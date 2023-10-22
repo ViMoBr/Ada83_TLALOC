@@ -7,44 +7,48 @@ PACKAGE BODY TBL IS
    
   TBL_ERROR	: EXCEPTION;
    
-  --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+  --|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+  --|		FUNCTION UPPER_CASE
   --|
-  FUNCTION UPPER_CASE (A: STRING) RETURN STRING IS
-    S: STRING(1 .. A'LENGTH) := A;
-    MAGIC: CONSTANT := CHARACTER'POS('A') - CHARACTER'POS('A');
+  FUNCTION UPPER_CASE ( A :STRING ) RETURN STRING IS
+    S	: STRING( 1 .. A'LENGTH )	:= A;
+    MAGIC	: CONSTANT := CHARACTER'POS( 'A' ) - CHARACTER'POS( 'A' );
   BEGIN
     FOR I IN 1 .. S'LENGTH LOOP
       IF S(I) IN 'A' .. 'Z' THEN
-        S(I) := CHARACTER'VAL(CHARACTER'POS(S(I)) + MAGIC);
+        S(I) := CHARACTER'VAL( CHARACTER'POS( S(I) ) + MAGIC );
       END IF;
     END LOOP;
     RETURN S;
   END UPPER_CASE;
-  --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+  --|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+  --|		PROCEDURE READ_TABLES
   --|
   PROCEDURE READ_TABLES ( NOM_TABLE :STRING ) IS
     TABLE_FILE		: TEXT_IO.FILE_TYPE;
-    BUFFER		: STRING(1 .. 120);
+    BUFFER		: STRING( 1 .. 120 );
     B_CHAR		: CHARACTER;
-    B_NUM		: INTEGER;
-    LAST		: NATURAL;
+    B_NUM			: INTEGER;
+    LAST			: NATURAL;
     FIRST_COL, LAST_COL	: NATURAL;
       
     LAST_FIELD		: FIELD_IDX	:= 0;
       
     ATTR_SEEN_FOR_THIS_NODE	: BOOLEAN := FALSE;
       
-    PACKAGE MY_INTEGER_IO IS NEW INTEGER_IO(INTEGER);
+    PACKAGE MY_INTEGER_IO IS NEW INTEGER_IO( INTEGER );
     USE MY_INTEGER_IO;
-      
+    --|----------------------------------------------------------------------------------------------
+    --|		PROCEDURE NIBBLE_NAME
+    --|
     PROCEDURE NIBBLE_NAME IS
     BEGIN
       FIRST_COL := LAST_COL + 1;
-      WHILE FIRST_COL <= LAST AND THEN (BUFFER(FIRST_COL) = ' ' OR ELSE BUFFER(FIRST_COL) = ASCII.HT) LOOP
+      WHILE FIRST_COL <= LAST AND THEN (BUFFER( FIRST_COL ) = ' ' OR ELSE BUFFER( FIRST_COL ) = ASCII.HT) LOOP
         FIRST_COL := FIRST_COL + 1;
       END LOOP;
       LAST_COL := FIRST_COL;
-      WHILE LAST_COL <= LAST AND THEN BUFFER(LAST_COL) /= ' ' AND THEN BUFFER(LAST_COL) /= ASCII.HT LOOP
+      WHILE LAST_COL <= LAST AND THEN BUFFER( LAST_COL ) /= ' ' AND THEN BUFFER( LAST_COL ) /= ASCII.HT LOOP
         LAST_COL := LAST_COL + 1;
       END LOOP;
       LAST_COL := LAST_COL - 1;
@@ -55,14 +59,14 @@ PACKAGE BODY TBL IS
     START_NODE( 0 ) := 0;
     END_NODE( 0 ) := 0;
       
-    TEXT_IO.OPEN ( TABLE_FILE, TEXT_IO.IN_FILE, NOM_TEXTE & ".TBL" );
+    TEXT_IO.OPEN( TABLE_FILE, TEXT_IO.IN_FILE, NOM_TEXTE & ".TBL" );
          
     LOOP
       EXIT WHEN END_OF_FILE ( TABLE_FILE );
-      GET ( TABLE_FILE, B_CHAR );
+      GET( TABLE_FILE, B_CHAR );
             
       IF B_CHAR = 'C' THEN
-        GET_LINE ( TABLE_FILE, BUFFER, LAST );
+        GET_LINE( TABLE_FILE, BUFFER, LAST );
         LAST_COL := 0;
         NIBBLE_NAME;
         CLASS_IMAGE( LAST_CLASS ) := NEW STRING'( BUFFER( FIRST_COL..LAST_COL ) );
@@ -81,12 +85,12 @@ PACKAGE BODY TBL IS
         END LOOP;
                
       ELSIF B_CHAR = 'N' THEN
-        GET ( TABLE_FILE, B_NUM );
-        GET_LINE ( TABLE_FILE, BUFFER, LAST );
+        GET     ( TABLE_FILE, B_NUM );
+        GET_LINE( TABLE_FILE, BUFFER, LAST );
         LAST_COL := 0;
         IF LAST_NODE /= NODE_IDX( B_NUM ) THEN
-          SET_OUTPUT ( STANDARD_OUTPUT );
-          PUT_LINE ( "**** NODES OUT OF SYNC LAST NODE = "
+          SET_OUTPUT( STANDARD_OUTPUT );
+          PUT_LINE( "**** NODES OUT OF SYNC LAST NODE = "
                      & INTEGER'IMAGE ( INTEGER( TBL.LAST_NODE ) )
                      & "  B_NUM = "
                      & NATURAL'IMAGE ( INTEGER( B_NUM ) )
@@ -101,12 +105,12 @@ PACKAGE BODY TBL IS
         END_FIELD( LAST_NODE ) := 0;
             
       ELSIF B_CHAR = 'A' OR B_CHAR = 'B' OR B_CHAR = 'I' THEN
-        GET ( TABLE_FILE, B_NUM );
-        GET_LINE ( TABLE_FILE, BUFFER, LAST );
+        GET     ( TABLE_FILE, B_NUM );
+        GET_LINE( TABLE_FILE, BUFFER, LAST );
         LAST_COL := 0;
         IF B_NUM < 0 THEN
-          B_NUM := - B_NUM;			--| NUMERO NEGATIF
-          ATTR_KIND( ATTR_IDX( B_NUM ) ) := 'S';		--| SEQUENCE/LISTE
+          B_NUM := - B_NUM;								--| NUMERO NEGATIF
+          ATTR_KIND( ATTR_IDX( B_NUM ) ) := 'S';						--| SEQUENCE/LISTE
         ELSE
           ATTR_KIND( ATTR_IDX( B_NUM ) ) := B_CHAR;
         END IF;
@@ -126,15 +130,15 @@ PACKAGE BODY TBL IS
       END IF;
     END LOOP;
       
-    LAST_NODE := LAST_NODE - 1;
-    LAST_CLASS := LAST_CLASS -1;
+    LAST_NODE  := LAST_NODE - 1;
+    LAST_CLASS := LAST_CLASS - 1;
       
-    TEXT_IO.CLOSE ( TABLE_FILE );
+    TEXT_IO.CLOSE( TABLE_FILE );
       
   EXCEPTION
     WHEN END_ERROR =>
-      TEXT_IO.CLOSE ( TABLE_FILE );
+      TEXT_IO.CLOSE( TABLE_FILE );
   END READ_TABLES;
-   
+
 --|-------------------------------------------------------------------------------------------------
 END TBL;
