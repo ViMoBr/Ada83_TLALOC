@@ -2,4 +2,4 @@ root = true
 
 [*.{ads,adb}]
 indent_style = space
-indent_size = 20
+indent_size = 16
