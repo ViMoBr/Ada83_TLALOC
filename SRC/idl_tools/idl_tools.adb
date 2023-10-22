@@ -1,7 +1,7 @@
 WITH TEXT_IO, IDL;
-USE  TEXT_IO;					--| LA VERSION ADAPTÉE À LA GESTION DES STRUCTURES DE GRAMMAIRE LALR
+USE  TEXT_IO;									--| LA VERSION ADAPTÉE À LA GESTION DES STRUCTURES DE GRAMMAIRE LALR
 --|-------------------------------------------------------------------------------------------------
---|	PROCEDURE IDL_TOOLS
+--|		PROCEDURE IDL_TOOLS
 --|-------------------------------------------------------------------------------------------------
 PROCEDURE IDL_TOOLS IS
     
