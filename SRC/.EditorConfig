@@ -1,5 +1,5 @@
 root = true
 
 [*.{ads,adb}]
-indent_style = tab
-indent_size = 20
+indent_style = space
+indent_size = 10
