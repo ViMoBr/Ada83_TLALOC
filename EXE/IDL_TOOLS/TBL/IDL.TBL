@@ -1,0 +1,53 @@
+C NON_DIANA
+N   0 root
+A      0   xd_high_page
+A      1   xd_user_root
+A     -2   xd_source_list
+A      3   xd_err_count
+A      4   spare_1
+N   1 txtrep
+N   2 num_val
+C BOOLEAN
+N   3 false
+N   4 true
+E BOOLEAN
+N   5 nil
+N   6 list
+A      5   xd_head
+A      6   xd_tail
+N   7 sourceline
+A      7   xd_number
+A     -8   xd_error_list
+N   8 error
+A      9   xd_srcpos
+A     10   xd_text
+N   9 symbol_rep
+A     10   xd_text
+A    -11   xd_deflist
+N  10 hash
+A    -12   xd_list
+N  11 void
+N  12 user_root
+A     13   xd_sourcename
+A    -14   xd_rule_s
+C NAMED_ELEMENT
+N  13 class_node
+A     16   lx_srcpos
+A     15   xd_symrep
+A    -17   xd_right_side
+A     18   xd_is_class
+A     19   xd_parent
+A     20   xd_node_id
+C ATTR_MEMBER
+N  14 attr
+A     16   lx_srcpos
+A     15   xd_symrep
+A     21   xd_attr_id
+A     22   xd_attr_type
+N  15 member
+A     16   lx_srcpos
+A     15   xd_symrep
+A     23   xd_class_node
+E ATTR_MEMBER
+E NAMED_ELEMENT
+E NON_DIANA
