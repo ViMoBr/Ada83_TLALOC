@@ -1,0 +1,42 @@
+WITH SEQUENTIAL_IO;
+--|-------------------------------------------------------------------------------------------------
+--|		PACKAGE GRMR_TBL
+--|-------------------------------------------------------------------------------------------------
+PACKAGE GRMR_TBL IS
+      
+  TYPE AC_BYTE		IS RANGE 0..16#FF#;			FOR AC_BYTE'SIZE USE 8;
+  TYPE AC_SHORT		IS RANGE -16#8000# .. 16#7FFF#;	FOR AC_SHORT'SIZE USE 16;
+      
+  TYPE ST_TBL_TYPE		IS ARRAY (1 .. 1000) OF INTEGER;				--| TABLE D'ETATS
+  TYPE AC_SYM_TYPE		IS ARRAY (1 .. 4800) OF AC_BYTE;				--| TABLE D'ACTIONS
+  TYPE AC_TBL_TYPE		IS ARRAY (1 .. 6000) OF AC_SHORT;
+      --| VALEURS DANS AC_TBL
+      --| VAL DANS 1..999  ETAT DE DECALAGE SUR LA PILE
+      --| VAL DANS 1_000..SHORT'LAST FAIRE K:= (VAL-1)/1_000 ET OPERER SUIVANT GRMR_OP'VAL(K) AVEC ARGUMENT GRMR_OP'VAL(1) SAUF POUR INFIX ET UNARY : ARG PAGE PUIS LINE AU MOT SUIVANT
+      --| VAL 0 INDIQUE UNE ERREUR
+      --| VAL DANS  -9_999..-1  ALLER A L'ACTION INDICE ABS(VAL) DANS AC_TBL
+      --| VAL DANS SHORT'FIRST..-9_999  FAIRE K:= (-VAL-10_000-1)/1000 PUIS POP K ELEMENTS ET REDUIRE A 1
+      
+      -- NONTER TABLE
+      -- INFO TO BUILD TXTREP FOR NONTER (FOR DEBUG PURPOSES)
+  TYPE NTER_PG_TYPE		IS ARRAY (1 .. 255) OF AC_BYTE;
+  TYPE NTER_LN_TYPE		IS ARRAY (1 .. 255) OF AC_BYTE;
+      
+  TYPE GRMR_TBL_RECORD	IS RECORD
+			  ST_TBL		: ST_TBL_TYPE;
+			  ST_TBL_LAST	: INTEGER;
+			  AC_SYM		: AC_SYM_TYPE;
+			  AC_TBL		: AC_TBL_TYPE;
+			  AC_SYM_LAST	: INTEGER;
+			  AC_TBL_LAST	: INTEGER;
+			  NTER_PG		: NTER_PG_TYPE;
+			  NTER_LN		: NTER_LN_TYPE;
+			  NTER_LAST	: INTEGER;
+			END RECORD;
+      
+  GRMR	: GRMR_TBL_RECORD;
+      
+  PACKAGE GRMR_TBL_IO	IS NEW SEQUENTIAL_IO( GRMR_TBL_RECORD );
+      
+--|-------------------------------------------------------------------------------------------------
+END GRMR_TBL;
