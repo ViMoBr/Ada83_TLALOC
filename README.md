@@ -2,9 +2,21 @@
 
 
 
-## Getting started
+## Motivation
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+Au moment de son apparition, le langage Ada, aujourd'hui "Ada 83", fut une vraie innovation et constituait un univers de programmation spécial contraignant son utilisateur à produire du logiciel bien conçu, tout en offrant à ce même utilisateur une palette de structures et de services logiciels inégalés sous une syntaxe remarquablement naturelle.
+Les révisions ultérieures du langage aboutissant d'abord à Ada 95 puis 2005 et 2012 constituent-elles des progrès ? A titre personnel je ne le crois pas. L'introduction de la programmation objet et ses pointeurs omniprésents, ses types estampillés, la complication de la structure possible des programmes avec les paquets fils apportent une fausse impression de richesse alors que se multiplient simultanément les opportunités de faire des noeuds dans le système logiciel.
+La plupart des programmes n'ont pas de bénéfice à tirer des mécanismes d'héritage et de structures d'enregistrement extensibles. Les idées qui sous-tendent ces fonctionnalités proviennent de systèmes à usage spécifique, et ce n'est qu'avec artifice qu'on les applique à tous les programmes ; souvent au détriment de la compréhensibilité de ceux-ci.
+Quant à la syntaxe des révisions modernes du langage, il est clair que nombre de formules d'expression n'ont aucun sens immédiat et exigent une connaissance approfondie de certaines situations créées par la complexification des versions Ada ultérieures. De Ada 95 à Ada 2012, les révisions ont permis à de nombreux ingénieurs de travailler, mais comme de nombreux système logiciels, les développements empâtent et finalement dégradent la netteté du système d'origine et parfois même la philosophie.
+
+Il apparaît dès lors souhaitable que reste accessible un langage Ada conforme à la définition d'origine Ada 83. Comment peut-on conserver un environnement juste réalisant le langage originel ? Gnat, le compilateur libre le plus utilisé possède une option -gnat83 qui compile en principe une version originelle du langage, mais l'ensemble du système de compilation adapté aux révisions alourdit considérablement l'implantation, et s'il s'agit de ne compiler que la version Ada 83, il est préférable de n'avoir que le strict nécessaire.
+
+Ada 83 étant un langage dont l'implantation se montre malgré tout assez complexe, il n'existe que très peu de systèmes de compilation Ada 83 accessibles au niveau du code source. Une spécification SETL interprétable a été conservée par certains passionnés, mais en elle même elle est aujourd'hui de peu d'utilité. Cette spécification a fait l'objet d'une traduction en langage C qui a donné le compilateur NYU intégré au système Ada-Ed. Les sources C sont toujours accessibles et recompilables moyennant quelques interventions. Cependant, la structure du logiciel C traduit du SETL est bien difficile à appréhender.
+Il eût été souhaitable que fut produit un compilateur Ada 83 en Ada 83. Malheureusement aucun tel source ne fut rendu accessible.
+Le seul système qui s'en approchait, à notre connaissance, fut le prototype de traducteur Ada 83 vers DIANA produit par Peregrine Systems vers 1988. Ce système était fourni dans une suite logicielle composée de deux CD-ROMs.
+
+C'est ce système que nous avons repris ici et modifié pour en mieux faire ressortir la structure en profitant de la disponibilité de Gnat. Notre espoir étant que ce prototype, qui est doté de caractéristiques intéressantes, puisse servir de base à un compilateur Ada 83 comparable à Ada-Ed, mais de maintenance facilitée par l'usage d'Ada 83 pour sa programmation.
+
 
 Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
 
