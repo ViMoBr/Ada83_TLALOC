@@ -1,3 +1,5 @@
+WITH LALRIDL_NODE_ATTR_CLASS_NAMES;
+USE  LALRIDL_NODE_ATTR_CLASS_NAMES;
 --|-------------------------------------------------------------------------------------------------
 --|		IDL								--| VERSION SPECIALISEE POUR LE TRAITEMENT DE GRAMMAIRE
 --|-------------------------------------------------------------------------------------------------
@@ -22,41 +24,7 @@ PACKAGE IDL IS
    
    
 	--| DISPOSITIF D'ACCES A UN ARBRE REPESENTANT UNE DESCRIPTION DE GRAMMAIRE
-   
-  TYPE NODE_NAME	IS (
-	DN_root,		DN_txtrep,	DN_num_val,	DN_false,
-	DN_true,		DN_nil,		DN_list,		DN_sourceline,
-	DN_error,		DN_symbol_rep,	DN_hash,		DN_user_root,
-	DN_rule_s,	DN_rule,		DN_terminal,	DN_nonterminal,
-	DN_alt,		DN_ruleinfo,	DN_state_s,	DN_state,
-	DN_void,		DN_item,		DN_terminal_s,	DN_sem_s,
-	DN_sem_node,	DN_sem_op,
-	DN_VIRGIN
-	);
-	FOR NODE_NAME'SIZE USE 8;
-
-  TYPE ATTRIBUTE_NAME	IS (
-	xd_high_page,	xd_user_root,	xd_source_list,	xd_err_count,
-	spare_1,		xd_head,		xd_tail,		xd_number,
-	xd_error_list,	xd_srcpos,	xd_text,		xd_deflist,
-	xd_list,		xd_sourcename,	xd_grammar,	xd_statelist,
-	xd_structure,	xd_timestamp,	spare_3,		xd_name,
-	xd_is_nullable,	xd_ruleinfo,	lx_srcpos,	xd_alt_nbr,
-	xd_rule,		xd_state_s,	xd_semantics,	xd_symrep,
-	xd_ter_nbr,	xd_is_reachable,	xd_gens_ter_str,	xd_timechecked,
-	xd_timechanged,	xd_rule_nbr,	xd_init_nonter_s,	xd_state_nbr,
-	xd_alternative,	xd_alt_tail,	xd_syl_nbr,	xd_goto,
-	xd_follow,	xd_sem_index,	xd_sem_op,	xd_kind
-	);
-
-  SUBTYPE CLASS_NON_DIANA	IS NODE_NAME RANGE DN_root	.. DN_sem_op;
-  SUBTYPE CLASS_BOOLEAN	IS NODE_NAME RANGE DN_false	.. DN_true;
-  SUBTYPE CLASS_RULE_S	IS NODE_NAME RANGE DN_rule_s	.. DN_rule_s;
-  SUBTYPE CLASS_DEF_NAME	IS NODE_NAME RANGE DN_rule	.. DN_nonterminal;
-  SUBTYPE CLASS_SYLLABLE	IS NODE_NAME RANGE DN_terminal.. DN_nonterminal;
-  SUBTYPE CLASS_STATE_VOID	IS NODE_NAME RANGE DN_state	.. DN_void;
-  SUBTYPE CLASS_SEMANTICS	IS NODE_NAME RANGE DN_sem_node.. DN_sem_op;
-   
+      
   TYPE SHORT			IS RANGE -32_768 .. 32767;	FOR SHORT'SIZE    USE 16;
   TYPE PAGE_IDX			IS RANGE 0 .. 16#7FFF#;	FOR PAGE_IDX'SIZE USE 15;
   TYPE LINE_IDX			IS RANGE 0 .. 127;		FOR LINE_IDX'SIZE USE 7;
