@@ -497,7 +497,7 @@ PROCEDURE IDL_READ ( NOM_TEXTE :STRING ) IS						--| LIT UNE DESCRIPTION IDL EN 
    
 BEGIN
    
-  OPEN ( IFILE, IN_FILE, NOM_TEXTE & ".IDL" );						--| FICHIER SOURCE IDL
+  OPEN ( IFILE, IN_FILE, "../../IDL/" & NOM_TEXTE & ".IDL" );						--| FICHIER SOURCE IDL
   PUT_LINE ( "LE FICHIER : " & NOM_TEXTE & ".IDL EST OUVERT " );
   CREATE_IDL_TREE_FILE ( NOM_TEXTE & ".LAR");						--| FICHIER D'ARBRE IDL
   PUT_LINE ( "LE FICHIER : " & NOM_TEXTE & ".LAR  EST CREE" );
@@ -514,7 +514,7 @@ BEGIN
        
 EXCEPTION
   WHEN NAME_ERROR =>
-    PUT_LINE ( "LE FICHIER DESCRIPTION : " & NOM_TEXTE & ".IDL  EST INTROUVABLE" );
+    PUT_LINE ( "LE FICHIER DESCRIPTION : " & "../../IDL/" & NOM_TEXTE & ".IDL  EST INTROUVABLE" );
    
 --|-------------------------------------------------------------------------------------------------
 END IDL_READ;
