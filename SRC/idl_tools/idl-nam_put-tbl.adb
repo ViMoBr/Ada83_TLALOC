@@ -12,15 +12,29 @@ PACKAGE BODY TBL IS
   --|
   FUNCTION UPPER_CASE ( A :STRING ) RETURN STRING IS
     S	: STRING( 1 .. A'LENGTH )	:= A;
-    MAGIC	: CONSTANT := CHARACTER'POS( 'A' ) - CHARACTER'POS( 'A' );
+    DECAL	: CONSTANT := CHARACTER'POS( 'A' ) - CHARACTER'POS( 'a' );
   BEGIN
     FOR I IN 1 .. S'LENGTH LOOP
-      IF S(I) IN 'A' .. 'Z' THEN
-        S(I) := CHARACTER'VAL( CHARACTER'POS( S(I) ) + MAGIC );
+      IF S( I ) IN 'a' .. 'z' THEN
+        S( I ) := CHARACTER'VAL( CHARACTER'POS( S( I ) ) + DECAL );
       END IF;
     END LOOP;
     RETURN S;
   END UPPER_CASE;
+  --|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+  --|		FUNCTION LOWER_CASE
+  --|
+  FUNCTION LOWER_CASE ( A :STRING ) RETURN STRING IS
+    S	: STRING( 1 .. A'LENGTH )	:= A;
+    DECAL	: CONSTANT := CHARACTER'POS( 'a' ) - CHARACTER'POS( 'A' );
+  BEGIN
+    FOR I IN 1 .. S'LENGTH LOOP
+      IF S( I ) IN 'A' .. 'Z' THEN
+        S( I ) := CHARACTER'VAL( CHARACTER'POS( S( I ) ) + DECAL );
+      END IF;
+    END LOOP;
+    RETURN S;
+  END LOWER_CASE;
   --|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
   --|		PROCEDURE READ_TABLES
   --|
