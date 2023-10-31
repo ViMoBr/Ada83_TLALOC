@@ -40,7 +40,7 @@ package ada_main is
    pragma Export (C, main, "main");
 
    type Version_32 is mod 2 ** 32;
-   u00001 : constant Version_32 := 16#bc843c4a#;
+   u00001 : constant Version_32 := 16#adf2a688#;
    pragma Export (C, u00001, "lalr_toolsB");
    u00002 : constant Version_32 := 16#7320ff5f#;
    pragma Export (C, u00002, "system__standard_libraryB");
@@ -258,9 +258,9 @@ package ada_main is
    pragma Export (C, u00108, "system__string_hashB");
    u00109 : constant Version_32 := 16#84464e89#;
    pragma Export (C, u00109, "system__string_hashS");
-   u00110 : constant Version_32 := 16#647414e4#;
+   u00110 : constant Version_32 := 16#9b33791f#;
    pragma Export (C, u00110, "idlB");
-   u00111 : constant Version_32 := 16#2d976029#;
+   u00111 : constant Version_32 := 16#462ee20c#;
    pragma Export (C, u00111, "idlS");
    u00112 : constant Version_32 := 16#e56aa583#;
    pragma Export (C, u00112, "ada__text_ioB");
@@ -310,9 +310,9 @@ package ada_main is
    pragma Export (C, u00134, "system__sequential_ioB");
    u00135 : constant Version_32 := 16#936518dd#;
    pragma Export (C, u00135, "system__sequential_ioS");
-   u00136 : constant Version_32 := 16#31a0e57e#;
+   u00136 : constant Version_32 := 16#4046b062#;
    pragma Export (C, u00136, "lexB");
-   u00137 : constant Version_32 := 16#3b6ccd95#;
+   u00137 : constant Version_32 := 16#4a8a9889#;
    pragma Export (C, u00137, "lexS");
    u00138 : constant Version_32 := 16#ff1f6112#;
    pragma Export (C, u00138, "text_ioS");
@@ -368,10 +368,12 @@ package ada_main is
    pragma Export (C, u00163, "system__val_llliS");
    u00164 : constant Version_32 := 16#4f0fea27#;
    pragma Export (C, u00164, "system__val_llluS");
-   u00165 : constant Version_32 := 16#1982dcd0#;
-   pragma Export (C, u00165, "system__memoryB");
-   u00166 : constant Version_32 := 16#f95ea4cd#;
-   pragma Export (C, u00166, "system__memoryS");
+   u00165 : constant Version_32 := 16#7acf18e7#;
+   pragma Export (C, u00165, "lalridl_node_attr_class_namesS");
+   u00166 : constant Version_32 := 16#1982dcd0#;
+   pragma Export (C, u00166, "system__memoryB");
+   u00167 : constant Version_32 := 16#f95ea4cd#;
+   pragma Export (C, u00167, "system__memoryS");
 
    --  BEGIN ELABORATION ORDER
    --  ada%s
@@ -535,6 +537,7 @@ package ada_main is
    --  grmr_ops%s
    --  grmr_ops%b
    --  grmr_tbl%s
+   --  lalridl_node_attr_class_names%s
    --  lex%s
    --  lex%b
    --  idl%s
