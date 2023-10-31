@@ -274,10 +274,12 @@ package body ada_main is
 --  BEGIN Object file/option list
    --   ./grmr_ops.o
    --   ./grmr_tbl.o
+   --   ./lalridl_node_attr_class_names.o
    --   ./lex.o
    --   ./idl.o
    --   ./lalr_tools.o
    --   -L./
+   --   -L../../EXE/IDL_TOOLS/
    --   -L../communs/
    --   -L../par_phase/
    --   -L/usr/lib/gcc/x86_64-linux-gnu/12/adalib/
