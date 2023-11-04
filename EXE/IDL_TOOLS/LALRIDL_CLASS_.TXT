@@ -1,0 +1,26 @@
+NON_DIANA > root
+NON_DIANA > txtrep
+NON_DIANA > num_val
+NON_DIANA > BOOLEAN > false
+NON_DIANA > BOOLEAN > true
+NON_DIANA > nil
+NON_DIANA > list
+NON_DIANA > sourceline
+NON_DIANA > error
+NON_DIANA > symbol_rep
+NON_DIANA > hash
+NON_DIANA > STATE_VOID > void
+NON_DIANA > user_root
+NON_DIANA > RULE_S > rule_s
+NON_DIANA > rule
+NON_DIANA > alt
+NON_DIANA > SYLLABLE > terminal
+NON_DIANA > SYLLABLE > nonterminal
+NON_DIANA > ruleinfo
+NON_DIANA > state_s
+NON_DIANA > STATE_VOID > state
+NON_DIANA > item
+NON_DIANA > terminal_s
+NON_DIANA > sem_s
+NON_DIANA > SEMANTICS > sem_node
+NON_DIANA > SEMANTICS > sem_op

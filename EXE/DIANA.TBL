@@ -1,0 +1,1288 @@
+C STANDARD_IDL
+N   0 root
+A      0   xd_high_page
+A      1   xd_user_root
+A     -2   xd_source_list
+A      3   xd_err_count
+A      4   spare_1
+N   1 txtrep
+N   2 num_val
+C BOOLEAN
+N   3 false
+N   4 true
+E BOOLEAN
+N   5 nil
+N   6 list
+A      5   xd_head
+A      6   xd_tail
+N   7 sourceline
+A      7   xd_number
+A     -8   xd_error_list
+N   8 error
+A      9   xd_srcpos
+A     10   xd_text
+N   9 symbol_rep
+A     10   xd_text
+A    -11   xd_deflist
+N  10 hash
+A    -12   xd_list
+N  11 void
+E STANDARD_IDL
+C ALL_SOURCE
+C DEF_NAME
+C SOURCE_NAME
+C OBJECT_NAME
+C INIT_OBJECT_NAME
+C VC_NAME
+N  12 variable_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A     15   sm_obj_type
+A     24   sm_init_exp
+B     25   sm_renames_obj
+A     26   sm_address
+B     31   sm_is_shared
+A     14   xd_region
+A     27   cd_comp_unit
+A     28   cd_level
+A     29   cd_offset
+B     30   cd_compiled
+N  13 constant_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A     15   sm_obj_type
+A     24   sm_init_exp
+B     25   sm_renames_obj
+A     26   sm_address
+A     16   sm_first
+A     14   xd_region
+A     27   cd_comp_unit
+A     28   cd_level
+A     29   cd_offset
+B     30   cd_compiled
+E VC_NAME
+N  14 number_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A     15   sm_obj_type
+A     24   sm_init_exp
+A     14   xd_region
+C COMP_NAME
+N  15 component_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A     15   sm_obj_type
+A     24   sm_init_exp
+A     70   sm_comp_rep
+A     14   xd_region
+N  16 discriminant_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A     15   sm_obj_type
+A     24   sm_init_exp
+A     70   sm_comp_rep
+A     16   sm_first
+A     14   xd_region
+E COMP_NAME
+C PARAM_NAME
+N  17 in_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A     15   sm_obj_type
+A     24   sm_init_exp
+A     16   sm_first
+A     14   xd_region
+A     28   cd_level
+A     29   cd_offset
+C PARAM_IO_O
+N  18 in_out_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A     15   sm_obj_type
+A     24   sm_init_exp
+A     16   sm_first
+A     14   xd_region
+A     28   cd_level
+A    122   cd_addr_offset
+A    123   cd_val_offset
+N  19 out_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A     15   sm_obj_type
+A     24   sm_init_exp
+A     16   sm_first
+A     14   xd_region
+A     28   cd_level
+A    122   cd_addr_offset
+A    123   cd_val_offset
+E PARAM_IO_O
+E PARAM_NAME
+E INIT_OBJECT_NAME
+C ENUM_LITERAL
+N  20 enumeration_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A     15   sm_obj_type
+A     55   sm_pos
+A     56   sm_rep
+A     14   xd_region
+N  21 character_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A     15   sm_obj_type
+A     55   sm_pos
+A     56   sm_rep
+A     14   xd_region
+E ENUM_LITERAL
+N  22 iteration_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A     15   sm_obj_type
+A     14   xd_region
+A     28   cd_level
+A     29   cd_offset
+E OBJECT_NAME
+C TYPE_NAME
+N  23 type_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A     33   sm_type_spec
+A     16   sm_first
+A     14   xd_region
+N  24 subtype_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A     33   sm_type_spec
+A     14   xd_region
+N  25 private_type_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A     33   sm_type_spec
+A     14   xd_region
+N  26 l_private_type_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A     33   sm_type_spec
+A     14   xd_region
+E TYPE_NAME
+C UNIT_NAME
+C NON_TASK_NAME
+C SUBPROG_PACK_NAME
+C SUBPROG_NAME
+N  27 procedure_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A     16   sm_first
+A    109   sm_spec
+A    112   sm_unit_desc
+A     26   sm_address
+B    113   sm_is_inline
+A    114   sm_interface
+A     14   xd_region
+A    110   xd_stub
+A    111   xd_body
+B     30   cd_compiled
+A     28   cd_level
+A     73   cd_label
+A    115   cd_param_size
+N  28 function_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A     16   sm_first
+A    109   sm_spec
+A    112   sm_unit_desc
+A     26   sm_address
+B    113   sm_is_inline
+A    114   sm_interface
+A     14   xd_region
+A    110   xd_stub
+A    111   xd_body
+B     30   cd_compiled
+A     28   cd_level
+A     73   cd_label
+A    115   cd_param_size
+A    118   cd_result_size
+N  29 operator_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A     16   sm_first
+A    109   sm_spec
+A    112   sm_unit_desc
+A     26   sm_address
+B    113   sm_is_inline
+A    114   sm_interface
+A     14   xd_region
+A    110   xd_stub
+A    111   xd_body
+B     30   cd_compiled
+A     28   cd_level
+A     73   cd_label
+A    115   cd_param_size
+A    119   xd_not_equal
+E SUBPROG_NAME
+N  30 package_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A     16   sm_first
+A    109   sm_spec
+A    112   sm_unit_desc
+A     26   sm_address
+A     14   xd_region
+A    110   xd_stub
+A    111   xd_body
+B     30   cd_compiled
+E SUBPROG_PACK_NAME
+N  31 generic_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A     16   sm_first
+A    109   sm_spec
+A    148   sm_generic_param_s
+A    133   sm_body
+B    113   sm_is_inline
+A     14   xd_region
+A    110   xd_stub
+A    111   xd_body
+E NON_TASK_NAME
+N  32 task_body_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A     16   sm_first
+A     33   sm_type_spec
+A    133   sm_body
+A     14   xd_region
+E UNIT_NAME
+C LABEL_NAME
+N  33 label_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A    101   sm_stm
+A     14   xd_region
+A     73   cd_label
+N  34 block_loop_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A    101   sm_stm
+A     14   xd_region
+E LABEL_NAME
+N  35 entry_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A    109   sm_spec
+A     26   sm_address
+A     14   xd_region
+N  36 exception_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A    147   sm_renames_exc
+A     14   xd_region
+A     73   cd_label
+E SOURCE_NAME
+C PREDEF_NAME
+N  37 attribute_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A    151   xd_pos
+N  38 pragma_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A    153   sm_argument_id_s
+A    151   xd_pos
+N  39 argument_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A    151   xd_pos
+N  40 bltn_operator_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A    152   sm_operator
+E PREDEF_NAME
+E DEF_NAME
+C ALL_DECL
+N  41 block_master
+A    154   lx_srcpos
+A    101   sm_stm
+C ITEM
+C DSCRMT_PARAM_DECL
+N  42 dscrmt_decl
+A     21   as_source_name_s
+A     48   as_name
+A     22   as_exp
+A    154   lx_srcpos
+C PARAM
+N  43 in
+A     21   as_source_name_s
+A     48   as_name
+A     22   as_exp
+A    154   lx_srcpos
+B    121   lx_default
+N  44 out
+A     21   as_source_name_s
+A     48   as_name
+A     22   as_exp
+A    154   lx_srcpos
+N  45 in_out
+A     21   as_source_name_s
+A     48   as_name
+A     22   as_exp
+A    154   lx_srcpos
+E PARAM
+E DSCRMT_PARAM_DECL
+C DECL
+C ID_S_DECL
+C EXP_DECL
+C OBJECT_DECL
+N  46 constant_decl
+A     21   as_source_name_s
+A     22   as_exp
+A     23   as_type_def
+A    154   lx_srcpos
+N  47 variable_decl
+A     21   as_source_name_s
+A     22   as_exp
+A     23   as_type_def
+A    154   lx_srcpos
+E OBJECT_DECL
+N  48 number_decl
+A     21   as_source_name_s
+A     22   as_exp
+A    154   lx_srcpos
+E EXP_DECL
+N  49 exception_decl
+A     21   as_source_name_s
+A    154   lx_srcpos
+N  50 deferred_constant_decl
+A     21   as_source_name_s
+A     48   as_name
+A    154   lx_srcpos
+E ID_S_DECL
+C ID_DECL
+N  51 type_decl
+A     20   as_source_name
+A     32   as_dscrmt_decl_s
+A     23   as_type_def
+A    154   lx_srcpos
+N  52 subtype_decl
+A     20   as_source_name
+A     34   as_subtype_indication
+A    154   lx_srcpos
+N  53 task_decl
+A     20   as_source_name
+A     74   as_decl_s
+A    154   lx_srcpos
+C UNIT_DECL
+N  54 generic_decl
+A     20   as_source_name
+A     85   as_header
+A    106   as_item_s
+A    154   lx_srcpos
+C NON_GENERIC_DECL
+N  55 subprog_entry_decl
+A     20   as_source_name
+A     85   as_header
+A     86   as_unit_kind
+A    154   lx_srcpos
+N  56 package_decl
+A     20   as_source_name
+A     85   as_header
+A     86   as_unit_kind
+A    154   lx_srcpos
+E NON_GENERIC_DECL
+E UNIT_DECL
+C SIMPLE_RENAME_DECL
+N  57 renames_obj_decl
+A     20   as_source_name
+A     48   as_name
+A    131   as_type_mark_name
+A    154   lx_srcpos
+N  58 renames_exc_decl
+A     20   as_source_name
+A     48   as_name
+A    154   lx_srcpos
+E SIMPLE_RENAME_DECL
+E ID_DECL
+N  59 null_comp_decl
+A    154   lx_srcpos
+C REP
+C NAMED_REP
+N  60 length_enum_rep
+A     48   as_name
+A     22   as_exp
+A    154   lx_srcpos
+N  61 address
+A     48   as_name
+A     22   as_exp
+A    154   lx_srcpos
+E NAMED_REP
+N  62 record_rep
+A     48   as_name
+A    149   as_alignment_clause
+A    150   as_comp_rep_s
+A    154   lx_srcpos
+E REP
+C USE_PRAGMA
+N  63 use
+A    130   as_name_s
+A    154   lx_srcpos
+N  64 pragma
+A     17   as_used_name_id
+A     18   as_general_assoc_s
+A    154   lx_srcpos
+E USE_PRAGMA
+E DECL
+C SUBUNIT_BODY
+N  65 subprogram_body
+A     20   as_source_name
+A    146   as_body
+A     85   as_header
+A    154   lx_srcpos
+N  66 package_body
+A     20   as_source_name
+A    146   as_body
+A    154   lx_srcpos
+N  67 task_body
+A     20   as_source_name
+A    146   as_body
+A    154   lx_srcpos
+E SUBUNIT_BODY
+E ITEM
+N  68 subunit
+A     48   as_name
+A    145   as_subunit_body
+A    154   lx_srcpos
+E ALL_DECL
+C TYPE_DEF
+N  69 enumeration_def
+A     52   as_enum_literal_s
+A    154   lx_srcpos
+C CONSTRAINED_DEF
+N  70 subtype_indication
+A     47   as_constraint
+A     48   as_name
+A    154   lx_srcpos
+N  71 integer_def
+A     47   as_constraint
+A    154   lx_srcpos
+N  72 float_def
+A     47   as_constraint
+A    154   lx_srcpos
+N  73 fixed_def
+A     47   as_constraint
+A    154   lx_srcpos
+E CONSTRAINED_DEF
+C ARR_ACC_DER_DEF
+N  74 constrained_array_def
+A     34   as_subtype_indication
+A     47   as_constraint
+A    154   lx_srcpos
+N  75 unconstrained_array_def
+A     34   as_subtype_indication
+A     60   as_index_s
+A    154   lx_srcpos
+N  76 access_def
+A     34   as_subtype_indication
+A    154   lx_srcpos
+N  77 derived_def
+A     34   as_subtype_indication
+A    154   lx_srcpos
+A    -49   xd_derived_subprog_list
+E ARR_ACC_DER_DEF
+N  78 record_def
+A     65   as_comp_list
+A    154   lx_srcpos
+N  79 private_def
+A    154   lx_srcpos
+N  80 l_private_def
+A    154   lx_srcpos
+N  81 formal_dscrt_def
+A    154   lx_srcpos
+N  82 formal_integer_def
+A    154   lx_srcpos
+N  83 formal_fixed_def
+A    154   lx_srcpos
+N  84 formal_float_def
+A    154   lx_srcpos
+E TYPE_DEF
+C SEQUENCES
+N  85 alternative_s
+A    -19   as_list
+A    154   lx_srcpos
+N  86 argument_id_s
+A    -19   as_list
+A    154   lx_srcpos
+N  87 choice_s
+A    -19   as_list
+A    154   lx_srcpos
+A     73   cd_label
+N  88 comp_rep_s
+A    -19   as_list
+A    154   lx_srcpos
+N  89 compltn_unit_s
+A    -19   as_list
+A    154   lx_srcpos
+N  90 context_elem_s
+A    -19   as_list
+A    154   lx_srcpos
+N  91 decl_s
+A    -19   as_list
+A    154   lx_srcpos
+N  92 dscrmt_decl_s
+A    -19   as_list
+A    154   lx_srcpos
+N  93 general_assoc_s
+A    -19   as_list
+A    154   lx_srcpos
+N  94 discrete_range_s
+A    -19   as_list
+A    154   lx_srcpos
+N  95 enum_literal_s
+A    -19   as_list
+A    154   lx_srcpos
+A     46   cd_alignment
+A     40   cd_impl_size
+A     53   cd_last
+N  96 exp_s
+A    -19   as_list
+A    154   lx_srcpos
+N  97 item_s
+A    -19   as_list
+A    154   lx_srcpos
+N  98 index_s
+A    -19   as_list
+A    154   lx_srcpos
+N  99 name_s
+A    -19   as_list
+A    154   lx_srcpos
+N 100 param_s
+A    -19   as_list
+A    154   lx_srcpos
+N 101 pragma_s
+A    -19   as_list
+A    154   lx_srcpos
+N 102 scalar_s
+A    -19   as_list
+A    154   lx_srcpos
+N 103 source_name_s
+A    -19   as_list
+A    154   lx_srcpos
+N 104 stm_s
+A    -19   as_list
+A    154   lx_srcpos
+N 105 test_clause_elem_s
+A    -19   as_list
+A    154   lx_srcpos
+N 106 use_pragma_s
+A    -19   as_list
+A    154   lx_srcpos
+N 107 variant_s
+A    -19   as_list
+A    154   lx_srcpos
+E SEQUENCES
+C STM_ELEM
+C STM
+N 108 labeled
+A     21   as_source_name_s
+A     76   as_pragma_s
+A     98   as_stm
+A    154   lx_srcpos
+N 109 null_stm
+A    154   lx_srcpos
+N 110 abort
+A    130   as_name_s
+A    154   lx_srcpos
+C STM_WITH_EXP
+N 111 return
+A     22   as_exp
+A    154   lx_srcpos
+N 112 delay
+A     22   as_exp
+A    154   lx_srcpos
+C STM_WITH_EXP_NAME
+N 113 assign
+A     22   as_exp
+A     48   as_name
+A    154   lx_srcpos
+N 114 exit
+A     22   as_exp
+A     48   as_name
+A    154   lx_srcpos
+A    101   sm_stm
+N 115 code
+A     22   as_exp
+A     48   as_name
+A    154   lx_srcpos
+E STM_WITH_EXP_NAME
+N 116 case
+A     22   as_exp
+A    102   as_alternative_s
+A    154   lx_srcpos
+E STM_WITH_EXP
+C STM_WITH_NAME
+N 117 goto
+A     48   as_name
+A    154   lx_srcpos
+N 118 raise
+A     48   as_name
+A    154   lx_srcpos
+C CALL_STM
+N 119 entry_call
+A     48   as_name
+A     18   as_general_assoc_s
+A    154   lx_srcpos
+A    124   sm_normalized_param_s
+N 120 procedure_call
+A     48   as_name
+A     18   as_general_assoc_s
+A    154   lx_srcpos
+A    124   sm_normalized_param_s
+E CALL_STM
+E STM_WITH_NAME
+N 121 accept
+A     48   as_name
+A    120   as_param_s
+A    100   as_stm_s
+A    154   lx_srcpos
+C BLOCK_LOOP
+N 122 loop
+A     20   as_source_name
+A    103   as_iteration
+A    100   as_stm_s
+A    154   lx_srcpos
+A     28   cd_level
+A    104   cd_after_loop
+N 123 block
+A     20   as_source_name
+A    105   as_block_body
+A    154   lx_srcpos
+E BLOCK_LOOP
+C ENTRY_STM
+N 124 cond_entry
+A    134   as_stm_s1
+A    135   as_stm_s2
+A    154   lx_srcpos
+N 125 timed_entry
+A    134   as_stm_s1
+A    135   as_stm_s2
+A    154   lx_srcpos
+E ENTRY_STM
+C CLAUSES_STM
+N 126 if
+A     99   as_test_clause_elem_s
+A    100   as_stm_s
+A    154   lx_srcpos
+N 127 selective_wait
+A     99   as_test_clause_elem_s
+A    100   as_stm_s
+A    154   lx_srcpos
+E CLAUSES_STM
+N 128 terminate
+A    154   lx_srcpos
+E STM
+N 129 stm_pragma
+A     77   as_pragma
+A    154   lx_srcpos
+E STM_ELEM
+C GENERAL_ASSOC
+C NAMED_ASSOC
+N 130 named
+A     22   as_exp
+A     72   as_choice_s
+A    154   lx_srcpos
+N 131 assoc
+A     22   as_exp
+A    126   as_used_name
+A    154   lx_srcpos
+E NAMED_ASSOC
+C EXP
+C NAME
+C DESIGNATOR
+C USED_OBJECT
+N 132 used_char
+A    154   lx_srcpos
+A     13   lx_symrep
+A     89   sm_defn
+A     87   sm_exp_type
+A     88   sm_value
+N 133 used_object_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A     89   sm_defn
+A     87   sm_exp_type
+A     88   sm_value
+E USED_OBJECT
+C USED_NAME
+N 134 used_op
+A    154   lx_srcpos
+A     13   lx_symrep
+A     89   sm_defn
+N 135 used_name_id
+A    154   lx_srcpos
+A     13   lx_symrep
+A     89   sm_defn
+E USED_NAME
+E DESIGNATOR
+C NAME_EXP
+C NAME_VAL
+N 136 attribute
+A     48   as_name
+A     17   as_used_name_id
+A     22   as_exp
+A    154   lx_srcpos
+A     87   sm_exp_type
+A     88   sm_value
+N 137 selected
+A     48   as_name
+A     91   as_designator
+A    154   lx_srcpos
+A     87   sm_exp_type
+A     88   sm_value
+N 138 function_call
+A     48   as_name
+A     18   as_general_assoc_s
+A    154   lx_srcpos
+B    125   lx_prefix
+A     87   sm_exp_type
+A     88   sm_value
+A    124   sm_normalized_param_s
+E NAME_VAL
+N 139 indexed
+A     48   as_name
+A     90   as_exp_s
+A    154   lx_srcpos
+A     87   sm_exp_type
+N 140 slice
+A     48   as_name
+A     78   as_discrete_range
+A    154   lx_srcpos
+A     87   sm_exp_type
+N 141 all
+A     48   as_name
+A    154   lx_srcpos
+A     87   sm_exp_type
+E NAME_EXP
+E NAME
+C EXP_EXP
+C EXP_VAL
+N 142 short_circuit
+A     50   as_exp1
+A     93   as_short_circuit_op
+A     51   as_exp2
+A    154   lx_srcpos
+A     87   sm_exp_type
+A     88   sm_value
+N 143 numeric_literal
+A    154   lx_srcpos
+A     96   lx_numrep
+A     87   sm_exp_type
+A     88   sm_value
+N 144 null_access
+A    154   lx_srcpos
+A     87   sm_exp_type
+A     88   sm_value
+C EXP_VAL_EXP
+C MEMBERSHIP
+N 145 range_membership
+A     22   as_exp
+A     94   as_membership_op
+A     57   as_range
+A    154   lx_srcpos
+A     87   sm_exp_type
+A     88   sm_value
+N 146 type_membership
+A     22   as_exp
+A     94   as_membership_op
+A     48   as_name
+A    154   lx_srcpos
+A     87   sm_exp_type
+A     88   sm_value
+E MEMBERSHIP
+C QUAL_CONV
+N 147 conversion
+A     22   as_exp
+A     48   as_name
+A    154   lx_srcpos
+A     87   sm_exp_type
+A     88   sm_value
+N 148 qualified
+A     22   as_exp
+A     48   as_name
+A    154   lx_srcpos
+A     87   sm_exp_type
+A     88   sm_value
+E QUAL_CONV
+N 149 parenthesized
+A     22   as_exp
+A    154   lx_srcpos
+A     87   sm_exp_type
+A     88   sm_value
+E EXP_VAL_EXP
+E EXP_VAL
+C AGG_EXP
+N 150 aggregate
+A     18   as_general_assoc_s
+A    154   lx_srcpos
+A     87   sm_exp_type
+A     95   sm_discrete_range
+A     92   sm_normalized_comp_s
+N 151 string_literal
+A    154   lx_srcpos
+A     13   lx_symrep
+A     87   sm_exp_type
+A     95   sm_discrete_range
+E AGG_EXP
+N 152 qualified_allocator
+A     97   as_qualified
+A    154   lx_srcpos
+A     87   sm_exp_type
+N 153 subtype_allocator
+A     34   as_subtype_indication
+A    154   lx_srcpos
+A     87   sm_exp_type
+A     81   sm_desig_type
+E EXP_EXP
+E EXP
+E GENERAL_ASSOC
+C CONSTRAINT
+C DISCRETE_RANGE
+C RANGE
+N 154 range
+A     50   as_exp1
+A     51   as_exp2
+A    154   lx_srcpos
+A     33   sm_type_spec
+N 155 range_attribute
+A     48   as_name
+A     17   as_used_name_id
+A     22   as_exp
+A    154   lx_srcpos
+A     33   sm_type_spec
+E RANGE
+N 156 discrete_subtype
+A     34   as_subtype_indication
+A    154   lx_srcpos
+E DISCRETE_RANGE
+C REAL_CONSTRAINT
+N 157 float_constraint
+A     22   as_exp
+A     57   as_range
+A    154   lx_srcpos
+A     33   sm_type_spec
+N 158 fixed_constraint
+A     22   as_exp
+A     57   as_range
+A    154   lx_srcpos
+A     33   sm_type_spec
+E REAL_CONSTRAINT
+N 159 index_constraint
+A     59   as_discrete_range_s
+A    154   lx_srcpos
+N 160 dscrmt_constraint
+A     18   as_general_assoc_s
+A    154   lx_srcpos
+E CONSTRAINT
+C CHOICE
+N 161 choice_exp
+A     22   as_exp
+A    154   lx_srcpos
+N 162 choice_range
+A     78   as_discrete_range
+A    154   lx_srcpos
+N 163 choice_others
+A    154   lx_srcpos
+E CHOICE
+C HEADER
+C SUBP_ENTRY_HEADER
+N 164 procedure_spec
+A    120   as_param_s
+A    154   lx_srcpos
+N 165 function_spec
+A    120   as_param_s
+A     48   as_name
+A    154   lx_srcpos
+N 166 entry
+A    120   as_param_s
+A     78   as_discrete_range
+A    154   lx_srcpos
+E SUBP_ENTRY_HEADER
+N 167 package_spec
+A    127   as_decl_s1
+A    128   as_decl_s2
+A    154   lx_srcpos
+B    129   xd_body_is_required
+E HEADER
+C UNIT_DESC
+C UNIT_KIND
+C RENAME_INSTANT
+N 168 renames_unit
+A     48   as_name
+A    154   lx_srcpos
+N 169 instantiation
+A     48   as_name
+A     18   as_general_assoc_s
+A    154   lx_srcpos
+A    132   sm_decl_s
+E RENAME_INSTANT
+C GENERIC_PARAM
+N 170 name_default
+A     48   as_name
+A    154   lx_srcpos
+N 171 box_default
+A    154   lx_srcpos
+N 172 no_default
+A    154   lx_srcpos
+E GENERIC_PARAM
+E UNIT_KIND
+C BODY
+N 173 block_body
+A    106   as_item_s
+A    100   as_stm_s
+A    102   as_alternative_s
+A    154   lx_srcpos
+A     28   cd_level
+A    107   cd_return_label
+A    108   cd_result_offset
+N 174 stub
+A    154   lx_srcpos
+E BODY
+N 175 implicit_not_eq
+A    154   lx_srcpos
+A    117   sm_equal
+N 176 derived_subprog
+A    154   lx_srcpos
+A    116   sm_derivable
+E UNIT_DESC
+C TEST_CLAUSE_ELEM
+C TEST_CLAUSE
+N 177 cond_clause
+A     22   as_exp
+A    100   as_stm_s
+A    154   lx_srcpos
+N 178 select_alternative
+A     22   as_exp
+A    100   as_stm_s
+A    154   lx_srcpos
+E TEST_CLAUSE
+N 179 select_alt_pragma
+A     77   as_pragma
+A    154   lx_srcpos
+E TEST_CLAUSE_ELEM
+C MEMBERSHIP_OP
+N 180 in_op
+A    154   lx_srcpos
+N 181 not_in
+A    154   lx_srcpos
+E MEMBERSHIP_OP
+C SHORT_CIRCUIT_OP
+N 182 and_then
+A    154   lx_srcpos
+N 183 or_else
+A    154   lx_srcpos
+E SHORT_CIRCUIT_OP
+C ITERATION
+C FOR_REV
+N 184 for
+A     20   as_source_name
+A     78   as_discrete_range
+A    154   lx_srcpos
+N 185 reverse
+A     20   as_source_name
+A     78   as_discrete_range
+A    154   lx_srcpos
+E FOR_REV
+N 186 while
+A     22   as_exp
+A    154   lx_srcpos
+E ITERATION
+C ALTERNATIVE_ELEM
+N 187 alternative
+A     72   as_choice_s
+A    100   as_stm_s
+A    154   lx_srcpos
+N 188 alternative_pragma
+A     77   as_pragma
+A    154   lx_srcpos
+E ALTERNATIVE_ELEM
+C COMP_REP_ELEM
+N 189 comp_rep
+A     48   as_name
+A     22   as_exp
+A     57   as_range
+A    154   lx_srcpos
+N 190 comp_rep_pragma
+A     77   as_pragma
+A    154   lx_srcpos
+E COMP_REP_ELEM
+C CONTEXT_ELEM
+N 191 context_pragma
+A     77   as_pragma
+A    154   lx_srcpos
+N 192 with
+A    130   as_name_s
+A    144   as_use_pragma_s
+A    154   lx_srcpos
+E CONTEXT_ELEM
+C VARIANT_ELEM
+N 193 variant
+A     72   as_choice_s
+A     65   as_comp_list
+A    154   lx_srcpos
+N 194 variant_pragma
+A     77   as_pragma
+A    154   lx_srcpos
+E VARIANT_ELEM
+C ALIGNMENT_CLAUSE
+N 195 alignment
+A     76   as_pragma_s
+A     22   as_exp
+A    154   lx_srcpos
+E ALIGNMENT_CLAUSE
+C VARIANT_PART
+N 196 variant_part
+A     48   as_name
+A     71   as_variant_s
+A    154   lx_srcpos
+E VARIANT_PART
+N 197 comp_list
+A     74   as_decl_s
+A     75   as_variant_part
+A     76   as_pragma_s
+A    154   lx_srcpos
+N 198 compilation
+A    136   as_compltn_unit_s
+A    154   lx_srcpos
+N 199 compilation_unit
+A    137   as_context_elem_s
+A    138   as_all_decl
+A     76   as_pragma_s
+A    154   lx_srcpos
+A    139   xd_timestamp
+A   -140   xd_with_list
+A    141   xd_nbr_pages
+A    142   xd_parent
+A    143   xd_lib_name
+N 200 index
+A     48   as_name
+A    154   lx_srcpos
+A     33   sm_type_spec
+E ALL_SOURCE
+C TYPE_SPEC
+C DERIVABLE_SPEC
+C FULL_TYPE_SPEC
+N 201 task_spec
+A     36   sm_derived
+B     37   sm_is_anonymous
+A    132   sm_decl_s
+A    133   sm_body
+A     26   sm_address
+A     42   sm_size
+A     79   sm_storage_size
+A     35   xd_source_name
+A     27   cd_comp_unit
+A     28   cd_level
+B     30   cd_compiled
+A    110   xd_stub
+A    111   xd_body
+C NON_TASK
+C SCALAR
+N 202 enumeration
+A     36   sm_derived
+B     37   sm_is_anonymous
+A     38   sm_base_type
+A     39   sm_range
+A     54   sm_literal_s
+A     35   xd_source_name
+A     27   cd_comp_unit
+A     28   cd_level
+B     30   cd_compiled
+A     40   cd_impl_size
+N 203 Integer
+A     36   sm_derived
+B     37   sm_is_anonymous
+A     38   sm_base_type
+A     39   sm_range
+A     35   xd_source_name
+A     27   cd_comp_unit
+A     28   cd_level
+B     30   cd_compiled
+A     40   cd_impl_size
+A     29   cd_offset
+A     40   cd_impl_size
+C REAL
+N 204 float
+A     36   sm_derived
+B     37   sm_is_anonymous
+A     38   sm_base_type
+A     39   sm_range
+A     41   sm_accuracy
+A     35   xd_source_name
+A     27   cd_comp_unit
+A     28   cd_level
+B     30   cd_compiled
+A     40   cd_impl_size
+A     40   cd_impl_size
+N 205 fixed
+A     36   sm_derived
+B     37   sm_is_anonymous
+A     38   sm_base_type
+A     39   sm_range
+A     41   sm_accuracy
+A     35   xd_source_name
+A     27   cd_comp_unit
+A     28   cd_level
+B     30   cd_compiled
+A     40   cd_impl_size
+A     58   cd_impl_small
+A     40   cd_impl_size
+E REAL
+E SCALAR
+C UNCONSTRAINED
+C UNCONSTRAINED_COMPOSITE
+N 206 array
+A     36   sm_derived
+B     37   sm_is_anonymous
+A     38   sm_base_type
+A     42   sm_size
+B     43   sm_is_limited
+B     44   sm_is_packed
+A     61   sm_index_s
+A     62   sm_comp_type
+A     35   xd_source_name
+A     27   cd_comp_unit
+A     28   cd_level
+B     30   cd_compiled
+N 207 record
+A     36   sm_derived
+B     37   sm_is_anonymous
+A     38   sm_base_type
+A     42   sm_size
+B     43   sm_is_limited
+B     44   sm_is_packed
+A     66   sm_discriminant_s
+A     67   sm_comp_list
+A     68   sm_representation
+A     35   xd_source_name
+A     27   cd_comp_unit
+A     28   cd_level
+B     30   cd_compiled
+E UNCONSTRAINED_COMPOSITE
+N 208 access
+A     36   sm_derived
+B     37   sm_is_anonymous
+A     38   sm_base_type
+A     42   sm_size
+A     79   sm_storage_size
+B     80   sm_is_controlled
+A     81   sm_desig_type
+A     82   sm_master
+A     35   xd_source_name
+A     27   cd_comp_unit
+A     28   cd_level
+B     30   cd_compiled
+A     29   cd_offset
+B     83   cd_constrained
+E UNCONSTRAINED
+C CONSTRAINED
+N 209 constrained_array
+A     36   sm_derived
+B     37   sm_is_anonymous
+A     38   sm_base_type
+B     45   sm_depends_on_dscrmt
+A     63   sm_index_subtype_s
+A     35   xd_source_name
+A     27   cd_comp_unit
+A     28   cd_level
+B     30   cd_compiled
+A     40   cd_impl_size
+A     46   cd_alignment
+A     29   cd_offset
+A     64   cd_dimensions
+N 210 constrained_record
+A     36   sm_derived
+B     37   sm_is_anonymous
+A     38   sm_base_type
+B     45   sm_depends_on_dscrmt
+A     69   sm_normalized_dscrmt_s
+A     35   xd_source_name
+A     27   cd_comp_unit
+A     28   cd_level
+B     30   cd_compiled
+A     40   cd_impl_size
+A     46   cd_alignment
+N 211 constrained_access
+A     36   sm_derived
+B     37   sm_is_anonymous
+A     38   sm_base_type
+B     45   sm_depends_on_dscrmt
+A     81   sm_desig_type
+A     35   xd_source_name
+A     27   cd_comp_unit
+A     28   cd_level
+B     30   cd_compiled
+A     40   cd_impl_size
+A     46   cd_alignment
+E CONSTRAINED
+E NON_TASK
+E FULL_TYPE_SPEC
+C PRIVATE_SPEC
+N 212 private
+A     36   sm_derived
+B     37   sm_is_anonymous
+A     66   sm_discriminant_s
+A     33   sm_type_spec
+A     35   xd_source_name
+N 213 l_private
+A     36   sm_derived
+B     37   sm_is_anonymous
+A     66   sm_discriminant_s
+A     33   sm_type_spec
+A     35   xd_source_name
+E PRIVATE_SPEC
+E DERIVABLE_SPEC
+N 214 incomplete
+A     66   sm_discriminant_s
+A     35   xd_source_name
+A     84   xd_full_type_spec
+N 215 universal_integer
+N 216 universal_fixed
+N 217 universal_real
+E TYPE_SPEC
+C NON_DIANA
+N 218 user_root
+A    155   xd_sourcename
+A    156   xd_grammar
+A    157   xd_statelist
+A    158   xd_structure
+A    139   xd_timestamp
+A    159   spare_3
+N 219 real_val
+A    160   xd_numer
+A    161   xd_denom
+N 220 trans_with
+A    162   tw_filename
+A    163   tw_comp_unit
+N 221 lib_info
+A    164   xd_short
+A    165   xd_primary
+A    166   xd_secondary
+N 222 def
+A    168   xd_header
+A     35   xd_source_name
+A    169   xd_region_def
+B    170   xd_is_in_spec
+A    171   xd_lex_level
+B    172   xd_is_used
+C UNSPECIFIED_TYPE
+N 223 any_access
+N 224 any_composite
+N 225 any_string
+N 226 any_access_of
+A    167   xd_item
+N 227 any_integer
+N 228 any_real
+E UNSPECIFIED_TYPE
+N 229 implicit_conv
+A    167   xd_item
+A    -12   xd_list
+N 230 nullary_call
+A    167   xd_item
+E NON_DIANA

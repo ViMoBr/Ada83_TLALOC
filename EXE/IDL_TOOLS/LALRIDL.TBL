@@ -1,0 +1,97 @@
+C NON_DIANA
+N   0 root
+A      0   xd_high_page
+A      1   xd_user_root
+A     -2   xd_source_list
+A      3   xd_err_count
+A      4   spare_1
+N   1 txtrep
+N   2 num_val
+C BOOLEAN
+N   3 false
+N   4 true
+E BOOLEAN
+N   5 nil
+N   6 list
+A      5   xd_head
+A      6   xd_tail
+N   7 sourceline
+A      7   xd_number
+A     -8   xd_error_list
+N   8 error
+A      9   xd_srcpos
+A     10   xd_text
+N   9 symbol_rep
+A     10   xd_text
+A    -11   xd_deflist
+N  10 hash
+A    -12   xd_list
+N  11 user_root
+A     13   xd_sourcename
+A     14   xd_grammar
+A     15   xd_statelist
+A     16   xd_structure
+A     17   xd_timestamp
+A     18   spare_3
+C RULE_S
+N  12 rule_s
+A    -12   xd_list
+E RULE_S
+N  13 rule
+A     22   lx_srcpos
+A     19   xd_name
+A    -12   xd_list
+B     20   xd_is_nullable
+A     21   xd_ruleinfo
+N  14 alt
+A     22   lx_srcpos
+A    -12   xd_list
+A     23   xd_alt_nbr
+A     24   xd_rule
+A     25   xd_state_s
+A     26   xd_semantics
+C SYLLABLE
+N  15 terminal
+A     22   lx_srcpos
+A     27   xd_symrep
+A     28   xd_ter_nbr
+N  16 nonterminal
+A     22   lx_srcpos
+A     27   xd_symrep
+A     24   xd_rule
+E SYLLABLE
+N  17 ruleinfo
+A    -12   xd_list
+B     29   xd_is_reachable
+B     30   xd_gens_ter_str
+A     31   xd_timechecked
+A     32   xd_timechanged
+A     33   xd_rule_nbr
+A     34   xd_init_nonter_s
+N  18 state_s
+A    -12   xd_list
+C STATE_VOID
+N  19 state
+A    -12   xd_list
+A     35   xd_state_nbr
+N  20 void
+E STATE_VOID
+N  21 item
+A     36   xd_alternative
+A    -37   xd_alt_tail
+A     38   xd_syl_nbr
+A     39   xd_goto
+A     40   xd_follow
+N  22 terminal_s
+A    -12   xd_list
+N  23 sem_s
+A    -12   xd_list
+A     41   xd_sem_index
+C SEMANTICS
+N  24 sem_node
+A     42   xd_sem_op
+A     43   xd_kind
+N  25 sem_op
+A     42   xd_sem_op
+E SEMANTICS
+E NON_DIANA

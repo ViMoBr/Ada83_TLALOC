@@ -1,0 +1,155 @@
+----- ARBORESCENCE IDL -----
+root	PATH NON_DIANA > root
+	=> xd_high_page	: num_val
+	=> xd_user_root	: user_root
+	=> xd_source_list	: SEQ OF sourceline
+	=> xd_err_count	: num_val
+	=> spare_1	: void
+
+txtrep	PATH NON_DIANA > txtrep
+
+num_val	PATH NON_DIANA > num_val
+
+{BOOLEAN}	PATH NON_DIANA > BOOLEAN ::= 
+	false
+	true
+
+false	PATH NON_DIANA > BOOLEAN > false
+
+true	PATH NON_DIANA > BOOLEAN > true
+
+nil	PATH NON_DIANA > nil
+
+list	PATH NON_DIANA > list
+	=> xd_head	: void
+	=> xd_tail	: void
+
+sourceline	PATH NON_DIANA > sourceline
+	=> xd_number	: num_val
+	=> xd_error_list	: SEQ OF error
+
+error	PATH NON_DIANA > error
+	=> xd_srcpos	: Source_Position
+	=> xd_text	: txtrep
+
+symbol_rep	PATH NON_DIANA > symbol_rep
+	=> xd_text	: txtrep
+	=> xd_deflist	: SEQ OF DEF_NAME
+
+hash	PATH NON_DIANA > hash
+	=> xd_list	: SEQ OF symbol_rep
+
+{NON_DIANA}	PATH NON_DIANA ::= 
+	root
+	txtrep
+	num_val
+	BOOLEAN
+	nil
+	list
+	sourceline
+	error
+	symbol_rep
+	hash
+	user_root
+	RULE_S
+	rule
+	alt
+	SYLLABLE
+	ruleinfo
+	state_s
+	STATE_VOID
+	item
+	terminal_s
+	sem_s
+	SEMANTICS
+
+void	PATH NON_DIANA > STATE_VOID > void
+
+user_root	PATH NON_DIANA > user_root
+	=> xd_sourcename	: txtrep
+	=> xd_grammar	: rule_s
+	=> xd_statelist	: state_s
+	=> xd_structure	: compilation
+	=> xd_timestamp	: Integer
+	=> spare_3	: void
+
+{RULE_S}	PATH NON_DIANA > RULE_S ::= 
+	rule_s
+
+rule_s	PATH NON_DIANA > RULE_S > rule_s
+	=> xd_list	: SEQ OF rule
+
+rule	PATH NON_DIANA > rule
+	=> xd_name	: symbol_rep
+	=> xd_list	: SEQ OF alt
+	=> xd_is_nullable	: BOOLEAN
+	=> xd_ruleinfo	: ruleinfo
+	=> lx_srcpos	: Source_Position
+
+alt	PATH NON_DIANA > alt
+	=> xd_list	: SEQ OF SYLLABLE
+	=> xd_alt_nbr	: Integer
+	=> xd_rule	: rule
+	=> xd_state_s	: state_s
+	=> xd_semantics	: sem_s
+	=> lx_srcpos	: Source_Position
+
+{SYLLABLE}	PATH NON_DIANA > SYLLABLE ::= 
+	terminal
+	nonterminal
+
+terminal	PATH NON_DIANA > SYLLABLE > terminal
+	=> xd_symrep	: symbol_rep
+	=> xd_ter_nbr	: Integer
+	=> lx_srcpos	: Source_Position
+
+nonterminal	PATH NON_DIANA > SYLLABLE > nonterminal
+	=> xd_symrep	: symbol_rep
+	=> xd_rule	: rule
+	=> lx_srcpos	: Source_Position
+
+ruleinfo	PATH NON_DIANA > ruleinfo
+	=> xd_list	: SEQ OF terminal
+	=> xd_is_reachable	: BOOLEAN
+	=> xd_gens_ter_str	: BOOLEAN
+	=> xd_timechecked	: Integer
+	=> xd_timechanged	: Integer
+	=> xd_rule_nbr	: Integer
+	=> xd_init_nonter_s	: rule_s
+
+state_s	PATH NON_DIANA > state_s
+	=> xd_list	: SEQ OF state
+
+state	PATH NON_DIANA > STATE_VOID > state
+	=> xd_list	: SEQ OF item
+	=> xd_state_nbr	: Integer
+
+{STATE_VOID}	PATH NON_DIANA > STATE_VOID ::= 
+	state
+	void
+
+item	PATH NON_DIANA > item
+	=> xd_alternative	: alt
+	=> xd_alt_tail	: SEQ OF SYLLABLE
+	=> xd_syl_nbr	: Integer
+	=> xd_goto	: STATE_VOID
+	=> xd_follow	: terminal_s
+
+terminal_s	PATH NON_DIANA > terminal_s
+	=> xd_list	: SEQ OF terminal
+
+sem_s	PATH NON_DIANA > sem_s
+	=> xd_list	: SEQ OF SEMANTICS
+	=> xd_sem_index	: Integer
+
+{SEMANTICS}	PATH NON_DIANA > SEMANTICS ::= 
+	sem_node
+	sem_op
+
+sem_node	PATH NON_DIANA > SEMANTICS > sem_node
+	=> xd_sem_op	: Integer
+	=> xd_kind	: Integer
+
+sem_op	PATH NON_DIANA > SEMANTICS > sem_op
+	=> xd_sem_op	: Integer
+

@@ -1,0 +1,111 @@
+root	=>
+	=> xd_high_page	:num_val
+	=> xd_user_root	:user_root
+	=> xd_source_list	:sourceline
+	=> xd_err_count	:num_val
+	=> spare_1	:void
+	;
+txtrep	=>
+	;
+num_val	=>
+	;
+false	=>
+	;
+true	=>
+	;
+nil	=>
+	;
+list	=>
+	=> xd_head	:void
+	=> xd_tail	:void
+	;
+sourceline	=>
+	=> xd_number	:num_val
+	=> xd_error_list	:error
+	;
+error	=>
+	=> xd_srcpos	:Source_Position
+	=> xd_text	:txtrep
+	;
+symbol_rep	=>
+	=> xd_text	:txtrep
+	=> xd_deflist	:DEF_NAME
+	;
+hash	=>
+	=> xd_list	:symbol_rep
+	;
+user_root	=>
+	=> xd_sourcename	:txtrep
+	=> xd_grammar	:rule_s
+	=> xd_statelist	:state_s
+	=> xd_structure	:compilation
+	=> xd_timestamp	:Integer
+	=> spare_3	:void
+	;
+rule_s	=>
+	=> xd_list	:rule
+	;
+rule	=>
+	=> lx_srcpos	:Source_Position
+	=> xd_name	:symbol_rep
+	=> xd_list	:alt
+	=> xd_is_nullable	:BOOLEAN
+	=> xd_ruleinfo	:ruleinfo
+	;
+alt	=>
+	=> lx_srcpos	:Source_Position
+	=> xd_list	:SYLLABLE
+	=> xd_alt_nbr	:Integer
+	=> xd_rule	:rule
+	=> xd_state_s	:state_s
+	=> xd_semantics	:sem_s
+	;
+terminal	=>
+	=> lx_srcpos	:Source_Position
+	=> xd_symrep	:symbol_rep
+	=> xd_ter_nbr	:Integer
+	;
+nonterminal	=>
+	=> lx_srcpos	:Source_Position
+	=> xd_symrep	:symbol_rep
+	=> xd_rule	:rule
+	;
+ruleinfo	=>
+	=> xd_list	:terminal
+	=> xd_is_reachable	:BOOLEAN
+	=> xd_gens_ter_str	:BOOLEAN
+	=> xd_timechecked	:Integer
+	=> xd_timechanged	:Integer
+	=> xd_rule_nbr	:Integer
+	=> xd_init_nonter_s	:rule_s
+	;
+state_s	=>
+	=> xd_list	:state
+	;
+state	=>
+	=> xd_list	:item
+	=> xd_state_nbr	:Integer
+	;
+void	=>
+	;
+item	=>
+	=> xd_alternative	:alt
+	=> xd_alt_tail	:SYLLABLE
+	=> xd_syl_nbr	:Integer
+	=> xd_goto	:STATE_VOID
+	=> xd_follow	:terminal_s
+	;
+terminal_s	=>
+	=> xd_list	:terminal
+	;
+sem_s	=>
+	=> xd_list	:SEMANTICS
+	=> xd_sem_index	:Integer
+	;
+sem_node	=>
+	=> xd_sem_op	:Integer
+	=> xd_kind	:Integer
+	;
+sem_op	=>
+	=> xd_sem_op	:Integer
+	;

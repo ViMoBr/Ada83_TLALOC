@@ -1,0 +1,1321 @@
+root	=>
+	=> xd_high_page	:num_val
+	=> xd_user_root	:user_root
+	=> xd_source_list	:sourceline
+	=> xd_err_count	:num_val
+	=> spare_1	:void
+	;
+txtrep	=>
+	;
+num_val	=>
+	;
+false	=>
+	;
+true	=>
+	;
+nil	=>
+	;
+list	=>
+	=> xd_head	:void
+	=> xd_tail	:void
+	;
+sourceline	=>
+	=> xd_number	:num_val
+	=> xd_error_list	:error
+	;
+error	=>
+	=> xd_srcpos	:Source_Position
+	=> xd_text	:txtrep
+	;
+symbol_rep	=>
+	=> xd_text	:txtrep
+	=> xd_deflist	:DEF_NAME
+	;
+hash	=>
+	=> xd_list	:symbol_rep
+	;
+void	=>
+	;
+variable_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_obj_type	:TYPE_SPEC
+	=> sm_init_exp	:EXP
+	=> sm_renames_obj	:BOOLEAN
+	=> sm_address	:EXP
+	=> sm_is_shared	:BOOLEAN
+	=> xd_region	:SOURCE_NAME
+	=> cd_comp_unit	:Integer
+	=> cd_level	:Integer
+	=> cd_offset	:Integer
+	=> cd_compiled	:BOOLEAN
+	;
+constant_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_obj_type	:TYPE_SPEC
+	=> sm_init_exp	:EXP
+	=> sm_renames_obj	:BOOLEAN
+	=> sm_address	:EXP
+	=> sm_first	:DEF_NAME
+	=> xd_region	:SOURCE_NAME
+	=> cd_comp_unit	:Integer
+	=> cd_level	:Integer
+	=> cd_offset	:Integer
+	=> cd_compiled	:BOOLEAN
+	;
+number_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_obj_type	:TYPE_SPEC
+	=> sm_init_exp	:EXP
+	=> xd_region	:SOURCE_NAME
+	;
+component_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_obj_type	:TYPE_SPEC
+	=> sm_init_exp	:EXP
+	=> sm_comp_rep	:COMP_REP_ELEM
+	=> xd_region	:SOURCE_NAME
+	;
+discriminant_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_obj_type	:TYPE_SPEC
+	=> sm_init_exp	:EXP
+	=> sm_comp_rep	:COMP_REP_ELEM
+	=> sm_first	:DEF_NAME
+	=> xd_region	:SOURCE_NAME
+	;
+in_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_obj_type	:TYPE_SPEC
+	=> sm_init_exp	:EXP
+	=> sm_first	:DEF_NAME
+	=> xd_region	:SOURCE_NAME
+	=> cd_level	:Integer
+	=> cd_offset	:Integer
+	;
+in_out_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_obj_type	:TYPE_SPEC
+	=> sm_init_exp	:EXP
+	=> sm_first	:DEF_NAME
+	=> xd_region	:SOURCE_NAME
+	=> cd_level	:Integer
+	=> cd_addr_offset	:Integer
+	=> cd_val_offset	:Integer
+	;
+out_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_obj_type	:TYPE_SPEC
+	=> sm_init_exp	:EXP
+	=> sm_first	:DEF_NAME
+	=> xd_region	:SOURCE_NAME
+	=> cd_level	:Integer
+	=> cd_addr_offset	:Integer
+	=> cd_val_offset	:Integer
+	;
+enumeration_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_obj_type	:TYPE_SPEC
+	=> sm_pos	:Integer
+	=> sm_rep	:Integer
+	=> xd_region	:SOURCE_NAME
+	;
+character_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_obj_type	:TYPE_SPEC
+	=> sm_pos	:Integer
+	=> sm_rep	:Integer
+	=> xd_region	:SOURCE_NAME
+	;
+iteration_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_obj_type	:TYPE_SPEC
+	=> xd_region	:SOURCE_NAME
+	=> cd_level	:Integer
+	=> cd_offset	:Integer
+	;
+type_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_type_spec	:TYPE_SPEC
+	=> sm_first	:DEF_NAME
+	=> xd_region	:SOURCE_NAME
+	;
+subtype_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_type_spec	:TYPE_SPEC
+	=> xd_region	:SOURCE_NAME
+	;
+private_type_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_type_spec	:TYPE_SPEC
+	=> xd_region	:SOURCE_NAME
+	;
+l_private_type_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_type_spec	:TYPE_SPEC
+	=> xd_region	:SOURCE_NAME
+	;
+procedure_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_first	:DEF_NAME
+	=> sm_spec	:HEADER
+	=> sm_unit_desc	:UNIT_DESC
+	=> sm_address	:EXP
+	=> sm_is_inline	:BOOLEAN
+	=> sm_interface	:PREDEF_NAME
+	=> xd_region	:SOURCE_NAME
+	=> xd_stub	:stub
+	=> xd_body	:SUBUNIT_BODY
+	=> cd_compiled	:BOOLEAN
+	=> cd_level	:Integer
+	=> cd_label	:Integer
+	=> cd_param_size	:Integer
+	;
+function_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_first	:DEF_NAME
+	=> sm_spec	:HEADER
+	=> sm_unit_desc	:UNIT_DESC
+	=> sm_address	:EXP
+	=> sm_is_inline	:BOOLEAN
+	=> sm_interface	:PREDEF_NAME
+	=> xd_region	:SOURCE_NAME
+	=> xd_stub	:stub
+	=> xd_body	:SUBUNIT_BODY
+	=> cd_compiled	:BOOLEAN
+	=> cd_level	:Integer
+	=> cd_label	:Integer
+	=> cd_param_size	:Integer
+	=> cd_result_size	:Integer
+	;
+operator_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_first	:DEF_NAME
+	=> sm_spec	:HEADER
+	=> sm_unit_desc	:UNIT_DESC
+	=> sm_address	:EXP
+	=> sm_is_inline	:BOOLEAN
+	=> sm_interface	:PREDEF_NAME
+	=> xd_region	:SOURCE_NAME
+	=> xd_stub	:stub
+	=> xd_body	:SUBUNIT_BODY
+	=> cd_compiled	:BOOLEAN
+	=> cd_level	:Integer
+	=> cd_label	:Integer
+	=> cd_param_size	:Integer
+	=> xd_not_equal	:operator_id
+	;
+package_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_first	:DEF_NAME
+	=> sm_spec	:HEADER
+	=> sm_unit_desc	:UNIT_DESC
+	=> sm_address	:EXP
+	=> xd_region	:SOURCE_NAME
+	=> xd_stub	:stub
+	=> xd_body	:SUBUNIT_BODY
+	=> cd_compiled	:BOOLEAN
+	;
+generic_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_first	:DEF_NAME
+	=> sm_spec	:HEADER
+	=> sm_generic_param_s	:item_s
+	=> sm_body	:BODY
+	=> sm_is_inline	:BOOLEAN
+	=> xd_region	:SOURCE_NAME
+	=> xd_stub	:stub
+	=> xd_body	:SUBUNIT_BODY
+	;
+task_body_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_first	:DEF_NAME
+	=> sm_type_spec	:TYPE_SPEC
+	=> sm_body	:BODY
+	=> xd_region	:SOURCE_NAME
+	;
+label_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_stm	:STM
+	=> xd_region	:SOURCE_NAME
+	=> cd_label	:Integer
+	;
+block_loop_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_stm	:STM
+	=> xd_region	:SOURCE_NAME
+	;
+entry_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_spec	:HEADER
+	=> sm_address	:EXP
+	=> xd_region	:SOURCE_NAME
+	;
+exception_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_renames_exc	:NAME
+	=> xd_region	:SOURCE_NAME
+	=> cd_label	:Integer
+	;
+attribute_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> xd_pos	:Integer
+	;
+pragma_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_argument_id_s	:argument_id
+	=> xd_pos	:Integer
+	;
+argument_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> xd_pos	:Integer
+	;
+bltn_operator_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_operator	:Integer
+	;
+block_master	=>
+	=> lx_srcpos	:Source_Position
+	=> sm_stm	:STM
+	;
+dscrmt_decl	=>
+	=> as_source_name_s	:source_name_s
+	=> as_name	:NAME
+	=> as_exp	:EXP
+	=> lx_srcpos	:Source_Position
+	;
+in	=>
+	=> as_source_name_s	:source_name_s
+	=> as_name	:NAME
+	=> as_exp	:EXP
+	=> lx_srcpos	:Source_Position
+	=> lx_default	:BOOLEAN
+	;
+out	=>
+	=> as_source_name_s	:source_name_s
+	=> as_name	:NAME
+	=> as_exp	:EXP
+	=> lx_srcpos	:Source_Position
+	;
+in_out	=>
+	=> as_source_name_s	:source_name_s
+	=> as_name	:NAME
+	=> as_exp	:EXP
+	=> lx_srcpos	:Source_Position
+	;
+constant_decl	=>
+	=> as_source_name_s	:source_name_s
+	=> as_exp	:EXP
+	=> as_type_def	:TYPE_DEF
+	=> lx_srcpos	:Source_Position
+	;
+variable_decl	=>
+	=> as_source_name_s	:source_name_s
+	=> as_exp	:EXP
+	=> as_type_def	:TYPE_DEF
+	=> lx_srcpos	:Source_Position
+	;
+number_decl	=>
+	=> as_source_name_s	:source_name_s
+	=> as_exp	:EXP
+	=> lx_srcpos	:Source_Position
+	;
+exception_decl	=>
+	=> as_source_name_s	:source_name_s
+	=> lx_srcpos	:Source_Position
+	;
+deferred_constant_decl	=>
+	=> as_source_name_s	:source_name_s
+	=> as_name	:NAME
+	=> lx_srcpos	:Source_Position
+	;
+type_decl	=>
+	=> as_source_name	:SOURCE_NAME
+	=> as_dscrmt_decl_s	:dscrmt_decl_s
+	=> as_type_def	:TYPE_DEF
+	=> lx_srcpos	:Source_Position
+	;
+subtype_decl	=>
+	=> as_source_name	:SOURCE_NAME
+	=> as_subtype_indication	:subtype_indication
+	=> lx_srcpos	:Source_Position
+	;
+task_decl	=>
+	=> as_source_name	:SOURCE_NAME
+	=> as_decl_s	:decl_s
+	=> lx_srcpos	:Source_Position
+	;
+generic_decl	=>
+	=> as_source_name	:SOURCE_NAME
+	=> as_header	:HEADER
+	=> as_item_s	:item_s
+	=> lx_srcpos	:Source_Position
+	;
+subprog_entry_decl	=>
+	=> as_source_name	:SOURCE_NAME
+	=> as_header	:HEADER
+	=> as_unit_kind	:UNIT_KIND
+	=> lx_srcpos	:Source_Position
+	;
+package_decl	=>
+	=> as_source_name	:SOURCE_NAME
+	=> as_header	:HEADER
+	=> as_unit_kind	:UNIT_KIND
+	=> lx_srcpos	:Source_Position
+	;
+renames_obj_decl	=>
+	=> as_source_name	:SOURCE_NAME
+	=> as_name	:NAME
+	=> as_type_mark_name	:NAME
+	=> lx_srcpos	:Source_Position
+	;
+renames_exc_decl	=>
+	=> as_source_name	:SOURCE_NAME
+	=> as_name	:NAME
+	=> lx_srcpos	:Source_Position
+	;
+null_comp_decl	=>
+	=> lx_srcpos	:Source_Position
+	;
+length_enum_rep	=>
+	=> as_name	:NAME
+	=> as_exp	:EXP
+	=> lx_srcpos	:Source_Position
+	;
+address	=>
+	=> as_name	:NAME
+	=> as_exp	:EXP
+	=> lx_srcpos	:Source_Position
+	;
+record_rep	=>
+	=> as_name	:NAME
+	=> as_alignment_clause	:ALIGNMENT_CLAUSE
+	=> as_comp_rep_s	:comp_rep_s
+	=> lx_srcpos	:Source_Position
+	;
+use	=>
+	=> as_name_s	:name_s
+	=> lx_srcpos	:Source_Position
+	;
+pragma	=>
+	=> as_used_name_id	:used_name_id
+	=> as_general_assoc_s	:general_assoc_s
+	=> lx_srcpos	:Source_Position
+	;
+subprogram_body	=>
+	=> as_source_name	:SOURCE_NAME
+	=> as_body	:BODY
+	=> as_header	:HEADER
+	=> lx_srcpos	:Source_Position
+	;
+package_body	=>
+	=> as_source_name	:SOURCE_NAME
+	=> as_body	:BODY
+	=> lx_srcpos	:Source_Position
+	;
+task_body	=>
+	=> as_source_name	:SOURCE_NAME
+	=> as_body	:BODY
+	=> lx_srcpos	:Source_Position
+	;
+subunit	=>
+	=> as_name	:NAME
+	=> as_subunit_body	:SUBUNIT_BODY
+	=> lx_srcpos	:Source_Position
+	;
+enumeration_def	=>
+	=> as_enum_literal_s	:enum_literal_s
+	=> lx_srcpos	:Source_Position
+	;
+subtype_indication	=>
+	=> as_constraint	:CONSTRAINT
+	=> as_name	:NAME
+	=> lx_srcpos	:Source_Position
+	;
+integer_def	=>
+	=> as_constraint	:CONSTRAINT
+	=> lx_srcpos	:Source_Position
+	;
+float_def	=>
+	=> as_constraint	:CONSTRAINT
+	=> lx_srcpos	:Source_Position
+	;
+fixed_def	=>
+	=> as_constraint	:CONSTRAINT
+	=> lx_srcpos	:Source_Position
+	;
+constrained_array_def	=>
+	=> as_subtype_indication	:subtype_indication
+	=> as_constraint	:CONSTRAINT
+	=> lx_srcpos	:Source_Position
+	;
+unconstrained_array_def	=>
+	=> as_subtype_indication	:subtype_indication
+	=> as_index_s	:index_s
+	=> lx_srcpos	:Source_Position
+	;
+access_def	=>
+	=> as_subtype_indication	:subtype_indication
+	=> lx_srcpos	:Source_Position
+	;
+derived_def	=>
+	=> as_subtype_indication	:subtype_indication
+	=> lx_srcpos	:Source_Position
+	=> xd_derived_subprog_list	:SUBPROG_NAME
+	;
+record_def	=>
+	=> as_comp_list	:comp_list
+	=> lx_srcpos	:Source_Position
+	;
+private_def	=>
+	=> lx_srcpos	:Source_Position
+	;
+l_private_def	=>
+	=> lx_srcpos	:Source_Position
+	;
+formal_dscrt_def	=>
+	=> lx_srcpos	:Source_Position
+	;
+formal_integer_def	=>
+	=> lx_srcpos	:Source_Position
+	;
+formal_fixed_def	=>
+	=> lx_srcpos	:Source_Position
+	;
+formal_float_def	=>
+	=> lx_srcpos	:Source_Position
+	;
+alternative_s	=>
+	=> as_list	:ALTERNATIVE_ELEM
+	=> lx_srcpos	:Source_Position
+	;
+argument_id_s	=>
+	=> as_list	:argument_id
+	=> lx_srcpos	:Source_Position
+	;
+choice_s	=>
+	=> as_list	:CHOICE
+	=> lx_srcpos	:Source_Position
+	=> cd_label	:Integer
+	;
+comp_rep_s	=>
+	=> as_list	:COMP_REP_ELEM
+	=> lx_srcpos	:Source_Position
+	;
+compltn_unit_s	=>
+	=> as_list	:compilation_unit
+	=> lx_srcpos	:Source_Position
+	;
+context_elem_s	=>
+	=> as_list	:CONTEXT_ELEM
+	=> lx_srcpos	:Source_Position
+	;
+decl_s	=>
+	=> as_list	:DECL
+	=> lx_srcpos	:Source_Position
+	;
+dscrmt_decl_s	=>
+	=> as_list	:dscrmt_decl
+	=> lx_srcpos	:Source_Position
+	;
+general_assoc_s	=>
+	=> as_list	:GENERAL_ASSOC
+	=> lx_srcpos	:Source_Position
+	;
+discrete_range_s	=>
+	=> as_list	:DISCRETE_RANGE
+	=> lx_srcpos	:Source_Position
+	;
+enum_literal_s	=>
+	=> as_list	:ENUM_LITERAL
+	=> lx_srcpos	:Source_Position
+	=> cd_alignment	:Integer
+	=> cd_impl_size	:Integer
+	=> cd_last	:Integer
+	;
+exp_s	=>
+	=> as_list	:EXP
+	=> lx_srcpos	:Source_Position
+	;
+item_s	=>
+	=> as_list	:ITEM
+	=> lx_srcpos	:Source_Position
+	;
+index_s	=>
+	=> as_list	:index
+	=> lx_srcpos	:Source_Position
+	;
+name_s	=>
+	=> as_list	:NAME
+	=> lx_srcpos	:Source_Position
+	;
+param_s	=>
+	=> as_list	:PARAM
+	=> lx_srcpos	:Source_Position
+	;
+pragma_s	=>
+	=> as_list	:pragma
+	=> lx_srcpos	:Source_Position
+	;
+scalar_s	=>
+	=> as_list	:SCALAR
+	=> lx_srcpos	:Source_Position
+	;
+source_name_s	=>
+	=> as_list	:SOURCE_NAME
+	=> lx_srcpos	:Source_Position
+	;
+stm_s	=>
+	=> as_list	:STM_ELEM
+	=> lx_srcpos	:Source_Position
+	;
+test_clause_elem_s	=>
+	=> as_list	:TEST_CLAUSE_ELEM
+	=> lx_srcpos	:Source_Position
+	;
+use_pragma_s	=>
+	=> as_list	:USE_PRAGMA
+	=> lx_srcpos	:Source_Position
+	;
+variant_s	=>
+	=> as_list	:VARIANT_ELEM
+	=> lx_srcpos	:Source_Position
+	;
+labeled	=>
+	=> as_source_name_s	:source_name_s
+	=> as_pragma_s	:pragma_s
+	=> as_stm	:STM
+	=> lx_srcpos	:Source_Position
+	;
+null_stm	=>
+	=> lx_srcpos	:Source_Position
+	;
+abort	=>
+	=> as_name_s	:name_s
+	=> lx_srcpos	:Source_Position
+	;
+return	=>
+	=> as_exp	:EXP
+	=> lx_srcpos	:Source_Position
+	;
+delay	=>
+	=> as_exp	:EXP
+	=> lx_srcpos	:Source_Position
+	;
+assign	=>
+	=> as_exp	:EXP
+	=> as_name	:NAME
+	=> lx_srcpos	:Source_Position
+	;
+exit	=>
+	=> as_exp	:EXP
+	=> as_name	:NAME
+	=> lx_srcpos	:Source_Position
+	=> sm_stm	:STM
+	;
+code	=>
+	=> as_exp	:EXP
+	=> as_name	:NAME
+	=> lx_srcpos	:Source_Position
+	;
+case	=>
+	=> as_exp	:EXP
+	=> as_alternative_s	:alternative_s
+	=> lx_srcpos	:Source_Position
+	;
+goto	=>
+	=> as_name	:NAME
+	=> lx_srcpos	:Source_Position
+	;
+raise	=>
+	=> as_name	:NAME
+	=> lx_srcpos	:Source_Position
+	;
+entry_call	=>
+	=> as_name	:NAME
+	=> as_general_assoc_s	:general_assoc_s
+	=> lx_srcpos	:Source_Position
+	=> sm_normalized_param_s	:exp_s
+	;
+procedure_call	=>
+	=> as_name	:NAME
+	=> as_general_assoc_s	:general_assoc_s
+	=> lx_srcpos	:Source_Position
+	=> sm_normalized_param_s	:exp_s
+	;
+accept	=>
+	=> as_name	:NAME
+	=> as_param_s	:param_s
+	=> as_stm_s	:stm_s
+	=> lx_srcpos	:Source_Position
+	;
+loop	=>
+	=> as_source_name	:SOURCE_NAME
+	=> as_iteration	:ITERATION
+	=> as_stm_s	:stm_s
+	=> lx_srcpos	:Source_Position
+	=> cd_level	:Integer
+	=> cd_after_loop	:Integer
+	;
+block	=>
+	=> as_source_name	:SOURCE_NAME
+	=> as_block_body	:block_body
+	=> lx_srcpos	:Source_Position
+	;
+cond_entry	=>
+	=> as_stm_s1	:stm_s
+	=> as_stm_s2	:stm_s
+	=> lx_srcpos	:Source_Position
+	;
+timed_entry	=>
+	=> as_stm_s1	:stm_s
+	=> as_stm_s2	:stm_s
+	=> lx_srcpos	:Source_Position
+	;
+if	=>
+	=> as_test_clause_elem_s	:test_clause_elem_s
+	=> as_stm_s	:stm_s
+	=> lx_srcpos	:Source_Position
+	;
+selective_wait	=>
+	=> as_test_clause_elem_s	:test_clause_elem_s
+	=> as_stm_s	:stm_s
+	=> lx_srcpos	:Source_Position
+	;
+terminate	=>
+	=> lx_srcpos	:Source_Position
+	;
+stm_pragma	=>
+	=> as_pragma	:pragma
+	=> lx_srcpos	:Source_Position
+	;
+named	=>
+	=> as_exp	:EXP
+	=> as_choice_s	:choice_s
+	=> lx_srcpos	:Source_Position
+	;
+assoc	=>
+	=> as_exp	:EXP
+	=> as_used_name	:USED_NAME
+	=> lx_srcpos	:Source_Position
+	;
+used_char	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_defn	:DEF_NAME
+	=> sm_exp_type	:TYPE_SPEC
+	=> sm_value	:Value
+	;
+used_object_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_defn	:DEF_NAME
+	=> sm_exp_type	:TYPE_SPEC
+	=> sm_value	:Value
+	;
+used_op	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_defn	:DEF_NAME
+	;
+used_name_id	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_defn	:DEF_NAME
+	;
+attribute	=>
+	=> as_name	:NAME
+	=> as_used_name_id	:used_name_id
+	=> as_exp	:EXP
+	=> lx_srcpos	:Source_Position
+	=> sm_exp_type	:TYPE_SPEC
+	=> sm_value	:Value
+	;
+selected	=>
+	=> as_name	:NAME
+	=> as_designator	:DESIGNATOR
+	=> lx_srcpos	:Source_Position
+	=> sm_exp_type	:TYPE_SPEC
+	=> sm_value	:Value
+	;
+function_call	=>
+	=> as_name	:NAME
+	=> as_general_assoc_s	:general_assoc_s
+	=> lx_srcpos	:Source_Position
+	=> lx_prefix	:BOOLEAN
+	=> sm_exp_type	:TYPE_SPEC
+	=> sm_value	:Value
+	=> sm_normalized_param_s	:exp_s
+	;
+indexed	=>
+	=> as_name	:NAME
+	=> as_exp_s	:exp_s
+	=> lx_srcpos	:Source_Position
+	=> sm_exp_type	:TYPE_SPEC
+	;
+slice	=>
+	=> as_name	:NAME
+	=> as_discrete_range	:DISCRETE_RANGE
+	=> lx_srcpos	:Source_Position
+	=> sm_exp_type	:TYPE_SPEC
+	;
+all	=>
+	=> as_name	:NAME
+	=> lx_srcpos	:Source_Position
+	=> sm_exp_type	:TYPE_SPEC
+	;
+short_circuit	=>
+	=> as_exp1	:EXP
+	=> as_short_circuit_op	:SHORT_CIRCUIT_OP
+	=> as_exp2	:EXP
+	=> lx_srcpos	:Source_Position
+	=> sm_exp_type	:TYPE_SPEC
+	=> sm_value	:Value
+	;
+numeric_literal	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_numrep	:Number_Rep
+	=> sm_exp_type	:TYPE_SPEC
+	=> sm_value	:Value
+	;
+null_access	=>
+	=> lx_srcpos	:Source_Position
+	=> sm_exp_type	:TYPE_SPEC
+	=> sm_value	:Value
+	;
+range_membership	=>
+	=> as_exp	:EXP
+	=> as_membership_op	:MEMBERSHIP_OP
+	=> as_range	:RANGE
+	=> lx_srcpos	:Source_Position
+	=> sm_exp_type	:TYPE_SPEC
+	=> sm_value	:Value
+	;
+type_membership	=>
+	=> as_exp	:EXP
+	=> as_membership_op	:MEMBERSHIP_OP
+	=> as_name	:NAME
+	=> lx_srcpos	:Source_Position
+	=> sm_exp_type	:TYPE_SPEC
+	=> sm_value	:Value
+	;
+conversion	=>
+	=> as_exp	:EXP
+	=> as_name	:NAME
+	=> lx_srcpos	:Source_Position
+	=> sm_exp_type	:TYPE_SPEC
+	=> sm_value	:Value
+	;
+qualified	=>
+	=> as_exp	:EXP
+	=> as_name	:NAME
+	=> lx_srcpos	:Source_Position
+	=> sm_exp_type	:TYPE_SPEC
+	=> sm_value	:Value
+	;
+parenthesized	=>
+	=> as_exp	:EXP
+	=> lx_srcpos	:Source_Position
+	=> sm_exp_type	:TYPE_SPEC
+	=> sm_value	:Value
+	;
+aggregate	=>
+	=> as_general_assoc_s	:general_assoc_s
+	=> lx_srcpos	:Source_Position
+	=> sm_exp_type	:TYPE_SPEC
+	=> sm_discrete_range	:DISCRETE_RANGE
+	=> sm_normalized_comp_s	:general_assoc_s
+	;
+string_literal	=>
+	=> lx_srcpos	:Source_Position
+	=> lx_symrep	:symbol_rep
+	=> sm_exp_type	:TYPE_SPEC
+	=> sm_discrete_range	:DISCRETE_RANGE
+	;
+qualified_allocator	=>
+	=> as_qualified	:qualified
+	=> lx_srcpos	:Source_Position
+	=> sm_exp_type	:TYPE_SPEC
+	;
+subtype_allocator	=>
+	=> as_subtype_indication	:subtype_indication
+	=> lx_srcpos	:Source_Position
+	=> sm_exp_type	:TYPE_SPEC
+	=> sm_desig_type	:TYPE_SPEC
+	;
+range	=>
+	=> as_exp1	:EXP
+	=> as_exp2	:EXP
+	=> lx_srcpos	:Source_Position
+	=> sm_type_spec	:TYPE_SPEC
+	;
+range_attribute	=>
+	=> as_name	:NAME
+	=> as_used_name_id	:used_name_id
+	=> as_exp	:EXP
+	=> lx_srcpos	:Source_Position
+	=> sm_type_spec	:TYPE_SPEC
+	;
+discrete_subtype	=>
+	=> as_subtype_indication	:subtype_indication
+	=> lx_srcpos	:Source_Position
+	;
+float_constraint	=>
+	=> as_exp	:EXP
+	=> as_range	:RANGE
+	=> lx_srcpos	:Source_Position
+	=> sm_type_spec	:TYPE_SPEC
+	;
+fixed_constraint	=>
+	=> as_exp	:EXP
+	=> as_range	:RANGE
+	=> lx_srcpos	:Source_Position
+	=> sm_type_spec	:TYPE_SPEC
+	;
+index_constraint	=>
+	=> as_discrete_range_s	:discrete_range_s
+	=> lx_srcpos	:Source_Position
+	;
+dscrmt_constraint	=>
+	=> as_general_assoc_s	:general_assoc_s
+	=> lx_srcpos	:Source_Position
+	;
+choice_exp	=>
+	=> as_exp	:EXP
+	=> lx_srcpos	:Source_Position
+	;
+choice_range	=>
+	=> as_discrete_range	:DISCRETE_RANGE
+	=> lx_srcpos	:Source_Position
+	;
+choice_others	=>
+	=> lx_srcpos	:Source_Position
+	;
+procedure_spec	=>
+	=> as_param_s	:param_s
+	=> lx_srcpos	:Source_Position
+	;
+function_spec	=>
+	=> as_param_s	:param_s
+	=> as_name	:NAME
+	=> lx_srcpos	:Source_Position
+	;
+entry	=>
+	=> as_param_s	:param_s
+	=> as_discrete_range	:DISCRETE_RANGE
+	=> lx_srcpos	:Source_Position
+	;
+package_spec	=>
+	=> as_decl_s1	:decl_s
+	=> as_decl_s2	:decl_s
+	=> lx_srcpos	:Source_Position
+	=> xd_body_is_required	:BOOLEAN
+	;
+renames_unit	=>
+	=> as_name	:NAME
+	=> lx_srcpos	:Source_Position
+	;
+instantiation	=>
+	=> as_name	:NAME
+	=> as_general_assoc_s	:general_assoc_s
+	=> lx_srcpos	:Source_Position
+	=> sm_decl_s	:decl_s
+	;
+name_default	=>
+	=> as_name	:NAME
+	=> lx_srcpos	:Source_Position
+	;
+box_default	=>
+	=> lx_srcpos	:Source_Position
+	;
+no_default	=>
+	=> lx_srcpos	:Source_Position
+	;
+block_body	=>
+	=> as_item_s	:item_s
+	=> as_stm_s	:stm_s
+	=> as_alternative_s	:alternative_s
+	=> lx_srcpos	:Source_Position
+	=> cd_level	:Integer
+	=> cd_return_label	:Integer
+	=> cd_result_offset	:Integer
+	;
+stub	=>
+	=> lx_srcpos	:Source_Position
+	;
+implicit_not_eq	=>
+	=> lx_srcpos	:Source_Position
+	=> sm_equal	:SOURCE_NAME
+	;
+derived_subprog	=>
+	=> lx_srcpos	:Source_Position
+	=> sm_derivable	:SOURCE_NAME
+	;
+cond_clause	=>
+	=> as_exp	:EXP
+	=> as_stm_s	:stm_s
+	=> lx_srcpos	:Source_Position
+	;
+select_alternative	=>
+	=> as_exp	:EXP
+	=> as_stm_s	:stm_s
+	=> lx_srcpos	:Source_Position
+	;
+select_alt_pragma	=>
+	=> as_pragma	:pragma
+	=> lx_srcpos	:Source_Position
+	;
+in_op	=>
+	=> lx_srcpos	:Source_Position
+	;
+not_in	=>
+	=> lx_srcpos	:Source_Position
+	;
+and_then	=>
+	=> lx_srcpos	:Source_Position
+	;
+or_else	=>
+	=> lx_srcpos	:Source_Position
+	;
+for	=>
+	=> as_source_name	:SOURCE_NAME
+	=> as_discrete_range	:DISCRETE_RANGE
+	=> lx_srcpos	:Source_Position
+	;
+reverse	=>
+	=> as_source_name	:SOURCE_NAME
+	=> as_discrete_range	:DISCRETE_RANGE
+	=> lx_srcpos	:Source_Position
+	;
+while	=>
+	=> as_exp	:EXP
+	=> lx_srcpos	:Source_Position
+	;
+alternative	=>
+	=> as_choice_s	:choice_s
+	=> as_stm_s	:stm_s
+	=> lx_srcpos	:Source_Position
+	;
+alternative_pragma	=>
+	=> as_pragma	:pragma
+	=> lx_srcpos	:Source_Position
+	;
+comp_rep	=>
+	=> as_name	:NAME
+	=> as_exp	:EXP
+	=> as_range	:RANGE
+	=> lx_srcpos	:Source_Position
+	;
+comp_rep_pragma	=>
+	=> as_pragma	:pragma
+	=> lx_srcpos	:Source_Position
+	;
+context_pragma	=>
+	=> as_pragma	:pragma
+	=> lx_srcpos	:Source_Position
+	;
+with	=>
+	=> as_name_s	:name_s
+	=> as_use_pragma_s	:use_pragma_s
+	=> lx_srcpos	:Source_Position
+	;
+variant	=>
+	=> as_choice_s	:choice_s
+	=> as_comp_list	:comp_list
+	=> lx_srcpos	:Source_Position
+	;
+variant_pragma	=>
+	=> as_pragma	:pragma
+	=> lx_srcpos	:Source_Position
+	;
+alignment	=>
+	=> as_pragma_s	:pragma_s
+	=> as_exp	:EXP
+	=> lx_srcpos	:Source_Position
+	;
+variant_part	=>
+	=> as_name	:NAME
+	=> as_variant_s	:variant_s
+	=> lx_srcpos	:Source_Position
+	;
+comp_list	=>
+	=> as_decl_s	:decl_s
+	=> as_variant_part	:VARIANT_PART
+	=> as_pragma_s	:pragma_s
+	=> lx_srcpos	:Source_Position
+	;
+compilation	=>
+	=> as_compltn_unit_s	:compltn_unit_s
+	=> lx_srcpos	:Source_Position
+	;
+compilation_unit	=>
+	=> as_context_elem_s	:context_elem_s
+	=> as_all_decl	:ALL_DECL
+	=> as_pragma_s	:pragma_s
+	=> lx_srcpos	:Source_Position
+	=> xd_timestamp	:Integer
+	=> xd_with_list	:trans_with
+	=> xd_nbr_pages	:Integer
+	=> xd_parent	:compilation_unit
+	=> xd_lib_name	:symbol_rep
+	;
+index	=>
+	=> as_name	:NAME
+	=> lx_srcpos	:Source_Position
+	=> sm_type_spec	:TYPE_SPEC
+	;
+task_spec	=>
+	=> sm_derived	:TYPE_SPEC
+	=> sm_is_anonymous	:BOOLEAN
+	=> sm_decl_s	:decl_s
+	=> sm_body	:BODY
+	=> sm_address	:EXP
+	=> sm_size	:EXP
+	=> sm_storage_size	:EXP
+	=> xd_source_name	:SOURCE_NAME
+	=> cd_comp_unit	:Integer
+	=> cd_level	:Integer
+	=> cd_compiled	:BOOLEAN
+	=> xd_stub	:stub
+	=> xd_body	:SUBUNIT_BODY
+	;
+enumeration	=>
+	=> sm_derived	:TYPE_SPEC
+	=> sm_is_anonymous	:BOOLEAN
+	=> sm_base_type	:TYPE_SPEC
+	=> sm_range	:RANGE
+	=> sm_literal_s	:enum_literal_s
+	=> xd_source_name	:SOURCE_NAME
+	=> cd_comp_unit	:Integer
+	=> cd_level	:Integer
+	=> cd_compiled	:BOOLEAN
+	=> cd_impl_size	:Integer
+	;
+Integer	=>
+	=> sm_derived	:TYPE_SPEC
+	=> sm_is_anonymous	:BOOLEAN
+	=> sm_base_type	:TYPE_SPEC
+	=> sm_range	:RANGE
+	=> xd_source_name	:SOURCE_NAME
+	=> cd_comp_unit	:Integer
+	=> cd_level	:Integer
+	=> cd_compiled	:BOOLEAN
+	=> cd_impl_size	:Integer
+	=> cd_offset	:Integer
+	=> cd_impl_size	:Integer
+	;
+float	=>
+	=> sm_derived	:TYPE_SPEC
+	=> sm_is_anonymous	:BOOLEAN
+	=> sm_base_type	:TYPE_SPEC
+	=> sm_range	:RANGE
+	=> sm_accuracy	:Value
+	=> xd_source_name	:SOURCE_NAME
+	=> cd_comp_unit	:Integer
+	=> cd_level	:Integer
+	=> cd_compiled	:BOOLEAN
+	=> cd_impl_size	:Integer
+	=> cd_impl_size	:Integer
+	;
+fixed	=>
+	=> sm_derived	:TYPE_SPEC
+	=> sm_is_anonymous	:BOOLEAN
+	=> sm_base_type	:TYPE_SPEC
+	=> sm_range	:RANGE
+	=> sm_accuracy	:Value
+	=> xd_source_name	:SOURCE_NAME
+	=> cd_comp_unit	:Integer
+	=> cd_level	:Integer
+	=> cd_compiled	:BOOLEAN
+	=> cd_impl_size	:Integer
+	=> cd_impl_small	:Value
+	=> cd_impl_size	:Integer
+	;
+array	=>
+	=> sm_derived	:TYPE_SPEC
+	=> sm_is_anonymous	:BOOLEAN
+	=> sm_base_type	:TYPE_SPEC
+	=> sm_size	:EXP
+	=> sm_is_limited	:BOOLEAN
+	=> sm_is_packed	:BOOLEAN
+	=> sm_index_s	:index_s
+	=> sm_comp_type	:TYPE_SPEC
+	=> xd_source_name	:SOURCE_NAME
+	=> cd_comp_unit	:Integer
+	=> cd_level	:Integer
+	=> cd_compiled	:BOOLEAN
+	;
+record	=>
+	=> sm_derived	:TYPE_SPEC
+	=> sm_is_anonymous	:BOOLEAN
+	=> sm_base_type	:TYPE_SPEC
+	=> sm_size	:EXP
+	=> sm_is_limited	:BOOLEAN
+	=> sm_is_packed	:BOOLEAN
+	=> sm_discriminant_s	:dscrmt_decl_s
+	=> sm_comp_list	:comp_list
+	=> sm_representation	:REP
+	=> xd_source_name	:SOURCE_NAME
+	=> cd_comp_unit	:Integer
+	=> cd_level	:Integer
+	=> cd_compiled	:BOOLEAN
+	;
+access	=>
+	=> sm_derived	:TYPE_SPEC
+	=> sm_is_anonymous	:BOOLEAN
+	=> sm_base_type	:TYPE_SPEC
+	=> sm_size	:EXP
+	=> sm_storage_size	:EXP
+	=> sm_is_controlled	:BOOLEAN
+	=> sm_desig_type	:TYPE_SPEC
+	=> sm_master	:ALL_DECL
+	=> xd_source_name	:SOURCE_NAME
+	=> cd_comp_unit	:Integer
+	=> cd_level	:Integer
+	=> cd_compiled	:BOOLEAN
+	=> cd_offset	:Integer
+	=> cd_constrained	:BOOLEAN
+	;
+constrained_array	=>
+	=> sm_derived	:TYPE_SPEC
+	=> sm_is_anonymous	:BOOLEAN
+	=> sm_base_type	:TYPE_SPEC
+	=> sm_depends_on_dscrmt	:BOOLEAN
+	=> sm_index_subtype_s	:scalar_s
+	=> xd_source_name	:SOURCE_NAME
+	=> cd_comp_unit	:Integer
+	=> cd_level	:Integer
+	=> cd_compiled	:BOOLEAN
+	=> cd_impl_size	:Integer
+	=> cd_alignment	:Integer
+	=> cd_offset	:Integer
+	=> cd_dimensions	:Integer
+	;
+constrained_record	=>
+	=> sm_derived	:TYPE_SPEC
+	=> sm_is_anonymous	:BOOLEAN
+	=> sm_base_type	:TYPE_SPEC
+	=> sm_depends_on_dscrmt	:BOOLEAN
+	=> sm_normalized_dscrmt_s	:exp_s
+	=> xd_source_name	:SOURCE_NAME
+	=> cd_comp_unit	:Integer
+	=> cd_level	:Integer
+	=> cd_compiled	:BOOLEAN
+	=> cd_impl_size	:Integer
+	=> cd_alignment	:Integer
+	;
+constrained_access	=>
+	=> sm_derived	:TYPE_SPEC
+	=> sm_is_anonymous	:BOOLEAN
+	=> sm_base_type	:TYPE_SPEC
+	=> sm_depends_on_dscrmt	:BOOLEAN
+	=> sm_desig_type	:TYPE_SPEC
+	=> xd_source_name	:SOURCE_NAME
+	=> cd_comp_unit	:Integer
+	=> cd_level	:Integer
+	=> cd_compiled	:BOOLEAN
+	=> cd_impl_size	:Integer
+	=> cd_alignment	:Integer
+	;
+private	=>
+	=> sm_derived	:TYPE_SPEC
+	=> sm_is_anonymous	:BOOLEAN
+	=> sm_discriminant_s	:dscrmt_decl_s
+	=> sm_type_spec	:TYPE_SPEC
+	=> xd_source_name	:SOURCE_NAME
+	;
+l_private	=>
+	=> sm_derived	:TYPE_SPEC
+	=> sm_is_anonymous	:BOOLEAN
+	=> sm_discriminant_s	:dscrmt_decl_s
+	=> sm_type_spec	:TYPE_SPEC
+	=> xd_source_name	:SOURCE_NAME
+	;
+incomplete	=>
+	=> sm_discriminant_s	:dscrmt_decl_s
+	=> xd_source_name	:SOURCE_NAME
+	=> xd_full_type_spec	:TYPE_SPEC
+	;
+universal_integer	=>
+	;
+universal_fixed	=>
+	;
+universal_real	=>
+	;
+user_root	=>
+	=> xd_sourcename	:txtrep
+	=> xd_grammar	:void
+	=> xd_statelist	:void
+	=> xd_structure	:compilation
+	=> xd_timestamp	:Integer
+	=> spare_3	:void
+	;
+real_val	=>
+	=> xd_numer	:num_val
+	=> xd_denom	:num_val
+	;
+trans_with	=>
+	=> tw_filename	:txtrep
+	=> tw_comp_unit	:compilation_unit
+	;
+lib_info	=>
+	=> xd_short	:txtrep
+	=> xd_primary	:txtrep
+	=> xd_secondary	:txtrep
+	;
+def	=>
+	=> xd_header	:HEADER
+	=> xd_source_name	:SOURCE_NAME
+	=> xd_region_def	:def
+	=> xd_is_in_spec	:BOOLEAN
+	=> xd_lex_level	:Integer
+	=> xd_is_used	:BOOLEAN
+	;
+any_access	=>
+	;
+any_composite	=>
+	;
+any_string	=>
+	;
+any_access_of	=>
+	=> xd_item	:ITEM
+	;
+any_integer	=>
+	;
+any_real	=>
+	;
+implicit_conv	=>
+	=> xd_item	:ITEM
+	=> xd_list	:EXP
+	;
+nullary_call	=>
+	=> xd_item	:ITEM
+	;

@@ -1,0 +1,232 @@
+--|     Quelques explications sont nécessaires sur cette procédure qui n'est pas très longue mais
+--| dont le fonctionnement par changement de signe des références de page dans la version d'origine
+--| de Peregrine Systems n'est pas très clair.
+--|     Lors de l'analyse syntaxique (PAR_PHASE) des pages virtuelles d'arbre sont allouées pour
+--| l'arbre DIANA.
+--|     Dans la phase librairie où l'on charge les arbres d'unités "withées", des pages
+--| supplémentaires ultérieures sont allouées, pages "withées" qui ne seront pas à sauver lors de
+--| l'écriture de l'unité après analyse sémantique.
+--|     La phase de vérification sémantique (SEM_PHASE) ajoute des pages qui devront être
+--| sauvegardées à la phase WRITE_PHASE derrières les pages "withées" qui ainsi coupent en deux 
+--| la plage des pages à sauvegarder :
+--|     Pages AST | Pages withées | Pages SEM
+--|     Une translation de recompaction avant sauvegarde est ainsi nécessaire et procède en deux temps :
+--|     - On marque d'abord toutes les pages à ne pas toucher dans la compaction (les pages au delà
+--|       de la dernière utilisée en SEM_PHASE) et toutes les pages d'unités withées
+--|     - On fait une recopie des pages de l'unité à sauvegarder afin de former une seule plage de
+--| pages à sauvegarder dans le fichier de compilation de l'unité
+
+
+
+WITH SEQUENTIAL_IO;
+SEPARATE( IDL )
+--|-------------------------------------------------------------------------------------------------
+--|	PROCEDURE WRITE_LIB
+PROCEDURE WRITE_LIB IS
+   
+  DONT_MOVE		: ARRAY( VPG_IDX ) OF BOOLEAN;				--| INDIQUE SI UNE PAGE N EST PAS L OBJET DE DEPLACEMENTS DE TRANSLATION
+  NEW_UNIT_SEQ		: SEQ_TYPE;						--| LA NOUVELLE LISTE D UNITES APRES COMPACTION
+      
+  --|-----------------------------------------------------------------------------------------------
+  --|	PROCEDURE MARK_DONT_MOVE_PAGES
+  PROCEDURE MARK_DONT_MOVE_PAGES ( COMP_UNIT :TREE ) IS
+    TRANS_WITH_SEQ		: SEQ_TYPE	:= LIST( COMP_UNIT);			--| LISTE FERMETURE TRANSITIVE DES WITH
+    HIGH_BLOCK		: PAGE_IDX	:= LAST_BLOCK;
+  BEGIN
+--|
+--|		TOUTES LES PAGES JUSQU A HIGH_BLOCK PEUVENT A PRIORI ETRE OBJET DE TRANSLATION DE COMPACTION
+--|		LES AUTRES AU DESSUS N ONT PAS A ETRE AFFECTEES
+--|
+    DONT_MOVE( 1 .. HIGH_BLOCK )	   := (OTHERS=>FALSE);
+    DONT_MOVE( HIGH_BLOCK + 1 .. MAX_VPG ) := (OTHERS=>TRUE);
+--|
+--|		PARMI LES PAGES SOUS HIGH_BLOCK, LES PAGES WITHEES N ONT PAS A ETRE AFFECTEES PAR DE LA RECOPIE DE COMPACTION
+--|
+    DECLARE
+      TRANS_WITH		: TREE;
+      WITHED_UNIT		: TREE;
+    BEGIN
+MARK_TRANS_WITH:
+      WHILE NOT IS_EMPTY( TRANS_WITH_SEQ ) LOOP						--| POUR TOUTE LA LISTE TRANSITIVE DES UNITES WITHEES
+        POP( TRANS_WITH_SEQ, TRANS_WITH );						--| SORTIR UN POINTEUR DE BLOC INFO D UNITE WITHEE (AVEC ENTETE SPECIALE NON HI)
+        WITHED_UNIT := D( TW_COMP_UNIT, TRANS_WITH );					--| POINTEUR VERS NOEUD UNITE WITHEE
+
+TROUVE_WITHEE_PAS_MARQUEE:
+        LOOP
+          DECLARE
+            NEXT_WITHEE	: TREE	:= DABS( 0, WITHED_UNIT );				--| C EST UN EMPLACEMENT ENTETE QUI CONTIENT UN POINTEUR L OU P
+          BEGIN
+            EXIT WHEN NEXT_WITHEE.PT = P;						--| SORTIR AU PREMIER POINTEUR NORMAL EN ENTETE REPERANT UN DEBUT DE SEGMENT WITH NON MARQUE
+            WITHED_UNIT := NEXT_WITHEE;							--| SUIVRE LES POINTEURS L (UNITE DEJA MARQUEE DONT MOVE)
+          END;
+        END LOOP TROUVE_WITHEE_PAS_MARQUEE;
+
+MARK_DONT_MOVE_PAGES_WITHEES:
+        DECLARE
+          FIRST_PAGE	: PAGE_IDX	:= WITHED_UNIT.PG;
+          NBR_PAGES		: PAGE_IDX	:= PAGE_IDX( DI( XD_NBR_PAGES, WITHED_UNIT ) );
+        BEGIN
+          FOR I IN FIRST_PAGE .. FIRST_PAGE + NBR_PAGES - 1 LOOP
+            DONT_MOVE( I ) := TRUE;							--| LES PAGES DES UNITES WITHEES SONT DECLAREES HORS TRANSLATION
+          END LOOP;
+        END MARK_DONT_MOVE_PAGES_WITHEES;
+
+      END LOOP MARK_TRANS_WITH;
+    END;
+
+  END MARK_DONT_MOVE_PAGES;
+  --|-----------------------------------------------------------------------------------------------
+  --|	PROCEDURE WRITE_UNIT
+  PROCEDURE WRITE_UNIT ( COMP_UNIT_ARG : TREE) IS
+    PACKAGE SEQ_IO IS NEW SEQUENTIAL_IO( SECTOR ); 
+    COMP_UNIT		: TREE;
+    LIB_FILE		: SEQ_IO.FILE_TYPE;
+
+    --|---------------------------------------------------------------------------------------------
+    --|	PROCEDURE RECOPIE_POUR_COMPACTION
+    FUNCTION RECOPIE_POUR_COMPACTION ( T : TREE ) RETURN TREE IS
+      WORD_ZERO		: TREE;
+    BEGIN
+      IF T.PT = HI OR T = TREE_NIL OR T = TREE_VIRGIN THEN					--| NIL OU NUM_VAL OU NIL OU NON INITIALISE
+        RETURN T;									--| JUSTE RETOURNER L ARGUMENT
+--|
+--|		UN SOURCE_POSITION N EST PAS A RECOPIER EN LUI MEME MAIS EXIGE DE RECOPIER LE SOURCE LINE ASSOCIE
+--|              
+      ELSIF T.PT = S THEN								--| SOURCE_POSITION
+        RETURN MAKE_SOURCE_POSITION(							--| RECONSTRUIRE UNE POSITION SOURCE
+		RECOPIE_POUR_COMPACTION( GET_SOURCE_LINE( T ) ), GET_SOURCE_COL( T ) );	--| AVEC UN DN_SOURCELINE TRANSLATE
+--|
+--|		UN SYMBOL_REP N EST PAS A RECOPIER EN LUI MEME MAIS EXIGE DE RECOPIER LE TXT_REP ASSOCIE
+--|              
+      ELSIF T.TY = DN_SYMBOL_REP THEN							--| POINTEUR A DN_SYMBOL_REP
+        RETURN RECOPIE_POUR_COMPACTION( D( XD_TEXT , T ) );					--| TRANSLATER LE TEXTE (UN TXTREP REMPLACE UN SYMREP (!!)
+--|
+--|		UN POINTEUR SUR PAGE A NE PAS TOUCHER EST A RETOURNER TEL QUEL
+--|              
+      ELSIF DONT_MOVE( T.PG ) THEN							--| PAGE A NE PAS TRANSLATER
+        RETURN T;									--| NE RIEN FAIRE
+--|
+--|		UN POINTEUR P/L FAISANT L OBJET DE RECOPIE POUR COMPACTION
+--|              
+      ELSE
+        CASE T.TY IS
+        WHEN CLASS_NON_TASK_NAME | DN_TASK_SPEC =>
+          D( XD_STUB, T, TREE_VOID );
+          D( XD_BODY, T, TREE_VOID );
+        WHEN DN_INCOMPLETE =>
+          D( XD_FULL_TYPE_SPEC, T, TREE_VOID );
+        WHEN OTHERS =>
+          NULL;
+        END CASE;
+               
+        WORD_ZERO := DABS( 0, T );							--| ENTETE DU NOEUD POINTE PAR T
+--|
+--|		CAS OU L ENTETE DU NOEUD DONNE POUR RECOPIE EST DENATUREE EN POINTEUR L CE QUI INDIQUE UNE RECOPIE DEJA FAITE DE CE NOEUD
+--|
+        IF WORD_ZERO.PT = L THEN							--| ENTETE DE NOEUD DEJA RECOPIE CONTENANT UN POINTEUR L PG|LN AU REMPLACANT
+          IF DONT_MOVE( VPG_IDX( WORD_ZERO.PG ) ) THEN					--| SI PAGE CIBLE A LAISSER
+            RETURN (P, TY=> WORD_ZERO.TY, PG=> WORD_ZERO.PG, LN=> WORD_ZERO.LN );		--| RETOURNER LE POINTEUR P RECONSTITUE AU REMPLAÇANT
+          ELSE
+            RETURN RECOPIE_POUR_COMPACTION( WORD_ZERO );					--| SUIVRE LA RECOPIE A PARTIR DU REMPLACANT
+          END IF;
+--|
+--|		CAS OU L ENTETE DU NOEUD POINTE DONNE POUR RECOPIE EST NORMALE (HI VALU NSIZ)
+--|
+        ELSE									--| CAS NORMAL D'UNE ENTETE DE NOEUD
+RECOPIE_ET_MARQUAGE:
+          DECLARE
+            LENGTH		: ATTR_NBR	:= WORD_ZERO.NSIZ;
+            COPIED_T	: TREE		:= MAKE( T.TY, LENGTH );
+            LPTR_TO_COPIED_T	: TREE		:= (L, TY=> COPIED_T.TY, PG=> COPIED_T.PG, LN=> COPIED_T.LN );
+            INUTILE		: TREE;
+          BEGIN
+            DABS( 0, T, LPTR_TO_COPIED_T );						--| REMPLACE L'ENTETE DU RECOPIE PAR UN POINTEUR L AU TRANSLATE INDIQUE QUE LA TRANSLATION A EU LIEU
+               
+            IF T.TY = DN_TXTREP OR T.TY = DN_NUM_VAL THEN					--| TEXTE OU VALEUR NUMERIQUE
+              FOR I IN 1 .. LENGTH LOOP							--| RECOPIER LE CONTENU
+                DABS( I, COPIED_T, DABS( I, T ) );
+              END LOOP;
+            ELSE									--| TOUS AUTRES NOEUDS
+              IF T.TY = DN_COMPILATION_UNIT THEN						--| POUR UNE UNITE DE COMPILATION
+                INUTILE := RECOPIE_POUR_COMPACTION( D( XD_LIB_NAME, T ) );			--| TRANSLATER LE NOM EN LE CONVERTISSANT EN TXTREP (CONDUIT A DEUX RECOPIES AVEC CI-DESSOUS ! )
+              END IF;
+PROPAGER_RECOPIE:
+              FOR I IN 1 .. LENGTH LOOP							--| POUR LES ATTRIBUTS
+                DABS( I, COPIED_T, RECOPIE_POUR_COMPACTION( DABS( I, T ) ) );			--| METTRE LES ATTRIBUTS TRANSLATES
+              END LOOP PROPAGER_RECOPIE;
+            END IF;
+            RETURN COPIED_T;
+
+          END RECOPIE_ET_MARQUAGE;
+        END IF;
+               
+      END IF;
+    END RECOPIE_POUR_COMPACTION;
+      
+  BEGIN
+    COMP_UNIT := RECOPIE_POUR_COMPACTION ( COMP_UNIT_ARG );					--| FAIRE UNE RECOPIE COMPACTEE
+
+CREER_LE_FICHIER_UNITE:      
+    DECLARE
+      SYM		: CONSTANT TREE	:= D( XD_LIB_NAME, COMP_UNIT );			--| PRENDRE LE SYMBOLE DU NOM DE L'UNITE DANS LA LIBRAIRIE
+--      NAME	: CONSTANT STRING	:= PRINT_NAME( SYM );				--| PRENDRE LA CHAÎNE DE CE SYMBOLE
+      FILE_NAM	: CONSTANT STRING	:= GET_LIB_PREFIX & PRINT_NAME( SYM );			--| CHAINE DU NOM PREFIXEE
+    BEGIN
+      SEQ_IO.CREATE( LIB_FILE, SEQ_IO.OUT_FILE, FILE_NAM );					--| CREER LE FICHIER LIBRAIRIE
+    END CREER_LE_FICHIER_UNITE;
+
+PREPARER_ECRITURE_PAGES_UNITE:
+    DECLARE
+      FIRST_PAGE 	: VPG_IDX		:= COMP_UNIT.PG;					--| PREMIÈRE PAGE DE LA RECOPIE COMPACTEE
+      NBR_PAGES	: NATURAL		:= NATURAL( LAST_BLOCK - FIRST_PAGE + 1 );		--| NOMBRE DE PAGES DE LA RECOPIE COMPACTEE
+      POINTER	: TREE		:= (P, TY=> DN_VOID, PG=> FIRST_PAGE, LN=> 0);		--| FABRIQUER UN POINTEUR NON TYPE POUR TOUCHER LES PAGES
+      INUTILE	: TREE;
+    BEGIN
+      DI ( XD_NBR_PAGES, COMP_UNIT, NBR_PAGES );						--| PORTER LE NOMBRE DE PAGES DANS LE NOEUD RACINE (DN_COMPILATION_UNIT) DE LA RECOPIE
+
+ECRIRE_LES_PAGES_D_UNITE:      							--| DES OPERATIONS D'ECRITURE A CONFINER DANS LE PAGE_MANAGER
+      FOR I IN 1 .. NBR_PAGES LOOP							--| STOCKER LES PAGES
+        INUTILE := DABS( 0, POINTER );							--| TOUCHER LA PAGE POUR LA FORCER DANS UNE PAGE PHYSIQUE
+        SEQ_IO.WRITE( LIB_FILE, PAG( ASSOC_PAGE( POINTER.PG ) ).DATA.ALL );			--| ECRIRE LA PAGE
+        POINTER.PG := POINTER.PG + 1;							--| PAGE SUIVANTE
+      END LOOP ECRIRE_LES_PAGES_D_UNITE;
+
+    END PREPARER_ECRITURE_PAGES_UNITE;
+
+    SEQ_IO.CLOSE( LIB_FILE );      
+    NEW_UNIT_SEQ := APPEND( NEW_UNIT_SEQ, COMP_UNIT );					--| AJOUTER A LA LISTE DES UNITES
+  END WRITE_UNIT;
+   
+BEGIN
+  OPEN_IDL_TREE_FILE( IDL.LIB_PATH( 1.. LIB_PATH_LENGTH ) & "$$$.TMP" );
+      
+  IF DI( XD_ERR_COUNT, TREE_ROOT ) > 0 THEN
+    PUT_LINE( "WRITELIB: NOT EXECUTED" );
+  ELSE
+    NEW_UNIT_SEQ := (TREE_NIL,TREE_NIL);
+    DECLARE
+      USER_ROOT	: TREE		:= D( XD_USER_ROOT, TREE_ROOT );			--| RETIRER LA RACINE UTILISATEUR
+      COMPILATION	: TREE		:= D( XD_STRUCTURE, USER_ROOT );			--| EN EXTRAIRE LA COMPILATION
+      COMP_UNIT_SEQ	: SEQ_TYPE	:= LIST( D( AS_COMPLTN_UNIT_S, COMPILATION ) );		--| PUIS LA LISTE D UNITES DE COMPILATION
+      COMP_UNIT	: TREE;
+    BEGIN
+
+TRAITE_LES_UNITES_DE_COMPILATION:
+      WHILE NOT IS_EMPTY( COMP_UNIT_SEQ ) LOOP
+        POP( COMP_UNIT_SEQ, COMP_UNIT );
+        IF D( AS_ALL_DECL, COMP_UNIT ).TY = DN_VOID THEN					--| UNITE A PRAGMAS SEULEMENT
+          NEW_UNIT_SEQ := APPEND( NEW_UNIT_SEQ, COMP_UNIT );				--| JUSTE LA RECHAINER DANS LA LISTE MISE A JOUR
+        ELSE									--| UNITE USUELLE
+          MARK_DONT_MOVE_PAGES( COMP_UNIT );
+          NEW_BLOCK;								--| FORCE A SE METTRE AU DEBUT D'UN NOUVEAU BLOC POUR ALIGNER LA RECOPIE COMPACTEE
+          WRITE_UNIT( COMP_UNIT );							--| COMPACTER ET ECRIRE L UNITE DE COMPILATION
+        END IF;
+      END LOOP TRAITE_LES_UNITES_DE_COMPILATION;
+           
+      LIST( D( AS_COMPLTN_UNIT_S, COMPILATION ), NEW_UNIT_SEQ );				--| REMPLACER LA LISTE DES UNITES PAR CELLE DES COMPACTEES, SERA ECRIT A LA FERMETURE DU FICHIER ARBRE
+    END;
+  END IF;
+      
+  CLOSE_IDL_TREE_FILE;
+--|-------------------------------------------------------------------------------------------------
+END WRITE_LIB;

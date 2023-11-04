@@ -1,0 +1,407 @@
+   with Text_io, CG_1, CG_Expr;
+   use  Text_io, CG_1, CG_Expr;
+    separate ( Code_Gen )
+    --|----------------------------------------------------------------------------------------------
+    --|	Object_Decls
+    --|----------------------------------------------------------------------------------------------
+    package body Object_Decls is
+    
+      --|-------------------------------------------------------------------------------------------
+      --|
+       procedure Compile_VC_NAME_Integer ( vc_Name :Tree ) is
+      begin
+         ALIGN ( intg_Al );
+         declare
+            lvl		: Level_Type	:= CG_1.level;
+            ofs		: Offset_Type	:= - CG_1.offset_Act;
+            cpu		: Comp_Unit_Nbr	:= CG_1.cur_Comp_Unit;
+            init_Exp	: Tree	:= D ( sm_INIT_EXP, vc_Name );
+         begin
+            DI ( cd_LEVEL, vc_Name, lvl );
+            DI ( cd_OFFSET, vc_Name, ofs );
+            DI ( cd_COMP_UNIT, vc_Name, cpu );
+            DB ( cd_COMPILED, vc_Name, true );
+            INC_OFFSET ( intg_Size );
+            if init_Exp /= Tree_VOID then
+               COMPILE_EXPRESSION ( init_Exp );
+               GEN_STORE ( I, cpu, lvl, ofs,
+                  "Store " & PRINT_NAME ( D (lx_SYMREP, vc_Name ) ) & " init expression value" );
+            end if;
+         end;
+      end Compile_VC_NAME_Integer;
+      --|-------------------------------------------------------------------------------------------
+      --|
+       Procedure Compile_VC_NAME_Bool_Char ( vc_Name :Tree; ct :Code_Type; siz, ali :Natural ) is
+      begin
+         ALIGN ( ali );
+         declare
+            lvl		: Level_Type	:= CG_1.level;
+            ofs		: Offset_Type	:= - CG_1.offset_Act;
+            cpu		: Comp_Unit_Nbr	:= CG_1.cur_Comp_Unit;
+            init_Exp	: Tree	:= D ( sm_INIT_EXP, vc_Name );
+         begin
+            DI ( cd_LEVEL, vc_Name, lvl );
+            DI ( cd_OFFSET, vc_Name, ofs );
+            DI ( cd_COMP_UNIT, vc_Name, cpu );
+            DB ( cd_COMPILED, vc_Name, true );
+            INC_OFFSET ( siz );
+            if init_Exp /= Tree_VOID then
+               COMPILE_EXPRESSION ( init_Exp );
+            end if;
+            GEN_STORE ( ct, cpu, lvl, ofs,
+               "Store " & PRINT_NAME ( D (lx_SYMREP, vc_Name ) ) & " init expression value" );
+         end;
+      end Compile_VC_NAME_Bool_Char;
+      --|-------------------------------------------------------------------------------------------
+      --|
+       procedure Compile_VC_NAME_enumeration ( vc_Name, type_Spec :Tree ) is
+         type_source_name	: Tree	:= D ( xd_SOURCE_NAME, type_Spec );
+         type_symrep	: Tree	:= D ( lx_SYMREP, type_source_name );
+         name		: constant String	:= PRINT_NAME ( type_symrep );
+      begin
+         if name = "BOOLEAN" then
+            COMPILE_VC_NAME_BOOL_CHAR ( vc_Name, B, bool_Size, bool_Al );
+         elsif name = "CHARACTER" then
+            COMPILE_VC_NAME_BOOL_CHAR ( vc_Name, C, char_Size, char_Al );
+         else
+            COMPILE_VC_NAME_INTEGER ( vc_Name );
+         end if;
+      end Compile_VC_NAME_enumeration;
+      --|-------------------------------------------------------------------------------------------
+      --|
+       procedure Compile_Access_Var ( var_id, type_Spec :Tree ) is
+      begin
+         ALIGN ( addr_Al );
+         declare
+            lvl	: Level_Type	:= CG_1.level;
+            ofs	: Offset_Type	:= - CG_1.offset_Act;
+            cpu	: Comp_Unit_Nbr	:= CG_1.cur_Comp_Unit;
+         begin
+            DI ( cd_LEVEL, var_id, lvl );
+            DI ( cd_OFFSET, var_id, ofs );
+            DI ( cd_COMP_UNIT, var_id, cpu );
+            DB ( cd_COMPILED, var_id, true );
+            INC_OFFSET ( addr_Size );
+            declare
+               init_exp	: Tree	:= D ( sm_INIT_EXP, var_id );
+            begin
+               if init_Exp = Tree_VOID then
+                  Gen_1_i ( const, A, -1, "Null init for " & PRINT_NAME ( D (lx_SYMREP, var_id ) ) );
+               else
+                  null;
+               -- GET_NODE(sm_obj_def, nd_allocator);
+               -- LOAD_TYPE_SIZE ( nd_allocator.c_allocator^.as_exp_constrained );
+               -- Gen_1_i ( oALO, lvl - LevelOfType ( sm_obj_type ) );
+               end if;
+            end;
+            GEN_STORE ( A, cpu, lvl, ofs,
+               "Store " & PRINT_NAME ( D (lx_SYMREP, var_id ) ) & " init expression value" );
+         end;
+      end Compile_Access_Var;
+      --|-------------------------------------------------------------------------------------------
+      --|	procedure Compile_Array_Var
+       procedure Compile_Array_Var ( vc_Name, type_Spec :Tree ) is
+         descr_Ptr	: offset_Type;
+      begin
+         ALIGN ( addr_Al );
+         declare
+            lvl		: Level_Type	:= CG_1.level;
+            value_Ptr	: Offset_Type	:= - CG_1.offset_Act;
+            cpu		: Comp_Unit_Nbr	:= CG_1.cur_Comp_Unit;
+         begin
+            DI ( cd_LEVEL, vc_Name, lvl );
+            DI ( cd_OFFSET, vc_Name, value_Ptr );
+            DI ( cd_COMP_UNIT, vc_Name, cpu );
+            DB ( cd_COMPILED, vc_Name, true );
+            INC_OFFSET ( addr_Size );
+            ALIGN ( addr_Al );
+            descr_Ptr := - CG_1.offset_Act;
+            INC_OFFSET ( addr_Size );
+            
+            if DB ( cd_COMPILED, type_Spec ) then
+               GEN_LOAD_ADDR ( DI ( cd_comp_unit, type_Spec ) , DI ( cd_level, type_Spec ), DI ( cd_offset, type_Spec ) );
+               GEN_0 ( DPL, A, "Duplicate " & PRINT_NAME ( D (lx_SYMREP, vc_Name ) ) & " array descriptor address" );
+               GEN_STORE ( A, CG_1.cur_Comp_Unit, CG_1.level, descr_Ptr, "Store descriptor address" );
+               GEN_1_i ( IND, I, 0, "Indexed load array size from descriptor address" );
+               GEN_1_I ( alloc, 0, "Allocate array" );
+               GEN_STORE ( A, CG_1.cur_Comp_Unit, CG_1.level, value_Ptr, "Store allocated array address" );
+            else
+               PUT_LINE ( "!!! CG_Decl.Compile_Array_Var : type_Spec non compile" );
+               raise Program_Error;
+            end if;
+         end;
+      end Compile_Array_Var;
+      --|-------------------------------------------------------------------------------------------
+      --|	procedure Compile_Record_Var
+       procedure Compile_Record_Var ( vc_Name, type_Spec :Tree ) is
+         init_exp	: Tree	:= D ( sm_INIT_EXP, vc_Name );
+      begin
+         
+         ALIGN ( record_Al );
+         declare
+            lvl	: Level_Type	:= CG_1.level;
+            ofs	: Offset_Type	:= - CG_1.offset_Act;
+            cpu	: Comp_Unit_Nbr	:= CG_1.cur_Comp_Unit;
+         begin
+            DI ( cd_LEVEL, vc_Name, lvl );
+            DI ( cd_OFFSET, vc_Name, ofs );
+            DI ( cd_COMP_UNIT, vc_Name, cpu );
+            DB ( cd_COMPILED, vc_Name, true );
+         
+            if init_exp.ty = dn_AGGREGATE then
+               declare
+                  general_Assoc_Seq	: Seq_Type	:= LIST ( D ( sm_NORMALIZED_COMP_S, init_exp ) );
+                  comp_Exp	: Tree;
+               begin
+                  while not IS_EMPTY ( general_Assoc_Seq ) loop
+                     POP ( general_Assoc_Seq, comp_Exp );
+                    
+                     COMPILE_EXPRESSION ( comp_Exp );
+                     GEN_STORE ( ct, cpu, lvl, ofs + field_Ofs,
+                        "Store " & PRINT_NAME ( D (lx_SYMREP, vc_Name ) ) & " field init expression value" );
+                  	 
+                  end loop;
+               end;
+            end if;
+         end;
+      end Compile_Record_Var;
+      --|-------------------------------------------------------------------------------------------
+      --|	procedure Compile_VC_NAME
+       procedure Compile_VC_NAME ( vc_Name, type_Spec :Tree ) is
+      begin
+         case type_Spec.ty is
+            when dn_INTEGER =>
+               COMPILE_VC_NAME_INTEGER ( vc_Name );
+               
+            when dn_ENUMERATION =>
+               COMPILE_VC_NAME_ENUMERATION ( vc_Name, type_Spec );
+               
+            when dn_ACCESS =>
+               COMPILE_ACCESS_VAR ( vc_Name, type_Spec );
+               
+            when dn_CONSTRAINED_ARRAY =>
+               COMPILE_ARRAY_VAR ( vc_Name, type_Spec);
+         
+            when dn_RECORD =>
+               COMPILE_RECORD_VAR ( vc_Name, type_Spec);
+               
+            when others =>
+               PUT_LINE ( "!!! CG_Decl.Compile_VC_NAME, type_Spec.ty = " & Node_Name'IMAGE ( type_Spec.ty ) );
+               raise Program_Error;
+         end case;
+      end Compile_VC_NAME;
+      --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+      --|
+       procedure Compile_OBJECT_Decl ( object_decl :Tree ) is		--| variable_decl ou constant_decl
+         src_name_seq	: Seq_Type	:= LIST ( D ( as_SOURCE_NAME_S, object_decl ) );
+         src_name		: Tree;
+      begin
+         while not IS_EMPTY ( src_name_seq ) loop
+            POP ( src_name_seq, src_name );
+            Compile_VC_NAME ( src_name, D ( sm_OBJ_TYPE, src_name ) );
+         end loop;
+      end Compile_OBJECT_Decl;
+   
+   
+   
+   
+   
+      --|-------------------------------------------------------------------------------------------
+      --|	procedure Compile_Enumeration_Def
+       procedure Compile_Enumeration_Def ( enumeration_Def :Tree ) is
+         enum_Literal_s	: Tree	:= D ( as_ENUM_LITERAL_S, enumeration_Def );
+         literal_Seq	: Seq_Type	:= LIST ( enum_Literal_s );
+         literal		: Tree;
+      begin
+         while not IS_EMPTY ( literal_Seq ) loop			--| Tant qu'il y a des éléments
+            POP ( literal_Seq, literal );			--| En extraire un
+         end loop;
+         DI ( cd_LAST, enum_Literal_s, DI ( sm_REP, literal ) );		--| Stocker la valeur du dernier élément
+      end;
+      --|-------------------------------------------------------------------------------------------
+      --|	procedure Compile_Integer_Def
+       procedure Compile_Integer_Def ( integer_Def, integer_Spec :Tree ) is
+         lower	: Offset_Type;				--| Lieu de la borne basse
+         upper	: Offset_Type;				--| Lieu de la borne haute
+         int_range	: Tree	:= D ( as_CONSTRAINT, integer_Def );		--| Etendue du type entier
+      begin
+         ALIGN( intg_Al );				--| Aligner le sommet de pile pour un entier
+         lower := - CG_1.offset_Act;				--| Lieu de la borne basse
+         INC_OFFSET ( intg_Size );				--| Aller au lieu libre suivant l'entier
+         upper := - CG_1.offset_Act;				--| Lieu de la borne haute
+         INC_OFFSET ( intg_Size );				--| Aller au lieu libre suivant l'entier
+      
+         DI ( cd_OFFSET, integer_Spec, lower );			--| Lieu des bornes
+         DI ( cd_LEVEL, integer_Spec, CG_1.level );			--| Niveau statique de la définition
+         DI ( cd_COMP_UNIT, integer_Spec, cur_Comp_Unit );			--| Unité parente
+         DB ( cd_COMPILED, integer_Spec, true );			--| Définition traitée
+      
+         CG_Expr.COMPILE_EXPRESSION ( D ( as_EXP1, int_range ) );		--| Générer le code de calcul de l'expression de borne basse
+         CG_1.GEN_STORE ( I, CG_1.cur_Comp_Unit, CG_1.level, lower, "Store lower integer bound" );	--| Stocker le résultat dans la borne basse
+         CG_Expr.COMPILE_EXPRESSION ( D ( as_EXP2, int_range ) );		--| Pareil pour la borne haute
+         CG_1.GEN_STORE ( I, CG_1.cur_Comp_Unit, CG_1.level, upper, "Store upper integer bound" );
+      end Compile_Integer_Def;
+      --|-------------------------------------------------------------------------------------------
+      --|	procedure Compile_Constrained_Array_Def
+       procedure Compile_Constrained_Array_Def ( type_Def, type_Spec :Tree ) is
+         Dimensions_Nbr	: Natural	:= 0;
+         subtype_indication	: Tree	:= D ( as_SUBTYPE_INDICATION, type_Def );--| Sous type de l'élément
+         used_name_id	: Tree	:= D ( as_NAME, subtype_indication );
+         comp_type_id	: Tree	:= D ( sm_DEFN, used_name_id );
+         comp_type		: Tree	:= D ( sm_TYPE_SPEC, comp_type_id );	--| Type_spec du type d'élément
+         index_Constraint	: Tree	:= D ( as_CONSTRAINT, type_Def );	--| La contrainte de définition du type tableau
+         discrete_Range_s	: Tree	:= D ( as_DISCRETE_RANGE_S, index_Constraint );
+         discrete_Range_Seq	: Seq_Type	:= LIST ( discrete_Range_s );	--| La séquence des indiçages
+         
+      --|-------------------------------------------------------------------------------------------
+      --|	procedure Install_Array_Dimension
+          procedure Install_Array_Dimension ( discrete_Range_Seq :in out Seq_Type ) is
+            idxfac, first, last	: Offset_Type;
+            discrete_Range	: Tree;
+         begin
+            Dimensions_Nbr := Dimensions_Nbr + 1;			--| Une dimension de plus
+            ALIGN ( intg_Al );				--| Aligner le lieu pour un entier
+            idxfac := - offset_Act;				--| Lieu du facteur de l'indice (pour passer d'un élément au suivant)
+            first := idxfac - intg_Size;			--| Lieu de l'indice bas
+            last := first - intg_Size;				--| Lieu de l'indice haut
+            INC_OFFSET ( 3*intg_Size );				--| Monter le lieu libre à 3 entiers plus loin
+            
+            POP ( discrete_Range_Seq, discrete_Range );			--| Extraire l'indiçage de cette dimension
+            if IS_EMPTY( discrete_Range_Seq ) then			--| C'était le dernier indiçage (indice "rapide")
+               CG_Expr.LOAD_TYPE_SIZE ( comp_type );			--| Empiler la taille de l'élément
+               GEN_0 ( DPL, I, "Duplicate index factor" );			--| Générer une duplication de cette taille
+               CG_1.GEN_STORE ( I, 0, CG_1.level, idxfac, "Store index factor" );	--| La stocker comme facteur de passage d'un élément au suivant pour cette dimension
+            else					--| C'est un indiçage intermédiaire
+               INSTALL_ARRAY_DIMENSION ( discrete_Range_Seq );		--| Traiter la dimension suivante
+               GEN_0 ( DPL, I, "Duplicate index factor" );			--| Dupliquer le facteur de passage
+               CG_1.GEN_STORE ( I, 0, CG_1.level, idxfac, "Store index factor" );	--| Le stocker dans le descripteur du tableau
+            end if;
+            
+            if discrete_Range.ty = dn_DISCRETE_SUBTYPE then
+               declare
+                  subtype_Indication	: Tree	:= D ( as_SUBTYPE_INDICATION, discrete_Range );
+               begin
+                  discrete_Range := D ( as_CONSTRAINT, subtype_Indication );
+                  if discrete_Range.ty = dn_VOID then
+                     declare
+                        used_name_id	: Tree	:= D ( as_NAME, subtype_Indication );
+                        def_name	: Tree	:= D ( sm_DEFN, used_name_id );
+                        type_Spec	: Tree	:= D ( sm_TYPE_SPEC, def_name );
+                     begin
+                        discrete_Range := D ( sm_RANGE, type_Spec );
+                     end;
+                  end if;
+               end;
+            end if;
+         
+            if discrete_Range.ty = dn_RANGE_ATTRIBUTE then
+               declare
+                  type_Spec	: Tree	:= D ( sm_TYPE_SPEC, discrete_Range );
+               begin
+                  discrete_Range := D ( sm_RANGE, type_Spec );
+               end;
+            end if;
+            
+            if discrete_Range.ty = dn_RANGE then
+               CG_Expr.COMPILE_EXPRESSION ( D ( as_EXP1, discrete_Range ) );		--| Générer le calcul de l'indice bas
+               CG_1.GEN_STORE ( I, CG_1.cur_Comp_Unit, CG_1.level, first, "Store first" );	--| Le stocker dans le descripteur
+               CG_Expr.COMPILE_EXPRESSION ( D ( as_EXP2, discrete_Range ) );		--| Pareil pour l'indice haut
+               CG_1.GEN_STORE ( I, 0, CG_1.level, last, "Store last" );
+               CG_1.GEN_LOAD_ADDR ( 0, Level, first, "Load @first" );		--| Générer l'empilage de l'adresse de la section du descripteur pour la dimension
+               GEN_CSP ( LEN, "Calculate length" );			--| Procédure de calcul du length(dim)
+               GEN_0 ( mul, I, "Next index factor = len * previous factor" );				--| Laisser le facteur de passage (lenghth*facteur précédent) sur la pile
+            elsif discrete_Range.ty = dn_RANGE_ATTRIBUTE then
+               null;
+               null;
+            else
+            -- dn_RANGE_ATTRIBUTE
+            -- dn_DISCRETE_SUBTYPE
+               PUT_LINE ( "!!! Compile_Type_Array_Dimension : discrete_Range.ty illicite " & Node_Name'IMAGE ( discrete_Range.ty ) );
+               raise Program_Error;
+            end if;
+         end Install_Array_Dimension;
+         
+      begin
+         ALIGN ( intg_Al );				--| Aligner le lieu libre pour un entier
+         DI ( cd_LEVEL, type_Spec, CG_1.level );			--| Stocker le niveau statique
+         DI ( cd_COMP_UNIT, type_Spec, cur_Comp_Unit );			--| Stocker l'unité courante
+         DB ( cd_COMPILED, type_Spec, true );			--| Marquer comme traité
+         declare
+            offset		: Integer	:= - CG_1.offset_Act;
+         begin
+            DI ( cd_OFFSET, type_Spec, offset );			--| Stocker le lieu du nombre de dimensions
+            INC_OFFSET ( intg_Size );				--| Monter au lieu libre suivant l'entier
+            INSTALL_ARRAY_DIMENSION ( discrete_Range_Seq );			--| Mettre en place les facteurs d'indexation et les limites d'indice
+            CG_1.GEN_STORE ( I, CG_1.cur_Comp_Unit, CG_1.level, offset,
+               "Store array size (last index factor)" );		--| Générer le stockage en pile du nombre de dimensions
+            DI ( cd_DIMENSIONS, type_Spec, Dimensions_Nbr );		--| Stocker aussi dans le type_Spec
+         end;
+      end Compile_Constrained_Array_Def;
+      --|-------------------------------------------------------------------------------------------
+      --|	 procedure Compile_Access_Def
+       procedure Compile_Access_Def ( access_Def, access_Spec :Tree ) is
+         pointed_Type_Spec	: Tree	:= D ( sm_DESIG_TYPE, access_Spec );
+         contraint		: Boolean	:= (pointed_Type_Spec.ty in class_CONSTRAINED);
+      begin
+         DB ( cd_CONSTRAINED, access_Spec, contraint );
+      
+         if contraint then
+            DI ( cd_LEVEL, access_Spec, CG_1.level );			--| Stocker le niveau statique de la définition
+            ALIGN ( intg_Al );				--| Aligner le lieu libre pour un entier
+            declare
+               offset	: Offset_Type	:= CG_1.offset_Act;
+            begin
+               DI ( cd_OFFSET, access_Spec, offset );			--| Stocker le lieu
+               INC_OFFSET ( intg_Size );			--| Monter au lieu suivant l'entier
+               CG_Expr.LOAD_TYPE_SIZE ( pointed_Type_Spec );		--| Générer le chargement de la taille du type pointé
+               CG_1.GEN_STORE ( I, 0, CG_1.level, offset, "Store pointerd type size" );			--| La stocker dans le lieu réservé
+            end;
+         end if;
+      end;
+      --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+      --|	procedure Compile_Type_Decl
+       procedure Compile_Type_Decl ( type_decl :Tree ) is
+         type_Def	: Tree	:= D ( as_TYPE_DEF, type_Decl );
+         type_Id	: Tree	:= D ( as_SOURCE_NAME, type_Decl );
+         type_Spec	: Tree	:= D ( sm_TYPE_SPEC, type_Id );
+      begin
+         if CG_1.cur_Comp_Unit /= 1 then			--| Pas le STANDARD
+            case type_Def.ty is
+            
+               when dn_ENUMERATION_DEF =>
+                  COMPILE_ENUMERATION_DEF ( type_Def );
+                  
+               when dn_INTEGER_DEF =>				--| type truc is range 1..10*U;
+                  COMPILE_INTEGER_DEF ( type_Def, type_Spec );
+            
+               when dn_FLOAT_DEF =>
+                  null;
+            
+               when dn_FIXED_DEF =>
+                  null;
+            
+               when dn_CONSTRAINED_ARRAY_DEF =>
+                  COMPILE_CONSTRAINED_ARRAY_DEF ( type_Def, type_Spec );
+                  
+               when dn_RECORD_DEF =>
+                  null;
+            
+               when dn_ACCESS_DEF =>
+                  COMPILE_ACCESS_DEF ( type_Def, type_Spec );
+                  
+               when dn_DERIVED_DEF =>
+                  null;
+                  
+               when others =>
+               -- dn_SUBTYPE_INDICATION
+               -- dn_L_PRIVATE_DEF
+               -- dn_PRIVATE_DEF
+               -- dn_UNCONSTRAINED_ARRAY_DEF
+                  PUT_LINE ( "!!! Compile_Type_Decl : type_Spec.ty illicite " & Node_Name'IMAGE ( type_Spec.ty ) );
+                  raise Program_Error;
+            end case;
+         end if;
+      end Compile_Type_Decl;
+   
+   --|----------------------------------------------------------------------------------------------
+   end Object_Decls;

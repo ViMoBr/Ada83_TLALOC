@@ -1,0 +1,1326 @@
+----- ARBORESCENCE IDL -----
+root	PATH STANDARD_IDL > root
+	=> xd_high_page	: num_val
+	=> xd_user_root	: user_root
+	=> xd_source_list	: SEQ OF sourceline
+	=> xd_err_count	: num_val
+	=> spare_1	: void
+
+txtrep	PATH STANDARD_IDL > txtrep
+
+num_val	PATH STANDARD_IDL > num_val
+
+{BOOLEAN}	PATH STANDARD_IDL > BOOLEAN ::= 
+	false
+	true
+
+false	PATH STANDARD_IDL > BOOLEAN > false
+
+true	PATH STANDARD_IDL > BOOLEAN > true
+
+nil	PATH STANDARD_IDL > nil
+
+list	PATH STANDARD_IDL > list
+	=> xd_head	: void
+	=> xd_tail	: void
+
+sourceline	PATH STANDARD_IDL > sourceline
+	=> xd_number	: num_val
+	=> xd_error_list	: SEQ OF error
+
+error	PATH STANDARD_IDL > error
+	=> xd_srcpos	: Source_Position
+	=> xd_text	: txtrep
+
+symbol_rep	PATH STANDARD_IDL > symbol_rep
+	=> xd_text	: txtrep
+	=> xd_deflist	: SEQ OF DEF_NAME
+
+hash	PATH STANDARD_IDL > hash
+	=> xd_list	: SEQ OF symbol_rep
+
+void	PATH STANDARD_IDL > void
+
+{STANDARD_IDL}	PATH STANDARD_IDL ::= 
+	root
+	txtrep
+	num_val
+	BOOLEAN
+	nil
+	list
+	sourceline
+	error
+	symbol_rep
+	hash
+	void
+
+{DEF_NAME}	PATH ALL_SOURCE > DEF_NAME ::= 
+	SOURCE_NAME
+	PREDEF_NAME
+	=> lx_symrep	: symbol_rep
+
+{SOURCE_NAME}	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME ::= 
+	OBJECT_NAME
+	TYPE_NAME
+	UNIT_NAME
+	LABEL_NAME
+	=> xd_region	: SOURCE_NAME
+	entry_id
+	exception_id
+
+{OBJECT_NAME}	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > OBJECT_NAME ::= 
+	=> sm_obj_type	: TYPE_SPEC
+	INIT_OBJECT_NAME
+	ENUM_LITERAL
+	iteration_id
+
+{UNIT_NAME}	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > UNIT_NAME ::= 
+	=> sm_first	: DEF_NAME
+	NON_TASK_NAME
+	task_body_id
+
+pragma	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > USE_PRAGMA > pragma
+	=> as_used_name_id	: used_name_id
+	=> as_general_assoc_s	: general_assoc_s
+
+general_assoc_s	PATH ALL_SOURCE > SEQUENCES > general_assoc_s
+	=> as_list	: SEQ OF GENERAL_ASSOC
+
+{DECL}	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL ::= 
+	ID_S_DECL
+	ID_DECL
+	null_comp_decl
+	REP
+	USE_PRAGMA
+
+{ID_DECL}	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > ID_DECL ::= 
+	type_decl
+	subtype_decl
+	task_decl
+	UNIT_DECL
+	=> as_source_name	: SOURCE_NAME
+	SIMPLE_RENAME_DECL
+
+{ID_S_DECL}	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > ID_S_DECL ::= 
+	EXP_DECL
+	exception_decl
+	deferred_constant_decl
+	=> as_source_name_s	: source_name_s
+
+{EXP_DECL}	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > ID_S_DECL > EXP_DECL ::= 
+	OBJECT_DECL
+	number_decl
+	=> as_exp	: EXP
+
+{CONSTRAINED_DEF}	PATH ALL_SOURCE > TYPE_DEF > CONSTRAINED_DEF ::= 
+	subtype_indication
+	integer_def
+	float_def
+	fixed_def
+	=> as_constraint	: CONSTRAINT
+
+{OBJECT_DECL}	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > ID_S_DECL > EXP_DECL > OBJECT_DECL ::= 
+	constant_decl
+	variable_decl
+	=> as_type_def	: TYPE_DEF
+
+constant_decl	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > ID_S_DECL > EXP_DECL > OBJECT_DECL > constant_decl
+
+variable_decl	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > ID_S_DECL > EXP_DECL > OBJECT_DECL > variable_decl
+
+{INIT_OBJECT_NAME}	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > OBJECT_NAME > INIT_OBJECT_NAME ::= 
+	VC_NAME
+	=> sm_init_exp	: EXP
+	number_id
+	COMP_NAME
+	PARAM_NAME
+
+{VC_NAME}	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > OBJECT_NAME > INIT_OBJECT_NAME > VC_NAME ::= 
+	variable_id
+	constant_id
+	=> sm_renames_obj	: BOOLEAN
+	=> sm_address	: EXP
+	=> cd_comp_unit	: Integer
+	=> cd_level	: Integer
+	=> cd_offset	: Integer
+	=> cd_compiled	: BOOLEAN
+
+variable_id	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > OBJECT_NAME > INIT_OBJECT_NAME > VC_NAME > variable_id
+	=> sm_is_shared	: BOOLEAN
+
+constant_id	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > OBJECT_NAME > INIT_OBJECT_NAME > VC_NAME > constant_id
+	=> sm_first	: DEF_NAME
+
+number_decl	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > ID_S_DECL > EXP_DECL > number_decl
+
+number_id	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > OBJECT_NAME > INIT_OBJECT_NAME > number_id
+
+source_name_s	PATH ALL_SOURCE > SEQUENCES > source_name_s
+	=> as_list	: SEQ OF SOURCE_NAME
+
+type_decl	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > ID_DECL > type_decl
+	=> as_dscrmt_decl_s	: dscrmt_decl_s
+	=> as_type_def	: TYPE_DEF
+
+{TYPE_NAME}	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > TYPE_NAME ::= 
+	type_id
+	=> sm_type_spec	: TYPE_SPEC
+	subtype_id
+	private_type_id
+	l_private_type_id
+
+type_id	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > TYPE_NAME > type_id
+	=> sm_first	: DEF_NAME
+
+{TYPE_DEF}	PATH ALL_SOURCE > TYPE_DEF ::= 
+	enumeration_def
+	CONSTRAINED_DEF
+	ARR_ACC_DER_DEF
+	record_def
+	private_def
+	l_private_def
+	formal_dscrt_def
+	formal_integer_def
+	formal_fixed_def
+	formal_float_def
+
+{ARR_ACC_DER_DEF}	PATH ALL_SOURCE > TYPE_DEF > ARR_ACC_DER_DEF ::= 
+	constrained_array_def
+	unconstrained_array_def
+	access_def
+	derived_def
+	=> as_subtype_indication	: subtype_indication
+
+{TYPE_SPEC}	PATH TYPE_SPEC ::= 
+	DERIVABLE_SPEC
+	incomplete
+	universal_integer
+	universal_fixed
+	universal_real
+
+{DERIVABLE_SPEC}	PATH TYPE_SPEC > DERIVABLE_SPEC ::= 
+	FULL_TYPE_SPEC
+	PRIVATE_SPEC
+	=> xd_source_name	: SOURCE_NAME
+	=> sm_derived	: TYPE_SPEC
+	=> sm_is_anonymous	: BOOLEAN
+
+{FULL_TYPE_SPEC}	PATH TYPE_SPEC > DERIVABLE_SPEC > FULL_TYPE_SPEC ::= 
+	task_spec
+	NON_TASK
+	=> cd_comp_unit	: Integer
+	=> cd_level	: Integer
+	=> cd_compiled	: BOOLEAN
+
+{NON_TASK}	PATH TYPE_SPEC > DERIVABLE_SPEC > FULL_TYPE_SPEC > NON_TASK ::= 
+	SCALAR
+	UNCONSTRAINED
+	CONSTRAINED
+	=> sm_base_type	: TYPE_SPEC
+
+{SCALAR}	PATH TYPE_SPEC > DERIVABLE_SPEC > FULL_TYPE_SPEC > NON_TASK > SCALAR ::= 
+	enumeration
+	Integer
+	REAL
+	=> sm_range	: RANGE
+	=> cd_impl_size	: Integer
+
+{REAL}	PATH TYPE_SPEC > DERIVABLE_SPEC > FULL_TYPE_SPEC > NON_TASK > SCALAR > REAL ::= 
+	float
+	fixed
+	=> sm_accuracy	: Value
+
+{UNCONSTRAINED}	PATH TYPE_SPEC > DERIVABLE_SPEC > FULL_TYPE_SPEC > NON_TASK > UNCONSTRAINED ::= 
+	UNCONSTRAINED_COMPOSITE
+	access
+	=> sm_size	: EXP
+
+{UNCONSTRAINED_COMPOSITE}	PATH TYPE_SPEC > DERIVABLE_SPEC > FULL_TYPE_SPEC > NON_TASK > UNCONSTRAINED > UNCONSTRAINED_COMPOSITE ::= 
+	array
+	record
+	=> sm_is_limited	: BOOLEAN
+	=> sm_is_packed	: BOOLEAN
+
+{CONSTRAINED}	PATH TYPE_SPEC > DERIVABLE_SPEC > FULL_TYPE_SPEC > NON_TASK > CONSTRAINED ::= 
+	constrained_array
+	constrained_record
+	constrained_access
+	=> sm_depends_on_dscrmt	: BOOLEAN
+	=> cd_impl_size	: Integer
+	=> cd_alignment	: Integer
+
+subtype_decl	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > ID_DECL > subtype_decl
+	=> as_subtype_indication	: subtype_indication
+
+subtype_id	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > TYPE_NAME > subtype_id
+
+subtype_indication	PATH ALL_SOURCE > TYPE_DEF > CONSTRAINED_DEF > subtype_indication
+	=> as_name	: NAME
+
+{CONSTRAINT}	PATH ALL_SOURCE > CONSTRAINT ::= 
+	DISCRETE_RANGE
+	REAL_CONSTRAINT
+	index_constraint
+	dscrmt_constraint
+
+derived_def	PATH ALL_SOURCE > TYPE_DEF > ARR_ACC_DER_DEF > derived_def
+	=> xd_derived_subprog_list	: SEQ OF SUBPROG_NAME
+
+{DISCRETE_RANGE}	PATH ALL_SOURCE > CONSTRAINT > DISCRETE_RANGE ::= 
+	RANGE
+	discrete_subtype
+
+{RANGE}	PATH ALL_SOURCE > CONSTRAINT > DISCRETE_RANGE > RANGE ::= 
+	range
+	range_attribute
+	=> sm_type_spec	: TYPE_SPEC
+
+range	PATH ALL_SOURCE > CONSTRAINT > DISCRETE_RANGE > RANGE > range
+	=> as_exp1	: EXP
+	=> as_exp2	: EXP
+
+range_attribute	PATH ALL_SOURCE > CONSTRAINT > DISCRETE_RANGE > RANGE > range_attribute
+	=> as_name	: NAME
+	=> as_used_name_id	: used_name_id
+	=> as_exp	: EXP
+
+enumeration_def	PATH ALL_SOURCE > TYPE_DEF > enumeration_def
+	=> as_enum_literal_s	: enum_literal_s
+
+enum_literal_s	PATH ALL_SOURCE > SEQUENCES > enum_literal_s
+	=> as_list	: SEQ OF ENUM_LITERAL
+	=> cd_alignment	: Integer
+	=> cd_impl_size	: Integer
+	=> cd_last	: Integer
+
+enumeration	PATH TYPE_SPEC > DERIVABLE_SPEC > FULL_TYPE_SPEC > NON_TASK > SCALAR > enumeration
+	=> sm_literal_s	: enum_literal_s
+
+{ENUM_LITERAL}	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > OBJECT_NAME > ENUM_LITERAL ::= 
+	enumeration_id
+	character_id
+	=> sm_pos	: Integer
+	=> sm_rep	: Integer
+
+enumeration_id	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > OBJECT_NAME > ENUM_LITERAL > enumeration_id
+
+character_id	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > OBJECT_NAME > ENUM_LITERAL > character_id
+
+integer_def	PATH ALL_SOURCE > TYPE_DEF > CONSTRAINED_DEF > integer_def
+
+Integer	PATH TYPE_SPEC > DERIVABLE_SPEC > FULL_TYPE_SPEC > NON_TASK > SCALAR > Integer
+	=> cd_offset	: Integer
+	=> cd_impl_size	: Integer
+
+{REAL_CONSTRAINT}	PATH ALL_SOURCE > CONSTRAINT > REAL_CONSTRAINT ::= 
+	float_constraint
+	fixed_constraint
+	=> sm_type_spec	: TYPE_SPEC
+	=> as_exp	: EXP
+	=> as_range	: RANGE
+
+float_def	PATH ALL_SOURCE > TYPE_DEF > CONSTRAINED_DEF > float_def
+
+float_constraint	PATH ALL_SOURCE > CONSTRAINT > REAL_CONSTRAINT > float_constraint
+
+float	PATH TYPE_SPEC > DERIVABLE_SPEC > FULL_TYPE_SPEC > NON_TASK > SCALAR > REAL > float
+	=> cd_impl_size	: Integer
+
+fixed_def	PATH ALL_SOURCE > TYPE_DEF > CONSTRAINED_DEF > fixed_def
+
+fixed_constraint	PATH ALL_SOURCE > CONSTRAINT > REAL_CONSTRAINT > fixed_constraint
+
+fixed	PATH TYPE_SPEC > DERIVABLE_SPEC > FULL_TYPE_SPEC > NON_TASK > SCALAR > REAL > fixed
+	=> cd_impl_small	: Value
+	=> cd_impl_size	: Integer
+
+constrained_array_def	PATH ALL_SOURCE > TYPE_DEF > ARR_ACC_DER_DEF > constrained_array_def
+	=> as_constraint	: CONSTRAINT
+
+index_constraint	PATH ALL_SOURCE > CONSTRAINT > index_constraint
+	=> as_discrete_range_s	: discrete_range_s
+
+discrete_range_s	PATH ALL_SOURCE > SEQUENCES > discrete_range_s
+	=> as_list	: SEQ OF DISCRETE_RANGE
+
+unconstrained_array_def	PATH ALL_SOURCE > TYPE_DEF > ARR_ACC_DER_DEF > unconstrained_array_def
+	=> as_index_s	: index_s
+
+scalar_s	PATH ALL_SOURCE > SEQUENCES > scalar_s
+	=> as_list	: SEQ OF SCALAR
+
+array	PATH TYPE_SPEC > DERIVABLE_SPEC > FULL_TYPE_SPEC > NON_TASK > UNCONSTRAINED > UNCONSTRAINED_COMPOSITE > array
+	=> sm_index_s	: index_s
+	=> sm_comp_type	: TYPE_SPEC
+
+constrained_array	PATH TYPE_SPEC > DERIVABLE_SPEC > FULL_TYPE_SPEC > NON_TASK > CONSTRAINED > constrained_array
+	=> sm_index_subtype_s	: scalar_s
+	=> cd_offset	: Integer
+	=> cd_dimensions	: Integer
+
+index	PATH ALL_SOURCE > index
+	=> as_name	: NAME
+	=> sm_type_spec	: TYPE_SPEC
+
+index_s	PATH ALL_SOURCE > SEQUENCES > index_s
+	=> as_list	: SEQ OF index
+
+discrete_subtype	PATH ALL_SOURCE > CONSTRAINT > DISCRETE_RANGE > discrete_subtype
+	=> as_subtype_indication	: subtype_indication
+
+record_def	PATH ALL_SOURCE > TYPE_DEF > record_def
+	=> as_comp_list	: comp_list
+
+record	PATH TYPE_SPEC > DERIVABLE_SPEC > FULL_TYPE_SPEC > NON_TASK > UNCONSTRAINED > UNCONSTRAINED_COMPOSITE > record
+	=> sm_discriminant_s	: dscrmt_decl_s
+	=> sm_comp_list	: comp_list
+	=> sm_representation	: REP
+
+constrained_record	PATH TYPE_SPEC > DERIVABLE_SPEC > FULL_TYPE_SPEC > NON_TASK > CONSTRAINED > constrained_record
+	=> sm_normalized_dscrmt_s	: exp_s
+
+null_comp_decl	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > null_comp_decl
+
+{COMP_NAME}	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > OBJECT_NAME > INIT_OBJECT_NAME > COMP_NAME ::= 
+	component_id
+	discriminant_id
+	=> sm_comp_rep	: COMP_REP_ELEM
+
+component_id	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > OBJECT_NAME > INIT_OBJECT_NAME > COMP_NAME > component_id
+
+{ITEM}	PATH ALL_SOURCE > ALL_DECL > ITEM ::= 
+	DSCRMT_PARAM_DECL
+	DECL
+	SUBUNIT_BODY
+
+{DSCRMT_PARAM_DECL}	PATH ALL_SOURCE > ALL_DECL > ITEM > DSCRMT_PARAM_DECL ::= 
+	dscrmt_decl
+	=> as_source_name_s	: source_name_s
+	=> as_name	: NAME
+	=> as_exp	: EXP
+	PARAM
+
+dscrmt_decl_s	PATH ALL_SOURCE > SEQUENCES > dscrmt_decl_s
+	=> as_list	: SEQ OF dscrmt_decl
+
+dscrmt_decl	PATH ALL_SOURCE > ALL_DECL > ITEM > DSCRMT_PARAM_DECL > dscrmt_decl
+
+discriminant_id	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > OBJECT_NAME > INIT_OBJECT_NAME > COMP_NAME > discriminant_id
+	=> sm_first	: DEF_NAME
+
+dscrmt_constraint	PATH ALL_SOURCE > CONSTRAINT > dscrmt_constraint
+	=> as_general_assoc_s	: general_assoc_s
+
+{VARIANT_PART}	PATH ALL_SOURCE > VARIANT_PART ::= 
+	variant_part
+
+variant_part	PATH ALL_SOURCE > VARIANT_PART > variant_part
+	=> as_name	: NAME
+	=> as_variant_s	: variant_s
+
+variant_s	PATH ALL_SOURCE > SEQUENCES > variant_s
+	=> as_list	: SEQ OF VARIANT_ELEM
+
+{VARIANT_ELEM}	PATH ALL_SOURCE > VARIANT_ELEM ::= 
+	variant
+	variant_pragma
+
+variant	PATH ALL_SOURCE > VARIANT_ELEM > variant
+	=> as_choice_s	: choice_s
+	=> as_comp_list	: comp_list
+
+choice_s	PATH ALL_SOURCE > SEQUENCES > choice_s
+	=> as_list	: SEQ OF CHOICE
+	=> cd_label	: Integer
+
+comp_list	PATH ALL_SOURCE > comp_list
+	=> as_decl_s	: decl_s
+	=> as_variant_part	: VARIANT_PART
+	=> as_pragma_s	: pragma_s
+
+variant_pragma	PATH ALL_SOURCE > VARIANT_ELEM > variant_pragma
+	=> as_pragma	: pragma
+
+{CHOICE}	PATH ALL_SOURCE > CHOICE ::= 
+	choice_exp
+	choice_range
+	choice_others
+
+choice_exp	PATH ALL_SOURCE > CHOICE > choice_exp
+	=> as_exp	: EXP
+
+choice_range	PATH ALL_SOURCE > CHOICE > choice_range
+	=> as_discrete_range	: DISCRETE_RANGE
+
+choice_others	PATH ALL_SOURCE > CHOICE > choice_others
+
+access_def	PATH ALL_SOURCE > TYPE_DEF > ARR_ACC_DER_DEF > access_def
+
+access	PATH TYPE_SPEC > DERIVABLE_SPEC > FULL_TYPE_SPEC > NON_TASK > UNCONSTRAINED > access
+	=> sm_storage_size	: EXP
+	=> sm_is_controlled	: BOOLEAN
+	=> sm_desig_type	: TYPE_SPEC
+	=> sm_master	: ALL_DECL
+	=> cd_offset	: Integer
+	=> cd_constrained	: BOOLEAN
+
+constrained_access	PATH TYPE_SPEC > DERIVABLE_SPEC > FULL_TYPE_SPEC > NON_TASK > CONSTRAINED > constrained_access
+	=> sm_desig_type	: TYPE_SPEC
+
+incomplete	PATH TYPE_SPEC > incomplete
+	=> sm_discriminant_s	: dscrmt_decl_s
+	=> xd_source_name	: SOURCE_NAME
+	=> xd_full_type_spec	: TYPE_SPEC
+
+{USE_PRAGMA}	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > USE_PRAGMA ::= 
+	use
+	pragma
+
+item_s	PATH ALL_SOURCE > SEQUENCES > item_s
+	=> as_list	: SEQ OF ITEM
+
+{UNIT_DECL}	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > ID_DECL > UNIT_DECL ::= 
+	generic_decl
+	NON_GENERIC_DECL
+	=> as_header	: HEADER
+
+{NON_GENERIC_DECL}	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > ID_DECL > UNIT_DECL > NON_GENERIC_DECL ::= 
+	subprog_entry_decl
+	package_decl
+	=> as_unit_kind	: UNIT_KIND
+
+{NAME}	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > NAME ::= 
+	DESIGNATOR
+	NAME_EXP
+
+{NAME_EXP}	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > NAME > NAME_EXP ::= 
+	NAME_VAL
+	indexed
+	slice
+	all
+	=> as_name	: NAME
+	=> sm_exp_type	: TYPE_SPEC
+
+{NAME_VAL}	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > NAME > NAME_EXP > NAME_VAL ::= 
+	attribute
+	selected
+	=> sm_value	: Value
+	function_call
+
+{DESIGNATOR}	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > NAME > DESIGNATOR ::= 
+	USED_OBJECT
+	USED_NAME
+	=> sm_defn	: DEF_NAME
+	=> lx_symrep	: symbol_rep
+
+{USED_NAME}	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > NAME > DESIGNATOR > USED_NAME ::= 
+	used_op
+	used_name_id
+
+used_op	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > NAME > DESIGNATOR > USED_NAME > used_op
+
+used_name_id	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > NAME > DESIGNATOR > USED_NAME > used_name_id
+
+{USED_OBJECT}	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > NAME > DESIGNATOR > USED_OBJECT ::= 
+	used_char
+	used_object_id
+	=> sm_exp_type	: TYPE_SPEC
+	=> sm_value	: Value
+
+used_char	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > NAME > DESIGNATOR > USED_OBJECT > used_char
+
+used_object_id	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > NAME > DESIGNATOR > USED_OBJECT > used_object_id
+
+exp_s	PATH ALL_SOURCE > SEQUENCES > exp_s
+	=> as_list	: SEQ OF EXP
+
+indexed	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > NAME > NAME_EXP > indexed
+	=> as_exp_s	: exp_s
+
+slice	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > NAME > NAME_EXP > slice
+	=> as_discrete_range	: DISCRETE_RANGE
+
+selected	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > NAME > NAME_EXP > NAME_VAL > selected
+	=> as_designator	: DESIGNATOR
+
+all	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > NAME > NAME_EXP > all
+
+attribute	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > NAME > NAME_EXP > NAME_VAL > attribute
+	=> as_used_name_id	: used_name_id
+	=> as_exp	: EXP
+
+aggregate	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > EXP_EXP > AGG_EXP > aggregate
+	=> as_general_assoc_s	: general_assoc_s
+	=> sm_normalized_comp_s	: general_assoc_s
+
+{GENERAL_ASSOC}	PATH ALL_SOURCE > GENERAL_ASSOC ::= 
+	NAMED_ASSOC
+	EXP
+
+{NAMED_ASSOC}	PATH ALL_SOURCE > GENERAL_ASSOC > NAMED_ASSOC ::= 
+	named
+	=> as_exp	: EXP
+	assoc
+
+named	PATH ALL_SOURCE > GENERAL_ASSOC > NAMED_ASSOC > named
+	=> as_choice_s	: choice_s
+
+{EXP_VAL}	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > EXP_EXP > EXP_VAL ::= 
+	short_circuit
+	numeric_literal
+	null_access
+	EXP_VAL_EXP
+	=> sm_value	: Value
+
+short_circuit	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > EXP_EXP > EXP_VAL > short_circuit
+	=> as_exp1	: EXP
+	=> as_short_circuit_op	: SHORT_CIRCUIT_OP
+	=> as_exp2	: EXP
+
+{SHORT_CIRCUIT_OP}	PATH ALL_SOURCE > SHORT_CIRCUIT_OP ::= 
+	and_then
+	or_else
+
+and_then	PATH ALL_SOURCE > SHORT_CIRCUIT_OP > and_then
+
+or_else	PATH ALL_SOURCE > SHORT_CIRCUIT_OP > or_else
+
+{EXP_VAL_EXP}	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > EXP_EXP > EXP_VAL > EXP_VAL_EXP ::= 
+	MEMBERSHIP
+	QUAL_CONV
+	parenthesized
+	=> as_exp	: EXP
+
+{MEMBERSHIP}	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > EXP_EXP > EXP_VAL > EXP_VAL_EXP > MEMBERSHIP ::= 
+	range_membership
+	type_membership
+	=> as_membership_op	: MEMBERSHIP_OP
+
+range_membership	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > EXP_EXP > EXP_VAL > EXP_VAL_EXP > MEMBERSHIP > range_membership
+	=> as_range	: RANGE
+
+type_membership	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > EXP_EXP > EXP_VAL > EXP_VAL_EXP > MEMBERSHIP > type_membership
+	=> as_name	: NAME
+
+{MEMBERSHIP_OP}	PATH ALL_SOURCE > MEMBERSHIP_OP ::= 
+	in_op
+	not_in
+
+in_op	PATH ALL_SOURCE > MEMBERSHIP_OP > in_op
+
+not_in	PATH ALL_SOURCE > MEMBERSHIP_OP > not_in
+
+{EXP}	PATH ALL_SOURCE > GENERAL_ASSOC > EXP ::= 
+	NAME
+	EXP_EXP
+
+{EXP_EXP}	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > EXP_EXP ::= 
+	EXP_VAL
+	AGG_EXP
+	qualified_allocator
+	subtype_allocator
+	=> sm_exp_type	: TYPE_SPEC
+
+{AGG_EXP}	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > EXP_EXP > AGG_EXP ::= 
+	aggregate
+	string_literal
+	=> sm_discrete_range	: DISCRETE_RANGE
+
+parenthesized	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > EXP_EXP > EXP_VAL > EXP_VAL_EXP > parenthesized
+
+numeric_literal	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > EXP_EXP > EXP_VAL > numeric_literal
+	=> lx_numrep	: Number_Rep
+
+string_literal	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > EXP_EXP > AGG_EXP > string_literal
+	=> lx_symrep	: symbol_rep
+
+null_access	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > EXP_EXP > EXP_VAL > null_access
+
+{QUAL_CONV}	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > EXP_EXP > EXP_VAL > EXP_VAL_EXP > QUAL_CONV ::= 
+	conversion
+	qualified
+	=> as_name	: NAME
+
+conversion	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > EXP_EXP > EXP_VAL > EXP_VAL_EXP > QUAL_CONV > conversion
+
+qualified	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > EXP_EXP > EXP_VAL > EXP_VAL_EXP > QUAL_CONV > qualified
+
+qualified_allocator	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > EXP_EXP > qualified_allocator
+	=> as_qualified	: qualified
+
+subtype_allocator	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > EXP_EXP > subtype_allocator
+	=> as_subtype_indication	: subtype_indication
+	=> sm_desig_type	: TYPE_SPEC
+
+{STM_ELEM}	PATH ALL_SOURCE > STM_ELEM ::= 
+	STM
+	stm_pragma
+
+stm_s	PATH ALL_SOURCE > SEQUENCES > stm_s
+	=> as_list	: SEQ OF STM_ELEM
+
+stm_pragma	PATH ALL_SOURCE > STM_ELEM > stm_pragma
+	=> as_pragma	: pragma
+
+{STM}	PATH ALL_SOURCE > STM_ELEM > STM ::= 
+	labeled
+	null_stm
+	abort
+	STM_WITH_EXP
+	STM_WITH_NAME
+	accept
+	BLOCK_LOOP
+	ENTRY_STM
+	CLAUSES_STM
+	terminate
+
+labeled	PATH ALL_SOURCE > STM_ELEM > STM > labeled
+	=> as_source_name_s	: source_name_s
+	=> as_pragma_s	: pragma_s
+	=> as_stm	: STM
+
+{STM_WITH_EXP}	PATH ALL_SOURCE > STM_ELEM > STM > STM_WITH_EXP ::= 
+	return
+	delay
+	STM_WITH_EXP_NAME
+	=> as_exp	: EXP
+	case
+
+{STM_WITH_EXP_NAME}	PATH ALL_SOURCE > STM_ELEM > STM > STM_WITH_EXP > STM_WITH_EXP_NAME ::= 
+	assign
+	exit
+	code
+	=> as_name	: NAME
+
+{STM_WITH_NAME}	PATH ALL_SOURCE > STM_ELEM > STM > STM_WITH_NAME ::= 
+	goto
+	raise
+	CALL_STM
+	=> as_name	: NAME
+
+{CALL_STM}	PATH ALL_SOURCE > STM_ELEM > STM > STM_WITH_NAME > CALL_STM ::= 
+	entry_call
+	procedure_call
+	=> as_general_assoc_s	: general_assoc_s
+	=> sm_normalized_param_s	: exp_s
+
+{CLAUSES_STM}	PATH ALL_SOURCE > STM_ELEM > STM > CLAUSES_STM ::= 
+	if
+	selective_wait
+	=> as_test_clause_elem_s	: test_clause_elem_s
+	=> as_stm_s	: stm_s
+
+{LABEL_NAME}	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > LABEL_NAME ::= 
+	label_id
+	=> sm_stm	: STM
+	block_loop_id
+
+label_id	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > LABEL_NAME > label_id
+	=> cd_label	: Integer
+
+null_stm	PATH ALL_SOURCE > STM_ELEM > STM > null_stm
+
+assign	PATH ALL_SOURCE > STM_ELEM > STM > STM_WITH_EXP > STM_WITH_EXP_NAME > assign
+
+if	PATH ALL_SOURCE > STM_ELEM > STM > CLAUSES_STM > if
+
+{TEST_CLAUSE}	PATH ALL_SOURCE > TEST_CLAUSE_ELEM > TEST_CLAUSE ::= 
+	cond_clause
+	=> as_exp	: EXP
+	=> as_stm_s	: stm_s
+	select_alternative
+
+cond_clause	PATH ALL_SOURCE > TEST_CLAUSE_ELEM > TEST_CLAUSE > cond_clause
+
+{ALTERNATIVE_ELEM}	PATH ALL_SOURCE > ALTERNATIVE_ELEM ::= 
+	alternative
+	alternative_pragma
+
+case	PATH ALL_SOURCE > STM_ELEM > STM > STM_WITH_EXP > case
+	=> as_alternative_s	: alternative_s
+
+alternative_s	PATH ALL_SOURCE > SEQUENCES > alternative_s
+	=> as_list	: SEQ OF ALTERNATIVE_ELEM
+
+alternative	PATH ALL_SOURCE > ALTERNATIVE_ELEM > alternative
+	=> as_choice_s	: choice_s
+	=> as_stm_s	: stm_s
+
+alternative_pragma	PATH ALL_SOURCE > ALTERNATIVE_ELEM > alternative_pragma
+	=> as_pragma	: pragma
+
+{BLOCK_LOOP}	PATH ALL_SOURCE > STM_ELEM > STM > BLOCK_LOOP ::= 
+	loop
+	=> as_source_name	: SOURCE_NAME
+	block
+
+block_loop_id	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > LABEL_NAME > block_loop_id
+
+loop	PATH ALL_SOURCE > STM_ELEM > STM > BLOCK_LOOP > loop
+	=> as_iteration	: ITERATION
+	=> as_stm_s	: stm_s
+	=> cd_level	: Integer
+	=> cd_after_loop	: Integer
+
+{ITERATION}	PATH ALL_SOURCE > ITERATION ::= 
+	FOR_REV
+	while
+
+{FOR_REV}	PATH ALL_SOURCE > ITERATION > FOR_REV ::= 
+	for
+	reverse
+	=> as_source_name	: SOURCE_NAME
+	=> as_discrete_range	: DISCRETE_RANGE
+
+for	PATH ALL_SOURCE > ITERATION > FOR_REV > for
+
+reverse	PATH ALL_SOURCE > ITERATION > FOR_REV > reverse
+
+iteration_id	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > OBJECT_NAME > iteration_id
+	=> cd_level	: Integer
+	=> cd_offset	: Integer
+
+while	PATH ALL_SOURCE > ITERATION > while
+	=> as_exp	: EXP
+
+block	PATH ALL_SOURCE > STM_ELEM > STM > BLOCK_LOOP > block
+	=> as_block_body	: block_body
+
+block_body	PATH ALL_SOURCE > UNIT_DESC > BODY > block_body
+	=> as_item_s	: item_s
+	=> as_stm_s	: stm_s
+	=> as_alternative_s	: alternative_s
+	=> cd_level	: Integer
+	=> cd_return_label	: Integer
+	=> cd_result_offset	: Integer
+
+exit	PATH ALL_SOURCE > STM_ELEM > STM > STM_WITH_EXP > STM_WITH_EXP_NAME > exit
+	=> sm_stm	: STM
+
+return	PATH ALL_SOURCE > STM_ELEM > STM > STM_WITH_EXP > return
+
+goto	PATH ALL_SOURCE > STM_ELEM > STM > STM_WITH_NAME > goto
+
+subprog_entry_decl	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > ID_DECL > UNIT_DECL > NON_GENERIC_DECL > subprog_entry_decl
+
+{NON_TASK_NAME}	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > UNIT_NAME > NON_TASK_NAME ::= 
+	SUBPROG_PACK_NAME
+	=> sm_spec	: HEADER
+	=> xd_stub	: stub
+	=> xd_body	: SUBUNIT_BODY
+	generic_id
+
+{SUBPROG_PACK_NAME}	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > UNIT_NAME > NON_TASK_NAME > SUBPROG_PACK_NAME ::= 
+	SUBPROG_NAME
+	=> sm_unit_desc	: UNIT_DESC
+	=> sm_address	: EXP
+	=> cd_compiled	: BOOLEAN
+	package_id
+
+{SUBPROG_NAME}	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > UNIT_NAME > NON_TASK_NAME > SUBPROG_PACK_NAME > SUBPROG_NAME ::= 
+	procedure_id
+	function_id
+	operator_id
+	=> sm_is_inline	: BOOLEAN
+	=> sm_interface	: PREDEF_NAME
+	=> cd_level	: Integer
+	=> cd_label	: Integer
+	=> cd_param_size	: Integer
+
+{UNIT_DESC}	PATH ALL_SOURCE > UNIT_DESC ::= 
+	UNIT_KIND
+	BODY
+	implicit_not_eq
+	derived_subprog
+
+derived_subprog	PATH ALL_SOURCE > UNIT_DESC > derived_subprog
+	=> sm_derivable	: SOURCE_NAME
+
+implicit_not_eq	PATH ALL_SOURCE > UNIT_DESC > implicit_not_eq
+	=> sm_equal	: SOURCE_NAME
+
+procedure_id	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > UNIT_NAME > NON_TASK_NAME > SUBPROG_PACK_NAME > SUBPROG_NAME > procedure_id
+
+function_id	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > UNIT_NAME > NON_TASK_NAME > SUBPROG_PACK_NAME > SUBPROG_NAME > function_id
+	=> cd_result_size	: Integer
+
+operator_id	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > UNIT_NAME > NON_TASK_NAME > SUBPROG_PACK_NAME > SUBPROG_NAME > operator_id
+	=> xd_not_equal	: operator_id
+
+{HEADER}	PATH ALL_SOURCE > HEADER ::= 
+	SUBP_ENTRY_HEADER
+	package_spec
+
+{SUBP_ENTRY_HEADER}	PATH ALL_SOURCE > HEADER > SUBP_ENTRY_HEADER ::= 
+	procedure_spec
+	function_spec
+	=> as_param_s	: param_s
+	entry
+
+procedure_spec	PATH ALL_SOURCE > HEADER > SUBP_ENTRY_HEADER > procedure_spec
+
+function_spec	PATH ALL_SOURCE > HEADER > SUBP_ENTRY_HEADER > function_spec
+	=> as_name	: NAME
+
+param_s	PATH ALL_SOURCE > SEQUENCES > param_s
+	=> as_list	: SEQ OF PARAM
+
+{PARAM}	PATH ALL_SOURCE > ALL_DECL > ITEM > DSCRMT_PARAM_DECL > PARAM ::= 
+	in
+	out
+	in_out
+
+in	PATH ALL_SOURCE > ALL_DECL > ITEM > DSCRMT_PARAM_DECL > PARAM > in
+	=> lx_default	: BOOLEAN
+
+in_out	PATH ALL_SOURCE > ALL_DECL > ITEM > DSCRMT_PARAM_DECL > PARAM > in_out
+
+out	PATH ALL_SOURCE > ALL_DECL > ITEM > DSCRMT_PARAM_DECL > PARAM > out
+
+{PARAM_NAME}	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > OBJECT_NAME > INIT_OBJECT_NAME > PARAM_NAME ::= 
+	in_id
+	PARAM_IO_O
+	=> sm_first	: DEF_NAME
+	=> cd_level	: Integer
+
+{PARAM_IO_O}	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > OBJECT_NAME > INIT_OBJECT_NAME > PARAM_NAME > PARAM_IO_O ::= 
+	in_out_id
+	out_id
+	=> cd_addr_offset	: Integer
+	=> cd_val_offset	: Integer
+
+in_id	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > OBJECT_NAME > INIT_OBJECT_NAME > PARAM_NAME > in_id
+	=> cd_offset	: Integer
+
+in_out_id	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > OBJECT_NAME > INIT_OBJECT_NAME > PARAM_NAME > PARAM_IO_O > in_out_id
+
+out_id	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > OBJECT_NAME > INIT_OBJECT_NAME > PARAM_NAME > PARAM_IO_O > out_id
+
+{BODY}	PATH ALL_SOURCE > UNIT_DESC > BODY ::= 
+	block_body
+	stub
+
+subprogram_body	PATH ALL_SOURCE > ALL_DECL > ITEM > SUBUNIT_BODY > subprogram_body
+	=> as_header	: HEADER
+
+procedure_call	PATH ALL_SOURCE > STM_ELEM > STM > STM_WITH_NAME > CALL_STM > procedure_call
+
+function_call	PATH ALL_SOURCE > GENERAL_ASSOC > EXP > NAME > NAME_EXP > NAME_VAL > function_call
+	=> as_general_assoc_s	: general_assoc_s
+	=> sm_normalized_param_s	: exp_s
+	=> lx_prefix	: BOOLEAN
+
+assoc	PATH ALL_SOURCE > GENERAL_ASSOC > NAMED_ASSOC > assoc
+	=> as_used_name	: USED_NAME
+
+package_decl	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > ID_DECL > UNIT_DECL > NON_GENERIC_DECL > package_decl
+
+package_id	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > UNIT_NAME > NON_TASK_NAME > SUBPROG_PACK_NAME > package_id
+
+package_spec	PATH ALL_SOURCE > HEADER > package_spec
+	=> as_decl_s1	: decl_s
+	=> as_decl_s2	: decl_s
+	=> xd_body_is_required	: BOOLEAN
+
+decl_s	PATH ALL_SOURCE > SEQUENCES > decl_s
+	=> as_list	: SEQ OF DECL
+
+package_body	PATH ALL_SOURCE > ALL_DECL > ITEM > SUBUNIT_BODY > package_body
+
+private_def	PATH ALL_SOURCE > TYPE_DEF > private_def
+
+l_private_def	PATH ALL_SOURCE > TYPE_DEF > l_private_def
+
+private_type_id	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > TYPE_NAME > private_type_id
+
+l_private_type_id	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > TYPE_NAME > l_private_type_id
+
+{PRIVATE_SPEC}	PATH TYPE_SPEC > DERIVABLE_SPEC > PRIVATE_SPEC ::= 
+	private
+	l_private
+	=> sm_discriminant_s	: dscrmt_decl_s
+	=> sm_type_spec	: TYPE_SPEC
+
+private	PATH TYPE_SPEC > DERIVABLE_SPEC > PRIVATE_SPEC > private
+
+l_private	PATH TYPE_SPEC > DERIVABLE_SPEC > PRIVATE_SPEC > l_private
+
+deferred_constant_decl	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > ID_S_DECL > deferred_constant_decl
+	=> as_name	: NAME
+
+use	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > USE_PRAGMA > use
+	=> as_name_s	: name_s
+
+{SIMPLE_RENAME_DECL}	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > ID_DECL > SIMPLE_RENAME_DECL ::= 
+	renames_obj_decl
+	renames_exc_decl
+	=> as_name	: NAME
+
+renames_obj_decl	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > ID_DECL > SIMPLE_RENAME_DECL > renames_obj_decl
+	=> as_type_mark_name	: NAME
+
+renames_exc_decl	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > ID_DECL > SIMPLE_RENAME_DECL > renames_exc_decl
+
+{UNIT_KIND}	PATH ALL_SOURCE > UNIT_DESC > UNIT_KIND ::= 
+	RENAME_INSTANT
+	GENERIC_PARAM
+
+{RENAME_INSTANT}	PATH ALL_SOURCE > UNIT_DESC > UNIT_KIND > RENAME_INSTANT ::= 
+	renames_unit
+	=> as_name	: NAME
+	instantiation
+
+renames_unit	PATH ALL_SOURCE > UNIT_DESC > UNIT_KIND > RENAME_INSTANT > renames_unit
+
+task_decl	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > ID_DECL > task_decl
+	=> as_decl_s	: decl_s
+
+task_spec	PATH TYPE_SPEC > DERIVABLE_SPEC > FULL_TYPE_SPEC > task_spec
+	=> sm_decl_s	: decl_s
+	=> sm_body	: BODY
+	=> sm_address	: EXP
+	=> sm_size	: EXP
+	=> sm_storage_size	: EXP
+	=> xd_stub	: stub
+	=> xd_body	: SUBUNIT_BODY
+
+task_body	PATH ALL_SOURCE > ALL_DECL > ITEM > SUBUNIT_BODY > task_body
+
+task_body_id	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > UNIT_NAME > task_body_id
+	=> sm_type_spec	: TYPE_SPEC
+	=> sm_body	: BODY
+
+{ALL_DECL}	PATH ALL_SOURCE > ALL_DECL ::= 
+	block_master
+	ITEM
+	subunit
+
+block_master	PATH ALL_SOURCE > ALL_DECL > block_master
+	=> sm_stm	: STM
+
+entry	PATH ALL_SOURCE > HEADER > SUBP_ENTRY_HEADER > entry
+	=> as_discrete_range	: DISCRETE_RANGE
+
+entry_id	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > entry_id
+	=> sm_spec	: HEADER
+	=> sm_address	: EXP
+
+entry_call	PATH ALL_SOURCE > STM_ELEM > STM > STM_WITH_NAME > CALL_STM > entry_call
+
+accept	PATH ALL_SOURCE > STM_ELEM > STM > accept
+	=> as_name	: NAME
+	=> as_param_s	: param_s
+	=> as_stm_s	: stm_s
+
+delay	PATH ALL_SOURCE > STM_ELEM > STM > STM_WITH_EXP > delay
+
+selective_wait	PATH ALL_SOURCE > STM_ELEM > STM > CLAUSES_STM > selective_wait
+
+{TEST_CLAUSE_ELEM}	PATH ALL_SOURCE > TEST_CLAUSE_ELEM ::= 
+	TEST_CLAUSE
+	select_alt_pragma
+
+test_clause_elem_s	PATH ALL_SOURCE > SEQUENCES > test_clause_elem_s
+	=> as_list	: SEQ OF TEST_CLAUSE_ELEM
+
+select_alternative	PATH ALL_SOURCE > TEST_CLAUSE_ELEM > TEST_CLAUSE > select_alternative
+
+select_alt_pragma	PATH ALL_SOURCE > TEST_CLAUSE_ELEM > select_alt_pragma
+	=> as_pragma	: pragma
+
+terminate	PATH ALL_SOURCE > STM_ELEM > STM > terminate
+
+{ENTRY_STM}	PATH ALL_SOURCE > STM_ELEM > STM > ENTRY_STM ::= 
+	cond_entry
+	timed_entry
+	=> as_stm_s1	: stm_s
+	=> as_stm_s2	: stm_s
+
+cond_entry	PATH ALL_SOURCE > STM_ELEM > STM > ENTRY_STM > cond_entry
+
+timed_entry	PATH ALL_SOURCE > STM_ELEM > STM > ENTRY_STM > timed_entry
+
+name_s	PATH ALL_SOURCE > SEQUENCES > name_s
+	=> as_list	: SEQ OF NAME
+
+abort	PATH ALL_SOURCE > STM_ELEM > STM > abort
+	=> as_name_s	: name_s
+
+compilation	PATH ALL_SOURCE > compilation
+	=> as_compltn_unit_s	: compltn_unit_s
+
+compltn_unit_s	PATH ALL_SOURCE > SEQUENCES > compltn_unit_s
+	=> as_list	: SEQ OF compilation_unit
+
+pragma_s	PATH ALL_SOURCE > SEQUENCES > pragma_s
+	=> as_list	: SEQ OF pragma
+
+compilation_unit	PATH ALL_SOURCE > compilation_unit
+	=> as_context_elem_s	: context_elem_s
+	=> as_all_decl	: ALL_DECL
+	=> as_pragma_s	: pragma_s
+	=> xd_timestamp	: Integer
+	=> xd_with_list	: SEQ OF trans_with
+	=> xd_nbr_pages	: Integer
+	=> xd_parent	: compilation_unit
+	=> xd_lib_name	: symbol_rep
+
+{CONTEXT_ELEM}	PATH ALL_SOURCE > CONTEXT_ELEM ::= 
+	context_pragma
+	with
+
+context_pragma	PATH ALL_SOURCE > CONTEXT_ELEM > context_pragma
+	=> as_pragma	: pragma
+
+context_elem_s	PATH ALL_SOURCE > SEQUENCES > context_elem_s
+	=> as_list	: SEQ OF CONTEXT_ELEM
+
+with	PATH ALL_SOURCE > CONTEXT_ELEM > with
+	=> as_name_s	: name_s
+	=> as_use_pragma_s	: use_pragma_s
+
+use_pragma_s	PATH ALL_SOURCE > SEQUENCES > use_pragma_s
+	=> as_list	: SEQ OF USE_PRAGMA
+
+subunit	PATH ALL_SOURCE > ALL_DECL > subunit
+	=> as_name	: NAME
+	=> as_subunit_body	: SUBUNIT_BODY
+
+{SUBUNIT_BODY}	PATH ALL_SOURCE > ALL_DECL > ITEM > SUBUNIT_BODY ::= 
+	subprogram_body
+	package_body
+	task_body
+	=> as_source_name	: SOURCE_NAME
+	=> as_body	: BODY
+
+stub	PATH ALL_SOURCE > UNIT_DESC > BODY > stub
+
+exception_decl	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > ID_S_DECL > exception_decl
+
+exception_id	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > exception_id
+	=> sm_renames_exc	: NAME
+	=> cd_label	: Integer
+
+raise	PATH ALL_SOURCE > STM_ELEM > STM > STM_WITH_NAME > raise
+
+generic_decl	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > ID_DECL > UNIT_DECL > generic_decl
+	=> as_item_s	: item_s
+
+generic_id	PATH ALL_SOURCE > DEF_NAME > SOURCE_NAME > UNIT_NAME > NON_TASK_NAME > generic_id
+	=> sm_generic_param_s	: item_s
+	=> sm_body	: BODY
+	=> sm_is_inline	: BOOLEAN
+
+{GENERIC_PARAM}	PATH ALL_SOURCE > UNIT_DESC > UNIT_KIND > GENERIC_PARAM ::= 
+	name_default
+	box_default
+	no_default
+
+name_default	PATH ALL_SOURCE > UNIT_DESC > UNIT_KIND > GENERIC_PARAM > name_default
+	=> as_name	: NAME
+
+box_default	PATH ALL_SOURCE > UNIT_DESC > UNIT_KIND > GENERIC_PARAM > box_default
+
+no_default	PATH ALL_SOURCE > UNIT_DESC > UNIT_KIND > GENERIC_PARAM > no_default
+
+formal_dscrt_def	PATH ALL_SOURCE > TYPE_DEF > formal_dscrt_def
+
+formal_fixed_def	PATH ALL_SOURCE > TYPE_DEF > formal_fixed_def
+
+formal_float_def	PATH ALL_SOURCE > TYPE_DEF > formal_float_def
+
+formal_integer_def	PATH ALL_SOURCE > TYPE_DEF > formal_integer_def
+
+instantiation	PATH ALL_SOURCE > UNIT_DESC > UNIT_KIND > RENAME_INSTANT > instantiation
+	=> as_general_assoc_s	: general_assoc_s
+	=> sm_decl_s	: decl_s
+
+{REP}	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > REP ::= 
+	NAMED_REP
+	record_rep
+	=> as_name	: NAME
+
+{NAMED_REP}	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > REP > NAMED_REP ::= 
+	=> as_exp	: EXP
+	length_enum_rep
+	address
+
+length_enum_rep	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > REP > NAMED_REP > length_enum_rep
+
+{ALIGNMENT_CLAUSE}	PATH ALL_SOURCE > ALIGNMENT_CLAUSE ::= 
+	alignment
+
+alignment	PATH ALL_SOURCE > ALIGNMENT_CLAUSE > alignment
+	=> as_pragma_s	: pragma_s
+	=> as_exp	: EXP
+
+record_rep	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > REP > record_rep
+	=> as_alignment_clause	: ALIGNMENT_CLAUSE
+	=> as_comp_rep_s	: comp_rep_s
+
+{COMP_REP_ELEM}	PATH ALL_SOURCE > COMP_REP_ELEM ::= 
+	comp_rep
+	comp_rep_pragma
+
+comp_rep_s	PATH ALL_SOURCE > SEQUENCES > comp_rep_s
+	=> as_list	: SEQ OF COMP_REP_ELEM
+
+comp_rep	PATH ALL_SOURCE > COMP_REP_ELEM > comp_rep
+	=> as_name	: NAME
+	=> as_exp	: EXP
+	=> as_range	: RANGE
+
+comp_rep_pragma	PATH ALL_SOURCE > COMP_REP_ELEM > comp_rep_pragma
+	=> as_pragma	: pragma
+
+address	PATH ALL_SOURCE > ALL_DECL > ITEM > DECL > REP > NAMED_REP > address
+
+code	PATH ALL_SOURCE > STM_ELEM > STM > STM_WITH_EXP > STM_WITH_EXP_NAME > code
+
+{PREDEF_NAME}	PATH ALL_SOURCE > DEF_NAME > PREDEF_NAME ::= 
+	attribute_id
+	pragma_id
+	argument_id
+	bltn_operator_id
+
+attribute_id	PATH ALL_SOURCE > DEF_NAME > PREDEF_NAME > attribute_id
+	=> xd_pos	: Integer
+
+universal_integer	PATH TYPE_SPEC > universal_integer
+
+universal_fixed	PATH TYPE_SPEC > universal_fixed
+
+universal_real	PATH TYPE_SPEC > universal_real
+
+argument_id	PATH ALL_SOURCE > DEF_NAME > PREDEF_NAME > argument_id
+	=> xd_pos	: Integer
+
+bltn_operator_id	PATH ALL_SOURCE > DEF_NAME > PREDEF_NAME > bltn_operator_id
+	=> sm_operator	: Integer
+
+pragma_id	PATH ALL_SOURCE > DEF_NAME > PREDEF_NAME > pragma_id
+	=> sm_argument_id_s	: argument_id
+	=> xd_pos	: Integer
+
+argument_id_s	PATH ALL_SOURCE > SEQUENCES > argument_id_s
+	=> as_list	: SEQ OF argument_id
+
+{ALL_SOURCE}	PATH ALL_SOURCE ::= 
+	DEF_NAME
+	ALL_DECL
+	TYPE_DEF
+	SEQUENCES
+	STM_ELEM
+	GENERAL_ASSOC
+	CONSTRAINT
+	CHOICE
+	HEADER
+	UNIT_DESC
+	TEST_CLAUSE_ELEM
+	MEMBERSHIP_OP
+	SHORT_CIRCUIT_OP
+	ITERATION
+	ALTERNATIVE_ELEM
+	COMP_REP_ELEM
+	CONTEXT_ELEM
+	VARIANT_ELEM
+	ALIGNMENT_CLAUSE
+	VARIANT_PART
+	comp_list
+	compilation
+	compilation_unit
+	index
+	=> lx_srcpos	: Source_Position
+
+{SEQUENCES}	PATH ALL_SOURCE > SEQUENCES ::= 
+	alternative_s
+	argument_id_s
+	choice_s
+	comp_rep_s
+	compltn_unit_s
+	context_elem_s
+	decl_s
+	dscrmt_decl_s
+	general_assoc_s
+	discrete_range_s
+	enum_literal_s
+	exp_s
+	item_s
+	index_s
+	name_s
+	param_s
+	pragma_s
+	scalar_s
+	source_name_s
+	stm_s
+	test_clause_elem_s
+	use_pragma_s
+	variant_s
+
+user_root	PATH NON_DIANA > user_root
+	=> xd_sourcename	: txtrep
+	=> xd_grammar	: void
+	=> xd_statelist	: void
+	=> xd_structure	: compilation
+	=> xd_timestamp	: Integer
+	=> spare_3	: void
+
+{NON_DIANA}	PATH NON_DIANA ::= 
+	user_root
+	real_val
+	trans_with
+	lib_info
+	def
+	UNSPECIFIED_TYPE
+	implicit_conv
+	nullary_call
+
+real_val	PATH NON_DIANA > real_val
+	=> xd_numer	: num_val
+	=> xd_denom	: num_val
+
+trans_with	PATH NON_DIANA > trans_with
+	=> tw_filename	: txtrep
+	=> tw_comp_unit	: compilation_unit
+
+lib_info	PATH NON_DIANA > lib_info
+	=> xd_short	: txtrep
+	=> xd_primary	: txtrep
+	=> xd_secondary	: txtrep
+
+any_integer	PATH NON_DIANA > UNSPECIFIED_TYPE > any_integer
+
+any_real	PATH NON_DIANA > UNSPECIFIED_TYPE > any_real
+
+any_access	PATH NON_DIANA > UNSPECIFIED_TYPE > any_access
+
+any_composite	PATH NON_DIANA > UNSPECIFIED_TYPE > any_composite
+
+any_string	PATH NON_DIANA > UNSPECIFIED_TYPE > any_string
+
+any_access_of	PATH NON_DIANA > UNSPECIFIED_TYPE > any_access_of
+	=> xd_item	: ITEM
+
+{UNSPECIFIED_TYPE}	PATH NON_DIANA > UNSPECIFIED_TYPE ::= 
+	any_access
+	any_composite
+	any_string
+	any_access_of
+	any_integer
+	any_real
+
+def	PATH NON_DIANA > def
+	=> xd_header	: HEADER
+	=> xd_source_name	: SOURCE_NAME
+	=> xd_region_def	: def
+	=> xd_is_in_spec	: BOOLEAN
+	=> xd_lex_level	: Integer
+	=> xd_is_used	: BOOLEAN
+
+implicit_conv	PATH NON_DIANA > implicit_conv
+	=> xd_item	: ITEM
+	=> xd_list	: SEQ OF EXP
+
+nullary_call	PATH NON_DIANA > nullary_call
+	=> xd_item	: ITEM
+

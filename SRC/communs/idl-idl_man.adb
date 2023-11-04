@@ -5,7 +5,7 @@ SEPARATE (IDL)
 --|-------------------------------------------------------------------------------------------------
 PACKAGE BODY IDL_MAN IS
    
-  TREE_HASH	: TREE		:= (N, TY=> DN_HASH, PG=> 2, LN=> 0 );
+  TREE_HASH	: TREE		:= (P, TY=> DN_HASH, PG=> 2, LN=> 0 );
    
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 --|		FUNCTION ARITY
@@ -202,7 +202,7 @@ BEGIN
     A_IDX := A_IDX + 1;								--| ATTIBUT SUIVANT
   END LOOP;
       
-  PUT_LINE ( "IDL.IDL-MAN.LIST : PAS DE LISTE INSCRIPTIBLE DANS " & NODE_REP ( T ) );
+  PUT_LINE ( "IDL.IDL_MAN.LIST : PAS DE LISTE INSCRIPTIBLE DANS " & NODE_REP ( T ) );
   RAISE PROGRAM_ERROR;
 END;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
@@ -254,7 +254,7 @@ BEGIN
     TT			: TREE		:= MAKE ( DN_TXTREP, NB_ATTR=> NB_TREES, AR=> 9 );--| FABRIQUER LE NOEUD CONTENANT LE TEXTE
     TYPE TTREES		IS ARRAY (1..NB_TREES) OF TREE;
     SUBTYPE LSTR		IS STRING (1..NB_CARS);
-    FUNCTION TO_TREES		IS NEW UNCHECKED_CONVERSION ( LSTR, TTREES );
+    FUNCTION TO_TREES	IS NEW UNCHECKED_CONVERSION ( LSTR, TTREES );
     A_COPIER		: LSTR		:= (OTHERS=> ASCII.NUL);
     START			: LINE_IDX		:= TT.LN;
     TTR			: TTREES;
@@ -279,9 +279,9 @@ FUNCTION HASH_SEARCH ( S :STRING ) RETURN TREE IS
   SUBTYPE LSTR		IS STRING ( 1 .. NB_CARS );					--| CHAINE DE S AVEC UN OCTET DE LONGUEUR
   FUNCTION TO_TREES		IS NEW UNCHECKED_CONVERSION ( LSTR, TTREES );			--| CONVERSION DE LA CHAINE EN TABLEAU DE TREES
   TTR			: TTREES;							--| VARIABLE CONVERTIE
-  A_COPIER			: LSTR		:= (OTHERS=> ASCII.NUL);
+  A_COPIER		: LSTR		:= (OTHERS=> ASCII.NUL);
          
-  HASH_SUM			: INTEGER := 0;					--| VALEUR DE HACHAGE
+  HASH_SUM		: INTEGER := 0;						--| VALEUR DE HACHAGE
   FUNCTION TO_INT		IS NEW UNCHECKED_CONVERSION( TREE, INTEGER );
          
 BEGIN
@@ -301,7 +301,7 @@ BEGIN
         SYM_T	: TREE		:= HEAD( HASH_LIST );				--| POINTEUR SYMBOL_REP
         TXT_T	: TREE		:= DABS( 1, SYM_T );				--| LE POINTEUR TXTREP AU NOEUD CONTENANT LE TEXTE
       BEGIN
-        IF DABS( 0, TXT_T ).LN = NB_TREES THEN						--| SI LA LONGUEUR DU BLOC CORRESPOND A CELLE DU CONVERTI
+        IF DABS( 0, TXT_T ).NSIZ = NB_TREES THEN						--| SI LA LONGUEUR DU BLOC CORRESPOND A CELLE DU CONVERTI
           DECLARE
             IS_MATCH	: BOOLEAN		:= TRUE;					--| SUPPOSER QUE CELA VA MARCHER
             START		: LINE_IDX	:= TXT_T.LN;				--| INDICE DE L'ENTETE DU BLOC CONTENANT LE TEXTE A TESTER
@@ -315,23 +315,23 @@ BEGIN
             END LOOP;
                      
             IF IS_MATCH THEN								--| ACCORD
-              RETURN SYM_T;								--| RETOURNER LA VALEUR
+              RETURN SYM_T;								--| RETOURNER LE SYMBOLE TROUVE
             END IF;
           END;
         END IF;
         HASH_LIST := TAIL( HASH_LIST );							--| CONTINUER SUR LE RESTE DE LA LISTE
       END;
     END LOOP;
-    RETURN (N, TY=> DN_NUM_VAL, PG=> 0, LN=> BUCKET );
+    RETURN (HI, NOTY=> DN_NUM_VAL, VALU=> 0, NSIZ=> BUCKET  );				--| RETOURNER LE SEAU
   END;
 END HASH_SEARCH;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 --|		FUNCTION STORE_SYM
 --|
 FUNCTION STORE_SYM ( S :STRING ) RETURN TREE IS						--| INSERE UN SYMBOLE ACCESSIBLE A LA RECHERCHE
-  TR		: TREE		:= HASH_SEARCH ( S );
+  TR		: TREE		:= HASH_SEARCH( S );
 BEGIN
-  IF TR.TY /= DN_NUM_VAL THEN
+  IF TR.PT /= HI THEN								--| TROUVE LE SYMBOLE DEJA ENTRE
     RETURN TR;
   ELSE
     DECLARE
@@ -341,10 +341,10 @@ BEGIN
       DABS ( 1, SYMREP, STORE_TEXT ( S ) );						--| LE TEXTE REPRESENTATIF EN PREMIER CHAMP
       DABS ( 2, SYMREP, TREE_NIL );							--| RIEN EN SECOND CHAMP
       DECLARE
-        T_SEQ : SEQ_TYPE := ( FIRST=> DABS ( TR.LN, TREE_HASH ) , NEXT=> TREE_NIL );
+        T_SEQ : SEQ_TYPE := ( FIRST=> DABS( TR.NSIZ, TREE_HASH ) , NEXT=> TREE_NIL );
       BEGIN
-        T_SEQ := INSERT ( T_SEQ, SYMREP );
-        DABS ( TR.LN, TREE_HASH, T_SEQ.FIRST );
+        T_SEQ := INSERT( T_SEQ, SYMREP );
+        DABS( TR.NSIZ, TREE_HASH, T_SEQ.FIRST );
       END;
       RETURN SYMREP;
     END;
@@ -356,7 +356,7 @@ END;
 FUNCTION FIND_SYM ( S :STRING ) RETURN TREE IS
   T		: TREE		:= HASH_SEARCH ( S );
 BEGIN
-  IF T.TY = DN_NUM_VAL THEN
+  IF T.NOTY = DN_NUM_VAL THEN								--| TROUVE LE BUCKET MAIS PAS LE SYMBOLE
     T := TREE_VOID;
   ELSIF T.TY /= DN_SYMBOL_REP THEN
     PUT_LINE ( "IDL.IDL_MAN.FIND_SYM : HASHSEARCH A TROUVE UN NON SYMBOLE " & NODE_REP ( T ) );
@@ -367,24 +367,26 @@ END;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 --|		FUNCTION MAKE_SOURCE_POSITION
 --|
-FUNCTION MAKE_SOURCE_POSITION ( T: TREE; COL :SRCCOL_IDX ) RETURN TREE IS
+FUNCTION MAKE_SOURCE_POSITION ( T: TREE; COL :SRCCOL_IDX ) RETURN TREE IS			--| FABRIQUE UN ELEMENT S CONTENANT LA COLONNE AVEC UN POINTEUR DE LIGNE
 BEGIN
-  IF T.TY /= DN_SOURCELINE THEN
+  IF T.TY = DN_SOURCELINE THEN							--| POINTEUR DE SOURCE_LINE
+    RETURN (S, COL=> COL, SPG=> T.PG, SLN=> T.LN );
+  ELSE										--| SINON ERREUR
     PUT_LINE ( "IDL.IDL_MAN.MAKE_SOURCE_POSITION : T N'EST PAS UN SOURCE_LINE, C'EST " & NODE_REP ( T ) );
     RAISE PROGRAM_ERROR;
   END IF;
-  RETURN (S, COL=> COL, SPG=> T.PG, SLN=> T.LN );
 END;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 --|		FUNCTION GET_SOURCE_LINE
 --|
-FUNCTION GET_SOURCE_LINE ( T :TREE ) RETURN TREE IS
+FUNCTION GET_SOURCE_LINE ( T :TREE ) RETURN TREE IS					--| RAMENE LE POINTEUR DE LIGNE ASSOCIE A UN ELEMENT S
 BEGIN
-  IF T.PT /= S THEN
+  IF T.PT = S THEN
+    RETURN (P, TY=> DN_SOURCELINE, PG=> T.SPG, LN=> T.SLN );
+  ELSE
     PUT_LINE ( "IDL.IDL_MAN.GET_SOURCE_LINE : POSITION ERRONEE, NOEUD " & NODE_REP ( T ) );
     RAISE PROGRAM_ERROR;
   END IF;
-  RETURN (N, TY=> DN_SOURCELINE, PG=> T.SPG, LN=> T.SLN );
 END;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 --|		FUNCTION GET_SOURCE_COL
@@ -399,18 +401,18 @@ END;
 PROCEDURE EMIT_ERROR ( SP_ARG :TREE; MSG :STRING ) IS
   SP		: TREE		:= SP_ARG;
   SRC_LIN		: TREE;
-  ERR_NOD		: TREE		:= MAKE ( DN_ERROR );
+  ERR_NOD		: TREE		:= MAKE( DN_ERROR );
 BEGIN
   IF SP.PT /= S THEN								--| NOEUD STRUCTUREL
     SP := D( LX_SRCPOS, SP );								--| REMPLACER SP PAR L'ATTRIBUT LX_SRCPOS
   END IF;
          
-  DABS ( 1, ERR_NOD, SP );								--| POSITION DANS CHAMP 1
-  DABS ( 2, ERR_NOD, STORE_TEXT ( MSG ) );						--| MESSAGE DANS CHAMP 2
-  SRC_LIN := GET_SOURCE_LINE ( SP );							--| 
-  LIST ( SRC_LIN, (APPEND(LIST(SRC_LIN), ERR_NOD)) );					--| AJOUTER EN FIN LE NOEUD ERREUR
+  D( XD_SRCPOS, ERR_NOD, SP );							--| POSITION DANS CHAMP 1
+  D( XD_TEXT,   ERR_NOD, STORE_TEXT( MSG ) );						--| MESSAGE DANS CHAMP 2
+  SRC_LIN := GET_SOURCE_LINE( SP );							--| 
+  LIST( SRC_LIN, (APPEND( LIST( SRC_LIN ), ERR_NOD)) );					--| AJOUTER EN FIN LE NOEUD ERREUR
 
-  PUT_LINE ( SHORT'IMAGE ( DABS ( 1, SRC_LIN ).VAL ) & ": " & MSG );				--| AFFICHAGE DU No DE LIGNE ET DE L'ERREUR
+  PUT_LINE( SSHORT'IMAGE ( D( XD_NUMBER, SRC_LIN ).VALU ) & ": " & MSG );			--| AFFICHAGE DU No DE LIGNE ET DE L'ERREUR
 END;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 --|		PROCEDURE ERROR
@@ -419,14 +421,14 @@ PROCEDURE ERROR ( T :TREE; MSG :STRING ) IS
   ERR_CNT		: TREE;
 BEGIN
   IF PRAGMA_CONTEXT /= TREE_VOID THEN
-    DABS ( 3, PRAGMA_CONTEXT, TREE_VOID );
-    WARNING ( T, MSG );
+    DABS( 3, PRAGMA_CONTEXT, TREE_VOID );
+    WARNING( T, MSG );
             
   ELSE
     EMIT_ERROR ( T, MSG );
-    ERR_CNT := DABS ( 4, TREE_ROOT );
-    ERR_CNT.PG := ERR_CNT.PG + 1;
-    DABS ( 4, TREE_ROOT, ERR_CNT );
+    ERR_CNT := D( XD_ERR_COUNT, TREE_ROOT );
+    ERR_CNT.VALU := ERR_CNT.VALU + 1;
+    D( XD_ERR_COUNT, TREE_ROOT, ERR_CNT );
   END IF;
 END;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
@@ -451,8 +453,8 @@ BEGIN
   CUR_VP := AREA( AR ).VP;								--| No DE PAGE VIRTUELLE DU LIEU D'INSERTION
   CUR_RP := ASSOC_PAGE( CUR_VP );							--| No DE PAGE PHYSIQUE ASSOCIEE
   AREA( AR ).FREE_LINE := FREE_IDX + NB_REQUIS;						--| NOMBRE DE LIGNES OCCUPEES : AJOUTER NB_ATTR + 1 POUR L'ENTETE
-  PAG( CUR_RP ).DATA.ALL( LINE_IDX( FREE_IDX ) ) := (N, TY=> NN, PG=> 0, LN=> NB_ATTR );		--| ENTETE DU NOEUD (TYPE ET NB D'ATTRIBUTS)
-  RETURN (N, TY=> NN, PG=> AREA( AR ).VP, LN=> LINE_IDX( FREE_IDX ) );			--| RETOUR DU POINTEUR
+  PAG( CUR_RP ).DATA.ALL( LINE_IDX( FREE_IDX ) ) := (HI, NOTY=> NN, VALU=> 0, NSIZ=> NB_ATTR );	--| ENTETE DU NOEUD (TYPE ET NB D'ATTRIBUTS)
+  RETURN (P, TY=> NN, PG=> AREA( AR ).VP, LN=> LINE_IDX( FREE_IDX ) );			--| RETOUR DU POINTEUR
 END MAKE;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 --|		FUNCTION MAKE
@@ -473,7 +475,7 @@ END;
 --|
 FUNCTION PRINT_NAME ( PG :VPG_IDX; LN :LINE_IDX ) RETURN STRING IS
 BEGIN
-  RETURN PRINT_NAME ( (N, TY=> DN_TXTREP, PG=> PG, LN=> LN ) );
+  RETURN PRINT_NAME ( (P, TY=> DN_TXTREP, PG=> PG, LN=> LN ) );
 END;
 --|-------------------------------------------------------------------------------------------------
 --|		FUNCTION INT_IMAGE_NOBLANK
@@ -497,17 +499,24 @@ FUNCTION NODE_REP ( T :TREE ) RETURN STRING IS
     RETURN '{' & NODE_NAME'IMAGE ( T.TY ) & '}';
   END;
          
-BEGIN      
-  IF T = TREE_VIRGIN THEN								--| NOEUD NON INITIALISE
-    RETURN "<???>";
-  END IF;
-            
-  IF T.PG = 0 AND T.LN = 0 THEN							--| ACCES A NOEUD SANS ATTRIBUT OU VALEUR NUM NULLE
-    RETURN '<' & NODE_NAME_IMAGE & '>';
-  ELSE
-    RETURN '<' & NODE_NAME_IMAGE & '.' & INT_IMAGE_NOBLANK ( INTEGER( T.PG ) )
-		& '.' & INT_IMAGE_NOBLANK ( INTEGER( T.LN ) ) & '>';
-  END IF;
+BEGIN
+  CASE T.PT IS
+  WHEN HI =>
+    RETURN '['	& NODE_NAME'IMAGE ( T.NOTY )
+		& " NSIZ=" & ATTR_NBR'IMAGE( T.NSIZ )
+		& " VALU=" & SSHORT'IMAGE( T.VALU )	& ']' ;
+
+  WHEN S =>
+    RETURN "[COL="	& SRCCOL_IDX'IMAGE( T.COL )
+		& " <" & PAGE_IDX'IMAGE( T.SPG ) & '.' & LINE_IDX'IMAGE( T.SLN ) & '>';
+  WHEN P | L =>
+
+    IF T = TREE_VIRGIN THEN RETURN "[___]"; END IF;
+
+    RETURN '['	& NODE_NAME'IMAGE(T.TY)
+		& '<' & INT_IMAGE_NOBLANK ( INTEGER( T.PG ) )
+		& '.' & INT_IMAGE_NOBLANK ( INTEGER( T.LN ) ) & "]>";
+  END CASE;
 END NODE_REP;
    
 --|-------------------------------------------------------------------------------------------------

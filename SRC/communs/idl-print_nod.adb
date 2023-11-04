@@ -8,7 +8,8 @@ PACKAGE BODY PRINT_NOD IS
 		--| POUR DETERMINER SI LA MACHINE EST LITTLE-ENDIAN OU BIG-ENDIAN
 
   DUMMY2			: INTEGER;
-  DUMMY			: ARRAY (1..4) OF CHARACTER	:= (CHARACTER'VAL(1),ASCII.NUL,ASCII.NUL,ASCII.NUL);
+  DUMMY			: ARRAY ( 1 .. 4 ) OF CHARACTER
+			  := (CHARACTER'VAL( 1 ), ASCII.NUL, ASCII.NUL, ASCII.NUL);
   FOR DUMMY USE AT DUMMY2'ADDRESS;
   IS_LITTLE_ENDIAN		: CONSTANT BOOLEAN		:= (DUMMY2 = 1);
    
@@ -16,7 +17,7 @@ PACKAGE BODY PRINT_NOD IS
 --|		FUNCTION L_PNN
 --|
 FUNCTION  L_PNN ( NN :NODE_NAME ) RETURN NATURAL IS
-  STR		: CONSTANT STRING		:= NODE_NAME'IMAGE ( NN );
+  STR		: CONSTANT STRING		:= NODE_NAME'IMAGE( NN );
 BEGIN
   PUT ( STR );
   RETURN STR'LENGTH;
@@ -44,17 +45,17 @@ END;
 --|-------------------------------------------------------------------------------------------------
 --|		FUNCTION L_PINT
 --|
-FUNCTION L_PINT ( S :VPG_IDX ) RETURN NATURAL IS
-BEGIN
-  RETURN L_PINT( INTEGER( S ) );
-END;
---|-------------------------------------------------------------------------------------------------
---|		FUNCTION L_PINT
---|
-FUNCTION  L_PINT ( B :LINE_IDX ) RETURN NATURAL IS
-BEGIN
-  RETURN L_PINT ( INTEGER( B ) );
-END;
+FUNCTION L_PINT ( P :VPG_IDX ) RETURN NATURAL IS
+BEGIN RETURN L_PINT( INTEGER( P ) ); END;
+
+FUNCTION  L_PINT ( L :LINE_IDX ) RETURN NATURAL IS
+BEGIN RETURN L_PINT ( INTEGER( L ) ); END;
+
+FUNCTION  L_PINT ( S :SSHORT ) RETURN NATURAL IS
+BEGIN RETURN L_PINT ( INTEGER( S ) ); END;
+
+FUNCTION  L_PINT ( C :SRCCOL_IDX ) RETURN NATURAL IS
+BEGIN RETURN L_PINT ( INTEGER( C ) ); END;
 --|-------------------------------------------------------------------------------------------------
 --|		FUNCTION PRINT_ABS_TREE
 --|
@@ -62,11 +63,18 @@ FUNCTION PRINT_ABS_TREE ( T :TREE ) RETURN INTEGER IS					--| IMPRESSION D'UN PO
   SIZE		: INTEGER		:= 8;						--| LE "!?>" DE DEBUT PLUS LES DEUX . ET LE "<?!" DE FIN
 BEGIN
   PUT ( "!?>" );
-  SIZE := SIZE + L_PNN ( T.TY );							--| VALEUR DU CHAMP TYPE
-  PUT ( '.' );
-  SIZE := SIZE + L_PINT ( T.PG );							--| VALEUR DU CHAMP PAGE
-  PUT('.');
-  SIZE := SIZE + L_PINT( T.LN );							--| VALEUR DU CHAMP LIGNE (DE PAGE VIRTUELLE OU BLOC FICHIER ARBRE)
+  CASE T.PT IS
+  WHEN P | L => SIZE := SIZE + L_PNN ( T.TY );
+    PUT( 'P' ); SIZE := SIZE + L_PINT( T.PG );
+    PUT( 'L' ); SIZE := SIZE + L_PINT( T.LN );
+
+  WHEN HI => SIZE := SIZE + L_PNN( T.NOTY );
+    PUT( 'S' ); SIZE := SIZE + L_PINT( T.NSIZ );
+    PUT( 'V' ); SIZE := SIZE + L_PINT( T.VALU );
+  WHEN S => SIZE := SIZE + L_PINT( T.COL );
+    PUT( 'S' ); SIZE := SIZE + L_PINT( T.NSIZ );
+    PUT( 'V' ); SIZE := SIZE + L_PINT( T.VALU );
+  END CASE;
   PUT ( "<?!" );
   RETURN SIZE;
 END;
@@ -94,7 +102,7 @@ END;
 PROCEDURE PRINT_TREE ( T :TREE ) IS
   DUMMY		: INTEGER;
 BEGIN
-  DUMMY := L_PRINT_TREE ( T );
+  DUMMY := L_PRINT_TREE( T );
 END;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 --|		FUNCTION L_PRINT_TREE
@@ -106,24 +114,24 @@ FUNCTION L_PRINT_TREE ( T :TREE ) RETURN NATURAL IS
   --|
   FUNCTION TRAITE_SOURCELINE RETURN NATURAL IS						--| CAS DU NOEUD S (SOURCE_LINE)
   BEGIN
-    IF T.PG > PAGE_MAN.HIGH_VPG THEN							--| LE CHAMP PG EST HORS DU FICHIER ARBRE (ANORMAL)
-      RETURN PRINT_ABS_TREE ( T );							--| IMPRIMER COMME $$TY.PG.LN$$
+    IF T.SPG > PAGE_MAN.HIGH_VPG THEN							--| LE CHAMP PG EST HORS DU FICHIER ARBRE (ANORMAL)
+      RETURN PRINT_ABS_TREE( T );							--| IMPRIMER COMME <?!
     END IF;
                
     DECLARE
       NB_CARS	: NATURAL;
-      SLPTR	: TREE		:= (N, TY=> DN_SOURCELINE, PG=> T.SPG, LN=> T.SLN);	--| FABRIQUER UN POINTEUR DE SOURCELINE NORMAL AVEC LE POINTEUR SOURCE_POSITION
+      SLPTR	: TREE		:= (P, TY=> DN_SOURCELINE, PG=> T.SPG, LN=> T.SLN);	--| FABRIQUER UN POINTEUR DE SOURCELINE NORMAL AVEC LE POINTEUR SOURCE_POSITION
       SLNOD	: TREE		:= D( XD_NUMBER, SLPTR );				--| XD_NUMBER UN ENTIER
     BEGIN
       NB_CARS := L_PRINT_TREE( SLPTR );							--| FAIRE IMPRIMER LE NOEUD LIGNE SOURCE (PG=LIGNE ET LN=COL)
       PUT( '(' );									--| ON SUIT AVEC LE CONTENU
-      IF SLNOD.TY = DN_NUM_VAL THEN							--| UNE VALEUR NUMERIQUE ENTIERE (16 BITS)
-        NB_CARS := NB_CARS + L_PINT( SLNOD.PG );						--| FAIRE IMPRIMER LA VALEUR 16 BITS (NUM LIGNE)
+      IF SLNOD.NOTY = DN_NUM_VAL THEN							--| UNE VALEUR NUMERIQUE ENTIERE (16 BITS)
+        NB_CARS := NB_CARS + L_PINT( SLNOD.VALU );					--| FAIRE IMPRIMER LA VALEUR 16 BITS (NUM LIGNE)
       ELSE									--| ANOMALIE
         NB_CARS := NB_CARS + PRINT_ABS_TREE( SLNOD );					--| AU FORMAT $$TY.PG.LN$$ POUR INFORMATION
       END IF;
-      PUT ( ',' );
-      NB_CARS := NB_CARS + L_PINT( INTEGER( T.COL ) );
+      PUT( ',' );
+      NB_CARS := NB_CARS + L_PINT( T.COL );
       PUT( ')' );
       RETURN NB_CARS + 3;								--| LES NOMBRES PLUS (,)
     END;
@@ -133,35 +141,35 @@ FUNCTION L_PRINT_TREE ( T :TREE ) RETURN NATURAL IS
   --|
   FUNCTION TRAITE_NUM_VAL RETURN NATURAL IS
   BEGIN
-    IF T.PT = F THEN								--| VALEUR COURTE 16 BITS
-      IF T.VAL < 0 THEN								--| VALEUR NEGATIVE
-        RETURN L_PINT ( INTEGER( T.VAL ) );						--| IMPRIMER
+    IF T.PT = HI THEN								--| VALEUR COURTE 16 BITS
+      IF T.VALU < 0 THEN								--| VALEUR NEGATIVE
+        RETURN L_PINT( T.VALU );							--| IMPRIMER
       ELSE									--| VALEUR POSITIVE
         PUT ( '+' );								--| PREFIXER PAR LE SIGNE
-        RETURN L_PINT ( INTEGER( T.VAL ) ) + 1;						--| IMPRIMER ET DONNER LA TAILLE AVEC LE SIGNE EN PLUS
+        RETURN L_PINT( T.VALU ) + 1;							--| IMPRIMER ET DONNER LA TAILLE AVEC LE SIGNE EN PLUS
       END IF;
                
-    ELSIF T.PT = N THEN								--| POINTEUR VERS BLOC GRAND ENTIER
+    ELSIF T.PT = P THEN								--| POINTEUR VERS BLOC GRAND ENTIER
       IF NOT (T.PG IN 1.. PAGE_MAN.HIGH_VPG) THEN						--| ANOMALIE SUR L ADRESSE DE PAGE
-        RETURN PRINT_ABS_TREE ( T );
+        RETURN PRINT_ABS_TREE( T );
       END IF;
               
       DECLARE									--| UN VRAI DN_NUM_VAL
-        ENTETE		: TREE		:= DABS ( 0, T );				--| ENTETE CONTENANT LE NOMBRE DE DIGITS
+        ENTETE		: TREE		:= DABS( 0, T );				--| ENTETE CONTENANT LE NOMBRE DE DIGITS
         TYPE DOUBLET	IS ARRAY( 1..2 ) OF SHORT;
         FUNCTION TO_DOUBLET	IS NEW UNCHECKED_CONVERSION( TREE, DOUBLET );
-        DD		: DOUBLET		:= TO_DOUBLET( DABS ( 1, T ) );		--| PREMIERE PAIRE DE DIGITS BASE 10000
+        DD		: DOUBLET		:= TO_DOUBLET( DABS( 1, T ) );		--| PREMIERE PAIRE DE DIGITS BASE 10000
         NB_CARS		: INTEGER		:= 0;
       BEGIN
         IF DD(1) >= 10000 THEN							--| 10000 EST AJOUTE AU PREMIER POUR NB NEGATIF
-          PUT ( '-' ); 								--| CHIFFRE NEGATIF
+          PUT( '-' ); 								--| CHIFFRE NEGATIF
         ELSE
-          PUT ( '+' );								--| DE 0 A 9_999 : CHIFFRE POSITIF
+          PUT( '+' );								--| DE 0 A 9_999 : CHIFFRE POSITIF
         END IF;
-        FOR I IN 1 .. ENTETE.LN LOOP
-          DD := TO_DOUBLET( DABS ( I, T ) );						--| PAIRE DE DIGITS
+        FOR I IN 1 .. ENTETE.NSIZ LOOP
+          DD := TO_DOUBLET( DABS( I, T ) );						--| PAIRE DE DIGITS
           PUT_LONG_DIGIT( INTEGER( DD(1) MOD 10_000 ) );					--| SECOND DIGIT 10_000 AIRE
-          PUT ('_');
+          PUT( '_' );
           PUT_LONG_DIGIT( INTEGER( DD(2) MOD 10_000 ) );					--| PREMIER DIGIT 10_000 AIRE (MOD POUR LE PREMIER
           IF I /= ENTETE.LN THEN
             IF (I MOD 8) = 1 THEN
@@ -178,22 +186,22 @@ FUNCTION L_PRINT_TREE ( T :TREE ) RETURN NATURAL IS
   END;
        
 BEGIN
-       			--| DN_SOURCELINE
   CASE T.PT IS
   WHEN S =>									--| POSITION SOURCE
     RETURN TRAITE_SOURCELINE;
-  WHEN F =>									--| TREE REPRESENTANT UN ENTIER 16 BITS STRICTEMENT NEGATIF OU UNE POSITION SOURCE
-    IF T.TTY = DN_NUM_VAL THEN							--| VALEUR ENTIERE COURTE
+  WHEN HI =>									--| TREE REPRESENTANT UN ENTIER 16 BITS STRICTEMENT NEGATIF OU UNE POSITION SOURCE
+    IF T.NOTY = DN_NUM_VAL THEN							--| VALEUR ENTIERE COURTE
       RETURN TRAITE_NUM_VAL;
     ELSE
       DECLARE
-        NAM	: CONSTANT STRING		:= NODE_NAME'IMAGE ( T.TY );			--| CHAINE DU TYPE DE NOEUD
+        NAM	: CONSTANT STRING		:= NODE_NAME'IMAGE( T.NOTY );			--| CHAINE DU TYPE DE NOEUD
       BEGIN
         PUT ( '(' & NAM & ')' );							--| IMPRIMER LE NOM DU TYPE DE NOEUD
         RETURN NAM'LENGTH + 2;							--| AJOUTER SA LONGUEUR
       END;
     END IF;  
-  WHEN N =>									--| 
+
+  WHEN P =>									--| 
     IF T.TY = DN_NUM_VAL THEN								--| VALEUR ENTIERE LONGUE
       RETURN TRAITE_NUM_VAL;
     END IF;  
@@ -202,7 +210,7 @@ BEGIN
       NB_CARS	: INTEGER;
     BEGIN										--| PAS UNE VALEUR ENTIERE
       DECLARE
-        NAM	: CONSTANT STRING		:= NODE_NAME'IMAGE( T.TY );			--| CHAINE DU TYPE DE NOEUD
+        NAM	: CONSTANT STRING	:= NODE_NAME'IMAGE( T.TY );				--| CHAINE DU TYPE DE NOEUD
       BEGIN
         PUT( '[' & NAM );								--| IMPRIMER LE NOM DU TYPE DE NOEUD
         NB_CARS := NAM'LENGTH + 1;							--| AJOUTER SA LONGUEUR
@@ -219,28 +227,11 @@ BEGIN
       END IF;
                
       IF T.TY = DN_TXTREP THEN							--| CAS PARTICULIER D'UN TXTREP
-        PUT ( ' ' );
+        PUT( ' ' );
         IF T.PG > PAGE_MAN.HIGH_VPG THEN						--| HORS BORNES (!)
           PUT ( "!?TXT?!" );
           NB_CARS := NB_CARS + 7;							--| TAILLE NOM PLUS UN' ' ET SIX $
           RETURN NB_CARS;
-        ELSE
-          DECLARE
-            WORD_ZERO	: TREE		:= DABS( 0, T );
-            WORD_ONE	: TREE		:= DABS( 1, T );
-          BEGIN
-            IF T.LN + WORD_ZERO.LN > LINE_IDX'LAST
-              OR ELSE WORD_ZERO.LN > 32
-              OR ELSE (IS_LITTLE_ENDIAN
-              AND THEN WORD_ONE.PG MOD 256 >= PAGE_IDX( WORD_ZERO.LN ) * 4)
-              OR ELSE (NOT IS_LITTLE_ENDIAN
-              AND THEN WORD_ONE.PG / 256 >= PAGE_IDX( WORD_ZERO.LN ) * 4)
-            THEN
-              NB_CARS := NB_CARS + PRINT_ABS_TREE( WORD_ZERO );
-              NB_CARS := NB_CARS + PRINT_ABS_TREE( WORD_ONE );
-              RETURN NB_CARS + 1;
-            END IF;
-          END;
         END IF;
                   
         DECLARE
@@ -276,7 +267,7 @@ PROCEDURE PRINT_NODE ( T :TREE; INDENT :NATURAL := 0 ) IS
     PROCEDURE PRINT_SUB_TREE ( T :TREE ) IS
     BEGIN
       PRINT_TREE( T );
-      IF T.TY = DN_SYMBOL_REP AND THEN T.PG > 0 THEN
+      IF T.PT = P AND THEN (T.TY = DN_SYMBOL_REP AND T.PG > 0) THEN
         PUT( ' ' );
         PUT( PRINT_NAME( T ) );
       END IF;
@@ -285,7 +276,7 @@ PROCEDURE PRINT_NODE ( T :TREE; INDENT :NATURAL := 0 ) IS
   BEGIN
     IF T.TY = DN_HASH THEN
       TR := DABS( 0, T );
-      N_SIZ := TR.LN;
+      N_SIZ := TR.NSIZ;
     END IF;
          
     FOR I IN 1 .. N_SIZ LOOP
@@ -305,7 +296,7 @@ PROCEDURE PRINT_NODE ( T :TREE; INDENT :NATURAL := 0 ) IS
         PUT( ": " );
         PRINT_SUB_TREE( DABS( I, T ) );
       ELSE
-        SQ.FIRST := DABS ( I, T );
+        SQ.FIRST := DABS( I, T );
         SQ.NEXT := TREE_NIL;
                
         IF SQ.FIRST = TREE_NIL THEN
@@ -321,7 +312,7 @@ PROCEDURE PRINT_NODE ( T :TREE; INDENT :NATURAL := 0 ) IS
           END LOOP;
           PUT( "   < " );
           LOOP
-            PRINT_SUB_TREE ( HEAD ( SQ ) );
+            PRINT_SUB_TREE( HEAD( SQ ) );
             SQ := TAIL(SQ);
             EXIT WHEN SQ.FIRST = TREE_NIL;
             PUT_LINE( "," );
@@ -343,12 +334,10 @@ PROCEDURE PRINT_NODE ( T :TREE; INDENT :NATURAL := 0 ) IS
 BEGIN
   PRINT_TREE( T );
   NEW_LINE;
-  IF T.LN /= 0 THEN
-    IF T.PT = S THEN
-      PRINT_SUB(  (N, PG=> T.PG, TY=> DN_SOURCELINE, LN=> T.LN ),  INDENT );
-    ELSE
-      PRINT_SUB( T, INDENT );
-    END IF;
+  IF T.PT = S THEN
+    PRINT_SUB(  (P, PG=> T.SPG, TY=> DN_SOURCELINE, LN=> T.SLN ),  INDENT );
+  ELSIF T.PT = P THEN
+    PRINT_SUB( T, INDENT );
   END IF;
   NEW_LINE;
 END PRINT_NODE;
