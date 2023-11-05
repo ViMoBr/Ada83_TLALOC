@@ -86,8 +86,8 @@ PACKAGE BODY IDL IS
       
     TYPE ARITIES		IS (NULLARY, UNARY, BINARY, TERNARY, ARBITRARY);
       
-    TREE_FALSE		: CONSTANT TREE	:= (HI, NOTY => DN_FALSE, VALU => 0, NSIZ=> 0);
-    TREE_TRUE		: CONSTANT TREE	:= (HI, NOTY => DN_TRUE,  VALU => 1, NSIZ=> 0);
+    TREE_FALSE		: CONSTANT TREE	:= (HI, NOTY => DN_FALSE, ABSS => 0, NSIZ=> 0);
+    TREE_TRUE		: CONSTANT TREE	:= (HI, NOTY => DN_TRUE,  ABSS => 1, NSIZ=> 0);
       
     TREE_BINARY_ZERO	: CONSTANT TREE	:= (P, TY => NODE_NAME'VAL(0), PG => 0, LN => 0);
       
@@ -176,7 +176,7 @@ PACKAGE BODY IDL IS
     PROCEDURE WRITE_SPEC	( SPEC_FILE :STRING );					--| ECRITURE DE LA TABLE EN BINAIRE DANS LE FICHIER SPEC_FILE.BIN
     PROCEDURE READ_SPEC	( SPEC_FILE :STRING );					--| LECTRE DE LA TABLE À PARTIR D'UN FICHIER SPEC_FILE.BIN
       
-    --|-------------------------------------------------------------------------------------------
+  --|-----------------------------------------------------------------------------------------------
   END IDL_TBL;
   USE IDL_TBL;
       
@@ -192,6 +192,15 @@ PACKAGE BODY IDL IS
   --|
   PROCEDURE CREATE_IDL_TREE_FILE ( PAGE_FILE_NAME :STRING ) IS
   BEGIN
+
+    BEGIN
+      READ_SPEC( "DIANA" );
+    EXCEPTION
+      WHEN NAME_ERROR =>								--| OUVERTURE DU FICHIER .TBL
+        INIT_SPEC ( "DIANA" );
+        WRITE_SPEC( "DIANA" );							--| ECRITURE DU .BIN
+    END;
+
     PAGE_MAN.CREATE_PAGE_MANAGER( PAGE_FILE_NAME );
  		--|
 		--|		INSTALLATION NOEUD RACINE
@@ -199,9 +208,9 @@ PACKAGE BODY IDL IS
     DECLARE
       ROOT	: TREE	:= MAKE( DN_ROOT, NB_ATTR=>5, AR=> 1 );
     BEGIN
-      DABS( 1, ROOT, (HI, NOTY=> DN_NUM_VAL, VALU=> 1, NSIZ=> 0 ) );				--| xd_high_page : DERNIERE PAGE VIRTUELLE
-      DABS( 3, ROOT, TREE_NIL );							--| xd_source_list : LISTE DE SOURCES
-      DABS( 4, ROOT, (HI, NOTY=> DN_NUM_VAL, VALU=> 0, NSIZ=> 0 ) );				--| xd_err_count : NOMBRE D'ERREURS
+      DI( XD_HIGH_PAGE,   ROOT, 1 );							--| xd_high_page : DERNIERE PAGE VIRTUELLE
+      D ( XD_SOURCE_LIST, ROOT, TREE_NIL );						--| xd_source_list : LISTE DE SOURCES
+      DI( XD_ERR_COUNT,   ROOT, 0 );							--| xd_err_count : NOMBRE D'ERREURS
     END;
 		--|
 		--|		INSTALLATION LISTE DE HACHAGE
@@ -215,13 +224,6 @@ PACKAGE BODY IDL IS
       END LOOP;
     END;
       
-  BEGIN
-    READ_SPEC( "DIANA" );
-  EXCEPTION
-    WHEN NAME_ERROR =>								--| OUVERTURE DU FICHIER .TBL
-      INIT_SPEC ( "DIANA" );
-      WRITE_SPEC( "DIANA" );								--| ECRITURE DU .BIN
-  END;
 
   --| IL FAUT QUE CECI SOIT AU DEBUT AU MEME LIEU ET EN MEME PLACE QUE DANS LE GENERATEUR DE TABLE PARSE
   DECLARE
@@ -334,8 +336,15 @@ END;
   --|		PROCEDURE DI
   --|
   PROCEDURE DI ( AN :ATTRIBUTE_NAME; T :TREE; V :INTEGER) IS
+    VAL_POS	: POSITIVE_SHORT;
+    COMPLEMENT_DEUX	: ATTR_NBR;
   BEGIN
-    D( AN, T, (HI, NOTY=> DN_NUM_VAL, VALU=> SSHORT(V), NSIZ=> 0) );
+    IF V < 0 THEN
+      VAL_POS := POSITIVE_SHORT( ABS( V+1 ) ); COMPLEMENT_DEUX := 1;
+    ELSE
+      VAL_POS := POSITIVE_SHORT( V ); COMPLEMENT_DEUX := 0;
+    END IF;
+    D( AN, T, (HI, NOTY=> DN_NUM_VAL, ABSS=> VAL_POS, NSIZ=> COMPLEMENT_DEUX) );
   END DI;
   --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
   --|		FUNCTION DI
@@ -344,11 +353,14 @@ END;
     ATTR		: TREE		:= D( AN, T );
   BEGIN
     IF ATTR.PT = HI AND THEN ATTR.NOTY = DN_NUM_VAL THEN
-      RETURN INTEGER( ATTR.VALU );
-    ELSE
-      PUT_LINE( "!! L ATTRIBUT " & ATTR_IMAGE( AN ) & " DU NOEUD " & NODE_REP( T ) & " N EST PAS UN ENTIER");
-      RAISE PROGRAM_ERROR;
+      IF ATTR.NSIZ = 0 THEN
+        RETURN INTEGER( ATTR.ABSS );
+      ELSIF ATTR.NSIZ = 1 THEN
+        RETURN INTEGER( -ATTR.ABSS - 1 );
+      END IF;
     END IF;
+    PUT_LINE( "!! L ATTRIBUT " & ATTR_IMAGE( AN ) & " DU NOEUD " & NODE_REP( T ) & " N EST PAS UN ENTIER");
+    RAISE PROGRAM_ERROR;
   END DI;
   --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
   --|		FUNCTION LIST

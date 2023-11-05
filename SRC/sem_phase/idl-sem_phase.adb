@@ -1,5 +1,5 @@
-    SEPARATE ( IDL )
-    --|----------------------------------------------------------------------------------------------
+SEPARATE( IDL )
+--|-------------------------------------------------------------------------------------------------
     --|	PROCEDURE SEM_PHASE
     PROCEDURE SEM_PHASE IS
    
@@ -78,20 +78,17 @@
       --|-------------------------------------------------------------------------------------------
        PACKAGE UNIV_OPS IS
       
---         TYPE SHORT	IS RANGE -32768..32767; FOR SHORT'SIZE USE 16;
-      
          URADIX	: CONSTANT := 10_000;
       
-         TYPE UDIGIT	IS RANGE -16#8000# .. 16#7FFF#;	FOR UDIGIT'SIZE USE 16;
+         TYPE UDIGIT	IS RANGE -32_768 .. 32_767;		FOR UDIGIT'SIZE USE 16;
          
-         TYPE VECTOR_DIGITS	IS ARRAY( 1..252 ) OF UDIGIT;	PRAGMA PACK ( VECTOR_DIGITS );
+         TYPE VECTOR_DIGITS	IS ARRAY( 1..252 ) OF UDIGIT;		PRAGMA PACK( VECTOR_DIGITS );
       
          TYPE VECTOR	IS RECORD
-               L		: NATURAL;			-- NOMBRE DE "CHIFFRES" 10_000 AIRES
-               S		: UDIGIT;			-- SIGNE +1 OR -1
-               D		: VECTOR_DIGITS;			-- CHIFFRES EN BASE 10_000
-                -- .D(1) + 10000+N FOR NEGATIVE IN UNIVERSAL REC
-            END RECORD;			PRAGMA PACK ( VECTOR );
+			  L	: NATURAL;					--| NOMBRE DE "CHIFFRES" 10_000 AIRES
+			  S	: UDIGIT;						--| SIGNE +1 OR -1
+			  D	: VECTOR_DIGITS;					--| CHIFFRES EN BASE 10_000
+			END RECORD;			PRAGMA PACK( VECTOR );
       
           FUNCTION  U_INT	( V :VECTOR )		RETURN TREE;			--| FABRIQUE UN ENTIER UNIVERSEL À PARTIR D'UN VECTEUR
           FUNCTION  U_REAL	( NUMER, DENOM :VECTOR )	RETURN TREE;			--| UNIVERSAL REAL À PARTIR DE VECTEURS DÉJÀ RÉDUITS AUX TERMES LES PLUS BAS
@@ -102,15 +99,15 @@
       
       --| LES SIGNES SONT IGNORÉS : OPÉRATIONS SUR VALEURS ABSOLUES
         
-          PROCEDURE V_ADD	( A :VECTOR; R :IN OUT VECTOR );		-- |R| + |A| --> |R|
-          PROCEDURE V_SUB	( A :VECTOR; R :IN OUT VECTOR );		-- |R| - |A| --> |R| ; ASSUME |A| < |R|
-          PROCEDURE V_MUL	( A,B :VECTOR; R :IN OUT VECTOR );		-- |A| * |B| --> R
-          PROCEDURE V_SCALE	( A :INTEGER; R :IN OUT VECTOR );		-- A * R --> R ; ASSUME A > 0
-          PROCEDURE V_DIV	( A :VECTOR; R, Q :IN OUT VECTOR );		-- |R| / |A| --> Q REMAINDER |R| ASSUME A /= 0
-          PROCEDURE V_REM	( A :VECTOR; R :IN OUT VECTOR );		-- |R| / |A| --> ... REMAINDER |R| ; ASSUME A /= 0
-          PROCEDURE V_GCD	( A,B :VECTOR; R :IN OUT VECTOR );		-- GCD(|A|,|B|) --> R
-          PROCEDURE V_LOWEST_TERMS	( A,B : IN OUT VECTOR );		-- REDUCE |A|/|B| TO LOWEST TERMS, ASSUME B /= 0
-          FUNCTION  V_EQUAL	( A,B : VECTOR )		RETURN BOOLEAN;	-- TEST |A| = |B|, |A| < |B|
+          PROCEDURE V_ADD	( A :VECTOR; R :IN OUT VECTOR );				-- |R| + |A| --> |R|
+          PROCEDURE V_SUB	( A :VECTOR; R :IN OUT VECTOR );				-- |R| - |A| --> |R| ; ASSUME |A| < |R|
+          PROCEDURE V_MUL	( A,B :VECTOR; R :IN OUT VECTOR );				-- |A| * |B| --> R
+          PROCEDURE V_SCALE	( A :INTEGER; R :IN OUT VECTOR );				-- A * R --> R ; ASSUME A > 0
+          PROCEDURE V_DIV	( A :VECTOR; R, Q :IN OUT VECTOR );				-- |R| / |A| --> Q REMAINDER |R| ASSUME A /= 0
+          PROCEDURE V_REM	( A :VECTOR; R :IN OUT VECTOR );				-- |R| / |A| --> ... REMAINDER |R| ; ASSUME A /= 0
+          PROCEDURE V_GCD	( A,B :VECTOR; R :IN OUT VECTOR );				-- GCD(|A|,|B|) --> R
+          PROCEDURE V_LOWEST_TERMS	( A,B : IN OUT VECTOR );				-- REDUCE |A|/|B| TO LOWEST TERMS, ASSUME B /= 0
+          FUNCTION  V_EQUAL	( A,B : VECTOR )		RETURN BOOLEAN;			-- TEST |A| = |B|, |A| < |B|
           FUNCTION  V_LESS	( A,B : VECTOR )		RETURN BOOLEAN;
       
       --|-------------------------------------------------------------------------------------------

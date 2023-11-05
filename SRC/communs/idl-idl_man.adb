@@ -322,7 +322,7 @@ BEGIN
         HASH_LIST := TAIL( HASH_LIST );							--| CONTINUER SUR LE RESTE DE LA LISTE
       END;
     END LOOP;
-    RETURN (HI, NOTY=> DN_NUM_VAL, VALU=> 0, NSIZ=> BUCKET  );				--| RETOURNER LE SEAU
+    RETURN (HI, NOTY=> DN_NUM_VAL, ABSS=> 0, NSIZ=> BUCKET  );				--| RETOURNER LE SEAU
   END;
 END HASH_SEARCH;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
@@ -412,7 +412,7 @@ BEGIN
   SRC_LIN := GET_SOURCE_LINE( SP );							--| 
   LIST( SRC_LIN, (APPEND( LIST( SRC_LIN ), ERR_NOD)) );					--| AJOUTER EN FIN LE NOEUD ERREUR
 
-  PUT_LINE( SSHORT'IMAGE ( D( XD_NUMBER, SRC_LIN ).VALU ) & ": " & MSG );			--| AFFICHAGE DU No DE LIGNE ET DE L'ERREUR
+  PUT_LINE( POSITIVE_SHORT'IMAGE ( D( XD_NUMBER, SRC_LIN ).ABSS ) & ": " & MSG );		--| AFFICHAGE DU No DE LIGNE ET DE L'ERREUR
 END;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 --|		PROCEDURE ERROR
@@ -427,7 +427,7 @@ BEGIN
   ELSE
     EMIT_ERROR ( T, MSG );
     ERR_CNT := D( XD_ERR_COUNT, TREE_ROOT );
-    ERR_CNT.VALU := ERR_CNT.VALU + 1;
+    ERR_CNT.ABSS := ERR_CNT.ABSS + 1;
     D( XD_ERR_COUNT, TREE_ROOT, ERR_CNT );
   END IF;
 END;
@@ -453,7 +453,7 @@ BEGIN
   CUR_VP := AREA( AR ).VP;								--| No DE PAGE VIRTUELLE DU LIEU D'INSERTION
   CUR_RP := ASSOC_PAGE( CUR_VP );							--| No DE PAGE PHYSIQUE ASSOCIEE
   AREA( AR ).FREE_LINE := FREE_IDX + NB_REQUIS;						--| NOMBRE DE LIGNES OCCUPEES : AJOUTER NB_ATTR + 1 POUR L'ENTETE
-  PAG( CUR_RP ).DATA.ALL( LINE_IDX( FREE_IDX ) ) := (HI, NOTY=> NN, VALU=> 0, NSIZ=> NB_ATTR );	--| ENTETE DU NOEUD (TYPE ET NB D'ATTRIBUTS)
+  PAG( CUR_RP ).DATA.ALL( LINE_IDX( FREE_IDX ) ) := (HI, NOTY=> NN, ABSS=> 0, NSIZ=> NB_ATTR );	--| ENTETE DU NOEUD (TYPE ET NB D'ATTRIBUTS)
   RETURN (P, TY=> NN, PG=> AREA( AR ).VP, LN=> LINE_IDX( FREE_IDX ) );			--| RETOUR DU POINTEUR
 END MAKE;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
@@ -504,7 +504,7 @@ BEGIN
   WHEN HI =>
     RETURN '['	& NODE_NAME'IMAGE ( T.NOTY )
 		& " NSIZ=" & ATTR_NBR'IMAGE( T.NSIZ )
-		& " VALU=" & SSHORT'IMAGE( T.VALU )	& ']' ;
+		& " ABSS=" & POSITIVE_SHORT'IMAGE( T.ABSS )	& ']' ;
 
   WHEN S =>
     RETURN "[COL="	& SRCCOL_IDX'IMAGE( T.COL )

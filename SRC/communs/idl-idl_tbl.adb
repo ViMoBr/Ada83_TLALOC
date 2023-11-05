@@ -69,7 +69,7 @@ BEGIN
     ELSIF T_CHR = 'A' OR T_CHR = 'B' OR T_CHR = 'I' THEN
       LAST_NODE_ATTR := LAST_NODE_ATTR + 1;						--| UN ATTRIBUT DE PLUS
       DECLARE
-        NN	: NODE_NAME	:= NODE_NAME'VAL ( LAST_NODE );
+        NN	: NODE_NAME	:= NODE_NAME'VAL( LAST_NODE );
       BEGIN
         IF N_SPEC( NN ).NS_FIRST_A = 0 THEN						--| SI L'ON A PAS VU LE PREMIER ATTRIBUT
           N_SPEC( NN ).NS_FIRST_A := LAST_NODE_ATTR;					--| METTRE L'INDICE DE CET ATTRIBUT COMME PREMIER
@@ -108,7 +108,7 @@ BEGIN
     END IF;
            
   END LOOP;
-  CLOSE ( SFILE );
+  CLOSE( SFILE );
 END INIT_SPEC;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
       
