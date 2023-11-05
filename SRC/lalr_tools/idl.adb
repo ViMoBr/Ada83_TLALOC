@@ -8,7 +8,7 @@ PACKAGE BODY IDL IS
    
   DEBUG		: BOOLEAN		:= FALSE;						--| POSITIONNE PAR LE "PRAGMA DEBUG;" (VOIR PRA_WALK)
    
-  TREE_VIRGIN	: CONSTANT TREE	:= (N, TY => DN_VIRGIN, PG => 0, LN => 0);		--| POINTEUR NON INITIALISE
+  TREE_VIRGIN	: CONSTANT TREE	:= (P, TY => DN_VIRGIN, PG => 0, LN => 0);		--| POINTEUR NON INITIALISE
    
   PACKAGE INT_IO	IS NEW INTEGER_IO ( INTEGER );					--| POUR L'IO D'ENTIERS
    
@@ -86,12 +86,12 @@ PACKAGE BODY IDL IS
       
     TYPE ARITIES		IS (NULLARY, UNARY, BINARY, TERNARY, ARBITRARY);
       
-    TREE_FALSE		: CONSTANT TREE	:= (N, TY => DN_FALSE, PG => 0, LN => 0);
-    TREE_TRUE		: CONSTANT TREE	:= (N, TY => DN_TRUE,  PG => 0, LN => 0);
-    TREE_VOID		: CONSTANT TREE	:= (N, TY => DN_VOID,  PG => 0, LN => 0);
-    TREE_ROOT		: CONSTANT TREE	:= (N, TY => DN_ROOT,  PG => 1, LN => 0);
+    TREE_FALSE		: CONSTANT TREE	:= (P, TY => DN_FALSE, PG => 0, LN => 0);
+    TREE_TRUE		: CONSTANT TREE	:= (P, TY => DN_TRUE,  PG => 0, LN => 0);
+    TREE_VOID		: CONSTANT TREE	:= (P, TY => DN_VOID,  PG => 0, LN => 0);
+    TREE_ROOT		: CONSTANT TREE	:= (P, TY => DN_ROOT,  PG => 1, LN => 0);
       
-    TREE_BINARY_ZERO	: CONSTANT TREE	:= (N, TY => NODE_NAME'VAL(0), PG => 0, LN => 0);
+    TREE_BINARY_ZERO	: CONSTANT TREE	:= (P, TY => NODE_NAME'VAL(0), PG => 0, LN => 0);
       
     PRAGMA_CONTEXT		: TREE		:= TREE_VOID;
       
@@ -189,34 +189,11 @@ PACKAGE BODY IDL IS
    
    
    
-  --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-  --|		PROCEDURE CREATE_IDL_TREE_FILE
-  --|
-  PROCEDURE CREATE_IDL_TREE_FILE ( PAGE_FILE_NAME :STRING ) IS
-  BEGIN
-    PAGE_MAN.CREATE_PAGE_MANAGER ( PAGE_FILE_NAME );
- 		--|
-		--|		INSTALLATION NOEUD RACINE
-		--|         
-    DECLARE
-      ROOT	: TREE	:= MAKE( DN_ROOT, NB_ATTR=>5, AR=> 1 );
-    BEGIN
-      DABS( 1, ROOT, (F, TTY=> DN_NUM_VAL, VAL=> 1 ) );					--| xd_high_page : DERNIERE PAGE VIRTUELLE
-      DABS( 3, ROOT, (N, TY=>  DN_NIL,     PG=> 0, LN=> 0 ) );				--| xd_source_list : LISTE DE SOURCES
-      DABS( 4, ROOT, (F, TTY=> DN_NUM_VAL, VAL=> 0 ) );					--| xd_err_count : NOMBRE D'ERREURS
-    END;
-		--|
-		--|		INSTALLATION LISTE DE HACHAGE
-		--|         
-    DECLARE
-      NB		: LINE_IDX	:= LINE_IDX'LAST;
-      T		: TREE		:= MAKE( DN_HASH, NB_ATTR=> NB, AR=> 2 );		--| LISTE DE HACHAGE
-    BEGIN
-      FOR I IN 1 .. LINE_IDX'LAST LOOP
-        DABS( I, T, (N, TY=> DN_NIL, PG=> 0, LN=> 1 ) );					--| INITIALISER AVEC DES NIL
-      END LOOP;
-    END;
-         
+--||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+--|		PROCEDURE CREATE_IDL_TREE_FILE
+--|
+PROCEDURE CREATE_IDL_TREE_FILE ( PAGE_FILE_NAME :STRING ) IS
+BEGIN
   BEGIN
     READ_SPEC( "LALRIDL" );
   EXCEPTION
@@ -224,33 +201,56 @@ PACKAGE BODY IDL IS
       INIT_SPEC ( "../IDL_TOOLS/LALRIDL" );
       WRITE_SPEC( "LALRIDL" );							--| ECRITURE DU .BIN
   END;
+
+  PAGE_MAN.CREATE_PAGE_MANAGER ( PAGE_FILE_NAME );
+ 		--|
+		--|		INSTALLATION NOEUD RACINE
+		--|         
+  DECLARE
+    ROOT	: TREE	:= MAKE( DN_ROOT, NB_ATTR=>5, AR=> 1 );
+  BEGIN
+    DI( XD_HIGH_PAGE,   ROOT, 1 );							--| xd_high_page : DERNIERE PAGE VIRTUELLE
+    D ( XD_SOURCE_LIST, ROOT, TREE_NIL );						--| xd_source_list : LISTE DE SOURCES
+    DI( XD_ERR_COUNT,   ROOT, 0 );							--| xd_err_count : NOMBRE D'ERREURS
+  END;
+		--|
+		--|		INSTALLATION LISTE DE HACHAGE
+		--|         
+  DECLARE
+    NB		: LINE_IDX	:= LINE_IDX'LAST;
+    T		: TREE		:= MAKE( DN_HASH, NB_ATTR=> NB, AR=> 2 );		--| LISTE DE HACHAGE
+  BEGIN
+    FOR I IN 1 .. LINE_IDX'LAST LOOP
+      DABS( I, T, TREE_NIL );								--| INITIALISER AVEC DES NIL
+    END LOOP;
+  END;
          
          --| IL FAUT QUE CECI SOIT ICI AU DEBUT, LE GENERATEUR DE TABLE PARSE EN A BESOIN ET LE LIEU IMPORTE
-    DECLARE
-      DUMMY	: TREE;
-    BEGIN
-      DUMMY := STORE_SYM( """AND""" );
-      DUMMY := STORE_SYM( """OR""" );
-      DUMMY := STORE_SYM( """XOR""" );
-      DUMMY := STORE_SYM( """=""" );
-      DUMMY := STORE_SYM( """/=""" );
-      DUMMY := STORE_SYM( """<""" );
-      DUMMY := STORE_SYM( """<=""" );
-      DUMMY := STORE_SYM( """>""" );
-      DUMMY := STORE_SYM( """>=""" );
-      DUMMY := STORE_SYM( """+""" );
-      DUMMY := STORE_SYM( """-""" );
-      DUMMY := STORE_SYM( """&""" );
-      DUMMY := STORE_SYM( """/""" );
-      DUMMY := STORE_SYM( """*""" );
-      DUMMY := STORE_SYM( """MOD""" );
-      DUMMY := STORE_SYM( """REM""" );
-      DUMMY := STORE_SYM( """**""" );
-      DUMMY := STORE_SYM( """ABS""" );
-      DUMMY := STORE_SYM( """NOT""" );
-    END;
-         
+  DECLARE
+    DUMMY	: TREE;
+  BEGIN
+    DUMMY := STORE_SYM( """AND""" );
+    DUMMY := STORE_SYM( """OR"""  );
+    DUMMY := STORE_SYM( """XOR""" );
+    DUMMY := STORE_SYM( """="""   );
+    DUMMY := STORE_SYM( """/="""  );
+    DUMMY := STORE_SYM( """<"""   );
+    DUMMY := STORE_SYM( """<="""  );
+    DUMMY := STORE_SYM( """>"""   );
+    DUMMY := STORE_SYM( """>="""  );
+    DUMMY := STORE_SYM( """+"""   );
+    DUMMY := STORE_SYM( """-"""   );
+    DUMMY := STORE_SYM( """&"""   );
+    DUMMY := STORE_SYM( """/"""   );
+    DUMMY := STORE_SYM( """*"""   );
+    DUMMY := STORE_SYM( """MOD""" );
+    DUMMY := STORE_SYM( """REM""" );
+    DUMMY := STORE_SYM( """**"""  );
+    DUMMY := STORE_SYM( """ABS""" );
+    DUMMY := STORE_SYM( """NOT""" );
   END;
+         
+END;
   --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
   --|		PROCEDURE OPEN_IDL_TREE_FILE
   --|
@@ -266,161 +266,177 @@ PACKAGE BODY IDL IS
   BEGIN
     PAGE_MAN.CLOSE_PAGE_MANAGER;
   END;
-  --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-  --|		FUNCTION MAKE
-  --|
-  FUNCTION MAKE ( NN :NODE_NAME ) RETURN TREE IS
-  BEGIN
-    IF IDL_TBL.N_SPEC( NN ).NS_SIZE = 0 THEN						--| TYPE DE NOEUD SANS ATTRIBUT
-      RETURN (N, TY=> NN, PG=> 0, LN=> 1 );						--| TY 0 1 : FORMAT DU NOEUD SANS ATTRIBUT
-    ELSE											--| NOEUD AVEC ATTRIBUTS EN NOMBRE NS_SIZE
-      RETURN MAKE ( NN, N_SPEC( NN ).NS_SIZE, 1 );					--| TYP TAILLE LIGNE
+--||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+--|		FUNCTION MAKE
+--|
+FUNCTION MAKE ( NN :NODE_NAME ) RETURN TREE IS
+BEGIN
+  IF IDL_TBL.N_SPEC( NN ).NS_SIZE = 0 THEN						--| TYPE DE NOEUD SANS ATTRIBUT
+    RETURN (P, TY=> NN, PG=> 0, LN=> 0 );						--| TY 0 1 : FORMAT DU NOEUD SANS ATTRIBUT
+  ELSE										--| NOEUD AVEC ATTRIBUTS EN NOMBRE NS_SIZE
+    RETURN MAKE( NN, N_SPEC( NN ).NS_SIZE, 1 );						--| TYP TAILLE LIGNE
+  END IF;
+END;
+--||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+--|		 PROCEDURE D
+--|
+PROCEDURE D ( AN :ATTRIBUTE_NAME; T :TREE; V :TREE ) IS
+  APOS		: INTEGER := N_SPEC( T.TY ).NS_FIRST_A;					--| INDICE DE PREMIER ATTRIBUT DANS LA TABLE DE TOUS LES ATTRIBUTS DE TOUS LES NOEUDS
+BEGIN
+  FOR I IN 1 .. N_SPEC( T.TY ).NS_SIZE LOOP						--| BALAYAGE SUR LES ATTRIBUTS DU NOEUD POINTE PAR T
+    IF A_SPEC( APOS ).ATTR = AN THEN							--| SI C'EST L'ATTRIBUT CHERCHE
+      DABS( I, T, V );								--| REMPLIR LE CHAMP
+      RETURN;
     END IF;
-  END;
-  --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-  --|		 PROCEDURE D
-  --|
-  PROCEDURE D ( AN :ATTRIBUTE_NAME; T :TREE; V :TREE ) IS
-    APOS		: INTEGER := N_SPEC( T.TY ).NS_FIRST_A;					--| INDICE DE PREMIER ATTRIBUT DANS LA TABLE DE TOUS LES ATTRIBUTS DE TOUS LES NOEUDS
-  BEGIN
-    FOR I IN 1 .. N_SPEC( T.TY ).NS_SIZE LOOP						--| BALAYAGE SUR LES ATTRIBUTS DU NOEUD POINTE PAR T
-      IF A_SPEC( APOS ).ATTR = AN THEN							--| SI C'EST L'ATTRIBUT CHERCHE
-        DABS ( I, T, V );								--| REMPLIR LE CHAMP
-        RETURN;
-      END IF;
-      APOS := APOS + 1;								--| MONTER AU CHAMP SUIVANT
-    END LOOP;
-    PUT_LINE ( "!! PROCEDURE D : PAS D ATTRIBUT " & ATTR_IMAGE( AN ) & " DANS " & NODE_REP ( T ) );	--| L'ATTRIBUT N'A PA S ETE TROUVE POUR LE NOEUD
-    RAISE PROGRAM_ERROR;						--| ERREUR
-  END D;
-  --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-  --|		FUNCTION D
-  --|
-  FUNCTION D ( AN :ATTRIBUTE_NAME; T :TREE ) RETURN TREE IS
-    APOS		: INTEGER := N_SPEC( T.TY ).NS_FIRST_A;					--| INDICE DE PREMIER ATTRIBUT DANS LA TABLE DE TOUS LES ATTRIBUTS DE TOUS LES NOEUDS
-  BEGIN
-    FOR I IN 1 .. N_SPEC( T.TY ).NS_SIZE LOOP						--| BALAYAGE SUR LES ATTRIBUTS DU NOEUD POINTE PAR T
-      IF A_SPEC( APOS ).ATTR = AN THEN							--| SI C'EST L'ATTRIBUT CHERCHE
-        RETURN DABS ( I, T );								--| RENDRE LE CHAMP
-      END IF;
-      APOS := APOS + 1;								--| MONTER AU CHAMP SUIVANT
-    END LOOP;
-    PUT_LINE ( "!! FUNCTION D : PAS D ATTRIBUT " & ATTR_IMAGE ( AN ) & " DANS " & NODE_REP ( T ) );	--| L'ATTRIBUT N'A PA S ETE TROUVE POUR LE NOEUD
-    RAISE PROGRAM_ERROR;								--| ERREUR
-  END D;
-  --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-  --|		PROCEDURE DB
-  --|
-  PROCEDURE DB ( AN :ATTRIBUTE_NAME; T :TREE; V :BOOLEAN ) IS
-    VAL		: TREE		:= TREE_FALSE;					--| VALEUR ARBRE À PLACER (INITIALISEE À FAUX)
-  BEGIN
-    IF V THEN
-      VAL := TREE_TRUE;								--| SI VALEUR VRAI À PLACER, CHANGER VAL À VALEUR VRAIE
+    APOS := APOS + 1;								--| MONTER AU CHAMP SUIVANT
+  END LOOP;
+  PUT_LINE( "!! PROCEDURE D : PAS D ATTRIBUT " & ATTR_IMAGE( AN ) & " DANS " & NODE_REP( T ) );	--| L'ATTRIBUT N'A PA S ETE TROUVE POUR LE NOEUD
+  RAISE PROGRAM_ERROR;								--| ERREUR
+END D;
+--||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+--|		FUNCTION D
+--|
+FUNCTION D ( AN :ATTRIBUTE_NAME; T :TREE ) RETURN TREE IS
+  APOS		: INTEGER := N_SPEC( T.TY ).NS_FIRST_A;					--| INDICE DE PREMIER ATTRIBUT DANS LA TABLE DE TOUS LES ATTRIBUTS DE TOUS LES NOEUDS
+BEGIN
+  FOR I IN 1 .. N_SPEC( T.TY ).NS_SIZE LOOP						--| BALAYAGE SUR LES ATTRIBUTS DU NOEUD POINTE PAR T
+    IF A_SPEC( APOS ).ATTR = AN THEN							--| SI C'EST L'ATTRIBUT CHERCHE
+      RETURN DABS( I, T );								--| RENDRE LE CHAMP
     END IF;
-    D ( AN, T, VAL );								--| PLACER VAL DANS L'ATTRIBUT
-  END DB;
-  --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-  --|		FUNCTION DB
-  --|
-  FUNCTION DB ( AN :ATTRIBUTE_NAME; T :TREE ) RETURN BOOLEAN IS
-  BEGIN
-    RETURN D ( AN, T ) = TREE_TRUE;							--| CHERCHER LA VALEUR TREE ET RENDRE LA COMPARAISON
-  END DB;
-  --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-  --|		PROCEDURE DI
-  --|
-  PROCEDURE DI ( AN :ATTRIBUTE_NAME; T :TREE; V :INTEGER) IS
-  BEGIN
-    D ( AN, T, (F, TTY=> DN_NUM_VAL, VAL=> SHORT(V)) );
-  END DI;
-  --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-  --|		FUNCTION DI
-  --|
-  FUNCTION DI ( AN :ATTRIBUTE_NAME; T :TREE) RETURN INTEGER IS
-    ATTR		: TREE		:= D ( AN, T );
-  BEGIN
-    IF ATTR.PT = F AND THEN ATTR.TTY = DN_NUM_VAL THEN
-      RETURN INTEGER( ATTR.VAL );
-    ELSE
-      PUT_LINE ( "!! L ATTRIBUT " & ATTR_IMAGE ( AN ) & " DU NOEUD " & NODE_REP ( T ) & " N EST PAS UN ENTIER");
-      RAISE PROGRAM_ERROR;
-    END IF;
-  END DI;
-  --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-  --|		FUNCTION LIST
-  --|
-  FUNCTION LIST ( T :TREE ) RETURN SEQ_TYPE IS
-    A_IDX: INTEGER := N_SPEC( T.TY ).NS_FIRST_A;
-  BEGIN
-    FOR I IN 1 .. N_SPEC( T.TY ).NS_SIZE LOOP
-      IF A_SPEC( A_IDX ).IS_LIST THEN
-        RETURN (FIRST=> DABS ( I, T ) , NEXT=> TREE_NIL );
-      END IF;
-      A_IDX := A_IDX + 1;
-    END LOOP;
-         
-    PUT_LINE ( "!! IL N Y A PAS DE LISTE ASSOCIEE AU NOEUD " & NODE_REP( T ) );
+    APOS := APOS + 1;								--| MONTER AU CHAMP SUIVANT
+  END LOOP;
+  PUT_LINE( "!! FUNCTION D : PAS D ATTRIBUT " & ATTR_IMAGE( AN ) & " DANS " & NODE_REP( T ) );	--| L'ATTRIBUT N'A PA S ETE TROUVE POUR LE NOEUD
+  RAISE PROGRAM_ERROR;								--| ERREUR
+END D;
+--||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+--|		PROCEDURE DB
+--|
+PROCEDURE DB ( AN :ATTRIBUTE_NAME; T :TREE; V :BOOLEAN ) IS
+  VAL		: TREE		:= TREE_FALSE;					--| VALEUR ARBRE À PLACER (INITIALISEE À FAUX)
+BEGIN
+  IF V THEN
+    VAL := TREE_TRUE;								--| SI VALEUR VRAI À PLACER, CHANGER VAL À VALEUR VRAIE
+  END IF;
+  D( AN, T, VAL );									--| PLACER VAL DANS L'ATTRIBUT
+END DB;
+--||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+--|		FUNCTION DB
+--|
+FUNCTION DB ( AN :ATTRIBUTE_NAME; T :TREE ) RETURN BOOLEAN IS
+  A	: TREE	:= D( AN, T );
+BEGIN
+  IF A = TREE_TRUE THEN RETURN TRUE;
+  ELSIF A = TREE_FALSE THEN RETURN FALSE;
+  ELSE
+    PUT_LINE( "!! L ATTRIBUT " & ATTR_IMAGE( AN ) & " DU NOEUD " & NODE_REP( T ) & " N EST PAS UN BOOLEEN");
     RAISE PROGRAM_ERROR;
-  END;
-  --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-  --|		FUNCTION IS_EMPTY
-  --|
-  FUNCTION IS_EMPTY ( S :SEQ_TYPE ) RETURN BOOLEAN IS
-  BEGIN
-    RETURN S.FIRST = TREE_NIL;
-  END;
-  --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-  --|		PROCEDURE POP
-  --|
-  PROCEDURE POP ( S :IN OUT SEQ_TYPE; T :OUT TREE ) IS
-  BEGIN
-    T := HEAD ( S );
-    S := TAIL ( S );
-  END POP;
-  --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-  --|		FUNCTION PRINT_NAME
-  --|
-  FUNCTION PRINT_NAME ( T :TREE ) RETURN STRING IS					--| POUR TXTREP OR SYMBOL_REP
-    TR		: TREE := T;
-  BEGIN
-    IF TR.TY = DN_SYMBOL_REP THEN							--| POUR UN SYMBOL_REP
-      TR := DABS ( 1, TR );								--| PRENDRE LE TXTREP CORRRESPONDANT
+  END IF;
+END DB;
+--||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+--|		PROCEDURE DI
+--|
+PROCEDURE DI ( AN :ATTRIBUTE_NAME; T :TREE; V :INTEGER) IS
+  VAL_POS	: POSITIVE_SHORT;
+  COMPLEMENT_DEUX	: ATTR_NBR;
+BEGIN
+  IF V < 0 THEN
+    VAL_POS := POSITIVE_SHORT( ABS( V+1 ) ); COMPLEMENT_DEUX := 1;
+  ELSE
+    VAL_POS := POSITIVE_SHORT( V ); COMPLEMENT_DEUX := 0;
+  END IF;
+  D( AN, T, (HI, NOTY=> DN_NUM_VAL, ABSS=> VAL_POS, NSIZ=> COMPLEMENT_DEUX) );
+END DI;
+--||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+--|		FUNCTION DI
+--|
+FUNCTION DI ( AN :ATTRIBUTE_NAME; T :TREE) RETURN INTEGER IS
+  ATTR		: TREE		:= D( AN, T );
+BEGIN
+  IF ATTR.PT = HI AND THEN ATTR.NOTY = DN_NUM_VAL THEN
+    IF ATTR.NSIZ = 0 THEN
+      RETURN INTEGER( ATTR.ABSS );
+    ELSIF ATTR.NSIZ = 1 THEN
+      RETURN INTEGER( -ATTR.ABSS - 1 );
     END IF;
-         
-    IF TR.TY /= DN_TXTREP THEN							--| SI CE N'EST PAS UN TXTREP
-      RETURN "PAS UN TXTREP PAS DE CHAINE ???";						--| CHAINE PAS DE NOM
+  END IF;
+  PUT_LINE( "!! L ATTRIBUT " & ATTR_IMAGE( AN ) & " DU NOEUD " & NODE_REP( T ) & " N EST PAS UN ENTIER");
+  RAISE PROGRAM_ERROR;
+END DI;
+--||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+--|		FUNCTION LIST
+--|
+FUNCTION LIST ( T :TREE ) RETURN SEQ_TYPE IS
+  A_IDX	: INTEGER := N_SPEC( T.TY ).NS_FIRST_A;
+BEGIN
+  FOR I IN 1 .. N_SPEC( T.TY ).NS_SIZE LOOP
+    IF A_SPEC( A_IDX ).IS_LIST THEN
+      RETURN (FIRST=> DABS ( I, T ) , NEXT=> TREE_NIL );
     END IF;
+    A_IDX := A_IDX + 1;
+  END LOOP;
          
-    DECLARE
-      TXT_HDR		: TREE		:= DABS ( 0, TR );				--| PRENDRE L'ENTETE DU BLOC DE CHAINE
-      USE SYSTEM;
-      START		: LINE_IDX	:= TR.LN+1;				--| EMPLACEMENT DU PREMIER TREE COMPRENANT LE NOM
-      NB_TREES		: LINE_IDX	:= LINE_IDX( TXT_HDR.VAL );			--| NOMBRE DE TREES COMPRENANT LE NOM
-      NB_CARS		: NATURAL		:= NATURAL( NB_TREES )*(TREE'SIZE+STORAGE_UNIT-1)/STORAGE_UNIT;
-      TYPE SUITE_TREES	IS ARRAY (START..START-1+NB_TREES) OF TREE;
-      SUBTYPE CHN		IS STRING (1..NB_CARS);
-      FUNCTION TO_CHN	IS NEW UNCHECKED_CONVERSION ( SUITE_TREES, CHN );
-      THE_CHN		: CHN;
-    BEGIN
-      THE_CHN := TO_CHN ( SUITE_TREES( PAG( CUR_RP ).DATA.ALL( START..START-1+NB_TREES ) ) );
-      RETURN THE_CHN( 2..1+NATURAL( CHARACTER'POS( THE_CHN( 1 ) ) ) );
-    END;
+  PUT_LINE( "!! IL N Y A PAS DE LISTE ASSOCIEE AU NOEUD " & NODE_REP( T ) );
+  RAISE PROGRAM_ERROR;
+  END;
+--||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+--|		FUNCTION IS_EMPTY
+--|
+FUNCTION IS_EMPTY ( S :SEQ_TYPE ) RETURN BOOLEAN IS
+BEGIN
+  RETURN S.FIRST = TREE_NIL;
+END;
+--||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+--|		PROCEDURE POP
+--|
+PROCEDURE POP ( S :IN OUT SEQ_TYPE; T :OUT TREE ) IS
+BEGIN
+  T := HEAD( S );
+  S := TAIL( S );
+END POP;
+--||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+--|		FUNCTION PRINT_NAME
+--|
+FUNCTION PRINT_NAME ( T :TREE ) RETURN STRING IS						--| POUR TXTREP OR SYMBOL_REP
+  TR		: TREE := T;
+BEGIN
+  IF TR.TY = DN_SYMBOL_REP THEN							--| POUR UN SYMBOL_REP
+    TR := DABS( 1, TR );								--| PRENDRE LE TXTREP CORRRESPONDANT
+  END IF;
          
-  END PRINT_NAME;
-  --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-  --|		FUNCTION NODE_IMAGE
-  ---
-  FUNCTION NODE_IMAGE ( NN :NODE_NAME ) RETURN STRING IS
+  IF TR.TY /= DN_TXTREP THEN								--| SI CE N'EST PAS UN TXTREP
+    RETURN "PAS UN TXTREP PAS DE CHAINE ???";						--| CHAINE PAS DE NOM
+  END IF;
+         
+  DECLARE
+    TXT_HDR		: TREE		:= DABS( 0, TR );				--| PRENDRE L'ENTETE DU BLOC DE CHAINE
+    USE SYSTEM;
+    START			: LINE_IDX	:= TR.LN+1;				--| EMPLACEMENT DU PREMIER TREE COMPRENANT LE NOM
+    NB_TREES		: LINE_IDX	:= LINE_IDX( TXT_HDR.NSIZ );			--| NOMBRE DE TREES COMPRENANT LE NOM
+    NB_CARS		: NATURAL		:= NATURAL( NB_TREES )*(TREE'SIZE+STORAGE_UNIT-1)/STORAGE_UNIT;
+    TYPE SUITE_TREES	IS ARRAY( START .. START-1+NB_TREES ) OF TREE;
+    SUBTYPE CHN		IS STRING( 1 .. NB_CARS );
+    FUNCTION TO_CHN	IS NEW UNCHECKED_CONVERSION( SUITE_TREES, CHN );
+    THE_CHN		: CHN;
   BEGIN
-    RETURN NODE_NAME'IMAGE ( NN );
+    THE_CHN := TO_CHN( SUITE_TREES( PAG( CUR_RP ).DATA.ALL( START..START-1+NB_TREES ) ) );
+    RETURN THE_CHN( 2..1+NATURAL( CHARACTER'POS( THE_CHN( 1 ) ) ) );
   END;
-  --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-  --|		FUNCTION ATTR_IMAGE
-  --|
-  FUNCTION ATTR_IMAGE ( AN :ATTRIBUTE_NAME ) RETURN STRING IS
-  BEGIN
-    RETURN ATTRIBUTE_NAME'IMAGE ( AN );
-  END;
+         
+END PRINT_NAME;
+--||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+--|		FUNCTION NODE_IMAGE
+--|
+FUNCTION NODE_IMAGE ( NN :NODE_NAME ) RETURN STRING IS
+BEGIN
+  RETURN NODE_NAME'IMAGE( NN );
+END;
+--||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+--|		FUNCTION ATTR_IMAGE
+--|
+FUNCTION ATTR_IMAGE ( AN :ATTRIBUTE_NAME ) RETURN STRING IS
+BEGIN
+  RETURN ATTRIBUTE_NAME'IMAGE( AN );
+END;
   
   USE PRINT_NOD;
   PACKAGE BODY PRINT_NOD IS SEPARATE;

@@ -394,7 +394,7 @@ PROCEDURE CHECK_GRMR ( NOM_TEXTE :STRING ) IS
             AC_SUB := AC_SUB + 1;
             TXT_LN := INTEGER( GRMR.AC_TBL( AC_SUB ) );
             IF TXT_LN IN 0..INTEGER( LINE_NBR'LAST ) THEN
-              TXT := (PT=>N, PG=> PAGE_IDX( DATA MOD 1000 ), TY=> DN_SYMBOL_REP, LN=> LINE_IDX( TXT_LN ));
+              TXT := (P, PG=> PAGE_IDX( DATA MOD 1000 ), TY=> DN_SYMBOL_REP, LN=> LINE_IDX( TXT_LN ));
               PUT( OFILE, PRINT_NAME ( TXT ) );
             ELSE
               INT_IO.PUT ( OFILE, DATA MOD 1000 );
