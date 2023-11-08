@@ -1,5 +1,5 @@
-   WITH TEXT_IO; USE  TEXT_IO;
-    SEPARATE ( IDL.SEM_PHASE )
+WITH TEXT_IO; USE  TEXT_IO;
+SEPARATE( IDL.SEM_PHASE )
     --|----------------------------------------------------------------------------------------------
     --|	UARITH
     --|----------------------------------------------------------------------------------------------
@@ -26,7 +26,7 @@
       --|	FUNCTION U_VALUE
        FUNCTION U_VALUE ( TXT :STRING ) RETURN TREE IS
       BEGIN
-         RETURN EVAL_NUM ( TXT);
+         RETURN EVAL_NUM( TXT );
       END;
       --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
       --|	FUNCTION U_POS

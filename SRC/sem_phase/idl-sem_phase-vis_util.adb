@@ -1087,22 +1087,22 @@
       END CAST_SEQ_TYPE;
    
         ----------------------------------------------------------------
-   
-       FUNCTION COPY_NODE ( NODE : TREE ) RETURN TREE IS
-         RESULT	: TREE;
-         LENGTH	: ATTR_NBR;
-      BEGIN
-         IF NODE.LN = 0 THEN
-            RETURN NODE;
-         ELSE
-            LENGTH := DABS( 0, NODE ).LN;
-            RESULT := MAKE( NODE.TY, LENGTH );
-            FOR I IN 1 .. LENGTH LOOP
-               DABS( I, RESULT, DABS( I, NODE ) );
-            END LOOP;
-            RETURN RESULT;
-         END IF;
-      END COPY_NODE;
+
+FUNCTION COPY_NODE ( NODE : TREE ) RETURN TREE IS
+  RESULT	: TREE;
+  LENGTH	: ATTR_NBR;
+BEGIN
+  IF NODE.LN = 0 THEN
+    RETURN NODE;
+  ELSE
+    LENGTH := DABS( 0, NODE ).NSIZ;
+    RESULT := MAKE( NODE.TY, LENGTH );
+    FOR I IN 1 .. LENGTH LOOP
+      DABS( I, RESULT, DABS( I, NODE ) );
+    END LOOP;
+    RETURN RESULT;
+  END IF;
+END COPY_NODE;
    
         ----------------------------------------------------------------
    

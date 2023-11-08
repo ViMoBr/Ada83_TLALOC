@@ -320,23 +320,19 @@
          
             WHEN DN_NUMERIC_LITERAL =>
                DECLARE
-                  VALUE: TREE := UARITH.U_VALUE(
-                                                PRINT_NAME ( D(LX_NUMREP, EXP)));
+                  VALUE: TREE := UARITH.U_VALUE( PRINT_NAME( D( LX_NUMREP, EXP ) ) );--| UN HI ENTIER COURT, OU UN P 
                BEGIN
-                                        -- ALWAYS A STATIC VALUE
-                                        -- SAVE THE VALUE IN SM_VALUE ATTRIBUTE
                   D(SM_VALUE, EXP, VALUE);
                
-                                        -- AND CONSTRUCT TYPE ACCORDING AS THERE WAS A DECIMAL POINT
-                  IF VALUE.TY = DN_REAL_VAL THEN
-                     ADD_TO_TYPESET(
-                                                        NEW_TYPESET, MAKE(
-                                                                DN_ANY_REAL));
-                  ELSE
-                     ADD_TO_TYPESET(
-                                                        NEW_TYPESET, MAKE(
-                                                                DN_ANY_INTEGER));
-                  END IF;
+IF VALUE.PT = HI OR ELSE VALUE.TY = DN_NUM_VAL THEN
+  ADD_TO_TYPESET( NEW_TYPESET, MAKE( DN_ANY_INTEGER ) );
+ELSIF VALUE.TY = DN_REAL_VAL THEN
+  ADD_TO_TYPESET( NEW_TYPESET, MAKE( DN_ANY_REAL ) );
+ELSE
+  PUT_LINE( "EVAL_EXP_SUBTYPE_TYPES : VALUE.TY INCORRECT" );
+  RAISE PROGRAM_ERROR;
+END IF;
+
                END;
          
          

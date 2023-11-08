@@ -1,7 +1,7 @@
-    SEPARATE ( IDL.SEM_PHASE )
+SEPARATE( IDL.SEM_PHASE )
       --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
       --|
-    FUNCTION EVAL_NUM(TXT: STRING) RETURN TREE IS
+FUNCTION EVAL_NUM( TXT :STRING ) RETURN TREE IS
       USE UNIV_OPS;
    
       MAXCOL: CONSTANT INTEGER := TXT'LAST;
@@ -137,11 +137,11 @@
       
       IF SCALEFACTOR >= 0 THEN
          VNUMER.D(VNUMER.L+1) := 0;
-         RETURN U_INT(VNUMER);
+         RETURN U_INT( VNUMER );
       ELSE
          V_LOWEST_TERMS(VNUMER,VDENOM);
          VNUMER.D(VNUMER.L+1) := 0;
          VDENOM.D(VDENOM.L+1) := 0;
-         RETURN U_REAL(VNUMER, VDENOM);
+         RETURN U_REAL( VNUMER, VDENOM );
       END IF;
    END EVAL_NUM;
