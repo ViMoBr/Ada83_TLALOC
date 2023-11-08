@@ -360,6 +360,7 @@ BEGIN
     END IF;
   END IF;
   PUT_LINE( "!! L ATTRIBUT " & ATTR_IMAGE( AN ) & " DU NOEUD " & NODE_REP( T ) & " N EST PAS UN ENTIER");
+put( "!!-->" ) ; print_nod.print_node( t );
   RAISE PROGRAM_ERROR;
 END DI;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
