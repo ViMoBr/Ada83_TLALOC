@@ -10,21 +10,21 @@ PACKAGE BODY EMITS IS
    
       
   INT_LABEL	: LABEL_TYPE	:= 1;
-  FS	: FILE_TYPE;
-  CDX	: CONSTANT ARRAY(OP_CODE) OF OFFSET_TYPE := (		--| TABLE DES TAILLES DE CHAQUE INSTRUCTION (CODE EXTENSION)
-      		-4,  0, -2, -4,  0, -4,  4, -4,  0,
-      		 0,  0,  0,  0,  0,  0, -4,  4,  0,
-      		 0,  0, -4,  0,  0,  0,  0,  0,  0,
-      		 0, -4,  0, -4, -4,  0, -4,  0,  0,
-      		-4,  4,  4,  4,  4,  4, -4, -4,  4,
-      		 0, -4, -8,  0, -4,-12,  0, -4,  0,
-      		-4,  0,  0,  0,  0,  0,  0, -4,  0,
-      		 0,  0, -4, -8, -4, -4,  0, -4,  0,
-      		 0, -4
-      		);
-  PDX	: CONSTANT ARRAY(STD_PROC) OF OFFSET_TYPE := (
-      		0, -4, 0, -8, -8, -4, -12, 0, -4, -16, 0
-      		);
+  FS		: FILE_TYPE;
+  CDX		: CONSTANT ARRAY(OP_CODE) OF OFFSET_TYPE := (				--| TABLE DES TAILLES DE CHAQUE INSTRUCTION (CODE EXTENSION)
+			-4,  0, -2, -4,  0, -4,  4, -4,  0,
+			 0,  0,  0,  0,  0,  0, -4,  4,  0,
+			 0,  0, -4,  0,  0,  0,  0,  0,  0,
+			 0, -4,  0, -4, -4,  0, -4,  0,  0,
+			-4,  4,  4,  4,  4,  4, -4, -4,  4,
+			 0, -4, -8,  0, -4,-12,  0, -4,  0,
+			-4,  0,  0,  0,  0,  0,  0, -4,  0,
+			 0,  0, -4, -8, -4, -4,  0, -4,  0,
+			 0, -4
+			);
+  PDX		: CONSTANT ARRAY(STD_PROC) OF OFFSET_TYPE := (
+			0, -4, 0, -8, -8, -4, -12, 0, -4, -16, 0
+			);
 
 --|#################################################################################################
 --|	PROCEDURE OPEN_OUTPUT_FILE

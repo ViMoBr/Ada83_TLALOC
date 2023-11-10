@@ -14,9 +14,10 @@ s#i0
 s#k0
 s#j0
 s#l0
-!2493;g
+!2520;g
 %\011SRC%spar_phase%sidl-par_phase-set_dflt.adb
 %\011SRC%ssem_phase%sidl-sem_phase-att_walk.adb
+%\011EXE%scomp_ada_comp.sh
 %\011SRC%ssem_phase%sidl-sem_phase-hom_unit.adb
 %\011SRC%scommuns%sidl-idl_man.adb
 %\011EXE%sDIRECT_IO.ADA
@@ -79,9 +80,10 @@ s#l0
 %\011SRC%ssem_phase%sidl-sem_phase-make_nod.adb
 %\011SRC%ssem_phase%sidl-sem_phase-fix_with.adb
 %\011SRC%scode_gen%semits.ads
-!2493;f
+!2520;f
 %\011SRC%spar_phase%sidl-par_phase-set_dflt.adb
 %\011SRC%ssem_phase%sidl-sem_phase-att_walk.adb
+%\011EXE%scomp_ada_comp.sh
 %\011SRC%ssem_phase%sidl-sem_phase-hom_unit.adb
 %\011SRC%scommuns%sidl-idl_man.adb
 %\011EXE%sDIRECT_IO.ADA

@@ -98,103 +98,89 @@
             END IF;
          END LOOP;
       END SUBSTITUTE_ATTRIBUTES;
-      --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-      --|
-       PROCEDURE SUBSTITUTE
-                        ( NODE: 	IN OUT TREE
-                        ; NODE_HASH:	IN OUT NODE_HASH_TYPE
-                        ; H_IN: 	H_TYPE )
-                        IS
-         OLD_NODE: CONSTANT TREE := NODE;
-         H: H_TYPE RENAMES H_IN;
-      BEGIN
-      
+--||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+--|
+PROCEDURE SUBSTITUTE ( NODE :IN OUT TREE; NODE_HASH :IN OUT NODE_HASH_TYPE; H_IN :H_TYPE ) IS
+  OLD_NODE	: CONSTANT TREE	:= NODE;
+  H		: H_TYPE		RENAMES H_IN;
+BEGIN      
                 -- $$$$ FOR TESTING -- AVOID RUNAWAY SUBSTITUTION
-         IF NODE_HASH.LIMIT > 0 THEN
-            NODE_HASH.LIMIT := NODE_HASH.LIMIT - 1;
-         ELSE
-            PUT_LINE ( "!! RUNAWAY LOOP IN GENERIC SUBSTITUTION");
-            RAISE PROGRAM_ERROR;
-         END IF;
+  IF NODE_HASH.LIMIT > 0 THEN
+    NODE_HASH.LIMIT := NODE_HASH.LIMIT - 1;
+  ELSE
+    PUT_LINE ( "!! RUNAWAY LOOP IN GENERIC SUBSTITUTION");
+    RAISE PROGRAM_ERROR;
+  END IF;
       
                 -- CHECK FOR NODE WITH NO ATTRIBUTES
-         IF NODE.PG <= 0 OR ELSE NODE.LN = 0 THEN
-            RETURN;
-         END IF;
-      
-      
+  IF NODE.PT = HI OR NODE.PT = S THEN RETURN;						--| ENTETE/INTEGER OU SRCPOS
+  ELSIF NODE.PG = 0 OR ELSE DABS( 0, NODE ).NSIZ = 0 THEN RETURN;				--| POINTEUR P NIL OU VOID OU VIRGIN OU SANS ATTRIBUT
+  END IF;
                 -- IF NODE HAS ALREADY BEEN CONSIDERED
-         SEARCH_NODE_HASH(NODE_HASH, NODE);
+  SEARCH_NODE_HASH( NODE_HASH, NODE );
       
                 -- IF IT WAS ACTUALLY CHANGED
-         IF NODE /= OLD_NODE THEN
+  IF NODE /= OLD_NODE THEN
          
                         -- RETURN RESULT FROM HASH TABLE
-            RETURN;
-         END IF;
+    RETURN;
+  END IF;
       
       
-         CASE NODE.TY IS
-         
-            WHEN DN_ROOT =>
+  CASE NODE.TY IS
+       
+  WHEN DN_ROOT =>
                PUT_LINE ( "!! INVALID NODE IN GENERIC COPY");
                RAISE PROGRAM_ERROR;
          
-            WHEN DN_TXTREP | DN_NUM_VAL =>
+  WHEN DN_TXTREP | DN_NUM_VAL =>
                NULL;
          
-            WHEN CLASS_BOOLEAN | DN_NIL =>
-               PUT_LINE ( "INVALID NODE IN GENERIC COPY" );
+  WHEN CLASS_BOOLEAN | DN_NIL =>
+              PUT_LINE ( "INVALID NODE IN GENERIC COPY" );
                RAISE PROGRAM_ERROR;
          
-            WHEN DN_LIST =>
+  WHEN DN_LIST =>
                SUBSTITUTE_GENERAL_NODE(NODE, NODE_HASH, H);
-         
-            WHEN DN_SOURCELINE | DN_ERROR =>
+        
+  WHEN DN_SOURCELINE | DN_ERROR =>
                PUT_LINE ( "!! INVALID NODE IN GENERIC COPY" );
          
-            WHEN DN_SYMBOL_REP =>
+  WHEN DN_SYMBOL_REP =>
                NULL;
          
-            WHEN DN_HASH | DN_VOID =>
+  WHEN DN_HASH | DN_VOID =>
                PUT_LINE ( "!! INVALID NODE IN GENERIC COPY" );
                RAISE PROGRAM_ERROR;
          
-            WHEN CLASS_DEF_NAME =>
+  WHEN CLASS_DEF_NAME =>
                                 -- (ONLY SUBSTITUTED IF FOUND IN HASH TABLE)
                NULL;
          
          
-            WHEN DN_BLOCK_MASTER =>
+  WHEN DN_BLOCK_MASTER =>
                SUBSTITUTE_GENERAL_NODE(NODE, NODE_HASH, H);
          
          
-            WHEN CLASS_DSCRMT_PARAM_DECL | DN_NUMBER_DECL |
+  WHEN CLASS_DSCRMT_PARAM_DECL | DN_NUMBER_DECL |
                                         DN_EXCEPTION_DECL
                                         | DN_DEFERRED_CONSTANT_DECL =>
-               DECLARE
+    DECLARE
                   SOURCE_NAME_S: TREE := D(
                                                 AS_SOURCE_NAME_S, NODE);
                   SOURCE_NAME_LIST: SEQ_TYPE := LIST(
                                                 SOURCE_NAME_S);
                   SOURCE_NAME: TREE;
-               BEGIN
-                  WHILE NOT IS_EMPTY(
-                                                        SOURCE_NAME_LIST) LOOP
-                     POP(SOURCE_NAME_LIST,
-                                                        SOURCE_NAME);
-                  
-                     REPLACE_SOURCE_NAME(
-                                                        SOURCE_NAME,
-                                                        NODE_HASH, H, NODE);
-                  END LOOP;
-               
-                  SUBSTITUTE_GENERAL_NODE(NODE,
-                                                NODE_HASH, H);
-               END;
+    BEGIN
+      WHILE NOT IS_EMPTY( SOURCE_NAME_LIST ) LOOP
+        POP( SOURCE_NAME_LIST, SOURCE_NAME );
+        REPLACE_SOURCE_NAME( SOURCE_NAME, NODE_HASH, H, NODE );
+      END LOOP;
+      SUBSTITUTE_GENERAL_NODE( NODE, NODE_HASH, H );
+    END;
          
          
-            WHEN CLASS_OBJECT_DECL =>
+  WHEN CLASS_OBJECT_DECL =>
                DECLARE
                   SOURCE_NAME_S: TREE := D(
                                                 AS_SOURCE_NAME_S, NODE);
