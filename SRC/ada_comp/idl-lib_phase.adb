@@ -128,13 +128,13 @@ if debug_lib then put_line( "make_file_sym avec pri=" & PRI
 & " sec=" & SEC
 ); end if;
 
-    IF SEC = ".DCL" OR ELSE SEC = ".BDY" THEN						--| UNITES DE COMPILATION SPEC / CORPS
-      IF PRI'LENGTH <= 8 THEN								--| NOM DE MOINS DE 8 CARACTERES
+    IF SEC = ".DCL" OR ELSE SEC = ".BDY" OR ELSE SEC = ".SUB" THEN				--| UNITES DE COMPILATION SPEC / CORPS
+--      IF PRI'LENGTH <= 8 THEN							--| NOM DE MOINS DE 8 CARACTERES
         RETURN STORE_SYM( PRI & SEC );							--| STOCKER LE NOM.EXT ET RETOURNER LE SYMBOLE
-      ELSE									--| NOM DE 9 CARACTERES OU PLUS
-        SECSYM := STORE_SYM( "$" );							--| STOCKER (OU RETROUVER) UN SYMBOLE $ POUR SEC_SYM
-        EXTEN := SEC( SEC'FIRST..SEC'FIRST+3 );						--| JUSTE 4 CARACTERES DE LA CHAINE "SEC"
-      END IF;
+--      ELSE									--| NOM DE 9 CARACTERES OU PLUS
+--        SECSYM := STORE_SYM( "$" );							--| STOCKER (OU RETROUVER) UN SYMBOLE $ POUR SEC_SYM
+--        EXTEN := SEC( SEC'FIRST..SEC'FIRST+3 );						--| JUSTE 4 CARACTERES DE LA CHAINE "SEC"
+--      END IF;
     ELSE										--| SOUS UNITE SEPAREE D'UNE UNITE DE LIBRAIRIE
       SECSYM := STORE_SYM( SEC );							--| STOCKER LE NOM DE CORPS SEPARE
       EXTEN := ".SUB";
@@ -150,6 +150,9 @@ if debug_lib then put_line( "make_file_sym avec pri=" & PRI
         RETURN STORE_SYM( PRINT_NAME( D( XD_SHORT, LIB_INFO ) ) & EXTEN );			--| RETOURNER LE NOM COURT AVEC EXTENSION CORRESPONDANT
       END IF;
     END LOOP;
+
+
+
       					--| SI L'ON EST LA ON A PAS TROUVE DE NOM COURT DANS LA LIBRAIRIE
     DECLARE
       FILETEXT	: STRING( 1 .. 8 )	:= "$$$$$$$$";					--| CHAINE DE 8 CARACTERES
@@ -184,7 +187,7 @@ if debug_lib then put_line( "make_file_sym avec pri=" & PRI
     IF UNIT_BODY.TY /= DN_SUBUNIT THEN							--| SI PAS UNE SOUS UNITE (PAS UNE UNITE "SEPARATE")
 --|
 --|		CAS UNITE CORPS : PACKAGE BODY / PROCEDURE ... IS
---|         
+--|_________________________________________________________________________________________________     
       IF UNIT_BODY.TY = DN_PACKAGE_BODY OR ELSE UNIT_BODY.TY = DN_SUBPROGRAM_BODY THEN		--| CORPS SOUS PROGRAMME OU PACKAGE
         FILE_SYM := MAKE_FILE_SYM(							--| FABRIQUER (OU TROUVER) UNE ENTREE DE LIBRAIRIE (UN LIB_INFO)
            		PRINT_NAME( D( LX_SYMREP, D( AS_SOURCE_NAME, UNIT_BODY ) ) ),	--| AVEC LE NOM D'UNITE
@@ -192,7 +195,7 @@ if debug_lib then put_line( "make_file_sym avec pri=" & PRI
                   		);
 --|
 --|		CAS UNITE SPEC : PACKAGE / PROCEDURE
---|
+--|_________________________________________________________________________________________________
       ELSE									--| SPEC SOUS PROGRAMME, GENERIQUE OU PACKAGE
         FILE_SYM := MAKE_FILE_SYM(							--| FABRIQUER (OU TROUVER) UNE ENTREE DE LIBRAIRIE (UN LIB_INFO)
 			PRINT_NAME ( D( LX_SYMREP, D( AS_SOURCE_NAME, UNIT_BODY ) ) ),	--| AVEC LE NOM D'UNITE
@@ -201,7 +204,7 @@ if debug_lib then put_line( "make_file_sym avec pri=" & PRI
       END IF;
 --|
 --|		CAS SEPARATE( X.Y.Z.A ) PACKAGE BODY / PROCEDURE ... IS
---|
+--|_________________________________________________________________________________________________
     ELSE										--| SOUS UNITE (SEPAREE)
 
 -- TENTATIVE DE NOM ETENDU
@@ -215,39 +218,37 @@ if debug_lib then put_line( "make_file_sym avec pri=" & PRI
       BEGIN
         IF SELECTOR.TY = DN_SELECTED THEN
           RETURN SECTION_NOM( D( AS_NAME, SELECTOR ) )
-		& "-" & PRINT_NAME( D( LX_SYMREP, D( AS_DESIGNATOR, SELECTOR ) ) ) & "-";
+		& PRINT_NAME( D( LX_SYMREP, D( AS_DESIGNATOR, SELECTOR ) ) ) & "-";
         ELSE
-          RETURN PRINT_NAME( D( LX_SYMREP, SELECTOR ) );
+          RETURN PRINT_NAME( D( LX_SYMREP, SELECTOR ) ) & "-";
         END IF;
       END;
 
     BEGIN
       PUT_LINE( "ESSAI : " & SECTION_NOM( SEP_NAME ) & PRINT_NAME( D( LX_SYMREP, NAME ) ) & ".SUB" ); 
---      FILESYM := STORE_SYM( SECTION_NOM( SEP_NAME ) & PRINT_NAME( D( LX_SYMREP, NAME ) ) & ".SUB" );						--| STOCKER CE SYMBOLE
---      LIB_INFO := MAKE( DN_LIB_INFO );							--| FABRIQUER UN LIB_INFO
---      D( XD_SHORT, LIB_INFO, STORE_SYM( FILETEXT ) );					--| Y PORTER LE SYMBOLE
+      FILE_SYM := MAKE_FILE_SYM( SECTION_NOM( SEP_NAME ) & PRINT_NAME( D( LX_SYMREP, NAME ) ) , ".SUB" );
     END;
 
 
 
-      DECLARE
-        SEP_NAME		: TREE	:= D( AS_NAME, UNIT_BODY );				--| NOM MIS DANS LE "SEPARATE"
-      BEGIN
-FOLLOW_SELECTORS:
-        WHILE SEP_NAME.TY = DN_SELECTED LOOP						--| TANT QUE NOM INTERMEDIAIRE X.Y.Z.A
-          SEP_NAME := D( AS_NAME, SEP_NAME );						--| SUIVRE LA CHAINE DES POINTS
-        END LOOP FOLLOW_SELECTORS;
+--      DECLARE
+--        SEP_NAME		: TREE	:= D( AS_NAME, UNIT_BODY );				--| NOM MIS DANS LE "SEPARATE"
+--      BEGIN
+--FOLLOW_SELECTORS:
+--        WHILE SEP_NAME.TY = DN_SELECTED LOOP						--| TANT QUE NOM INTERMEDIAIRE X.Y.Z.A
+--          SEP_NAME := D( AS_NAME, SEP_NAME );						--| SUIVRE LA CHAINE DES POINTS
+--        END LOOP FOLLOW_SELECTORS;
 
-        DECLARE
-          SUBUNIT_BODY	: TREE	:= D( AS_SUBUNIT_BODY, UNIT_BODY );	--| LE CORPS SEPARE
-          NAME		: TREE	:= D( AS_SOURCE_NAME, SUBUNIT_BODY );	--| LE NOM DU CORPS SEPARE
-        BEGIN
-          FILE_SYM := MAKE_FILE_SYM(
-	PRINT_NAME( D( LX_SYMREP, SEP_NAME ) ),						--| NOM PRIMAIRE LE NOM FINAL "A" DU X.Y.Z.A OU PARENT DIRECT
-	PRINT_NAME( D( LX_SYMREP, NAME ) )						--| NOM DU CORPS SEPARE LUI MEME
-	);
-        END;
-      END;
+--        DECLARE
+--          SUBUNIT_BODY	: TREE	:= D( AS_SUBUNIT_BODY, UNIT_BODY );	--| LE CORPS SEPARE
+--          NAME		: TREE	:= D( AS_SOURCE_NAME, SUBUNIT_BODY );	--| LE NOM DU CORPS SEPARE
+--        BEGIN
+--          FILE_SYM := MAKE_FILE_SYM(
+--	PRINT_NAME( D( LX_SYMREP, SEP_NAME ) ),						--| NOM PRIMAIRE LE NOM FINAL "A" DU X.Y.Z.A OU PARENT DIRECT
+--	PRINT_NAME( D( LX_SYMREP, NAME ) )						--| NOM DU CORPS SEPARE LUI MEME
+--	);
+--        END;
+--      END;
     END IF;
          
     D( XD_LIB_NAME, COMP_UNIT, FILE_SYM );						--| RANGER LE SYMBOLE DE NOM DANS LE XD_LIB_NAME DU NOEUD DN_COMPILATION_UNIT
@@ -507,121 +508,152 @@ INTEGRER_EN_FERMETURE:
       RETURN NAME;
     END IF;
   END UNSELECTED;
+
   --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE LOAD_WITH_ANCESTOR
-  PROCEDURE LOAD_WITH_ANCESTOR ( ANC_NAME :IN OUT TREE; ANC_PRISYM :OUT TREE ) IS
-    BASE_UNIT_SYM		: TREE;
-    ANC_UNIT		: TREE;
-    TEST_UNIT		: TREE;
-    ANC_ANC_NAME		: TREE;
-    USED_NAME_ID		: TREE;
+  --|	PROCEDURE INCLUDES_PARENTS
+  PROCEDURE INCLUDES_PARENTS ( SUBUNIT :TREE ) IS
+    PARENT_NAME_OUT_USED	: TREE	:= D( AS_NAME, SUBUNIT );				--| NAME PARENT DE LA SOUS-UNITE
+    ANCESTOR_SYM		: TREE;							--| SYM DE L ANCETRE DE LA SOUS-UNITE (DETERMINE EN FOND DE RECURSION)
+
+    FILE_CHN	: STRING(1..255);							--| CONTIENT LA CHAINE AA-BB-U
+    FILE_CHN_L	: NATURAL	:= 0;							--| LONGUEUR D ICELLE
+  --|-----------------------------------------------------------------------------------------------
+  --|	PROCEDURE INCLUDE_PARENT
+  PROCEDURE INCLUDE_PARENT ( PARENT_NAME_OUT_USED :IN OUT TREE ) IS
   BEGIN
 --|
---|	CAS SIMPLE NOM SEPARATE( X )
+--|	CAS DU SIMPLE NOM DANS LE SEPARATE( X ) (PARENT=ANCETRE)
 --|_________________________________________________________________________________________________
-    IF ANC_NAME.TY /= DN_SELECTED THEN							--| SIMPLE NOM DANS LE SEPARATE
-      BASE_UNIT_SYM := D( LX_SYMREP, ANC_NAME );
-      ANC_UNIT := LOAD_UNIT( PRINT_NAME( BASE_UNIT_SYM ), ".DCL" );				--| CHARGER l UNITE DU SEPARATE
+    IF PARENT_NAME_OUT_USED.TY /= DN_SELECTED THEN					--| SIMPLE NOM DANS LE SEPARATE OU ARRIVE EN BOUT DE RECURSION
 
-if debug_lib then put_line( "load_with_ancestor simple nom terme charge " & PRINT_NAME( BASE_UNIT_SYM ) ); end if;
+      ANCESTOR_SYM := D( LX_SYMREP, PARENT_NAME_OUT_USED );					--| ON A TROUVE L ANCETRE DU SEPARATE
 
-      IF ANC_UNIT /= TREE_VOID THEN							--| TROUVEE OK
-        IF D( AS_ALL_DECL, ANC_UNIT ).TY = DN_SUBPROGRAM_BODY THEN				--| SEPARE D UN CORPS DE SOUS-PROGRAMME
-          LIST( MAKE_FILE_SYM( PRINT_NAME( BASE_UNIT_SYM ), ".BDY" ), SINGLETON( ANC_UNIT ) );		--| CHAINER DANS LE LIB_INFO
-        ELSE
-          ANC_UNIT := LOAD_UNIT( PRINT_NAME( BASE_UNIT_SYM), ".BDY" );				--| SEPARE D UN PAQUET, CHARGER
+      DECLARE
+        ANCESTOR_NAME	: CONSTANT STRING	:= PRINT_NAME( ANCESTOR_SYM );
+        ANC_UNIT		: TREE		:= LOAD_UNIT ( ANCESTOR_NAME, ".DCL" );		--| CHARGER LA SPEC DE L UNITE DU SEPARATE
+      BEGIN
+        FILE_CHN( 1 .. ANCESTOR_NAME'LENGTH ) := ANCESTOR_NAME;
+        FILE_CHN_L := ANCESTOR_NAME'LENGTH;
+
+if debug_lib then put_line( "INCLUDE_PARENT simple nom terme charge " & ANCESTOR_NAME ); end if;
+
+        IF ANC_UNIT /= TREE_VOID THEN							--| DCL TROUVEE/CHARGEE OK
+          IF D( AS_ALL_DECL, ANC_UNIT ).TY = DN_SUBPROGRAM_BODY THEN				--| SI SEPARE D UN CORPS DE SOUS-PROGRAMME
+            LIST( MAKE_FILE_SYM( ANCESTOR_NAME, ".BDY" ), SINGLETON( ANC_UNIT ) );		--| CHAINER DANS LE LIB_INFO
+          ELSE
+            ANC_UNIT := LOAD_UNIT( ANCESTOR_NAME, ".BDY" );					--| SEPARE D UN PAQUET, CHARGER AUSSI LE CORPS
+          END IF;
         END IF;
-      END IF;
 
-      IF ANC_UNIT = TREE_VOID THEN
-        ERROR( ANC_NAME, "ANCETRE INTROUVABLE - "& PRINT_NAME( BASE_UNIT_SYM ) );
-        BASE_UNIT_SYM := TREE_VOID;
-      ELSE
-        INTEGRER_EN_FERMETURE_DES_WITH( ANC_UNIT );
-        ANC_NAME := MAKE_USED_NAME_ID( ANC_NAME );					--| LE ANC_NAME EST MODIFIE EN USED_NAME_ID
-        D( SM_DEFN, ANC_NAME, D( SM_FIRST, SON_1( D( AS_ALL_DECL, ANC_UNIT ) ) ) );
-      END IF;
+        IF ANC_UNIT = TREE_VOID THEN
+          ERROR( PARENT_NAME_OUT_USED, "ANCETRE INTROUVABLE - "& ANCESTOR_NAME);		--| LE DCL OU LE BDY N A PAS ETE TROUVE/CHARGE
+          ANCESTOR_SYM := TREE_VOID;
+        ELSE
+          INTEGRER_EN_FERMETURE_DES_WITH( ANC_UNIT );
+          PARENT_NAME_OUT_USED := MAKE_USED_NAME_ID( PARENT_NAME_OUT_USED );			--| LE PARENT_NAME EST MODIFIE EN USED_NAME
+          D( SM_DEFN, PARENT_NAME_OUT_USED , D( SM_FIRST, SON_1( D( AS_ALL_DECL, ANC_UNIT ) ) ) );
+        END IF;
+
+      END;
 --|
 --|	CHAINE DE NOMS POUR SEPARATE( X.Y.Z )
 --|_________________________________________________________________________________________________
     ELSE
 
-if debug_lib then put_line( "load_with_ancestor (chaine composee du separate) terme = "
- & PRINT_NAME( BASE_UNIT_SYM )
-);
-end if;
+      D( SM_EXP_TYPE, PARENT_NAME_OUT_USED, TREE_VOID );
 
-      D( SM_EXP_TYPE, ANC_NAME, TREE_VOID );
-      ANC_ANC_NAME := D( AS_NAME, ANC_NAME );						--| TIRER LE Y DU X.Y.Z
+      DECLARE
+        GRAND_PARENT_NAME_OUT_USED	: TREE	:= D( AS_NAME,       PARENT_NAME_OUT_USED );	--| TIRER LE Y DU X.Y.Z
+        PARENT_SYM			: TREE	:= D( AS_DESIGNATOR, PARENT_NAME_OUT_USED );
+        CUR_PARENT			: CONSTANT STRING	:= PRINT_NAME( D( LX_SYMREP, PARENT_SYM ) );
+      BEGIN
+        INCLUDE_PARENT( GRAND_PARENT_NAME_OUT_USED );					--| RECURSION
 
-      LOAD_WITH_ANCESTOR( ANC_ANC_NAME, BASE_UNIT_SYM );						--| RECURSION
-if debug_lib then put_line( "remonte base " & PRINT_NAME( BASE_UNIT_SYM ) ); end if;
+MAJ_FILE_CHN:
+        DECLARE
+	I_CAR_LIBRE	: NATURAL	:= FILE_CHN_L + 1;
+        BEGIN
+	FILE_CHN_L := FILE_CHN_L + CUR_PARENT'LENGTH + 1;				--| NOUVELLE LONGUEUR AVEC LE NOM PARENT ET UN TIRET
+	FILE_CHN( I_CAR_LIBRE .. FILE_CHN_L ) := '-' & CUR_PARENT;			--| COMPLETER LA CHAINE POUR LE NOM DE FICHIER
+        END MAJ_FILE_CHN;
 
-      D( AS_NAME, ANC_NAME, ANC_ANC_NAME );						--| REPORTER LE USED_NAME_ID
-					-- USED_NAME_ID'S
-      IF BASE_UNIT_SYM /= TREE_VOID THEN
-        TEST_UNIT := LOAD_UNIT( PRINT_NAME( BASE_UNIT_SYM ),
-		PRINT_NAME( D( LX_SYMREP, D( AS_DESIGNATOR, ANC_NAME ) ) )
-		);
+        D( AS_NAME, PARENT_NAME_OUT_USED, GRAND_PARENT_NAME_OUT_USED );			--| REPORTER LE USED_NAME_ID
 
-if debug_lib then put_line( "terme charge " & PRINT_NAME( BASE_UNIT_SYM ) ); end if;
+        IF ANCESTOR_SYM /= TREE_VOID THEN						--| ON A VU L ANCETRE ET PAS DE PROBLEME DEPUIS
 
-        IF TEST_UNIT = TREE_VOID THEN
-          ERROR( ANC_NAME, "SOUS-UNITE ANCETRE INTROUVABLE - "
-		& PRINT_NAME( D( LX_SYMREP, D( AS_DESIGNATOR, ANC_NAME ) ) ) );
-          BASE_UNIT_SYM := TREE_VOID;
-					-- (NOTE. COMPARE PRINTNAMES IN CASE IT IS STILL A TXTREP)
-        ELSIF PRINT_NAME( D( LX_SYMREP, UNSELECTED( ANC_ANC_NAME ) ) )
-                  /= PRINT_NAME( D( LX_SYMREP, UNSELECTED( D( AS_NAME, D( AS_ALL_DECL, TEST_UNIT ) ) ) ) )
-        THEN
-          ERROR( ANC_NAME, "NOMS ANCETRES EN CONFLIT - "
-		& PRINT_NAME( D( LX_SYMREP, UNSELECTED( D( AS_DESIGNATOR, ANC_NAME ) ) ) )
+ if debug_lib then put_line( "file_select_str " & FILE_CHN( 1.. FILE_CHN_L ) ); end if;
+
+	DECLARE
+            TEST_UNIT	: TREE	:= LOAD_UNIT( FILE_CHN( 1.. FILE_CHN_L ), ".SUB" );
+	BEGIN
+
+
+            IF TEST_UNIT = TREE_VOID THEN
+              ERROR( PARENT_NAME_OUT_USED, "SOUS-UNITE ANCETRE INTROUVABLE - "
+		& PRINT_NAME( D( LX_SYMREP, PARENT_SYM ) ) );
+              ANCESTOR_SYM := TREE_VOID;
+
+            ELSIF PRINT_NAME(
+		D( LX_SYMREP, UNSELECTED( GRAND_PARENT_NAME_OUT_USED ) ) )
+		/= PRINT_NAME( D( LX_SYMREP, UNSELECTED( D( AS_NAME, D( AS_ALL_DECL, TEST_UNIT ) ) ) ) )
+            THEN
+              ERROR( PARENT_NAME_OUT_USED, "NOMS ANCETRES EN CONFLIT - "
+		& PRINT_NAME( D( LX_SYMREP, UNSELECTED( PARENT_SYM ) ) )
                      );
-          BASE_UNIT_SYM := TREE_VOID;
-        ELSE
-          INTEGRER_EN_FERMETURE_DES_WITH( TEST_UNIT );
-          USED_NAME_ID := MAKE_USED_NAME_ID( D( AS_DESIGNATOR, ANC_NAME ) );
-          D( SM_DEFN, USED_NAME_ID, D( SM_FIRST, SON_1( D( AS_SUBUNIT_BODY, D( AS_ALL_DECL, TEST_UNIT ) ) ) ) );
-          D( AS_DESIGNATOR, ANC_NAME, USED_NAME_ID );
+              ANCESTOR_SYM := TREE_VOID;
+            ELSE
+              INTEGRER_EN_FERMETURE_DES_WITH( TEST_UNIT );
+	    DECLARE
+                USED_NAME	: TREE	:= MAKE_USED_NAME_ID( PARENT_SYM );
+	    BEGIN 
+	      D( SM_DEFN, USED_NAME, D( SM_FIRST, SON_1( D( AS_SUBUNIT_BODY, D( AS_ALL_DECL, TEST_UNIT ) ) ) ) );
+	      D( AS_DESIGNATOR, PARENT_NAME_OUT_USED, USED_NAME );
+	    END;
+            END IF;
+          END;
         END IF;
-      END IF;
 
-if debug_lib then put_line( "up prisym void" ); end if;
+      END;
 
     END IF;
-    ANC_PRISYM := BASE_UNIT_SYM;							--| REMONTER LE NOM D UNITE BASE
-  END LOAD_WITH_ANCESTOR;
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE WITH_FOR_ANCESTOR
-  PROCEDURE WITH_FOR_ANCESTOR ( SUBUNIT :TREE ) IS
-    ANC_NAME		: TREE	:= D( AS_NAME, SUBUNIT );				--| NOM OU CHAINE POINTEE DE NOMS DANS LE SEPARATE
-    ANC_PRISYM		: TREE;			-- RETURNED LX_SYMREP OF FIRST SELECTOR
-    UNIT			: TREE;
+  END INCLUDE_PARENT;
+
+
+
+
+
+
   BEGIN
-    LOAD_WITH_ANCESTOR( ANC_NAME, ANC_PRISYM );
-    D( AS_NAME, SUBUNIT, ANC_NAME );
+    INCLUDE_PARENT( PARENT_NAME_OUT_USED );						--| PARCOURS RECURSIF VERS L ANCETRE ET CHARGEMENTS EN RETOUR
+
+    D( AS_NAME, SUBUNIT, PARENT_NAME_OUT_USED );						--| USED_NAME_ID PROVENANT DU PARENT_NAME_OUT_USED
 --|
 --|		VERIFIER QUE S IL Y A UN FICHIER LIBRAIRIE CODE POUR LA SOUS-UNITE IL CONTIENT LE BON NOM
+--|	!!! CELA GENERE UN MESSAGE INDESIRABLE LA PREMIERE FOIS QU UNE SOUS UNITE EST COMPILEE. A REVOIR
 --|
-    IF ANC_PRISYM /= TREE_VOID AND THEN ANC_NAME.TY = DN_SELECTED THEN
-      UNIT := LOAD_UNIT( PRINT_NAME( ANC_PRISYM ),
-		PRINT_NAME( D( LX_SYMREP, SON_1( D( AS_SUBUNIT_BODY, SUBUNIT ) ) ) )
-		);
+--    IF ANCESTOR_SYM /= TREE_VOID AND THEN PARENT_NAME_OUT_USED.TY = DN_SELECTED THEN
 
-if debug_lib then put_line( "tester la presence d un fichier code pour pri=" & PRINT_NAME( ANC_PRISYM )
-& "sec=" & PRINT_NAME( D( LX_SYMREP, SON_1( D( AS_SUBUNIT_BODY, SUBUNIT ) ) ) )
-); end if;
- 
-     IF UNIT /= TREE_VOID THEN
-        IF PRINT_NAME( D( LX_SYMREP, D( AS_DESIGNATOR, ANC_NAME ) ) )
- 	/= PRINT_NAME( D( LX_SYMREP, D( AS_DESIGNATOR,  D( AS_NAME, D( AS_ALL_DECL, UNIT ) ) ) ) )
-        THEN
-          ERROR( SUBUNIT, "CONFLICTING SUBUNIT NAMES" );
-        END IF;
-      END IF;
-    END IF;
+--      DECLARE
+--        UNIT	: TREE	:= LOAD_UNIT( PRINT_NAME( ANCESTOR_SYM ),
+--		PRINT_NAME( D( LX_SYMREP, SON_1( D( AS_SUBUNIT_BODY, SUBUNIT ) ) ) )
+--		);
+--      BEGIN
 
-  END WITH_FOR_ANCESTOR;
+--if debug_lib then put_line( "tester la presence d un fichier code pour pri=" & PRINT_NAME( ANCESTOR_SYM )
+--& "sec=" & PRINT_NAME( D( LX_SYMREP, SON_1( D( AS_SUBUNIT_BODY, SUBUNIT ) ) ) )
+--); end if;
+
+--        IF UNIT /= TREE_VOID THEN
+--          IF PRINT_NAME( D( LX_SYMREP, D( AS_DESIGNATOR, PARENT_NAME_OUT_USED ) ) )
+-- 	  /= PRINT_NAME( D( LX_SYMREP, D( AS_DESIGNATOR,  D( AS_NAME, D( AS_ALL_DECL, UNIT ) ) ) ) )
+--          THEN
+--            ERROR( SUBUNIT, "CONFLICTING SUBUNIT NAMES" );
+--          END IF;
+--        END IF;
+--      END;
+
+--    END IF;
+  END INCLUDES_PARENTS;
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE CHECK_USE_CLAUSES
   PROCEDURE CHECK_USE_CLAUSES ( CONTEXT_LIST_IN :SEQ_TYPE; CONTEXT_ITEM :TREE ) IS
@@ -816,9 +848,9 @@ if debug_lib then put_line( "with_for_one_comp_unit load_unit : unit_pri = " & u
 --|_________________________________________________________________________________________________        
     ELSE
 
-if debug_lib then put_line( "with_for_one_comp_unit with_for_ancestor : unit_body = " ); PRINT_NOD.PRINT_NODE(UNIT_BODY); end if;
+if debug_lib then put_line( "with_for_one_comp_unit INCLUDES_PARENTS : unit_body = " ); PRINT_NOD.PRINT_NODE(UNIT_BODY); end if;
 
-       WITH_FOR_ANCESTOR( UNIT_BODY );
+       INCLUDES_PARENTS( UNIT_BODY );						--| CHARGER TOUT CE QUI EST ENTRE LA SOUS UNITE ET SON ANCETRE Y COMPRIS
     END IF;
       
     CUR_TIMESTAMP := CUR_TIMESTAMP + 1;							--| MARQUEUR TEMPOREL
