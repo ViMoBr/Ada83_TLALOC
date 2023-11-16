@@ -59,7 +59,6 @@ PROCEDURE PAR_PHASE ( NOM_TEXTE, LIB_PATH :STRING ) IS
   --|		PROCEDURE GET_TOKEN
   --|-----------------------------------------------------------------------------------------------
   PROCEDURE GET_TOKEN IS								--| SEULE PROCEDURE APPELANT LEX_SCAN
---    CH	: CHARACTER;
 
     --|-----------------------------------------------------------------------------------------------
     --|		PROCEDURE GET_SOURCE_LINE
@@ -67,34 +66,8 @@ PROCEDURE PAR_PHASE ( NOM_TEXTE, LIB_PATH :STRING ) IS
     PROCEDURE GET_SOURCE_LINE IS
     BEGIN
       LINE_COUNT := LINE_COUNT + 1;							--| ON VA PRENDRE UNE LIGNE DE PLUS
-
       GET_LINE( IFILE, SLINE.BDY, SLINE.LEN );
       LAST := SLINE.LEN;
-
-
---      LAST := 0;									--| AUCUN CARACTERE ENCORE PRIS
---GET_CHARS:									--| REMPLIR SLINE JUSQU'A FIN DE LIGNE OU FIN DE SLINE OU COMMENTAIRE
---      WHILE NOT END_OF_LINE( IFILE )  LOOP						--| TANT QUE PAS EN FIN DE LIGNE
---        LAST := LAST + 1;								--| ON VA PRENDRE UN CARACTERE DE PLUS
---        GET( IFILE, SLINE.BDY( LAST ) );						--| LE PRENDRE EFFECTIVEMENT
-
---        IF SLINE.BDY( LAST ) = '-' THEN							--| SI C EST UN '-'
---          GET( IFILE, CH );								--| PRENDRE UN AUTRE
---          IF CH = '-' THEN								--| SI C EST ENCORE UN '-'
---            LAST := LAST - 1;								--| RECULER L INDICE DE DERNIER CARACTERE POUR ELIMINER LE '-' PRECEDENT
---            EXIT GET_CHARS;								--| ET SORTIR DE LA LECTURE DE LIGNE (PASSER LES COMMENTAIRES)
---          END IF;
-
---          LAST := LAST + 1;								--| PAS UN '-' INCREMENTER L INDICE DE DERNIER CARACTERE
---          SLINE.BDY( LAST ) := CH;							--| ET STOCKER LE CARACTERE DIFFERANT DE '-'
---        END IF;
---        EXIT WHEN LAST = SLINE.BDY'LAST;						--| SORTIE FORCEE SI ON ARRIVE EN FIN DE TAMPON LIGNE
---      END LOOP GET_CHARS;
-
---      IF NOT END_OF_FILE( IFILE ) THEN							--| SI PAS EN FIN DE FICHIER
---        SKIP_LINE( IFILE );								--| SAUTER LA FIN DE LIGNE
---      END IF;
---      SLINE.LEN := LAST;								--| LONGUEUR DE LA LIGNE LUE
       LEX.COL := 0;									--| POUR LE LEXEUR RETOUR COLONNE 0
     END GET_SOURCE_LINE;
 
@@ -125,7 +98,7 @@ CHERCHE_LIGNE_PLEINE:
 
         IF LAST = MAX_STRING AND THEN NOT END_OF_LINE( IFILE ) THEN				--| ON EST SORTI SUR BUTEE EN FIN DE TAMPON
           ERROR( MAKE_SOURCE_POSITION( SOURCE_LINE, SRCCOL_IDX( MAX_STRING ) ),
-		"LINE TOO LONG FOR IMPLEMENTATION" );
+		"LIGNE TROP LONGUE" );
         END IF;
       END IF;
 
