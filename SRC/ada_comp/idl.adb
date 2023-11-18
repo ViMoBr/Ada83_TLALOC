@@ -454,6 +454,8 @@ begin
   CLOSE( CTL );
   return LINE( 1..LEN );
 end GET_LIB_PREFIX;
+
+procedure stop is begin null; end;	--| POUR DEBUG   
    
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 --|		PROCEDURE PAR_PHASE
@@ -479,6 +481,6 @@ procedure WRITE_LIB is separate;
 --|		PROCEDURE PRETTY_DIANA
 --|
 procedure PRETTY_DIANA ( OPTION :CHARACTER := 'U' ) is separate;
-       
+
 --|-------------------------------------------------------------------------------------------------
 end IDL;
