@@ -1,0 +1,12 @@
+project Ada_Classic is
+
+   for Source_Dirs use ("SRC", "SRC/ada_comp", "SRC/communs", "SRC/par_phase", "SRC/sem_phase", "SRC/code_gen", "SRC/pretty", "EXE/IDL_TOOLS");
+   for Object_Dir use "build";
+   for Main use ("ada_comp.adb");
+
+   package Pretty_Printer is
+      for Default_Switches ("ada") use ("-i2", "-M255", "-aU", "-nU", "-pU", "-c0", "--no-separate-is", "--no-separate-loop-then", "-l3");
+   end Pretty_Printer;
+
+end Ada_Classic;
+

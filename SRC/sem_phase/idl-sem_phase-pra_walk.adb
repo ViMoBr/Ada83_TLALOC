@@ -1,586 +1,381 @@
-    SEPARATE ( IDL.SEM_PHASE )
+separate (IDL.SEM_PHASE)
     --|----------------------------------------------------------------------------------------------
-    --|	PRA_WALK
+    --| PRA_WALK
     --|----------------------------------------------------------------------------------------------
-    PACKAGE BODY PRA_WALK IS
-      USE PRENAME;
-      USE VIS_UTIL;
-      USE REQ_UTIL;
-      USE DEF_UTIL;
-      USE EXP_TYPE;
-      USE EXPRESO;
-      USE SET_UTIL;
-      USE NOD_WALK;
-   
-      PRAGMA_ERROR: EXCEPTION;
-   
-       PROCEDURE WALK_PRAGMA_ARGUMENTS(USED_NAME_ID, GEN_ASSOC_S: TREE; H:
-                H_TYPE);
-   
-       PROCEDURE GET_ARGUMENT_NAME
-                ( USED_NAME_ID: 	TREE
-                ; ASSOC_LIST:		IN OUT SEQ_TYPE
-                ; ASSOC_OUT:		OUT TREE
-                ; NEW_ASSOC_LIST:	IN OUT SEQ_TYPE
-                ; ARGUMENT_LIST:	SEQ_TYPE );
-   
-       PROCEDURE GET_ARGUMENT_EXP
-                ( USED_NAME_ID: 	TREE
-                ; ASSOC_LIST:		IN OUT SEQ_TYPE
-                ; ASSOC_OUT:		OUT TREE );
-   
-       PROCEDURE MUST_BE_SIMPLE_NAME (EXP: TREE);
-   
-       PROCEDURE MUST_BE_NAME (EXP: TREE);
-   
-   
-       PROCEDURE WALK_PRAGMA
-                        ( USED_NAME_ID: TREE
-                        ; GEN_ASSOC_S:	TREE
-                        ; H:		H_TYPE )
-                        IS
-         DEFLIST: SEQ_TYPE := LIST(D(LX_SYMREP,USED_NAME_ID));
-         DEF: TREE;
-         PRAGMA_DEFN: TREE := TREE_VOID;
-      BEGIN
-      
+package body PRA_WALK is
+  use PRENAME;
+  use VIS_UTIL;
+  use REQ_UTIL;
+  use DEF_UTIL;
+  use EXP_TYPE;
+  use EXPRESO;
+  use SET_UTIL;
+  use NOD_WALK;
+
+  PRAGMA_ERROR : exception;
+
+  procedure WALK_PRAGMA_ARGUMENTS (USED_NAME_ID, GEN_ASSOC_S : TREE; H : H_TYPE);
+
+  procedure GET_ARGUMENT_NAME (USED_NAME_ID : TREE; ASSOC_LIST : in out SEQ_TYPE; ASSOC_OUT : out TREE; NEW_ASSOC_LIST : in out SEQ_TYPE; ARGUMENT_LIST : SEQ_TYPE);
+
+  procedure GET_ARGUMENT_EXP (USED_NAME_ID : TREE; ASSOC_LIST : in out SEQ_TYPE; ASSOC_OUT : out TREE);
+
+  procedure MUST_BE_SIMPLE_NAME (EXP : TREE);
+
+  procedure MUST_BE_NAME (EXP : TREE);
+
+  procedure WALK_PRAGMA (USED_NAME_ID : TREE; GEN_ASSOC_S : TREE; H : H_TYPE) is
+    DEFLIST     : SEQ_TYPE := LIST (D (LX_SYMREP, USED_NAME_ID));
+    DEF         : TREE;
+    PRAGMA_DEFN : TREE     := TREE_VOID;
+  begin
+
                 -- FIND THE PRAGMA_ID
-         WHILE NOT IS_EMPTY(DEFLIST) LOOP
-            POP(DEFLIST, DEF);
-            PRAGMA_DEFN := D(XD_SOURCE_NAME, DEF);
-            IF PRAGMA_DEFN.TY = DN_PRAGMA_ID THEN
-               EXIT;
-            ELSE
-               PRAGMA_DEFN := TREE_VOID;
-            END IF;
-         END LOOP;
-      
+    while not IS_EMPTY (DEFLIST) loop
+      POP (DEFLIST, DEF);
+      PRAGMA_DEFN := D (XD_SOURCE_NAME, DEF);
+      if PRAGMA_DEFN.TY = DN_PRAGMA_ID then
+        exit;
+      else
+        PRAGMA_DEFN := TREE_VOID;
+      end if;
+    end loop;
+
                 -- STORE THE PRAGMA_ID (OR VOID)
-         D(SM_DEFN, USED_NAME_ID, PRAGMA_DEFN);
-      
+    D (SM_DEFN, USED_NAME_ID, PRAGMA_DEFN);
+
                 -- IF PRAGMA_ID FOUND
-         IF PRAGMA_DEFN /= TREE_VOID THEN
-         
+    if PRAGMA_DEFN /= TREE_VOID then
+
                         -- SUPPRESS FATAL ERRORS
-            PRAGMA_CONTEXT := USED_NAME_ID;
-         
+      PRAGMA_CONTEXT := USED_NAME_ID;
+
                         -- WALK THE ARGUMENTS
-            WALK_PRAGMA_ARGUMENTS(USED_NAME_ID, GEN_ASSOC_S, H);
-         
+      WALK_PRAGMA_ARGUMENTS (USED_NAME_ID, GEN_ASSOC_S, H);
+
                         -- ENABLE FATAL ERRORS
-            PRAGMA_CONTEXT := TREE_VOID;
-         
+      PRAGMA_CONTEXT := TREE_VOID;
+
                         -- IF ERROR IN PRAGMA, PUT OUT IGNORED MESSAGE
-            IF D(SM_DEFN, USED_NAME_ID) = TREE_VOID THEN
-               RAISE PRAGMA_ERROR;
-            END IF;
-         
+      if D (SM_DEFN, USED_NAME_ID) = TREE_VOID then
+        raise PRAGMA_ERROR;
+      end if;
+
                         -- ELSE -- SINCE PRAGMA_ID NOT FOUND
-         ELSE
-         
+    else
+
                         -- PUT OUT ERROR
-            WARNING(D(LX_SRCPOS,USED_NAME_ID)
-                                , "PRAGMA NOT KNOWN TO IMPLEMENTATION - "
-                                & PRINT_NAME ( D(LX_SYMREP,USED_NAME_ID)) );
-         END IF;
-      
-          EXCEPTION
-         
+      WARNING (D (LX_SRCPOS, USED_NAME_ID), "PRAGMA NOT KNOWN TO IMPLEMENTATION - " & PRINT_NAME (D (LX_SYMREP, USED_NAME_ID)));
+    end if;
+
+  exception
+
                 -- IN CASE OF ERROR IN ARGUMENT EVALUATION
-            WHEN PRAGMA_ERROR =>
-            
+    when PRAGMA_ERROR =>
+
                         -- CLEAR THE PRAGMA_ID
-               D(SM_DEFN, USED_NAME_ID, TREE_VOID);
-            
+      D (SM_DEFN, USED_NAME_ID, TREE_VOID);
+
                         -- ENABLE FATAL ERRORS
-               PRAGMA_CONTEXT := TREE_VOID;
-            
-               WARNING(D(LX_SRCPOS,USED_NAME_ID)
-                                , "PRAGMA IGNORED - "
-                                & PRINT_NAME ( D(LX_SYMREP,USED_NAME_ID)) );
-      END WALK_PRAGMA;
-   
-   
-       PROCEDURE WALK_PRAGMA_ARGUMENTS(USED_NAME_ID, GEN_ASSOC_S: TREE; H:
-                        H_TYPE)
-                        IS
-         PRAGMA_ID:	TREE := D(SM_DEFN, USED_NAME_ID);
-         ARGUMENT_ID_LIST: SEQ_TYPE := LIST(D(SM_ARGUMENT_ID_S,
-                                PRAGMA_ID));
-         ASSOC_LIST:	SEQ_TYPE := LIST(GEN_ASSOC_S);
-         ASSOC_NODE:	TREE;
-         ASSOC_EXP:	TREE;
-         ASSOC_TYPE:	TREE;
-         DEFSET: 	DEFSET_TYPE;
-         DEFINTERP:	DEFINTERP_TYPE;
-         TYPESET:	TYPESET_TYPE;
-         DEF:		TREE;
-         ID:		TREE;
-         IDLIST: 	SEQ_TYPE := (TREE_NIL,TREE_NIL);
-         NEW_ASSOC_LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);
-      BEGIN
-      
-         CASE DEFINED_PRAGMAS'VAL ( DI(XD_POS,D(SM_DEFN,USED_NAME_ID)) ) IS
-         
-            WHEN CONTROLLED =>
+      PRAGMA_CONTEXT := TREE_VOID;
+
+      WARNING (D (LX_SRCPOS, USED_NAME_ID), "PRAGMA IGNORED - " & PRINT_NAME (D (LX_SYMREP, USED_NAME_ID)));
+  end WALK_PRAGMA;
+
+  procedure WALK_PRAGMA_ARGUMENTS (USED_NAME_ID, GEN_ASSOC_S : TREE; H : H_TYPE) is
+    PRAGMA_ID        : TREE     := D (SM_DEFN, USED_NAME_ID);
+    ARGUMENT_ID_LIST : SEQ_TYPE := LIST (D (SM_ARGUMENT_ID_S, PRAGMA_ID));
+    ASSOC_LIST       : SEQ_TYPE := LIST (GEN_ASSOC_S);
+    ASSOC_NODE       : TREE;
+    ASSOC_EXP        : TREE;
+    ASSOC_TYPE       : TREE;
+    DEFSET           : DEFSET_TYPE;
+    DEFINTERP        : DEFINTERP_TYPE;
+    TYPESET          : TYPESET_TYPE;
+    DEF              : TREE;
+    ID               : TREE;
+    IDLIST           : SEQ_TYPE := (TREE_NIL, TREE_NIL);
+    NEW_ASSOC_LIST   : SEQ_TYPE := (TREE_NIL, TREE_NIL);
+  begin
+
+    case DEFINED_PRAGMAS'VAL (DI (XD_POS, D (SM_DEFN, USED_NAME_ID))) is
+
+      when CONTROLLED =>
                                 -- $$$$ IMMEDIATELY WITHIN DECLARATIVE PART OR PACKAGE SPECIFICATION
-               GET_ARGUMENT_EXP(USED_NAME_ID,ASSOC_LIST,
-                                        ASSOC_EXP);
-               MUST_BE_SIMPLE_NAME(ASSOC_EXP);
-               ASSOC_EXP := WALK_TYPE_MARK(ASSOC_EXP);
-               NEW_ASSOC_LIST := APPEND(NEW_ASSOC_LIST,
-                                        ASSOC_EXP);
-               ASSOC_TYPE := GET_BASE_STRUCT(ASSOC_EXP);
-               IF ASSOC_TYPE.TY /= DN_ACCESS
-                                                OR ELSE D(SM_DERIVED,
-                                                ASSOC_TYPE) /= TREE_VOID THEN
-                  ERROR(D(LX_SRCPOS,ASSOC_EXP),
-                                                "CONTROLLED NOT ALLOWED FOR TYPE");
-               ELSIF D(XD_REGION, D(XD_SOURCE_NAME,
-                                                        ASSOC_TYPE))
-                                                /= D(XD_SOURCE_NAME,
-                                                H.REGION_DEF)
-                                                THEN
-                  ERROR(D(LX_SRCPOS,ASSOC_EXP),
-                                                "CONTROLLED NOT ALLOWED HERE");
-               ELSE
-                  DB(SM_IS_CONTROLLED, ASSOC_TYPE,
-                                                TRUE);
-               END IF;
-         
-            WHEN ELABORATE =>
+        GET_ARGUMENT_EXP (USED_NAME_ID, ASSOC_LIST, ASSOC_EXP);
+        MUST_BE_SIMPLE_NAME (ASSOC_EXP);
+        ASSOC_EXP      := WALK_TYPE_MARK (ASSOC_EXP);
+        NEW_ASSOC_LIST := APPEND (NEW_ASSOC_LIST, ASSOC_EXP);
+        ASSOC_TYPE     := GET_BASE_STRUCT (ASSOC_EXP);
+        if ASSOC_TYPE.TY /= DN_ACCESS or else D (SM_DERIVED, ASSOC_TYPE) /= TREE_VOID then
+          ERROR (D (LX_SRCPOS, ASSOC_EXP), "CONTROLLED NOT ALLOWED FOR TYPE");
+        elsif D (XD_REGION, D (XD_SOURCE_NAME, ASSOC_TYPE)) /= D (XD_SOURCE_NAME, H.REGION_DEF) then
+          ERROR (D (LX_SRCPOS, ASSOC_EXP), "CONTROLLED NOT ALLOWED HERE");
+        else
+          DB (SM_IS_CONTROLLED, ASSOC_TYPE, True);
+        end if;
+
+      when ELABORATE =>
                                 -- $$$$ ONLY AFTER CONTEXT CLAUSE; MUST BE IN CONTEXT CLAUSE
-               LOOP
-                  GET_ARGUMENT_EXP(USED_NAME_ID,
-                                                ASSOC_LIST,ASSOC_EXP);
-                  MUST_BE_SIMPLE_NAME(ASSOC_EXP);
-                  FIND_DIRECT_VISIBILITY(ASSOC_EXP,
-                                                DEFSET);
-                  REQUIRE_UNIQUE_DEF(ASSOC_EXP,
-                                                DEFSET);
-                  ASSOC_EXP := RESOLVE_NAME(
-                                                ASSOC_EXP, GET_THE_ID(
-                                                        DEFSET));
-                  NEW_ASSOC_LIST := APPEND(
-                                                NEW_ASSOC_LIST, ASSOC_EXP);
-                  IF D(SM_DEFN,ASSOC_EXP).TY NOT IN
-                                                        CLASS_NON_TASK_NAME
-                                                        AND D(SM_DEFN,
-                                                        ASSOC_EXP) /=
-                                                        TREE_VOID
-                                                        THEN
-                     ERROR(D(LX_SRCPOS,
-                                                                ASSOC_EXP)
-                                                        ,
-                                                        "LIBRARY UNIT NAME REQUIRED");
-                  END IF;
-                  EXIT
-                                                WHEN IS_EMPTY(ASSOC_LIST);
-               END LOOP;
-         
-            WHEN INLINE =>
+        loop
+          GET_ARGUMENT_EXP (USED_NAME_ID, ASSOC_LIST, ASSOC_EXP);
+          MUST_BE_SIMPLE_NAME (ASSOC_EXP);
+          FIND_DIRECT_VISIBILITY (ASSOC_EXP, DEFSET);
+          REQUIRE_UNIQUE_DEF (ASSOC_EXP, DEFSET);
+          ASSOC_EXP      := RESOLVE_NAME (ASSOC_EXP, GET_THE_ID (DEFSET));
+          NEW_ASSOC_LIST := APPEND (NEW_ASSOC_LIST, ASSOC_EXP);
+          if D (SM_DEFN, ASSOC_EXP).TY not in CLASS_NON_TASK_NAME and D (SM_DEFN, ASSOC_EXP) /= TREE_VOID then
+            ERROR (D (LX_SRCPOS, ASSOC_EXP), "LIBRARY UNIT NAME REQUIRED");
+          end if;
+          exit when IS_EMPTY (ASSOC_LIST);
+        end loop;
+
+      when INLINE =>
                                 -- $$$$ AT PLACE OF DECLARATIVE ITEM OR FOLLOWING LIBRARY UNIT
-               LOOP
-                  GET_ARGUMENT_EXP(USED_NAME_ID,
-                                                ASSOC_LIST,ASSOC_EXP);
-                  MUST_BE_SIMPLE_NAME(ASSOC_EXP);
-                  FIND_DIRECT_VISIBILITY(ASSOC_EXP,
-                                                DEFSET);
-                  WHILE NOT IS_EMPTY(DEFSET) LOOP
-                     POP(DEFSET, DEFINTERP);
-                     DEF := GET_DEF(DEFINTERP);
-                     ID := D(XD_SOURCE_NAME,
-                                                        DEF);
-                     IF D(XD_REGION_DEF,DEF) =
-                                                                H.REGION_DEF
-                                                                AND THEN (
-                                                                ID.TY IN
-                                                                CLASS_SUBPROG_NAME
-                                                                OR ELSE (
-                                                                        
-                                                                                ID.TY =
-                                                                        DN_GENERIC_ID
-                                                                        AND THEN
-                                                                        
-                                                                                D(
-                                                                                        SM_SPEC,
-                                                                                        ID).TY
-                                                                        IN
-                                                                        DN_PROCEDURE_SPEC
-                                                                        ..
-                                                                        DN_FUNCTION_SPEC))
-                                                                THEN
-                        IDLIST := APPEND(
-                                                                IDLIST, ID);
-                        DB(SM_IS_INLINE,
-                                                                ID, TRUE);
-                     END IF;
-                  END LOOP;
-                  IF IS_EMPTY(IDLIST) THEN
-                     ERROR(D(LX_SRCPOS,
-                                                                ASSOC_EXP),
-                                                        "NO SUCH SUBPROGRAM");
-                  END IF;
-                  D(SM_DEFN,ASSOC_EXP,CAST_TREE(
-                                                        IDLIST));
-                  ASSOC_EXP :=
-                                                MAKE_USED_NAME_ID_FROM_OBJECT(
-                                                ASSOC_EXP);
-                  NEW_ASSOC_LIST := APPEND(
-                                                NEW_ASSOC_LIST, ASSOC_EXP);
-                  EXIT
-                                                WHEN IS_EMPTY(ASSOC_LIST);
-               END LOOP;
-         
-            WHEN INTERFACE =>
+        loop
+          GET_ARGUMENT_EXP (USED_NAME_ID, ASSOC_LIST, ASSOC_EXP);
+          MUST_BE_SIMPLE_NAME (ASSOC_EXP);
+          FIND_DIRECT_VISIBILITY (ASSOC_EXP, DEFSET);
+          while not IS_EMPTY (DEFSET) loop
+            POP (DEFSET, DEFINTERP);
+            DEF := GET_DEF (DEFINTERP);
+            ID  := D (XD_SOURCE_NAME, DEF);
+            if D (XD_REGION_DEF, DEF) = H.REGION_DEF and then (ID.TY in CLASS_SUBPROG_NAME or else (
+ID.TY = DN_GENERIC_ID and then
+D (SM_SPEC, ID).TY in DN_PROCEDURE_SPEC .. DN_FUNCTION_SPEC)) then
+              IDLIST := APPEND (IDLIST, ID);
+              DB (SM_IS_INLINE, ID, True);
+            end if;
+          end loop;
+          if IS_EMPTY (IDLIST) then
+            ERROR (D (LX_SRCPOS, ASSOC_EXP), "NO SUCH SUBPROGRAM");
+          end if;
+          D (SM_DEFN, ASSOC_EXP, CAST_TREE (IDLIST));
+          ASSOC_EXP      := MAKE_USED_NAME_ID_FROM_OBJECT (ASSOC_EXP);
+          NEW_ASSOC_LIST := APPEND (NEW_ASSOC_LIST, ASSOC_EXP);
+          exit when IS_EMPTY (ASSOC_LIST);
+        end loop;
+
+      when INTERFACE =>
                                 -- $$$$ AT PLACE OF DECLARATIVE ITEM OR FOLLOWING LIBRARY UNIT SPEC
-               GET_ARGUMENT_NAME
-                                        ( USED_NAME_ID
-                                        , ASSOC_LIST
-                                        , ASSOC_EXP
-                                        , NEW_ASSOC_LIST
-                                        , ARGUMENT_ID_LIST );
-               GET_ARGUMENT_EXP(USED_NAME_ID,ASSOC_LIST,
-                                        ASSOC_EXP);
-               MUST_BE_NAME(ASSOC_EXP);
-               FIND_VISIBILITY(ASSOC_EXP, DEFSET);
-               WHILE NOT IS_EMPTY(DEFSET) LOOP
-                  POP(DEFSET, DEFINTERP);
-                  DEF := GET_DEF(DEFINTERP);
-                  ID := D(XD_SOURCE_NAME, DEF);
-                  IF D(XD_REGION_DEF,DEF) =
-                                                        H.REGION_DEF
-                                                        AND THEN ID.TY IN
-                                                        CLASS_SUBPROG_NAME
-                                                        THEN
-                     IDLIST := APPEND(IDLIST,
-                                                        ID);
-                     IF D(XD_BODY,ID) /=
-                                                                TREE_VOID
-                                                                OR ELSE D(
-                                                                XD_STUB,
-                                                                ID) /=
-                                                                TREE_VOID THEN
-                        ERROR(D(LX_SRCPOS,
-                                                                        ASSOC_EXP),
-                                                                "BODY ALREADY GIVEN");
-                        RAISE PRAGMA_ERROR;
-                     END IF;
-                  END IF;
-               END LOOP;
-               IF IS_EMPTY(IDLIST) THEN
-                  ERROR(D(LX_SRCPOS,ASSOC_EXP),
-                                                "NO SUCH SUBPROGRAM");
-               END IF;
-               D(SM_DEFN,ASSOC_EXP,CAST_TREE(IDLIST));
-               ASSOC_EXP := MAKE_USED_NAME_ID_FROM_OBJECT(
-                                        ASSOC_EXP);
-               NEW_ASSOC_LIST := APPEND(NEW_ASSOC_LIST,
-                                        ASSOC_EXP);
-               WHILE NOT IS_EMPTY(IDLIST) LOOP
-                  POP(IDLIST,ID);
-                  D(SM_INTERFACE, ID, D(SM_DEFN,
-                                                        HEAD(
-                                                                NEW_ASSOC_LIST)));
-               END LOOP;
-         
-            WHEN LIST =>
+        GET_ARGUMENT_NAME (USED_NAME_ID, ASSOC_LIST, ASSOC_EXP, NEW_ASSOC_LIST, ARGUMENT_ID_LIST);
+        GET_ARGUMENT_EXP (USED_NAME_ID, ASSOC_LIST, ASSOC_EXP);
+        MUST_BE_NAME (ASSOC_EXP);
+        FIND_VISIBILITY (ASSOC_EXP, DEFSET);
+        while not IS_EMPTY (DEFSET) loop
+          POP (DEFSET, DEFINTERP);
+          DEF := GET_DEF (DEFINTERP);
+          ID  := D (XD_SOURCE_NAME, DEF);
+          if D (XD_REGION_DEF, DEF) = H.REGION_DEF and then ID.TY in CLASS_SUBPROG_NAME then
+            IDLIST := APPEND (IDLIST, ID);
+            if D (XD_BODY, ID) /= TREE_VOID or else D (XD_STUB, ID) /= TREE_VOID then
+              ERROR (D (LX_SRCPOS, ASSOC_EXP), "BODY ALREADY GIVEN");
+              raise PRAGMA_ERROR;
+            end if;
+          end if;
+        end loop;
+        if IS_EMPTY (IDLIST) then
+          ERROR (D (LX_SRCPOS, ASSOC_EXP), "NO SUCH SUBPROGRAM");
+        end if;
+        D (SM_DEFN, ASSOC_EXP, CAST_TREE (IDLIST));
+        ASSOC_EXP      := MAKE_USED_NAME_ID_FROM_OBJECT (ASSOC_EXP);
+        NEW_ASSOC_LIST := APPEND (NEW_ASSOC_LIST, ASSOC_EXP);
+        while not IS_EMPTY (IDLIST) loop
+          POP (IDLIST, ID);
+          D (SM_INTERFACE, ID, D (SM_DEFN, HEAD (NEW_ASSOC_LIST)));
+        end loop;
+
+      when LIST =>
                                 -- $$$$ NOT GENERATING LISTING
-               GET_ARGUMENT_NAME
-                                        ( USED_NAME_ID
-                                        , ASSOC_LIST
-                                        , ASSOC_EXP
-                                        , NEW_ASSOC_LIST
-                                        , ARGUMENT_ID_LIST );
-         
-            WHEN MEMORY_SIZE =>
-               ERROR(D(LX_SRCPOS,USED_NAME_ID),
-                                        "PRAGMA MEMORY_SIZE NOT SUPPORTED");
-               GET_ARGUMENT_EXP( USED_NAME_ID, ASSOC_LIST,
-                                        ASSOC_EXP );
-         
-            WHEN OPTIMIZE =>
-               GET_ARGUMENT_NAME
-                                        ( USED_NAME_ID
-                                        , ASSOC_LIST
-                                        , ASSOC_EXP
-                                        , NEW_ASSOC_LIST
-                                        , ARGUMENT_ID_LIST );
-         
-            WHEN PACK =>
+        GET_ARGUMENT_NAME (USED_NAME_ID, ASSOC_LIST, ASSOC_EXP, NEW_ASSOC_LIST, ARGUMENT_ID_LIST);
+
+      when MEMORY_SIZE =>
+        ERROR (D (LX_SRCPOS, USED_NAME_ID), "PRAGMA MEMORY_SIZE NOT SUPPORTED");
+        GET_ARGUMENT_EXP (USED_NAME_ID, ASSOC_LIST, ASSOC_EXP);
+
+      when OPTIMIZE =>
+        GET_ARGUMENT_NAME (USED_NAME_ID, ASSOC_LIST, ASSOC_EXP, NEW_ASSOC_LIST, ARGUMENT_ID_LIST);
+
+      when PACK =>
                                 -- $$$$ POSITIONS AS FOR REPRESENTATION CLAUSE; BEFORE REP ATTR
-               GET_ARGUMENT_EXP(USED_NAME_ID,ASSOC_LIST,
-                                        ASSOC_EXP);
-               MUST_BE_SIMPLE_NAME(ASSOC_EXP);
-               ASSOC_EXP := WALK_TYPE_MARK(ASSOC_EXP);
-               NEW_ASSOC_LIST := APPEND(NEW_ASSOC_LIST,
-                                        ASSOC_EXP);
-               ASSOC_TYPE := GET_BASE_STRUCT(ASSOC_EXP);
-               IF ASSOC_TYPE.TY NOT IN DN_ARRAY ..
-                                                DN_RECORD THEN
-                  ERROR(D(LX_SRCPOS,ASSOC_EXP),
-                                                "PACK NOT ALLOWED FOR TYPE");
-               ELSIF D(XD_REGION, D(XD_SOURCE_NAME,
-                                                        ASSOC_TYPE))
-                                                /= D(XD_SOURCE_NAME,
-                                                H.REGION_DEF)
-                                                THEN
-                  ERROR(D(LX_SRCPOS,ASSOC_EXP),
-                                                "PACK NOT ALLOWED HERE");
-               ELSE
-                  DB(SM_IS_PACKED, ASSOC_TYPE, TRUE);
-               END IF;
-         
-            WHEN PAGE =>
-               NULL;
-         
-            WHEN PRIORITY =>
+        GET_ARGUMENT_EXP (USED_NAME_ID, ASSOC_LIST, ASSOC_EXP);
+        MUST_BE_SIMPLE_NAME (ASSOC_EXP);
+        ASSOC_EXP      := WALK_TYPE_MARK (ASSOC_EXP);
+        NEW_ASSOC_LIST := APPEND (NEW_ASSOC_LIST, ASSOC_EXP);
+        ASSOC_TYPE     := GET_BASE_STRUCT (ASSOC_EXP);
+        if ASSOC_TYPE.TY not in DN_ARRAY .. DN_RECORD then
+          ERROR (D (LX_SRCPOS, ASSOC_EXP), "PACK NOT ALLOWED FOR TYPE");
+        elsif D (XD_REGION, D (XD_SOURCE_NAME, ASSOC_TYPE)) /= D (XD_SOURCE_NAME, H.REGION_DEF) then
+          ERROR (D (LX_SRCPOS, ASSOC_EXP), "PACK NOT ALLOWED HERE");
+        else
+          DB (SM_IS_PACKED, ASSOC_TYPE, True);
+        end if;
+
+      when PAGE =>
+        null;
+
+      when PRIORITY =>
                                 -- $$$$ TASK OR MAIN PROGRAM
-               GET_ARGUMENT_EXP(USED_NAME_ID,ASSOC_LIST,
-                                        ASSOC_EXP);
-               EVAL_EXP_TYPES(ASSOC_EXP, TYPESET);
-               REQUIRE_TYPE(PREDEFINED_INTEGER, ASSOC_EXP,
-                                        TYPESET);
-               ASSOC_EXP := RESOLVE_EXP(ASSOC_EXP,
-                                        TYPESET);
-               IF GET_STATIC_VALUE(ASSOC_EXP) =
-                                                TREE_VOID THEN
-                  ERROR(D(LX_SRCPOS,ASSOC_EXP),
-                                                "PRIORITY MUST BE STATIC");
-               END IF;
-               NEW_ASSOC_LIST := APPEND(NEW_ASSOC_LIST,
-                                        ASSOC_EXP);
-         
-            WHEN SHARED =>
+        GET_ARGUMENT_EXP (USED_NAME_ID, ASSOC_LIST, ASSOC_EXP);
+        EVAL_EXP_TYPES (ASSOC_EXP, TYPESET);
+        REQUIRE_TYPE (PREDEFINED_INTEGER, ASSOC_EXP, TYPESET);
+        ASSOC_EXP := RESOLVE_EXP (ASSOC_EXP, TYPESET);
+        if GET_STATIC_VALUE (ASSOC_EXP) = TREE_VOID then
+          ERROR (D (LX_SRCPOS, ASSOC_EXP), "PRIORITY MUST BE STATIC");
+        end if;
+        NEW_ASSOC_LIST := APPEND (NEW_ASSOC_LIST, ASSOC_EXP);
+
+      when SHARED =>
                                 -- $$$$ SAME DECLARATIVE PART OR PACKAGE SPECIFICATION
-               GET_ARGUMENT_EXP(USED_NAME_ID,ASSOC_LIST,
-                                        ASSOC_EXP);
-               MUST_BE_SIMPLE_NAME(ASSOC_EXP);
-               ASSOC_EXP := WALK_NAME(DN_VARIABLE_ID,
-                                        ASSOC_EXP);
-               NEW_ASSOC_LIST := APPEND(NEW_ASSOC_LIST,
-                                        ASSOC_EXP);
-               ASSOC_TYPE := GET_BASE_STRUCT(ASSOC_EXP);
-               IF D(SM_DEFN,ASSOC_EXP) = TREE_VOID THEN
-                  NULL;
-               ELSIF ASSOC_TYPE.TY IN CLASS_SCALAR
-                                                OR ASSOC_TYPE.TY =
-                                                DN_ACCESS THEN
-                  IF D(SM_RENAMES_OBJ,D(SM_DEFN,
-                                                                ASSOC_EXP)) =
-                                                        TREE_VOID THEN
-                     DB(SM_IS_SHARED, D(
-                                                                SM_DEFN,
-                                                                ASSOC_EXP),
-                                                        TRUE);
-                  ELSE
-                     ERROR(D(LX_SRCPOS,
-                                                                ASSOC_EXP),
-                                                        "MAY NOT BE SHARED");
-                  END IF;
-               ELSIF ASSOC_TYPE /= TREE_VOID THEN
-                  ERROR(D(LX_SRCPOS,ASSOC_EXP),
-                                                "MUST BE SCALAR OR ACCESS TYPE");
-               END IF;
-         
-            WHEN STORAGE_UNIT =>
-               ERROR(D(LX_SRCPOS,USED_NAME_ID)
-                                        ,
-                                        "PRAGMA STORAGE_UNIT NOT SUPPORTED");
-               GET_ARGUMENT_EXP( USED_NAME_ID, ASSOC_LIST,
-                                        ASSOC_EXP );
-         
-            WHEN SUPPRESS =>
+        GET_ARGUMENT_EXP (USED_NAME_ID, ASSOC_LIST, ASSOC_EXP);
+        MUST_BE_SIMPLE_NAME (ASSOC_EXP);
+        ASSOC_EXP      := WALK_NAME (DN_VARIABLE_ID, ASSOC_EXP);
+        NEW_ASSOC_LIST := APPEND (NEW_ASSOC_LIST, ASSOC_EXP);
+        ASSOC_TYPE     := GET_BASE_STRUCT (ASSOC_EXP);
+        if D (SM_DEFN, ASSOC_EXP) = TREE_VOID then
+          null;
+        elsif ASSOC_TYPE.TY in CLASS_SCALAR or ASSOC_TYPE.TY = DN_ACCESS then
+          if D (SM_RENAMES_OBJ, D (SM_DEFN, ASSOC_EXP)) = TREE_VOID then
+            DB (SM_IS_SHARED, D (SM_DEFN, ASSOC_EXP), True);
+          else
+            ERROR (D (LX_SRCPOS, ASSOC_EXP), "MAY NOT BE SHARED");
+          end if;
+        elsif ASSOC_TYPE /= TREE_VOID then
+          ERROR (D (LX_SRCPOS, ASSOC_EXP), "MUST BE SCALAR OR ACCESS TYPE");
+        end if;
+
+      when STORAGE_UNIT =>
+        ERROR (D (LX_SRCPOS, USED_NAME_ID), "PRAGMA STORAGE_UNIT NOT SUPPORTED");
+        GET_ARGUMENT_EXP (USED_NAME_ID, ASSOC_LIST, ASSOC_EXP);
+
+      when SUPPRESS =>
                                 -- $$$$ IMMEDIATELY WITHIN DECL PART OR PACKAGE SPEC
-               GET_ARGUMENT_NAME
-                                        ( USED_NAME_ID
-                                        , ASSOC_LIST
-                                        , ASSOC_EXP
-                                        , NEW_ASSOC_LIST
-                                        , TAIL(ARGUMENT_ID_LIST) );
-               IF NOT IS_EMPTY(ASSOC_LIST) THEN
-                  POP(ASSOC_LIST, ASSOC_NODE);
-                  IF ASSOC_NODE.TY = DN_ASSOC THEN
-                     IF D(LX_SYMREP,D(
-                                                                        AS_USED_NAME,
-                                                                        ASSOC_NODE))
-                                                                /= D(
-                                                                LX_SYMREP,
-                                                                HEAD(
-                                                                        ARGUMENT_ID_LIST))
-                                                                THEN
-                        ERROR(D(LX_SRCPOS,
-                                                                        ASSOC_NODE)
-                                                                ,
-                                                                "SELECTOR MUST BE ON =>");
-                        RAISE PRAGMA_ERROR;
-                     END IF;
-                     D(SM_DEFN,D(AS_USED_NAME,
-                                                                ASSOC_NODE),
-                                                        HEAD(
-                                                                ARGUMENT_ID_LIST));
-                     ASSOC_EXP := D(AS_EXP,
-                                                        ASSOC_NODE);
-                  ELSE
-                     ASSOC_EXP := ASSOC_NODE;
-                  END IF;
-                  IF ASSOC_EXP.TY =
-                                                        DN_STRING_LITERAL THEN
-                     ASSOC_EXP :=
-                                                        MAKE_USED_OP_FROM_STRING(
-                                                        ASSOC_EXP);
-                  END IF;
-                  MUST_BE_NAME(ASSOC_EXP);
-                  FIND_VISIBILITY(ASSOC_EXP, DEFSET);
-                  REQUIRE_UNIQUE_DEF(ASSOC_EXP,
-                                                DEFSET);
-                  ID := GET_THE_ID(DEFSET);
-                  ASSOC_EXP := RESOLVE_NAME(
-                                                ASSOC_EXP, ID);
-                  IF ID.TY IN CLASS_OBJECT_NAME'
-                                                        FIRST ..
-                                                        DN_GENERIC_ID
-                                                        AND THEN ID.TY /=
-                                                        DN_PACKAGE_ID THEN
-                     NULL;
-                  ELSIF ID /= TREE_VOID THEN
-                     ERROR(D(LX_SRCPOS,
-                                                                ASSOC_EXP)
-                                                        ,
-                                                        "SUPPRESS NOT ALLOWED ON THIS");
-                  END IF;
-                  IF ASSOC_NODE.TY = DN_ASSOC THEN
-                     D(AS_EXP, ASSOC_NODE,
-                                                        ASSOC_EXP);
-                  ELSE
-                     ASSOC_NODE := ASSOC_EXP;
-                  END IF;
-                  NEW_ASSOC_LIST := APPEND(
-                                                NEW_ASSOC_LIST, ASSOC_NODE);
-               END IF;
-         
-            WHEN SYSTEM_NAME =>
-               ERROR(D(LX_SRCPOS,USED_NAME_ID)
-                                        ,
-                                        "PRAGMA SYSTEM_NAME NOT SUPPORTED");
-               GET_ARGUMENT_EXP( USED_NAME_ID, ASSOC_LIST,
-                                        ASSOC_EXP );
-         
-            WHEN PRENAME.DEBUG =>
-               GET_ARGUMENT_NAME
-                                        ( USED_NAME_ID
-                                        , ASSOC_LIST
-                                        , ASSOC_EXP
-                                        , NEW_ASSOC_LIST
-                                        , ARGUMENT_ID_LIST );
-               CASE LIST_ARGUMENTS'VAL(DI(XD_POS,D(
-                                                                        SM_DEFN,
-                                                                        ASSOC_EXP))) IS
-                  WHEN OFF =>
-                     IDL.DEBUG := FALSE;
-                  WHEN ON =>
-                     IDL.DEBUG := TRUE;
-               END CASE;
-         
-         END CASE;
-         IF NOT IS_EMPTY(ASSOC_LIST) THEN
-            WARNING(D(LX_SRCPOS, USED_NAME_ID),
-                                "TOO MANY PRAGMA ARGUMENTS");
-            RAISE PRAGMA_ERROR;
-         END IF;
-      
-         LIST(GEN_ASSOC_S, NEW_ASSOC_LIST);
-      
-      END WALK_PRAGMA_ARGUMENTS;
-   
-       PROCEDURE GET_ARGUMENT_NAME
-                        ( USED_NAME_ID: 	TREE
-                        ; ASSOC_LIST:		IN OUT SEQ_TYPE
-                        ; ASSOC_OUT:		OUT TREE
-                        ; NEW_ASSOC_LIST:	IN OUT SEQ_TYPE
-                        ; ARGUMENT_LIST:	SEQ_TYPE )
-                        IS
-         TEMP_ARGUMENT_LIST:	SEQ_TYPE := ARGUMENT_LIST;
-         ARGUMENT_ID:		TREE;
-         ACTUAL_SYM:		TREE;
-         ASSOC_EXP:		TREE;
-      BEGIN
-         GET_ARGUMENT_EXP(USED_NAME_ID, ASSOC_LIST, ASSOC_EXP);
+        GET_ARGUMENT_NAME (USED_NAME_ID, ASSOC_LIST, ASSOC_EXP, NEW_ASSOC_LIST, TAIL (ARGUMENT_ID_LIST));
+        if not IS_EMPTY (ASSOC_LIST) then
+          POP (ASSOC_LIST, ASSOC_NODE);
+          if ASSOC_NODE.TY = DN_ASSOC then
+            if D (LX_SYMREP, D (AS_USED_NAME, ASSOC_NODE)) /= D (LX_SYMREP, HEAD (ARGUMENT_ID_LIST)) then
+              ERROR (D (LX_SRCPOS, ASSOC_NODE), "SELECTOR MUST BE ON =>");
+              raise PRAGMA_ERROR;
+            end if;
+            D (SM_DEFN, D (AS_USED_NAME, ASSOC_NODE), HEAD (ARGUMENT_ID_LIST));
+            ASSOC_EXP := D (AS_EXP, ASSOC_NODE);
+          else
+            ASSOC_EXP := ASSOC_NODE;
+          end if;
+          if ASSOC_EXP.TY = DN_STRING_LITERAL then
+            ASSOC_EXP := MAKE_USED_OP_FROM_STRING (ASSOC_EXP);
+          end if;
+          MUST_BE_NAME (ASSOC_EXP);
+          FIND_VISIBILITY (ASSOC_EXP, DEFSET);
+          REQUIRE_UNIQUE_DEF (ASSOC_EXP, DEFSET);
+          ID        := GET_THE_ID (DEFSET);
+          ASSOC_EXP := RESOLVE_NAME (ASSOC_EXP, ID);
+          if ID.TY in CLASS_OBJECT_NAME'FIRST .. DN_GENERIC_ID and then ID.TY /= DN_PACKAGE_ID then
+            null;
+          elsif ID /= TREE_VOID then
+            ERROR (D (LX_SRCPOS, ASSOC_EXP), "SUPPRESS NOT ALLOWED ON THIS");
+          end if;
+          if ASSOC_NODE.TY = DN_ASSOC then
+            D (AS_EXP, ASSOC_NODE, ASSOC_EXP);
+          else
+            ASSOC_NODE := ASSOC_EXP;
+          end if;
+          NEW_ASSOC_LIST := APPEND (NEW_ASSOC_LIST, ASSOC_NODE);
+        end if;
+
+      when SYSTEM_NAME =>
+        ERROR (D (LX_SRCPOS, USED_NAME_ID), "PRAGMA SYSTEM_NAME NOT SUPPORTED");
+        GET_ARGUMENT_EXP (USED_NAME_ID, ASSOC_LIST, ASSOC_EXP);
+
+      when PRENAME.DEBUG =>
+        GET_ARGUMENT_NAME (USED_NAME_ID, ASSOC_LIST, ASSOC_EXP, NEW_ASSOC_LIST, ARGUMENT_ID_LIST);
+        case LIST_ARGUMENTS'VAL (DI (XD_POS, D (SM_DEFN, ASSOC_EXP))) is
+          when OFF =>
+            IDL.DEBUG := False;
+          when ON =>
+            IDL.DEBUG := True;
+        end case;
+
+    end case;
+    if not IS_EMPTY (ASSOC_LIST) then
+      WARNING (D (LX_SRCPOS, USED_NAME_ID), "TOO MANY PRAGMA ARGUMENTS");
+      raise PRAGMA_ERROR;
+    end if;
+
+    LIST (GEN_ASSOC_S, NEW_ASSOC_LIST);
+
+  end WALK_PRAGMA_ARGUMENTS;
+
+  procedure GET_ARGUMENT_NAME (USED_NAME_ID : TREE; ASSOC_LIST : in out SEQ_TYPE; ASSOC_OUT : out TREE; NEW_ASSOC_LIST : in out SEQ_TYPE; ARGUMENT_LIST : SEQ_TYPE) is
+    TEMP_ARGUMENT_LIST : SEQ_TYPE := ARGUMENT_LIST;
+    ARGUMENT_ID        : TREE;
+    ACTUAL_SYM         : TREE;
+    ASSOC_EXP          : TREE;
+  begin
+    GET_ARGUMENT_EXP (USED_NAME_ID, ASSOC_LIST, ASSOC_EXP);
 --          IF ASSOC_EXP.TY = DN_USED_OBJECT_ID THEN
---          
+--
 --          PUT_LINE ( "USED NAME ID : " & PRINT_NAME ( D(LX_SYMREP, USED_NAME_ID) ) );
 --          PUT_LINE ( "ASSOC EXP : " & PRINT_NAME ( D(LX_SYMREP,ASSOC_EXP) ) );
---          
---          
+--
+--
 --             WARNING(D(LX_SRCPOS,USED_NAME_ID),
 --                                 "ARGUMENT ID REQUIRED");
 --             RAISE PRAGMA_ERROR;
 --          END IF;
-      
-         ACTUAL_SYM := D(LX_SYMREP, ASSOC_EXP);
-         ARGUMENT_ID := TREE_VOID;
-         WHILE NOT IS_EMPTY(TEMP_ARGUMENT_LIST) LOOP
-            IF D(LX_SYMREP, HEAD(TEMP_ARGUMENT_LIST)) =
-                                        ACTUAL_SYM THEN
-               ARGUMENT_ID := HEAD(TEMP_ARGUMENT_LIST);
-               EXIT;
-            END IF;
-            TEMP_ARGUMENT_LIST := TAIL(TEMP_ARGUMENT_LIST);
-         END LOOP;
-         IF ARGUMENT_ID = TREE_VOID THEN
-            WARNING(D(LX_SRCPOS,USED_NAME_ID),
-                                "ARGUMENT ID INVALID");
-            RAISE PRAGMA_ERROR;
-         END IF;
-      
-         D(SM_DEFN, ASSOC_EXP, ARGUMENT_ID);
-         NEW_ASSOC_LIST := APPEND
-                        ( NEW_ASSOC_LIST, MAKE_USED_NAME_ID_FROM_OBJECT(
-                                ASSOC_EXP) );
-      
-         ASSOC_OUT := ASSOC_EXP;
-      END GET_ARGUMENT_NAME;
-   
-   
-       PROCEDURE GET_ARGUMENT_EXP
-                        ( USED_NAME_ID: 	TREE
-                        ; ASSOC_LIST:           IN OUT SEQ_TYPE
-                        ; ASSOC_OUT:		OUT TREE )
-                        IS
-         ASSOC_EXP: TREE;
-      BEGIN
-         IF IS_EMPTY(ASSOC_LIST) THEN
-            WARNING(D(LX_SRCPOS,USED_NAME_ID),
-                                "ARGUMENT REQUIRED");
-            RAISE PRAGMA_ERROR;
-         END IF;
-      
-         POP(ASSOC_LIST, ASSOC_EXP);
-         IF ASSOC_EXP.TY = DN_STRING_LITERAL THEN
-            ASSOC_EXP := MAKE_USED_OP_FROM_STRING(ASSOC_EXP);
-         END IF;
-      
-         ASSOC_OUT := ASSOC_EXP;
-      END GET_ARGUMENT_EXP;
-   
-   
-       PROCEDURE MUST_BE_SIMPLE_NAME (EXP: TREE) IS
-      BEGIN
-         IF EXP.TY /= DN_USED_OBJECT_ID THEN
-            WARNING(D(LX_SRCPOS, EXP), "SIMPLE NAME REQUIRED");
-            RAISE PRAGMA_ERROR;
-         END IF;
-      END MUST_BE_SIMPLE_NAME;
-   
-   
-       PROCEDURE MUST_BE_NAME (EXP: TREE) IS
-      BEGIN
-         IF EXP.TY NOT IN CLASS_DESIGNATOR
-                                AND THEN EXP.TY /= DN_SELECTED THEN
-            WARNING(D(LX_SRCPOS, EXP), "NAME REQUIRED");
-            RAISE PRAGMA_ERROR;
-         END IF;
-      END MUST_BE_NAME;
-   
+
+    ACTUAL_SYM  := D (LX_SYMREP, ASSOC_EXP);
+    ARGUMENT_ID := TREE_VOID;
+    while not IS_EMPTY (TEMP_ARGUMENT_LIST) loop
+      if D (LX_SYMREP, HEAD (TEMP_ARGUMENT_LIST)) = ACTUAL_SYM then
+        ARGUMENT_ID := HEAD (TEMP_ARGUMENT_LIST);
+        exit;
+      end if;
+      TEMP_ARGUMENT_LIST := TAIL (TEMP_ARGUMENT_LIST);
+    end loop;
+    if ARGUMENT_ID = TREE_VOID then
+      WARNING (D (LX_SRCPOS, USED_NAME_ID), "ARGUMENT ID INVALID");
+      raise PRAGMA_ERROR;
+    end if;
+
+    D (SM_DEFN, ASSOC_EXP, ARGUMENT_ID);
+    NEW_ASSOC_LIST := APPEND (NEW_ASSOC_LIST, MAKE_USED_NAME_ID_FROM_OBJECT (ASSOC_EXP));
+
+    ASSOC_OUT := ASSOC_EXP;
+  end GET_ARGUMENT_NAME;
+
+  procedure GET_ARGUMENT_EXP (USED_NAME_ID : TREE; ASSOC_LIST : in out SEQ_TYPE; ASSOC_OUT : out TREE) is
+    ASSOC_EXP : TREE;
+  begin
+    if IS_EMPTY (ASSOC_LIST) then
+      WARNING (D (LX_SRCPOS, USED_NAME_ID), "ARGUMENT REQUIRED");
+      raise PRAGMA_ERROR;
+    end if;
+
+    POP (ASSOC_LIST, ASSOC_EXP);
+    if ASSOC_EXP.TY = DN_STRING_LITERAL then
+      ASSOC_EXP := MAKE_USED_OP_FROM_STRING (ASSOC_EXP);
+    end if;
+
+    ASSOC_OUT := ASSOC_EXP;
+  end GET_ARGUMENT_EXP;
+
+  procedure MUST_BE_SIMPLE_NAME (EXP : TREE) is
+  begin
+    if EXP.TY /= DN_USED_OBJECT_ID then
+      WARNING (D (LX_SRCPOS, EXP), "SIMPLE NAME REQUIRED");
+      raise PRAGMA_ERROR;
+    end if;
+  end MUST_BE_SIMPLE_NAME;
+
+  procedure MUST_BE_NAME (EXP : TREE) is
+  begin
+    if EXP.TY not in CLASS_DESIGNATOR and then EXP.TY /= DN_SELECTED then
+      WARNING (D (LX_SRCPOS, EXP), "NAME REQUIRED");
+      raise PRAGMA_ERROR;
+    end if;
+  end MUST_BE_NAME;
+
     --|----------------------------------------------------------------------------------------------
-   END PRA_WALK;
+end PRA_WALK;

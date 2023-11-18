@@ -1,104 +1,82 @@
-    SEPARATE ( IDL.SEM_PHASE )
+separate (IDL.SEM_PHASE)
     --|----------------------------------------------------------------------------------------------
-    --|	EXP_TYPE
+    --| EXP_TYPE
     --|----------------------------------------------------------------------------------------------
-    PACKAGE BODY EXP_TYPE IS
-      USE DEF_UTIL, VIS_UTIL;
-      USE RED_SUBP;
-      USE REQ_UTIL;
-      USE ATT_WALK;
-   
+package body EXP_TYPE is
+  use DEF_UTIL, VIS_UTIL;
+  use RED_SUBP;
+  use REQ_UTIL;
+  use ATT_WALK;
+
       --|-------------------------------------------------------------------------------------------
       --|
-       PROCEDURE REDUCE_EXP_TYPES
-                        ( DEFSET:		DEFSET_TYPE
-                        ; TYPESET:		OUT TYPESET_TYPE )
-                        IS
+  procedure REDUCE_EXP_TYPES (DEFSET : DEFSET_TYPE; TYPESET : out TYPESET_TYPE) is
                 -- FIND EXPRESSION TYPES OF NAMES IN DEFSET
-      
-         TEMP_DEFSET:		DEFSET_TYPE := DEFSET;
-         DEFINTERP:		DEFINTERP_TYPE;
-      
-         NEW_TYPESET:		TYPESET_TYPE := EMPTY_TYPESET;
-         TYPE_SPEC:		TREE;
-      BEGIN
+
+    TEMP_DEFSET : DEFSET_TYPE := DEFSET;
+    DEFINTERP   : DEFINTERP_TYPE;
+
+    NEW_TYPESET : TYPESET_TYPE := EMPTY_TYPESET;
+    TYPE_SPEC   : TREE;
+  begin
                 -- FOR EACH GIVEN DEF
-         WHILE NOT IS_EMPTY(TEMP_DEFSET) LOOP
-            POP(TEMP_DEFSET, DEFINTERP);
-         
+    while not IS_EMPTY (TEMP_DEFSET) loop
+      POP (TEMP_DEFSET, DEFINTERP);
+
                         -- GET ITS TYPE (WHEN CONSIDERED AS AN EXPRESSION)
                         -- (I.E., IF FUNCTION NAME, THEN WITH ALL DEFAULT PARAMETERS)
-            TYPE_SPEC := GET_DEF_EXP_TYPE(GET_DEF(DEFINTERP));
-         
+      TYPE_SPEC := GET_DEF_EXP_TYPE (GET_DEF (DEFINTERP));
+
                         -- SAVE TYPE AND IMPLICIT CONVERSION INFORMATION IN TYPESET
-            IF TYPE_SPEC /= TREE_VOID THEN
-               ADD_TO_TYPESET(NEW_TYPESET, TYPE_SPEC,
-                                        GET_EXTRAINFO(DEFINTERP));
-            END IF;
-         END LOOP;
-      
+      if TYPE_SPEC /= TREE_VOID then
+        ADD_TO_TYPESET (NEW_TYPESET, TYPE_SPEC, GET_EXTRAINFO (DEFINTERP));
+      end if;
+    end loop;
+
                 -- RETURN THE NEW TYPESET
-         TYPESET := NEW_TYPESET;
-      END REDUCE_EXP_TYPES;
+    TYPESET := NEW_TYPESET;
+  end REDUCE_EXP_TYPES;
       --|-------------------------------------------------------------------------------------------
       --|
-       PROCEDURE REDUCE_DESIGNATED_TYPES
-                        ( PREFIX_TYPESET:	IN OUT TYPESET_TYPE
-                        ; TYPESET:		OUT TYPESET_TYPE )
-                        IS
-         TEMP_PREFIXSET: TYPESET_TYPE := PREFIX_TYPESET;
-         PREFIX_INTERP:	TYPEINTERP_TYPE;
-         PREFIX_TYPE:	TREE;
-         PREFIX_STRUCT:	TREE;
-         DESIG_TYPE:	TREE;
-      
-         NEW_PREFIXSET:	TYPESET_TYPE := EMPTY_TYPESET;
-         NEW_TYPESET:	TYPESET_TYPE := EMPTY_TYPESET;
-      BEGIN
-         WHILE NOT IS_EMPTY(TEMP_PREFIXSET) LOOP
-            POP(TEMP_PREFIXSET, PREFIX_INTERP);
-            PREFIX_TYPE := GET_TYPE(PREFIX_INTERP);
-            PREFIX_STRUCT := GET_BASE_STRUCT(PREFIX_TYPE);
-         
-            IF PREFIX_STRUCT.TY = DN_ACCESS THEN
-               DESIG_TYPE := GET_BASE_TYPE(D(
-                                                SM_DESIG_TYPE,
-                                                PREFIX_STRUCT));
-               ADD_TO_TYPESET(NEW_PREFIXSET,
-                                        PREFIX_INTERP);
-               ADD_TO_TYPESET ( NEW_TYPESET, DESIG_TYPE
-                                        , GET_EXTRAINFO(PREFIX_INTERP) );
-            END IF;
-         END LOOP;
-      
-         PREFIX_TYPESET := NEW_PREFIXSET;
-         TYPESET := NEW_TYPESET;
-      END REDUCE_DESIGNATED_TYPES;
+  procedure REDUCE_DESIGNATED_TYPES (PREFIX_TYPESET : in out TYPESET_TYPE; TYPESET : out TYPESET_TYPE) is
+    TEMP_PREFIXSET : TYPESET_TYPE := PREFIX_TYPESET;
+    PREFIX_INTERP  : TYPEINTERP_TYPE;
+    PREFIX_TYPE    : TREE;
+    PREFIX_STRUCT  : TREE;
+    DESIG_TYPE     : TREE;
+
+    NEW_PREFIXSET : TYPESET_TYPE := EMPTY_TYPESET;
+    NEW_TYPESET   : TYPESET_TYPE := EMPTY_TYPESET;
+  begin
+    while not IS_EMPTY (TEMP_PREFIXSET) loop
+      POP (TEMP_PREFIXSET, PREFIX_INTERP);
+      PREFIX_TYPE   := GET_TYPE (PREFIX_INTERP);
+      PREFIX_STRUCT := GET_BASE_STRUCT (PREFIX_TYPE);
+
+      if PREFIX_STRUCT.TY = DN_ACCESS then
+        DESIG_TYPE := GET_BASE_TYPE (D (SM_DESIG_TYPE, PREFIX_STRUCT));
+        ADD_TO_TYPESET (NEW_PREFIXSET, PREFIX_INTERP);
+        ADD_TO_TYPESET (NEW_TYPESET, DESIG_TYPE, GET_EXTRAINFO (PREFIX_INTERP));
+      end if;
+    end loop;
+
+    PREFIX_TYPESET := NEW_PREFIXSET;
+    TYPESET        := NEW_TYPESET;
+  end REDUCE_DESIGNATED_TYPES;
       --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
       --|
-       PROCEDURE EVAL_EXP_TYPES
-                        ( EXP:			    TREE
-                        ; TYPESET:		    OUT TYPESET_TYPE )
-                        IS
-         IS_SUBTYPE:			BOOLEAN;
-      BEGIN
-         EVAL_EXP_SUBTYPE_TYPES
-                        ( EXP
-                        , TYPESET
-                        , IS_SUBTYPE );
-         IF IS_SUBTYPE THEN
-            ERROR(D(LX_SRCPOS,EXP),
-                                "EXPRESSION (NOT SUBTYPE) REQUIRED");
-            TYPESET := EMPTY_TYPESET;
-         END IF;
-      END EVAL_EXP_TYPES;
+  procedure EVAL_EXP_TYPES (EXP : TREE; TYPESET : out TYPESET_TYPE) is
+    IS_SUBTYPE : Boolean;
+  begin
+    EVAL_EXP_SUBTYPE_TYPES (EXP, TYPESET, IS_SUBTYPE);
+    if IS_SUBTYPE then
+      ERROR (D (LX_SRCPOS, EXP), "EXPRESSION (NOT SUBTYPE) REQUIRED");
+      TYPESET := EMPTY_TYPESET;
+    end if;
+  end EVAL_EXP_TYPES;
       --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
       --|
-       PROCEDURE EVAL_EXP_SUBTYPE_TYPES
-                        ( EXP:			    TREE
-                        ; TYPESET:		    OUT TYPESET_TYPE
-                        ; IS_SUBTYPE_OUT:	    OUT BOOLEAN)
-                        IS
+  procedure EVAL_EXP_SUBTYPE_TYPES (EXP : TREE; TYPESET : out TYPESET_TYPE; IS_SUBTYPE_OUT : out Boolean) is
                 -- CHECKS THAT EXP REPRESENTS AN EXPRESSION, SUBTYPE OR VOID
                 -- ON RETURN, TYPESET IS SET OF POSSIBLE BASE TYPES,
                 -- ... WITH IMPLICIT CONVERSION INFORMATION
@@ -106,532 +84,416 @@
                 -- ... SET TO TRUE; THEN TYPESET IS THE SET OF POSSIBLE BASE
                 -- ... (THERE MAY BE MORE THAN ONE, SINCE THE SUBTYPE MAY BE
                 -- ... OF THE FORM SIMPLE_EXPRESSION .. SIMPLE_EXPRESSION.)
-      
-         NEW_TYPESET:		TYPESET_TYPE := EMPTY_TYPESET;
-      BEGIN
-                -- ASSUME IT IS NOT A RANGE
-         IS_SUBTYPE_OUT := FALSE;
-      
-                -- IF VOID, RETURN WITH EMPTY TYPESET
-         IF EXP = TREE_VOID THEN
-            TYPESET := EMPTY_TYPESET;
-            RETURN;
-         END IF;
-      
-      
-         IF EXP.TY = DN_RANGE THEN
-            DECLARE
-               EXP1: CONSTANT TREE := D(AS_EXP1, EXP);
-               EXP2: CONSTANT TREE := D(AS_EXP2, EXP);
-               TYPESET_1: TYPESET_TYPE;
-               TYPESET_2: TYPESET_TYPE;
-            BEGIN
-               EVAL_EXP_TYPES(EXP1, TYPESET_1);
-               EVAL_EXP_TYPES(EXP2, TYPESET_2);
-               REQUIRE_SAME_TYPES
-                                        ( EXP1, TYPESET_1
-                                        , EXP2, TYPESET_2
-                                        , NEW_TYPESET );
-            END;
-         
-            IS_SUBTYPE_OUT := TRUE;
-            TYPESET := NEW_TYPESET;
-            RETURN;
-         END IF;
-      
-         IF EXP.TY = DN_SUBTYPE_INDICATION THEN
-            DECLARE
-               TYPE_SPEC: TREE := EVAL_SUBTYPE_INDICATION(
-                                        EXP);
-            BEGIN
-               IF TYPE_SPEC /= TREE_VOID THEN
-                  ADD_TO_TYPESET(NEW_TYPESET,
-                                                TYPE_SPEC);
-               END IF;
-               TYPESET := NEW_TYPESET;
-            END;
-         
-            IS_SUBTYPE_OUT := TRUE;
-            RETURN;
-         END IF;
-      
-                -- CHECK FOR NAMED, ASSOC (E.G. IN INDEX CONSTRAINT)
-         IF EXP.TY NOT IN CLASS_EXP THEN
-            ERROR(D(LX_SRCPOS, EXP), "EXPRESSION REQUIRED");
-            TYPESET := EMPTY_TYPESET;
-            RETURN;
-         END IF;
-      
-      
-                -- EXP IS SYNTACTICALLY AN EXPRESSION
-         CASE CLASS_EXP'(EXP.TY) IS
-         
-                        -- WHEN CLASS_USED_OBJECT => -- SEE SELECTED
-         
-            WHEN DN_USED_OP | DN_USED_NAME_ID =>
-               PUT_LINE ( "!! IMPOSSIBLE ARGUMENT FOR EVAL_EXP_TYPES" );
-               RAISE PROGRAM_ERROR;
-         
-         
-            WHEN DN_ATTRIBUTE =>
-               EVAL_ATTRIBUTE(EXP, TYPESET,
-                                                IS_SUBTYPE_OUT);
-               RETURN;
-         
-            WHEN CLASS_USED_OBJECT | DN_SELECTED =>
-               DECLARE
-                  DEFSET: 		DEFSET_TYPE;
-                  SOURCE_NAME:		TREE;
-               BEGIN
-                  FIND_VISIBILITY(EXP, DEFSET);
-                  IF NOT IS_EMPTY(DEFSET) THEN
-                     SOURCE_NAME := GET_THE_ID(
-                                                        DEFSET);
-                     IF SOURCE_NAME.TY IN CLASS_TYPE_NAME
-                     AND THEN NOT ( GET_BASE_STRUCT( SOURCE_NAME).TY = DN_TASK_SPEC
-                     AND THEN DI( XD_LEX_LEVEL, GET_DEF_FOR_ID ( D( XD_SOURCE_NAME, GET_BASE_STRUCT( SOURCE_NAME)))) > 0 )
-                                                                THEN
-                        ADD_TO_TYPESET( NEW_TYPESET, GET_BASE_TYPE( SOURCE_NAME));
-                        IS_SUBTYPE_OUT := TRUE;
-                     ELSE
-                        REDUCE_EXP_TYPES( DEFSET, NEW_TYPESET);
-                        IF NOT IS_EMPTY( NEW_TYPESET) THEN
-                           IF GET_THE_TYPE( NEW_TYPESET).TY = DN_UNIVERSAL_INTEGER THEN
-                              NEW_TYPESET := EMPTY_TYPESET;
-                              ADD_TO_TYPESET ( NEW_TYPESET, MAKE(DN_ANY_INTEGER));
-                           ELSIF GET_THE_TYPE( NEW_TYPESET).TY = DN_UNIVERSAL_REAL THEN
-                              NEW_TYPESET := EMPTY_TYPESET;
-                              ADD_TO_TYPESET (
-                                                                                NEW_TYPESET
-                                                                                ,
-                                                                                MAKE(
-                                                                                        DN_ANY_REAL));
-                           END IF;
-                        END IF;
-                     END IF;
-                     STASH_DEFSET(EXP, DEFSET);
-                  END IF;
-               END;
-         
-         
-            WHEN DN_FUNCTION_CALL =>
-               DECLARE
-                  NAME: TREE := D(AS_NAME, EXP);
-                  GENERAL_ASSOC_S: TREE := D ( AS_GENERAL_ASSOC_S, EXP );
-               
-               BEGIN
-                  CASE CLASS_EXP'(NAME.TY) IS
-                     WHEN DN_ATTRIBUTE =>
-                        EVAL_ATTRIBUTE(
-                                                                EXP,
-                                                                TYPESET,
-                                                                IS_SUBTYPE_OUT);
-                        RETURN;
-                  
-                     WHEN DN_USED_OBJECT_ID |
-                                                                DN_SELECTED |
-                                                                DN_USED_OP =>
-                        EVAL_SUBP_CALL
-                                                                ( EXP
-                                                                ,
-                                                                NEW_TYPESET );
-                  
-                     WHEN DN_STRING_LITERAL =>
-                        NAME :=
-                                                                MAKE_USED_OP_FROM_STRING(
-                                                                NAME);
-                        D(AS_NAME, EXP,
-                                                                NAME);
-                        EVAL_SUBP_CALL
-                                                                ( EXP
-                                                                ,
-                                                                NEW_TYPESET );
-                  
-                     WHEN OTHERS =>
-                        EVAL_SUBP_CALL
-                                                                ( EXP
-                                                                ,
-                                                                NEW_TYPESET );
-                  END CASE;
-               END;
-         
-         
-            WHEN DN_INDEXED | DN_SLICE =>
-               PUT_LINE ( "IMPOSSIBLE ARGUMENT FOR EVAL_EXP_TYPES" );
-               RAISE PROGRAM_ERROR;
-         
-         
-            WHEN DN_ALL =>
-               DECLARE
-                  NAME: CONSTANT TREE := D(AS_NAME,
-                                                EXP);
-                  PREFIX_TYPESET: TYPESET_TYPE;
-               BEGIN
-                                        -- GET POSSIBLE TYPES OF PREFIX
-                  EVAL_EXP_TYPES(NAME,
-                                                PREFIX_TYPESET);
-               
-                                        -- IF THERE WERE ANY
-                  IF NOT IS_EMPTY(PREFIX_TYPESET) THEN
-                  
-                                                -- FIND THE RESULT TYPES AND REVISE PREFIX TYPE LISTS
-                     REDUCE_DESIGNATED_TYPES(
-                                                        PREFIX_TYPESET,
-                                                        NEW_TYPESET);
-                  
-                                                -- CHECK THAT THERE WERE SOME
-                     IF IS_EMPTY(NEW_TYPESET) THEN
-                        ERROR(D(LX_SRCPOS,
-                                                                        EXP),
-                                                                "PREFIX OF .ALL NOT ACCESS");
-                     END IF;
-                  END IF;
-               
-                                        -- SAVE LIST OF POSSIBLE PREFIX TYPES
-                  STASH_TYPESET( NAME,
-                                                PREFIX_TYPESET);
-               END;
-         
-         
-            WHEN DN_SHORT_CIRCUIT =>
-               DECLARE
-                  EXP1: CONSTANT TREE := D(AS_EXP1,
-                                                EXP);
-                  EXP2: CONSTANT TREE := D(AS_EXP2,
-                                                EXP);
-                  TYPESET_1: TYPESET_TYPE;
-                  TYPESET_2: TYPESET_TYPE;
-               BEGIN
-               
-                                        -- EVALUATE THE TWO EXPRESSIONS
-                  EVAL_EXP_TYPES(EXP1, TYPESET_1);
-                  EVAL_EXP_TYPES(EXP2, TYPESET_2);
-               
-                                        -- THEY MUST BE OF THE SAME BOOLEAN TYPE
-                  REQUIRE_BOOLEAN_TYPE(EXP1,
-                                                TYPESET_1);
-                  REQUIRE_BOOLEAN_TYPE(EXP2,
-                                                TYPESET_2);
-                  REQUIRE_SAME_TYPES
-                                                (EXP1, TYPESET_1, EXP2,
-                                                TYPESET_2, NEW_TYPESET);
-               END;
-         
-         
-            WHEN DN_NUMERIC_LITERAL =>
-               DECLARE
-                  VALUE: TREE := UARITH.U_VALUE( PRINT_NAME( D( LX_NUMREP, EXP ) ) );--| UN HI ENTIER COURT, OU UN P 
-               BEGIN
-                  D(SM_VALUE, EXP, VALUE);
-               
-IF VALUE.PT = HI OR ELSE VALUE.TY = DN_NUM_VAL THEN
-  ADD_TO_TYPESET( NEW_TYPESET, MAKE( DN_ANY_INTEGER ) );
-ELSIF VALUE.TY = DN_REAL_VAL THEN
-  ADD_TO_TYPESET( NEW_TYPESET, MAKE( DN_ANY_REAL ) );
-ELSE
-  PUT_LINE( "EVAL_EXP_SUBTYPE_TYPES : VALUE.TY INCORRECT" );
-  RAISE PROGRAM_ERROR;
-END IF;
 
-               END;
-         
-         
-            WHEN DN_NULL_ACCESS =>
-               ADD_TO_TYPESET(NEW_TYPESET, MAKE(
-                                                DN_ANY_ACCESS));
-         
-         
-            WHEN CLASS_MEMBERSHIP =>
+    NEW_TYPESET : TYPESET_TYPE := EMPTY_TYPESET;
+  begin
+                -- ASSUME IT IS NOT A RANGE
+    IS_SUBTYPE_OUT := False;
+
+                -- IF VOID, RETURN WITH EMPTY TYPESET
+    if EXP = TREE_VOID then
+      TYPESET := EMPTY_TYPESET;
+      return;
+    end if;
+
+    if EXP.TY = DN_RANGE then
+      declare
+        EXP1      : constant TREE := D (AS_EXP1, EXP);
+        EXP2      : constant TREE := D (AS_EXP2, EXP);
+        TYPESET_1 : TYPESET_TYPE;
+        TYPESET_2 : TYPESET_TYPE;
+      begin
+        EVAL_EXP_TYPES (EXP1, TYPESET_1);
+        EVAL_EXP_TYPES (EXP2, TYPESET_2);
+        REQUIRE_SAME_TYPES (EXP1, TYPESET_1, EXP2, TYPESET_2, NEW_TYPESET);
+      end;
+
+      IS_SUBTYPE_OUT := True;
+      TYPESET        := NEW_TYPESET;
+      return;
+    end if;
+
+    if EXP.TY = DN_SUBTYPE_INDICATION then
+      declare
+        TYPE_SPEC : TREE := EVAL_SUBTYPE_INDICATION (EXP);
+      begin
+        if TYPE_SPEC /= TREE_VOID then
+          ADD_TO_TYPESET (NEW_TYPESET, TYPE_SPEC);
+        end if;
+        TYPESET := NEW_TYPESET;
+      end;
+
+      IS_SUBTYPE_OUT := True;
+      return;
+    end if;
+
+                -- CHECK FOR NAMED, ASSOC (E.G. IN INDEX CONSTRAINT)
+    if EXP.TY not in CLASS_EXP then
+      ERROR (D (LX_SRCPOS, EXP), "EXPRESSION REQUIRED");
+      TYPESET := EMPTY_TYPESET;
+      return;
+    end if;
+
+                -- EXP IS SYNTACTICALLY AN EXPRESSION
+    case CLASS_EXP'(EXP.TY) is
+
+                        -- WHEN CLASS_USED_OBJECT => -- SEE SELECTED
+
+      when DN_USED_OP | DN_USED_NAME_ID =>
+        Put_Line ("!! IMPOSSIBLE ARGUMENT FOR EVAL_EXP_TYPES");
+        raise Program_Error;
+
+      when DN_ATTRIBUTE =>
+        EVAL_ATTRIBUTE (EXP, TYPESET, IS_SUBTYPE_OUT);
+        return;
+
+      when CLASS_USED_OBJECT | DN_SELECTED =>
+        declare
+          DEFSET      : DEFSET_TYPE;
+          SOURCE_NAME : TREE;
+        begin
+          FIND_VISIBILITY (EXP, DEFSET);
+          if not IS_EMPTY (DEFSET) then
+            SOURCE_NAME := GET_THE_ID (DEFSET);
+            if SOURCE_NAME.TY in CLASS_TYPE_NAME and then not (GET_BASE_STRUCT (SOURCE_NAME).TY = DN_TASK_SPEC and then DI (XD_LEX_LEVEL, GET_DEF_FOR_ID (D (XD_SOURCE_NAME, GET_BASE_STRUCT (SOURCE_NAME)))) > 0) then
+              ADD_TO_TYPESET (NEW_TYPESET, GET_BASE_TYPE (SOURCE_NAME));
+              IS_SUBTYPE_OUT := True;
+            else
+              REDUCE_EXP_TYPES (DEFSET, NEW_TYPESET);
+              if not IS_EMPTY (NEW_TYPESET) then
+                if GET_THE_TYPE (NEW_TYPESET).TY = DN_UNIVERSAL_INTEGER then
+                  NEW_TYPESET := EMPTY_TYPESET;
+                  ADD_TO_TYPESET (NEW_TYPESET, MAKE (DN_ANY_INTEGER));
+                elsif GET_THE_TYPE (NEW_TYPESET).TY = DN_UNIVERSAL_REAL then
+                  NEW_TYPESET := EMPTY_TYPESET;
+                  ADD_TO_TYPESET (NEW_TYPESET, MAKE (DN_ANY_REAL));
+                end if;
+              end if;
+            end if;
+            STASH_DEFSET (EXP, DEFSET);
+          end if;
+        end;
+
+      when DN_FUNCTION_CALL =>
+        declare
+          NAME            : TREE := D (AS_NAME, EXP);
+          GENERAL_ASSOC_S : TREE := D (AS_GENERAL_ASSOC_S, EXP);
+
+        begin
+          case CLASS_EXP'(NAME.TY) is
+            when DN_ATTRIBUTE =>
+              EVAL_ATTRIBUTE (EXP, TYPESET, IS_SUBTYPE_OUT);
+              return;
+
+            when DN_USED_OBJECT_ID | DN_SELECTED | DN_USED_OP =>
+              EVAL_SUBP_CALL (EXP, NEW_TYPESET);
+
+            when DN_STRING_LITERAL =>
+              NAME := MAKE_USED_OP_FROM_STRING (NAME);
+              D (AS_NAME, EXP, NAME);
+              EVAL_SUBP_CALL (EXP, NEW_TYPESET);
+
+            when others =>
+              EVAL_SUBP_CALL (EXP, NEW_TYPESET);
+          end case;
+        end;
+
+      when DN_INDEXED | DN_SLICE =>
+        Put_Line ("IMPOSSIBLE ARGUMENT FOR EVAL_EXP_TYPES");
+        raise Program_Error;
+
+      when DN_ALL =>
+        declare
+          NAME           : constant TREE := D (AS_NAME, EXP);
+          PREFIX_TYPESET : TYPESET_TYPE;
+        begin
+                                        -- GET POSSIBLE TYPES OF PREFIX
+          EVAL_EXP_TYPES (NAME, PREFIX_TYPESET);
+
+                                        -- IF THERE WERE ANY
+          if not IS_EMPTY (PREFIX_TYPESET) then
+
+                                                -- FIND THE RESULT TYPES AND REVISE PREFIX TYPE LISTS
+            REDUCE_DESIGNATED_TYPES (PREFIX_TYPESET, NEW_TYPESET);
+
+                                                -- CHECK THAT THERE WERE SOME
+            if IS_EMPTY (NEW_TYPESET) then
+              ERROR (D (LX_SRCPOS, EXP), "PREFIX OF .ALL NOT ACCESS");
+            end if;
+          end if;
+
+                                        -- SAVE LIST OF POSSIBLE PREFIX TYPES
+          STASH_TYPESET (NAME, PREFIX_TYPESET);
+        end;
+
+      when DN_SHORT_CIRCUIT =>
+        declare
+          EXP1      : constant TREE := D (AS_EXP1, EXP);
+          EXP2      : constant TREE := D (AS_EXP2, EXP);
+          TYPESET_1 : TYPESET_TYPE;
+          TYPESET_2 : TYPESET_TYPE;
+        begin
+
+                                        -- EVALUATE THE TWO EXPRESSIONS
+          EVAL_EXP_TYPES (EXP1, TYPESET_1);
+          EVAL_EXP_TYPES (EXP2, TYPESET_2);
+
+                                        -- THEY MUST BE OF THE SAME BOOLEAN TYPE
+          REQUIRE_BOOLEAN_TYPE (EXP1, TYPESET_1);
+          REQUIRE_BOOLEAN_TYPE (EXP2, TYPESET_2);
+          REQUIRE_SAME_TYPES (EXP1, TYPESET_1, EXP2, TYPESET_2, NEW_TYPESET);
+        end;
+
+      when DN_NUMERIC_LITERAL =>
+        declare
+          VALUE : TREE := UARITH.U_VALUE (PRINT_NAME (D (LX_NUMREP, EXP)));--| UN HI ENTIER COURT, OU UN P
+        begin
+          D (SM_VALUE, EXP, VALUE);
+
+          if VALUE.PT = HI or else VALUE.TY = DN_NUM_VAL then
+            ADD_TO_TYPESET (NEW_TYPESET, MAKE (DN_ANY_INTEGER));
+          elsif VALUE.TY = DN_REAL_VAL then
+            ADD_TO_TYPESET (NEW_TYPESET, MAKE (DN_ANY_REAL));
+          else
+            Put_Line ("EVAL_EXP_SUBTYPE_TYPES : VALUE.TY INCORRECT");
+            raise Program_Error;
+          end if;
+
+        end;
+
+      when DN_NULL_ACCESS =>
+        ADD_TO_TYPESET (NEW_TYPESET, MAKE (DN_ANY_ACCESS));
+
+      when CLASS_MEMBERSHIP =>
                                 -- RESULT TYPE IS ALWAYS BOOLEAN
                                 -- OPERANDS WILL BE LOOKED AT DURING RESOLVE PASS
-               ADD_TO_TYPESET(NEW_TYPESET,
-                                        PREDEFINED_BOOLEAN);
-               D(SM_EXP_TYPE, EXP, PREDEFINED_BOOLEAN);
-         
-         
-            WHEN DN_CONVERSION =>
-               PUT_LINE ( "!! IMPOSSIBLE ARGUMENT FOR EVAL_EXP_TYPES" );
-               RAISE PROGRAM_ERROR;
-         
-            WHEN DN_QUALIFIED =>
-               DECLARE
-                  NAME: CONSTANT TREE := D(AS_NAME,
-                                                EXP);
-                  TYPE_SPEC: TREE := EVAL_TYPE_MARK(
-                                                NAME);
-               BEGIN
+        ADD_TO_TYPESET (NEW_TYPESET, PREDEFINED_BOOLEAN);
+        D (SM_EXP_TYPE, EXP, PREDEFINED_BOOLEAN);
+
+      when DN_CONVERSION =>
+        Put_Line ("!! IMPOSSIBLE ARGUMENT FOR EVAL_EXP_TYPES");
+        raise Program_Error;
+
+      when DN_QUALIFIED =>
+        declare
+          NAME      : constant TREE := D (AS_NAME, EXP);
+          TYPE_SPEC : TREE          := EVAL_TYPE_MARK (NAME);
+        begin
                                         -- TYPE IS GIVEN BY THE TYPE MARK
                                         -- OPERAND WILL BE LOOKED AT DURING RESOLVE PASS
-                  IF TYPE_SPEC /= TREE_VOID THEN
-                     ADD_TO_TYPESET(
-                                                        NEW_TYPESET,
-                                                        TYPE_SPEC);
-                  END IF;
-               END;
-         
-         
-            WHEN DN_PARENTHESIZED =>
-               DECLARE
-                  SUBEXP: CONSTANT TREE := D(AS_EXP,
-                                                EXP);
-               BEGIN
+          if TYPE_SPEC /= TREE_VOID then
+            ADD_TO_TYPESET (NEW_TYPESET, TYPE_SPEC);
+          end if;
+        end;
+
+      when DN_PARENTHESIZED =>
+        declare
+          SUBEXP : constant TREE := D (AS_EXP, EXP);
+        begin
                                         -- EVALUARE THE EXPRESSION AND PASS IT ON
-                  EVAL_EXP_TYPES
-                                                ( SUBEXP
-                                                , NEW_TYPESET);
-               END;
-         
-         
-            WHEN DN_AGGREGATE =>
-               ADD_TO_TYPESET(NEW_TYPESET, MAKE(
-                                                DN_ANY_COMPOSITE));
-         
-         
-            WHEN DN_STRING_LITERAL =>
-               ADD_TO_TYPESET(NEW_TYPESET, MAKE(
-                                                DN_ANY_STRING));
-         
-         
-            WHEN DN_QUALIFIED_ALLOCATOR =>
-               DECLARE
-                  QUALIFIED: CONSTANT TREE := D(
-                                                AS_QUALIFIED, EXP);
-                  TEMP_TYPESET: TYPESET_TYPE;
-                  ANY_ACCESS_OF: TREE := MAKE(
-                                                DN_ANY_ACCESS_OF);
-               BEGIN
-                  EVAL_EXP_TYPES(QUALIFIED,
-                                                TEMP_TYPESET);
-                  IF NOT IS_EMPTY(TEMP_TYPESET) THEN
-                     D(XD_ITEM, ANY_ACCESS_OF,
-                                                        GET_THE_TYPE(
-                                                                TEMP_TYPESET));
-                     ADD_TO_TYPESET(
-                                                        NEW_TYPESET,
-                                                        ANY_ACCESS_OF);
-                  END IF;
-               END;
-         
-            WHEN  DN_SUBTYPE_ALLOCATOR =>
-               DECLARE
-                  SUBTYPE_INDICATION: CONSTANT TREE
-                                                := D(
-                                                AS_SUBTYPE_INDICATION, EXP);
-                  TYPE_SPEC: TREE :=
-                                                EVAL_SUBTYPE_INDICATION(
-                                                SUBTYPE_INDICATION);
-                  ANY_ACCESS_OF: TREE := MAKE(
-                                                DN_ANY_ACCESS_OF);
-               BEGIN
+          EVAL_EXP_TYPES (SUBEXP, NEW_TYPESET);
+        end;
+
+      when DN_AGGREGATE =>
+        ADD_TO_TYPESET (NEW_TYPESET, MAKE (DN_ANY_COMPOSITE));
+
+      when DN_STRING_LITERAL =>
+        ADD_TO_TYPESET (NEW_TYPESET, MAKE (DN_ANY_STRING));
+
+      when DN_QUALIFIED_ALLOCATOR =>
+        declare
+          QUALIFIED     : constant TREE := D (AS_QUALIFIED, EXP);
+          TEMP_TYPESET  : TYPESET_TYPE;
+          ANY_ACCESS_OF : TREE          := MAKE (DN_ANY_ACCESS_OF);
+        begin
+          EVAL_EXP_TYPES (QUALIFIED, TEMP_TYPESET);
+          if not IS_EMPTY (TEMP_TYPESET) then
+            D (XD_ITEM, ANY_ACCESS_OF, GET_THE_TYPE (TEMP_TYPESET));
+            ADD_TO_TYPESET (NEW_TYPESET, ANY_ACCESS_OF);
+          end if;
+        end;
+
+      when DN_SUBTYPE_ALLOCATOR =>
+        declare
+          SUBTYPE_INDICATION : constant TREE := D (AS_SUBTYPE_INDICATION, EXP);
+          TYPE_SPEC          : TREE          := EVAL_SUBTYPE_INDICATION (SUBTYPE_INDICATION);
+          ANY_ACCESS_OF      : TREE          := MAKE (DN_ANY_ACCESS_OF);
+        begin
                                         -- TYPE IS GIVEN BY THE SUBTYPE INDICATION
-                  IF TYPE_SPEC /= TREE_VOID THEN
-                     D(XD_ITEM, ANY_ACCESS_OF,
-                                                        TYPE_SPEC);
-                     ADD_TO_TYPESET(
-                                                        NEW_TYPESET,
-                                                        ANY_ACCESS_OF);
-                  END IF;
-               END;
-         
-         END CASE;
-      
-         TYPESET := NEW_TYPESET;
-      END EVAL_EXP_SUBTYPE_TYPES;
+          if TYPE_SPEC /= TREE_VOID then
+            D (XD_ITEM, ANY_ACCESS_OF, TYPE_SPEC);
+            ADD_TO_TYPESET (NEW_TYPESET, ANY_ACCESS_OF);
+          end if;
+        end;
+
+    end case;
+
+    TYPESET := NEW_TYPESET;
+  end EVAL_EXP_SUBTYPE_TYPES;
       --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
       --|
-       FUNCTION EVAL_TYPE_MARK(EXP: TREE) RETURN TREE IS
+  function EVAL_TYPE_MARK (EXP : TREE) return TREE is
                 -- EXP MUST BE A TYPE MARK (BY THE SYNTAX)
                 -- WE DETERMINE VISIBILITY AND CHECK THAT IT IS ONE
-      
-         DEFSET: 		DEFSET_TYPE := EMPTY_DEFSET;
-         TYPE_ID:		TREE := TREE_VOID;
-      BEGIN
-         IF EXP.TY = DN_SUBTYPE_INDICATION THEN
-            IF D(AS_CONSTRAINT, EXP) /= TREE_VOID THEN
-               ERROR(D(LX_SRCPOS,EXP),
-                                        "TYPE MARK REQUIRED");
-            END IF;
-            RETURN EVAL_TYPE_MARK(D(AS_NAME, EXP));
-         END IF;
-      
-         IF EXP.TY = DN_USED_OBJECT_ID THEN
-            FIND_DIRECT_VISIBILITY(EXP, DEFSET);
-         ELSIF EXP.TY = DN_SELECTED
-                                AND THEN D(AS_DESIGNATOR,EXP).TY =
-                                DN_USED_OBJECT_ID THEN
-            FIND_SELECTED_VISIBILITY(EXP, DEFSET);
-         ELSE
-            ERROR(D(LX_SRCPOS,EXP), "TYPE MARK REQUIRED");
-            RETURN TREE_VOID;
-         END IF;
-      
-         TYPE_ID := GET_THE_ID(DEFSET);
-         IF TYPE_ID.TY IN CLASS_TYPE_NAME THEN
-            NULL;
-         ELSIF TYPE_ID /= TREE_VOID THEN
-            ERROR(D(LX_SRCPOS,EXP), "NOT A TYPE NAME - "
-                                & PRINT_NAME ( D(LX_SYMREP,TYPE_ID)) );
-            TYPE_ID := TREE_VOID;
-         END IF;
-      
-         IF EXP.TY = DN_USED_OBJECT_ID THEN
-            D(SM_DEFN, EXP, TYPE_ID);
-         ELSE -- SINCE EXP) = DN_SELECTED
-            D(SM_DEFN, D(AS_DESIGNATOR,EXP), TYPE_ID);
-         END IF;
-      
-         RETURN GET_BASE_TYPE(TYPE_ID);
-      END EVAL_TYPE_MARK;
+
+    DEFSET  : DEFSET_TYPE := EMPTY_DEFSET;
+    TYPE_ID : TREE        := TREE_VOID;
+  begin
+    if EXP.TY = DN_SUBTYPE_INDICATION then
+      if D (AS_CONSTRAINT, EXP) /= TREE_VOID then
+        ERROR (D (LX_SRCPOS, EXP), "TYPE MARK REQUIRED");
+      end if;
+      return EVAL_TYPE_MARK (D (AS_NAME, EXP));
+    end if;
+
+    if EXP.TY = DN_USED_OBJECT_ID then
+      FIND_DIRECT_VISIBILITY (EXP, DEFSET);
+    elsif EXP.TY = DN_SELECTED and then D (AS_DESIGNATOR, EXP).TY = DN_USED_OBJECT_ID then
+      FIND_SELECTED_VISIBILITY (EXP, DEFSET);
+    else
+      ERROR (D (LX_SRCPOS, EXP), "TYPE MARK REQUIRED");
+      return TREE_VOID;
+    end if;
+
+    TYPE_ID := GET_THE_ID (DEFSET);
+    if TYPE_ID.TY in CLASS_TYPE_NAME then
+      null;
+    elsif TYPE_ID /= TREE_VOID then
+      ERROR (D (LX_SRCPOS, EXP), "NOT A TYPE NAME - " & PRINT_NAME (D (LX_SYMREP, TYPE_ID)));
+      TYPE_ID := TREE_VOID;
+    end if;
+
+    if EXP.TY = DN_USED_OBJECT_ID then
+      D (SM_DEFN, EXP, TYPE_ID);
+    else -- SINCE EXP) = DN_SELECTED
+      D (SM_DEFN, D (AS_DESIGNATOR, EXP), TYPE_ID);
+    end if;
+
+    return GET_BASE_TYPE (TYPE_ID);
+  end EVAL_TYPE_MARK;
       --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
       --|
-       FUNCTION EVAL_SUBTYPE_INDICATION(EXP: TREE) RETURN TREE IS
-         BASE_TYPE: TREE;
-      BEGIN
-         IF EXP.TY = DN_SUBTYPE_INDICATION THEN
-            BASE_TYPE := EVAL_TYPE_MARK(D(AS_NAME, EXP));
+  function EVAL_SUBTYPE_INDICATION (EXP : TREE) return TREE is
+    BASE_TYPE : TREE;
+  begin
+    if EXP.TY = DN_SUBTYPE_INDICATION then
+      BASE_TYPE := EVAL_TYPE_MARK (D (AS_NAME, EXP));
                         -- NOTE CONSTRAINT EVALUATED IN RESOLVE PASS
-            RETURN BASE_TYPE;
-         
-         ELSIF EXP.TY = DN_USED_OBJECT_ID
-                                OR ELSE EXP.TY = DN_SELECTED THEN
-            RETURN EVAL_TYPE_MARK(EXP);
-         
-         ELSE
-            PUT_LINE ( "!! $$$$ NODE SHOULD BE SUBTYPE INDICATION");
-            RAISE PROGRAM_ERROR;
-         END IF;
-      END EVAL_SUBTYPE_INDICATION;
+      return BASE_TYPE;
+
+    elsif EXP.TY = DN_USED_OBJECT_ID or else EXP.TY = DN_SELECTED then
+      return EVAL_TYPE_MARK (EXP);
+
+    else
+      Put_Line ("!! $$$$ NODE SHOULD BE SUBTYPE INDICATION");
+      raise Program_Error;
+    end if;
+  end EVAL_SUBTYPE_INDICATION;
       --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
       --|
-       PROCEDURE EVAL_RANGE
-                        ( EXP:			    TREE
-                        ; TYPESET:		    OUT TYPESET_TYPE)
-                        IS
-      BEGIN -- EVAL_RANGE
-         IF EXP.TY = DN_RANGE THEN
-            DECLARE
-               EXP_1:		CONSTANT TREE := D(AS_EXP1, EXP);
-               EXP_2:		CONSTANT TREE := D(AS_EXP2, EXP);
-               TYPESET_1:	TYPESET_TYPE;
-               TYPESET_2:	TYPESET_TYPE;
-            BEGIN
-               EVAL_EXP_TYPES(EXP_1, TYPESET_1);
-               EVAL_EXP_TYPES(EXP_2, TYPESET_2);
-               REQUIRE_SCALAR_TYPE(EXP_1, TYPESET_1);
-               REQUIRE_SCALAR_TYPE(EXP_2, TYPESET_2);
-               REQUIRE_SAME_TYPES
-                                        ( EXP_1, TYPESET_1
-                                        , EXP_2, TYPESET_2
-                                        , TYPESET );
-            END;
-         
-         ELSIF EXP.TY = DN_ATTRIBUTE
-           OR ELSE ( EXP.TY = DN_FUNCTION_CALL AND THEN D(AS_NAME,EXP).TY = DN_ATTRIBUTE )
-         THEN
-            DECLARE
-               IS_SUBTYPE: BOOLEAN;
-            BEGIN
-               EVAL_ATTRIBUTE(EXP, TYPESET, IS_SUBTYPE);
-               IF NOT IS_SUBTYPE THEN
-                  TYPESET := EMPTY_TYPESET;
-                  ERROR(D(LX_SRCPOS,EXP),
-                                                "RANGE ATTRIBUTE REQUIRED");
-               
-               END IF;
-            END;
-         ELSE
-            TYPESET := EMPTY_TYPESET;
-            ERROR(D(LX_SRCPOS,EXP), "RANGE REQUIRED");
-         END IF;
-      END EVAL_RANGE;
+  procedure EVAL_RANGE (EXP : TREE; TYPESET : out TYPESET_TYPE) is
+  begin -- EVAL_RANGE
+    if EXP.TY = DN_RANGE then
+      declare
+        EXP_1     : constant TREE := D (AS_EXP1, EXP);
+        EXP_2     : constant TREE := D (AS_EXP2, EXP);
+        TYPESET_1 : TYPESET_TYPE;
+        TYPESET_2 : TYPESET_TYPE;
+      begin
+        EVAL_EXP_TYPES (EXP_1, TYPESET_1);
+        EVAL_EXP_TYPES (EXP_2, TYPESET_2);
+        REQUIRE_SCALAR_TYPE (EXP_1, TYPESET_1);
+        REQUIRE_SCALAR_TYPE (EXP_2, TYPESET_2);
+        REQUIRE_SAME_TYPES (EXP_1, TYPESET_1, EXP_2, TYPESET_2, TYPESET);
+      end;
+
+    elsif EXP.TY = DN_ATTRIBUTE or else (EXP.TY = DN_FUNCTION_CALL and then D (AS_NAME, EXP).TY = DN_ATTRIBUTE) then
+      declare
+        IS_SUBTYPE : Boolean;
+      begin
+        EVAL_ATTRIBUTE (EXP, TYPESET, IS_SUBTYPE);
+        if not IS_SUBTYPE then
+          TYPESET := EMPTY_TYPESET;
+          ERROR (D (LX_SRCPOS, EXP), "RANGE ATTRIBUTE REQUIRED");
+
+        end if;
+      end;
+    else
+      TYPESET := EMPTY_TYPESET;
+      ERROR (D (LX_SRCPOS, EXP), "RANGE REQUIRED");
+    end if;
+  end EVAL_RANGE;
       --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
       --|
-       PROCEDURE EVAL_DISCRETE_RANGE
-                        ( EXP:			    TREE
-                        ; TYPESET:		    OUT TYPESET_TYPE)
-                        IS
-         NEW_TYPESET:	TYPESET_TYPE;
-      BEGIN -- EVAL_DISCRETE_RANGE
-      
+  procedure EVAL_DISCRETE_RANGE (EXP : TREE; TYPESET : out TYPESET_TYPE) is
+    NEW_TYPESET : TYPESET_TYPE;
+  begin -- EVAL_DISCRETE_RANGE
+
                 -- IF IT'S A RANGE OR RANGE ATTRIBUTE
-         IF EXP.TY = DN_RANGE
-                                OR ELSE EXP.TY = DN_ATTRIBUTE
-                                OR ELSE EXP.TY = DN_FUNCTION_CALL
-                                THEN
-         
+    if EXP.TY = DN_RANGE or else EXP.TY = DN_ATTRIBUTE or else EXP.TY = DN_FUNCTION_CALL then
+
                         -- EVALUATE THE RANGE
-            EVAL_RANGE(EXP, NEW_TYPESET);
-         
+      EVAL_RANGE (EXP, NEW_TYPESET);
+
                         -- ELSE -- MUST BE DISCRETE SUBTYPE OR SUBTYPE INDICATION
-         ELSE -- MUST BE A (DISCRETE) SUBTYPE INDICATION
-            DECLARE
-               SUBTYPE_INDICATION: TREE;
-               TYPE_SPEC: TREE;
-            BEGIN
-               IF EXP.TY = DN_DISCRETE_SUBTYPE THEN
-                  SUBTYPE_INDICATION := D(
-                                                AS_SUBTYPE_INDICATION, EXP);
-               ELSE
-                  SUBTYPE_INDICATION := EXP;
-               END IF;
-            
-               NEW_TYPESET := EMPTY_TYPESET;
-               TYPE_SPEC := EVAL_SUBTYPE_INDICATION(
-                                        SUBTYPE_INDICATION);
-               IF TYPE_SPEC /= TREE_VOID THEN
-                  ADD_TO_TYPESET(NEW_TYPESET,
-                                                TYPE_SPEC);
-               END IF;
-            END;
-         END IF;
-      
-         REQUIRE_DISCRETE_TYPE(EXP, NEW_TYPESET);
-         TYPESET := NEW_TYPESET;
-      END EVAL_DISCRETE_RANGE;
+    else -- MUST BE A (DISCRETE) SUBTYPE INDICATION
+      declare
+        SUBTYPE_INDICATION : TREE;
+        TYPE_SPEC          : TREE;
+      begin
+        if EXP.TY = DN_DISCRETE_SUBTYPE then
+          SUBTYPE_INDICATION := D (AS_SUBTYPE_INDICATION, EXP);
+        else
+          SUBTYPE_INDICATION := EXP;
+        end if;
+
+        NEW_TYPESET := EMPTY_TYPESET;
+        TYPE_SPEC   := EVAL_SUBTYPE_INDICATION (SUBTYPE_INDICATION);
+        if TYPE_SPEC /= TREE_VOID then
+          ADD_TO_TYPESET (NEW_TYPESET, TYPE_SPEC);
+        end if;
+      end;
+    end if;
+
+    REQUIRE_DISCRETE_TYPE (EXP, NEW_TYPESET);
+    TYPESET := NEW_TYPESET;
+  end EVAL_DISCRETE_RANGE;
       --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
       --|
-       PROCEDURE EVAL_NON_UNIVERSAL_DISCRETE_RANGE
-                        ( EXP:			    TREE
-                        ; TYPESET:		    OUT TYPESET_TYPE)
-                        IS
+  procedure EVAL_NON_UNIVERSAL_DISCRETE_RANGE (EXP : TREE; TYPESET : out TYPESET_TYPE) is
                 -- EVALUATE TYPES OF DISCRETE RANGE IN A CONTEXT WHERE
                 -- ... CONVERTIBLE UNIVERSAL_INTEGER IS TAKEN AS INTEGER
-      
-         NEW_TYPESET:	TYPESET_TYPE;
-         TYPE_NODE:	TREE;
-      BEGIN
-      
+
+    NEW_TYPESET : TYPESET_TYPE;
+    TYPE_NODE   : TREE;
+  begin
+
                 -- EVALUATE THE DISCRETE RANGE
-         EVAL_DISCRETE_RANGE(EXP, NEW_TYPESET);
-      
+    EVAL_DISCRETE_RANGE (EXP, NEW_TYPESET);
+
                 -- IF THERE ARE INTERPRETATIONS
-         IF NOT IS_EMPTY(NEW_TYPESET) THEN
-         
+    if not IS_EMPTY (NEW_TYPESET) then
+
                         -- IF INTERPRETATION IS UNIVERSAL_INTEGER
                         -- ... AND CONTEXT IS CONVERTIBLE
-            TYPE_NODE := GET_THE_TYPE(NEW_TYPESET);
-            IF TYPE_NODE.TY = DN_ANY_INTEGER
-                                        AND THEN EXP.TY = DN_RANGE
-                                        AND THEN D(AS_EXP1,EXP).TY /= DN_PARENTHESIZED
-                                        AND THEN D(AS_EXP2,EXP).TY /= DN_PARENTHESIZED THEN
-            
+      TYPE_NODE := GET_THE_TYPE (NEW_TYPESET);
+      if TYPE_NODE.TY = DN_ANY_INTEGER and then EXP.TY = DN_RANGE and then D (AS_EXP1, EXP).TY /= DN_PARENTHESIZED and then D (AS_EXP2, EXP).TY /= DN_PARENTHESIZED then
+
                                 -- REPLACE WITH PREDEFINED INTEGER
-               NEW_TYPESET := EMPTY_TYPESET;
-               ADD_TO_TYPESET(NEW_TYPESET,
-                                        PREDEFINED_INTEGER);
-            
+        NEW_TYPESET := EMPTY_TYPESET;
+        ADD_TO_TYPESET (NEW_TYPESET, PREDEFINED_INTEGER);
+
                                 -- ELSE -- SINCE INTERPRETATION IS NOT CONVERTIBLE UNIVERSAL
-            ELSE
-            
+      else
+
                                 -- DISCARD INTERPRETATIONS AS UNIVERSAL_INTEGER
-               REQUIRE_NON_UNIVERSAL_TYPE(EXP,
-                                        NEW_TYPESET);
-            END IF;
-         END IF;
-      
+        REQUIRE_NON_UNIVERSAL_TYPE (EXP, NEW_TYPESET);
+      end if;
+    end if;
+
                 -- RETURN THE REDUCED TYPESET
-         TYPESET := NEW_TYPESET;
-      END EVAL_NON_UNIVERSAL_DISCRETE_RANGE;
-   
+    TYPESET := NEW_TYPESET;
+  end EVAL_NON_UNIVERSAL_DISCRETE_RANGE;
+
     --|----------------------------------------------------------------------------------------------
-   END EXP_TYPE;
+end EXP_TYPE;

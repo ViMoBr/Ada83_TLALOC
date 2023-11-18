@@ -1,147 +1,143 @@
-SEPARATE( IDL.SEM_PHASE )
+separate (IDL.SEM_PHASE)
       --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
       --|
-FUNCTION EVAL_NUM( TXT :STRING ) RETURN TREE IS
-      USE UNIV_OPS;
-   
-      MAXCOL: CONSTANT INTEGER := TXT'LAST;
-      COL: INTEGER := TXT'FIRST;
-      CHR : CHARACTER := TXT(TXT'FIRST);
-      SCALEFACTOR : INTEGER := INTEGER'LAST;
-      VNUMER: VECTOR;
-      VDENOM: VECTOR;
-      RADIX:  INTEGER := 10;
-      EXPONENT: INTEGER := 0;
-      EXPONENT_POSITIVE: BOOLEAN := TRUE;
-   
-   
-       PROCEDURE V_CLEAR(ARG: OUT VECTOR) IS
-      BEGIN
-         ARG.S := +1;
-         ARG.L := 1;
-         ARG.D(1) := 0;
-      END V_CLEAR;
-   
-       PROCEDURE V_INCREMENT(DLTA: INTEGER; V: IN OUT VECTOR) IS
-         TEMP: UDIGIT;
-         CARRY : UDIGIT := 0;
-      BEGIN
-         V_SCALE(RADIX,V);
-         TEMP := V.D(1) + UDIGIT(DLTA);
-         IF TEMP >= 10000 THEN
-            CARRY := 1;
-            TEMP := TEMP - 10000;
-         END IF;
-         V.D(1) := TEMP;
-         FOR I IN 2 .. V.L LOOP
-            IF CARRY = 0 THEN
-               RETURN;
-            END IF;
-            TEMP := V.D(I) + 1;
-            IF TEMP >= 10000 THEN
-               CARRY := 1;
-               TEMP := TEMP - 10000;
-            ELSE
-               CARRY := 0;
-            END IF;
-            V.D(I) := TEMP;
-         END LOOP;
-         IF CARRY > 0 THEN
-            V.L := V.L + 1;
-            V.D(V.L) := CARRY;
-            NORMALIZE(V); -- TO CHECK FOR OVERFLOW
-         END IF;
-      END V_INCREMENT;
-   
-       PROCEDURE NEXT_CHR IS
-      BEGIN
-         COL := COL + 1;
-         IF COL <= MAXCOL THEN
-            CHR := TXT(COL);
-         ELSE
-            CHR := ' ';
-         END IF;
-      END NEXT_CHR;
-   
-   BEGIN
-      V_CLEAR ( VNUMER );
+function EVAL_NUM (TXT : String) return TREE is
+  use UNIV_OPS;
+
+  MAXCOL            : constant Integer := TXT'LAST;
+  COL               : Integer          := TXT'FIRST;
+  CHR               : Character        := TXT (TXT'FIRST);
+  SCALEFACTOR       : Integer          := Integer'LAST;
+  VNUMER            : VECTOR;
+  VDENOM            : VECTOR;
+  RADIX             : Integer          := 10;
+  EXPONENT          : Integer          := 0;
+  EXPONENT_POSITIVE : Boolean          := True;
+
+  procedure V_CLEAR (ARG : out VECTOR) is
+  begin
+    ARG.S     := +1;
+    ARG.L     := 1;
+    ARG.D (1) := 0;
+  end V_CLEAR;
+
+  procedure V_INCREMENT (DLTA : Integer; V : in out VECTOR) is
+    TEMP  : UDIGIT;
+    CARRY : UDIGIT := 0;
+  begin
+    V_SCALE (RADIX, V);
+    TEMP := V.D (1) + UDIGIT (DLTA);
+    if TEMP >= 10_000 then
+      CARRY := 1;
+      TEMP  := TEMP - 10_000;
+    end if;
+    V.D (1) := TEMP;
+    for I in 2 .. V.L loop
+      if CARRY = 0 then
+        return;
+      end if;
+      TEMP := V.D (I) + 1;
+      if TEMP >= 10_000 then
+        CARRY := 1;
+        TEMP  := TEMP - 10_000;
+      else
+        CARRY := 0;
+      end if;
+      V.D (I) := TEMP;
+    end loop;
+    if CARRY > 0 then
+      V.L       := V.L + 1;
+      V.D (V.L) := CARRY;
+      NORMALIZE (V); -- TO CHECK FOR OVERFLOW
+    end if;
+  end V_INCREMENT;
+
+  procedure NEXT_CHR is
+  begin
+    COL := COL + 1;
+    if COL <= MAXCOL then
+      CHR := TXT (COL);
+    else
+      CHR := ' ';
+    end if;
+  end NEXT_CHR;
+
+begin
+  V_CLEAR (VNUMER);
                 -- GET INTEGER VAL OR RADIX
-      WHILE CHR IN '0' .. '9' OR ELSE CHR = '.' OR ELSE CHR = '_' LOOP
-         IF CHR = '.' THEN
-            SCALEFACTOR := 0;
-         ELSIF CHR /= '_' THEN
-            V_INCREMENT ( CHARACTER'POS ( CHR ) - CHARACTER'POS ( '0' ), VNUMER );
-            SCALEFACTOR := SCALEFACTOR - 1;
-         END IF;
-         NEXT_CHR;
-      END LOOP;
-      IF CHR = '#' THEN
-         RADIX := INTEGER(VNUMER.D(1));
-         VNUMER.D(1) := 0;
-         NEXT_CHR;
-         WHILE CHR /= '#' LOOP
-            IF CHR = '.' THEN
-               SCALEFACTOR := 0;
-            ELSIF CHR = '_' THEN
-               NULL;
-            ELSIF CHR <= '9' THEN
-               V_INCREMENT (CHARACTER'POS(CHR) - CHARACTER'POS('0'), VNUMER );
-               SCALEFACTOR := SCALEFACTOR - 1;
-            ELSE
-               V_INCREMENT (CHARACTER'POS(CHR) - CHARACTER'POS('A') + 10, VNUMER );
-               SCALEFACTOR := SCALEFACTOR - 1;
-            END IF;
-            NEXT_CHR;
-         END LOOP;
-         NEXT_CHR;
-         
-      END IF;
-      IF CHR = 'E' THEN
-         NEXT_CHR;
-         IF CHR = '+' THEN
-            NEXT_CHR;
-         ELSIF CHR = '-' THEN
-            NEXT_CHR;
-            EXPONENT_POSITIVE := FALSE;
-         END IF;
-         WHILE CHR /= ' ' LOOP
-            IF EXPONENT > 3275 THEN
-               PUT_LINE ( "!! EXPONENT IN NUMERIC LIT TOO LARGE" );
-               RAISE PROGRAM_ERROR;
-            END IF;
-            EXPONENT := EXPONENT * 10 + CHARACTER'POS ( CHR ) - CHARACTER'POS ( '0' );
-            NEXT_CHR;
-         END LOOP;
-         IF NOT EXPONENT_POSITIVE THEN
-            EXPONENT := - EXPONENT;
-         END IF;
-      END IF;
-      IF SCALEFACTOR < 0 THEN
-         EXPONENT := EXPONENT + SCALEFACTOR;
-         V_CLEAR ( VDENOM );
-         VDENOM.D(1) := 1;
-      END IF;
-      
-      IF EXPONENT > 0 THEN
-         FOR I IN 1 .. EXPONENT LOOP
-            V_SCALE(RADIX, VNUMER);
-         END LOOP;
-      ELSIF EXPONENT < 0 THEN
-         FOR I IN 1 .. - EXPONENT LOOP
-            V_SCALE(RADIX, VDENOM);
-         END LOOP;
-      END IF;
-      
-      
-      
-      
-      IF SCALEFACTOR >= 0 THEN
-         VNUMER.D(VNUMER.L+1) := 0;
-         RETURN U_INT( VNUMER );
-      ELSE
-         V_LOWEST_TERMS(VNUMER,VDENOM);
-         VNUMER.D(VNUMER.L+1) := 0;
-         VDENOM.D(VDENOM.L+1) := 0;
-         RETURN U_REAL( VNUMER, VDENOM );
-      END IF;
-   END EVAL_NUM;
+  while CHR in '0' .. '9' or else CHR = '.' or else CHR = '_' loop
+    if CHR = '.' then
+      SCALEFACTOR := 0;
+    elsif CHR /= '_' then
+      V_INCREMENT (Character'POS (CHR) - Character'POS ('0'), VNUMER);
+      SCALEFACTOR := SCALEFACTOR - 1;
+    end if;
+    NEXT_CHR;
+  end loop;
+  if CHR = '#' then
+    RADIX        := Integer (VNUMER.D (1));
+    VNUMER.D (1) := 0;
+    NEXT_CHR;
+    while CHR /= '#' loop
+      if CHR = '.' then
+        SCALEFACTOR := 0;
+      elsif CHR = '_' then
+        null;
+      elsif CHR <= '9' then
+        V_INCREMENT (Character'POS (CHR) - Character'POS ('0'), VNUMER);
+        SCALEFACTOR := SCALEFACTOR - 1;
+      else
+        V_INCREMENT (Character'POS (CHR) - Character'POS ('A') + 10, VNUMER);
+        SCALEFACTOR := SCALEFACTOR - 1;
+      end if;
+      NEXT_CHR;
+    end loop;
+    NEXT_CHR;
+
+  end if;
+  if CHR = 'E' then
+    NEXT_CHR;
+    if CHR = '+' then
+      NEXT_CHR;
+    elsif CHR = '-' then
+      NEXT_CHR;
+      EXPONENT_POSITIVE := False;
+    end if;
+    while CHR /= ' ' loop
+      if EXPONENT > 3_275 then
+        Put_Line ("!! EXPONENT IN NUMERIC LIT TOO LARGE");
+        raise Program_Error;
+      end if;
+      EXPONENT := EXPONENT * 10 + Character'POS (CHR) - Character'POS ('0');
+      NEXT_CHR;
+    end loop;
+    if not EXPONENT_POSITIVE then
+      EXPONENT := -EXPONENT;
+    end if;
+  end if;
+  if SCALEFACTOR < 0 then
+    EXPONENT := EXPONENT + SCALEFACTOR;
+    V_CLEAR (VDENOM);
+    VDENOM.D (1) := 1;
+  end if;
+
+  if EXPONENT > 0 then
+    for I in 1 .. EXPONENT loop
+      V_SCALE (RADIX, VNUMER);
+    end loop;
+  elsif EXPONENT < 0 then
+    for I in 1 .. -EXPONENT loop
+      V_SCALE (RADIX, VDENOM);
+    end loop;
+  end if;
+
+  if SCALEFACTOR >= 0 then
+    VNUMER.D (VNUMER.L + 1) := 0;
+    return U_INT (VNUMER);
+  else
+    V_LOWEST_TERMS (VNUMER, VDENOM);
+    VNUMER.D (VNUMER.L + 1) := 0;
+    VDENOM.D (VDENOM.L + 1) := 0;
+    return U_REAL (VNUMER, VDENOM);
+  end if;
+end EVAL_NUM;

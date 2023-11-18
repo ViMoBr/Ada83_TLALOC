@@ -1,22 +1,31 @@
 V "GNAT Lib v12"
 M P W=b
-A -gnat83
-A -g
+A -gnatA
+A -mtune=generic
+A -march=x86-64
 P ZX
 
 RN
+RV NO_CALENDAR
+RV NO_DELAY
 RV NO_DIRECT_BOOLEAN_OPERATORS
+RV NO_FIXED_POINT
 RV NO_IO
 RV NO_DYNAMIC_SIZED_OBJECTS
+RV NO_IMPLEMENTATION_PRAGMAS
 
-U ada_comp%b		ada_comp.adb		278fe0a5 NE OO SU IU KU
+U ada_comp%b		ada_comp.adb		3782a44d NE OO SU IU KU
 Z ada.strings.text_buffers%s  a-sttebu.adb	a-sttebu.ali
+W calendar%s		calendar.ads		calendar.ali
 W code_gen%s		code_gen.adb		code_gen.ali
 W idl%s			idl.adb			idl.ali
 Z system.concat_2%s	s-conca2.adb		s-conca2.ali
+Z system.concat_3%s	s-conca3.adb		s-conca3.ali
+Z system.img_int%s	s-imgint.ads		s-imgint.ali
 W text_io%s		text_io.ads		text_io.ali
 
 D ada.ads		20230508121439 76789da1 ada%s
+D a-calend.ads		20230508121439 f55c50a3 ada.calendar%s
 D a-except.ads		20230508121439 2a7d8d70 ada.exceptions%s
 D a-ioexce.ads		20230508121439 40018c65 ada.io_exceptions%s
 D a-stream.ads		20230508121439 119b8fb3 ada.streams%s
@@ -26,17 +35,21 @@ D a-stuten.ads		20230508121439 33c54060 ada.strings.utf_encoding%s
 D a-tags.ads		20230508121439 9eaa38c6 ada.tags%s
 D a-textio.ads		20230508121439 deada98a ada.text_io%s
 D a-unccon.ads		20230508121439 0e9b276f ada.unchecked_conversion%s
-D ada_comp.adb		20231013182654 0c472e08 ada_comp%b
+D ada_comp.adb		20231116214915 18a1423a ada_comp%b
+D calendar.ads		20230508121439 2cb525cd calendar%s
 D code_gen.ads		20230823210317 9ce3fa93 code_gen%s
-D idl.ads		20231013131315 9699fca6 idl%s
+D diana_node_attr_class_names.ads  20231103143040 6d94ff6d diana_node_attr_class_names%s
+D idl.ads		20231106170305 bec7f1b1 idl%s
 D interfac.ads		20230508121439 edec285f interfaces%s
 D i-cstrea.ads		20230508121439 e53d8b8e interfaces.c_streams%s
-D node_attr_class_names.ads  20230823210317 920ea9cc node_attr_class_names%s
 D system.ads		20230508121439 a2da961d system%s
 D s-conca2.ads		20230508121439 3d460502 system.concat_2%s
+D s-conca3.ads		20230508121439 9078e860 system.concat_3%s
 D s-crtl.ads		20230508121439 8a0692f8 system.crtl%s
 D s-exctab.ads		20230508121439 91bef6ef system.exception_table%s
 D s-ficobl.ads		20230508121439 dc5161d4 system.file_control_block%s
+D s-imagei.ads		20230508121439 0d3f86a7 system.image_i%s
+D s-imgint.ads		20230508121439 bdb6f5ec system.img_int%s
 D s-parame.ads		20230508121439 d494a4a6 system.parameters%s
 D s-putima.ads		20230508121439 4e095881 system.put_images%s
 D s-secsta.ads		20230508121439 62cd9202 system.secondary_stack%s
@@ -51,50 +64,60 @@ D s-wchcon.ads		20230508121439 d9032363 system.wch_con%s
 D text_io.ads		20230508121439 21b2c898 text_io%s
 D unchconv.ads		20230508121439 ca2f9e18 unchecked_conversion%s
 G a e
-G c Z b b [ada_comp standard 6 11 none]
-G r c none [ada_comp standard 6 11 none] [par_phase idl 23 13 none]
-G r c none [ada_comp standard 6 11 none] [lib_phase idl 24 13 none]
-G r c none [ada_comp standard 6 11 none] [sem_phase idl 25 13 none]
-G r c none [ada_comp standard 6 11 none] [err_phase idl 26 13 none]
-G r c none [ada_comp standard 6 11 none] [write_lib idl 27 13 none]
-G r c none [ada_comp standard 6 11 none] [code_gen standard 3 15 none]
-G r c none [ada_comp standard 6 11 none] [pretty_diana idl 88 13 none]
-X 9 a-textio.ads
-391U14*Put 11|59s3 61s3 63s3 65s3 67s3 69s3
-464U14*Put 11|71s3
-480U14*Get_Line 11|14s3
-X 11 ada_comp.adb
-6U11*ADA_COMP 6b11 77l5 77t13
-7a3 COMMAND{string} 14m14 23r22 25r22 28r57 39r22 41r22 44r43 53r22 54r17
-8i3 CMD_LENGTH{natural} 14m23
-9a3 NOM_TEXTE{string} 44m7 58r19
-10i3 NOM_TEXTE_LENGTH{natural} 43m7 44r21 58r33
-11e3 OPTION{character} 54m7 59r18 61r18 63r18 65r18 67r18 72r6 72r22 72r38
-. 73r24
-17i5 NC1{natural} 23r31 23m45 23r52 24r14 27r40 28r66 38m7 39r31 39m45 39r52
-. 40r14 43r34 44r52 52m7 53r31 53m45 53r52 54r26
-18i5 NC2{natural} 24m7 25r31 25m45 25r52 27r34 28r73 38r14 40m7 41r31 41m45
-. 41r52 43r28 44r59 52r14
-21q1 ISOLE_PROJECT_DIR_PATH 29l9 29e31
-36q1 ISOLE_RELATIVE_SOURCE_PATH 48l9 48e35
-50q1 ISOLE_OPTION 55l9 55e21
-70L3 FIN 59r41 61r41 63r41 65r41 67r41
-X 12 code_gen.ads
-3U15*Code_Gen 11|3w11 68s3
-X 13 idl.ads
-6K9*IDL 11|3w6 27r7 28r7 28r28 31r5 31r28 31r54 32r5 32r22 32r47 32r70 32r98
-. 58r3 58r53 60r3 62r3 64r3 66r3 73r5 13|98e8
-8a3*PROJECT_PATH{string} 11|28m11 32r51
-9i3*PROJECT_PATH_LENGTH{natural} 11|27m11 28r32 31r32 32r74
-11a3*LIB_PATH{string} 11|32m9 58r57
-12i3*LIB_PATH_LENGTH{natural} 11|31m9 32r26
-13a3*DEFAULT_LIB_PATH{string} 11|31r58 32r102
-23U13*PAR_PHASE 11|58s7
-24U13*LIB_PHASE 11|60s7
-25U13*SEM_PHASE 11|62s7
-26U13*ERR_PHASE 11|64s7
-27U13*WRITE_LIB 11|66s7
-88U13*PRETTY_DIANA 11|73s9
-X 33 text_io.ads
-24K9*Text_IO=24:29 11|1w6 2r6
+G c Z b b [ada_comp standard 7 11 none]
+G r c none [ada_comp standard 7 11 none] [pretty_diana idl 28 13 none]
+G r c none [ada_comp standard 7 11 none] [par_phase idl 23 13 none]
+G r c none [ada_comp standard 7 11 none] [lib_phase idl 24 13 none]
+G r c none [ada_comp standard 7 11 none] [sem_phase idl 25 13 none]
+G r c none [ada_comp standard 7 11 none] [err_phase idl 26 13 none]
+G r c none [ada_comp standard 7 11 none] [write_lib idl 27 13 none]
+G r c none [ada_comp standard 7 11 none] [code_gen standard 3 15 none]
+X 2 a-calend.ads
+42I9*Time<226I9> 12|13r44
+56V13*Clock{42I9} 12|62s13 76s13
+112V14*"-"{duration} 12|77s56
+226I9 Time_Rep<long_long_integer>
+X 10 a-textio.ads
+391U14*Put 12|64s3 66s3 68s3 70s3 72s3 74s3
+464U14*Put 12|77s3
+480U14*Get_Line 12|16s3
+507U14*Put_Line 12|61s3
+X 12 ada_comp.adb
+7U11*ADA_COMP 7b11 80l5 80t13
+8a3 COMMAND{string} 16m13 25r22 27r22 30r57 39r22 41r22 44r43 51r22 52r17
+9i3 CMD_LENGTH{natural} 16m22
+10a3 NOM_TEXTE{string} 44m7 61r25 63r19
+11i3 NOM_TEXTE_LENGTH{natural} 43m7 44r21 61r39 63r33
+12e3 OPTION{character} 52m7 56r6 56r22 56r38 57r23 64r18 66r18 68r18 70r18
+. 72r18
+13i3 TIME_1{2|42I9} 62m3 77r58
+13i11 TIME_2{2|42I9} 76m3 77r49
+19i5 NC1{natural} 25r31 25m45 25r52 26r14 29r40 30r66 38m7 39r31 39m45 39r52
+. 40r14 43r34 44r52 50m7 51r31 51m45 51r52 52r26
+20i5 NC2{natural} 26m7 27r31 27m45 27r52 29r34 30r73 38r14 40m7 41r31 41m45
+. 41r52 43r28 44r59 50r14
+23q1 ISOLE_PROJECT_DIR_PATH 31l9 31e31
+36q1 ISOLE_RELATIVE_SOURCE_PATH 46l9 46e35
+48q1 ISOLE_OPTION 53l9 53e21
+75L3 FIN 64r41 66r41 68r41 70r41 72r41
+X 13 calendar.ads
+18K9*Calendar=18:30 12|1w15 2r15 13r35
+X 14 code_gen.ads
+3U15*Code_Gen 12|3w11 73s3
+X 16 idl.ads
+6K9*IDL 12|3w6 29r7 30r7 30r28 33r5 33r28 33r54 34r5 34r22 34r47 34r70 34r98
+. 57r5 63r3 63r53 65r3 67r3 69r3 71r3 16|130e8
+8a3*PROJECT_PATH{string} 12|30m11 34r51
+9i3*PROJECT_PATH_LENGTH{natural} 12|29m11 30r32 33r32 34r74
+11a3*LIB_PATH{string} 12|34m9 63r57
+12i3*LIB_PATH_LENGTH{natural} 12|33m9 34r26
+13a3*DEFAULT_LIB_PATH{string} 12|33r58 34r102
+23U13*PAR_PHASE 12|63s7
+24U13*LIB_PHASE 12|65s7
+25U13*SEM_PHASE 12|67s7
+26U13*ERR_PHASE 12|69s7
+27U13*WRITE_LIB 12|71s7
+28U13*PRETTY_DIANA 12|57s9
+X 38 text_io.ads
+24K9*Text_IO=24:29 12|1w6 2r6
 

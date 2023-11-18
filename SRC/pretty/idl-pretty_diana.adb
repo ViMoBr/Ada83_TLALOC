@@ -6,6 +6,8 @@ SEPARATE( IDL )
 --|-------------------------------------------------------------------------------------------------
 PROCEDURE PRETTY_DIANA ( OPTION :CHARACTER := 'U' ) IS
   OFILE		: FILE_TYPE;							--| LE FICHIER DE SORTIE IMPRESSION
+
+  DEBUG_PRETTY	: BOOLEAN		:= FALSE;
   --|-----------------------------------------------------------------------------------------------
 
   --	IMPRIME	--
@@ -81,6 +83,8 @@ PROCEDURE PRETTY_DIANA ( OPTION :CHARACTER := 'U' ) IS
     PROCEDURE PRINT_DIANA ( T : TREE; IND : NATURAL; PARENT :TREE ) IS
       A_SUB	: INTEGER;
     BEGIN
+if debug_pretty then put_line( "print_diana" ); end if;
+
 --..................................................................................................
 
 --		IMPRESSION AU BESOIN DU POINTEUR DE NOEUD
@@ -165,7 +169,9 @@ IMPRIME_POSITION_SOURCE:
 	COMP_UNIT		: TREE;
         BEGIN
 	IF TRANS_WITH_LIST.FIRST /= TREE_VIRGIN THEN					--| TETE DE LISTE NON INITIALISEE : LIB_PHASE NON FAITE
-	        
+
+if debug_pretty then put_line( "dn_compilation_unit trans_with_list" ); end if;
+
 	  WHILE NOT IS_EMPTY ( TRANS_WITH_LIST ) LOOP
 	    POP ( TRANS_WITH_LIST, TRANS_WITH );					--| EXTRAIRE UN ELEMENT DE LISTE WITH
 	 	
@@ -198,15 +204,18 @@ TRAITER_LES_DESCENDANTS:
         --|	PROCEDURE PRINT_NON_STRUCT_ATTR
         PROCEDURE PRINT_NON_STRUCT_ATTR ( A_SUB :INTEGER; T :TREE; IND :INTEGER; PARENT :TREE) IS	--| IMPRESSION SANS DETAIL DES SOUS ARBRES (PRINT_TREE)
         BEGIN
+if debug_pretty then put_line( "print_non_struct_attr" ); end if;
 
-	IF T = TREE_VOID OR ELSE T = TREE_NIL OR ELSE T = TREE_VIRGIN
-	   OR ELSE T.PT = S OR ELSE  T.PT = HI THEN RETURN;
+	IF T = TREE_VOID OR ELSE T = TREE_VIRGIN THEN
+	  PUT( "^" & NODE_NAME'IMAGE( T.TY ) ); RETURN;
 	END IF;
+	IF T.PT = S  THEN PUT( "c" & SRCCOL_IDX'IMAGE( T.COL ) ); RETURN; END IF;
+	IF T.PT = HI THEN PUT( "#" & NODE_NAME'IMAGE( T.NOTY ) ); RETURN; END IF;
 
 	INDENT( IND );
 	PUT( ATTRIBUTE_NAME'IMAGE( A_SPEC( A_SUB ).ATTR ) );
 	     
-	IF NOT A_SPEC( A_SUB ).IS_LIST AND THEN T.TY /= DN_LIST THEN
+	IF NOT A_SPEC( A_SUB ).IS_LIST AND THEN T.TY /= DN_LIST THEN			--| PAS UNE LISTE
 	  PUT(": ");
 	  IF T.PG > 0 AND THEN T.TY = DN_REAL_VAL THEN
 	    PRINT_TREE( D( XD_NUMER,T ) ); PUT( '/' ); PRINT_TREE( D( XD_DENOM, T ) );
@@ -222,23 +231,15 @@ TRAITER_LES_DESCENDANTS:
 IMPRIME_UNE_LISTE:
 	  DECLARE
 	    SQ	:  SEQ_TYPE	:= ( FIRST=> T, NEXT=> TREE_NIL );
+	    E	: TREE;
 	  BEGIN
-	    IF IS_EMPTY( SQ ) THEN PUT( ": {}" );
-	    ELSIF IS_EMPTY( TAIL( SQ ) ) THEN
-	      PUT( ": { " ); PRINT_TREE( HEAD( SQ ) ); PUT( " }" );
-	    ELSE
-	      INDENT( IND );
-	      PUT( "{ " );
-	      PRINT_TREE( HEAD( SQ ) );
-	      SQ := TAIL( SQ );
-	      WHILE NOT IS_EMPTY( SQ ) LOOP
-	        INDENT( IND+2 );
-	        PRINT_TREE( HEAD( SQ ) );
-	        SQ := TAIL( SQ );
-	      END LOOP;
-	      PUT( " }" );
-	    END IF;
+	    PUT( ": { " ); 
+	    while not IS_EMPTY( SQ ) loop
+	      POP( SQ, E ); INDENT( IND ); PRINT_TREE( E );
+	    end loop;
+	    PUT( " }" );
 	  END IMPRIME_UNE_LISTE;
+
 	END IF;
         END PRINT_NON_STRUCT_ATTR;
         --|-----------------------------------------------------------------------------------------
@@ -246,8 +247,14 @@ IMPRIME_UNE_LISTE:
         PROCEDURE PRINT_STRUCT_ATTR ( A_SUB : INTEGER; T : TREE; IND :INTEGER; PARENT : TREE ) IS	--| IMPRESSION AVEC DETAIL DES SOUS ARBRES (PRINT_DIANA)
 	ATNBR	: ATTRIBUTE_NAME	:= A_SPEC( A_SUB ).ATTR;
         BEGIN
-	IF T = TREE_VOID OR ELSE T = TREE_NIL OR ElSE T = TREE_VIRGIN
-	  OR ELSE  T.PT = HI THEN RETURN; END IF;
+
+	IF T = TREE_VOID OR ELSE T = TREE_VIRGIN THEN
+	  PUT( "^" & NODE_NAME'IMAGE( T.TY ) ); RETURN;
+	END IF;
+	IF T.PT = S  THEN PUT( "c" & SRCCOL_IDX'IMAGE( T.COL ) ); RETURN; END IF;
+	IF T.PT = HI THEN PUT( "#" & NODE_NAME'IMAGE( T.NOTY ) ); RETURN; END IF;
+
+if debug_pretty then put_line( "print_struct_attr" ); end if;
 
 	IF T.PT = P AND THEN T.TY IN CLASS_STANDARD_IDL AND THEN NOT A_SPEC( A_SUB ).IS_LIST THEN
 	  PRINT_NON_STRUCT_ATTR( A_SUB, T, IND, PARENT );
@@ -268,6 +275,8 @@ IMPRIME_UNE_LISTE:
 	  END IF;
 
 	ELSE
+
+
 IMPRIME_LISTE_DETAILLEE:								--| UNE LISTE
 	  DECLARE
 	    SQ	: SEQ_TYPE	:= ( FIRST=> T, NEXT=> TREE_NIL );
@@ -293,6 +302,8 @@ IMPRIME_LISTE_DETAILLEE:								--| UNE LISTE
 	 	PUT( " }" );
 	        END IF;
 	      END;
+
+
 	    END IF;
 	  END IMPRIME_LISTE_DETAILLEE;
 	END IF;
@@ -303,7 +314,13 @@ IMPRIME_LISTE_DETAILLEE:								--| UNE LISTE
         BEGIN
 	IF T.PT = S OR T.PT = HI THEN RETURN; END IF;
 
-	IF T.PG = 0 OR ELSE T.LN = 0 OR ELSE PRINT_STATUS( T.PG )( T.LN ) = NO_PRINT THEN
+if debug_pretty then put( "maybe_non_struct_attr ("
+	& "P" & VPG_IDX'image( T.PG ) & " L" & LINE_IDX'image( T.LN ) & ") " );
+  if T.PG /= 0 then put( " status=" & STATUS'image( PRINT_STATUS( T.PG )( T.LN ) ) ); end if;
+  new_line;
+end if;
+
+	IF T.PG = 0 OR ELSE PRINT_STATUS( T.PG )( T.LN ) = NO_PRINT THEN
 	  PRINT_NON_STRUCT_ATTR ( A_SUB, T, IND, PARENT );
 	ELSE
 	  PRINT_STRUCT_ATTR( A_SUB, T, IND, PARENT );
@@ -315,6 +332,8 @@ IMPRIME_LISTE_DETAILLEE:								--| UNE LISTE
         BEGIN
 	IF (T.PT = S OR T.PT = HI) OR ELSE T.PG = 0 THEN RETURN; END IF;			--| S HI NIL VOID VIRGIN
 
+if debug_pretty then put_line( "print_if_not_structural" ); end if;
+
 	IF PRINT_STATUS( T.PG )( T.LN ) /= PRINT THEN
 	  PRINT_NON_STRUCT_ATTR( A_SUB, T, IND, PARENT );
 	ELSE
@@ -323,7 +342,9 @@ IMPRIME_LISTE_DETAILLEE:								--| UNE LISTE
         END PRINT_IF_NOT_STRUCTURAL;
 	          
       BEGIN
-        IF (T.PT = P OR T.PT = L) AND THEN T.TY IN CLASS_ALL_SOURCE THEN
+ if debug_pretty then put_line( "traiter_les_descendants" ); end if;
+
+       IF (T.PT = P OR T.PT = L) AND THEN T.TY IN CLASS_ALL_SOURCE THEN
 	IF ARITY( T ) = ARBITRARY THEN						--| UN ELEMENT DE LISTE
 	  NB_STRUC_CHILD := 1;							--| UN SEUL ELEMENT STRUCTUREL D'ARBRE SYNTAXIQUE
 	ELSE
@@ -344,6 +365,7 @@ IMPRIME_LISTE_DETAILLEE:								--| UNE LISTE
         END LOOP;
       END TRAITER_LES_DESCENDANTS;
          
+ if debug_pretty then put_line( "print_diana ok" ); end if;
     END PRINT_DIANA;
       
   BEGIN

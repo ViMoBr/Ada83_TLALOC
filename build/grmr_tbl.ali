@@ -1,5 +1,8 @@
 V "GNAT Lib v12"
+A -gnatA
 A -gnat83
+A -mtune=generic
+A -march=x86-64
 P ZX
 
 RN
@@ -38,7 +41,7 @@ D a-sttebu.ads		20230508121439 18209c64 ada.strings.text_buffers%s
 D a-stuten.ads		20230508121439 33c54060 ada.strings.utf_encoding%s
 D a-tags.ads		20230508121439 9eaa38c6 ada.tags%s
 D a-unccon.ads		20230508121439 0e9b276f ada.unchecked_conversion%s
-D grmr_tbl.ads		20230823210317 a179c727 grmr_tbl%s
+D grmr_tbl.ads		20231031175013 a179c727 grmr_tbl%s
 D interfac.ads		20230508121439 edec285f interfaces%s
 D i-cstrea.ads		20230508121439 e53d8b8e interfaces.c_streams%s
 D sequenio.ads		20230508121439 46f09bdc sequential_io%s
@@ -86,23 +89,23 @@ G c Z s s [to_sio grmr_tbl__grmr_tbl_io 61 13 39_3]
 G c Z s s [byte_swap grmr_tbl__grmr_tbl_io 66 14 39_3]
 X 12 grmr_tbl.ads
 5K9*GRMR_TBL 42l5 42e13
-7I8*AC_BYTE<short_integer> 7r61 11r57 22r56 23r56
+7I8*AC_BYTE<short_integer> 7r69 11r57 22r56 23r56
 8I8*AC_SHORT<short_integer> 8r61 12r57
-10A8*ST_TBL_TYPE(integer)<integer> 26r27
-11A8*AC_SYM_TYPE(7I8)<integer> 28r27
-12A8*AC_TBL_TYPE(8I8)<integer> 29r27
-22A8*NTER_PG_TYPE(7I8)<integer> 32r27
-23A8*NTER_LN_TYPE(7I8)<integer> 33r27
-25R8*GRMR_TBL_RECORD 35e27 37r11 39r48
-26a17*ST_TBL{10A8}
-27i17*ST_TBL_LAST{integer}
-28a17*AC_SYM{11A8}
-29a17*AC_TBL{12A8}
-30i17*AC_SYM_LAST{integer}
-31i17*AC_TBL_LAST{integer}
-32a17*NTER_PG{22A8}
-33a17*NTER_LN{23A8}
-34i17*NTER_LAST{integer}
+10A8*ST_TBL_TYPE(integer)<integer> 26r51
+11A8*AC_SYM_TYPE(7I8)<integer> 28r51
+12A8*AC_TBL_TYPE(8I8)<integer> 29r51
+22A8*NTER_PG_TYPE(7I8)<integer> 32r51
+23A8*NTER_LN_TYPE(7I8)<integer> 33r51
+25R8*GRMR_TBL_RECORD 35e35 37r11 39r47
+26a27*ST_TBL{10A8}
+27i27*ST_TBL_LAST{integer}
+28a27*AC_SYM{11A8}
+29a27*AC_TBL{12A8}
+30i27*AC_SYM_LAST{integer}
+31i27*AC_TBL_LAST{integer}
+32a27*NTER_PG{22A8}
+33a27*NTER_LN{23A8}
+34i27*NTER_LAST{integer}
 37r3*GRMR{25R8}
 39K11*GRMR_TBL_IO[4|43]
 X 15 sequenio.ads
