@@ -454,8 +454,6 @@ begin
   CLOSE( CTL );
   return LINE( 1..LEN );
 end GET_LIB_PREFIX;
-
-procedure stop is begin null; end;	--| POUR DEBUG   
    
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 --|		PROCEDURE PAR_PHASE

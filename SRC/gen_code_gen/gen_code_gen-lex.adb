@@ -1,35 +1,37 @@
-SEPARATE ( GEN_CODEGEN )
---|-------------------------------------------------------------------------------------------------
---|	PACKAGE BODY LEX
---|-------------------------------------------------------------------------------------------------
-PACKAGE BODY LEX IS
+SEPARATE ( GEN_CODE_GEN )
+						---
+			PACKAGE BODY		LEX
+						---
+
+IS
       
-  FE	: FILE_TYPE;				--| LE FICHIER D'ENTREE CONTENANT LES SECTIONS DE CODEGEN
-  S	: STRING( 1.. 256 );			--| TAMPON POUR UNE LIGNE DE CE FICHIER
-  L	: NATURAL	:= 0;			--| LONGUEUR DE LA LIGNE
+  FE		: FILE_TYPE;									--| LE FICHIER D'ENTREE CONTENANT LES SECTIONS DE CODEGEN
+  S		: STRING( 1.. 256 );								--| TAMPON POUR UNE LIGNE DE CE FICHIER
+  L		: NATURAL	:= 0;									--| LONGUEUR DE LA LIGNE
       
-  COL	: POSITIVE	:= NATURAL'LAST;			--| COLONNE COURANTE SUR LA LIGNE
-  TOK_START	: POSITIVE;				--| DEBUT
-  TOK_END	: NATURAL;				--| ET FIN DU LEXEME
+  COL		: POSITIVE	:= NATURAL'LAST;							--| COLONNE COURANTE SUR LA LIGNE
+  TOK_START	: POSITIVE;									--| DEBUT
+  TOK_END		: NATURAL;									--| ET FIN DU LEXEME
       
-  --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-  --|
-  PROCEDURE AVANCE IS
+					------
+		PROCEDURE			AVANCE
+					------
+IS
   BEGIN
     GET_A_TOKEN:
-    LOOP					--| BOUCLER TANT QUE L'ON A PAS UN LEXEME VALIDE
+    LOOP												--| BOUCLER TANT QUE L'ON A PAS UN LEXEME VALIDE
     
-      IF COL > L THEN				--| ON EST EN FIN DE LIGNE
-        LOOP					--| BOUCLE POUR PASSER LES LIGNE NE CONCERNANT PAS CODEGEN (NE COMMENCANT PAS PAR "##")
-          IF END_OF_FILE ( FE ) THEN				--| ON EST EN FIN DE FICHIER
-            S( 1..3 ) := "END";				--| METTRE "END" COMME LEXEME
-            TOK_START := 1;				--| DEBUTE EN 1
-            TOK_END := 3;				--| FINIT EN 3
-            EXIT GET_A_TOKEN;				--| SORTIR DE LA BOUCLE
-          ELSE					--| ON EST PAS EN FIN DE FICHIER
-            GET_LINE ( FE, S, L );				--| PRENDRE UNE LIGNE DU FICHIER
-            LINE_NBR := LINE_NBR + 1;				--| LA COMPTER
-            EXIT WHEN S( 1..2 ) = "##";				--| NE SORTIR QUE SI LA LIGNE COMMENCE PAR "##" INDIQUANT UN LIGNE POUR CODEGEN
+      IF COL > L THEN										--| ON EST EN FIN DE LIGNE
+        LOOP											--| BOUCLE POUR PASSER LES LIGNES NE CONCERNANT PAS CODEGEN (NE COMMENCANT PAS PAR "##")
+          IF END_OF_FILE ( FE ) THEN									--| ON EST EN FIN DE FICHIER
+            S( 1..3 ) := "END";									--| METTRE "END" COMME LEXEME
+            TOK_START := 1;										--| DEBUTE EN 1
+            TOK_END := 3;										--| FINIT EN 3
+            EXIT GET_A_TOKEN;										--| SORTIR DE LA BOUCLE
+          ELSE											--| ON EST PAS EN FIN DE FICHIER
+            GET_LINE ( FE, S, L );									--| PRENDRE UNE LIGNE DU FICHIER
+            LINE_NBR := LINE_NBR + 1;									--| LA COMPTER
+            EXIT WHEN S( 1..2 ) = "##";									--| NE SORTIR QUE SI LA LIGNE COMMENCE PAR "##" INDIQUANT UN LIGNE POUR CODEGEN
           END IF;
         END LOOP;
         COL := 3;					--| COLONNE JUSTE APRÈS ## (POSITIONS 1 ET 2)
@@ -81,7 +83,7 @@ PACKAGE BODY LEX IS
   --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
       
 BEGIN
-  OPEN ( FE, IN_FILE, "../TABLES/DIANA.IDL" );
+  OPEN ( FE, IN_FILE, "../IDL/DIANA.IDL" );
   AVANCE;
 --|-------------------------------------------------------------------------------------------------
 END LEX;

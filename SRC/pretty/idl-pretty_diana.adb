@@ -23,7 +23,8 @@ PROCEDURE PRETTY_DIANA ( OPTION :CHARACTER := 'U' ) IS
       
     PRINT_STATUS		: PRINT_STATUS_ARRAY	:= (OTHERS => (OTHERS => PRINT) );
     USER_ROOT		: TREE			:= D( XD_USER_ROOT, TREE_ROOT );
-      
+    COMPLTN_STRUCT		: TREE			:= D( XD_STRUCTURE, USER_ROOT );
+
     --|-----------------------------------------------------------------------------------------------
 
     --		INDENT	--
@@ -369,8 +370,12 @@ if debug_pretty then put_line( "print_if_not_structural" ); end if;
     END PRINT_DIANA;
       
   BEGIN
-    MARK_STRUCT( D( XD_STRUCTURE, USER_ROOT ) );						--| MARQUER LES NOEUDS DE CLASS_ALL_SOURCE
-    PRINT_DIANA( D( XD_STRUCTURE, USER_ROOT ), 0, TREE_VOID );
+
+    PUT_LINE( "TREE_ROOT=" );    print_node( TREE_ROOT );
+    PUT_LINE( "USER_ROOT=" );    print_node( USER_ROOT );
+
+    MARK_STRUCT( COMPLTN_STRUCT );							--| MARQUER LES NOEUDS DE CLASS_ALL_SOURCE
+    PRINT_DIANA( COMPLTN_STRUCT, 0, TREE_VOID );
     NEW_LINE;
   END IMPRIME;
    

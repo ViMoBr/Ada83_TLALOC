@@ -1,8 +1,6 @@
-V "GNAT Lib v12"
-A -gnatA
+V "GNAT Lib v13"
+A -g
 A -gnat83
-A -mtune=generic
-A -march=x86-64
 P ZX
 
 RN
@@ -30,39 +28,38 @@ Z system.file_io%s	s-fileio.adb		s-fileio.ali
 Z system.sequential_io%s  s-sequio.adb		s-sequio.ali
 Z system.storage_elements%s  s-stoele.adb	s-stoele.ali
 
-D ada.ads		20230508121439 76789da1 ada%s
-D a-except.ads		20230508121439 2a7d8d70 ada.exceptions%s
-D a-ioexce.ads		20230508121439 40018c65 ada.io_exceptions%s
-D a-sequio.ads		20230508121439 3573d8ce ada.sequential_io%s
-D a-sequio.adb		20230508121439 3a82bda9 ada.sequential_io%b
-D a-stream.ads		20230508121439 119b8fb3 ada.streams%s
-D a-string.ads		20230508121439 90ac6797 ada.strings%s
-D a-sttebu.ads		20230508121439 18209c64 ada.strings.text_buffers%s
-D a-stuten.ads		20230508121439 33c54060 ada.strings.utf_encoding%s
-D a-tags.ads		20230508121439 9eaa38c6 ada.tags%s
-D a-unccon.ads		20230508121439 0e9b276f ada.unchecked_conversion%s
+D ada.ads		20230426070939 76789da1 ada%s
+D a-except.ads		20230426070939 2a7d8d70 ada.exceptions%s
+D a-ioexce.ads		20230426070939 40018c65 ada.io_exceptions%s
+D a-sequio.ads		20230426070939 3573d8ce ada.sequential_io%s
+D a-sequio.adb		20230426070939 3a82bda9 ada.sequential_io%b
+D a-stream.ads		20230426070939 119b8fb3 ada.streams%s
+D a-string.ads		20230426070939 90ac6797 ada.strings%s
+D a-sttebu.ads		20230426070939 f1ad67a2 ada.strings.text_buffers%s
+D a-stuten.ads		20230426070939 c6ced0ae ada.strings.utf_encoding%s
+D a-tags.ads		20230426070939 9eaa38c6 ada.tags%s
+D a-unccon.ads		20230426070939 0e9b276f ada.unchecked_conversion%s
 D grmr_tbl.ads		20231031175013 a179c727 grmr_tbl%s
-D interfac.ads		20230508121439 edec285f interfaces%s
-D i-cstrea.ads		20230508121439 e53d8b8e interfaces.c_streams%s
-D sequenio.ads		20230508121439 46f09bdc sequential_io%s
-D system.ads		20230508121439 a2da961d system%s
-D s-bytswa.ads		20230508121439 1d5476e8 system.byte_swapping%s
-D s-crtl.ads		20230508121439 8a0692f8 system.crtl%s
-D s-exctab.ads		20230508121439 91bef6ef system.exception_table%s
-D s-ficobl.ads		20230508121439 dc5161d4 system.file_control_block%s
-D s-fileio.ads		20230508121439 45ce2f0f system.file_io%s
-D s-parame.ads		20230508121439 d494a4a6 system.parameters%s
-D s-putima.ads		20230508121439 4e095881 system.put_images%s
-D s-secsta.ads		20230508121439 62cd9202 system.secondary_stack%s
-D s-sequio.ads		20230508121439 fc7560a7 system.sequential_io%s
-D s-soflin.ads		20230508121439 df77073e system.soft_links%s
-D s-stache.ads		20230508121439 0b81c1fe system.stack_checking%s
-D s-stalib.ads		20230508121439 1c9580f6 system.standard_library%s
-D s-stoele.ads		20230508121439 6d8e1ff4 system.storage_elements%s
-D s-stoele.adb		20230508121439 8f5a9db6 system.storage_elements%b
-D s-traent.ads		20230508121439 c81cbf8c system.traceback_entries%s
-D s-unstyp.ads		20230508121439 fa2a7f59 system.unsigned_types%s
-D unchconv.ads		20230508121439 ca2f9e18 unchecked_conversion%s
+D interfac.ads		20230426070939 15f799c2 interfaces%s
+D i-cstrea.ads		20230426070939 e53d8b8e interfaces.c_streams%s
+D sequenio.ads		20230426070939 46f09bdc sequential_io%s
+D system.ads		20230426070939 426dafb8 system%s
+D s-bytswa.ads		20230426070939 1d5476e8 system.byte_swapping%s
+D s-crtl.ads		20230426070939 8a0692f8 system.crtl%s
+D s-exctab.ads		20230426070939 91bef6ef system.exception_table%s
+D s-ficobl.ads		20230426070939 dc5161d4 system.file_control_block%s
+D s-fileio.ads		20230426070939 45ce2f0f system.file_io%s
+D s-parame.ads		20230426070939 d494a4a6 system.parameters%s
+D s-putima.ads		20230426070939 17291fe4 system.put_images%s
+D s-secsta.ads		20230426070939 578279f5 system.secondary_stack%s
+D s-sequio.ads		20230426070939 fc7560a7 system.sequential_io%s
+D s-soflin.ads		20230426070939 df77073e system.soft_links%s
+D s-stache.ads		20230426070939 0b81c1fe system.stack_checking%s
+D s-stalib.ads		20230426070939 1c9580f6 system.standard_library%s
+D s-stoele.ads		20230426070939 ab5468e4 system.storage_elements%s
+D s-stoele.adb		20230426070939 8f5a9db6 system.storage_elements%b
+D s-traent.ads		20230426070939 c81cbf8c system.traceback_entries%s
+D s-unstyp.ads		20230426070939 fa2a7f59 system.unsigned_types%s
 G a e
 G c Z s s [Tst_tbl_typeBIP grmr_tbl 10 3 none]
 G c Z s s [Tac_sym_typeBIP grmr_tbl 11 3 none]

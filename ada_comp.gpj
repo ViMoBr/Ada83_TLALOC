@@ -14,7 +14,7 @@ s#i0
 s#k0
 s#j0
 s#l0
-!2520;g
+!2540;g
 %\011SRC%spar_phase%sidl-par_phase-set_dflt.adb
 %\011SRC%ssem_phase%sidl-sem_phase-att_walk.adb
 %\011EXE%scomp_ada_comp.sh
@@ -51,6 +51,7 @@ s#l0
 %\011SRC%ssem_phase%sidl-sem_phase-def_walk.adb
 %\011SRC%ssem_phase%sidl-sem_phase-pre_fcns.adb
 %\011SRC%ssem_phase%sidl-sem_phase-sem_glob.adb
+%\011IDL%sDIANA.IDL
 %\011SRC%sada_comp%sidl-lib_phase.adb
 %\011SRC%ssem_phase%sidl-sem_phase-def_util.adb
 %\011EXE%sUNCHECKED_CONVERSION.ADA
@@ -80,7 +81,7 @@ s#l0
 %\011SRC%ssem_phase%sidl-sem_phase-make_nod.adb
 %\011SRC%ssem_phase%sidl-sem_phase-fix_with.adb
 %\011SRC%scode_gen%semits.ads
-!2520;f
+!2540;f
 %\011SRC%spar_phase%sidl-par_phase-set_dflt.adb
 %\011SRC%ssem_phase%sidl-sem_phase-att_walk.adb
 %\011EXE%scomp_ada_comp.sh
@@ -117,6 +118,7 @@ s#l0
 %\011SRC%ssem_phase%sidl-sem_phase-def_walk.adb
 %\011SRC%ssem_phase%sidl-sem_phase-pre_fcns.adb
 %\011SRC%ssem_phase%sidl-sem_phase-sem_glob.adb
+%\011IDL%sDIANA.IDL
 %\011SRC%sada_comp%sidl-lib_phase.adb
 %\011SRC%ssem_phase%sidl-sem_phase-def_util.adb
 %\011EXE%sUNCHECKED_CONVERSION.ADA

@@ -3905,7 +3905,7 @@ operator_symbol	::=
 ##  function_spec	====>
 ##  include	INC_OFFSET ( EMITS.RELATIVE_RESULT_OFFSET );
 ##  include	EMITS.PARAM_SIZE := ( EMITS.OFFSET_ACT - EMITS.FIRST_PARAM_OFFSET );
-##  include	EMITS.RESULT_SIZE := EMITS.TYPE_SIZE ( RESULT_TYPE_SPEC );		--| A VOIR
+-- ##  include	EMITS.RESULT_SIZE := EMITS.TYPE_SIZE ( RESULT_TYPE_SPEC );		--| A VOIR
 ##  include	DI ( CD_RESULT_SIZE, D ( AS_NAME, FUNCTION_SPEC ), EMITS.RESULT_SIZE );
 ##  include	INC_OFFSET ( EMITS.RESULT_SIZE );
 ##  include	ALIGN ( STACK_AL );

@@ -9,88 +9,93 @@ package body DEF_UTIL is
   use VIS_UTIL; -- FOR DEBUG (NODE_REP)
   use EXPRESO; -- FOR GET_NAME_DEFN
 
-      --|-------------------------------------------------------------------------------------------
-      --|
-  function HEADER_IS_HOMOGRAPH (HEADER_1 : TREE; PARAM_S_2 : TREE; RESULT_TYPE_2 : TREE := TREE_VOID) return Boolean is
-    KIND_1 : constant NODE_NAME := HEADER_1.TY;
+--|=================================================================================================
+
+--|				HEADER_IS_HOMOGRAPH
+
+--|_________________________________________________________________________________________________
+  function HEADER_IS_HOMOGRAPH ( HEADER_1 :TREE; PARAM_S_2 :TREE; RESULT_TYPE_2 : TREE := TREE_VOID ) return BOOLEAN is
+    KIND_1	: constant NODE_NAME	:= HEADER_1.TY;
   begin
 
-    if KIND_1 not in CLASS_SUBP_ENTRY_HEADER or else PARAM_S_2 = TREE_VOID then    --| IF HEADER_1 IS NON_OVERLOADABLE OR PARAM_S_2 IS VOID
-      return True;                                --| ILS SONT HOMOGRAPHES
+    if KIND_1 not in CLASS_SUBP_ENTRY_HEADER or else PARAM_S_2 = TREE_VOID then			--| IF HEADER_1 IS NON_OVERLOADABLE OR PARAM_S_2 IS VOID
+      return True;									--| ILS SONT HOMOGRAPHES
     end if;
 
-    if (KIND_1 = DN_FUNCTION_SPEC) xor (RESULT_TYPE_2 /= TREE_VOID) then           --| L'UN FONCTION L'AUTRE NON
-      return False;                               --| ILS NE SONT PAS HOMOGRAPHES
+    if (KIND_1 = DN_FUNCTION_SPEC) xor (RESULT_TYPE_2 /= TREE_VOID) then			--| L'UN FONCTION L'AUTRE NON
+      return FALSE;									--| ILS NE SONT PAS HOMOGRAPHES
     end if;
 
-    if KIND_1 = DN_FUNCTION_SPEC then                      --| DEUX FONCTIONS
-      if GET_BASE_TYPE (D (AS_NAME, HEADER_1)) /= GET_BASE_TYPE (RESULT_TYPE_2) then        --| TYPES RETOURNÉS DIFFÉRENTS
-        return False;                            --| ILS NE SONT PAS HOMOGRAPHES
+    if KIND_1 = DN_FUNCTION_SPEC then							--| DEUX FONCTIONS
+      if GET_BASE_TYPE( D( AS_NAME, HEADER_1 ) ) /= GET_BASE_TYPE( RESULT_TYPE_2 ) then		--| TYPES RETOURNES DIFFERENTS
+        return FALSE;								--| ILS NE SONT PAS HOMOGRAPHES
       end if;
     end if;
 
-    return IS_SAME_PARAMETER_PROFILE (D (AS_PARAM_S, HEADER_1), PARAM_S_2);    --| COMPARER LES PROFILS DE PARAMÈTRES
+    return IS_SAME_PARAMETER_PROFILE( D( AS_PARAM_S, HEADER_1 ), PARAM_S_2 );			--| COMPARER LES PROFILS DE PARAMÈTRES
   end HEADER_IS_HOMOGRAPH;
-      --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-      --|
-  function MAKE_DEF_FOR_ID (ID : TREE; H : H_TYPE) return TREE is
-    SYMREP : constant TREE := D (LX_SYMREP, ID);
-    DEF    : TREE          := MAKE (DN_DEF);
+--|#################################################################################################
+
+--|				MAKE_DEF_FOR_ID
+
+--|_________________________________________________________________________________________________
+  function MAKE_DEF_FOR_ID ( ID : TREE; H : H_TYPE ) return TREE is
+    SYMREP	: constant TREE	:= D( LX_SYMREP, ID );
+    DEF		: TREE		:= MAKE( DN_DEF );
   begin
     if H.REGION_DEF /= TREE_VOID and then ID.TY in CLASS_SOURCE_NAME then
-      D (XD_REGION, ID, D (XD_SOURCE_NAME, H.REGION_DEF));
+      D( XD_REGION, ID, D( XD_SOURCE_NAME, H.REGION_DEF ) );
     end if;
 
-    D (XD_HEADER, DEF, TREE_TRUE);
-    D (XD_SOURCE_NAME, DEF, ID);
-    D (XD_REGION_DEF, DEF, H.REGION_DEF);
-    DB (XD_IS_IN_SPEC, DEF, H.IS_IN_SPEC);
-    DB (XD_IS_USED, DEF, False);
-    DI (XD_LEX_LEVEL, DEF, 0);
+    D(  XD_HEADER,      DEF,  TREE_TRUE    );
+    D(  XD_SOURCE_NAME, DEF,  ID           );
+    D(  XD_REGION_DEF,  DEF,  H.REGION_DEF );
+    DB( XD_IS_IN_SPEC,  DEF,  H.IS_IN_SPEC );
+    DB( XD_IS_USED,     DEF,  FALSE        );
+    DI( XD_LEX_LEVEL,   DEF,  0            );
 
     LIST (SYMREP, INSERT (LIST (SYMREP), DEF));
     return DEF;
   end MAKE_DEF_FOR_ID;
-      --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-      --|
-  procedure CHECK_UNIQUE_SOURCE_NAME_S (SOURCE_NAME_S : TREE) is
-                -- CHECK A SEQUENCE OF NEWLY DECLARED SOURCE NAMES FOR UNIQUENESS
+--|#################################################################################################
 
-    SOURCE_NAME_LIST : SEQ_TYPE := LIST (SOURCE_NAME_S);
-    SOURCE_NAME      : TREE;
+--|				CHECK_UNIQUE_SOURCE_NAME_S
+
+--|_________________________________________________________________________________________________
+  procedure CHECK_UNIQUE_SOURCE_NAME_S ( SOURCE_NAME_S :TREE ) is
+    SOURCE_NAME_LIST	: SEQ_TYPE	:= LIST( SOURCE_NAME_S );
+    SOURCE_NAME		: TREE;
   begin
-                -- FOR EACH SOURCE_NAME IN THE SEQUENCE
-    while not IS_EMPTY (SOURCE_NAME_LIST) loop
-      POP (SOURCE_NAME_LIST, SOURCE_NAME);
-
-                        -- GET THE CORRESPONDING DEF NODE AND CHECK FOR UNIQUENESS
-      CHECK_UNIQUE_DEF (GET_DEF_FOR_ID (SOURCE_NAME));
+    while not IS_EMPTY( SOURCE_NAME_LIST ) loop
+      POP( SOURCE_NAME_LIST, SOURCE_NAME );
+      CHECK_UNIQUE_DEF( GET_DEF_FOR_ID( SOURCE_NAME ) );
     end loop;
   end CHECK_UNIQUE_SOURCE_NAME_S;
-      --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-      --|
-  procedure CHECK_CONSTANT_ID_S (SOURCE_NAME_S : TREE; H : H_TYPE) is
-                -- CHECK A SEQUENCE OF NEWLY DECLARED CONSTANT ID'S FOR PRIOR DECL
+--|#################################################################################################
 
-    SOURCE_NAME_LIST : SEQ_TYPE := LIST (SOURCE_NAME_S);
-    SOURCE_NAME      : TREE;
+--|				CHECK_CONSTANT_ID_S
+
+--|_________________________________________________________________________________________________
+  procedure CHECK_CONSTANT_ID_S (SOURCE_NAME_S :TREE; H :H_TYPE ) is
+    SOURCE_NAME_LIST	: SEQ_TYPE	:= LIST( SOURCE_NAME_S );
+    SOURCE_NAME		: TREE;
   begin
-                -- FOR EACH SOURCE_NAME IN THE SEQUENCE
-    while not IS_EMPTY (SOURCE_NAME_LIST) loop
-      POP (SOURCE_NAME_LIST, SOURCE_NAME);
-
-                        -- GET THE CORRESPONDING DEF NODE AND CHECK FOR PRIOR DECL
-      CHECK_CONSTANT_DEF (GET_DEF_FOR_ID (SOURCE_NAME), H);
+    while not IS_EMPTY( SOURCE_NAME_LIST ) loop
+      POP( SOURCE_NAME_LIST, SOURCE_NAME );
+      CHECK_CONSTANT_DEF( GET_DEF_FOR_ID( SOURCE_NAME ), H );
     end loop;
   end CHECK_CONSTANT_ID_S;
-      --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-      --|
-  function GET_DEF_FOR_ID (ID : TREE) return TREE is
-    DEFLIST : SEQ_TYPE := LIST (D (LX_SYMREP, ID));
-    DEF     : TREE;
+--|#################################################################################################
+
+--|				GET_DEF_FOR_ID
+
+--|_________________________________________________________________________________________________
+  function GET_DEF_FOR_ID ( ID :TREE ) return TREE is
+    DEFLIST	: SEQ_TYPE	:= LIST( D( LX_SYMREP, ID ) );
+    DEF		: TREE;
   begin
-    while not IS_EMPTY (DEFLIST) loop
-      POP (DEFLIST, DEF);
+    while not IS_EMPTY( DEFLIST ) loop
+      POP( DEFLIST, DEF );
 
       if D (XD_SOURCE_NAME, DEF) = ID then
         return DEF;
@@ -304,7 +309,7 @@ package body DEF_UTIL is
   end CHECK_TYPE_DEF;
       --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
       --|
-  function ARE_HOMOGRAPH_HEADERS (HEADER_1, HEADER_2 : TREE) return Boolean is
+  function ARE_HOMOGRAPH_HEADERS (HEADER_1, HEADER_2 : TREE) return BOOLEAN is
                 -- DETERMINES IF TWO HEADERS ARE HOMOGRAPHS
                 -- ONLY CALLED WITH HEADER FROM XD_HEADER ATTRIBUTE OF DEF
                 --   (HENCE DO NOT NEED TO CHECK, E.G., DISCRETE_RANGE IN ENTRY)
@@ -332,7 +337,7 @@ package body DEF_UTIL is
 
       --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
       --|
-  function IS_SAME_PARAMETER_PROFILE (PARAM_S_1, PARAM_S_2 : TREE) return Boolean is
+  function IS_SAME_PARAMETER_PROFILE (PARAM_S_1, PARAM_S_2 : TREE) return BOOLEAN is
     PARAM_LIST_1         : SEQ_TYPE := LIST (PARAM_S_1);
     PARAM_LIST_2         : SEQ_TYPE := LIST (PARAM_S_2);
     PARAM_1, PARAM_2     : TREE;
@@ -362,7 +367,7 @@ package body DEF_UTIL is
 
                                         -- THERE IS NONE
                                         -- NOT COMPATIBLE SINCE THERE WAS AN ELEMENT ON PARAM_LIST_1
-          return False;
+          return FALSE;
         else
           POP (PARAM_LIST_2, PARAM_2);
           ID_LIST_2 := LIST (D (AS_SOURCE_NAME_S, PARAM_2));
@@ -373,7 +378,7 @@ package body DEF_UTIL is
                         -- IF THEY ARE NOT OF THE SAME TYPE,
       if GET_BASE_TYPE (D (SM_OBJ_TYPE, ID_1)) /= GET_BASE_TYPE (D (SM_OBJ_TYPE, ID_2)) then
                                 -- THEN THEY ARE NOT COMPATIBLE
-        return False;
+        return FALSE;
       end if;
     end loop;
   end IS_SAME_PARAMETER_PROFILE;
@@ -458,7 +463,7 @@ package body DEF_UTIL is
   end CONFORM_PARAMETER_LISTS;
       --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
       --|
-  function IS_COMPATIBLE_EXPRESSION (EXP_1, EXP_2 : TREE) return Boolean is
+  function IS_COMPATIBLE_EXPRESSION (EXP_1, EXP_2 : TREE) return BOOLEAN is
                 -- ARGUMENTS ARE EXPRESSIONS OR RANGES OR VOID
                 -- RETURN TRUE IF COMPATIBLE (WITHIN PARAM OR DSCRMT LIST)
   begin
@@ -484,7 +489,7 @@ package body DEF_UTIL is
     D (XD_HEADER, DEF, TREE_VOID);
     D (XD_REGION_DEF, DEF, TREE_VOID);
     DI (XD_LEX_LEVEL, DEF, 0);
-    DB (XD_IS_USED, DEF, False);
+    DB (XD_IS_USED, DEF, FALSE);
   end REMOVE_DEF_FROM_ENVIRONMENT;
       --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
       --|

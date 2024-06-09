@@ -171,7 +171,7 @@ FUNCTION L_PRINT_TREE ( T :TREE ) RETURN NATURAL IS
           PUT_LONG_DIGIT( INTEGER( DD(1) MOD 10_000 ) );					--| SECOND DIGIT 10_000 AIRE
           PUT( '_' );
           PUT_LONG_DIGIT( INTEGER( DD(2) MOD 10_000 ) );					--| PREMIER DIGIT 10_000 AIRE (MOD POUR LE PREMIER
-          IF I /= ENTETE.LN THEN
+          IF I /= ENTETE.NSIZ THEN
             IF (I MOD 8) = 1 THEN
               NEW_LINE;
             END IF;

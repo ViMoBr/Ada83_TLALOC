@@ -1,7 +1,7 @@
 pragma Warnings (Off);
 pragma Ada_95;
-pragma Source_File_Name (ada_main, Spec_File_Name => "b~ada_comp.ads");
-pragma Source_File_Name (ada_main, Body_File_Name => "b~ada_comp.adb");
+pragma Source_File_Name (ada_main, Spec_File_Name => "b~gen_code_gen.ads");
+pragma Source_File_Name (ada_main, Body_File_Name => "b~gen_code_gen.adb");
 pragma Suppress (Overflow_Check);
 with Ada.Exceptions;
 
@@ -28,22 +28,12 @@ package body ada_main is
    E104 : Short_Integer; pragma Import (Ada, E104, "ada__strings__utf_encoding_E");
    E112 : Short_Integer; pragma Import (Ada, E112, "ada__tags_E");
    E005 : Short_Integer; pragma Import (Ada, E005, "ada__strings__text_buffers_E");
-   E130 : Short_Integer; pragma Import (Ada, E130, "ada__streams_E");
-   E142 : Short_Integer; pragma Import (Ada, E142, "system__file_control_block_E");
-   E141 : Short_Integer; pragma Import (Ada, E141, "system__finalization_root_E");
-   E139 : Short_Integer; pragma Import (Ada, E139, "ada__finalization_E");
-   E138 : Short_Integer; pragma Import (Ada, E138, "system__file_io_E");
-   E119 : Short_Integer; pragma Import (Ada, E119, "ada__calendar_E");
-   E128 : Short_Integer; pragma Import (Ada, E128, "ada__text_io_E");
-   E187 : Short_Integer; pragma Import (Ada, E187, "system__direct_io_E");
-   E178 : Short_Integer; pragma Import (Ada, E178, "system__sequential_io_E");
-   E162 : Short_Integer; pragma Import (Ada, E162, "system__img_llli_E");
-   E159 : Short_Integer; pragma Import (Ada, E159, "system__img_lli_E");
-   E174 : Short_Integer; pragma Import (Ada, E174, "grmr_ops_E");
-   E180 : Short_Integer; pragma Import (Ada, E180, "lex_E");
-   E172 : Short_Integer; pragma Import (Ada, E172, "idl_E");
-   E126 : Short_Integer; pragma Import (Ada, E126, "emits_E");
-   E123 : Short_Integer; pragma Import (Ada, E123, "code_gen_E");
+   E133 : Short_Integer; pragma Import (Ada, E133, "ada__streams_E");
+   E145 : Short_Integer; pragma Import (Ada, E145, "system__file_control_block_E");
+   E144 : Short_Integer; pragma Import (Ada, E144, "system__finalization_root_E");
+   E142 : Short_Integer; pragma Import (Ada, E142, "ada__finalization_E");
+   E141 : Short_Integer; pragma Import (Ada, E141, "system__file_io_E");
+   E131 : Short_Integer; pragma Import (Ada, E131, "ada__text_io_E");
 
    Sec_Default_Sized_Stacks : array (1 .. 1) of aliased System.Secondary_Stack.SS_Stack (System.Parameters.Runtime_Default_Sec_Stack_Size);
 
@@ -54,33 +44,19 @@ package body ada_main is
 
    procedure finalize_library is
    begin
-      E178 := E178 - 1;
+      E131 := E131 - 1;
       declare
          procedure F1;
-         pragma Import (Ada, F1, "system__sequential_io__finalize_spec");
+         pragma Import (Ada, F1, "ada__text_io__finalize_spec");
       begin
          F1;
       end;
-      E187 := E187 - 1;
       declare
          procedure F2;
-         pragma Import (Ada, F2, "system__direct_io__finalize_spec");
+         pragma Import (Ada, F2, "system__file_io__finalize_body");
       begin
+         E141 := E141 - 1;
          F2;
-      end;
-      E128 := E128 - 1;
-      declare
-         procedure F3;
-         pragma Import (Ada, F3, "ada__text_io__finalize_spec");
-      begin
-         F3;
-      end;
-      declare
-         procedure F4;
-         pragma Import (Ada, F4, "system__file_io__finalize_body");
-      begin
-         E138 := E138 - 1;
-         F4;
       end;
       declare
          procedure Reraise_Library_Exception_If_Any;
@@ -227,42 +203,22 @@ package body ada_main is
       Ada.Strings.Text_Buffers'Elab_Spec;
       E005 := E005 + 1;
       Ada.Streams'Elab_Spec;
-      E130 := E130 + 1;
+      E133 := E133 + 1;
       System.File_Control_Block'Elab_Spec;
-      E142 := E142 + 1;
+      E145 := E145 + 1;
       System.Finalization_Root'Elab_Spec;
-      E141 := E141 + 1;
+      E144 := E144 + 1;
       Ada.Finalization'Elab_Spec;
-      E139 := E139 + 1;
+      E142 := E142 + 1;
       System.File_Io'Elab_Body;
-      E138 := E138 + 1;
-      Ada.Calendar'Elab_Spec;
-      Ada.Calendar'Elab_Body;
-      E119 := E119 + 1;
+      E141 := E141 + 1;
       Ada.Text_Io'Elab_Spec;
       Ada.Text_Io'Elab_Body;
-      E128 := E128 + 1;
-      System.Direct_Io'Elab_Spec;
-      E187 := E187 + 1;
-      System.Sequential_Io'Elab_Spec;
-      E178 := E178 + 1;
-      System.Img_Llli'Elab_Spec;
-      E162 := E162 + 1;
-      System.Img_Lli'Elab_Spec;
-      E159 := E159 + 1;
-      GRMR_OPS'ELAB_BODY;
-      E174 := E174 + 1;
-      LEX'ELAB_BODY;
-      E180 := E180 + 1;
-      IDL'ELAB_BODY;
-      E172 := E172 + 1;
-      EMITS'ELAB_SPEC;
-      E126 := E126 + 1;
-      E123 := E123 + 1;
+      E131 := E131 + 1;
    end adainit;
 
    procedure Ada_Main_Program;
-   pragma Import (Ada, Ada_Main_Program, "_ada_ada_comp");
+   pragma Import (Ada, Ada_Main_Program, "_ada_gen_code_gen");
 
    function main
      (argc : Integer;
@@ -296,16 +252,8 @@ package body ada_main is
    end;
 
 --  BEGIN Object file/option list
-   --   ./diana_node_attr_class_names.o
-   --   ./grmr_ops.o
-   --   ./grmr_tbl.o
-   --   ./lex.o
-   --   ./idl.o
-   --   ./emits.o
-   --   ./code_gen.o
-   --   ./ada_comp.o
+   --   ./gen_code_gen.o
    --   -L./
-   --   -L../EXE/IDL_TOOLS/
    --   -L/home/vmo/Documents/ada83_git/ada-83-compiler-tools/build/
    --   -L./
    --   -L/usr/lib/gcc/x86_64-linux-gnu/13/adalib/

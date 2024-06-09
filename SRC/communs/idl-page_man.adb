@@ -286,6 +286,9 @@ begin
       PAG( RP ).CHANGED := TRUE;							--| MENTIONNER LE CHANGEMENT
     end if;
   end;
+
+--    PUT_LINE( "TREE_ROOT=" );    IDL.PRINT_NOD.PRINT_NODE( TREE_ROOT );
+--    PUT_LINE( "USER_ROOT=" );    IDL.PRINT_NOD.PRINT_NODE( D( XD_USER_ROOT, TREE_ROOT ) );
          
   for I in RPG_NUM loop FREE_PAGE( I );	end loop;						--| LIBERER LES PAGES (INCLUT UNE ECRITURE SI NECESSAIRE)
 

@@ -1,8 +1,10 @@
 separate( IDL.SEM_PHASE)
---|----------------------------------------------------------------------------------------------
+--|-------------------------------------------------------------------------------------------------
 --|     RED_SUBP
---|----------------------------------------------------------------------------------------------
+--|-------------------------------------------------------------------------------------------------
 package body RED_SUBP is
+
+--  DEBUG_RED_SUBP		: BOOLEAN		:= FALSE;					--| COMMUTATEUR DE DEVERMINAGE
 
   use VIS_UTIL, EXP_TYPE, EXPRESO, DEF_UTIL, MAKE_NOD, SET_UTIL, REQ_UTIL, DEF_WALK, ATT_WALK, AGGRESO;
 
@@ -651,24 +653,24 @@ package body RED_SUBP is
     for I in ACTUAL'RANGE loop
       POP( ASSOC_LIST, ACTUAL( I ).EXP );
       if ACTUAL( I ).EXP.TY = DN_ASSOC then
-        NAMED_SEEN     := TRUE;
-        ACTUAL( I ).SYM := D( LX_SYMREP, D( AS_USED_NAME, ACTUAL( I ).EXP ) );
-        ACTUAL( I ).EXP := D( AS_EXP, ACTUAL( I ).EXP );
-      else
-        if NAMED_SEEN then
-          ERROR( D( LX_SRCPOS, ACTUAL( I ).EXP ), "POSITIONAL PARAMETER FOLLOWS NAMED" );
+        NAMED_SEEN      := TRUE;							--| UN PARAMETRE NOMME PAR LE FORMEL
+        ACTUAL( I ).SYM := D( LX_SYMREP, D( AS_USED_NAME, ACTUAL( I ).EXP ) );			--| SYMBOLE DU PARAMETRE ACTUEL
+        ACTUAL( I ).EXP := D( AS_EXP, ACTUAL( I ).EXP );					--| DEPASSER LE DN_ASSOC
+      else									--| PARAMETRE ACTUEL REPERE PAR POSITION
+        if NAMED_SEEN then								--| SI DEJA VU UN "FORMEL => ACTUEL"
+          ERROR( D( LX_SRCPOS, ACTUAL( I ).EXP ), "POSITIONAL PARAMETER FOLLOWS NAMED" );		--| PAS AUTORISE
           ERROR_SEEN := TRUE;
         end if;
-        ACTUAL( I).SYM  := TREE_VOID;
-        POSITIONAL_LAST := I;
+        ACTUAL( I ).SYM  := TREE_VOID;
+        POSITIONAL_LAST := I;								--| MAJ RANG DERNIER PARAMETRE POSITIONNEL
       end if;
     end loop;
 
-    if ACTUAL'LAST = 1 and then INDEX = TREE_VOID and then not NAMED_SEEN then
+    if ACTUAL'LAST = 1 and then INDEX = TREE_VOID and then not NAMED_SEEN then			--| UN SEUL PARAMETRE ASSOCIE PAR POSITION ET NON INDICE
       EVAL_EXP_SUBTYPE_TYPES( ACTUAL( 1 ).EXP, ACTUAL( 1 ).TYPESET, IS_SLICE );
       if IS_SLICE and then ACTUAL( 1 ).EXP.TY /= DN_RANGE then
                         --( RESOLVE NOW -- USED TO INDICATE SLICE LATER)
-        REQUIRE_UNIQUE_TYPE( ACTUAL( 1 ).EXP, ACTUAL( 1 ).TYPESET);
+        REQUIRE_UNIQUE_TYPE( ACTUAL( 1 ).EXP, ACTUAL( 1 ).TYPESET );
         ACTUAL( 1 ).EXP := RESOLVE_DISCRETE_RANGE( ACTUAL( 1 ).EXP, GET_THE_TYPE( ACTUAL( 1 ).TYPESET ) );
         LIST( GEN_ASSOC_S, SINGLETON( ACTUAL( 1).EXP ) );
       end if;
@@ -740,10 +742,8 @@ package body RED_SUBP is
           when DN_PROCEDURE_ID | DN_OPERATOR_ID | DN_BLTN_OPERATOR_ID =>
                                  --$$$$ WORRY ABOUT CONVERSIONS WITH BOOLEAN-VALUED OPS
             HEADER := D( XD_HEADER, GET_DEF( DEFINTERP ) );
-
-stop;
-
             CHECK_ACTUAL_LIST( HEADER, ACTUAL, ACTUALS_OK, EXTRAINFO );
+
             if ACTUALS_OK and not IS_SLICE then
               ADD_EXTRAINFO( DEFINTERP, EXTRAINFO );
               ADD_TO_DEFSET( NEW_DEFSET, DEFINTERP );
@@ -797,8 +797,9 @@ stop;
       end loop;
 
       if IS_EMPTY( NEW_DEFSET ) then
-        ERROR( D( LX_SRCPOS, NAME), "PARAMETER TYPE MISMATCH" );
-      end if;
+        ERROR( D( LX_SRCPOS, NAME), "DESACCORD DE TYPE" );
+print_node( NAME );
+     end if;
     end if;
 
     NAME_DEFSET := NEW_DEFSET;
@@ -824,6 +825,7 @@ stop;
       exit when ACTUAL( I ).SYM /= TREE_VOID;
 
       ADVANCE_PARAM_CURSOR( PARAM_CURSOR );
+
       if PARAM_CURSOR.ID = TREE_VOID then
         ACTUALS_OK := FALSE;
         EXTRAINFO  := NULL_EXTRAINFO;
@@ -831,7 +833,8 @@ stop;
       end if;
 
       CHECK_ACTUAL_TYPE( GET_BASE_TYPE( D( SM_OBJ_TYPE, PARAM_CURSOR.ID ) ), ACTUAL( I ).TYPESET, NEW_ACTUALS_OK, SUB_EXTRAINFO );
-      if not NEW_ACTUALS_OK then
+ 
+     if not NEW_ACTUALS_OK then
         ACTUALS_OK := FALSE;
         EXTRAINFO  := NULL_EXTRAINFO;
         return;
@@ -991,6 +994,7 @@ stop;
 
     FORMAL_STRUCT	: TREE;
   begin
+
     ACTUALS_OK := TRUE;
     EXTRAINFO  := NULL_EXTRAINFO;
 

@@ -24,14 +24,14 @@ procedure SEM_PHASE is
 		end record;
       
     type H_TYPE	is record								--| INFORMATION HEREDITAIRE
-		REGION_DEF	: TREE;
-		LEX_LEVEL		: NATURAL;
-		IS_IN_SPEC	: BOOLEAN;
-		IS_IN_BODY	: BOOLEAN;
-		SUBP_SYMREP	: TREE;
-		RETURN_TYPE	: TREE;
-		ENCLOSING_LOOP_ID	: TREE;
-            end record;
+		  REGION_DEF	: TREE;
+		  LEX_LEVEL	: NATURAL;
+		  IS_IN_SPEC	: BOOLEAN;
+		  IS_IN_BODY	: BOOLEAN;
+		  SUBP_SYMREP	: TREE;
+		  RETURN_TYPE	: TREE;
+		  ENCLOSING_LOOP_ID	: TREE;
+		end record;
 
     SB			: SB_TYPE;
     SU			: SU_TYPE;
@@ -203,13 +203,13 @@ procedure SEM_PHASE is
     function  MAKE_DEF_FOR_ID			( ID :TREE; H :H_TYPE )		return TREE;
     procedure CHECK_UNIQUE_SOURCE_NAME_S	( SOURCE_NAME_S :TREE );
     procedure CHECK_CONSTANT_ID_S		( SOURCE_NAME_S :TREE; H :H_TYPE );
-    function  GET_DEF_FOR_ID			( ID :TREE)			return TREE;
-    function  GET_PRIOR_DEF			( DEF :TREE)			return TREE;
-    function  GET_PRIOR_HOMOGRAPH_DEF		( DEF :TREE)			return TREE;
+    function  GET_DEF_FOR_ID			( ID :TREE )			return TREE;
+    function  GET_PRIOR_DEF			( DEF :TREE )			return TREE;
+    function  GET_PRIOR_HOMOGRAPH_DEF		( DEF :TREE )			return TREE;
     function  GET_PRIOR_HOMOGRAPH_DEF		( DEF, PARAM_S :TREE;
 					  RESULT_TYPE :TREE := TREE_VOID )	return TREE;
     function  GET_DEF_IN_REGION		( ID :TREE; H :H_TYPE )		return TREE;
-    procedure CHECK_UNIQUE_DEF		( SOURCE_DEF : TREE);
+    procedure CHECK_UNIQUE_DEF		( SOURCE_DEF :TREE);
     procedure CHECK_CONSTANT_DEF		( SOURCE_DEF :TREE; H :H_TYPE );
     procedure CHECK_TYPE_DEF			( SOURCE_DEF :TREE; H :H_TYPE );
     function  ARE_HOMOGRAPH_HEADERS		( HEADER_1, HEADER_2 :TREE )		return BOOLEAN;
@@ -2316,7 +2316,7 @@ procedure SEM_PHASE is
       while not IS_EMPTY( NAME_LIST ) loop
         POP( NAME_LIST, NAME );
         NAME_DEFN := D( SM_DEFN, NAME );						--| CHERCHER LA DEFINITION CORRESPONDANTE
-        NAME_DEF := DEF_UTIL.GET_DEF_FOR_ID( NAME_DEFN );
+        NAME_DEF  := DEF_UTIL.GET_DEF_FOR_ID( NAME_DEFN );
         D( XD_REGION_DEF, NAME_DEF, DEF_UTIL.GET_DEF_FOR_ID( D( XD_REGION, NAME_DEFN) ) );	--| L'INDIQUER "WITH"EE
         NEW_NAME := VIS_UTIL.MAKE_USED_NAME_ID_FROM_OBJECT( NAME );				--| REMPLACER LES USED_OBJECT_ID AVEC DES USED_NAME_ID
         NEW_NAME_LIST := APPEND( NEW_NAME_LIST, NEW_NAME );
@@ -2457,7 +2457,7 @@ procedure SEM_PHASE is
         end if;
       end loop;
          
-      while not IS_EMPTY( TRANS_WITH_LIST ) loop						--| CLAUSES ANCÊTRES
+      while not IS_EMPTY( TRANS_WITH_LIST ) loop						--| CLAUSES ANCETRES
         POP( TRANS_WITH_LIST, TRANS_WITH);
         PROCESS_ANCESTOR_CONTEXT( D( TW_COMP_UNIT, TRANS_WITH ), COMPILATION_UNIT );
       end loop;
@@ -2473,16 +2473,18 @@ procedure SEM_PHASE is
       DEFLIST		: SEQ_TYPE;
       DEF			: TREE;
     begin
-      if NAME.TY = DN_SELECTED then
-        ENTER_ANCESTOR_REGION( D( AS_NAME, NAME ), H );
-        DESIGNATOR := D( AS_DESIGNATOR, NAME );
+      if NAME.TY = DN_SELECTED then							--| LE NOM EST PRECEDE D UN SELECTEUR SEL.NOM
+        ENTER_ANCESTOR_REGION( D( AS_NAME, NAME ), H );					--| Y REMONTER
+        DESIGNATOR := D( AS_DESIGNATOR, NAME );						--| PRENDRE LE DESIGNANT (USED_OBJECT | USED_NAME)
       else
-        DESIGNATOR := NAME;
+        DESIGNATOR := NAME;								--| PARENT NON SELECTE LE DESIGNANT EST LE NOM
       end if;
+
       D( SM_DEFN, DESIGNATOR, TREE_VOID );
-      DEFLIST := LIST( D( LX_SYMREP, DESIGNATOR ) );
-      while not IS_EMPTY( DEFLIST) loop
-        POP( DEFLIST, DEF);
+      DEFLIST := LIST( D( LX_SYMREP, DESIGNATOR ) );	--| LISTE DES DEFINITIONS DU SYMBOLE DESIGNANT
+ 
+     while not IS_EMPTY( DEFLIST ) loop
+        POP( DEFLIST, DEF );
         if D( XD_REGION, D( XD_SOURCE_NAME, DEF ) ) = D( XD_SOURCE_NAME, H.REGION_DEF ) then
           DEFN := D( XD_SOURCE_NAME, DEF);
           if DEFN.TY = DN_TYPE_ID or else DEFN.TY in CLASS_UNIT_NAME then
@@ -2492,6 +2494,7 @@ procedure SEM_PHASE is
           exit;
         end if;
       end loop;
+
       DEFN := D( SM_DEFN, DESIGNATOR );
       if DEFN = TREE_VOID then
         PUT_LINE( "!! DEFN NOT FOUND FOR ANCESTOR" );
@@ -2538,7 +2541,7 @@ procedure SEM_PHASE is
          
       NOD_WALK.WALK_ITEM_S( PRAGMA_S, H );
        
-      while not IS_EMPTY( USED_PACKAGE_LIST) loop
+      while not IS_EMPTY( USED_PACKAGE_LIST ) loop
         DB( XD_IS_USED, HEAD( USED_PACKAGE_LIST ), FALSE );
         USED_PACKAGE_LIST := TAIL( USED_PACKAGE_LIST );
       end loop;
@@ -2578,7 +2581,7 @@ begin
   OPEN_IDL_TREE_FILE( IDL.LIB_PATH( 1..LIB_PATH_LENGTH ) & "$$$.TMP" );
       
   if DI( XD_ERR_COUNT, TREE_ROOT) > 0 then
-    PUT_LINE( "SEMPHASE: NOT EXECUTED" );
+    PUT_LINE( "SEMPHASE: PAS FAIT (ERREURS ANTERIEURES)" );
   else
     declare
       USER_ROOT		: TREE		:= D( XD_USER_ROOT, TREE_ROOT );
