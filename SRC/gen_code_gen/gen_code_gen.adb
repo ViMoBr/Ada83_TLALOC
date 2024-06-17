@@ -1,16 +1,14 @@
 with Text_io;
 use  Text_io;
-					-----------
-		procedure			GEN_CODE_GEN
-					-----------
-is
+			------------
+procedure			GEN_CODE_GEN
+is			------------
 
   FS	: FILE_TYPE;
    
-			---
-	package		LEX
-			---
-  is
+		---
+  package		LEX
+  is		---
 
     LINE_NBR		: NATURAL		:= 0;
     SEPA_TAB_ONLY		: BOOLEAN		:= FALSE;
@@ -25,10 +23,9 @@ is
   package body LEX is separate;
   use LEX;
 
-					---------
-			procedure		GEN_SPECS
-					---------
-  is
+			---------
+  procedure		GEN_SPECS
+  is			---------
 
     OBJECT_NAME		: STRING( 1..256 );
     OBJECT_NAME_LEN		: NATURAL			:= 0;
@@ -243,6 +240,11 @@ is
       end;
             
     end loop;
+    if IN_IF then
+      NEW_LINE ( FS );
+      PUT_LINE ( FS, "    end if;" );
+      IN_IF := FALSE;
+    end if;
   end GEN_PROCS;
   --------------
    

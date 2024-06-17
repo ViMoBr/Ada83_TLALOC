@@ -6,24 +6,50 @@ USE  EMITS, DIANA_NODE_ATTR_CLASS_NAMES, IDL, TEXT_IO;
 is
 
   PROCEDURE CODE_root ( root :Tree );
+  PROCEDURE CODE_user_root ( user_root :Tree );
+  PROCEDURE CODE_compilation ( compilation :Tree );
+  PROCEDURE CODE_compltn_unit_s ( compltn_unit_s :Tree );
+  PROCEDURE CODE_compilation_unit ( compilation_unit :Tree );
+  PROCEDURE CODE_context_elem_s ( context_elem_s :Tree );
+  PROCEDURE CODE_CONTEXT_ELEM ( CONTEXT_ELEM :Tree );
+  PROCEDURE CODE_context_pragma ( context_pragma :Tree );
+  PROCEDURE CODE_with ( ada_with :Tree );
+  PROCEDURE CODE_ALL_DECL ( ALL_DECL :Tree );
+  PROCEDURE CODE_subunit ( subunit :Tree );
+  PROCEDURE CODE_SUBUNIT_BODY ( SUBUNIT_BODY :Tree );
+  PROCEDURE CODE_block_master ( block_master :Tree );
+  PROCEDURE CODE_item_s ( item_s :Tree );
+  PROCEDURE CODE_subprogram_body ( subprogram_body :Tree );
+  PROCEDURE CODE_package_body ( package_body :Tree );
+  PROCEDURE CODE_task_body ( task_body :Tree );
+  PROCEDURE CODE_DECL ( DECL :Tree );
+  PROCEDURE CODE_ID_DECL ( ID_DECL :Tree );
+  PROCEDURE CODE_UNIT_DECL ( UNIT_DECL :Tree );
+  PROCEDURE CODE_NON_GENERIC_DECL ( NON_GENERIC_DECL :Tree );
+  PROCEDURE CODE_ID_S_DECL ( ID_S_DECL :Tree );
+  PROCEDURE CODE_EXP_DECL ( EXP_DECL :Tree );
+  PROCEDURE CODE_package_decl ( package_decl :Tree );
+  PROCEDURE CODE_subprog_entry_decl ( subprog_entry_decl :Tree );
+  PROCEDURE CODE_generic_decl ( generic_decl :Tree );
+  PROCEDURE CODE_number_decl ( number_decl :Tree );
+  PROCEDURE CODE_type_decl ( type_decl :Tree );
+  PROCEDURE CODE_dscrmt_decl_s ( dscrmt_decl_s :Tree );
+  PROCEDURE CODE_dscrmt_decl ( dscrmt_decl :Tree );
+  PROCEDURE CODE_subtype_decl ( subtype_decl :Tree );
+  PROCEDURE CODE_constant_decl ( constant_decl :Tree );
+  PROCEDURE CODE_deferred_constant_decl ( deferred_constant_decl :Tree );
+  PROCEDURE CODE_variable_decl ( variable_decl :Tree );
   PROCEDURE CODE_SOURCE_NAME ( SOURCE_NAME :Tree );
   PROCEDURE CODE_OBJECT_NAME ( OBJECT_NAME :Tree );
   PROCEDURE CODE_UNIT_NAME ( UNIT_NAME :Tree );
-  PROCEDURE CODE_DECL ( DECL :Tree );
-  PROCEDURE CODE_ID_DECL ( ID_DECL :Tree );
-  PROCEDURE CODE_ID_S_DECL ( ID_S_DECL :Tree );
-  PROCEDURE CODE_EXP_DECL ( EXP_DECL :Tree );
   PROCEDURE CODE_OBJECT_DECL ( OBJECT_DECL :Tree );
   PROCEDURE CODE_VC_NAME ( VC_NAME :Tree );
   PROCEDURE CODE_variable_id ( variable_id :Tree );
   PROCEDURE CODE_constant_id ( constant_id :Tree );
-  PROCEDURE CODE_number_decl ( number_decl :Tree );
   PROCEDURE CODE_number_id ( number_id :Tree );
   PROCEDURE CODE_source_name_s ( source_name_s :Tree );
-  PROCEDURE CODE_type_decl ( type_decl :Tree );
   PROCEDURE CODE_TYPE_NAME ( TYPE_NAME :Tree );
   PROCEDURE CODE_type_id ( type_id :Tree );
-  PROCEDURE CODE_subtype_decl ( subtype_decl :Tree );
   PROCEDURE CODE_subtype_id ( subtype_id :Tree );
   PROCEDURE CODE_ENUM_LITERAL ( ENUM_LITERAL :Tree );
   PROCEDURE CODE_enumeration_id ( enumeration_id :Tree );
@@ -37,9 +63,6 @@ is
   PROCEDURE CODE_choice_range ( choice_range :Tree );
   PROCEDURE CODE_choice_others ( choice_others :Tree );
   PROCEDURE CODE_ITEM ( ITEM :Tree );
-  PROCEDURE CODE_item_s ( item_s :Tree );
-  PROCEDURE CODE_UNIT_DECL ( UNIT_DECL :Tree );
-  PROCEDURE CODE_NON_GENERIC_DECL ( NON_GENERIC_DECL :Tree );
   PROCEDURE CODE_NAME ( NAME :Tree );
   PROCEDURE CODE_NAME_EXP ( NAME_EXP :Tree );
   PROCEDURE CODE_DESIGNATOR ( DESIGNATOR :Tree );
@@ -109,7 +132,6 @@ is
   PROCEDURE CODE_exit ( ada_exit :Tree );
   PROCEDURE CODE_return ( ada_return :Tree );
   PROCEDURE CODE_goto ( ada_goto :Tree );
-  PROCEDURE CODE_subprog_entry_decl ( subprog_entry_decl :Tree );
   PROCEDURE CODE_NON_TASK_NAME ( NON_TASK_NAME :Tree );
   PROCEDURE CODE_SUBPROG_PACK_NAME ( SUBPROG_PACK_NAME :Tree );
   PROCEDURE CODE_SUBPROG_NAME ( SUBPROG_NAME :Tree );
@@ -132,19 +154,14 @@ is
   PROCEDURE CODE_in_out_id ( in_out_id :Tree );
   PROCEDURE CODE_out_id ( out_id :Tree );
   PROCEDURE CODE_BODY ( ada_BODY :Tree );
-  PROCEDURE CODE_subprogram_body ( subprogram_body :Tree );
   PROCEDURE CODE_procedure_call ( procedure_call :Tree );
   PROCEDURE CODE_function_call ( function_call :Tree );
-  PROCEDURE CODE_package_decl ( package_decl :Tree );
   PROCEDURE CODE_package_id ( package_id :Tree );
   PROCEDURE CODE_package_spec ( package_spec :Tree );
   PROCEDURE CODE_decl_s ( decl_s :Tree );
-  PROCEDURE CODE_package_body ( package_body :Tree );
   PROCEDURE CODE_private_type_id ( private_type_id :Tree );
   PROCEDURE CODE_l_private_type_id ( l_private_type_id :Tree );
-  PROCEDURE CODE_deferred_constant_decl ( deferred_constant_decl :Tree );
   PROCEDURE CODE_task_decl ( task_decl :Tree );
-  PROCEDURE CODE_task_body ( task_body :Tree );
   PROCEDURE CODE_task_body_id ( task_body_id :Tree );
   PROCEDURE CODE_entry_id ( entry_id :Tree );
   PROCEDURE CODE_entry_call ( entry_call :Tree );
@@ -161,27 +178,607 @@ is
   PROCEDURE CODE_timed_entry ( timed_entry :Tree );
   PROCEDURE CODE_name_s ( name_s :Tree );
   PROCEDURE CODE_abort ( ada_abort :Tree );
-  PROCEDURE CODE_compilation ( compilation :Tree );
-  PROCEDURE CODE_compltn_unit_s ( compltn_unit_s :Tree );
-  PROCEDURE CODE_compilation_unit ( compilation_unit :Tree );
-  PROCEDURE CODE_CONTEXT_ELEM ( CONTEXT_ELEM :Tree );
-  PROCEDURE CODE_context_pragma ( context_pragma :Tree );
-  PROCEDURE CODE_context_elem_s ( context_elem_s :Tree );
-  PROCEDURE CODE_with ( ada_with :Tree );
-  PROCEDURE CODE_subunit ( subunit :Tree );
-  PROCEDURE CODE_SUBUNIT_BODY ( SUBUNIT_BODY :Tree );
   PROCEDURE CODE_exception_decl ( exception_decl :Tree );
   PROCEDURE CODE_exception_id ( exception_id :Tree );
   PROCEDURE CODE_raise ( ada_raise :Tree );
-  PROCEDURE CODE_generic_decl ( generic_decl :Tree );
   PROCEDURE CODE_generic_id ( generic_id :Tree );
   PROCEDURE CODE_code ( code :Tree );
-  PROCEDURE CODE_ALL_DECL ( ALL_DECL :Tree );
-  PROCEDURE CODE_user_root ( user_root :Tree );
   --|-------------------------------------------------------------------------------------------
   procedure CODE_root ( root :TREE ) is
   begin
       CODE_user_root ( D ( xd_user_root, root ) );
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_user_root ( user_root :TREE ) is
+  begin
+      CODE_compilation ( D ( xd_structure, user_root ) );
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_compilation ( compilation :TREE ) is
+  begin
+      CODE_compltn_unit_s ( D ( as_compltn_unit_s, compilation ) );
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_compltn_unit_s ( compltn_unit_s :TREE ) is
+  begin
+    declare
+      compltn_unit_seq : Seq_Type := LIST ( compltn_unit_s );
+      compltn_unit : TREE;
+    begin
+      while not IS_EMPTY ( compltn_unit_seq ) loop
+        POP ( compltn_unit_seq, compltn_unit );
+        EMITS.OPEN_OUTPUT_FILE ( GET_LIB_PREFIX & PRINT_NAME ( D ( XD_LIB_NAME, COMPLTN_UNIT ) ) );
+      CODE_compilation_unit ( compltn_unit );
+        EMITS.CLOSE_OUTPUT_FILE;
+    end loop;
+    end;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_compilation_unit ( compilation_unit :TREE ) is
+  begin
+    EMITS.TOP_ACT := 0;
+    EMITS.TOP_MAX := 0;
+    EMITS.OFFSET_ACT := 0;
+    EMITS.OFFSET_MAX := 0;
+    EMITS.LEVEL := 0;
+    EMITS.GENERATE_CODE := FALSE;
+    EMITS.CUR_COMP_UNIT := 2;
+    EMITS.ENCLOSING_BODY := Tree_VOID;
+      CODE_context_elem_s ( D ( as_context_elem_s, compilation_unit ) );
+    EMITS.CUR_COMP_UNIT := 0;
+    EMITS.GENERATE_CODE := TRUE;
+      CODE_ALL_DECL ( D ( as_all_decl, compilation_unit ) );
+    EMIT ( QUIT );
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_context_elem_s ( context_elem_s :TREE ) is
+  begin
+    declare
+      context_elem_seq : Seq_Type := LIST ( context_elem_s );
+      context_elem : TREE;
+    begin
+      while not IS_EMPTY ( context_elem_seq ) loop
+        POP ( context_elem_seq, context_elem );
+      CODE_CONTEXT_ELEM ( context_elem );
+    end loop;
+    end;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_CONTEXT_ELEM ( CONTEXT_ELEM :TREE ) is
+  begin
+
+    if CONTEXT_ELEM.TY = DN_context_pragma then
+      CODE_context_pragma ( CONTEXT_ELEM );
+
+    elsif CONTEXT_ELEM.TY = DN_with then
+      CODE_with ( CONTEXT_ELEM );
+
+    end if;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_context_pragma ( context_pragma :TREE ) is
+  begin
+    null;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_with ( ADA_with :TREE ) is
+  begin
+      CODE_name_s ( D ( as_NAME_S, ADA_with ) );
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_ALL_DECL ( ALL_DECL :TREE ) is
+  begin
+
+    if ALL_DECL.TY IN CLASS_ITEM then
+      CODE_ITEM ( ALL_DECL );
+
+    elsif ALL_DECL.TY = DN_subunit then
+      CODE_subunit ( ALL_DECL );
+
+    elsif ALL_DECL.TY = DN_block_master then
+      CODE_block_master ( ALL_DECL );
+
+    end if;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_subunit ( subunit :TREE ) is
+  begin
+      CODE_SUBUNIT_BODY ( D ( as_subunit_body, subunit ) );
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_SUBUNIT_BODY ( SUBUNIT_BODY :TREE ) is
+  begin
+    DECLARE
+       POST_LBL : LABEL_TYPE;
+    BEGIN
+      IF ENCLOSING_BODY /= TREE_VOID THEN
+        POST_LBL := NEXT_LABEL;
+        EMIT ( JMP, POST_LBL, COMMENT=> "CONTOURNEMENT" );
+      END IF;
+
+    if SUBUNIT_BODY.TY = DN_subprogram_body then
+      CODE_subprogram_body ( SUBUNIT_BODY );
+
+    elsif SUBUNIT_BODY.TY = DN_package_body then
+      CODE_package_body ( SUBUNIT_BODY );
+
+    elsif SUBUNIT_BODY.TY = DN_task_body then
+      CODE_task_body ( SUBUNIT_BODY );
+
+    end if;
+      IF ENCLOSING_BODY /= TREE_VOID THEN
+        WRITE_LABEL ( POST_LBL, COMMENT=> "FIN DE CONTOURNEMENT" );
+      END IF;
+    END;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_block_master ( block_master :TREE ) is
+  begin
+    null;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_item_s ( item_s :TREE ) is
+  begin
+    declare
+      item_seq : Seq_Type := LIST ( item_s );
+      item : TREE;
+    begin
+      while not IS_EMPTY ( item_seq ) loop
+        POP ( item_seq, item );
+      CODE_ITEM ( item );
+    end loop;
+    end;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_subprogram_body ( subprogram_body :TREE ) is
+  begin
+    DECLARE
+       OLD_OFFSET_ACT : OFFSET_TYPE := EMITS.OFFSET_ACT;
+       OLD_OFFSET_MAX : OFFSET_TYPE := EMITS.OFFSET_MAX;
+       SOURCE_NAME    : TREE := D ( AS_SOURCE_NAME, SUBPROGRAM_BODY );
+       START_LABEL    : LABEL_TYPE := NEXT_LABEL;
+    BEGIN
+      IF EMITS.ENCLOSING_BODY = TREE_VOID THEN
+        EMIT ( PRO, S=> PRINT_NAME ( D ( LX_SYMREP, SOURCE_NAME ) ) );
+      END IF;
+      EMITS.OFFSET_ACT := EMITS.FIRST_PARAM_OFFSET;
+      EMITS.OFFSET_MAX := EMITS.OFFSET_ACT;
+      INC_LEVEL;
+      DI ( CD_LABEL, SOURCE_NAME, INTEGER ( START_LABEL ) );
+      DI ( CD_LEVEL, SOURCE_NAME, EMITS.LEVEL );
+      WRITE_LABEL ( START_LABEL );
+      CODE_HEADER ( D ( as_header, subprogram_body ) );
+      DI ( CD_PARAM_SIZE, SOURCE_NAME, PARAM_SIZE );
+      EMITS.OFFSET_ACT := EMITS.FIRST_LOCAL_VAR_OFFSET;
+      EMITS.OFFSET_MAX := EMITS.OFFSET_ACT;
+      CODE_BODY ( D ( as_BODY, subprogram_body ) );
+      DEC_LEVEL;
+      EMITS.OFFSET_MAX := OLD_OFFSET_MAX;
+      EMITS.OFFSET_ACT := OLD_OFFSET_ACT;
+    END;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_package_body ( package_body :TREE ) is
+  begin
+    EMIT ( PKB, S=> PRINT_NAME ( D ( LX_SYMREP, D ( AS_SOURCE_NAME, PACKAGE_BODY ) ) ) );
+    EMITS.GENERATE_CODE := FALSE;
+      CODE_package_spec ( D ( sm_spec, D ( as_source_name, package_body ) ) );
+    EMITS.GENERATE_CODE := TRUE;
+    WRITE_LABEL ( 1 );
+      CODE_BODY ( D ( as_body, package_body ) );
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_task_body ( task_body :TREE ) is
+  begin
+    null;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_DECL ( DECL :TREE ) is
+  begin
+
+    if DECL.TY IN CLASS_ID_DECL then
+      CODE_ID_DECL ( DECL );
+
+    elsif DECL.TY IN CLASS_ID_S_DECL then
+      CODE_ID_S_DECL ( DECL );
+
+    end if;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_ID_DECL ( ID_DECL :TREE ) is
+  begin
+
+    if ID_DECL.TY = DN_type_decl then
+      CODE_type_decl ( ID_DECL );
+
+    elsif ID_DECL.TY = DN_subtype_decl then
+      CODE_subtype_decl ( ID_DECL );
+
+    elsif ID_DECL.TY = DN_task_decl then
+      CODE_task_decl ( ID_DECL );
+
+    elsif ID_DECL.TY IN CLASS_UNIT_DECL then
+      CODE_UNIT_DECL ( ID_DECL );
+
+    end if;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_UNIT_DECL ( UNIT_DECL :TREE ) is
+  begin
+
+    if UNIT_DECL.TY = DN_generic_decl then
+      CODE_generic_decl ( UNIT_DECL );
+
+    elsif UNIT_DECL.TY IN CLASS_NON_GENERIC_DECL then
+      CODE_NON_GENERIC_DECL ( UNIT_DECL );
+
+    end if;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_NON_GENERIC_DECL ( NON_GENERIC_DECL :TREE ) is
+  begin
+
+    if NON_GENERIC_DECL.TY = DN_subprog_entry_decl then
+      CODE_subprog_entry_decl ( NON_GENERIC_DECL );
+
+    elsif NON_GENERIC_DECL.TY = DN_package_decl then
+      CODE_package_decl ( NON_GENERIC_DECL );
+
+    end if;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_ID_S_DECL ( ID_S_DECL :TREE ) is
+  begin
+
+    if ID_S_DECL.TY IN CLASS_EXP_DECL then
+      CODE_EXP_DECL ( ID_S_DECL );
+
+    elsif ID_S_DECL.TY = DN_exception_decl then
+      CODE_exception_decl ( ID_S_DECL );
+
+    elsif ID_S_DECL.TY = DN_deferred_constant_decl then
+      CODE_deferred_constant_decl ( ID_S_DECL );
+
+    end if;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_EXP_DECL ( EXP_DECL :TREE ) is
+  begin
+
+    if EXP_DECL.TY IN CLASS_OBJECT_DECL then
+      CODE_OBJECT_DECL ( EXP_DECL );
+
+    elsif EXP_DECL.TY = DN_number_decl then
+      CODE_number_decl ( EXP_DECL );
+
+    end if;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_package_decl ( package_decl :TREE ) is
+  begin
+    EMIT ( PKG, S=> PRINT_NAME ( D ( LX_SYMREP, D ( AS_SOURCE_NAME, PACKAGE_DECL ) ) ) );
+    WRITE_LABEL ( 1 );
+    DECLARE
+      L1 : LABEL_TYPE := NEXT_LABEL;
+      L2 : LABEL_TYPE := NEXT_LABEL;
+    BEGIN
+      EMIT ( ENT, Integer( 1 ), L1 );
+      EMIT ( ENT, Integer( 2 ), L2 );
+      EMITS.OFFSET_ACT := 0;
+      EMITS.OFFSET_MAX := 0;
+      CODE_HEADER ( D ( as_header, package_decl ) );
+      DECLARE
+        EXC_LBL : LABEL_TYPE := NEXT_LABEL;
+      BEGIN
+        EMIT ( EXH, EXC_LBL, COMMENT=> "ETIQUETTE EXCEPTION HANDLE DU PACKAGE" );
+        EMIT ( RET, RELATIVE_RESULT_OFFSET );
+        WRITE_LABEL ( EXC_LBL );
+      END;
+      EMIT ( EEX );
+      GEN_LBL_ASSIGNMENT ( L1, OFFSET_MAX );
+      GEN_LBL_ASSIGNMENT ( L2, TOP_MAX + OFFSET_MAX );
+    END;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_subprog_entry_decl ( subprog_entry_decl :TREE ) is
+  begin
+    DECLARE
+      OLD_OFFSET_ACT : OFFSET_TYPE := EMITS.OFFSET_ACT;
+      OLD_OFFSET_MAX : OFFSET_TYPE := EMITS.OFFSET_MAX;
+      SOURCE_NAME    : TREE        := D ( AS_SOURCE_NAME, SUBPROG_ENTRY_DECL );
+      HEADER         : TREE        := D ( AS_HEADER, SUBPROG_ENTRY_DECL );
+    BEGIN
+      EMITS.OFFSET_ACT := EMITS.FIRST_PARAM_OFFSET;
+      EMITS.OFFSET_MAX := EMITS.OFFSET_ACT;
+      INC_LEVEL;
+      IF SOURCE_NAME.TY IN CLASS_SUBPROG_NAME THEN
+        DECLARE
+          LBL : LABEL_TYPE := NEXT_LABEL;
+        BEGIN
+          DI ( CD_LABEL, SOURCE_NAME, INTEGER ( LBL ) );
+          DI ( CD_LEVEL, SOURCE_NAME, EMITS.LEVEL );
+          DB ( CD_COMPILED, SOURCE_NAME, TRUE );
+          IF NOT EMITS.GENERATE_CODE THEN
+            EMITS.GENERATE_CODE := TRUE;
+            EMIT ( RFL, LBL );
+            EMITS.GENERATE_CODE := FALSE;
+          END IF;
+      CODE_HEADER ( D ( as_header, subprog_entry_decl ) );
+          DI ( CD_PARAM_SIZE, SOURCE_NAME, OFFSET_ACT - FIRST_PARAM_OFFSET );
+        END;
+        IF SOURCE_NAME.TY = DN_FUNCTION_ID OR SOURCE_NAME.TY = DN_OPERATOR_ID THEN
+          DECLARE
+            USED_OBJECT_ID   : TREE := D ( AS_NAME, HEADER );
+            RESULT_TYPE_SPEC : TREE := D ( SM_EXP_TYPE, USED_OBJECT_ID );
+          BEGIN
+            DI ( CD_RESULT_SIZE, SOURCE_NAME, EMITS.TYPE_SIZE( RESULT_TYPE_SPEC ));
+          END;
+        END IF;
+      END IF;
+      DEC_LEVEL;
+      EMITS.OFFSET_MAX := OLD_OFFSET_MAX;
+      EMITS.OFFSET_ACT := OLD_OFFSET_ACT;
+    END;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_generic_decl ( generic_decl :TREE ) is
+  begin
+    null;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_number_decl ( number_decl :TREE ) is
+  begin
+    null;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_type_decl ( type_decl :TREE ) is
+  begin
+    DECLARE
+      TYPE_DEF  : TREE := D ( AS_TYPE_DEF, TYPE_DECL );
+      TYPE_ID   : TREE := D ( AS_SOURCE_NAME, TYPE_DECL );
+      TYPE_SPEC : TREE := D ( SM_TYPE_SPEC, TYPE_ID );
+      ------------------------------------------------------------------------------
+      PROCEDURE COMPILE_ENUMERATION_DEF ( ENUMERATION_DEF :TREE ) IS
+        ENUM_LITERAL_S  : TREE     := D ( AS_ENUM_LITERAL_S, ENUMERATION_DEF );
+        LITERAL_SEQ     : SEQ_TYPE := LIST ( ENUM_LITERAL_S );
+        LITERAL         : TREE;
+      BEGIN
+        WHILE NOT IS_EMPTY ( LITERAL_SEQ ) LOOP
+          POP ( LITERAL_SEQ, LITERAL );
+        END LOOP;
+        DI ( CD_LAST, ENUM_LITERAL_S, DI ( SM_REP, LITERAL ) );
+      END;
+      ------------------------------------------------------------------------------
+      PROCEDURE COMPILE_INTEGER_DEF ( INTEGER_DEF, INTEGER_SPEC :TREE ) IS
+        LOWER      : OFFSET_TYPE;
+        UPPER      : OFFSET_TYPE;
+        INT_RANGE  : TREE := D ( AS_CONSTRAINT, INTEGER_DEF );
+        EXP_BORNE  : TREE;
+      BEGIN
+        ALIGN ( INTG_AL );
+        LOWER := - EMITS.OFFSET_ACT;
+        INC_OFFSET ( INTG_SIZE );
+        UPPER := - EMITS.OFFSET_ACT;
+        INC_OFFSET ( INTG_SIZE );
+        DI ( CD_OFFSET, INTEGER_SPEC, LOWER );
+        DI ( CD_LEVEL, INTEGER_SPEC, EMITS.LEVEL );
+        DI ( CD_COMP_UNIT, INTEGER_SPEC, CUR_COMP_UNIT );
+        DB ( CD_COMPILED, INTEGER_SPEC, TRUE );
+        EXP_BORNE := D ( AS_EXP1, INT_RANGE );
+      CODE_EXP ( EXP_BORNE );
+        GEN_STORE ( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, LOWER, "BORNE BASSE" );
+        EXP_BORNE := D ( AS_EXP2, INT_RANGE );
+      CODE_EXP ( EXP_BORNE );
+        GEN_STORE ( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, UPPER, "BORNE HAUTE" );
+      END COMPILE_INTEGER_DEF;
+      ------------------------------------------------------------------------------
+      PROCEDURE COMPILE_CONSTRAINED_ARRAY_DEF ( TYPE_DEF, TYPE_SPEC :TREE ) IS
+        DIMENSIONS_NBR     : NATURAL  := 0;
+        SUBTYPE_INDICATION : TREE     := D ( AS_SUBTYPE_INDICATION, TYPE_DEF );
+        USED_NAME_ID       : TREE     := D ( AS_NAME, SUBTYPE_INDICATION );
+        COMP_TYPE_ID       : TREE     := D ( SM_DEFN, USED_NAME_ID );
+        COMP_TYPE          : TREE     := D ( SM_TYPE_SPEC, COMP_TYPE_ID );
+        INDEX_CONSTRAINT   : TREE     := D ( AS_CONSTRAINT, TYPE_DEF );
+        DISCRETE_RANGE_S   : TREE     := D ( AS_DISCRETE_RANGE_S, INDEX_CONSTRAINT );
+        DISCRETE_RANGE_SEQ : SEQ_TYPE := LIST ( DISCRETE_RANGE_S );
+        --|-------------------------------------------------------------------------
+        PROCEDURE INSTALL_ARRAY_DIMENSION ( DISCRETE_RANGE_SEQ :IN OUT SEQ_TYPE ) IS
+          IDXFAC, FIRST, LAST : OFFSET_TYPE;
+          DISCRETE_RANGE      : TREE;
+        BEGIN
+          DIMENSIONS_NBR := DIMENSIONS_NBR + 1;
+          ALIGN ( INTG_AL );
+          IDXFAC := - EMITS.OFFSET_ACT;
+          FIRST := IDXFAC - INTG_SIZE;
+          LAST := FIRST - INTG_SIZE;
+          INC_OFFSET ( 3*INTG_SIZE );
+          POP ( DISCRETE_RANGE_SEQ, DISCRETE_RANGE );
+          IF IS_EMPTY ( DISCRETE_RANGE_SEQ ) THEN
+            EMITS.LOAD_TYPE_SIZE ( COMP_TYPE );
+            EMIT ( DPL, I, "DUPLICATE INDEX FACTOR" );
+            GEN_STORE ( I, 0, EMITS.LEVEL, IDXFAC, "STORE INDEX FACTOR" );
+          ELSE
+            INSTALL_ARRAY_DIMENSION ( DISCRETE_RANGE_SEQ );
+            EMIT ( DPL, I, "DUPLICATE INDEX FACTOR" );
+            GEN_STORE ( I, 0, EMITS.LEVEL, IDXFAC, "STORE INDEX FACTOR" );
+          END IF;
+          IF DISCRETE_RANGE.TY = DN_DISCRETE_SUBTYPE THEN
+            DECLARE
+              SUBTYPE_INDICATION : TREE := D ( AS_SUBTYPE_INDICATION, DISCRETE_RANGE );
+            BEGIN
+              DISCRETE_RANGE := D ( AS_CONSTRAINT, SUBTYPE_INDICATION );
+              IF DISCRETE_RANGE.TY = DN_VOID THEN
+                DECLARE
+                  USED_NAME_ID : TREE := D ( AS_NAME, SUBTYPE_INDICATION );
+                  DEF_NAME     : TREE := D ( SM_DEFN, USED_NAME_ID );
+                  TYPE_SPEC    : TREE := D ( SM_TYPE_SPEC, DEF_NAME );
+                BEGIN
+                  DISCRETE_RANGE := D ( SM_RANGE, TYPE_SPEC );
+                END;
+              END IF;
+            END;
+          END IF;
+          IF DISCRETE_RANGE.TY = DN_RANGE_ATTRIBUTE THEN
+            DECLARE
+              TYPE_SPEC : TREE := D ( SM_TYPE_SPEC, DISCRETE_RANGE );
+            BEGIN
+              DISCRETE_RANGE := D ( SM_RANGE, TYPE_SPEC );
+            END;
+          END IF;
+          IF DISCRETE_RANGE.TY = DN_RANGE THEN
+            DECLARE
+              EXP_BORNE : TREE := D ( AS_EXP1, DISCRETE_RANGE );
+            BEGIN
+      CODE_EXP ( EXP_BORNE );
+              GEN_STORE ( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, FIRST, "FIRST" );
+              EXP_BORNE := D ( AS_EXP2, DISCRETE_RANGE );
+      CODE_EXP ( EXP_BORNE );
+              GEN_STORE ( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, LAST, "LAST" );
+            END;
+            GEN_LOAD_ADDR ( 0, LEVEL, FIRST, "LOAD @FIRST" );
+            EMIT ( LEN, "CALCULATE LENGTH" );
+            EMIT ( MUL, I, "NEXT INDEX FACTOR = LEN * PREVIOUS FACTOR" );
+          ELSIF DISCRETE_RANGE.TY = DN_RANGE_ATTRIBUTE THEN
+            NULL;
+          ELSE
+            NULL;      -- DN_RANGE_ATTRIBUTE -- DN_DISCRETE_SUBTYPE
+            PUT_LINE ( "!!! COMPILE_TYPE_ARRAY_DIMENSION : DISCRETE_RANGE.TY ILLICITE " & NODE_NAME'IMAGE ( DISCRETE_RANGE.TY ) );
+            RAISE PROGRAM_ERROR;
+          END IF;
+        END INSTALL_ARRAY_DIMENSION;
+      BEGIN
+        ALIGN ( INTG_AL );
+        DI ( CD_LEVEL, TYPE_SPEC, EMITS.LEVEL );
+        DI ( CD_COMP_UNIT, TYPE_SPEC, EMITS.CUR_COMP_UNIT );
+        DB ( CD_COMPILED, TYPE_SPEC, TRUE );
+        DECLARE
+          OFFSET : INTEGER := - EMITS.OFFSET_ACT;
+        BEGIN
+          DI ( CD_OFFSET, TYPE_SPEC, OFFSET );
+          INC_OFFSET ( INTG_SIZE );
+          INSTALL_ARRAY_DIMENSION ( DISCRETE_RANGE_SEQ );
+          GEN_STORE ( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, OFFSET,
+                 "STORE ARRAY SIZE (LAST INDEX FACTOR)" );
+          DI ( CD_DIMENSIONS, TYPE_SPEC, DIMENSIONS_NBR );
+        END;
+      END COMPILE_CONSTRAINED_ARRAY_DEF;
+      ------------------------------------------------------------------------------
+      PROCEDURE COMPILE_ACCESS_DEF ( ACCESS_DEF, ACCESS_SPEC :TREE ) IS
+        POINTED_TYPE_SPEC : TREE    := D ( SM_DESIG_TYPE, ACCESS_SPEC );
+        CONTRAINT         : BOOLEAN := (POINTED_TYPE_SPEC.TY IN CLASS_CONSTRAINED);
+      BEGIN
+        DB ( CD_CONSTRAINED, ACCESS_SPEC, CONTRAINT );
+        IF CONTRAINT THEN
+          DI ( CD_LEVEL, ACCESS_SPEC, EMITS.LEVEL );
+          ALIGN ( INTG_AL );
+          DECLARE
+            OFFSET : OFFSET_TYPE := EMITS.OFFSET_ACT;
+          BEGIN
+            DI ( CD_OFFSET, ACCESS_SPEC, OFFSET );
+            INC_OFFSET ( INTG_SIZE );
+            EMITS.LOAD_TYPE_SIZE ( POINTED_TYPE_SPEC );
+            GEN_STORE ( I, 0, EMITS.LEVEL, OFFSET, "STORE POINTERD TYPE SIZE" );
+          END;
+        END IF;
+      END;
+      ------------------------------------------------------------------------------
+    BEGIN
+      IF EMITS.CUR_COMP_UNIT /= 1 THEN
+        CASE TYPE_DEF.TY IS
+        WHEN DN_ENUMERATION_DEF =>
+          COMPILE_ENUMERATION_DEF ( TYPE_DEF );
+        WHEN DN_INTEGER_DEF =>
+          COMPILE_INTEGER_DEF ( TYPE_DEF, TYPE_SPEC );
+        WHEN DN_FLOAT_DEF =>
+          NULL;
+        WHEN DN_FIXED_DEF =>
+          NULL;
+        WHEN DN_CONSTRAINED_ARRAY_DEF =>
+          COMPILE_CONSTRAINED_ARRAY_DEF ( TYPE_DEF, TYPE_SPEC );
+        WHEN DN_RECORD_DEF =>
+          NULL;
+        WHEN DN_ACCESS_DEF =>
+          COMPILE_ACCESS_DEF ( TYPE_DEF, TYPE_SPEC );
+        WHEN DN_DERIVED_DEF =>
+          NULL;
+        WHEN OTHERS =>
+          NULL;
+                    PUT_LINE ( "!!! COMPILE_TYPE_DECL : TYPE_SPEC.TY ILLICITE " & NODE_NAME'IMAGE ( TYPE_SPEC.TY ) );
+          RAISE PROGRAM_ERROR;
+        END CASE;
+      END IF;
+    END;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_dscrmt_decl_s ( dscrmt_decl_s :TREE ) is
+  begin
+    declare
+      dscrmt_decl_seq : Seq_Type := LIST ( dscrmt_decl_s );
+      dscrmt_decl : TREE;
+    begin
+      while not IS_EMPTY ( dscrmt_decl_seq ) loop
+        POP ( dscrmt_decl_seq, dscrmt_decl );
+      CODE_dscrmt_decl ( dscrmt_decl );
+    end loop;
+    end;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_dscrmt_decl ( dscrmt_decl :TREE ) is
+  begin
+    null;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_subtype_decl ( subtype_decl :TREE ) is
+  begin
+    null;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_constant_decl ( constant_decl :TREE ) is
+  begin
+    null;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_deferred_constant_decl ( deferred_constant_decl :TREE ) is
+  begin
+    null;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_variable_decl ( variable_decl :TREE ) is
+  begin
+    null;
   end;
 
   --|-------------------------------------------------------------------------------------------
@@ -234,67 +831,6 @@ is
 
     elsif UNIT_NAME.TY IN CLASS_NON_TASK_NAME then
       CODE_NON_TASK_NAME ( UNIT_NAME );
-
-    end if;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_DECL ( DECL :TREE ) is
-  begin
-
-    if DECL.TY IN CLASS_ID_S_DECL then
-      CODE_ID_S_DECL ( DECL );
-
-    elsif DECL.TY IN CLASS_ID_DECL then
-      CODE_ID_DECL ( DECL );
-
-    end if;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_ID_DECL ( ID_DECL :TREE ) is
-  begin
-
-    if ID_DECL.TY = DN_type_decl then
-      CODE_type_decl ( ID_DECL );
-
-    elsif ID_DECL.TY = DN_subtype_decl then
-      CODE_subtype_decl ( ID_DECL );
-
-    elsif ID_DECL.TY = DN_task_decl then
-      CODE_task_decl ( ID_DECL );
-
-    elsif ID_DECL.TY IN CLASS_UNIT_DECL then
-      CODE_UNIT_DECL ( ID_DECL );
-
-    end if;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_ID_S_DECL ( ID_S_DECL :TREE ) is
-  begin
-
-    if ID_S_DECL.TY IN CLASS_EXP_DECL then
-      CODE_EXP_DECL ( ID_S_DECL );
-
-    elsif ID_S_DECL.TY = DN_exception_decl then
-      CODE_exception_decl ( ID_S_DECL );
-
-    elsif ID_S_DECL.TY = DN_deferred_constant_decl then
-      CODE_deferred_constant_decl ( ID_S_DECL );
-
-    end if;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_EXP_DECL ( EXP_DECL :TREE ) is
-  begin
-
-    if EXP_DECL.TY IN CLASS_OBJECT_DECL then
-      CODE_OBJECT_DECL ( EXP_DECL );
-
-    elsif EXP_DECL.TY = DN_number_decl then
-      CODE_number_decl ( EXP_DECL );
 
     end if;
   end;
@@ -495,12 +1031,6 @@ is
   end;
 
   --|-------------------------------------------------------------------------------------------
-  procedure CODE_number_decl ( number_decl :TREE ) is
-  begin
-    null;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
   procedure CODE_number_id ( number_id :TREE ) is
   begin
     null;
@@ -518,186 +1048,6 @@ is
       CODE_source_name ( source_name );
     end loop;
     end;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_type_decl ( type_decl :TREE ) is
-  begin
-    DECLARE
-      TYPE_DEF  : TREE := D ( AS_TYPE_DEF, TYPE_DECL );
-      TYPE_ID   : TREE := D ( AS_SOURCE_NAME, TYPE_DECL );
-      TYPE_SPEC : TREE := D ( SM_TYPE_SPEC, TYPE_ID );
-      ------------------------------------------------------------------------------
-      PROCEDURE COMPILE_ENUMERATION_DEF ( ENUMERATION_DEF :TREE ) IS
-        ENUM_LITERAL_S  : TREE     := D ( AS_ENUM_LITERAL_S, ENUMERATION_DEF );
-        LITERAL_SEQ     : SEQ_TYPE := LIST ( ENUM_LITERAL_S );
-        LITERAL         : TREE;
-      BEGIN
-        WHILE NOT IS_EMPTY ( LITERAL_SEQ ) LOOP
-          POP ( LITERAL_SEQ, LITERAL );
-        END LOOP;
-        DI ( CD_LAST, ENUM_LITERAL_S, DI ( SM_REP, LITERAL ) );
-      END;
-      ------------------------------------------------------------------------------
-      PROCEDURE COMPILE_INTEGER_DEF ( INTEGER_DEF, INTEGER_SPEC :TREE ) IS
-        LOWER      : OFFSET_TYPE;
-        UPPER      : OFFSET_TYPE;
-        INT_RANGE  : TREE := D ( AS_CONSTRAINT, INTEGER_DEF );
-        EXP_BORNE  : TREE;
-      BEGIN
-        ALIGN ( INTG_AL );
-        LOWER := - EMITS.OFFSET_ACT;
-        INC_OFFSET ( INTG_SIZE );
-        UPPER := - EMITS.OFFSET_ACT;
-        INC_OFFSET ( INTG_SIZE );
-        DI ( CD_OFFSET, INTEGER_SPEC, LOWER );
-        DI ( CD_LEVEL, INTEGER_SPEC, EMITS.LEVEL );
-        DI ( CD_COMP_UNIT, INTEGER_SPEC, CUR_COMP_UNIT );
-        DB ( CD_COMPILED, INTEGER_SPEC, TRUE );
-        EXP_BORNE := D ( AS_EXP1, INT_RANGE );
-      CODE_EXP ( EXP_BORNE );
-        GEN_STORE ( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, LOWER, "BORNE BASSE" );
-        EXP_BORNE := D ( AS_EXP2, INT_RANGE );
-      CODE_EXP ( EXP_BORNE );
-        GEN_STORE ( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, UPPER, "BORNE HAUTE" );
-      END COMPILE_INTEGER_DEF;
-      ------------------------------------------------------------------------------
-      PROCEDURE COMPILE_CONSTRAINED_ARRAY_DEF ( TYPE_DEF, TYPE_SPEC :TREE ) IS
-        DIMENSIONS_NBR     : NATURAL  := 0;
-        SUBTYPE_INDICATION : TREE     := D ( AS_SUBTYPE_INDICATION, TYPE_DEF );
-        USED_NAME_ID       : TREE     := D ( AS_NAME, SUBTYPE_INDICATION );
-        COMP_TYPE_ID       : TREE     := D ( SM_DEFN, USED_NAME_ID );
-        COMP_TYPE          : TREE     := D ( SM_TYPE_SPEC, COMP_TYPE_ID );
-        INDEX_CONSTRAINT   : TREE     := D ( AS_CONSTRAINT, TYPE_DEF );
-        DISCRETE_RANGE_S   : TREE     := D ( AS_DISCRETE_RANGE_S, INDEX_CONSTRAINT );
-        DISCRETE_RANGE_SEQ : SEQ_TYPE := LIST ( DISCRETE_RANGE_S );
-        --|-------------------------------------------------------------------------
-        PROCEDURE INSTALL_ARRAY_DIMENSION ( DISCRETE_RANGE_SEQ :IN OUT SEQ_TYPE ) IS
-          IDXFAC, FIRST, LAST : OFFSET_TYPE;
-          DISCRETE_RANGE      : TREE;
-        BEGIN
-          DIMENSIONS_NBR := DIMENSIONS_NBR + 1;
-          ALIGN ( INTG_AL );
-          IDXFAC := - EMITS.OFFSET_ACT;
-          FIRST := IDXFAC - INTG_SIZE;
-          LAST := FIRST - INTG_SIZE;
-          INC_OFFSET ( 3*INTG_SIZE );
-          POP ( DISCRETE_RANGE_SEQ, DISCRETE_RANGE );
-          IF IS_EMPTY ( DISCRETE_RANGE_SEQ ) THEN
-            EMITS.LOAD_TYPE_SIZE ( COMP_TYPE );
-            EMIT ( DPL, I, "DUPLICATE INDEX FACTOR" );
-            GEN_STORE ( I, 0, EMITS.LEVEL, IDXFAC, "STORE INDEX FACTOR" );
-          ELSE
-            INSTALL_ARRAY_DIMENSION ( DISCRETE_RANGE_SEQ );
-            EMIT ( DPL, I, "DUPLICATE INDEX FACTOR" );
-            GEN_STORE ( I, 0, EMITS.LEVEL, IDXFAC, "STORE INDEX FACTOR" );
-          END IF;
-          IF DISCRETE_RANGE.TY = DN_DISCRETE_SUBTYPE THEN
-            DECLARE
-              SUBTYPE_INDICATION : TREE := D ( AS_SUBTYPE_INDICATION, DISCRETE_RANGE );
-            BEGIN
-              DISCRETE_RANGE := D ( AS_CONSTRAINT, SUBTYPE_INDICATION );
-              IF DISCRETE_RANGE.TY = DN_VOID THEN
-                DECLARE
-                  USED_NAME_ID : TREE := D ( AS_NAME, SUBTYPE_INDICATION );
-                  DEF_NAME     : TREE := D ( SM_DEFN, USED_NAME_ID );
-                  TYPE_SPEC    : TREE := D ( SM_TYPE_SPEC, DEF_NAME );
-                BEGIN
-                  DISCRETE_RANGE := D ( SM_RANGE, TYPE_SPEC );
-                END;
-              END IF;
-            END;
-          END IF;
-          IF DISCRETE_RANGE.TY = DN_RANGE_ATTRIBUTE THEN
-            DECLARE
-              TYPE_SPEC : TREE := D ( SM_TYPE_SPEC, DISCRETE_RANGE );
-            BEGIN
-              DISCRETE_RANGE := D ( SM_RANGE, TYPE_SPEC );
-            END;
-          END IF;
-          IF DISCRETE_RANGE.TY = DN_RANGE THEN
-            DECLARE
-              EXP_BORNE : TREE := D ( AS_EXP1, DISCRETE_RANGE );
-            BEGIN
-      CODE_EXP ( EXP_BORNE );
-              GEN_STORE ( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, FIRST, "FIRST" );
-              EXP_BORNE := D ( AS_EXP2, DISCRETE_RANGE );
-      CODE_EXP ( EXP_BORNE );
-              GEN_STORE ( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, LAST, "LAST" );
-            END;
-            GEN_LOAD_ADDR ( 0, LEVEL, FIRST, "LOAD @FIRST" );
-            EMIT ( LEN, "CALCULATE LENGTH" );
-            EMIT ( MUL, I, "NEXT INDEX FACTOR = LEN * PREVIOUS FACTOR" );
-          ELSIF DISCRETE_RANGE.TY = DN_RANGE_ATTRIBUTE THEN
-            NULL;
-          ELSE
-            NULL;      -- DN_RANGE_ATTRIBUTE -- DN_DISCRETE_SUBTYPE
-            PUT_LINE ( "!!! COMPILE_TYPE_ARRAY_DIMENSION : DISCRETE_RANGE.TY ILLICITE " & NODE_NAME'IMAGE ( DISCRETE_RANGE.TY ) );
-            RAISE PROGRAM_ERROR;
-          END IF;
-        END INSTALL_ARRAY_DIMENSION;
-      BEGIN
-        ALIGN ( INTG_AL );
-        DI ( CD_LEVEL, TYPE_SPEC, EMITS.LEVEL );
-        DI ( CD_COMP_UNIT, TYPE_SPEC, EMITS.CUR_COMP_UNIT );
-        DB ( CD_COMPILED, TYPE_SPEC, TRUE );
-        DECLARE
-          OFFSET : INTEGER := - EMITS.OFFSET_ACT;
-        BEGIN
-          DI ( CD_OFFSET, TYPE_SPEC, OFFSET );
-          INC_OFFSET ( INTG_SIZE );
-          INSTALL_ARRAY_DIMENSION ( DISCRETE_RANGE_SEQ );
-          GEN_STORE ( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, OFFSET,
-                 "STORE ARRAY SIZE (LAST INDEX FACTOR)" );
-          DI ( CD_DIMENSIONS, TYPE_SPEC, DIMENSIONS_NBR );
-        END;
-      END COMPILE_CONSTRAINED_ARRAY_DEF;
-      ------------------------------------------------------------------------------
-      PROCEDURE COMPILE_ACCESS_DEF ( ACCESS_DEF, ACCESS_SPEC :TREE ) IS
-        POINTED_TYPE_SPEC : TREE    := D ( SM_DESIG_TYPE, ACCESS_SPEC );
-        CONTRAINT         : BOOLEAN := (POINTED_TYPE_SPEC.TY IN CLASS_CONSTRAINED);
-      BEGIN
-        DB ( CD_CONSTRAINED, ACCESS_SPEC, CONTRAINT );
-        IF CONTRAINT THEN
-          DI ( CD_LEVEL, ACCESS_SPEC, EMITS.LEVEL );
-          ALIGN ( INTG_AL );
-          DECLARE
-            OFFSET : OFFSET_TYPE := EMITS.OFFSET_ACT;
-          BEGIN
-            DI ( CD_OFFSET, ACCESS_SPEC, OFFSET );
-            INC_OFFSET ( INTG_SIZE );
-            EMITS.LOAD_TYPE_SIZE ( POINTED_TYPE_SPEC );
-            GEN_STORE ( I, 0, EMITS.LEVEL, OFFSET, "STORE POINTERD TYPE SIZE" );
-          END;
-        END IF;
-      END;
-      ------------------------------------------------------------------------------
-    BEGIN
-      IF EMITS.CUR_COMP_UNIT /= 1 THEN
-        CASE TYPE_DEF.TY IS
-        WHEN DN_ENUMERATION_DEF =>
-          COMPILE_ENUMERATION_DEF ( TYPE_DEF );
-        WHEN DN_INTEGER_DEF =>
-          COMPILE_INTEGER_DEF ( TYPE_DEF, TYPE_SPEC );
-        WHEN DN_FLOAT_DEF =>
-          NULL;
-        WHEN DN_FIXED_DEF =>
-          NULL;
-        WHEN DN_CONSTRAINED_ARRAY_DEF =>
-          COMPILE_CONSTRAINED_ARRAY_DEF ( TYPE_DEF, TYPE_SPEC );
-        WHEN DN_RECORD_DEF =>
-          NULL;
-        WHEN DN_ACCESS_DEF =>
-          COMPILE_ACCESS_DEF ( TYPE_DEF, TYPE_SPEC );
-        WHEN DN_DERIVED_DEF =>
-          NULL;
-        WHEN OTHERS =>
-          NULL;
-                    PUT_LINE ( "!!! COMPILE_TYPE_DECL : TYPE_SPEC.TY ILLICITE " & NODE_NAME'IMAGE ( TYPE_SPEC.TY ) );
-          RAISE PROGRAM_ERROR;
-        END CASE;
-      END IF;
-    END;
   end;
 
   --|-------------------------------------------------------------------------------------------
@@ -721,12 +1071,6 @@ is
 
   --|-------------------------------------------------------------------------------------------
   procedure CODE_type_id ( type_id :TREE ) is
-  begin
-    null;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_subtype_decl ( subtype_decl :TREE ) is
   begin
     null;
   end;
@@ -847,46 +1191,6 @@ is
 
     elsif ITEM.TY IN CLASS_SUBUNIT_BODY then
       CODE_SUBUNIT_BODY ( ITEM );
-
-    end if;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_item_s ( item_s :TREE ) is
-  begin
-    declare
-      item_seq : Seq_Type := LIST ( item_s );
-      item : TREE;
-    begin
-      while not IS_EMPTY ( item_seq ) loop
-        POP ( item_seq, item );
-      CODE_ITEM ( item );
-    end loop;
-    end;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_UNIT_DECL ( UNIT_DECL :TREE ) is
-  begin
-
-    if UNIT_DECL.TY = DN_generic_decl then
-      CODE_generic_decl ( UNIT_DECL );
-
-    elsif UNIT_DECL.TY IN CLASS_NON_GENERIC_DECL then
-      CODE_NON_GENERIC_DECL ( UNIT_DECL );
-
-    end if;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_NON_GENERIC_DECL ( NON_GENERIC_DECL :TREE ) is
-  begin
-
-    if NON_GENERIC_DECL.TY = DN_subprog_entry_decl then
-      CODE_subprog_entry_decl ( NON_GENERIC_DECL );
-
-    elsif NON_GENERIC_DECL.TY = DN_package_decl then
-      CODE_package_decl ( NON_GENERIC_DECL );
 
     end if;
   end;
@@ -2010,48 +2314,6 @@ is
   end;
 
   --|-------------------------------------------------------------------------------------------
-  procedure CODE_subprog_entry_decl ( subprog_entry_decl :TREE ) is
-  begin
-    DECLARE
-      OLD_OFFSET_ACT : OFFSET_TYPE := EMITS.OFFSET_ACT;
-      OLD_OFFSET_MAX : OFFSET_TYPE := EMITS.OFFSET_MAX;
-      SOURCE_NAME    : TREE        := D ( AS_SOURCE_NAME, SUBPROG_ENTRY_DECL );
-      HEADER         : TREE        := D ( AS_HEADER, SUBPROG_ENTRY_DECL );
-    BEGIN
-      EMITS.OFFSET_ACT := EMITS.FIRST_PARAM_OFFSET;
-      EMITS.OFFSET_MAX := EMITS.OFFSET_ACT;
-      INC_LEVEL;
-      IF SOURCE_NAME.TY IN CLASS_SUBPROG_NAME THEN
-        DECLARE
-          LBL : LABEL_TYPE := NEXT_LABEL;
-        BEGIN
-          DI ( CD_LABEL, SOURCE_NAME, INTEGER ( LBL ) );
-          DI ( CD_LEVEL, SOURCE_NAME, EMITS.LEVEL );
-          DB ( CD_COMPILED, SOURCE_NAME, TRUE );
-          IF NOT EMITS.GENERATE_CODE THEN
-            EMITS.GENERATE_CODE := TRUE;
-            EMIT ( RFL, LBL );
-            EMITS.GENERATE_CODE := FALSE;
-          END IF;
-      CODE_HEADER ( D ( as_header, subprog_entry_decl ) );
-          DI ( CD_PARAM_SIZE, SOURCE_NAME, OFFSET_ACT - FIRST_PARAM_OFFSET );
-        END;
-        IF SOURCE_NAME.TY = DN_FUNCTION_ID OR SOURCE_NAME.TY = DN_OPERATOR_ID THEN
-          DECLARE
-            USED_OBJECT_ID   : TREE := D ( AS_NAME, HEADER );
-            RESULT_TYPE_SPEC : TREE := D ( SM_EXP_TYPE, USED_OBJECT_ID );
-          BEGIN
-            DI ( CD_RESULT_SIZE, SOURCE_NAME, EMITS.TYPE_SIZE( RESULT_TYPE_SPEC ));
-          END;
-        END IF;
-      END IF;
-      DEC_LEVEL;
-      EMITS.OFFSET_MAX := OLD_OFFSET_MAX;
-      EMITS.OFFSET_ACT := OLD_OFFSET_ACT;
-    END;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
   procedure CODE_NON_TASK_NAME ( NON_TASK_NAME :TREE ) is
   begin
 
@@ -2278,35 +2540,6 @@ is
   end;
 
   --|-------------------------------------------------------------------------------------------
-  procedure CODE_subprogram_body ( subprogram_body :TREE ) is
-  begin
-    DECLARE
-       OLD_OFFSET_ACT : OFFSET_TYPE := EMITS.OFFSET_ACT;
-       OLD_OFFSET_MAX : OFFSET_TYPE := EMITS.OFFSET_MAX;
-       SOURCE_NAME    : TREE := D ( AS_SOURCE_NAME, SUBPROGRAM_BODY );
-       START_LABEL    : LABEL_TYPE := NEXT_LABEL;
-    BEGIN
-      IF EMITS.ENCLOSING_BODY = TREE_VOID THEN
-        EMIT ( PRO, S=> PRINT_NAME ( D ( LX_SYMREP, SOURCE_NAME ) ) );
-      END IF;
-      EMITS.OFFSET_ACT := EMITS.FIRST_PARAM_OFFSET;
-      EMITS.OFFSET_MAX := EMITS.OFFSET_ACT;
-      INC_LEVEL;
-      DI ( CD_LABEL, SOURCE_NAME, INTEGER ( START_LABEL ) );
-      DI ( CD_LEVEL, SOURCE_NAME, EMITS.LEVEL );
-      WRITE_LABEL ( START_LABEL );
-      CODE_HEADER ( D ( as_header, subprogram_body ) );
-      DI ( CD_PARAM_SIZE, SOURCE_NAME, PARAM_SIZE );
-      EMITS.OFFSET_ACT := EMITS.FIRST_LOCAL_VAR_OFFSET;
-      EMITS.OFFSET_MAX := EMITS.OFFSET_ACT;
-      CODE_BODY ( D ( as_BODY, subprogram_body ) );
-      DEC_LEVEL;
-      EMITS.OFFSET_MAX := OLD_OFFSET_MAX;
-      EMITS.OFFSET_ACT := OLD_OFFSET_ACT;
-    END;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
   procedure CODE_procedure_call ( procedure_call :TREE ) is
   begin
     null;
@@ -2316,33 +2549,6 @@ is
   procedure CODE_function_call ( function_call :TREE ) is
   begin
     null;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_package_decl ( package_decl :TREE ) is
-  begin
-    EMIT ( PKG, S=> PRINT_NAME ( D ( LX_SYMREP, D ( AS_SOURCE_NAME, PACKAGE_DECL ) ) ) );
-    WRITE_LABEL ( 1 );
-    DECLARE
-      L1 : LABEL_TYPE := NEXT_LABEL;
-      L2 : LABEL_TYPE := NEXT_LABEL;
-    BEGIN
-      EMIT ( ENT, Integer( 1 ), L1 );
-      EMIT ( ENT, Integer( 2 ), L2 );
-      EMITS.OFFSET_ACT := 0;
-      EMITS.OFFSET_MAX := 0;
-      CODE_HEADER ( D ( as_header, package_decl ) );
-      DECLARE
-        EXC_LBL : LABEL_TYPE := NEXT_LABEL;
-      BEGIN
-        EMIT ( EXH, EXC_LBL, COMMENT=> "ETIQUETTE EXCEPTION HANDLE DU PACKAGE" );
-        EMIT ( RET, RELATIVE_RESULT_OFFSET );
-        WRITE_LABEL ( EXC_LBL );
-      END;
-      EMIT ( EEX );
-      GEN_LBL_ASSIGNMENT ( L1, OFFSET_MAX );
-      GEN_LBL_ASSIGNMENT ( L2, TOP_MAX + OFFSET_MAX );
-    END;
   end;
 
   --|-------------------------------------------------------------------------------------------
@@ -2372,17 +2578,6 @@ is
   end;
 
   --|-------------------------------------------------------------------------------------------
-  procedure CODE_package_body ( package_body :TREE ) is
-  begin
-    EMIT ( PKB, S=> PRINT_NAME ( D ( LX_SYMREP, D ( AS_SOURCE_NAME, PACKAGE_BODY ) ) ) );
-    EMITS.GENERATE_CODE := FALSE;
-      CODE_package_spec ( D ( sm_spec, D ( as_source_name, package_body ) ) );
-    EMITS.GENERATE_CODE := TRUE;
-    WRITE_LABEL ( 1 );
-      CODE_BODY ( D ( as_body, package_body ) );
-  end;
-
-  --|-------------------------------------------------------------------------------------------
   procedure CODE_private_type_id ( private_type_id :TREE ) is
   begin
     null;
@@ -2395,19 +2590,7 @@ is
   end;
 
   --|-------------------------------------------------------------------------------------------
-  procedure CODE_deferred_constant_decl ( deferred_constant_decl :TREE ) is
-  begin
-    null;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
   procedure CODE_task_decl ( task_decl :TREE ) is
-  begin
-    null;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_task_body ( task_body :TREE ) is
   begin
     null;
   end;
@@ -2539,118 +2722,6 @@ is
   end;
 
   --|-------------------------------------------------------------------------------------------
-  procedure CODE_compilation ( compilation :TREE ) is
-  begin
-      CODE_compltn_unit_s ( D ( as_compltn_unit_s, compilation ) );
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_compltn_unit_s ( compltn_unit_s :TREE ) is
-  begin
-    declare
-      compltn_unit_seq : Seq_Type := LIST ( compltn_unit_s );
-      compltn_unit : TREE;
-    begin
-      while not IS_EMPTY ( compltn_unit_seq ) loop
-        POP ( compltn_unit_seq, compltn_unit );
-    EMITS.OPEN_OUTPUT_FILE ( GET_LIB_PREFIX & PRINT_NAME ( D ( XD_LIB_NAME, COMPLTN_UNIT ) ) );
-      CODE_compilation_unit ( compltn_unit );
-    EMITS.CLOSE_OUTPUT_FILE;
-    end loop;
-    end;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_compilation_unit ( compilation_unit :TREE ) is
-  begin
-    EMITS.TOP_ACT := 0;
-    EMITS.TOP_MAX := 0;
-    EMITS.OFFSET_ACT := 0;
-    EMITS.OFFSET_MAX := 0;
-    EMITS.LEVEL := 0;
-    EMITS.GENERATE_CODE := FALSE;
-    EMITS.CUR_COMP_UNIT := 2;
-    EMITS.ENCLOSING_BODY := Tree_VOID;
-      CODE_context_elem_s ( D ( as_context_elem_s, compilation_unit ) );
-    EMITS.CUR_COMP_UNIT := 0;
-    EMITS.GENERATE_CODE := TRUE;
-      CODE_ALL_DECL ( D ( as_all_decl, compilation_unit ) );
-    EMIT ( QUIT );
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_CONTEXT_ELEM ( CONTEXT_ELEM :TREE ) is
-  begin
-
-    if CONTEXT_ELEM.TY = DN_context_pragma then
-      CODE_context_pragma ( CONTEXT_ELEM );
-
-    elsif CONTEXT_ELEM.TY = DN_with then
-      CODE_with ( CONTEXT_ELEM );
-
-    end if;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_context_pragma ( context_pragma :TREE ) is
-  begin
-    null;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_context_elem_s ( context_elem_s :TREE ) is
-  begin
-    declare
-      context_elem_seq : Seq_Type := LIST ( context_elem_s );
-      context_elem : TREE;
-    begin
-      while not IS_EMPTY ( context_elem_seq ) loop
-        POP ( context_elem_seq, context_elem );
-      CODE_CONTEXT_ELEM ( context_elem );
-    end loop;
-    end;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_with ( ADA_with :TREE ) is
-  begin
-      CODE_name_s ( D ( as_NAME_S, ADA_with ) );
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_subunit ( subunit :TREE ) is
-  begin
-    null;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_SUBUNIT_BODY ( SUBUNIT_BODY :TREE ) is
-  begin
-    DECLARE
-       POST_LBL : LABEL_TYPE;
-    BEGIN
-      IF ENCLOSING_BODY /= TREE_VOID THEN
-        POST_LBL := NEXT_LABEL;
-        EMIT ( JMP, POST_LBL, COMMENT=> "CONTOURNEMENT" );
-      END IF;
-
-    if SUBUNIT_BODY.TY = DN_subprogram_body then
-      CODE_subprogram_body ( SUBUNIT_BODY );
-
-    elsif SUBUNIT_BODY.TY = DN_package_body then
-      CODE_package_body ( SUBUNIT_BODY );
-
-    elsif SUBUNIT_BODY.TY = DN_task_body then
-      CODE_task_body ( SUBUNIT_BODY );
-
-    end if;
-      IF ENCLOSING_BODY /= TREE_VOID THEN
-        WRITE_LABEL ( POST_LBL, COMMENT=> "FIN DE CONTOURNEMENT" );
-      END IF;
-    END;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
   procedure CODE_exception_decl ( exception_decl :TREE ) is
   begin
       CODE_source_name_s ( D ( as_source_name_s, exception_decl ) );
@@ -2694,12 +2765,6 @@ is
   end;
 
   --|-------------------------------------------------------------------------------------------
-  procedure CODE_generic_decl ( generic_decl :TREE ) is
-  begin
-    null;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
   procedure CODE_generic_id ( generic_id :TREE ) is
   begin
     null;
@@ -2709,25 +2774,6 @@ is
   procedure CODE_code ( code :TREE ) is
   begin
     null;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_ALL_DECL ( ALL_DECL :TREE ) is
-  begin
-
-    if ALL_DECL.TY IN CLASS_ITEM then
-      CODE_ITEM ( ALL_DECL );
-
-    elsif ALL_DECL.TY = DN_subunit then
-      CODE_subunit ( ALL_DECL );
-
-    end if;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_user_root ( user_root :TREE ) is
-  begin
-      CODE_compilation ( D ( xd_structure, user_root ) );
   end;
 
 begin
