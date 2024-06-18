@@ -29,6 +29,8 @@ is			------------
 
     OBJECT_NAME		: STRING( 1..256 );
     OBJECT_NAME_LEN		: NATURAL			:= 0;
+    PARAMETRAGE		: STRING( 1..256 );
+    PARAMETRAGE_LEN		: NATURAL		:= 0;
 
   begin
     while LEXEME /= "STOP" loop
@@ -55,9 +57,23 @@ is			------------
             OBJECT_NAME_LEN := NAME'LENGTH;								--| NOM D'OBJET CONFONDU AVEC LE LEXEME
             OBJECT_NAME( 1..OBJECT_NAME_LEN ) := NAME( NAME'FIRST..NAME'LAST );					--| ET LONGUEUR
           end if;
+ 
+	  PARAMETRAGE(  1..OBJECT_NAME_LEN ) := OBJECT_NAME( 1..OBJECT_NAME_LEN );
+	  PARAMETRAGE_LEN := OBJECT_NAME_LEN;
+
+            AVANCE;
+	  while LEXEME = "&" loop
+	    AVANCE;
+	    declare
+	      PARAM	: constant STRING	:= LEXEME;
+	    begin
+	      PARAMETRAGE( PARAMETRAGE_LEN+1 .. PARAMETRAGE_LEN + PARAM'LENGTH + 2 ) := ", " & PARAM;
+	      PARAMETRAGE_LEN := PARAMETRAGE_LEN + PARAM'LENGTH + 2;
+	    end;
+	    AVANCE;
+            end loop;
                   
-          PUT_LINE ( FS, "  PROCEDURE CODE_" & NAME & " ( " & OBJECT_NAME( 1..OBJECT_NAME_LEN ) & " :Tree );" );
-          AVANCE;											--| POURSUIVRE LE BALAYAGE
+          PUT_LINE ( FS, "  PROCEDURE CODE_" & NAME & " ( " & PARAMETRAGE( 1..PARAMETRAGE_LEN ) & " :Tree );" );
                  
         end if;
       end;
@@ -76,6 +92,8 @@ is			------------
     IN_REPEAT		: BOOLEAN		:= FALSE;
     OBJECT_NAME		: STRING( 1..256 );
     OBJECT_NAME_LEN		: NATURAL		:= 0;
+    PARAMETRAGE		: STRING( 1..256 );
+    PARAMETRAGE_LEN		: NATURAL		:= 0;
 
 						----------
 				procedure		GEN_ACTION ( action :STRING )
@@ -128,12 +146,21 @@ is			------------
       SEEN_AN_ACTION := true;
 
       if ACTION = "call" then
-        PUT ( FS, "      CODE_" & LEXEME );
+        PUT ( FS, "      CODE_" & LEXEME & " ( " );
         AVANCE;
-        PUT ( FS,  " ( " );
-        PUT_LINE ( FS, PARAM ( LEXEME ) & " );" );
+        PUT ( FS, PARAM ( LEXEME ) );
+        AVANCE;
+
+        while LEXEME = "&" loop
+	AVANCE;
+          PUT ( FS, ", " & PARAM ( LEXEME ) );
+	AVANCE;
+        end loop;
+
+        PUT_LINE ( FS, " );" );
+
         SEEN_AN_ACTION := true;
-        AVANCE;
+--        AVANCE;
                
       elsif ACTION = "if_class" then
         IF_ALTERNATIVE ( ".TY IN CLASS_" );
@@ -191,6 +218,7 @@ is			------------
         else
           AVANCE;
           if LEXEME = "====>" then
+
             if IN_PROCS then
               if not SEEN_AN_ACTION then
                 PUT_LINE ( FS, "    null;" );
@@ -208,6 +236,7 @@ is			------------
               PUT_LINE ( FS, "  end;" );
               NEW_LINE ( FS ); 
             end if;
+
             IN_PROCS := TRUE;
             PUT_LINE ( FS,
 	"  --|-------------------------------------------------------------------------------------------" );
@@ -229,9 +258,23 @@ is			------------
               OBJECT_NAME_LEN := NAME'LENGTH;
               OBJECT_NAME( 1..OBJECT_NAME_LEN ) := NAME( NAME'FIRST..NAME'LAST );
             end if;
-                  
-            PUT_LINE ( FS, "  procedure CODE_" & NAME & " ( " & OBJECT_NAME( 1..OBJECT_NAME_LEN ) & " :TREE ) is" );
+ 
+	  PARAMETRAGE(  1..OBJECT_NAME_LEN ) := OBJECT_NAME( 1..OBJECT_NAME_LEN );
+	  PARAMETRAGE_LEN := OBJECT_NAME_LEN;
+
             AVANCE;
+	  while LEXEME = "&" loop
+	    AVANCE;
+	    declare
+	      PARAM	: constant STRING	:= LEXEME;
+	    begin
+	      PARAMETRAGE( PARAMETRAGE_LEN+1 .. PARAMETRAGE_LEN + PARAM'LENGTH + 2 ) := ", " & PARAM;
+	      PARAMETRAGE_LEN := PARAMETRAGE_LEN + PARAM'LENGTH + 2;
+	    end;
+	    AVANCE;
+            end loop;
+
+            PUT_LINE ( FS, "  procedure CODE_" & NAME & " ( " & PARAMETRAGE( 1..PARAMETRAGE_LEN ) & " :TREE ) is" );
                   
             PUT_LINE ( FS, "  begin" );
             SEEN_AN_ACTION := FALSE;

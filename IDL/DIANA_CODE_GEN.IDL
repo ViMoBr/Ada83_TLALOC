@@ -319,200 +319,8 @@
 
 ##  type_decl	====>
 
-## include	DECLARE
-## include	  TYPE_DEF  : TREE := D ( AS_TYPE_DEF, TYPE_DECL );
-## include	  TYPE_ID   : TREE := D ( AS_SOURCE_NAME, TYPE_DECL );
-## include	  TYPE_SPEC : TREE := D ( SM_TYPE_SPEC, TYPE_ID );
-## include	  ------------------------------------------------------------------------------
-## include	  PROCEDURE COMPILE_ENUMERATION_DEF ( ENUMERATION_DEF :TREE ) IS
-## include	    ENUM_LITERAL_S  : TREE     := D ( AS_ENUM_LITERAL_S, ENUMERATION_DEF );
-## include	    LITERAL_SEQ     : SEQ_TYPE := LIST ( ENUM_LITERAL_S );
-## include	    LITERAL         : TREE;
-## include	  BEGIN
-## include	    WHILE NOT IS_EMPTY ( LITERAL_SEQ ) LOOP				--| TANT QU IL Y A DES ELEMENTS
-## include	      POP ( LITERAL_SEQ, LITERAL );					--| EN EXTRAIRE UN
-## include	    END LOOP;
-## include	    DI ( CD_LAST, ENUM_LITERAL_S, DI ( SM_REP, LITERAL ) );			--| STOCKER LA VALEUR DU DERNIER
-## include	  END;
-## include	  ------------------------------------------------------------------------------
-## include	  PROCEDURE COMPILE_INTEGER_DEF ( INTEGER_DEF, INTEGER_SPEC :TREE ) IS
-## include	    LOWER      : OFFSET_TYPE;						--| LIEU DE LA BORNE BASSE
-## include	    UPPER      : OFFSET_TYPE;						--| LIEU DE LA BORNE HAUTE
-## include	    INT_RANGE  : TREE := D ( AS_CONSTRAINT, INTEGER_DEF );			--| ETENDUE DU TYPE ENTIER
-## include	    EXP_BORNE  : TREE;
-## include	  BEGIN
-## include	    ALIGN ( INTG_AL );						--| ALIGNER LE SOMMET DE PILE POUR UN ENTIER
-## include	    LOWER := - EMITS.OFFSET_ACT;					--| LIEU DE LA BORNE BASSE
-## include	    INC_OFFSET ( INTG_SIZE );						--| ALLER AU LIEU LIBRE SUIVANT L'ENTIER
-## include	    UPPER := - EMITS.OFFSET_ACT;					--| LIEU DE LA BORNE HAUTE
-## include	    INC_OFFSET ( INTG_SIZE );						--| ALLER AU LIEU LIBRE SUIVANT L'ENTIER
-      
-## include	    DI ( CD_OFFSET, INTEGER_SPEC, LOWER );				--| LIEU DES BORNES
-## include	    DI ( CD_LEVEL, INTEGER_SPEC, EMITS.LEVEL );				--| NIVEAU STATIQUE DE LA DEFINITION
-## include	    DI ( CD_COMP_UNIT, INTEGER_SPEC, CUR_COMP_UNIT );			--| UNITE PARENTE
-## include	    DB ( CD_COMPILED, INTEGER_SPEC, TRUE );				--| DEFINITION TRAITEE
-## include	    EXP_BORNE := D ( AS_EXP1, INT_RANGE );				--| EXPRESSION BORNE BASSE
-## call	EXP	EXP_BORNE								--| GENERER LE CODE DE CALCUL DE L'EXPRESSION DE BORNE BASSE
-## include	    GEN_STORE ( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, LOWER, "BORNE BASSE" );	--| STOCKER LE RÉSULTAT DANS LA BORNE BASSE
-## include	    EXP_BORNE := D ( AS_EXP2, INT_RANGE );				--| EXPRESSION BORNE HAUTE
-## call	EXP	EXP_BORNE								--| GENERER LE CODE DE CALCUL DE L'EXPRESSION DE BORNE HAUTE
-## include	    GEN_STORE ( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, UPPER, "BORNE HAUTE" );	--| STOCKER LE RÉSULTAT DANS LA HAUTE
-## include	  END COMPILE_INTEGER_DEF;
-## include	  ------------------------------------------------------------------------------
-## include	  PROCEDURE COMPILE_CONSTRAINED_ARRAY_DEF ( TYPE_DEF, TYPE_SPEC :TREE ) IS
-## include	    DIMENSIONS_NBR     : NATURAL  := 0;
-## include	    SUBTYPE_INDICATION : TREE     := D ( AS_SUBTYPE_INDICATION, TYPE_DEF );	--| SOUS TYPE DE L'ELEMENT
-## include	    USED_NAME_ID       : TREE     := D ( AS_NAME, SUBTYPE_INDICATION );
-## include	    COMP_TYPE_ID       : TREE     := D ( SM_DEFN, USED_NAME_ID );
-## include	    COMP_TYPE          : TREE     := D ( SM_TYPE_SPEC, COMP_TYPE_ID );	--| TYPE_SPEC DU TYPE D'ELEMENT
-## include	    INDEX_CONSTRAINT   : TREE     := D ( AS_CONSTRAINT, TYPE_DEF );		--| LA CONTRAINTE DE DEFINITION DU TYPE TABLEAU
-## include	    DISCRETE_RANGE_S   : TREE     := D ( AS_DISCRETE_RANGE_S, INDEX_CONSTRAINT );
-## include	    DISCRETE_RANGE_SEQ : SEQ_TYPE := LIST ( DISCRETE_RANGE_S );		--| LA SEQUENCE DES INDICAGES
-         
-## include	    --|-------------------------------------------------------------------------
-## include	    PROCEDURE INSTALL_ARRAY_DIMENSION ( DISCRETE_RANGE_SEQ :IN OUT SEQ_TYPE ) IS
-## include	      IDXFAC, FIRST, LAST : OFFSET_TYPE;
-## include	      DISCRETE_RANGE      : TREE;
-## include	    BEGIN
-## include	      DIMENSIONS_NBR := DIMENSIONS_NBR + 1;				--| UNE DIMENSION DE PLUS
-## include	      ALIGN ( INTG_AL );						--| ALIGNER LE LIEU POUR UN ENTIER
-## include	      IDXFAC := - EMITS.OFFSET_ACT;					--| LIEU DU FACTEUR DE L'INDICE (POUR PASSER D'UN ÉLÉMENT AU SUIVANT)
-## include	      FIRST := IDXFAC - INTG_SIZE;					--| LIEU DE L'INDICE BAS
-## include	      LAST := FIRST - INTG_SIZE;					--| LIEU DE L'INDICE HAUT
-## include	      INC_OFFSET ( 3*INTG_SIZE );					--| MONTER LE LIEU LIBRE A 3 ENTIERS PLUS LOIN
-            
-## include	      POP ( DISCRETE_RANGE_SEQ, DISCRETE_RANGE );				--| EXTRAIRE L'INDIÇAGE DE CETTE DIMENSION
-## include	      IF IS_EMPTY ( DISCRETE_RANGE_SEQ ) THEN				--| C'ETAIT LE DERNIER INDICAGE (INDICE "RAPIDE")
-## include	        EMITS.LOAD_TYPE_SIZE ( COMP_TYPE );				--| EMPILER LA TAILLE DE L'ELEMENT
-## include	        EMIT ( DPL, I, "DUPLICATE INDEX FACTOR" );			--| GENERER UNE DUPLICATION DE CETTE TAILLE
-## include	        GEN_STORE ( I, 0, EMITS.LEVEL, IDXFAC, "STORE INDEX FACTOR" );	--| LA STOCKER COMME FACTEUR DE PASSAGE D'UN ELEMENT AU SUIVANT POUR CETTE DIMENSION
-## include	      ELSE							--| C'EST UN INDICAGE INTERMEDIAIRE
-## include	        INSTALL_ARRAY_DIMENSION ( DISCRETE_RANGE_SEQ );			--| TRAITER LA DIMENSION SUIVANTE
-## include	        EMIT ( DPL, I, "DUPLICATE INDEX FACTOR" );			--| DUPLIQUER LE FACTEUR DE PASSAGE
-## include	        GEN_STORE ( I, 0, EMITS.LEVEL, IDXFAC, "STORE INDEX FACTOR" );	--| LE STOCKER DANS LE DESCRIPTEUR DU TABLEAU
-## include	      END IF;
-            
-## include	      IF DISCRETE_RANGE.TY = DN_DISCRETE_SUBTYPE THEN
-## include	        DECLARE
-## include	          SUBTYPE_INDICATION : TREE := D ( AS_SUBTYPE_INDICATION, DISCRETE_RANGE );
-## include	        BEGIN
-## include	          DISCRETE_RANGE := D ( AS_CONSTRAINT, SUBTYPE_INDICATION );
-## include	          IF DISCRETE_RANGE.TY = DN_VOID THEN
-## include	            DECLARE
-## include	              USED_NAME_ID : TREE := D ( AS_NAME, SUBTYPE_INDICATION );
-## include	              DEF_NAME     : TREE := D ( SM_DEFN, USED_NAME_ID );
-## include	              TYPE_SPEC    : TREE := D ( SM_TYPE_SPEC, DEF_NAME );
-## include	            BEGIN
-## include	              DISCRETE_RANGE := D ( SM_RANGE, TYPE_SPEC );
-## include	            END;
-## include	          END IF;
-## include	        END;
-## include	      END IF;
-         
-## include	      IF DISCRETE_RANGE.TY = DN_RANGE_ATTRIBUTE THEN			--| CAS DU "SUBTYPE'RANGE"
-## include	        DECLARE
-## include	          TYPE_SPEC : TREE := D ( SM_TYPE_SPEC, DISCRETE_RANGE );		--| CHERCHER LE TYPE
-## include	        BEGIN
-## include	          DISCRETE_RANGE := D ( SM_RANGE, TYPE_SPEC );			--| REMPLACER LE DISCRETE RANGE PAR LE RANGE DU TYPE
-## include	        END;
-## include	      END IF;
-            
-## include	      IF DISCRETE_RANGE.TY = DN_RANGE THEN
-## include	        DECLARE
-## include	          EXP_BORNE : TREE := D ( AS_EXP1, DISCRETE_RANGE );
-## include	        BEGIN
-## call	EXP	EXP_BORNE								--| GENERER LE CODE DE CALCUL DE L'EXPRESSION DE BORNE BASSE
-## include	          GEN_STORE ( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, FIRST, "FIRST" );	--| LE STOCKER DANS LE DESCRIPTEUR
-## include	          EXP_BORNE := D ( AS_EXP2, DISCRETE_RANGE );
-## call	EXP	EXP_BORNE								--| GENERER LE CODE DE CALCUL DE L'EXPRESSION DE BORNE HAUTE
-## include	          GEN_STORE ( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, LAST, "LAST" );
-## include	        END;
-
-## include	        GEN_LOAD_ADDR ( 0, LEVEL, FIRST, "LOAD @FIRST" );			--| GENERER L'EMPILAGE DE L'ADRESSE DE LA SECTION DU DESCRIPTEUR POUR LA DIMENSION
-## include	        EMIT ( LEN, "CALCULATE LENGTH" );				--| PROCEDURE DE CALCUL DU LENGTH(DIM)
-## include	        EMIT ( MUL, I, "NEXT INDEX FACTOR = LEN * PREVIOUS FACTOR" );		--| LAISSER LE FACTEUR DE PASSAGE (LENGHTH*FACTEUR PRECEDENT) SUR LA PILE
-## include	      ELSIF DISCRETE_RANGE.TY = DN_RANGE_ATTRIBUTE THEN
-## include	        NULL;
-## include	      ELSE
-## include	        NULL;    							  -- DN_RANGE_ATTRIBUTE -- DN_DISCRETE_SUBTYPE
-## include	        PUT_LINE ( "!!! COMPILE_TYPE_ARRAY_DIMENSION : DISCRETE_RANGE.TY ILLICITE " & NODE_NAME'IMAGE ( DISCRETE_RANGE.TY ) );
-## include	        RAISE PROGRAM_ERROR;
-## include	      END IF;
-## include	    END INSTALL_ARRAY_DIMENSION;
-         
-## include	  BEGIN
-## include	    ALIGN ( INTG_AL );						--| ALIGNER LE LIEU LIBRE POUR UN ENTIER
-## include	    DI ( CD_LEVEL, TYPE_SPEC, EMITS.LEVEL );				--| STOCKER LE NIVEAU STATIQUE
-## include	    DI ( CD_COMP_UNIT, TYPE_SPEC, EMITS.CUR_COMP_UNIT );			--| STOCKER L'UNITE COURANTE
-## include	    DB ( CD_COMPILED, TYPE_SPEC, TRUE );				--| MARQUER COMME TRAITE
-## include	    DECLARE
-## include	      OFFSET : INTEGER := - EMITS.OFFSET_ACT;
-## include	    BEGIN
-## include	      DI ( CD_OFFSET, TYPE_SPEC, OFFSET );				--| STOCKER LE LIEU DU NOMBRE DE DIMENSIONS
-## include	      INC_OFFSET ( INTG_SIZE );					--| MONTER AU LIEU LIBRE SUIVANT L'ENTIER
-## include	      INSTALL_ARRAY_DIMENSION ( DISCRETE_RANGE_SEQ );			--| METTRE EN PLACE LES FACTEURS D'INDEXATION ET LES LIMITES D'INDICE
-## include	      GEN_STORE ( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, OFFSET,
-## include	             "STORE ARRAY SIZE (LAST INDEX FACTOR)" );			--| GENERER LE STOCKAGE EN PILE DU NOMBRE DE DIMENSIONS
-## include	      DI ( CD_DIMENSIONS, TYPE_SPEC, DIMENSIONS_NBR );			--| STOCKER AUSSI DANS LE TYPE_SPEC
-## include	    END;
-## include	  END COMPILE_CONSTRAINED_ARRAY_DEF;
-## include	  ------------------------------------------------------------------------------
-## include	  PROCEDURE COMPILE_ACCESS_DEF ( ACCESS_DEF, ACCESS_SPEC :TREE ) IS
-## include	    POINTED_TYPE_SPEC : TREE    := D ( SM_DESIG_TYPE, ACCESS_SPEC );
-## include	    CONTRAINT         : BOOLEAN := (POINTED_TYPE_SPEC.TY IN CLASS_CONSTRAINED);
-## include	  BEGIN
-## include	    DB ( CD_CONSTRAINED, ACCESS_SPEC, CONTRAINT );
-      
-## include	    IF CONTRAINT THEN
-## include	      DI ( CD_LEVEL, ACCESS_SPEC, EMITS.LEVEL );				--| STOCKER LE NIVEAU STATIQUE DE LA DEFINITION
-## include	      ALIGN ( INTG_AL );						--| ALIGNER LE LIEU LIBRE POUR UN ENTIER
-## include	      DECLARE
-## include	        OFFSET : OFFSET_TYPE := EMITS.OFFSET_ACT;
-## include	      BEGIN
-## include	        DI ( CD_OFFSET, ACCESS_SPEC, OFFSET );				--| STOCKER LE LIEU
-## include	        INC_OFFSET ( INTG_SIZE );					--| MONTER AU LIEU SUIVANT L'ENTIER
-## include	        EMITS.LOAD_TYPE_SIZE ( POINTED_TYPE_SPEC );			--| GENERER LE CHARGEMENT DE LA TAILLE DU TYPE POINTE
-## include	        GEN_STORE ( I, 0, EMITS.LEVEL, OFFSET, "STORE POINTERD TYPE SIZE" );	--| LA STOCKER DANS LE LIEU RESERVE
-## include	      END;
-## include	    END IF;
-## include	  END;
-## include	  ------------------------------------------------------------------------------
-
-## include	BEGIN
-## include	  IF EMITS.CUR_COMP_UNIT /= 1 THEN					--| PAS LE STANDARD
-## include	    CASE TYPE_DEF.TY IS
-            
-## include	    WHEN DN_ENUMERATION_DEF =>
-## include	      COMPILE_ENUMERATION_DEF ( TYPE_DEF );
-                  
-## include	    WHEN DN_INTEGER_DEF =>						--| TYPE TRUC IS RANGE 1..10*U;
-## include	      COMPILE_INTEGER_DEF ( TYPE_DEF, TYPE_SPEC );
-            
-## include	    WHEN DN_FLOAT_DEF =>
-## include	      NULL;
-            
-## include	    WHEN DN_FIXED_DEF =>
-## include	      NULL;
-            
-## include	    WHEN DN_CONSTRAINED_ARRAY_DEF =>
-## include	      COMPILE_CONSTRAINED_ARRAY_DEF ( TYPE_DEF, TYPE_SPEC );
-                  
-## include	    WHEN DN_RECORD_DEF =>
-## include	      NULL;
-            
-## include	    WHEN DN_ACCESS_DEF =>
-## include	      COMPILE_ACCESS_DEF ( TYPE_DEF, TYPE_SPEC );
-                  
-## include	    WHEN DN_DERIVED_DEF =>
-## include	      NULL;
-                  
-## include	    WHEN OTHERS =>
-## include	      NULL;							-- DN_SUBTYPE_INDICATION -- DN_L_PRIVATE_DEF -- DN_PRIVATE_DEF -- DN_UNCONSTRAINED_ARRAY_DEF
-## include                PUT_LINE ( "!!! COMPILE_TYPE_DECL : TYPE_SPEC.TY ILLICITE " & NODE_NAME'IMAGE ( TYPE_SPEC.TY ) );
-## include	      RAISE PROGRAM_ERROR;
-## include	    END CASE;
-## include	  END IF;
-## include	END;
+##	if	type_decl
+##	call	TYPE_DEF		@ as_type_def	type_decl		& type_decl
 --|.................................................................................................
 
 //  subtype_decl		=>
@@ -1399,12 +1207,215 @@
 --				ALL_SOURCE > TYPE_DEF
 --				---------------------
 
+
 //  TYPE_DEF		::=
 //	enumeration_def | record_def
 //	| formal_dscrt_def | formal_integer_def | formal_fixed_def | formal_float_def;
 //	| private_def | l_private_def |
 //	| CONSTRAINED_DEF | ARR_ACC_DER_DEF | ;
 --|.................................................................................................
+
+##  TYPE_DEF	====>	& TYPE_DECL
+
+##	if	enumeration_def
+##	call	enumeration_def	TYPE_DEF
+##	if	record_def
+##	call	record_def	TYPE_DEF
+##	if	formal_dscrt_def
+##	call	formal_dscrt_def	TYPE_DEF
+##	if	formal_integer_def
+##	call	formal_integer_def	TYPE_DEF
+##	if	formal_fixed_def
+##	call	formal_fixed_def	TYPE_DEF
+##	if	formal_float_def
+##	call	formal_float_def	TYPE_DEF
+##	if	private_def
+##	call	private_def	TYPE_DEF
+##	if	l_private_def
+##	call	l_private_def	TYPE_DEF
+##	if_class	CONSTRAINED_DEF
+##	call	CONSTRAINED_DEF	TYPE_DEF	& TYPE_DECL
+##	if_class	ARR_ACC_DER_DEF
+##	call	ARR_ACC_DER_DEF	TYPE_DEF
+
+
+-- ## include	DECLARE
+-- ## include	  TYPE_DEF  : TREE := D ( AS_TYPE_DEF, TYPE_DECL );
+-- ## include	  TYPE_ID   : TREE := D ( AS_SOURCE_NAME, TYPE_DECL );
+-- ## include	  TYPE_SPEC : TREE := D ( SM_TYPE_SPEC, TYPE_ID );
+-- ## include	  ------------------------------------------------------------------------------
+-- ## include	  PROCEDURE COMPILE_INTEGER_DEF ( INTEGER_DEF, INTEGER_SPEC :TREE ) IS
+-- ## include	    LOWER      : OFFSET_TYPE;						--| LIEU DE LA BORNE BASSE
+-- ## include	    UPPER      : OFFSET_TYPE;						--| LIEU DE LA BORNE HAUTE
+-- ## include	    INT_RANGE  : TREE := D ( AS_CONSTRAINT, INTEGER_DEF );			--| ETENDUE DU TYPE ENTIER
+-- ## include	    EXP_BORNE  : TREE;
+-- ## include	  BEGIN
+-- ## include	    ALIGN ( INTG_AL );						--| ALIGNER LE SOMMET DE PILE POUR UN ENTIER
+-- ## include	    LOWER := - EMITS.OFFSET_ACT;					--| LIEU DE LA BORNE BASSE
+-- ## include	    INC_OFFSET ( INTG_SIZE );						--| ALLER AU LIEU LIBRE SUIVANT L'ENTIER
+-- ## include	    UPPER := - EMITS.OFFSET_ACT;					--| LIEU DE LA BORNE HAUTE
+-- ## include	    INC_OFFSET ( INTG_SIZE );						--| ALLER AU LIEU LIBRE SUIVANT L'ENTIER
+      
+-- ## include	    DI ( CD_OFFSET, INTEGER_SPEC, LOWER );				--| LIEU DES BORNES
+-- ## include	    DI ( CD_LEVEL, INTEGER_SPEC, EMITS.LEVEL );				--| NIVEAU STATIQUE DE LA DEFINITION
+-- ## include	    DI ( CD_COMP_UNIT, INTEGER_SPEC, CUR_COMP_UNIT );			--| UNITE PARENTE
+-- ## include	    DB ( CD_COMPILED, INTEGER_SPEC, TRUE );				--| DEFINITION TRAITEE
+-- ## include	    EXP_BORNE := D ( AS_EXP1, INT_RANGE );				--| EXPRESSION BORNE BASSE
+-- ## call	EXP	EXP_BORNE								--| GENERER LE CODE DE CALCUL DE L'EXPRESSION DE BORNE BASSE
+-- ## include	    GEN_STORE ( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, LOWER, "BORNE BASSE" );	--| STOCKER LE RÉSULTAT DANS LA BORNE BASSE
+-- ## include	    EXP_BORNE := D ( AS_EXP2, INT_RANGE );				--| EXPRESSION BORNE HAUTE
+-- ## call	EXP	EXP_BORNE								--| GENERER LE CODE DE CALCUL DE L'EXPRESSION DE BORNE HAUTE
+-- ## include	    GEN_STORE ( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, UPPER, "BORNE HAUTE" );	--| STOCKER LE RÉSULTAT DANS LA HAUTE
+-- ## include	  END COMPILE_INTEGER_DEF;
+-- ## include	  ------------------------------------------------------------------------------
+-- ## include	  PROCEDURE COMPILE_CONSTRAINED_ARRAY_DEF ( TYPE_DEF, TYPE_SPEC :TREE ) IS
+-- ## include	    DIMENSIONS_NBR     : NATURAL  := 0;
+-- ## include	    SUBTYPE_INDICATION : TREE     := D ( AS_SUBTYPE_INDICATION, TYPE_DEF );	--| SOUS TYPE DE L'ELEMENT
+-- ## include	    USED_NAME_ID       : TREE     := D ( AS_NAME, SUBTYPE_INDICATION );
+-- ## include	    COMP_TYPE_ID       : TREE     := D ( SM_DEFN, USED_NAME_ID );
+-- ## include	    COMP_TYPE          : TREE     := D ( SM_TYPE_SPEC, COMP_TYPE_ID );	--| TYPE_SPEC DU TYPE D'ELEMENT
+-- ## include	    INDEX_CONSTRAINT   : TREE     := D ( AS_CONSTRAINT, TYPE_DEF );		--| LA CONTRAINTE DE DEFINITION DU TYPE TABLEAU
+-- ## include	    DISCRETE_RANGE_S   : TREE     := D ( AS_DISCRETE_RANGE_S, INDEX_CONSTRAINT );
+-- ## include	    DISCRETE_RANGE_SEQ : SEQ_TYPE := LIST ( DISCRETE_RANGE_S );		--| LA SEQUENCE DES INDICAGES
+         
+-- ## include	    --|-------------------------------------------------------------------------
+-- ## include	    PROCEDURE INSTALL_ARRAY_DIMENSION ( DISCRETE_RANGE_SEQ :IN OUT SEQ_TYPE ) IS
+-- ## include	      IDXFAC, FIRST, LAST : OFFSET_TYPE;
+-- ## include	      DISCRETE_RANGE      : TREE;
+-- ## include	    BEGIN
+-- ## include	      DIMENSIONS_NBR := DIMENSIONS_NBR + 1;				--| UNE DIMENSION DE PLUS
+-- ## include	      ALIGN ( INTG_AL );						--| ALIGNER LE LIEU POUR UN ENTIER
+-- ## include	      IDXFAC := - EMITS.OFFSET_ACT;					--| LIEU DU FACTEUR DE L'INDICE (POUR PASSER D'UN ÉLÉMENT AU SUIVANT)
+-- ## include	      FIRST := IDXFAC - INTG_SIZE;					--| LIEU DE L'INDICE BAS
+-- ## include	      LAST := FIRST - INTG_SIZE;					--| LIEU DE L'INDICE HAUT
+-- ## include	      INC_OFFSET ( 3*INTG_SIZE );					--| MONTER LE LIEU LIBRE A 3 ENTIERS PLUS LOIN
+            
+-- ## include	      POP ( DISCRETE_RANGE_SEQ, DISCRETE_RANGE );				--| EXTRAIRE L'INDIÇAGE DE CETTE DIMENSION
+-- ## include	      IF IS_EMPTY ( DISCRETE_RANGE_SEQ ) THEN				--| C'ETAIT LE DERNIER INDICAGE (INDICE "RAPIDE")
+-- ## include	        EMITS.LOAD_TYPE_SIZE ( COMP_TYPE );				--| EMPILER LA TAILLE DE L'ELEMENT
+-- ## include	        EMIT ( DPL, I, "DUPLICATE INDEX FACTOR" );			--| GENERER UNE DUPLICATION DE CETTE TAILLE
+-- ## include	        GEN_STORE ( I, 0, EMITS.LEVEL, IDXFAC, "STORE INDEX FACTOR" );	--| LA STOCKER COMME FACTEUR DE PASSAGE D'UN ELEMENT AU SUIVANT POUR CETTE DIMENSION
+-- ## include	      ELSE							--| C'EST UN INDICAGE INTERMEDIAIRE
+-- ## include	        INSTALL_ARRAY_DIMENSION ( DISCRETE_RANGE_SEQ );			--| TRAITER LA DIMENSION SUIVANTE
+-- ## include	        EMIT ( DPL, I, "DUPLICATE INDEX FACTOR" );			--| DUPLIQUER LE FACTEUR DE PASSAGE
+-- ## include	        GEN_STORE ( I, 0, EMITS.LEVEL, IDXFAC, "STORE INDEX FACTOR" );	--| LE STOCKER DANS LE DESCRIPTEUR DU TABLEAU
+-- ## include	      END IF;
+            
+-- ## include	      IF DISCRETE_RANGE.TY = DN_DISCRETE_SUBTYPE THEN
+-- ## include	        DECLARE
+-- ## include	          SUBTYPE_INDICATION : TREE := D ( AS_SUBTYPE_INDICATION, DISCRETE_RANGE );
+-- ## include	        BEGIN
+-- ## include	          DISCRETE_RANGE := D ( AS_CONSTRAINT, SUBTYPE_INDICATION );
+-- ## include	          IF DISCRETE_RANGE.TY = DN_VOID THEN
+-- ## include	            DECLARE
+-- ## include	              USED_NAME_ID : TREE := D ( AS_NAME, SUBTYPE_INDICATION );
+-- ## include	              DEF_NAME     : TREE := D ( SM_DEFN, USED_NAME_ID );
+-- ## include	              TYPE_SPEC    : TREE := D ( SM_TYPE_SPEC, DEF_NAME );
+-- ## include	            BEGIN
+-- ## include	              DISCRETE_RANGE := D ( SM_RANGE, TYPE_SPEC );
+-- ## include	            END;
+-- ## include	          END IF;
+-- ## include	        END;
+-- ## include	      END IF;
+         
+-- ## include	      IF DISCRETE_RANGE.TY = DN_RANGE_ATTRIBUTE THEN			--| CAS DU "SUBTYPE'RANGE"
+-- ## include	        DECLARE
+-- ## include	          TYPE_SPEC : TREE := D ( SM_TYPE_SPEC, DISCRETE_RANGE );		--| CHERCHER LE TYPE
+-- ## include	        BEGIN
+-- ## include	          DISCRETE_RANGE := D ( SM_RANGE, TYPE_SPEC );			--| REMPLACER LE DISCRETE RANGE PAR LE RANGE DU TYPE
+-- ## include	        END;
+-- ## include	      END IF;
+            
+-- ## include	      IF DISCRETE_RANGE.TY = DN_RANGE THEN
+-- ## include	        DECLARE
+-- ## include	          EXP_BORNE : TREE := D ( AS_EXP1, DISCRETE_RANGE );
+-- ## include	        BEGIN
+-- ## call	EXP	EXP_BORNE								--| GENERER LE CODE DE CALCUL DE L'EXPRESSION DE BORNE BASSE
+-- ## include	          GEN_STORE ( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, FIRST, "FIRST" );	--| LE STOCKER DANS LE DESCRIPTEUR
+-- ## include	          EXP_BORNE := D ( AS_EXP2, DISCRETE_RANGE );
+-- ## call	EXP	EXP_BORNE								--| GENERER LE CODE DE CALCUL DE L'EXPRESSION DE BORNE HAUTE
+-- ## include	          GEN_STORE ( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, LAST, "LAST" );
+-- ## include	        END;
+
+-- ## include	        GEN_LOAD_ADDR ( 0, LEVEL, FIRST, "LOAD @FIRST" );			--| GENERER L'EMPILAGE DE L'ADRESSE DE LA SECTION DU DESCRIPTEUR POUR LA DIMENSION
+-- ## include	        EMIT ( LEN, "CALCULATE LENGTH" );				--| PROCEDURE DE CALCUL DU LENGTH(DIM)
+-- ## include	        EMIT ( MUL, I, "NEXT INDEX FACTOR = LEN * PREVIOUS FACTOR" );		--| LAISSER LE FACTEUR DE PASSAGE (LENGHTH*FACTEUR PRECEDENT) SUR LA PILE
+-- ## include	      ELSIF DISCRETE_RANGE.TY = DN_RANGE_ATTRIBUTE THEN
+-- ## include	        NULL;
+-- ## include	      ELSE
+-- ## include	        NULL;    							  -- DN_RANGE_ATTRIBUTE -- DN_DISCRETE_SUBTYPE
+-- ## include	        PUT_LINE ( "!!! COMPILE_TYPE_ARRAY_DIMENSION : DISCRETE_RANGE.TY ILLICITE " & NODE_NAME'IMAGE ( DISCRETE_RANGE.TY ) );
+-- ## include	        RAISE PROGRAM_ERROR;
+-- ## include	      END IF;
+-- ## include	    END INSTALL_ARRAY_DIMENSION;
+         
+-- ## include	  BEGIN
+-- ## include	    ALIGN ( INTG_AL );						--| ALIGNER LE LIEU LIBRE POUR UN ENTIER
+-- ## include	    DI ( CD_LEVEL, TYPE_SPEC, EMITS.LEVEL );				--| STOCKER LE NIVEAU STATIQUE
+-- ## include	    DI ( CD_COMP_UNIT, TYPE_SPEC, EMITS.CUR_COMP_UNIT );			--| STOCKER L'UNITE COURANTE
+-- ## include	    DB ( CD_COMPILED, TYPE_SPEC, TRUE );				--| MARQUER COMME TRAITE
+-- ## include	    DECLARE
+-- ## include	      OFFSET : INTEGER := - EMITS.OFFSET_ACT;
+-- ## include	    BEGIN
+-- ## include	      DI ( CD_OFFSET, TYPE_SPEC, OFFSET );				--| STOCKER LE LIEU DU NOMBRE DE DIMENSIONS
+-- ## include	      INC_OFFSET ( INTG_SIZE );					--| MONTER AU LIEU LIBRE SUIVANT L'ENTIER
+-- ## include	      INSTALL_ARRAY_DIMENSION ( DISCRETE_RANGE_SEQ );			--| METTRE EN PLACE LES FACTEURS D'INDEXATION ET LES LIMITES D'INDICE
+-- ## include	      GEN_STORE ( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, OFFSET,
+-- ## include	             "STORE ARRAY SIZE (LAST INDEX FACTOR)" );			--| GENERER LE STOCKAGE EN PILE DU NOMBRE DE DIMENSIONS
+-- ## include	      DI ( CD_DIMENSIONS, TYPE_SPEC, DIMENSIONS_NBR );			--| STOCKER AUSSI DANS LE TYPE_SPEC
+-- ## include	    END;
+-- ## include	  END COMPILE_CONSTRAINED_ARRAY_DEF;
+-- ## include	  ------------------------------------------------------------------------------
+-- ## include	  PROCEDURE COMPILE_ACCESS_DEF ( ACCESS_DEF, ACCESS_SPEC :TREE ) IS
+-- ## include	    POINTED_TYPE_SPEC : TREE    := D ( SM_DESIG_TYPE, ACCESS_SPEC );
+-- ## include	    CONTRAINT         : BOOLEAN := (POINTED_TYPE_SPEC.TY IN CLASS_CONSTRAINED);
+-- ## include	  BEGIN
+-- ## include	    DB ( CD_CONSTRAINED, ACCESS_SPEC, CONTRAINT );
+      
+-- ## include	    IF CONTRAINT THEN
+-- ## include	      DI ( CD_LEVEL, ACCESS_SPEC, EMITS.LEVEL );				--| STOCKER LE NIVEAU STATIQUE DE LA DEFINITION
+-- ## include	      ALIGN ( INTG_AL );						--| ALIGNER LE LIEU LIBRE POUR UN ENTIER
+-- ## include	      DECLARE
+-- ## include	        OFFSET : OFFSET_TYPE := EMITS.OFFSET_ACT;
+-- ## include	      BEGIN
+-- ## include	        DI ( CD_OFFSET, ACCESS_SPEC, OFFSET );				--| STOCKER LE LIEU
+-- ## include	        INC_OFFSET ( INTG_SIZE );					--| MONTER AU LIEU SUIVANT L'ENTIER
+-- ## include	        EMITS.LOAD_TYPE_SIZE ( POINTED_TYPE_SPEC );			--| GENERER LE CHARGEMENT DE LA TAILLE DU TYPE POINTE
+-- ## include	        GEN_STORE ( I, 0, EMITS.LEVEL, OFFSET, "STORE POINTERD TYPE SIZE" );	--| LA STOCKER DANS LE LIEU RESERVE
+-- ## include	      END;
+-- ## include	    END IF;
+-- ## include	  END;
+-- ## include	  ------------------------------------------------------------------------------
+
+-- ## include	BEGIN
+-- ## include	  IF EMITS.CUR_COMP_UNIT /= 1 THEN					--| PAS LE STANDARD
+-- ## include	    CASE TYPE_DEF.TY IS
+            
+-- ## include	    WHEN DN_INTEGER_DEF =>						--| TYPE TRUC IS RANGE 1..10*U;
+-- ## include	      COMPILE_INTEGER_DEF ( TYPE_DEF, TYPE_SPEC );
+            
+-- ## include	    WHEN DN_FLOAT_DEF =>
+-- ## include	      NULL;
+            
+-- ## include	    WHEN DN_FIXED_DEF =>
+-- ## include	      NULL;
+            
+-- ## include	    WHEN DN_CONSTRAINED_ARRAY_DEF =>
+-- ## include	      COMPILE_CONSTRAINED_ARRAY_DEF ( TYPE_DEF, TYPE_SPEC );
+                  
+-- ## include	    WHEN DN_ACCESS_DEF =>
+-- ## include	      COMPILE_ACCESS_DEF ( TYPE_DEF, TYPE_SPEC );
+                  
+-- ## include	    WHEN DN_DERIVED_DEF =>
+-- ## include	      NULL;
+                  
+-- ## include	    WHEN OTHERS =>
+-- ## include	      NULL;							-- DN_SUBTYPE_INDICATION -- DN_L_PRIVATE_DEF -- DN_PRIVATE_DEF -- DN_UNCONSTRAINED_ARRAY_DEF
+-- ## include                PUT_LINE ( "!!! COMPILE_TYPE_DECL : TYPE_SPEC.TY ILLICITE " & NODE_NAME'IMAGE ( TYPE_SPEC.TY ) );
+-- ## include	      RAISE PROGRAM_ERROR;
+-- ## include	    END CASE;
+-- ## include	  END IF;
+-- ## include	END;
 
 //  enumeration_def		=>
 //	as_enum_literal_s	: enum_literal_s;
@@ -1422,8 +1433,14 @@
 
 ##  enum_literal_s	====>
 
+##  include	DECLARE
+##  include	  LAST_LITERAL :TREE;
+##  include	BEGIN
 ##  repeat_extract	enum_literal_s	enum_literal
-##  call	ENUM_LITERAL	enum_literal
+##  include	    LAST_LITERAL := enum_literal;
+##  end_repeat
+##  include	DI ( CD_LAST, ENUM_LITERAL_S, DI ( SM_REP, LAST_LITERAL ) );		--| STOCKER LA VALEUR DU DERNIER
+##  include	END;
 --|.................................................................................................
 
 //  ENUM_LITERAL		::=
@@ -1433,6 +1450,7 @@
 //	sm_rep	: Integer;
 
 ##  ENUM_LITERAL	====>
+
 ##	if	enumeration_id
 ##	call	enumeration_id	ENUM_LITERAL
 ##	if	character_id
@@ -1449,28 +1467,8 @@
 ##  character_id	====>
 
 ##	include	null;
-
-
-
 --|.................................................................................................
-//  formal_dscrt_def	=> ;
 
-##  formal_dscrt_def	====>
-
-##	include	null;
---|.................................................................................................
-//  formal_fixed_def	=> ;
-
-##  formal_fixed_def	====>
-
-##	include	null;
---|.................................................................................................
-//  formal_float_def	=> ;
-
-##  formal_float_def	====>
-
-##	include	null;
---|.................................................................................................
 //  formal_integer_def	=> ;
 
 ##  formal_integer_def	====>
@@ -1478,13 +1476,53 @@
 ##	include	null;
 --|.................................................................................................
 
+//  formal_fixed_def	=> ;
+
+##  formal_fixed_def	====>
+
+##	include	null;
+--|.................................................................................................
+
+//  formal_float_def	=> ;
+
+##  formal_float_def	====>
+
+##	include	null;
+--|.................................................................................................
+
+//  formal_dscrt_def	=> ;
+
+##  formal_dscrt_def	====>
+
+##	include	null;
+--|.................................................................................................
+//  private_def		=> ;
+
+##  private_def	====>
+
+##	include	null;
+--|.................................................................................................
+
+//  l_private_def		=> ;
+
+##  l_private_def	====>
+
+##	include	null;
+--|.................................................................................................
+
 //  record_def		=>
 //	as_comp_list	: comp_list;
+
+##  record_def	====>
+
+##	include	null;
 --|.................................................................................................
 //  comp_list		=>
 //	as_decl_s	: decl_s,
 //	as_variant_part	: VARIANT_PART,
 //	as_pragma_s	: pragma_s;
+--|.................................................................................................
+
 //  VARIANT_PART		::=
 //	variant_part;
 --|.................................................................................................
@@ -1501,13 +1539,134 @@
 //  variant		=>
 //	as_choice_s	: choice_s,
 //	as_comp_list	: comp_list;
-
-
-
-//  private_def		=> ;
 --|.................................................................................................
-//  l_private_def		=> ;
 
+
+				---------------------------------------
+--				ALL_SOURCE > TYPE_DEF > CONSTRAINED_DEF
+--				---------------------------------------
+
+
+--|.................................................................................................
+//  CONSTRAINED_DEF		=>
+//	as_constraint	: CONSTRAINT;
+
+##  CONSTRAINED_DEF	====>	& TYPE_DECL
+
+##	if	subtype_indication
+##	call	subtype_indication	CONSTRAINED_DEF
+##	if	integer_def
+##	call	integer_def	CONSTRAINED_DEF	& TYPE_DECL
+##	if	fixed_def
+##	call	fixed_def		CONSTRAINED_DEF
+##	if	float_def
+##	call	float_def		CONSTRAINED_DEF
+--|.................................................................................................
+
+//  subtype_indication	=>
+//	as_name	: NAME;
+
+##  subtype_indication	====>
+
+##	include	null;
+--|.................................................................................................
+
+//  integer_def	=> ;
+
+##  integer_def	====>	& TYPE_DECL
+
+## include	declare
+## include	  TYPE_ID      : TREE := D( AS_SOURCE_NAME, TYPE_DECL );
+## include	  INTEGER_SPEC : TREE := D( SM_TYPE_SPEC, TYPE_ID );
+## include	  LOWER        : OFFSET_TYPE;						--| LIEU DE LA BORNE BASSE
+## include	  UPPER        : OFFSET_TYPE;						--| LIEU DE LA BORNE HAUTE
+## include	  INT_RANGE    : TREE := D( AS_CONSTRAINT, INTEGER_DEF );			--| ETENDUE DU TYPE ENTIER
+## include	  EXP_BORNE    : TREE;
+## include	 begin
+## include	  ALIGN( INTG_AL );							--| ALIGNER LE SOMMET DE PILE POUR UN ENTIER
+## include	  LOWER := - EMITS.OFFSET_ACT;					--| LIEU DE LA BORNE BASSE
+## include	  INC_OFFSET( INTG_SIZE );						--| ALLER AU LIEU LIBRE SUIVANT L'ENTIER
+## include	  UPPER := - EMITS.OFFSET_ACT;					--| LIEU DE LA BORNE HAUTE
+## include	  INC_OFFSET( INTG_SIZE );						--| ALLER AU LIEU LIBRE SUIVANT L'ENTIER
+      
+## include	  DI( CD_OFFSET,    INTEGER_SPEC, LOWER );				--| LIEU DES BORNES
+## include	  DI( CD_LEVEL,     INTEGER_SPEC, EMITS.LEVEL );				--| NIVEAU STATIQUE DE LA DEFINITION
+## include	  DI( CD_COMP_UNIT, INTEGER_SPEC, CUR_COMP_UNIT );			--| UNITE PARENTE
+## include	  DB( CD_COMPILED,  INTEGER_SPEC, TRUE );				--| DEFINITION TRAITEE
+## include	  EXP_BORNE := D( AS_EXP1, INT_RANGE );					--| EXPRESSION BORNE BASSE
+## call	EXP	EXP_BORNE								--| GENERER LE CODE DE CALCUL DE L'EXPRESSION DE BORNE BASSE
+## include	  GEN_STORE( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, LOWER, "BORNE BASSE" );	--| STOCKER LE RÉSULTAT DANS LA BORNE BASSE
+## include	  EXP_BORNE := D( AS_EXP2, INT_RANGE );					--| EXPRESSION BORNE HAUTE
+## call	EXP	EXP_BORNE								--| GENERER LE CODE DE CALCUL DE L'EXPRESSION DE BORNE HAUTE
+## include	  GEN_STORE( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, UPPER, "BORNE HAUTE" );	--| STOCKER LE RÉSULTAT DANS LA HAUTE
+## include	end;
+
+--|.................................................................................................
+//  fixed_def	=> ;
+
+##  fixed_def	====>
+
+##	include	null;
+--|.................................................................................................
+//  float_def		=> ;
+
+##  float_def	====>
+
+##	include	null;
+--|.................................................................................................
+
+
+				---------------------------------------
+--				ALL_SOURCE > TYPE_DEF > ARR_ACC_DER_DEF
+--				---------------------------------------
+
+
+//  ARR_ACC_DER_DEF		::=
+//	constrained_array_def | unconstrained_array_def | access_def | derived_def;
+//  ARR_ACC_DER_DEF		=>
+//	as_subtype_indication	: subtype_indication;
+
+##  ARR_ACC_DER_DEF	====>
+
+##	if	constrained_array_def
+##	call	constrained_array_def	ARR_ACC_DER_DEF
+##	if	unconstrained_array_def
+##	call	unconstrained_array_def	ARR_ACC_DER_DEF
+##	if	access_def
+##	call	access_def		ARR_ACC_DER_DEF
+##	if	derived_def
+##	call	derived_def		ARR_ACC_DER_DEF
+
+
+--|.................................................................................................
+
+--|.................................................................................................
+//  constrained_array_def	=>
+//	as_constraint	: CONSTRAINT;
+
+##  constrained_array_def	====>
+
+##	include	null;
+--|.................................................................................................
+//  unconstrained_array_def	=>
+//	as_index_s	: index_s;
+
+##  unconstrained_array_def	====>
+
+##	include	null;
+--|.................................................................................................
+//  access_def	=> ;
+
+##  access_def	====>
+
+##	include	null;
+--|.................................................................................................
+//  derived_def	=>	   	xd_derived_subprog_list: Seq Of SUBPROG_NAME;
+
+##  derived_def	====>
+
+##	include	null;
+--|.................................................................................................
 
 
 
@@ -1847,14 +2006,6 @@
 
 
 --|.................................................................................................
-//  CONSTRAINED_DEF		::=
-//	integer_def | float_def | fixed_def;
---|.................................................................................................
-//  ARR_ACC_DER_DEF		::=
-//	constrained_array_def | unconstrained_array_def | access_def | derived_def;
-//  ARR_ACC_DER_DEF		=>
-//	as_subtype_indication	: subtype_indication;
---|.................................................................................................
 //  TYPE_SPEC		::=
 //	DERIVABLE_SPEC;
 --|.................................................................................................
@@ -1919,19 +2070,11 @@
 
 
 
---|.................................................................................................
-//  CONSTRAINED_DEF		=>
-//	as_constraint	: CONSTRAINT;
---|.................................................................................................
-//  subtype_indication	=>
-//	as_name	: NAME;
 
 
 //  CONSTRAINT		::=
 //	DISCRETE_RANGE | REAL_CONSTRAINT | index_constraint | dscrmt_constraint;
 
-
-//  derived_def	=>	   	xd_derived_subprog_list: Seq Of SUBPROG_NAME;
 
 
 //  DISCRETE_RANGE		::=
@@ -1951,11 +2094,6 @@
 
 
 
-//  integer_def	=> ;
---|.................................................................................................
-//  Integer	=>
-//	cd_offset	: Integer,
-//	cd_impl_size	: Integer;
 
 
 //  REAL_CONSTRAINT ::=     float_constraint
@@ -1963,7 +2101,6 @@
 //  REAL_CONSTRAINT	=>	    sm_type_spec : TYPE_SPEC;
 
 
-//  float_def		=> ;
 --|.................................................................................................
 //  REAL_CONSTRAINT		=>
 //	as_exp	: EXP,
@@ -1975,7 +2112,13 @@
 //	cd_impl_size	: Integer ;
 
 
-//  fixed_def	=> ;
+--|.................................................................................................
+//  Integer	=>
+//	cd_offset	: Integer,
+//	cd_impl_size	: Integer;
+
+
+
 --|.................................................................................................
 //  fixed_constraint	=> ;
 --|.................................................................................................
@@ -1983,17 +2126,11 @@
 //	cd_impl_small	: Value,
 //	cd_impl_size	: Integer;
 
-//  constrained_array_def	=>
-//	as_constraint	: CONSTRAINT;
---|.................................................................................................
 //  index_constraint	=>
 //	as_discrete_range_s	: discrete_range_s;
 --|.................................................................................................
 //  discrete_range_s	=>
 //	as_list	: Seq Of DISCRETE_RANGE;
---|.................................................................................................
-//  unconstrained_array_def	=>
-//	as_index_s	: index_s;
 --|.................................................................................................
 //  scalar_s		=>
 //	as_list	: Seq Of SCALAR;
@@ -2093,7 +2230,6 @@ others_s	::=
 
 
 
-//  access_def	=> ;
 --|.................................................................................................
 //  access		=>
 //	sm_storage_size	: EXP,			-- EXP or void

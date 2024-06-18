@@ -91,15 +91,29 @@ is
   PROCEDURE CODE_name_default ( name_default :Tree );
   PROCEDURE CODE_box_default ( box_default :Tree );
   PROCEDURE CODE_no_default ( no_default :Tree );
+  PROCEDURE CODE_TYPE_DEF ( TYPE_DEF, TYPE_DECL :Tree );
   PROCEDURE CODE_enumeration_def ( enumeration_def :Tree );
   PROCEDURE CODE_enum_literal_s ( enum_literal_s :Tree );
   PROCEDURE CODE_ENUM_LITERAL ( ENUM_LITERAL :Tree );
   PROCEDURE CODE_enumeration_id ( enumeration_id :Tree );
   PROCEDURE CODE_character_id ( character_id :Tree );
-  PROCEDURE CODE_formal_dscrt_def ( formal_dscrt_def :Tree );
+  PROCEDURE CODE_formal_integer_def ( formal_integer_def :Tree );
   PROCEDURE CODE_formal_fixed_def ( formal_fixed_def :Tree );
   PROCEDURE CODE_formal_float_def ( formal_float_def :Tree );
-  PROCEDURE CODE_formal_integer_def ( formal_integer_def :Tree );
+  PROCEDURE CODE_formal_dscrt_def ( formal_dscrt_def :Tree );
+  PROCEDURE CODE_private_def ( private_def :Tree );
+  PROCEDURE CODE_l_private_def ( l_private_def :Tree );
+  PROCEDURE CODE_record_def ( record_def :Tree );
+  PROCEDURE CODE_CONSTRAINED_DEF ( CONSTRAINED_DEF, TYPE_DECL :Tree );
+  PROCEDURE CODE_subtype_indication ( subtype_indication :Tree );
+  PROCEDURE CODE_integer_def ( integer_def, TYPE_DECL :Tree );
+  PROCEDURE CODE_fixed_def ( fixed_def :Tree );
+  PROCEDURE CODE_float_def ( float_def :Tree );
+  PROCEDURE CODE_ARR_ACC_DER_DEF ( ARR_ACC_DER_DEF :Tree );
+  PROCEDURE CODE_constrained_array_def ( constrained_array_def :Tree );
+  PROCEDURE CODE_unconstrained_array_def ( unconstrained_array_def :Tree );
+  PROCEDURE CODE_access_def ( access_def :Tree );
+  PROCEDURE CODE_derived_def ( derived_def :Tree );
   PROCEDURE CODE_SOURCE_NAME ( SOURCE_NAME :Tree );
   PROCEDURE CODE_OBJECT_NAME ( OBJECT_NAME :Tree );
   PROCEDURE CODE_UNIT_NAME ( UNIT_NAME :Tree );
@@ -487,181 +501,11 @@ is
   --|-------------------------------------------------------------------------------------------
   procedure CODE_type_decl ( type_decl :TREE ) is
   begin
-    DECLARE
-      TYPE_DEF  : TREE := D ( AS_TYPE_DEF, TYPE_DECL );
-      TYPE_ID   : TREE := D ( AS_SOURCE_NAME, TYPE_DECL );
-      TYPE_SPEC : TREE := D ( SM_TYPE_SPEC, TYPE_ID );
-      ------------------------------------------------------------------------------
-      PROCEDURE COMPILE_ENUMERATION_DEF ( ENUMERATION_DEF :TREE ) IS
-        ENUM_LITERAL_S  : TREE     := D ( AS_ENUM_LITERAL_S, ENUMERATION_DEF );
-        LITERAL_SEQ     : SEQ_TYPE := LIST ( ENUM_LITERAL_S );
-        LITERAL         : TREE;
-      BEGIN
-        WHILE NOT IS_EMPTY ( LITERAL_SEQ ) LOOP
-          POP ( LITERAL_SEQ, LITERAL );
-        END LOOP;
-        DI ( CD_LAST, ENUM_LITERAL_S, DI ( SM_REP, LITERAL ) );
-      END;
-      ------------------------------------------------------------------------------
-      PROCEDURE COMPILE_INTEGER_DEF ( INTEGER_DEF, INTEGER_SPEC :TREE ) IS
-        LOWER      : OFFSET_TYPE;
-        UPPER      : OFFSET_TYPE;
-        INT_RANGE  : TREE := D ( AS_CONSTRAINT, INTEGER_DEF );
-        EXP_BORNE  : TREE;
-      BEGIN
-        ALIGN ( INTG_AL );
-        LOWER := - EMITS.OFFSET_ACT;
-        INC_OFFSET ( INTG_SIZE );
-        UPPER := - EMITS.OFFSET_ACT;
-        INC_OFFSET ( INTG_SIZE );
-        DI ( CD_OFFSET, INTEGER_SPEC, LOWER );
-        DI ( CD_LEVEL, INTEGER_SPEC, EMITS.LEVEL );
-        DI ( CD_COMP_UNIT, INTEGER_SPEC, CUR_COMP_UNIT );
-        DB ( CD_COMPILED, INTEGER_SPEC, TRUE );
-        EXP_BORNE := D ( AS_EXP1, INT_RANGE );
-      CODE_EXP ( EXP_BORNE );
-        GEN_STORE ( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, LOWER, "BORNE BASSE" );
-        EXP_BORNE := D ( AS_EXP2, INT_RANGE );
-      CODE_EXP ( EXP_BORNE );
-        GEN_STORE ( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, UPPER, "BORNE HAUTE" );
-      END COMPILE_INTEGER_DEF;
-      ------------------------------------------------------------------------------
-      PROCEDURE COMPILE_CONSTRAINED_ARRAY_DEF ( TYPE_DEF, TYPE_SPEC :TREE ) IS
-        DIMENSIONS_NBR     : NATURAL  := 0;
-        SUBTYPE_INDICATION : TREE     := D ( AS_SUBTYPE_INDICATION, TYPE_DEF );
-        USED_NAME_ID       : TREE     := D ( AS_NAME, SUBTYPE_INDICATION );
-        COMP_TYPE_ID       : TREE     := D ( SM_DEFN, USED_NAME_ID );
-        COMP_TYPE          : TREE     := D ( SM_TYPE_SPEC, COMP_TYPE_ID );
-        INDEX_CONSTRAINT   : TREE     := D ( AS_CONSTRAINT, TYPE_DEF );
-        DISCRETE_RANGE_S   : TREE     := D ( AS_DISCRETE_RANGE_S, INDEX_CONSTRAINT );
-        DISCRETE_RANGE_SEQ : SEQ_TYPE := LIST ( DISCRETE_RANGE_S );
-        --|-------------------------------------------------------------------------
-        PROCEDURE INSTALL_ARRAY_DIMENSION ( DISCRETE_RANGE_SEQ :IN OUT SEQ_TYPE ) IS
-          IDXFAC, FIRST, LAST : OFFSET_TYPE;
-          DISCRETE_RANGE      : TREE;
-        BEGIN
-          DIMENSIONS_NBR := DIMENSIONS_NBR + 1;
-          ALIGN ( INTG_AL );
-          IDXFAC := - EMITS.OFFSET_ACT;
-          FIRST := IDXFAC - INTG_SIZE;
-          LAST := FIRST - INTG_SIZE;
-          INC_OFFSET ( 3*INTG_SIZE );
-          POP ( DISCRETE_RANGE_SEQ, DISCRETE_RANGE );
-          IF IS_EMPTY ( DISCRETE_RANGE_SEQ ) THEN
-            EMITS.LOAD_TYPE_SIZE ( COMP_TYPE );
-            EMIT ( DPL, I, "DUPLICATE INDEX FACTOR" );
-            GEN_STORE ( I, 0, EMITS.LEVEL, IDXFAC, "STORE INDEX FACTOR" );
-          ELSE
-            INSTALL_ARRAY_DIMENSION ( DISCRETE_RANGE_SEQ );
-            EMIT ( DPL, I, "DUPLICATE INDEX FACTOR" );
-            GEN_STORE ( I, 0, EMITS.LEVEL, IDXFAC, "STORE INDEX FACTOR" );
-          END IF;
-          IF DISCRETE_RANGE.TY = DN_DISCRETE_SUBTYPE THEN
-            DECLARE
-              SUBTYPE_INDICATION : TREE := D ( AS_SUBTYPE_INDICATION, DISCRETE_RANGE );
-            BEGIN
-              DISCRETE_RANGE := D ( AS_CONSTRAINT, SUBTYPE_INDICATION );
-              IF DISCRETE_RANGE.TY = DN_VOID THEN
-                DECLARE
-                  USED_NAME_ID : TREE := D ( AS_NAME, SUBTYPE_INDICATION );
-                  DEF_NAME     : TREE := D ( SM_DEFN, USED_NAME_ID );
-                  TYPE_SPEC    : TREE := D ( SM_TYPE_SPEC, DEF_NAME );
-                BEGIN
-                  DISCRETE_RANGE := D ( SM_RANGE, TYPE_SPEC );
-                END;
-              END IF;
-            END;
-          END IF;
-          IF DISCRETE_RANGE.TY = DN_RANGE_ATTRIBUTE THEN
-            DECLARE
-              TYPE_SPEC : TREE := D ( SM_TYPE_SPEC, DISCRETE_RANGE );
-            BEGIN
-              DISCRETE_RANGE := D ( SM_RANGE, TYPE_SPEC );
-            END;
-          END IF;
-          IF DISCRETE_RANGE.TY = DN_RANGE THEN
-            DECLARE
-              EXP_BORNE : TREE := D ( AS_EXP1, DISCRETE_RANGE );
-            BEGIN
-      CODE_EXP ( EXP_BORNE );
-              GEN_STORE ( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, FIRST, "FIRST" );
-              EXP_BORNE := D ( AS_EXP2, DISCRETE_RANGE );
-      CODE_EXP ( EXP_BORNE );
-              GEN_STORE ( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, LAST, "LAST" );
-            END;
-            GEN_LOAD_ADDR ( 0, LEVEL, FIRST, "LOAD @FIRST" );
-            EMIT ( LEN, "CALCULATE LENGTH" );
-            EMIT ( MUL, I, "NEXT INDEX FACTOR = LEN * PREVIOUS FACTOR" );
-          ELSIF DISCRETE_RANGE.TY = DN_RANGE_ATTRIBUTE THEN
-            NULL;
-          ELSE
-            NULL;    
-            PUT_LINE ( "!!! COMPILE_TYPE_ARRAY_DIMENSION : DISCRETE_RANGE.TY ILLICITE " & NODE_NAME'IMAGE ( DISCRETE_RANGE.TY ) );
-            RAISE PROGRAM_ERROR;
-          END IF;
-        END INSTALL_ARRAY_DIMENSION;
-      BEGIN
-        ALIGN ( INTG_AL );
-        DI ( CD_LEVEL, TYPE_SPEC, EMITS.LEVEL );
-        DI ( CD_COMP_UNIT, TYPE_SPEC, EMITS.CUR_COMP_UNIT );
-        DB ( CD_COMPILED, TYPE_SPEC, TRUE );
-        DECLARE
-          OFFSET : INTEGER := - EMITS.OFFSET_ACT;
-        BEGIN
-          DI ( CD_OFFSET, TYPE_SPEC, OFFSET );
-          INC_OFFSET ( INTG_SIZE );
-          INSTALL_ARRAY_DIMENSION ( DISCRETE_RANGE_SEQ );
-          GEN_STORE ( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, OFFSET,
-                 "STORE ARRAY SIZE (LAST INDEX FACTOR)" );
-          DI ( CD_DIMENSIONS, TYPE_SPEC, DIMENSIONS_NBR );
-        END;
-      END COMPILE_CONSTRAINED_ARRAY_DEF;
-      ------------------------------------------------------------------------------
-      PROCEDURE COMPILE_ACCESS_DEF ( ACCESS_DEF, ACCESS_SPEC :TREE ) IS
-        POINTED_TYPE_SPEC : TREE    := D ( SM_DESIG_TYPE, ACCESS_SPEC );
-        CONTRAINT         : BOOLEAN := (POINTED_TYPE_SPEC.TY IN CLASS_CONSTRAINED);
-      BEGIN
-        DB ( CD_CONSTRAINED, ACCESS_SPEC, CONTRAINT );
-        IF CONTRAINT THEN
-          DI ( CD_LEVEL, ACCESS_SPEC, EMITS.LEVEL );
-          ALIGN ( INTG_AL );
-          DECLARE
-            OFFSET : OFFSET_TYPE := EMITS.OFFSET_ACT;
-          BEGIN
-            DI ( CD_OFFSET, ACCESS_SPEC, OFFSET );
-            INC_OFFSET ( INTG_SIZE );
-            EMITS.LOAD_TYPE_SIZE ( POINTED_TYPE_SPEC );
-            GEN_STORE ( I, 0, EMITS.LEVEL, OFFSET, "STORE POINTERD TYPE SIZE" );
-          END;
-        END IF;
-      END;
-      ------------------------------------------------------------------------------
-    BEGIN
-      IF EMITS.CUR_COMP_UNIT /= 1 THEN
-        CASE TYPE_DEF.TY IS
-        WHEN DN_ENUMERATION_DEF =>
-          COMPILE_ENUMERATION_DEF ( TYPE_DEF );
-        WHEN DN_INTEGER_DEF =>
-          COMPILE_INTEGER_DEF ( TYPE_DEF, TYPE_SPEC );
-        WHEN DN_FLOAT_DEF =>
-          NULL;
-        WHEN DN_FIXED_DEF =>
-          NULL;
-        WHEN DN_CONSTRAINED_ARRAY_DEF =>
-          COMPILE_CONSTRAINED_ARRAY_DEF ( TYPE_DEF, TYPE_SPEC );
-        WHEN DN_RECORD_DEF =>
-          NULL;
-        WHEN DN_ACCESS_DEF =>
-          COMPILE_ACCESS_DEF ( TYPE_DEF, TYPE_SPEC );
-        WHEN DN_DERIVED_DEF =>
-          NULL;
-        WHEN OTHERS =>
-          NULL;
-                    PUT_LINE ( "!!! COMPILE_TYPE_DECL : TYPE_SPEC.TY ILLICITE " & NODE_NAME'IMAGE ( TYPE_SPEC.TY ) );
-          RAISE PROGRAM_ERROR;
-        END CASE;
-      END IF;
-    END;
+
+    if type_decl.TY = DN_type_decl then
+      CODE_TYPE_DEF ( D ( as_type_def, type_decl ), type_decl );
+
+    end if;
   end;
 
   --|-------------------------------------------------------------------------------------------
@@ -1376,6 +1220,43 @@ is
   end;
 
   --|-------------------------------------------------------------------------------------------
+  procedure CODE_TYPE_DEF ( TYPE_DEF, TYPE_DECL :TREE ) is
+  begin
+
+    if TYPE_DEF.TY = DN_enumeration_def then
+      CODE_enumeration_def ( TYPE_DEF );
+
+    elsif TYPE_DEF.TY = DN_record_def then
+      CODE_record_def ( TYPE_DEF );
+
+    elsif TYPE_DEF.TY = DN_formal_dscrt_def then
+      CODE_formal_dscrt_def ( TYPE_DEF );
+
+    elsif TYPE_DEF.TY = DN_formal_integer_def then
+      CODE_formal_integer_def ( TYPE_DEF );
+
+    elsif TYPE_DEF.TY = DN_formal_fixed_def then
+      CODE_formal_fixed_def ( TYPE_DEF );
+
+    elsif TYPE_DEF.TY = DN_formal_float_def then
+      CODE_formal_float_def ( TYPE_DEF );
+
+    elsif TYPE_DEF.TY = DN_private_def then
+      CODE_private_def ( TYPE_DEF );
+
+    elsif TYPE_DEF.TY = DN_l_private_def then
+      CODE_l_private_def ( TYPE_DEF );
+
+    elsif TYPE_DEF.TY IN CLASS_CONSTRAINED_DEF then
+      CODE_CONSTRAINED_DEF ( TYPE_DEF, TYPE_DECL );
+
+    elsif TYPE_DEF.TY IN CLASS_ARR_ACC_DER_DEF then
+      CODE_ARR_ACC_DER_DEF ( TYPE_DEF );
+
+    end if;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
   procedure CODE_enumeration_def ( enumeration_def :TREE ) is
   begin
       CODE_enum_literal_s ( D ( as_enum_literal_s, enumeration_def ) );
@@ -1384,15 +1265,20 @@ is
   --|-------------------------------------------------------------------------------------------
   procedure CODE_enum_literal_s ( enum_literal_s :TREE ) is
   begin
+    DECLARE
+      LAST_LITERAL :TREE;
+    BEGIN
     declare
       enum_literal_seq : Seq_Type := LIST ( enum_literal_s );
       enum_literal : TREE;
     begin
       while not IS_EMPTY ( enum_literal_seq ) loop
         POP ( enum_literal_seq, enum_literal );
-      CODE_ENUM_LITERAL ( enum_literal );
+        LAST_LITERAL := enum_literal;
     end loop;
     end;
+    DI ( CD_LAST, ENUM_LITERAL_S, DI ( SM_REP, LAST_LITERAL ) );
+    END;
   end;
 
   --|-------------------------------------------------------------------------------------------
@@ -1421,7 +1307,7 @@ is
   end;
 
   --|-------------------------------------------------------------------------------------------
-  procedure CODE_formal_dscrt_def ( formal_dscrt_def :TREE ) is
+  procedure CODE_formal_integer_def ( formal_integer_def :TREE ) is
   begin
     null;
   end;
@@ -1439,7 +1325,134 @@ is
   end;
 
   --|-------------------------------------------------------------------------------------------
-  procedure CODE_formal_integer_def ( formal_integer_def :TREE ) is
+  procedure CODE_formal_dscrt_def ( formal_dscrt_def :TREE ) is
+  begin
+    null;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_private_def ( private_def :TREE ) is
+  begin
+    null;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_l_private_def ( l_private_def :TREE ) is
+  begin
+    null;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_record_def ( record_def :TREE ) is
+  begin
+    null;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_CONSTRAINED_DEF ( CONSTRAINED_DEF, TYPE_DECL :TREE ) is
+  begin
+
+    if CONSTRAINED_DEF.TY = DN_subtype_indication then
+      CODE_subtype_indication ( CONSTRAINED_DEF );
+
+    elsif CONSTRAINED_DEF.TY = DN_integer_def then
+      CODE_integer_def ( CONSTRAINED_DEF, TYPE_DECL );
+
+    elsif CONSTRAINED_DEF.TY = DN_fixed_def then
+      CODE_fixed_def ( CONSTRAINED_DEF );
+
+    elsif CONSTRAINED_DEF.TY = DN_float_def then
+      CODE_float_def ( CONSTRAINED_DEF );
+
+    end if;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_subtype_indication ( subtype_indication :TREE ) is
+  begin
+    null;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_integer_def ( integer_def, TYPE_DECL :TREE ) is
+  begin
+    declare
+      TYPE_ID      : TREE := D( AS_SOURCE_NAME, TYPE_DECL );
+      INTEGER_SPEC : TREE := D( SM_TYPE_SPEC, TYPE_ID );
+      LOWER        : OFFSET_TYPE;
+      UPPER        : OFFSET_TYPE;
+      INT_RANGE    : TREE := D( AS_CONSTRAINT, INTEGER_DEF );
+      EXP_BORNE    : TREE;
+     begin
+      ALIGN( INTG_AL );
+      LOWER := - EMITS.OFFSET_ACT;
+      INC_OFFSET( INTG_SIZE );
+      UPPER := - EMITS.OFFSET_ACT;
+      INC_OFFSET( INTG_SIZE );
+      DI( CD_OFFSET,    INTEGER_SPEC, LOWER );
+      DI( CD_LEVEL,     INTEGER_SPEC, EMITS.LEVEL );
+      DI( CD_COMP_UNIT, INTEGER_SPEC, CUR_COMP_UNIT );
+      DB( CD_COMPILED,  INTEGER_SPEC, TRUE );
+      EXP_BORNE := D( AS_EXP1, INT_RANGE );
+      CODE_EXP ( EXP_BORNE );
+      GEN_STORE( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, LOWER, "BORNE BASSE" );
+      EXP_BORNE := D( AS_EXP2, INT_RANGE );
+      CODE_EXP ( EXP_BORNE );
+      GEN_STORE( I, EMITS.CUR_COMP_UNIT, EMITS.LEVEL, UPPER, "BORNE HAUTE" );
+    end;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_fixed_def ( fixed_def :TREE ) is
+  begin
+    null;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_float_def ( float_def :TREE ) is
+  begin
+    null;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_ARR_ACC_DER_DEF ( ARR_ACC_DER_DEF :TREE ) is
+  begin
+
+    if ARR_ACC_DER_DEF.TY = DN_constrained_array_def then
+      CODE_constrained_array_def ( ARR_ACC_DER_DEF );
+
+    elsif ARR_ACC_DER_DEF.TY = DN_unconstrained_array_def then
+      CODE_unconstrained_array_def ( ARR_ACC_DER_DEF );
+
+    elsif ARR_ACC_DER_DEF.TY = DN_access_def then
+      CODE_access_def ( ARR_ACC_DER_DEF );
+
+    elsif ARR_ACC_DER_DEF.TY = DN_derived_def then
+      CODE_derived_def ( ARR_ACC_DER_DEF );
+
+    end if;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_constrained_array_def ( constrained_array_def :TREE ) is
+  begin
+    null;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_unconstrained_array_def ( unconstrained_array_def :TREE ) is
+  begin
+    null;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_access_def ( access_def :TREE ) is
+  begin
+    null;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_derived_def ( derived_def :TREE ) is
   begin
     null;
   end;
