@@ -46,7 +46,8 @@ is			------------
             or NAME = "abort" or NAME = "terminate"
             or NAME = "exit"  or NAME = "return"
             or NAME = "goto"  or NAME = "accept"
-            or NAME = "raise"
+            or NAME = "raise" or NAME = "use"
+	  or NAME = "pragma"
           then
             OBJECT_NAME_LEN := NAME'LENGTH + 4;								--| ALLONGER LA LONGUEUR DE CELLE DE "ada_"
             OBJECT_NAME( 1..OBJECT_NAME_LEN ) := "ada_" & NAME( NAME'FIRST..NAME'LAST );				--| NOM D'OBJET = LEXEME & PREFIXE
@@ -101,7 +102,8 @@ is			------------
             or LEXEME = "abort" or LEXEME = "terminate"
             or LEXEME = "exit"  or LEXEME = "return"
             or LEXEME = "goto"  or LEXEME = "accept"
-            or LEXEME = "raise"
+            or LEXEME = "raise" or LEXEME = "use"
+	  or LEXEME = "pragma"
           then
             return "ADA_" & LEXEME;
           else
@@ -218,7 +220,8 @@ is			------------
               or NAME = "abort" or NAME = "terminate"
               or NAME = "exit"  or NAME = "return"
               or NAME = "goto"  or NAME = "accept"
-              or NAME = "raise"
+              or NAME = "raise" or NAME = "use"
+	    or NAME = "pragma"
             then
               OBJECT_NAME_LEN := NAME'LENGTH + 4;
               OBJECT_NAME( 1..OBJECT_NAME_LEN ) := "ADA_" & NAME( NAME'FIRST..NAME'LAST );
