@@ -32,8 +32,8 @@ W system.secondary_stack%s  s-secsta.adb	s-secsta.ali
 D ada.ads		20230426070939 76789da1 ada%s
 D a-except.ads		20230426070939 2a7d8d70 ada.exceptions%s
 D a-unccon.ads		20230426070939 0e9b276f ada.unchecked_conversion%s
-D b~gen_code_gen.ads	20240618185227 977e8681 ada_main%s
-D b~gen_code_gen.adb	20240618185227 58283ed9 ada_main%b
+D b~gen_code_gen.ads	20240619114718 977e8681 ada_main%s
+D b~gen_code_gen.adb	20240619114718 58283ed9 ada_main%b
 D system.ads		20230426070939 426dafb8 system%s
 D s-parame.ads		20230426070939 d494a4a6 system.parameters%s
 D s-secsta.ads		20230426070939 578279f5 system.secondary_stack%s
@@ -52,7 +52,7 @@ X 1 ada.ads
 X 2 a-except.ads
 44K13*Exceptions 295e19 5|6w10
 X 4 b~gen_code_gen.ads
-6K9*ada_main 488l5 488e13 5|8b14 266l5 266t13
+6K9*ada_main 488l5 488e13 5|8b14 265l5 265t13
 8i4*gnat_argc{integer} 12m22 12r22 5|240r10 241m10
 9m4*gnat_argv{6|67M9} 13m22 13r22 5|242m10
 10m4*gnat_envp{6|67M9} 14m22 14r22 5|244m7

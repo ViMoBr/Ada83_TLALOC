@@ -254,9 +254,8 @@ package body ada_main is
 --  BEGIN Object file/option list
    --   ./gen_code_gen.o
    --   -L./
-   --   -L../EXE/IDL_TOOLS/
    --   -L/home/vmo/Documents/ada83_git/ada-83-compiler-tools/build/
-   --   -L../EXE/
+   --   -L./
    --   -L/usr/lib/gcc/x86_64-linux-gnu/13/adalib/
    --   -shared
    --   -lgnat-13

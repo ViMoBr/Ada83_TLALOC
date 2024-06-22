@@ -227,7 +227,7 @@
 ##  include	  INC_LEVEL;							--| NIVEAU STATIQUE SUIVANT
 ##  include	  DI ( CD_LABEL, SOURCE_NAME, INTEGER ( START_LABEL ) );			--| STOCKER LE NUMERO D ETIQUETTE ENTREE
 ##  include	  DI ( CD_LEVEL, SOURCE_NAME, EMITS.LEVEL );				--| STOCKER LE NIVEAU STATIQUE
-##  include	  WRITE_LABEL ( START_LABEL );					--| EMETTRE L ETIQUETTE ENTREE
+##  include	  WRITE_LABEL ( START_LABEL, "Etiquette entree" );			--| EMETTRE L ETIQUETTE ENTREE
 ##  call	HEADER	@ as_header	subprogram_body					--| TRAITER LES PARAMETRES D APPEL
 ##  include	  DI ( CD_PARAM_SIZE, SOURCE_NAME, PARAM_SIZE );				--| STOCKER LA TAILLE DU PARAMETRAGE MAINTENANT CONNUE
 ##  include	  EMITS.OFFSET_ACT := EMITS.FIRST_LOCAL_VAR_OFFSET;			--| REPLACER LES OFFSETS SUR LA PREMIERE VARIABLE LOCALE
@@ -2985,45 +2985,6 @@ membership_op	::=
 ##  include	  END IF;
 ##  include	END;
 
-
-
---|-------------------------------------------------------------------------------------------------
--- 5.3	If Statements
--- Syntax 5.3.A
---  if_statement ::=
---	if condition then
---	    sequence_of_statements
---     {elsif condition then
---	    sequence_of_statements}
---     [else
---	    sequence_of_statements]
---	end if;
---|-------------------------------------------------------------------------------------------------
-
-if_statement	::=
-	  if_clause_s  END IF ;				====> nil $L stm_s $2 if
-	| if_clause_s  else_clause  END IF  ; 			====> $2 if
-	%%
---|.................................................................................................
-if_clause	::=
-	IF  condition  THEN  sequence_of_statements		====> $2 cond_clause
-	%%
---|.................................................................................................
-elsif_clause	::=
-	ELSIF  condition  THEN  sequence_of_statements		====> $2 cond_clause
-	%%
---|.................................................................................................
-if_clause_s	::=
-	if_clause{elsif_clause} 			====> $L test_clause_elem_s
-	%%
---|.................................................................................................
-else_clause	::=
-	ELSE  sequence_of_statements
-	%%
---|.................................................................................................
-condition	::=
-	expression
-	%%
 --|.................................................................................................
 
 
@@ -3079,28 +3040,6 @@ condition	::=
 
 ##  case	====>
 ##	include	null;
-
-
-
---|-------------------------------------------------------------------------------------------------
--- 5.5	Loop Statements
--- Syntax 5.5.A
---  loop_statement ::=
---     [loop_simple_name:]
---	    [iteration_scheme] loop
---		 sequence_of_statements
---	    end loop [loop_simple_name];
---|-------------------------------------------------------------------------------------------------
-
-loop_statement	::=
-	  loop  ;				====> void exch_2 exch_1 $V3 loop $DEF block_loop_id
-	| identifier  :  loop  identifier  ;			====> check_name $V3 loop $DEF block_loop_id
-	%%
---|.................................................................................................
-loop	::=
-	[iteration_scheme]  LOOP  sequence_of_statements  END  LOOP
-	%%
---|.................................................................................................
 
 
 //  BLOCK_LOOP		::=
@@ -3164,25 +3103,6 @@ loop	::=
 ##  include	  EMITS.LOOP_STM_S := OLD_LOOP_STM_S;
 ##  include	END;
 
-
---|-------------------------------------------------------------------------------------------------
--- Syntax 5.5.B
---  iteration_scheme ::=  while condition
---     | for loop_parameter_specification
---
---  loop_parameter_specification ::=
---     identifier in [reverse] discrete_range
---|-------------------------------------------------------------------------------------------------
-
-iteration_scheme	::=
-	  WHILE  condition				====> $1 while
-	| FOR  iteration_id  IN  discrete_range			====> $2 for
-	| FOR  iteration_id  IN  REVERSE  discrete_range		====> $2 reverse
-	%%
---|.................................................................................................
-iteration_id	::=
-	identifier				====> $0 iteration_id lx_symrep
-	%%
 --|.................................................................................................
 
 
@@ -3340,23 +3260,6 @@ iteration_id	::=
 ##  include	END;
 
 
---|-------------------------------------------------------------------------------------------------
--- 5.7	Exit Statements
--- Syntax 5.7
---  exit_statement ::=
---     exit [loop_name] [when condition] ;
---|-------------------------------------------------------------------------------------------------
-
-exit_statement	::= 
-	EXIT  [expanded_name]  [WHEN__condition]  ;		====> exch_1 $2 exit
-	%%
---|.................................................................................................
-[WHEN__condition]	::=
-	empty				====> void
-	| WHEN  expression
-	%%
---|.................................................................................................
-
 --|.................................................................................................
 //  exit		=>
 //	sm_stm	: STM;
@@ -3400,17 +3303,6 @@ exit_statement	::=
 ##  include	  END IF;
 ##  include	END;
 
-
-
---|-------------------------------------------------------------------------------------------------
--- 5.8	Return Statements
--- Syntax 5.8
---  return_statement ::= return [expression] ;
---|-------------------------------------------------------------------------------------------------
-
-return_statement	::=
-	RETURN  [expression]  ;			====> $1 return
-	%%
 --|.................................................................................................
 
 
@@ -3467,29 +3359,6 @@ goto_statement	::=
 
 
 
---||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
--- 6.  Subprograms
---||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
--- 6.1	Subprogram Declarations
--- Syntax 6.1.A
---  subprogram_declaration ::= subprogram_specification;
---|-------------------------------------------------------------------------------------------------
-
-subprogram_declaration	::=
-	subprogram_specification  ;			====> void $3 subprog_entry_decl
-	%%
---|.................................................................................................
-proc_id	::=
-	identifier				====> $0 procedure_id lx_symrep
-	%%
---|.................................................................................................
-function_id	::=
-	identifier				====> $0 function_id lx_symrep
-	%%
---|.................................................................................................
-def_op	::=
-	string_literal				====> $0 operator_id lx_symrep
-	%%
 --|.................................................................................................
 //  UNIT_NAME		::=
 //	NON_TASK_NAME;

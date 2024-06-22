@@ -1,21 +1,25 @@
+--	IDL.ADB	VINCENT MORIN	22/6/2024		UNIVERSITE DE BRETAGNE OCCIDENTALE	(UBO)
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--	1	2	3	4	5	6	7	8	9	0	1	2	3	4	5	6	7	8	9	0
+
 with SYSTEM, UNCHECKED_CONVERSION;
 with TEXT_IO;
 use  TEXT_IO;
---|-------------------------------------------------------------------------------------------------
---|		PACKAGE BODY IDL
---|-------------------------------------------------------------------------------------------------
-package body IDL is
+				---
+	package body		IDL
+is				---
    
   DEBUG		: BOOLEAN		:= FALSE;						--| POSITIONNE PAR LE "PRAGMA DEBUG;" (VOIR PRA_WALK)
    
   TREE_VIRGIN	: constant TREE	:= (P, TY => DN_VIRGIN, PG => 0, LN => 0);		--| POINTEUR NON INITIALISE
    
   package INT_IO	is new INTEGER_IO ( INTEGER );					--| POUR L'IO D'ENTIERS
-   
-  --|-----------------------------------------------------------------------------------------------
-  --|		PAGE_MANAGER
-  --|-----------------------------------------------------------------------------------------------
-  package PAGE_MAN is
+
+
+
+		--------
+  package		PAGE_MAN
+  is		--------
 
     MAX_VPG			: constant PAGE_IDX	:= PAGE_IDX'LAST;			--| PAGES VIRTUELLES (N° DE PAGES PHYSIQUES)
     subtype VPG_IDX			is PAGE_IDX range 0 .. MAX_VPG;
@@ -62,21 +66,19 @@ package body IDL is
     AREA			: array (AREA_NUM) of AREA_DATA
          			:= (others=> (	VP		=> 0,
          					FREE_LINE		=> LINE_NBR'LAST		--| INITIALISE AINSI POUR FORCER UNE ALLOC AU DEPART
-         					)
-         			);
+         				   )
+         			   );
 
-  --|-----------------------------------------------------------------------------------------------
-  end PAGE_MAN;
+	--------
+  end	PAGE_MAN;
+	--------
   use PAGE_MAN;
-   
-   
-   
-   
-   
-  --|-----------------------------------------------------------------------------------------------
-  --|		IDL_MAN
-  --|-----------------------------------------------------------------------------------------------
-  package IDL_MAN is
+
+
+
+		-------
+  package		IDL_MAN
+  is		-------
       
     type ARITIES		is (NULLARY, UNARY, BINARY, TERNARY, ARBITRARY);
       
@@ -123,17 +125,16 @@ package body IDL is
     function  PRINT_NAME	( PG :VPG_IDX; LN :LINE_IDX )		return STRING;
     function  NODE_REP	( T :TREE )			return STRING;
       
-  --|-----------------------------------------------------------------------------------------------
-  end IDL_MAN;
+	-------
+  end	IDL_MAN;
+	-------
   use IDL_MAN;
+
       
       
-      
-      
-  --|-----------------------------------------------------------------------------------------------
-  --|		IDL_TBL
-  --|-----------------------------------------------------------------------------------------------
-  package IDL_TBL is
+		-------
+  package		IDL_TBL
+  is		-------
       
     MAX_NODE_ATTR		: constant	:= 1024;					--| NOMBRE MAX DE MENTIONS D'ATRIBUTS DANS TOUS LES NOEUDS
          
@@ -170,10 +171,12 @@ package body IDL is
     procedure WRITE_SPEC	( SPEC_FILE :STRING );					--| ECRITURE DE LA TABLE EN BINAIRE DANS LE FICHIER SPEC_FILE.BIN
     procedure READ_SPEC	( SPEC_FILE :STRING );					--| LECTRE DE LA TABLE À PARTIR D'UN FICHIER SPEC_FILE.BIN
       
-  --|-----------------------------------------------------------------------------------------------
-  end IDL_TBL;
+	-------
+  end	IDL_TBL;
+	-------
   use IDL_TBL;
-      
+
+
   package body PAGE_MAN		is separate;
   package body IDL_TBL		is separate;
   package body IDL_MAN		is separate;
@@ -425,60 +428,54 @@ function NODE_IMAGE ( NN :NODE_NAME ) return STRING is
 begin
   return NODE_NAME'IMAGE( NN );
 end;
---||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
---|		FUNCTION ATTR_IMAGE
---|
-function ATTR_IMAGE ( AN :ATTRIBUTE_NAME ) return STRING is
-begin
-  return ATTRIBUTE_NAME'IMAGE( AN );
-end;
+		----------
+  function	ATTR_IMAGE	( AN :ATTRIBUTE_NAME ) return STRING
+  is		----------
+  begin
+    return ATTRIBUTE_NAME'IMAGE( AN );
+  end;
   
   use PRINT_NOD;
   package body PRINT_NOD is separate;
 
---||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
---|		FUNCTION GET_LIB_PREFIX
---|
-function GET_LIB_PREFIX return STRING is						--| UTILISEE PAR LIB_PHASE ET WRITE_LIB
-  CTL		: TEXT_IO.FILE_TYPE;
-  C		: CHARACTER;
-  LINE		: STRING( 1..256 );
-  LEN		: NATURAL	:= 0;
-begin
-  OPEN( CTL, IN_FILE, LIB_PATH(1..LIB_PATH_LENGTH) & "ADA__LIB.CTL" );
-  GET ( CTL, C );
-  if C = 'P' then
-    GET	    ( CTL, C );								--| LE BLANC QUI SUIT
-    GET_LINE( CTL, LINE, LEN );							--| LE PREFIXE (CHEMIN) DE LIBRAIRIE
-  end if;
-  CLOSE( CTL );
-  return LINE( 1..LEN );
-end GET_LIB_PREFIX;
-   
---||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
---|		PROCEDURE PAR_PHASE
---|
-procedure PAR_PHASE ( NOM_TEXTE, LIB_PATH :STRING ) is separate;
---||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
---|		PROCEDURE LIB_PHASE
---|
-procedure LIB_PHASE is separate;
---||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
---|		PROCEDURE SEM_PHASE
---|
-procedure SEM_PHASE is separate;
---||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
---|		PROCEDURE ERR_PHASE
---|
-procedure ERR_PHASE is separate;
---||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
---|		PROCEDURE WRITE_LIB
---|
-procedure WRITE_LIB is separate;
---||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
---|		PROCEDURE PRETTY_DIANA
---|
-procedure PRETTY_DIANA ( OPTION :CHARACTER := 'U' ) is separate;
 
---|-------------------------------------------------------------------------------------------------
-end IDL;
+		--------------
+  function	GET_LIB_PREFIX		return STRING						--| UTILISEE PAR LIB_PHASE ET WRITE_LIB
+  is		--------------
+
+    CTL		: TEXT_IO.FILE_TYPE;
+    C		: CHARACTER;
+    LINE		: STRING( 1..256 );
+    LEN		: NATURAL	:= 0;
+  begin
+    OPEN( CTL, IN_FILE, LIB_PATH(1..LIB_PATH_LENGTH) & "ADA__LIB.CTL" );
+    GET ( CTL, C );
+    if C = 'P' then
+      GET	    ( CTL, C );								--| LE BLANC QUI SUIT
+      GET_LINE( CTL, LINE, LEN );							--| LE PREFIXE (CHEMIN) DE LIBRAIRIE
+    end if;
+    CLOSE( CTL );
+    return LINE( 1..LEN );
+  end GET_LIB_PREFIX;
+
+		---------
+  procedure	PAR_PHASE		( NOM_TEXTE, LIB_PATH :STRING ) is separate;
+
+		---------
+  procedure	LIB_PHASE		is separate;
+
+		---------
+  procedure	SEM_PHASE		is separate;
+
+		---------
+  procedure	ERR_PHASE		is separate;
+
+		---------
+  procedure	WRITE_LIB		is separate;
+
+		------------
+  procedure	PRETTY_DIANA	( OPTION :CHARACTER := 'U' ) is separate;
+
+	---
+end	IDL;
+	---

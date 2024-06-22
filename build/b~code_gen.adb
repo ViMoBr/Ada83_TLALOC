@@ -302,7 +302,6 @@ package body ada_main is
    --   -L./
    --   -L../EXE/IDL_TOOLS/
    --   -L/home/vmo/Documents/ada83_git/ada-83-compiler-tools/build/
-   --   -L../EXE/
    --   -L/usr/lib/gcc/x86_64-linux-gnu/13/adalib/
    --   -shared
    --   -lgnat-13

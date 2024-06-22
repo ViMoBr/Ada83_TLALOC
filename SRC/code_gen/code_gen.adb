@@ -419,7 +419,7 @@ is
       INC_LEVEL;
       DI ( CD_LABEL, SOURCE_NAME, INTEGER ( START_LABEL ) );
       DI ( CD_LEVEL, SOURCE_NAME, EMITS.LEVEL );
-      WRITE_LABEL ( START_LABEL );
+      WRITE_LABEL ( START_LABEL, "Etiquette entree" );
       CODE_HEADER ( D ( as_header, subprogram_body ) );
       DI ( CD_PARAM_SIZE, SOURCE_NAME, PARAM_SIZE );
       EMITS.OFFSET_ACT := EMITS.FIRST_LOCAL_VAR_OFFSET;

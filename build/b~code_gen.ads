@@ -40,7 +40,7 @@ package ada_main is
    pragma Export (C, main, "main");
 
    type Version_32 is mod 2 ** 32;
-   u00001 : constant Version_32 := 16#8c6bf3dd#;
+   u00001 : constant Version_32 := 16#4745d1c2#;
    pragma Export (C, u00001, "code_genB");
    u00002 : constant Version_32 := 16#9ce3fa93#;
    pragma Export (C, u00002, "code_genS");

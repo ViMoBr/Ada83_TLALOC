@@ -1,7 +1,7 @@
 #!/bin/bash
-
+  pwd
   set -x
-  cd ./build
+  cd /home/vmo/Documents/ada83_git/ada-83-compiler-tools/build
 
 ADACOMP_SRCS="-aI../SRC/gen_code_gen"
 

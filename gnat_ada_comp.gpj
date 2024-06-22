@@ -1,4 +1,4 @@
-!1543;s
+!1679;s
 A
 SAK0user: gnat_ada_comp
 SAU0J
@@ -10,11 +10,19 @@ SXU0
 SOU0JGRASP_MAIN_BOUNDS=%<CONTROL_SHELL_BOUNDS>\012PATH+=%<JGRASP_PATHS>%;\012PATH=+%;%<JGRASP_C_PATHS>\012CYGWIN=nodosfilewarning\012GCC_COLORS=\012-Run\012ADD_EXE_PATH==Y\012
 SyU0JGRASP_MAIN_BOUNDS=%<CONTROL_SHELL_BOUNDS>\012PATH+=%<PYTHON_PATH>%;\012PATH+=%<JGRASP_PATHS>%;\012CYGWIN=nodosfilewarning\012GCC_COLORS=
 SPU0
+b#l01
+b#m01
+d#c00.07874015748031496
+d#d00.07874015748031496
+d#e00.07874015748031496
+d#f00.07874015748031496
+d#i07.0
+s#b0Liberation Mono
 s#i0
 s#k0
 s#j0
 s#l0
-!2569;g
+!2563;g
 %\011SRC%spar_phase%sidl-par_phase-set_dflt.adb
 %\011SRC%ssem_phase%sidl-sem_phase-att_walk.adb
 %\011EXE%scomp_ada_comp.sh
@@ -52,6 +60,7 @@ s#l0
 %\011SRC%ssem_phase%sidl-sem_phase-def_walk.adb
 %\011SRC%ssem_phase%sidl-sem_phase-pre_fcns.adb
 %\011SRC%ssem_phase%sidl-sem_phase-sem_glob.adb
+%\011make_ada_comp.sh
 %\011IDL%sDIANA.IDL
 %\011SRC%sada_comp%sidl-lib_phase.adb
 %\011SRC%ssem_phase%sidl-sem_phase-def_util.adb
@@ -64,7 +73,6 @@ s#l0
 %\011SRC%ssem_phase%sidl-sem_phase-set_util.adb
 %\011SRC%spar_phase%sidl-par_phase.adb
 %\011SRC%scode_gen%scode_gen.ads
-%\011SRC%sada_comp%smake.sh
 %\011SRC%ssem_phase%sidl-sem_phase-exp_type.adb
 %\011SRC%ssem_phase%sidl-sem_phase-uarith.adb
 %\011EXE%sIDL_TOOLS%sdiana_node_attr_class_names.ads
@@ -82,7 +90,7 @@ s#l0
 %\011SRC%ssem_phase%sidl-sem_phase-make_nod.adb
 %\011SRC%ssem_phase%sidl-sem_phase-fix_with.adb
 %\011SRC%scode_gen%semits.ads
-!2569;f
+!2563;f
 %\011SRC%spar_phase%sidl-par_phase-set_dflt.adb
 %\011SRC%ssem_phase%sidl-sem_phase-att_walk.adb
 %\011EXE%scomp_ada_comp.sh
@@ -120,6 +128,7 @@ s#l0
 %\011SRC%ssem_phase%sidl-sem_phase-def_walk.adb
 %\011SRC%ssem_phase%sidl-sem_phase-pre_fcns.adb
 %\011SRC%ssem_phase%sidl-sem_phase-sem_glob.adb
+%\011make_ada_comp.sh
 %\011IDL%sDIANA.IDL
 %\011SRC%sada_comp%sidl-lib_phase.adb
 %\011SRC%ssem_phase%sidl-sem_phase-def_util.adb
@@ -132,7 +141,6 @@ s#l0
 %\011SRC%ssem_phase%sidl-sem_phase-set_util.adb
 %\011SRC%spar_phase%sidl-par_phase.adb
 %\011SRC%scode_gen%scode_gen.ads
-%\011SRC%sada_comp%smake.sh
 %\011SRC%ssem_phase%sidl-sem_phase-exp_type.adb
 %\011SRC%ssem_phase%sidl-sem_phase-uarith.adb
 %\011EXE%sIDL_TOOLS%sdiana_node_attr_class_names.ads
