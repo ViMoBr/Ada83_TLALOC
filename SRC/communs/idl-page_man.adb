@@ -205,7 +205,7 @@ if PAGE_MAN_DEBUG then PUT_LINE( "page_man : ok read_page ----------"
 
 --|#################################################################################################
   procedure ALLOC_PAGE ( AR :AREA_IDX; REQUESTED_SIZE :LINE_NBR ) is
-    NB_FREE_LINES	:LINE_NBR		:= LINE_NBR( LINE_IDX'LAST ) - AREA( AR ).FREE_LINE + 1;	--| NOMBRE DE LIGNES LIBRES AU POINT D INSERTION
+    NB_FREE_LINES	: LINE_NBR	:= LINE_NBR( LINE_IDX'LAST ) - AREA( AR ).FREE_LINE + 1;	--| NOMBRE DE LIGNES LIBRES AU POINT D INSERTION
   begin
     if NB_FREE_LINES >= REQUESTED_SIZE then						--| IL Y A ASSEZ DE PLACE POUR CE LIEU D'INSERTION
 
@@ -237,6 +237,7 @@ if PAGE_MAN_DEBUG then PUT_LINE( "page_man : alloc recuperation"
           return;									--| RIEN A FAIRE DE PLUS (ON NE PREND PAS L ESPACE ICI)
         end;
       end;      
+
     else										--| PLACE INSUFFISANTE ALLOUER
 
 LACHE_PAGE_REELLE_TROP_PLEINE:

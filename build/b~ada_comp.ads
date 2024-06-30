@@ -380,7 +380,7 @@ package ada_main is
    pragma Export (C, u00169, "ada__text_io__enumeration_auxB");
    u00170 : constant Version_32 := 16#36b07428#;
    pragma Export (C, u00170, "ada__text_io__enumeration_auxS");
-   u00171 : constant Version_32 := 16#54887a4b#;
+   u00171 : constant Version_32 := 16#582e2f8e#;
    pragma Export (C, u00171, "idlB");
    u00172 : constant Version_32 := 16#d3530edc#;
    pragma Export (C, u00172, "idlS");
