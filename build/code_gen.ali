@@ -1,4 +1,4 @@
-V "GNAT Lib v13"
+V "GNAT Lib v12"
 M P W=b
 A -g
 A -gnat83
@@ -17,7 +17,7 @@ RV NO_STANDARD_STORAGE_POOLS
 RV NO_DEFAULT_INITIALIZATION
 RV NO_DYNAMIC_SIZED_OBJECTS
 
-U code_gen%b		code_gen.adb		dba99bf4 NE OO SU IU
+U code_gen%b		code_gen.adb		67fb637b NE OO SU IU
 Z ada.strings.text_buffers%s  a-sttebu.adb	a-sttebu.ali
 W diana_node_attr_class_names%s  diana_node_attr_class_names.ads  diana_node_attr_class_names.ali
 W emits%s		emits.adb		emits.ali
@@ -30,42 +30,43 @@ W text_io%s		text_io.ads		text_io.ali
 U code_gen%s		code_gen.ads		9ce3fa93 EE NE OO SU
 Z ada.strings.text_buffers%s  a-sttebu.adb	a-sttebu.ali
 
-D ada.ads		20230426070939 76789da1 ada%s
-D a-except.ads		20230426070939 2a7d8d70 ada.exceptions%s
-D a-ioexce.ads		20230426070939 40018c65 ada.io_exceptions%s
-D a-stream.ads		20230426070939 119b8fb3 ada.streams%s
-D a-string.ads		20230426070939 90ac6797 ada.strings%s
-D a-sttebu.ads		20230426070939 f1ad67a2 ada.strings.text_buffers%s
-D a-stuten.ads		20230426070939 c6ced0ae ada.strings.utf_encoding%s
-D a-tags.ads		20230426070939 9eaa38c6 ada.tags%s
-D a-textio.ads		20230426070939 5c2c6153 ada.text_io%s
-D a-tienio.ads		20230426070939 107ce547 ada.text_io.enumeration_io%s
-D a-unccon.ads		20230426070939 0e9b276f ada.unchecked_conversion%s
+D ada.ads		20230508121439 76789da1 ada%s
+D a-except.ads		20230508121439 2a7d8d70 ada.exceptions%s
+D a-ioexce.ads		20230508121439 40018c65 ada.io_exceptions%s
+D a-stream.ads		20230508121439 119b8fb3 ada.streams%s
+D a-string.ads		20230508121439 90ac6797 ada.strings%s
+D a-sttebu.ads		20230508121439 18209c64 ada.strings.text_buffers%s
+D a-stuten.ads		20230508121439 33c54060 ada.strings.utf_encoding%s
+D a-tags.ads		20230508121439 9eaa38c6 ada.tags%s
+D a-textio.ads		20230508121439 deada98a ada.text_io%s
+D a-tienio.ads		20230508121439 2e79c9bf ada.text_io.enumeration_io%s
+D a-unccon.ads		20230508121439 0e9b276f ada.unchecked_conversion%s
 D code_gen.ads		20230823210317 9ce3fa93 code_gen%s
 D code_gen.adb		20240622120839 2af3b037 code_gen%b
 D diana_node_attr_class_names.ads  20240622095819 6d94ff6d diana_node_attr_class_names%s
 D emits.ads		20240616165053 9f581714 emits%s
-D idl.ads		20240622091208 bec7f1b1 idl%s
-D interfac.ads		20230426070939 15f799c2 interfaces%s
-D i-cstrea.ads		20230426070939 e53d8b8e interfaces.c_streams%s
-D system.ads		20230426070939 426dafb8 system%s
-D s-conca2.ads		20230426070939 b5fb73f7 system.concat_2%s
-D s-conca3.ads		20230426070939 8a7a19a2 system.concat_3%s
-D s-crtl.ads		20230426070939 8a0692f8 system.crtl%s
-D s-exctab.ads		20230426070939 91bef6ef system.exception_table%s
-D s-ficobl.ads		20230426070939 dc5161d4 system.file_control_block%s
-D s-parame.ads		20230426070939 d494a4a6 system.parameters%s
-D s-putima.ads		20230426070939 17291fe4 system.put_images%s
-D s-secsta.ads		20230426070939 578279f5 system.secondary_stack%s
-D s-soflin.ads		20230426070939 df77073e system.soft_links%s
-D s-stache.ads		20230426070939 0b81c1fe system.stack_checking%s
-D s-stalib.ads		20230426070939 1c9580f6 system.standard_library%s
-D s-stoele.ads		20230426070939 ab5468e4 system.storage_elements%s
-D s-stoele.adb		20230426070939 8f5a9db6 system.storage_elements%b
-D s-traent.ads		20230426070939 c81cbf8c system.traceback_entries%s
-D s-unstyp.ads		20230426070939 fa2a7f59 system.unsigned_types%s
-D s-wchcon.ads		20230426070939 d9032363 system.wch_con%s
-D text_io.ads		20230426070939 21b2c898 text_io%s
+D idl.ads		20240707112854 0295093e idl%s
+D interfac.ads		20230508121439 edec285f interfaces%s
+D i-cstrea.ads		20230508121439 e53d8b8e interfaces.c_streams%s
+D system.ads		20230508121439 a2da961d system%s
+D s-conca2.ads		20230508121439 3d460502 system.concat_2%s
+D s-conca3.ads		20230508121439 9078e860 system.concat_3%s
+D s-crtl.ads		20230508121439 8a0692f8 system.crtl%s
+D s-exctab.ads		20230508121439 91bef6ef system.exception_table%s
+D s-ficobl.ads		20230508121439 dc5161d4 system.file_control_block%s
+D s-parame.ads		20230508121439 d494a4a6 system.parameters%s
+D s-putima.ads		20230508121439 4e095881 system.put_images%s
+D s-secsta.ads		20230508121439 62cd9202 system.secondary_stack%s
+D s-soflin.ads		20230508121439 df77073e system.soft_links%s
+D s-stache.ads		20230508121439 0b81c1fe system.stack_checking%s
+D s-stalib.ads		20230508121439 1c9580f6 system.standard_library%s
+D s-stoele.ads		20230508121439 6d8e1ff4 system.storage_elements%s
+D s-stoele.adb		20230508121439 8f5a9db6 system.storage_elements%b
+D s-traent.ads		20230508121439 c81cbf8c system.traceback_entries%s
+D s-unstyp.ads		20230508121439 fa2a7f59 system.unsigned_types%s
+D s-wchcon.ads		20230508121439 d9032363 system.wch_con%s
+D text_io.ads		20230508121439 21b2c898 text_io%s
+D unchconv.ads		20230508121439 ca2f9e18 unchecked_conversion%s
 G a e
 G c Z s b [code_gen standard 3 15 none]
 G r c none [code_gen standard 3 15 none] [open_idl_tree_file idl 21 13 none]
@@ -112,7 +113,7 @@ G r c none [code_gen standard 3 15 none] [get_clo emits 125 13 none]
 G r c none [code_gen standard 3 15 none] [close_output_file emits 88 13 none]
 G r c none [code_gen standard 3 15 none] [close_idl_tree_file idl 22 13 none]
 X 9 a-textio.ads
-566U14*Put_Line 13|1628s13 1674s9 2329s10 2349s5 2388s11 2618s9
+507U14*Put_Line 13|1628s13 1674s9 2329s10 2349s5 2388s11 2618s9
 X 12 code_gen.ads
 3U15*Code_Gen 13|4b49 3108l5 3108t13
 X 13 code_gen.adb

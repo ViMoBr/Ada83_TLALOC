@@ -1,4 +1,4 @@
-V "GNAT Lib v13"
+V "GNAT Lib v12"
 A -g
 A -gnat83
 P ZX
@@ -10,7 +10,7 @@ RV NO_IMPLICIT_LOOPS
 U diana_node_attr_class_names%s  diana_node_attr_class_names.ads  6d94ff6d NE OO PK IU
 
 D diana_node_attr_class_names.ads  20240622095819 6d94ff6d diana_node_attr_class_names%s
-D system.ads		20230426070939 426dafb8 system%s
+D system.ads		20230508121439 a2da961d system%s
 G a e
 X 1 diana_node_attr_class_names.ads
 6K33*DIANA_NODE_ATTR_CLASS_NAMES 205l9 205e36

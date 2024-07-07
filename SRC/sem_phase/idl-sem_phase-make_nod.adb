@@ -2638,7 +2638,7 @@
          RETURN NODE;
       END;
       --|-------------------------------------------------------------------------------------------
-      --|	FUNCTION MAKE_INTEGER
+      --|	FUNCTION MAKE_FLOAT
        FUNCTION MAKE_FLOAT
                         ( SM_DERIVED: TREE := TREE_VOID;
                         SM_IS_ANONYMOUS: BOOLEAN := FALSE;

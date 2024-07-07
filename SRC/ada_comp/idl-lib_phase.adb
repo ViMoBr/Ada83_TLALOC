@@ -1,8 +1,13 @@
-WITH SEQUENTIAL_IO;
-SEPARATE ( IDL )
---|-------------------------------------------------------------------------------------------------
---|	PROCEDURE LIB_PHASE
-PROCEDURE LIB_PHASE IS
+--	LIB_PHASE.ADB	VINCENT MORIN	21/6/2024		UNIVERSITE DE BRETAGNE OCCIDENTALE	(UBO)
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--	1	2	3	4	5	6	7	8	9	0	1	2	3	4	5	6	7	8	9	0
+
+with SEQUENTIAL_IO;
+separate ( IDL )
+
+					---------
+procedure					LIB_PHASE
+is					---------
    
   INITIAL_TIMESTAMP		: INTEGER;
   CUR_TIMESTAMP		: INTEGER;
@@ -14,13 +19,13 @@ PROCEDURE LIB_PHASE IS
   NEW_UNIT_LIST		: SEQ_TYPE	:= (TREE_NIL, TREE_NIL);
   TRANS_WITH_SEQ		: SEQ_TYPE;						--| LISTE FERMETURE TRANSITIVE DES "WITH" D UNE UNITE DE LA COMPILATION
    
-  CHTABLE			: CONSTANT STRING( 1..32 ) := "0123456789ABCDEFGHJKLMNPRSTVWXYZ";
+  CHTABLE			: constant STRING( 1..32 ) := "0123456789ABCDEFGHJKLMNPRSTVWXYZ";
 
   DEBUG_LIB		: BOOLEAN	:= FALSE;						--| POUR DEVERMINAGE
 
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE OPEN_LIBRARY
-  PROCEDURE OPEN_LIBRARY IS
+  procedure OPEN_LIBRARY is
     FCTL			: TEXT_IO.FILE_TYPE;					--| FICHIER DE CONTOLE DE LA LIBRAIRIE
     LIB_CHAR		: CHARACTER;
     DUMMY_CHAR		: CHARACTER;
@@ -33,162 +38,164 @@ PROCEDURE LIB_PHASE IS
     LIB_TEXT_2_LENGTH	: INTEGER;
     LAST			: INTEGER;
     LIB_INFO		: TREE;
-    USE IDL.INT_IO;
-  BEGIN
+    use IDL.INT_IO;
+  begin
     OPEN( FCTL, IN_FILE, IDL.LIB_PATH( 1..LIB_PATH_LENGTH ) & "ADA__LIB.CTL" );			--| OUVRIR LE FICHIER CONTROLE LIBRAIRIE
          
-    LOOP
+    loop
       GET( FCTL, LIB_CHAR );								--| PREMIER CARACTERE DE LA LIGNE (TYPE DE LIGNE)
-      IF LIB_CHAR = 'T' THEN								--| LIGNE ETIQUETTE DE VERSION (TIME STAMP)
+      if LIB_CHAR = 'T' then								--| LIGNE ETIQUETTE DE VERSION (TIME STAMP)
         GET( FCTL, LIB_NUM );								--| LIRE LE No DE VERSION
         INITIAL_TIMESTAMP := LIB_NUM;							--| INITIALISER
-        CUR_TIMESTAMP := LIB_NUM;
-        EXIT;									--| SORTIR DE LA BOUCLE, C'EST LA DERNIERE LIGNE DU FICHIER CONTROLE
-      ELSIF LIB_CHAR = 'P' THEN							--| LIGNE CHEMIN DE LA LIBRAIRIE (PATH)
+        CUR_TIMESTAMP     := LIB_NUM;
+        exit;									--| SORTIR DE LA BOUCLE, C'EST LA DERNIERE LIGNE DU FICHIER CONTROLE
+
+      elsif LIB_CHAR = 'P' then							--| LIGNE CHEMIN DE LA LIBRAIRIE (PATH)
         SKIP_LINE( FCTL );								--| SAUTER (INUTILE ICI)
-      ELSIF LIB_CHAR = 'S' OR LIB_CHAR = 'U' THEN						--| LIGNE U OU S (UNITE OU UNITE SEPAREE
+
+      elsif LIB_CHAR = 'S' or LIB_CHAR = 'U' then						--| LIGNE U OU S (UNITE OU UNITE SEPAREE
         GET( FCTL, DUMMY_CHAR );							--| PASSER LE BLANC
         GET_LINE( FCTL, LIB_SHORT, LAST );						--| LIRE LE NOM COURT
         LIB_SHORT_LENGTH := LAST;							--| LONGUEUR DU NOM INTERNE COURT
         GET_LINE( FCTL, LIB_TEXT_1, LAST );						--| LIRE LE NOM D'UNITE (SI PAS SEPAREE) OU LE NOM DE PARENTE (SI UNITE SEPAREE)
         LIB_TEXT_1_LENGTH := LAST;							--| SA LONGUEUR
-        IF LIB_CHAR = 'U' THEN							--| LIGNE U (UNSEPARATED UNIT, LES UNITES NON "SEPARATE")
+        if LIB_CHAR = 'U' then							--| LIGNE U (UNSEPARATED UNIT, LES UNITES NON "SEPARATE")
           LIB_TEXT_2( 1..1 ) := "$";							--| NOM SECONDAIRE EN $
           LIB_TEXT_2_LENGTH := 1;							--| LONGUEUR EGALE A UN
-        ELSIF LIB_CHAR = 'S' THEN							--| LIGNE S (SEPARATED UNIT, LES UNITES "SEPARATE")
+        elsif LIB_CHAR = 'S' then							--| LIGNE S (SEPARATED UNIT, LES UNITES "SEPARATE")
           GET_LINE( FCTL, LIB_TEXT_2, LAST );						--| LIRE LE NOM D'UNITE SEPAREE (PAS CONFONDRE AVEC LE NOM DE SA PARENTE ! )
           LIB_TEXT_2_LENGTH := LAST;							--| SA LONGUEUR
-        ELSE									--| AUTRE PREMIER CARACTERE
+        else									--| AUTRE PREMIER CARACTERE
           PUT_LINE( "FICHIER DE CONTROLE LIBRAIRIE MAL FORME : LETTRE TYPE LIGNE INCONNUE" );	--| ERREUR SUR LE PREMIER CARACTERE
-          RAISE PROGRAM_ERROR;
-        END IF;
+          raise PROGRAM_ERROR;
+        end if;
                
         LIB_INFO := MAKE( DN_LIB_INFO );						--| FABRIQUER UN NOEUD LIB_INFO
         D( XD_SHORT, LIB_INFO, STORE_SYM( LIB_SHORT( 1 .. LIB_SHORT_LENGTH ) ) );		--| NOM COURT (INTERNE A LA LIBRAIRIE)
         D( XD_PRIMARY, LIB_INFO, STORE_SYM( LIB_TEXT_1( 1 .. LIB_TEXT_1_LENGTH ) ) );		--| NOM LONG (D'UNITE SI NON SEPAREE, D'UNITE PARENTE DE SEPAREE SINON)
         D( XD_SECONDARY, LIB_INFO, STORE_SYM( LIB_TEXT_2( 1.. LIB_TEXT_2_LENGTH ) ) );		--| $ SI UNITE NON SEPAREE, NOM D'UNITE SEPAREE SINON
         LIB_INFO_SEQ := APPEND( LIB_INFO_SEQ, LIB_INFO );					--| AJOUTER A LA LISTE DES NOEUDS LIB_INFO
-      END IF;
-    END LOOP;
+      end if;
+    end loop;
 
     CLOSE( FCTL );									--| FERMER LE FICHIER CONTROLE LIBRAIRIE
-  END OPEN_LIBRARY;
+  end OPEN_LIBRARY;
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE CLOSE_LIBRARY
-  PROCEDURE CLOSE_LIBRARY IS
+  procedure CLOSE_LIBRARY is
     FCTL			: TEXT_IO.FILE_TYPE;					--| FICHIER CONTROLE
-    LIB_PREFIX		: CONSTANT STRING	:= GET_LIB_PREFIX;
-  BEGIN
+    LIB_PREFIX		: constant STRING	:= GET_LIB_PREFIX;
+  begin
     CREATE( FCTL, OUT_FILE, IDL.LIB_PATH( 1..LIB_PATH_LENGTH ) & "ADA__LIB.CTL" );		--| RECREER LE FICHIER CONTROLE
-    IF LIB_PREFIX'LENGTH /= 0 THEN							--| S'IL Y A UNE LIGNE DE PREFIXE LIBRAIRIE (CHEMIN DE CELLE-CI)
+    if LIB_PREFIX'LENGTH /= 0 then							--| S'IL Y A UNE LIGNE DE PREFIXE LIBRAIRIE (CHEMIN DE CELLE-CI)
       PUT_LINE( FCTL, "P " & LIB_PREFIX );						--| METTRE LA LIGNE P (PREFIXE CHEMIN DU REPERTOIRE LIBRAIRIE)
-    END IF;
+    end if;
          
-    DECLARE
+    declare
       LINFO_SEQ	: SEQ_TYPE	:= LIB_INFO_SEQ;					--| LISTE DES NOEUDS LIB_INFO
       LIB_INFO	: TREE;
-    BEGIN
-      WHILE NOT IS_EMPTY( LINFO_SEQ ) LOOP						--| TANT QUE LA LISTE DES LIB_INFO EST NON VIDE
+    begin
+      while not IS_EMPTY( LINFO_SEQ ) loop						--| TANT QUE LA LISTE DES LIB_INFO EST NON VIDE
         POP( LINFO_SEQ, LIB_INFO );							--| EXTRAIRE UN LIB_INFO
-        DECLARE
+        declare
           EXTEN	: TREE	:= D( XD_SECONDARY, LIB_INFO );				--| LIRE LE NOM SECONDAIRE (NOM D'UNITE SEPAREE OU SIMPLE $ POUR LES AUTRES NON SEPAREES)
           DOLLAR	: TREE	:= STORE_SYM( "$" );					--| STOCKER/RETROUVER LE SYMBOLE $
-        BEGIN
-          IF EXTEN = DOLLAR THEN							--| SI SECONDAIRE $ (UNITE NON SEPAREE)
+        begin
+          if EXTEN = DOLLAR then							--| SI SECONDAIRE $ (UNITE NON SEPAREE)
             PUT( FCTL, "U ");								--| LIGNE U (UNSEPARATED UNIT)
             PUT_LINE( FCTL, PRINT_NAME ( D( XD_SHORT, LIB_INFO ) ) );				--| NOM COURT INTERNE	
             PUT_LINE( FCTL, PRINT_NAME ( D( XD_PRIMARY, LIB_INFO ) ) );			--| ET NOM PRIMAIRE (NOM COMPLET DE L'UNITE)
-          ELSE
+          else
             PUT( FCTL, "S ");								--| LIGNE S (SEPARATED UNIT)
             PUT_LINE( FCTL, PRINT_NAME ( D( XD_SHORT, LIB_INFO ) ) );				--| NOM COURT
             PUT_LINE( FCTL, PRINT_NAME ( D( XD_PRIMARY, LIB_INFO ) ) );			--| NOM PRIMAIRE D'UNITE PARENTE DE SEPAREE
             PUT_LINE( FCTL, PRINT_NAME ( D( XD_SECONDARY, LIB_INFO ) ) );			--| NOM D'UNITE SEPAREE DANS CE CAS
-          END IF;
-        END;
-      END LOOP;
-    END;
+          end if;
+        end;
+      end loop;
+    end;
          
     PUT( FCTL, "T " );								--| LIGNE T (ESTAMPILLE "TEMPS" OU No DE MODIFICATION)
     INT_IO.PUT( FCTL, CUR_TIMESTAMP, 0 );						--| INDICE TEMPOREL
     NEW_LINE( FCTL );								--| PASSER A LA LIGNE
     CLOSE( FCTL );									--| FERMER LE FICHIER DE CONTROLE LIBRAIRIE
-  END CLOSE_LIBRARY;
+  end CLOSE_LIBRARY;
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE MAKE_FILE_SYM
-  FUNCTION MAKE_FILE_SYM ( PRI, SEC :STRING ) RETURN TREE IS
+  function MAKE_FILE_SYM ( PRI, SEC :STRING ) return TREE is
     BASE_UNIT_SYM		: TREE;
     SECSYM		: TREE;
     TEMP_INFO_SEQ		: SEQ_TYPE;
     LIB_INFO		: TREE;
     EXTEN			: STRING( 1 .. 4 );
     FILESYM		: TREE;
-  BEGIN
+  begin
 
 if debug_lib then put_line( "make_file_sym avec pri=" & PRI
 & " sec=" & SEC
 ); end if;
 
-    IF SEC = ".DCL" OR ELSE SEC = ".BDY" OR ELSE SEC = ".SUB" THEN				--| UNITES DE COMPILATION SPEC / CORPS
+    if SEC = ".DCL" or else SEC = ".BDY" or else SEC = ".SUB" then				--| UNITES DE COMPILATION SPEC / CORPS
 --      IF PRI'LENGTH <= 8 THEN							--| NOM DE MOINS DE 8 CARACTERES
-        RETURN STORE_SYM( PRI & SEC );							--| STOCKER LE NOM.EXT ET RETOURNER LE SYMBOLE
+        return STORE_SYM( PRI & SEC );							--| STOCKER LE NOM.EXT ET RETOURNER LE SYMBOLE
 --      ELSE									--| NOM DE 9 CARACTERES OU PLUS
 --        SECSYM := STORE_SYM( "$" );							--| STOCKER (OU RETROUVER) UN SYMBOLE $ POUR SEC_SYM
 --        EXTEN := SEC( SEC'FIRST..SEC'FIRST+3 );						--| JUSTE 4 CARACTERES DE LA CHAINE "SEC"
 --      END IF;
-    ELSE										--| SOUS UNITE SEPAREE D'UNE UNITE DE LIBRAIRIE
+    else										--| SOUS UNITE SEPAREE D'UNE UNITE DE LIBRAIRIE
       SECSYM := STORE_SYM( SEC );							--| STOCKER LE NOM DE CORPS SEPARE
       EXTEN := ".SUB";
-    END IF;
+    end if;
     BASE_UNIT_SYM := STORE_SYM( PRI );							--| STOCKER LE NOM PRIMAIRE
       
     TEMP_INFO_SEQ := LIB_INFO_SEQ;							--| LISTE DES LIB_INFO
-    WHILE NOT IS_EMPTY( TEMP_INFO_SEQ ) LOOP						--| TANT QU'IL Y EN A
+    while not IS_EMPTY( TEMP_INFO_SEQ ) loop						--| TANT QU'IL Y EN A
       POP( TEMP_INFO_SEQ, LIB_INFO );							--| EXTRAIRE UN LIB_INFO
-      IF D( XD_PRIMARY, LIB_INFO ) = BASE_UNIT_SYM					--| CONTIENT UN MEME NOM LONG
-      AND THEN D( XD_SECONDARY, LIB_INFO ) = SECSYM					--| AVEC LA MEME EXTENSION
-      THEN
-        RETURN STORE_SYM( PRINT_NAME( D( XD_SHORT, LIB_INFO ) ) & EXTEN );			--| RETOURNER LE NOM COURT AVEC EXTENSION CORRESPONDANT
-      END IF;
-    END LOOP;
+      if D( XD_PRIMARY, LIB_INFO ) = BASE_UNIT_SYM					--| CONTIENT UN MEME NOM LONG
+      and then D( XD_SECONDARY, LIB_INFO ) = SECSYM					--| AVEC LA MEME EXTENSION
+      then
+        return STORE_SYM( PRINT_NAME( D( XD_SHORT, LIB_INFO ) ) & EXTEN );			--| RETOURNER LE NOM COURT AVEC EXTENSION CORRESPONDANT
+      end if;
+    end loop;
 
 
 
       					--| SI L'ON EST LA ON A PAS TROUVE DE NOM COURT DANS LA LIBRAIRIE
-    DECLARE
+    declare
       FILETEXT	: STRING( 1 .. 8 )	:= "$$$$$$$$";					--| CHAINE DE 8 CARACTERES
       NUM_WORK	: INTEGER;
-    BEGIN
+    begin
       NUM_WORK := PRI'LENGTH;								--| LONGUEUR DU NOM
-      IF NUM_WORK > 4 THEN								--| DEPASSE 4 CARACTERES
+      if NUM_WORK > 4 then								--| DEPASSE 4 CARACTERES
         NUM_WORK := 4;								--| LIMITER A 4
-      END IF;
+      end if;
       FILETEXT( 1..NUM_WORK ) := PRI( PRI'FIRST..PRI'FIRST+NUM_WORK-1 );			--| REPORTER LE NOM
       NUM_WORK := CUR_TIMESTAMP + 1;							--| ESTAMPILLE DE TEMPS INCREMENTEE
-      FOR I IN REVERSE 6..8 LOOP							--| DE 8 A 6 A REBOURS
-        FILETEXT( I ) := CHTABLE( NUM_WORK MOD 32 + 1 );					--| COMPLETER LES 4 (AU PLUS) CARACTERES DE NOM PAR DES CARACTERES CHOISIS DANS LA TABLE 
+      for I in reverse 6..8 loop							--| DE 8 A 6 A REBOURS
+        FILETEXT( I ) := CHTABLE( NUM_WORK mod 32 + 1 );					--| COMPLETER LES 4 (AU PLUS) CARACTERES DE NOM PAR DES CARACTERES CHOISIS DANS LA TABLE 
         NUM_WORK := NUM_WORK / 32;
-      END LOOP;
+      end loop;
 
       FILESYM := STORE_SYM( FILETEXT & EXTEN );						--| STOCKER CE SYMBOLE ARTIFICIEL
       LIB_INFO := MAKE( DN_LIB_INFO );							--| FABRIQUER UN LIB_INFO
       D( XD_SHORT, LIB_INFO, STORE_SYM( FILETEXT ) );					--| Y PORTER LE SYMBOLE
-    END;
+    end;
     D( XD_PRIMARY, LIB_INFO, BASE_UNIT_SYM );						--| Y PORTER AUSSI LE SYMBOLE NOM PRIMAIRE (NOM D'UNITE OU D'UNITE PARENTE DE SEPAREE)
     D( XD_SECONDARY, LIB_INFO, SECSYM );						--| PORTER LE $ (UNITES NON SEPAREES) OU LE NOM D'UNITE SEPAREE
     LIB_INFO_SEQ := APPEND( LIB_INFO_SEQ, LIB_INFO );					--| CHAINER LE LIB_INFO
-    RETURN FILESYM;
-  END MAKE_FILE_SYM;
+    return FILESYM;
+  end MAKE_FILE_SYM;
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE INSERT_FILE_NAME
-  PROCEDURE INSERT_FILE_NAME ( COMP_UNIT :TREE ) IS
+  procedure INSERT_FILE_NAME ( COMP_UNIT :TREE ) is
     UNIT_BODY		: TREE	:= D( AS_ALL_DECL, COMP_UNIT );
     FILE_SYM		: TREE;
-  BEGIN
-    IF UNIT_BODY.TY /= DN_SUBUNIT THEN							--| SI PAS UNE SOUS UNITE (PAS UNE UNITE "SEPARATE")
+  begin
+    if UNIT_BODY.TY /= DN_SUBUNIT then							--| SI PAS UNE SOUS UNITE (PAS UNE UNITE "SEPARATE")
 --|
 --|		CAS UNITE CORPS : PACKAGE BODY / PROCEDURE ... IS
 --|_________________________________________________________________________________________________     
-      IF UNIT_BODY.TY = DN_PACKAGE_BODY OR ELSE UNIT_BODY.TY = DN_SUBPROGRAM_BODY THEN		--| CORPS SOUS PROGRAMME OU PACKAGE
+      if UNIT_BODY.TY = DN_PACKAGE_BODY or else UNIT_BODY.TY = DN_SUBPROGRAM_BODY then		--| CORPS SOUS PROGRAMME OU PACKAGE
         FILE_SYM := MAKE_FILE_SYM(							--| FABRIQUER (OU TROUVER) UNE ENTREE DE LIBRAIRIE (UN LIB_INFO)
            		PRINT_NAME( D( LX_SYMREP, D( AS_SOURCE_NAME, UNIT_BODY ) ) ),	--| AVEC LE NOM D'UNITE
                   		".BDY"							--| ET UNE EXTENSION ".BDY"
@@ -196,81 +203,81 @@ if debug_lib then put_line( "make_file_sym avec pri=" & PRI
 --|
 --|		CAS UNITE SPEC : PACKAGE / PROCEDURE
 --|_________________________________________________________________________________________________
-      ELSE									--| SPEC SOUS PROGRAMME, GENERIQUE OU PACKAGE
+      else									--| SPEC SOUS PROGRAMME, GENERIQUE OU PACKAGE
         FILE_SYM := MAKE_FILE_SYM(							--| FABRIQUER (OU TROUVER) UNE ENTREE DE LIBRAIRIE (UN LIB_INFO)
 			PRINT_NAME ( D( LX_SYMREP, D( AS_SOURCE_NAME, UNIT_BODY ) ) ),	--| AVEC LE NOM D'UNITE
 			".DCL"							--| ET EXTENSION ".DCL"
 			);
-      END IF;
+      end if;
 --|
 --|		CAS SEPARATE( X.Y.Z.A ) PACKAGE BODY / PROCEDURE ... IS
 --|_________________________________________________________________________________________________
-    ELSE										--| SOUS UNITE (SEPAREE)
+    else										--| SOUS UNITE (SEPAREE)
 
-      DECLARE
+      declare
         SUBUNIT_BODY	: TREE	:= D( AS_SUBUNIT_BODY, UNIT_BODY );				--| LE CORPS SEPARE
         NAME	: TREE	:= D( AS_SOURCE_NAME, SUBUNIT_BODY );				--| LE NOM DU CORPS SEPARE
         SEP_NAME	: TREE	:= D( AS_NAME, UNIT_BODY );					--| NOM MIS DANS LE "SEPARATE"
 
-        FUNCTION SECTION_NOM ( SELECTOR : TREE ) RETURN STRING IS
-        BEGIN
-	IF SELECTOR.TY = DN_SELECTED THEN
-	  RETURN SECTION_NOM( D( AS_NAME, SELECTOR ) )
+        function SECTION_NOM ( SELECTOR : TREE ) return STRING is
+        begin
+	if SELECTOR.TY = DN_SELECTED then
+	  return SECTION_NOM( D( AS_NAME, SELECTOR ) )
 		& PRINT_NAME( D( LX_SYMREP, D( AS_DESIGNATOR, SELECTOR ) ) ) & "-";
-	ELSE
-	  RETURN PRINT_NAME( D( LX_SYMREP, SELECTOR ) ) & "-";
-	END IF;
-        END;
+	else
+	  return PRINT_NAME( D( LX_SYMREP, SELECTOR ) ) & "-";
+	end if;
+        end;
 
-    BEGIN
+    begin
       FILE_SYM := MAKE_FILE_SYM( SECTION_NOM( SEP_NAME ) & PRINT_NAME( D( LX_SYMREP, NAME ) ) , ".SUB" );
-    END;
+    end;
 
-    END IF;
+    end if;
          
     D( XD_LIB_NAME, COMP_UNIT, FILE_SYM );						--| RANGER LE SYMBOLE DE NOM DANS LE XD_LIB_NAME DU NOEUD DN_COMPILATION_UNIT
-  END INSERT_FILE_NAME;
+  end INSERT_FILE_NAME;
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE LOAD_UNIT
-  FUNCTION LOAD_UNIT ( FILESYM_ARG :TREE ) RETURN TREE IS    
+  function LOAD_UNIT ( FILESYM_ARG :TREE ) return TREE is    
     FILESYM		: TREE		:= FILESYM_ARG;
     UNIT			: TREE		:= TREE_VOID;
     DLTA			: INTEGER;						--| DECALAGE DE PAGE DU AU CHARGEMENT D'UN ARBRE ANTERIEUREMENT COMPILE
     UNIT_TIMESTAMP		: INTEGER;
     --|---------------------------------------------------------------------------------------------
-    FUNCTION OFFSET ( T :TREE ) RETURN TREE IS						--| DECALE LA PAGE D'UN POINTEUR ANTIQUE (COMPILATION ANTERIEURE) POUR EN FAIRE UN POINTEUR ACTUEL
+    function OFFSET ( T :TREE ) return TREE is						--| DECALE LA PAGE D'UN POINTEUR ANTIQUE (COMPILATION ANTERIEURE) POUR EN FAIRE UN POINTEUR ACTUEL
       TEMP	: TREE	:= T;
-    BEGIN
+    begin
       TEMP.PG := PAGE_IDX( INTEGER( TEMP.PG ) + DLTA );					--| AJOUTER LE DECALAGE DE PAGE AU CHARGEMENT
-      RETURN TEMP;
-    END OFFSET;
+      return TEMP;
+    end OFFSET;
     --|---------------------------------------------------------------------------------------------
-    PROCEDURE LOAD_WITHED_UNIT ( WUNIT :TREE ) IS
+    procedure LOAD_WITHED_UNIT ( WUNIT :TREE ) is
       UNIT:	TREE;
-    BEGIN
+    begin
       UNIT := LOAD_UNIT( STORE_SYM (							--| APPEL RECURSIF POUR CHARGER UNE UNITE "WITHED" DE CELLE D'ABORD CHARGEE
 	PRINT_NAME( OFFSET( D( TW_FILENAME, OFFSET( WUNIT ) ) ) )
  	) );
 
-      IF UNIT = TREE_VOID THEN							--| PAS TROUVE L'UNITE A INCLURE
-        RAISE NAME_ERROR;
-      END IF;
+      if UNIT = TREE_VOID then							--| PAS TROUVE L'UNITE A INCLURE
+        raise NAME_ERROR;
+      end if;
 
-      IF DI( XD_TIMESTAMP, UNIT) >= UNIT_TIMESTAMP THEN					--| L'UNITE "WITHED" EST PLUS RECENTE QUE CELLE QUI L'UTILISE (ANORMAL ! )
+      if DI( XD_TIMESTAMP, UNIT) >= UNIT_TIMESTAMP then					--| L'UNITE "WITHED" EST PLUS RECENTE QUE CELLE QUI L'UTILISE (ANORMAL ! )
         PUT_LINE( "ANOMALIE : " & PRINT_NAME( D( XD_LIB_NAME,UNIT ) )
 		& " PAS ANTERIEURE A " & PRINT_NAME( FILESYM ) );
-        RAISE NAME_ERROR;
-      END IF;
-    END LOAD_WITHED_UNIT;
+        raise NAME_ERROR;
+      end if;
+    end LOAD_WITHED_UNIT;
     --|---------------------------------------------------------------------------------------------
-    PROCEDURE RELOCATE_UNIT ( UNIT :TREE; WUNIT_SEQ :SEQ_TYPE ) IS
-      RELOC	: ARRAY( VPG_NUM ) OF PAGE_IDX	:= (OTHERS=> 0);			--| ASSEZ GRAND TABLEAU
+    procedure RELOCATE_UNIT ( UNIT :TREE; WUNIT_SEQ :SEQ_TYPE ) is
+      RELOC	: array( VPG_NUM ) of PAGE_IDX	:= (others=> 0);			--| ASSEZ GRAND TABLEAU
       PNTR	: TREE				:= UNIT;
       LAST_PAGE	: PAGE_IDX			:= PNTR.PG
 						+ PAGE_IDX( DI( XD_NBR_PAGES, UNIT ) ) - 1;
       NODE_KIND	: NODE_NAME;
       --|-------------------------------------------------------------------------------------------
-      PROCEDURE RELOC_FOR_WUNIT ( WUNIT :TREE ) IS
+      procedure RELOC_FOR_WUNIT ( WUNIT :TREE ) is
         TRANS_WITH	: TREE		:= OFFSET( WUNIT );
         NEW_UNIT	: TREE		:= LOAD_UNIT(
 			STORE_SYM( PRINT_NAME( OFFSET( D( TW_FILENAME, TRANS_WITH ) ) ) )
@@ -280,215 +287,215 @@ if debug_lib then put_line( "make_file_sym avec pri=" & PRI
         DLTA	: INTEGER		:= INTEGER( FIRST_PAGE ) - INTEGER( UNIT_PNTR.PG );	--| DECALAGE DE PAGE
         NBR_PAGES	: PAGE_IDX	:= PAGE_IDX( DI( XD_NBR_PAGES,
 			(P, TY=> DN_COMPILATION_UNIT, PG=> FIRST_PAGE, LN=> 0) ) );
-      BEGIN
-        FOR I IN UNIT_PNTR.PG .. UNIT_PNTR.PG + NBR_PAGES - 1 LOOP
+      begin
+        for I in UNIT_PNTR.PG .. UNIT_PNTR.PG + NBR_PAGES - 1 loop
           RELOC( I ) := PAGE_IDX( INTEGER( I ) + DLTA );
-        END LOOP;
-      END RELOC_FOR_WUNIT;
+        end loop;
+      end RELOC_FOR_WUNIT;
          
-    BEGIN
-      FOR I IN UNIT.PG .. UNIT.PG + PAGE_IDX( DI ( XD_NBR_PAGES, UNIT ) ) - 1 LOOP
+    begin
+      for I in UNIT.PG .. UNIT.PG + PAGE_IDX( DI ( XD_NBR_PAGES, UNIT ) ) - 1 loop
         RELOC( PAGE_IDX( INTEGER( I ) - DLTA ) ) := I;
-      END LOOP;
+      end loop;
 
-      DECLARE
+      declare
         WUNIT_LIST		: TREE		:= WUNIT_SEQ.FIRST;				--| POINTEUR ELEMENT DE LISTE DES UNITES "WITHED"
         WUNIT		: TREE;							--| UNE UNITE "WITHED" DE L'UNITE CHARGEE
-      BEGIN
-        IF WUNIT_LIST /= TREE_NIL THEN
-          WHILE WUNIT_LIST.TY = DN_LIST LOOP
+      begin
+        if WUNIT_LIST /= TREE_NIL then
+          while WUNIT_LIST.TY = DN_LIST loop
             WUNIT      := D( XD_HEAD, OFFSET( WUNIT_LIST ) );
             WUNIT_LIST := D( XD_TAIL, OFFSET( WUNIT_LIST ) );
             RELOC_FOR_WUNIT( WUNIT );
-          END LOOP;
+          end loop;
           RELOC_FOR_WUNIT( WUNIT_LIST );						--| LA DERNIERE DE LA LISTE
-        END IF;
-      END;
+        end if;
+      end;
 
 RELOCATE_PNTRS:					-- TABLE IS SET UP, DO THE RELOC
-      WHILE PNTR.PG <= LAST_PAGE LOOP
-        DECLARE    
+      while PNTR.PG <= LAST_PAGE loop
+        declare    
           WORD_ZERO	: TREE	:= DABS( 0, PNTR);						--| ENTETE DE NOEUD
-        BEGIN
-          IF WORD_ZERO = TREE_VIRGIN THEN						--| NON INITIALISE
+        begin
+          if WORD_ZERO = TREE_VIRGIN then						--| NON INITIALISE
             PNTR.PG := PNTR.PG + 1;							--| PAGE SUIVANTE
             PNTR.LN := 0;								--| LIGNE 0
-          ELSE
+          else
             NODE_KIND := WORD_ZERO.NOTY;
             PNTR.TY := NODE_KIND;
                   
-            IF NODE_KIND = DN_TXTREP OR NODE_KIND = DN_NUM_VAL THEN				--| UN TERMINAL TEXTE OU NOMBRE
-              NULL;									--| RIEN A FAIRE DEDANS
-            ELSE
-              FOR I IN 1 .. WORD_ZERO.NSIZ LOOP						--| POUR TOUS LES TREES DU NOEUD
-                DECLARE
+            if NODE_KIND = DN_TXTREP or NODE_KIND = DN_NUM_VAL then				--| UN TERMINAL TEXTE OU NOMBRE
+              null;									--| RIEN A FAIRE DEDANS
+            else
+              for I in 1 .. WORD_ZERO.NSIZ loop						--| POUR TOUS LES TREES DU NOEUD
+                declare
                   WORD	: TREE	:= DABS( I, PNTR );					--| PRENDRE LE TREE
-                BEGIN
-                  IF WORD.PT = HI THEN							--| UN HEADER/INTEGER
-                    NULL;								--| RIEN A LUI FAIRE
-                  ELSIF WORD.PT = S THEN						--| UN SOURCE POSITION
+                begin
+                  if WORD.PT = HI then							--| UN HEADER/INTEGER
+                    null;								--| RIEN A LUI FAIRE
+                  elsif WORD.PT = S then						--| UN SOURCE POSITION
                     WORD.SPG := RELOC( WORD.SPG );					--| DECALER
                     DABS( I, PNTR, WORD );						--| REECRIRE
-                  ELSE								--| POINTEUR SEGMENTE STANDARD
-		IF WORD.PG /= 0 THEN
+                  else								--| POINTEUR SEGMENTE STANDARD
+		if WORD.PG /= 0 then
                       WORD.PG := RELOC( WORD.PG );					--| DECALER SA PAGE
                       DABS( I, PNTR, WORD );						--| REECRIRE
-                      IF WORD.TY = DN_GENERIC_DECL THEN					--| UN POINTEUR A GENERIQUE
+                      if WORD.TY = DN_GENERIC_DECL then					--| UN POINTEUR A GENERIQUE
                         GENERIC_LIST := INSERT( GENERIC_LIST, WORD );				--| LE METTRE EN LISTE SPECIALE
-		  END IF;
-                    END IF;
-                  END IF;
-                END;
-              END LOOP;
-            END IF;
+		  end if;
+                    end if;
+                  end if;
+                end;
+              end loop;
+            end if;
                   
-            IF PNTR.LN < LINE_IDX'LAST - WORD_ZERO.NSIZ THEN				--| SI RESTE DE LA PLACE
+            if PNTR.LN < LINE_IDX'LAST - WORD_ZERO.NSIZ then				--| SI RESTE DE LA PLACE
 	    PNTR.LN := PNTR.LN + WORD_ZERO.NSIZ + 1;					--| MONTER AU NOEUD SUIVANT
-	  ELSE
+	  else
 	    PNTR.PG := PNTR.PG + 1;							--| PAGE SUIVANTE
 	    PNTR.LN := 0;								--| LIGNE 1
-            END IF;
-          END IF;
-        END;
-      END LOOP RELOCATE_PNTRS;
+            end if;
+          end if;
+        end;
+      end loop RELOCATE_PNTRS;
 
-    END RELOCATE_UNIT;
+    end RELOCATE_UNIT;
       
-  BEGIN
-    IF NOT IS_EMPTY( LIST( FILESYM ) ) THEN						--| LE SYMBOLE A DEJA UNE UNITE CHARGEE
+  begin
+    if not IS_EMPTY( LIST( FILESYM ) ) then						--| LE SYMBOLE A DEJA UNE UNITE CHARGEE
       UNIT := HEAD( LIST( FILESYM ) );							--| RETOURNER CELLE-CI
-      RETURN UNIT;
-    END IF;
+      return UNIT;
+    end if;
          
 LIRE_BLOCS_PAGES:
-    DECLARE
-      PACKAGE SEQ_IO	IS NEW SEQUENTIAL_IO( SECTOR );
+    declare
+      package SEQ_IO	is new SEQUENTIAL_IO( SECTOR );
       LIB_FILE		: SEQ_IO.FILE_TYPE;
-    BEGIN
+    begin
       SEQ_IO.OPEN( LIB_FILE, SEQ_IO.IN_FILE, GET_LIB_PREFIX & PRINT_NAME( FILESYM ) );		--| OUVRIR LE FICHIER ARBRE LIBRARISE DE L'UNITE
 LECTURES:
-      DECLARE
+      declare
         PAGET	: TREE	:= MAKE( NODE_NAME'VAL( 0 ), ATTR_NBR( LINE_IDX'LAST ) );		--| ALLOUER UN ESPACE D'UNE PAGE (SOUS FORME DE NOEUD) DANS L'ARBRE DE LA COMPILATION
         ENTETE	: TREE;
-      BEGIN
-        SEQ_IO.READ( LIB_FILE, PAG( ASSOC_PAGE( PAGET.PG ) ).DATA.ALL );			--| LIRE LA PREMIERE PAGE
+      begin
+        SEQ_IO.READ( LIB_FILE, PAG( ASSOC_PAGE( PAGET.PG ) ).DATA.all );			--| LIRE LA PREMIERE PAGE
         ENTETE := DABS( 0, PAGET );							--| PREMIER ENTETE DE PREMIER NOEUD D'UNITE (UN DN_COMPILATION_UNIT)
  
         UNIT := (P, TY=> ENTETE.NOTY, PG=> PAGET.PG, LN=> 0);				--| POINTEUR VERS CE NOEUD COMPTE TENU DE SON TYPE ET DE SON LIEU DE CHARGEMENT
          
-        FOR I IN 2 .. DI( XD_NBR_PAGES, UNIT ) LOOP					--| POUR LE NOMBRE DES AUTRES PAGES
+        for I in 2 .. DI( XD_NBR_PAGES, UNIT ) loop					--| POUR LE NOMBRE DES AUTRES PAGES
           PAGET := MAKE( NODE_NAME'VAL( 0 ), ATTR_NBR( LINE_IDX'LAST ) );			--| ALLOUER UNE NOUVELLE PAGE (SOUS FORME DE NOEUD) DANS L'ARBRE DE LA COMPILATION
-          SEQ_IO.READ( LIB_FILE, PAG( ASSOC_PAGE( PAGET.PG ) ).DATA.ALL );			--| LIRE LA PAGE
-        END LOOP;
-      END LECTURES;
+          SEQ_IO.READ( LIB_FILE, PAG( ASSOC_PAGE( PAGET.PG ) ).DATA.all );			--| LIRE LA PAGE
+        end loop;
+      end LECTURES;
          
       SEQ_IO.CLOSE( LIB_FILE );							--| FERMER LE FICHIER ARBRE LIBRARISE
-    END LIRE_BLOCS_PAGES;
+    end LIRE_BLOCS_PAGES;
 
-    DECLARE      
+    declare      
       OLD_PTR	: TREE	:= D( XD_LIB_NAME, UNIT );					--| UN ANCIEN POINTEUR DANS LA PREMIERE PAGE
-    BEGIN
+    begin
       DLTA := INTEGER( UNIT.PG ) - INTEGER( OLD_PTR.PG );					--| DECALAGE DE PAGE SUITE AU CHARGEMENT
-    END;
+    end;
     UNIT_TIMESTAMP := DI( XD_TIMESTAMP, UNIT );						--| RECUPERER L'ESTAMPILLE TEMPORELLE
       
 LOAD_WITHED:
-    DECLARE
+    declare
       WUNIT_SEQ		: SEQ_TYPE	:= LIST( UNIT );				--| LISTE XD_WITH_LIST DES UNITES "WITHED"
       WUNIT_LIST		: TREE		:= WUNIT_SEQ.FIRST;				--| POINTEUR ELEMENT DE LISTE DES UNITES "WITHED"
       WUNIT		: TREE;							--| UNE UNITE "WITHED" DE L'UNITE CHARGEE
-    BEGIN
-      IF WUNIT_LIST /= TREE_NIL THEN							--| SI LISTE NON VIDE
-        WHILE WUNIT_LIST.TY = DN_LIST LOOP						--| TANT QUE LA LISTE SE POURSUIT
+    begin
+      if WUNIT_LIST /= TREE_NIL then							--| SI LISTE NON VIDE
+        while WUNIT_LIST.TY = DN_LIST loop						--| TANT QUE LA LISTE SE POURSUIT
           WUNIT      := D( XD_HEAD, OFFSET( WUNIT_LIST ) );					--| POINTEUR D'UNITE "WITHED" COMPTE TENU DU DÉCALAGE DE PAGE AU CHARGEMENT
           WUNIT_LIST := D( XD_TAIL, OFFSET( WUNIT_LIST ) );					--| AVANCER LE POINTEUR DE LISTE
           LOAD_WITHED_UNIT( WUNIT );							--| CHARGER L'UNITE "WITHED" DE CELLE CHARGEE
-        END LOOP;
+        end loop;
         LOAD_WITHED_UNIT( WUNIT_LIST );							--| CHARGER LA DERNIERE EN QUEUE
-      END IF;
-    END LOAD_WITHED;
+      end if;
+    end LOAD_WITHED;
 
     RELOCATE_UNIT( UNIT, LIST( UNIT ) );							--| TRANSLATER LES POINTEURS DE L'UNITE ET DE SES WITHED
     LOADED_UNIT_LIST := INSERT( LOADED_UNIT_LIST, UNIT );					--| INSERER DANS LA LISTE DES UNITES CHARGEES
     LIST( FILESYM, INSERT( (TREE_NIL,TREE_NIL), UNIT ) );					--| REPORTER L'UNITE DANS LE SYMBOLE CORRESPONDANT
-    RETURN UNIT;
+    return UNIT;
          
-  EXCEPTION
-    WHEN NAME_ERROR =>
+  exception
+    when NAME_ERROR =>
       PUT( "PAS TROUVE " & GET_LIB_PREFIX );
       PUT_LINE( PRINT_NAME( FILESYM ) );
       LIST( FILESYM, INSERT( (TREE_NIL,TREE_NIL), TREE_VOID ) );
-      RETURN TREE_VOID;
-  END LOAD_UNIT;
+      return TREE_VOID;
+  end LOAD_UNIT;
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE LOAD_UNIT
-  FUNCTION LOAD_UNIT ( PRI, SEC :STRING ) RETURN TREE IS
-  BEGIN
-    RETURN LOAD_UNIT( MAKE_FILE_SYM( PRI, SEC ) );
-  END LOAD_UNIT;
+  function LOAD_UNIT ( PRI, SEC :STRING ) return TREE is
+  begin
+    return LOAD_UNIT( MAKE_FILE_SYM( PRI, SEC ) );
+  end LOAD_UNIT;
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE INTEGRER_EN_FERMETURE_DES_WITH
   --|
-  PROCEDURE INTEGRER_EN_FERMETURE_DES_WITH ( UNIT :TREE ) IS
-  BEGIN
+  procedure INTEGRER_EN_FERMETURE_DES_WITH ( UNIT :TREE ) is
+  begin
 
 VERIFIER_SI_DEJA_EN_FERMETURE:
-    DECLARE
+    declare
       FERMETURE		: SEQ_TYPE	:= TRANS_WITH_SEQ;				--| FERMETURE TRANSITIVE EN COURS
       ELEMENT		: TREE;
-    BEGIN
-      WHILE NOT IS_EMPTY( FERMETURE ) LOOP
+    begin
+      while not IS_EMPTY( FERMETURE ) loop
         POP( FERMETURE, ELEMENT );
-        IF D( TW_COMP_UNIT, ELEMENT ) = UNIT THEN						--| L UNITE A INTEGRER EN FERMETURE L A ETE ET EST DEJA EN FERMETURE
-          RETURN;									--| RIEN A FAIRE SORTIR
-        END IF;
-      END LOOP;
-    END VERIFIER_SI_DEJA_EN_FERMETURE;
+        if D( TW_COMP_UNIT, ELEMENT ) = UNIT then						--| L UNITE A INTEGRER EN FERMETURE L A ETE ET EST DEJA EN FERMETURE
+          return;									--| RIEN A FAIRE SORTIR
+        end if;
+      end loop;
+    end VERIFIER_SI_DEJA_EN_FERMETURE;
 
 INTEGRER_LES_SUBWITHES:
-    DECLARE
+    declare
       SUB_WITH_SEQ		: SEQ_TYPE	:= LIST( UNIT );				--| LISTE DE UNITES WITHEES PAR L UNITE A INTEGRER
       SUB_ELEMENT		: TREE;
-    BEGIN
-      WHILE NOT IS_EMPTY( SUB_WITH_SEQ ) LOOP
+    begin
+      while not IS_EMPTY( SUB_WITH_SEQ ) loop
         POP( SUB_WITH_SEQ, SUB_ELEMENT );
         INTEGRER_EN_FERMETURE_DES_WITH( D( TW_COMP_UNIT, SUB_ELEMENT ) );					--| RECURSION POUR INTEGRER CES "SOUS" UNITES
-      END LOOP;
-    END INTEGRER_LES_SUBWITHES;
+      end loop;
+    end INTEGRER_LES_SUBWITHES;
 
 INTEGRER_EN_FERMETURE: 
-    DECLARE
+    declare
       INTEGRAND		: TREE		:= MAKE( DN_TRANS_WITH );			--| CREER UN ELEMENT DE LIAISON DE LISTE WITH FERMETURE
-    BEGIN     
+    begin     
       D( TW_FILENAME,  INTEGRAND, STORE_TEXT( PRINT_NAME( D( XD_LIB_NAME, UNIT ) ) ) );		--| NOM
       D( TW_COMP_UNIT, INTEGRAND, UNIT );						--| UNITE WITHEE
       TRANS_WITH_SEQ := APPEND( TRANS_WITH_SEQ, INTEGRAND );				--| ENFIN AJOUTER L ELEMENT DE LIAISON EN LISTE FERMETURE
-    END INTEGRER_EN_FERMETURE;
+    end INTEGRER_EN_FERMETURE;
 
-  END INTEGRER_EN_FERMETURE_DES_WITH;
+  end INTEGRER_EN_FERMETURE_DES_WITH;
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE MAKE_USED_NAME_ID
-  FUNCTION MAKE_USED_NAME_ID ( USED_ID :TREE) RETURN TREE IS
+  function MAKE_USED_NAME_ID ( USED_ID :TREE) return TREE is
     USED_NAME_ID	: TREE	:= MAKE( DN_USED_NAME_ID );
-  BEGIN
+  begin
     D( LX_SYMREP, USED_NAME_ID, D( LX_SYMREP, USED_ID ) );
     D( LX_SRCPOS, USED_NAME_ID, D( LX_SRCPOS, USED_ID ) );
-    RETURN USED_NAME_ID;
-  END MAKE_USED_NAME_ID;
+    return USED_NAME_ID;
+  end MAKE_USED_NAME_ID;
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE UNSELECTED
-  FUNCTION UNSELECTED ( NAME :TREE ) RETURN TREE IS
-  BEGIN
-    IF NAME.TY = DN_SELECTED THEN
-      RETURN D( AS_DESIGNATOR, NAME );
-    ELSE
-      RETURN NAME;
-    END IF;
-  END UNSELECTED;
+  function UNSELECTED ( NAME :TREE ) return TREE is
+  begin
+    if NAME.TY = DN_SELECTED then
+      return D( AS_DESIGNATOR, NAME );
+    else
+      return NAME;
+    end if;
+  end UNSELECTED;
 
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE INCLUDES_PARENTS
-  PROCEDURE INCLUDES_PARENTS ( SUBUNIT :TREE ) IS
+  procedure INCLUDES_PARENTS ( SUBUNIT :TREE ) is
     PARENT_NAME_OUT_USED	: TREE	:= D( AS_NAME, SUBUNIT );				--| NAME PARENT DE LA SOUS-UNITE
     ANCESTOR_SYM		: TREE;							--| SYM DE L ANCETRE DE LA SOUS-UNITE (DETERMINE EN FOND DE RECURSION)
 
@@ -496,111 +503,111 @@ INTEGRER_EN_FERMETURE:
     FILE_CHN_L	: NATURAL	:= 0;							--| LONGUEUR D ICELLE
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE INCLUDE_PARENT
-  PROCEDURE INCLUDE_PARENT ( PARENT_NAME_OUT_USED :IN OUT TREE ) IS
-  BEGIN
+  procedure INCLUDE_PARENT ( PARENT_NAME_OUT_USED :in out TREE ) is
+  begin
 --|
 --|	CAS DU SIMPLE NOM DANS LE SEPARATE( X ) (PARENT=ANCETRE)
 --|_________________________________________________________________________________________________
-    IF PARENT_NAME_OUT_USED.TY /= DN_SELECTED THEN					--| SIMPLE NOM DANS LE SEPARATE OU ARRIVE EN BOUT DE RECURSION
+    if PARENT_NAME_OUT_USED.TY /= DN_SELECTED then					--| SIMPLE NOM DANS LE SEPARATE OU ARRIVE EN BOUT DE RECURSION
 
       ANCESTOR_SYM := D( LX_SYMREP, PARENT_NAME_OUT_USED );					--| ON A TROUVE L ANCETRE DU SEPARATE
 
-      DECLARE
-        ANCESTOR_NAME	: CONSTANT STRING	:= PRINT_NAME( ANCESTOR_SYM );
+      declare
+        ANCESTOR_NAME	: constant STRING	:= PRINT_NAME( ANCESTOR_SYM );
         ANC_UNIT		: TREE		:= LOAD_UNIT ( ANCESTOR_NAME, ".DCL" );		--| CHARGER LA SPEC DE L UNITE DU SEPARATE
-      BEGIN
+      begin
         FILE_CHN( 1 .. ANCESTOR_NAME'LENGTH ) := ANCESTOR_NAME;
         FILE_CHN_L := ANCESTOR_NAME'LENGTH;
 
 if debug_lib then put_line( "INCLUDE_PARENT simple nom terme charge " & ANCESTOR_NAME ); end if;
 
-        IF ANC_UNIT /= TREE_VOID THEN							--| DCL TROUVEE/CHARGEE OK
-          IF D( AS_ALL_DECL, ANC_UNIT ).TY = DN_SUBPROGRAM_BODY THEN				--| SI SEPARE D UN CORPS DE SOUS-PROGRAMME
+        if ANC_UNIT /= TREE_VOID then							--| DCL TROUVEE/CHARGEE OK
+          if D( AS_ALL_DECL, ANC_UNIT ).TY = DN_SUBPROGRAM_BODY then				--| SI SEPARE D UN CORPS DE SOUS-PROGRAMME
             LIST( MAKE_FILE_SYM( ANCESTOR_NAME, ".BDY" ), SINGLETON( ANC_UNIT ) );		--| CHAINER DANS LE LIB_INFO
-          ELSE
+          else
             ANC_UNIT := LOAD_UNIT( ANCESTOR_NAME, ".BDY" );					--| SEPARE D UN PAQUET, CHARGER AUSSI LE CORPS
-          END IF;
-        END IF;
+          end if;
+        end if;
 
-        IF ANC_UNIT = TREE_VOID THEN
+        if ANC_UNIT = TREE_VOID then
           ERROR( PARENT_NAME_OUT_USED, "ANCETRE INTROUVABLE - "& ANCESTOR_NAME);		--| LE DCL OU LE BDY N A PAS ETE TROUVE/CHARGE
           ANCESTOR_SYM := TREE_VOID;
-        ELSE
+        else
           INTEGRER_EN_FERMETURE_DES_WITH( ANC_UNIT );
           PARENT_NAME_OUT_USED := MAKE_USED_NAME_ID( PARENT_NAME_OUT_USED );			--| LE PARENT_NAME EST MODIFIE EN USED_NAME
           D( SM_DEFN, PARENT_NAME_OUT_USED , D( SM_FIRST, SON_1( D( AS_ALL_DECL, ANC_UNIT ) ) ) );
-        END IF;
+        end if;
 
-      END;
+      end;
 --|
 --|	CHAINE DE NOMS POUR SEPARATE( X.Y.Z )
 --|_________________________________________________________________________________________________
-    ELSE
+    else
 
       D( SM_EXP_TYPE, PARENT_NAME_OUT_USED, TREE_VOID );
 
-      DECLARE
+      declare
         GRAND_PARENT_NAME_OUT_USED	: TREE	:= D( AS_NAME,       PARENT_NAME_OUT_USED );	--| TIRER LE Y DU X.Y.Z
         PARENT_SYM			: TREE	:= D( AS_DESIGNATOR, PARENT_NAME_OUT_USED );
-        CUR_PARENT			: CONSTANT STRING	:= PRINT_NAME( D( LX_SYMREP, PARENT_SYM ) );
-      BEGIN
+        CUR_PARENT			: constant STRING	:= PRINT_NAME( D( LX_SYMREP, PARENT_SYM ) );
+      begin
         INCLUDE_PARENT( GRAND_PARENT_NAME_OUT_USED );					--| RECURSION
 
 MAJ_FILE_CHN:
-        DECLARE
+        declare
 	I_CAR_LIBRE	: NATURAL	:= FILE_CHN_L + 1;
-        BEGIN
+        begin
 	FILE_CHN_L := FILE_CHN_L + CUR_PARENT'LENGTH + 1;				--| NOUVELLE LONGUEUR AVEC LE NOM PARENT ET UN TIRET
 	FILE_CHN( I_CAR_LIBRE .. FILE_CHN_L ) := '-' & CUR_PARENT;			--| COMPLETER LA CHAINE POUR LE NOM DE FICHIER
-        END MAJ_FILE_CHN;
+        end MAJ_FILE_CHN;
 
         D( AS_NAME, PARENT_NAME_OUT_USED, GRAND_PARENT_NAME_OUT_USED );			--| REPORTER LE USED_NAME_ID
 
-        IF ANCESTOR_SYM /= TREE_VOID THEN						--| ON A VU L ANCETRE ET PAS DE PROBLEME DEPUIS
+        if ANCESTOR_SYM /= TREE_VOID then						--| ON A VU L ANCETRE ET PAS DE PROBLEME DEPUIS
 
  if debug_lib then put_line( "file_select_str " & FILE_CHN( 1.. FILE_CHN_L ) ); end if;
 
-	DECLARE
+	declare
             TEST_UNIT	: TREE	:= LOAD_UNIT( FILE_CHN( 1.. FILE_CHN_L ), ".SUB" );
-	BEGIN
+	begin
 
 
-            IF TEST_UNIT = TREE_VOID THEN
+            if TEST_UNIT = TREE_VOID then
               ERROR( PARENT_NAME_OUT_USED, "SOUS-UNITE ANCETRE INTROUVABLE - "
 		& PRINT_NAME( D( LX_SYMREP, PARENT_SYM ) ) );
               ANCESTOR_SYM := TREE_VOID;
 
-            ELSIF PRINT_NAME(
+            elsif PRINT_NAME(
 		D( LX_SYMREP, UNSELECTED( GRAND_PARENT_NAME_OUT_USED ) ) )
 		/= PRINT_NAME( D( LX_SYMREP, UNSELECTED( D( AS_NAME, D( AS_ALL_DECL, TEST_UNIT ) ) ) ) )
-            THEN
+            then
               ERROR( PARENT_NAME_OUT_USED, "NOMS ANCETRES EN CONFLIT - "
 		& PRINT_NAME( D( LX_SYMREP, UNSELECTED( PARENT_SYM ) ) )
                      );
               ANCESTOR_SYM := TREE_VOID;
-            ELSE
+            else
               INTEGRER_EN_FERMETURE_DES_WITH( TEST_UNIT );
-	    DECLARE
+	    declare
                 USED_NAME	: TREE	:= MAKE_USED_NAME_ID( PARENT_SYM );
-	    BEGIN 
+	    begin 
 	      D( SM_DEFN, USED_NAME, D( SM_FIRST, SON_1( D( AS_SUBUNIT_BODY, D( AS_ALL_DECL, TEST_UNIT ) ) ) ) );
 	      D( AS_DESIGNATOR, PARENT_NAME_OUT_USED, USED_NAME );
-	    END;
-            END IF;
-          END;
-        END IF;
+	    end;
+            end if;
+          end;
+        end if;
 
-      END;
+      end;
 
-    END IF;
-  END INCLUDE_PARENT;
-
-
+    end if;
+  end INCLUDE_PARENT;
 
 
 
 
-  BEGIN
+
+
+  begin
     INCLUDE_PARENT( PARENT_NAME_OUT_USED );						--| PARCOURS RECURSIF VERS L ANCETRE ET CHARGEMENTS EN RETOUR
 
     D( AS_NAME, SUBUNIT, PARENT_NAME_OUT_USED );						--| USED_NAME_ID PROVENANT DU PARENT_NAME_OUT_USED
@@ -630,10 +637,10 @@ MAJ_FILE_CHN:
 --      END;
 
 --    END IF;
-  END INCLUDES_PARENTS;
+  end INCLUDES_PARENTS;
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE CHECK_USE_CLAUSES
-  PROCEDURE CHECK_USE_CLAUSES ( CONTEXT_LIST_IN :SEQ_TYPE; CONTEXT_ITEM :TREE ) IS
+  procedure CHECK_USE_CLAUSES ( CONTEXT_LIST_IN :SEQ_TYPE; CONTEXT_ITEM :TREE ) is
     USE_CLAUSE_LIST		: SEQ_TYPE	:= LIST( D( AS_USE_PRAGMA_S, CONTEXT_ITEM ) );
     USE_CLAUSE		: TREE;
     USE_ID_LIST		: SEQ_TYPE;
@@ -641,129 +648,129 @@ MAJ_FILE_CHN:
          
     --|---------------------------------------------------------------------------------------------
     --|	PROCEDURE CHECK_ONE_USE_ID
-    PROCEDURE CHECK_ONE_USE_ID ( CONTEXT_LIST_IN :SEQ_TYPE; CONTEXT_ITEM, USE_ID : TREE ) IS
+    procedure CHECK_ONE_USE_ID ( CONTEXT_LIST_IN :SEQ_TYPE; CONTEXT_ITEM, USE_ID : TREE ) is
       SYMREP		: TREE;
       TEMP_CONTEXT_LIST	: SEQ_TYPE 	:= CONTEXT_LIST_IN;
       TEMP_CONTEXT_ITEM	: TREE;
       WITH_ID_LIST		: SEQ_TYPE;
       WITH_ID		: TREE;
-    BEGIN
-      IF USE_ID.TY = DN_PRAGMA THEN
-        RETURN;
-      END IF;
+    begin
+      if USE_ID.TY = DN_PRAGMA then
+        return;
+      end if;
         
-      IF USE_ID.TY /= DN_USED_OBJECT_ID THEN
+      if USE_ID.TY /= DN_USED_OBJECT_ID then
         ERROR( D( LX_SRCPOS, USE_ID ), "ONLY SIMPLE NAMES ALLOWED IN CONTEXT USE");
-      END IF;
+      end if;
          
       SYMREP := D( LX_SYMREP, USE_ID );
          
-      LOOP
+      loop
         POP( TEMP_CONTEXT_LIST, TEMP_CONTEXT_ITEM );
-        IF TEMP_CONTEXT_ITEM.TY = DN_WITH THEN
+        if TEMP_CONTEXT_ITEM.TY = DN_WITH then
           WITH_ID_LIST := LIST( D( AS_NAME_S, TEMP_CONTEXT_ITEM ) );
-          WHILE NOT IS_EMPTY( WITH_ID_LIST) LOOP
+          while not IS_EMPTY( WITH_ID_LIST) loop
             POP( WITH_ID_LIST, WITH_ID );
-            IF D( LX_SYMREP, WITH_ID ) = SYMREP THEN
+            if D( LX_SYMREP, WITH_ID ) = SYMREP then
               D( SM_DEFN, USE_ID, D( SM_DEFN, WITH_ID ) );
-              RETURN;
-            END IF;
-          END LOOP;
-        END IF;
-        EXIT WHEN TEMP_CONTEXT_ITEM = CONTEXT_ITEM;
-      END LOOP;
+              return;
+            end if;
+          end loop;
+        end if;
+        exit when TEMP_CONTEXT_ITEM = CONTEXT_ITEM;
+      end loop;
          
       ERROR( D( LX_SRCPOS, USE_ID ),
              "USE'D NAME NOT WITHED IN CURRENT CONTEXT CLAUSE - " & PRINT_NAME( SYMREP ) );
       D( SM_DEFN, USE_ID, TREE_VOID );
-    END CHECK_ONE_USE_ID;
+    end CHECK_ONE_USE_ID;
          
-  BEGIN					--CHECK_USE_CLAUSES
-    WHILE NOT IS_EMPTY( USE_CLAUSE_LIST ) LOOP
+  begin					--CHECK_USE_CLAUSES
+    while not IS_EMPTY( USE_CLAUSE_LIST ) loop
       POP( USE_CLAUSE_LIST, USE_CLAUSE );
-      IF USE_CLAUSE.TY = DN_USE THEN
+      if USE_CLAUSE.TY = DN_USE then
         USE_ID_LIST := LIST( D( AS_NAME_S, USE_CLAUSE ) );
-        WHILE NOT IS_EMPTY( USE_ID_LIST) LOOP
+        while not IS_EMPTY( USE_ID_LIST) loop
           POP( USE_ID_LIST, USE_ID );
-          IF USE_ID.TY = DN_USED_OBJECT_ID THEN
+          if USE_ID.TY = DN_USED_OBJECT_ID then
             CHECK_ONE_USE_ID( CONTEXT_LIST_IN, CONTEXT_ITEM, USE_ID );
-          END IF;
-        END LOOP;
-      END IF;
-    END LOOP;
-  END CHECK_USE_CLAUSES;
+          end if;
+        end loop;
+      end if;
+    end loop;
+  end CHECK_USE_CLAUSES;
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE PROCESS_WITH_CLAUSES
-  PROCEDURE PROCESS_WITH_CLAUSES ( COMP_UNIT : TREE ) IS
+  procedure PROCESS_WITH_CLAUSES ( COMP_UNIT : TREE ) is
     UNIT_CONTEXT_LIST	: SEQ_TYPE	:= LIST( D( AS_CONTEXT_ELEM_S, COMP_UNIT ) );
     CONTEXT_ITEM_LIST	: SEQ_TYPE	:= UNIT_CONTEXT_LIST;
     CONTEXT_ITEM		: TREE;
     WITH_NAME_LIST		: SEQ_TYPE;
     WITH_NAME		: TREE;
     UNIT			: TREE;
-  BEGIN
+  begin
 
 TRAITE_ELEMENT_DE_CONTEXTE:
-    WHILE NOT IS_EMPTY( CONTEXT_ITEM_LIST) LOOP
+    while not IS_EMPTY( CONTEXT_ITEM_LIST) loop
       POP( CONTEXT_ITEM_LIST, CONTEXT_ITEM );						--| UN ELEMENT DE CONTEXTE
             
-      IF CONTEXT_ITEM.TY = DN_WITH THEN							--| QUI EST UN WITH
+      if CONTEXT_ITEM.TY = DN_WITH then							--| QUI EST UN WITH
         WITH_NAME_LIST := LIST( D( AS_NAME_S, CONTEXT_ITEM ) );				--| TIRER LA LISTE DES NOMS WITHES
 
 TRAITE_UN_NOM_WITHE:
-        WHILE NOT IS_EMPTY( WITH_NAME_LIST ) LOOP
+        while not IS_EMPTY( WITH_NAME_LIST ) loop
           POP( WITH_NAME_LIST, WITH_NAME );						--| TIRER UN NOM WITHE
           UNIT := LOAD_UNIT( PRINT_NAME( D( LX_SYMREP, WITH_NAME ) ), ".DCL" );			--| CHARGER L UNITE WITHEE
-          IF UNIT = TREE_VOID THEN							--| ECHEC
+          if UNIT = TREE_VOID then							--| ECHEC
             ERROR( D( LX_SRCPOS, WITH_NAME ),
  		"WITHED UNIT NOT FOUND - " & PRINT_NAME( D( LX_SYMREP, WITH_NAME ) )
 		);
             D( SM_DEFN, WITH_NAME, TREE_VOID );						--| RIEN DANS LE WITH_NAME.SM_DEFN
 
-          ELSIF DI( XD_TIMESTAMP, UNIT) = CUR_TIMESTAMP THEN
+          elsif DI( XD_TIMESTAMP, UNIT) = CUR_TIMESTAMP then
             ERROR( D( LX_SRCPOS, WITH_NAME ),
                         "WITH CLAUSE REFERS TO CURRENT UNIT - " & PRINT_NAME( D( LX_SYMREP, WITH_NAME ) )
                         );
                                                 -- AVOID ERROR WHEN CHECKING USE CLAUSE LATER
             D( SM_DEFN, WITH_NAME, TREE_VOID );
 
-          ELSE
+          else
             INTEGRER_EN_FERMETURE_DES_WITH( UNIT );					--| UNITE WITHEE EN FERMETURE DES WITH
-	  DECLARE
+	  declare
 	    WITH_BODY	: TREE	:= D( AS_ALL_DECL, UNIT );
-	  BEGIN
+	  begin
 	    D( SM_DEFN, WITH_NAME, SON_1( WITH_BODY ) );
-	  END;
-          END IF;
-        END LOOP TRAITE_UN_NOM_WITHE;
+	  end;
+          end if;
+        end loop TRAITE_UN_NOM_WITHE;
 
-      END IF;
+      end if;
       CHECK_USE_CLAUSES( UNIT_CONTEXT_LIST, CONTEXT_ITEM );
-    END LOOP TRAITE_ELEMENT_DE_CONTEXTE;
+    end loop TRAITE_ELEMENT_DE_CONTEXTE;
 
-  END PROCESS_WITH_CLAUSES;
+  end PROCESS_WITH_CLAUSES;
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE WITH_FOR_ONE_COMP_UNIT
   --|
-  PROCEDURE WITH_FOR_ONE_COMP_UNIT ( COMP_UNIT :TREE ) IS
+  procedure WITH_FOR_ONE_COMP_UNIT ( COMP_UNIT :TREE ) is
     FILE_SYM		: TREE		:= D( XD_LIB_NAME, COMP_UNIT );
     UNIT_BODY		: TREE		:= D( AS_ALL_DECL, COMP_UNIT );
     UNIT_KIND		: NODE_NAME	:= UNIT_BODY.TY;
     WITH_LIST		: SEQ_TYPE	:= (TREE_NIL, TREE_NIL);
     SPC_UNIT		: TREE;
-  BEGIN
+  begin
     TRANS_WITH_SEQ := (TREE_NIL, TREE_NIL);						--| FERMETURE TRANSITIVE DES WITH INITIALEMENT VIDE
 
 WITH_STANDARD:
-    DECLARE
+    declare
       SPC_STANDRD	: TREE	:= LOAD_UNIT( "_STANDRD", ".DCL" );				--| CHARGER L UNITE PREDEFINIE
-    BEGIN
-      IF SPC_STANDRD = TREE_VOID THEN
+    begin
+      if SPC_STANDRD = TREE_VOID then
         PUT_LINE( "ERREUR : ENVIRONNEMENT PREDEFINI _STANDRD.DCL INTROUVABLE.");
-        RAISE PROGRAM_ERROR;
-      END IF;
+        raise PROGRAM_ERROR;
+      end if;
       INTEGRER_EN_FERMETURE_DES_WITH( SPC_STANDRD );					--| LA METTRE EN FERMETURE TRANSITIVE
-    END WITH_STANDARD;
+    end WITH_STANDARD;
       
 					-- CLEAR LIST OF TRANS-WITH UNITS TO AVOID ABORT IF SELF-REFERENCE
     LIST( COMP_UNIT, (TREE_NIL,TREE_NIL) );
@@ -771,64 +778,64 @@ WITH_STANDARD:
 --|
 --|		TRAITEMENT WITH DE LA SPEC POUR UNITE DE COMPILATION CORPS DE PAQUET OU DE SOUS-PROGRAMME
 --|_________________________________________________________________________________________________           
-    IF UNIT_KIND = DN_SUBPROG_ENTRY_DECL OR UNIT_KIND = DN_PACKAGE_DECL
-       OR UNIT_KIND = DN_GENERIC_DECL THEN
-      NULL;									--| PAS DE TRAITEMENT WITH SPEC POUR UNE SPEC !
-    ELSIF UNIT_KIND = DN_PACKAGE_BODY OR UNIT_KIND = DN_SUBPROGRAM_BODY THEN
-      DECLARE
-        UNIT_PRI	: CONSTANT STRING	:= PRINT_NAME( D( LX_SYMREP, SON_1( UNIT_BODY ) ) );	--| LE AS_NAME POUR CHERCHER LA SPEC
-      BEGIN
+    if UNIT_KIND = DN_SUBPROG_ENTRY_DECL or UNIT_KIND = DN_PACKAGE_DECL
+       or UNIT_KIND = DN_GENERIC_DECL then
+      null;									--| PAS DE TRAITEMENT WITH SPEC POUR UNE SPEC !
+    elsif UNIT_KIND = DN_PACKAGE_BODY or UNIT_KIND = DN_SUBPROGRAM_BODY then
+      declare
+        UNIT_PRI	: constant STRING	:= PRINT_NAME( D( LX_SYMREP, SON_1( UNIT_BODY ) ) );	--| LE AS_NAME POUR CHERCHER LA SPEC
+      begin
         SPC_UNIT := LOAD_UNIT( UNIT_PRI, ".DCL" );					--| LA SPEC DU BODY
 
 if debug_lib then put_line( "with_for_one_comp_unit load_unit : unit_pri = " & unit_pri ); end if;
 
-        IF SPC_UNIT /= TREE_VOID AND THEN UNIT_KIND = DN_SUBPROGRAM_BODY THEN			--| CHARGE UNE SPC POUR UN CORPS DE SOUS-PROGRAMME
-	DECLARE
+        if SPC_UNIT /= TREE_VOID and then UNIT_KIND = DN_SUBPROGRAM_BODY then			--| CHARGE UNE SPC POUR UN CORPS DE SOUS-PROGRAMME
+	declare
 	  SPC_UNIT_IS_DECL_NOT_INSTANTIATION	: BOOLEAN	:= 
 		D( AS_ALL_DECL, SPC_UNIT ).TY = DN_SUBPROG_ENTRY_DECL			--| LA SPEC EST UNE DECL
-	 AND THEN D( AS_UNIT_KIND, D( AS_ALL_DECL, SPC_UNIT ) ).TY /= DN_INSTANTIATION;		--| QUI N EST PAS UNE INSTANTIATION
+	 and then D( AS_UNIT_KIND, D( AS_ALL_DECL, SPC_UNIT ) ).TY /= DN_INSTANTIATION;		--| QUI N EST PAS UNE INSTANTIATION
 
 	  SPC_UNIT_IS_GENERIC_SUBP_SPEC	: BOOLEAN	:= 
 		D( AS_ALL_DECL, SPC_UNIT ).TY = DN_GENERIC_DECL				--| LA SPEC EST UNE DECL GENERIQUE
-	 AND THEN D( AS_HEADER, D( AS_ALL_DECL, SPC_UNIT ) ).TY IN CLASS_SUBP_ENTRY_HEADER;	--| ET UNE SPEC
+	 and then D( AS_HEADER, D( AS_ALL_DECL, SPC_UNIT ) ).TY in CLASS_SUBP_ENTRY_HEADER;	--| ET UNE SPEC
 
-	BEGIN
-            IF NOT ( SPC_UNIT_IS_DECL_NOT_INSTANTIATION OR SPC_UNIT_IS_GENERIC_SUBP_SPEC )							--|   QUI N A PAS
-            THEN
+	begin
+            if not ( SPC_UNIT_IS_DECL_NOT_INSTANTIATION or SPC_UNIT_IS_GENERIC_SUBP_SPEC )							--|   QUI N A PAS
+            then
               SPC_UNIT := TREE_VOID;							--| NE PAS TRAITER UNE TELLE UNITE
-            END IF;
-	END;
-        END IF;
+            end if;
+	end;
+        end if;
             
-        IF SPC_UNIT /= TREE_VOID THEN
+        if SPC_UNIT /= TREE_VOID then
           INTEGRER_EN_FERMETURE_DES_WITH( SPC_UNIT );
           D( SM_FIRST, SON_1( UNIT_BODY ), SON_1( D( AS_ALL_DECL, SPC_UNIT ) ) );
           D( XD_PARENT, COMP_UNIT, SPC_UNIT );						--| LA SPEC EST PARENT DU BDY
 
-        ELSE
-          IF UNIT_KIND = DN_PACKAGE_BODY THEN						--| POUR UN CORPS DE PAQUET
+        else
+          if UNIT_KIND = DN_PACKAGE_BODY then						--| POUR UN CORPS DE PAQUET
             ERROR( D( LX_SRCPOS, COMP_UNIT ),
 		"CANNOT WITH SPEC FOR " & PRINT_NAME( D( LX_SYMREP, SON_1( UNIT_BODY ) ) ) );
 
-          ELSE
-            DECLARE
+          else
+            declare
               FILESYM	: TREE := MAKE_FILE_SYM( UNIT_PRI, ".DCL" );
-            BEGIN
+            begin
               LIST( FILESYM, SINGLETON( COMP_UNIT ) );
               D( XD_LIB_NAME, COMP_UNIT, FILESYM );
-            END;
-          END IF;
-        END IF;
-      END;
+            end;
+          end if;
+        end if;
+      end;
 --|
 --|		TRAITEMENT WITH SCOPE POUR SOUS UNITE DE COMPILATION UNIT_KIND = SUBUNIT
 --|_________________________________________________________________________________________________        
-    ELSE
+    else
 
 if debug_lib then put_line( "with_for_one_comp_unit INCLUDES_PARENTS : unit_body = " ); PRINT_NOD.PRINT_NODE(UNIT_BODY); end if;
 
        INCLUDES_PARENTS( UNIT_BODY );						--| CHARGER TOUT CE QUI EST ENTRE LA SOUS UNITE ET SON ANCETRE Y COMPRIS
-    END IF;
+    end if;
       
     CUR_TIMESTAMP := CUR_TIMESTAMP + 1;							--| MARQUEUR TEMPOREL
     DI( XD_TIMESTAMP, COMP_UNIT, CUR_TIMESTAMP );						--| REPORTE
@@ -839,28 +846,28 @@ if debug_lib then put_line( "with_for_one_comp_unit INCLUDES_PARENTS : unit_body
     LIST( COMP_UNIT, TRANS_WITH_SEQ );
     NEW_UNIT_LIST := APPEND( NEW_UNIT_LIST, COMP_UNIT );
          
-  END WITH_FOR_ONE_COMP_UNIT;
+  end WITH_FOR_ONE_COMP_UNIT;
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE COPY_NODE
-  FUNCTION COPY_NODE ( NODE :TREE ) RETURN TREE IS
+  function COPY_NODE ( NODE :TREE ) return TREE is
     WORD_ZERO	: TREE	:= DABS( 0, NODE );
     NEW_NODE	: TREE	:= MAKE( WORD_ZERO.NOTY, WORD_ZERO.NSIZ );
-  BEGIN
-    FOR I IN 1 .. WORD_ZERO.NSIZ LOOP
+  begin
+    for I in 1 .. WORD_ZERO.NSIZ loop
       DABS( I, NEW_NODE, DABS( I, NODE ) );
-    END LOOP;
-    RETURN NEW_NODE;
-  END COPY_NODE;
+    end loop;
+    return NEW_NODE;
+  end COPY_NODE;
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE GENERATE_DUMMY_SPEC
-  PROCEDURE GENERATE_DUMMY_SPEC ( COMP_UNIT :TREE ) IS
+  procedure GENERATE_DUMMY_SPEC ( COMP_UNIT :TREE ) is
 					-- GENERATE LIBRARY UNIT FOR DEFAULT SUBPROGRAM SPEC
     SUBP_BODY		: TREE	:= D( AS_ALL_DECL, COMP_UNIT );
     SUBP_HEADER		: TREE	:= D( AS_HEADER, SUBP_BODY );
     NEW_UNIT		: TREE	:= COPY_NODE( COMP_UNIT );
     NEW_ID		: TREE	:= COPY_NODE( SON_1( SUBP_BODY ) );
     NEW_DECL		: TREE	:= MAKE( DN_SUBPROG_ENTRY_DECL );
-  BEGIN
+  begin
     D( SM_SPEC, NEW_ID, NEW_DECL );
     D( SM_FIRST, NEW_ID, NEW_ID );
       
@@ -874,155 +881,157 @@ if debug_lib then put_line( "with_for_one_comp_unit INCLUDES_PARENTS : unit_body
       
     INSERT_FILE_NAME( NEW_UNIT );
     WITH_FOR_ONE_COMP_UNIT( NEW_UNIT );
-  END GENERATE_DUMMY_SPEC;
+  end GENERATE_DUMMY_SPEC;
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE ENTER_DEFAULT_GENERIC_FORMALS
-  PROCEDURE ENTER_DEFAULT_GENERIC_FORMALS IS
+  procedure ENTER_DEFAULT_GENERIC_FORMALS is
     GENERIC_DECL		: TREE;
     FORMAL_LIST		: SEQ_TYPE;
     FORMAL		: TREE;
     SUBPROGRAM_DEF		: TREE;
     --|---------------------------------------------------------------------------------------------
     --|	PROCEDURE INSERT_SYMBOL
-    PROCEDURE INSERT_SYMBOL ( NAME :TREE ) IS
+    procedure INSERT_SYMBOL ( NAME :TREE ) is
       DUMMY	: TREE;
-    BEGIN
-      IF NAME.TY = DN_SELECTED THEN
+    begin
+      if NAME.TY = DN_SELECTED then
         INSERT_SYMBOL( D( AS_NAME, NAME ) );
         INSERT_SYMBOL( D( AS_DESIGNATOR, NAME ) );
-      ELSE									--| DOIT ETRE UN DEF_ID, DEF_OP, USED_ID, USED_OP
+      else									--| DOIT ETRE UN DEF_ID, DEF_OP, USED_ID, USED_OP
         DUMMY := STORE_SYM( PRINT_NAME( D( LX_SYMREP, NAME ) ) );
-      END IF;
-    END INSERT_SYMBOL;
+      end if;
+    end INSERT_SYMBOL;
       
-  BEGIN
-    WHILE NOT IS_EMPTY( GENERIC_LIST) LOOP
+  begin
+    while not IS_EMPTY( GENERIC_LIST) loop
       POP( GENERIC_LIST, GENERIC_DECL );
       FORMAL_LIST := LIST( D( AS_ITEM_S, GENERIC_DECL ) );
-      WHILE NOT IS_EMPTY( FORMAL_LIST) LOOP
+      while not IS_EMPTY( FORMAL_LIST) loop
         POP( FORMAL_LIST, FORMAL );
-        IF FORMAL.TY = DN_SUBPROG_ENTRY_DECL THEN
+        if FORMAL.TY = DN_SUBPROG_ENTRY_DECL then
           SUBPROGRAM_DEF := D( AS_UNIT_KIND, FORMAL );
-          IF SUBPROGRAM_DEF.TY = DN_BOX_DEFAULT THEN
+          if SUBPROGRAM_DEF.TY = DN_BOX_DEFAULT then
             INSERT_SYMBOL( D( AS_SOURCE_NAME, FORMAL ) );
-          END IF;
-        END IF;
-      END LOOP;
-    END LOOP;
-  END ENTER_DEFAULT_GENERIC_FORMALS;
+          end if;
+        end if;
+      end loop;
+    end loop;
+  end ENTER_DEFAULT_GENERIC_FORMALS;
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE ENTER_USED_DEFINING_IDS
-  PROCEDURE ENTER_USED_DEFINING_IDS IS
+  procedure ENTER_USED_DEFINING_IDS is
     UNIT		: TREE;
     PNTR		: TREE;
     WORD_ZERO	: TREE;
     NODE_TYPE	: NODE_NAME;
     SYMREP	: TREE;
-  BEGIN
-    WHILE NOT IS_EMPTY( LOADED_UNIT_LIST ) LOOP
+  begin
+    while not IS_EMPTY( LOADED_UNIT_LIST ) loop
       POP( LOADED_UNIT_LIST, UNIT );							--| RETIRER UNE UNITE CHARGEE DE LA LISTE DES CHARGEES
       PNTR := UNIT;									--| POINTER LE DEBUT D UNITE
-      FOR I IN 1 .. DI( XD_NBR_PAGES, UNIT ) LOOP
+      for I in 1 .. DI( XD_NBR_PAGES, UNIT ) loop
         PNTR.LN := LINE_IDX'FIRST;							--| A CHAQUE PAGE REVENIR A LA PREMIERE LIGNE
 
 PARCOURS_BLOCS_NOEUDS:
-        LOOP
+        loop
           WORD_ZERO := DABS( 0, PNTR );							--| POSSIBLE ENTETE DE NOEUD
-          EXIT PARCOURS_BLOCS_NOEUDS WHEN WORD_ZERO = TREE_VIRGIN;				--| SORTIR SI EN FAIT NON INITIALISE (FIN DE PARTIE DE PAGE REMPLIE)
+          exit PARCOURS_BLOCS_NOEUDS when WORD_ZERO = TREE_VIRGIN;				--| SORTIR SI EN FAIT NON INITIALISE (FIN DE PARTIE DE PAGE REMPLIE)
           PNTR.TY   := WORD_ZERO.NOTY;
           NODE_TYPE := WORD_ZERO.NOTY;
                   
-          CASE NODE_TYPE IS
-          WHEN CLASS_DEF_NAME =>							--| TOUS LES ID (DE VARIABLE_ID A BLTN_OPERATOR_ID)
+          case NODE_TYPE is
+          when CLASS_DEF_NAME =>							--| TOUS LES ID (DE VARIABLE_ID A BLTN_OPERATOR_ID)
             SYMREP := D( LX_SYMREP, PNTR );						--| PRENDRE LE SYMREP (EN PRINCIPE UN SYMBOLE POUR L ID)
-            IF SYMREP.TY = DN_TXTREP THEN						--| SI C'EST UN TXTREP (REMPLACEMENT FAIT PAR WRITE_LIB)
-              IF NODE_TYPE IN CLASS_UNIT_NAME						--| PROCEDURE_ID, FUNCTION_ID, OPERATOR_ID
-              OR ELSE (	NODE_TYPE = DN_VARIABLE_ID					--| OU VARIABLE
-                           	AND THEN D( SM_OBJ_TYPE, PNTR).TY = DN_TASK_SPEC			--| DE TYPE TACHE
+            if SYMREP.TY = DN_TXTREP then						--| SI C'EST UN TXTREP (REMPLACEMENT FAIT PAR WRITE_LIB)
+              if NODE_TYPE in CLASS_UNIT_NAME						--| PROCEDURE_ID, FUNCTION_ID, OPERATOR_ID
+              or else (	NODE_TYPE = DN_VARIABLE_ID					--| OU VARIABLE
+                           	and then D( SM_OBJ_TYPE, PNTR).TY = DN_TASK_SPEC			--| DE TYPE TACHE
                            	)
-              OR ELSE NODE_TYPE = DN_TYPE_ID						--| OU TYPE_ID
-              THEN
-                IF NODE_TYPE = DN_VARIABLE_ID OR ELSE D( SM_FIRST, PNTR ) = PNTR		--| VARIABLE_ID (TACHE) OU 
-                THEN
+              or else NODE_TYPE = DN_TYPE_ID						--| OU TYPE_ID
+              then
+                if NODE_TYPE = DN_VARIABLE_ID or else D( SM_FIRST, PNTR ) = PNTR		--| VARIABLE_ID (TACHE) OU 
+                then
                   SYMREP := STORE_SYM( PRINT_NAME( SYMREP ) );				--| STOCKER LE SYMBOLE
-                ELSIF NODE_TYPE = DN_TYPE_ID THEN						--| TYPE_ID
-                  IF D( SM_TYPE_SPEC, D( SM_FIRST, PNTR ) ).TY = DN_INCOMPLETE THEN		--| INCOMPLET
+                elsif NODE_TYPE = DN_TYPE_ID then						--| TYPE_ID
+                  if D( SM_TYPE_SPEC, D( SM_FIRST, PNTR ) ).TY = DN_INCOMPLETE then		--| INCOMPLET
                     D( XD_FULL_TYPE_SPEC, D( SM_TYPE_SPEC, D( SM_FIRST, PNTR ) ), D( SM_TYPE_SPEC, PNTR ) );
-                  END IF;
-                END IF;
-              ELSE									--| AUTRES DE LA CLASSE DEF_NAME
+                  end if;
+                end if;
+              else									--| AUTRES DE LA CLASSE DEF_NAME
                 SYMREP := FIND_SYM( PRINT_NAME( SYMREP ) );					--| CHERCHER SI LA COMPILATION PRESENTE MENTIONNE CE SYMBOLE
-              END IF;
-              IF SYMREP /= TREE_VOID THEN						--| S'IL EST PRESENT
+              end if;
+              if SYMREP /= TREE_VOID then						--| S'IL EST PRESENT
                 D( LX_SYMREP, PNTR, SYMREP );						--| LE METTRE DANS LE LX_SYMREP DU POINTEUR DE L'UNITE CHARGEE
-              END IF;
-            END IF;
+              end if;
+            end if;
 
-          WHEN CLASS_DESIGNATOR =>							--| LES USED_OP, USED_NAME_ID, USED_CHAR, USED_OBJECT_ID 
+          when CLASS_DESIGNATOR =>							--| LES USED_OP, USED_NAME_ID, USED_CHAR, USED_OBJECT_ID 
             SYMREP := D( SM_DEFN, PNTR );						--| PRENDRE LE DEF_NAME
-            IF SYMREP.PG > 0 AND THEN SYMREP.TY IN CLASS_DEF_NAME THEN			--| POINTEUR DE BONNE FACTURE
+            if SYMREP.PG > 0 and then SYMREP.TY in CLASS_DEF_NAME then			--| POINTEUR DE BONNE FACTURE
               SYMREP :=  D( LX_SYMREP, SYMREP );						--| PRENDRE LE SYMBOLE
-              IF SYMREP.TY = DN_SYMBOL_REP THEN						--| SI C'EST UN SYMBOLE
+              if SYMREP.TY = DN_SYMBOL_REP then						--| SI C'EST UN SYMBOLE
                 D( LX_SYMREP, PNTR, SYMREP );						--| LE RECOLLER DANS LE POINTEUR
-              END IF;
-            END IF;
+              end if;
+            end if;
  
-          WHEN OTHERS =>
-            NULL;
-          END CASE;
+          when others =>
+            null;
+          end case;
 
-	EXIT PARCOURS_BLOCS_NOEUDS WHEN PNTR.LN >= LINE_IDX'LAST - WORD_ZERO.NSIZ;
+	exit PARCOURS_BLOCS_NOEUDS when PNTR.LN >= LINE_IDX'LAST - WORD_ZERO.NSIZ;
           PNTR.LN := PNTR.LN + WORD_ZERO.NSIZ + 1;
-        END LOOP PARCOURS_BLOCS_NOEUDS;
+        end loop PARCOURS_BLOCS_NOEUDS;
 
         PNTR.PG := PNTR.PG + 1;
-      END LOOP;
+      end loop;
 
-    END LOOP;
-  END ENTER_USED_DEFINING_IDS;
+    end loop;
+  end ENTER_USED_DEFINING_IDS;
    
-BEGIN
+begin
   OPEN_IDL_TREE_FILE ( IDL.LIB_PATH( 1..LIB_PATH_LENGTH ) & "$$$.TMP" );			--| OUVRIR L'ARBRE DIANA DE TRAVAIL
       
-  IF DI( XD_ERR_COUNT, TREE_ROOT) > 0 THEN						--| S'IL Y A DES ERREURS
+  if DI( XD_ERR_COUNT, TREE_ROOT) > 0 then						--| S'IL Y A DES ERREURS
     PUT_LINE( "IDL.LIB_PHASE : LIBPHASE PAS FAIT, IL Y A DES ERREURS ANTERIEURES");
-  ELSE										--| PAS D'ERREUR
-    DECLARE
+  else										--| PAS D'ERREUR
+    declare
       USER_ROOT	: TREE		:= D( XD_USER_ROOT, TREE_ROOT );			--| RACINE "USER" DU FICHIER
       COMPILATION	: TREE		:= D( XD_STRUCTURE, USER_ROOT );			--| NOEUD "COMPILATION"
       COMP_UNIT_SEQ	: SEQ_TYPE	:= LIST( D( AS_COMPLTN_UNIT_S, COMPILATION));		--| LISTE DES UNITES COMPILEES
       COMP_UNIT	: TREE;
-      SRC_NAME	: CONSTANT STRING	:= PRINT_NAME( D( XD_SOURCENAME, USER_ROOT ) );
-    BEGIN
-      IF SRC_NAME /= "_STANDRD.ADA" THEN						--| PAS DE LIB_PHASE POUR LE PACKAGE SPECIAL _STANDRD
+      SRC_NAME	: constant STRING	:= PRINT_NAME( D( XD_SOURCENAME, USER_ROOT ) );
+    begin
+
+      if SRC_NAME /= "_STANDRD.ADA" then						--| PAS DE LIB_PHASE POUR LE PACKAGE SPECIAL _STANDRD
         OPEN_LIBRARY;								--| OUVRIR LE FICHIER DE CONTROLE DE LIBRAIRIE ET LIRE LES LIGNES
             
-        WHILE NOT IS_EMPTY( COMP_UNIT_SEQ ) LOOP						--| TANT QU'IL Y A DES UNITES COMPILEES
+        while not IS_EMPTY( COMP_UNIT_SEQ ) loop						--| TANT QU'IL Y A DES UNITES COMPILEES
           POP( COMP_UNIT_SEQ, COMP_UNIT );						--| PRENDRE UNE UNITE
-          IF D( AS_ALL_DECL, COMP_UNIT ).TY = DN_VOID THEN					--| UNITE NE CONTENANT RIEN
+          if D( AS_ALL_DECL, COMP_UNIT ).TY = DN_VOID then					--| UNITE NE CONTENANT RIEN
             PUT_LINE ( "IDL.LIB_PHASE : PAS D'UNITE NE CONTENANT QUE DES PRAGMAS" );
-          ELSE
+          else
             INSERT_FILE_NAME( COMP_UNIT );
 --|
 --|		TRAITER LES WITH
 --|
             WITH_FOR_ONE_COMP_UNIT( COMP_UNIT );
 
-          END IF;
-        END LOOP;
+          end if;
+        end loop;
             
         LIST( D( AS_COMPLTN_UNIT_S, COMPILATION ), NEW_UNIT_LIST );
-        IF DI( XD_ERR_COUNT, TREE_ROOT ) = 0 THEN						--| PAS D'ERREUR
+        if DI( XD_ERR_COUNT, TREE_ROOT ) = 0 then						--| PAS D'ERREUR
           CLOSE_LIBRARY;								--| MAJ ET FERMER LE FICHIER CONTROLE DE LIBRAIRIE
-        END IF;
+        end if;
             
         ENTER_DEFAULT_GENERIC_FORMALS;
         ENTER_USED_DEFINING_IDS;
-      END IF;
-    END;
-  END IF;
+      end if;
+    end;
+  end if;
       
   CLOSE_IDL_TREE_FILE;								--| FERMER L'ARBRE DE TRAVAIL
       
---|-------------------------------------------------------------------------------------------------
-END LIB_PHASE;
+	---------
+end	LIB_PHASE;
+	---------

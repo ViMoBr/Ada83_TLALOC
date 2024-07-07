@@ -1,45 +1,49 @@
 
-   --|	RESPECTER LA CASSE DES CARACTERES DES TYPES, LE COMPILATEUR Y PRETE ATTENTION
+   --|	ATTENTION : RESPECTER LA CASSE DES CARACTERES DES TYPES, LE COMPILATEUR Y PRETE ATTENTION
 
-    package _standrd is				--| Package invisible aux programmes
-   
-   
-   --|----------------------------------------------------------------------------------------------
-   --|	package STANDARD
-   --|----------------------------------------------------------------------------------------------
-       package STANDARD is				--| Le package STANDARD visible aux programmes
+				--------
+package				_standrd								--| Package invisible aux programmes
+is				--------
+
+
+					--------
+  package					STANDARD
+  is					--------
       
-         type BOOLEAN	is (FALSE, TRUE);
+    type BOOLEAN			is (FALSE, TRUE);
       
-         type INTEGER	is range - 16#8000# .. 16#7FFF#;
-         type LONG_INTEGER	is range - 16#8000_0000# .. 16#7FFF_FFFF#;
+    type SHORT_INTEGER		is range -2**15 .. 2**15-1;
+    type INTEGER			is range -2**31 .. 2**31-1;
+    type LONG_INTEGER		is range -2**63 .. 2**63-1;
       
-         type FLOAT		is digits  6 range - 16#1.FFFF_FE# * 2**126 .. 16#1.FFFF_FE# * 2**126;
-         type LONG_FLOAT	is digits 15 range - 16#1.FFFF_FFFF_FFFF_F# * 2**1022 .. 16#1.FFFF_FFFF_FFFF_F# * 2**1022;
+    type FLOAT			is digits  6 range -1.0E38 .. 1.0E38;
+    type LONG_FLOAT			is digits 15 range -1.0E308 .. 1.0E308;
       
-         type CHARACTER is (
-         _nul,  _soh,  _stx,  _etx,	  _eot, _enq,  _ack,  _bel,
-         _bs,   _ht,   _lf,   _vt,	  _ff,  _cr,   _so,   _si,
-         _dle,  _dc1,  _dc2,  _dc3,	  _dc4, _nak,  _syn,  _etb,
-         _can,  _em,   _sub,  _esc,	  _fs,  _gs,   _rs,   _us,
+    type CHARACTER is (
+	_nul,  _soh,  _stx,  _etx,	  _eot, _enq,  _ack,  _bel,
+	_bs,   _ht,   _lf,   _vt,	  _ff,  _cr,   _so,   _si,
+	_dle,  _dc1,  _dc2,  _dc3,	  _dc4, _nak,  _syn,  _etb,
+	_can,  _em,   _sub,  _esc,	  _fs,  _gs,   _rs,   _us,
          
-         ' ',  '!',  '"',  '#',    '$',  '%',  '&',  ''',
-         '(',  ')',  '*',  '+',    ',',  '-',  '.',  '/',
-         '0',  '1',  '2',  '3',    '4',  '5',  '6',  '7',
-         '8',  '9',  ':',  ';',    '<',  '=',  '>',  '?',
+	' ',  '!',  '"',  '#',    '$',  '%',  '&',  ''',
+	'(',  ')',  '*',  '+',    ',',  '-',  '.',  '/',
+	'0',  '1',  '2',  '3',    '4',  '5',  '6',  '7',
+	'8',  '9',  ':',  ';',    '<',  '=',  '>',  '?',
          
-         '@',  'A',  'B',  'C',    'D',  'E',  'F',  'G',
-         'H',  'I',  'J',  'K',    'L',  'M',  'N',  'O',
-         'P',  'Q',  'R',  'S',    'T',  'U',  'V',  'W',
-         'X',  'Y',  'Z',  '[',    '\',  ']',  '^',  '_',
+	'@',  'A',  'B',  'C',    'D',  'E',  'F',  'G',
+	'H',  'I',  'J',  'K',    'L',  'M',  'N',  'O',
+	'P',  'Q',  'R',  'S',    'T',  'U',  'V',  'W',
+	'X',  'Y',  'Z',  '[',    '\',  ']',  '^',  '_',
          
-         '`',  'a',  'b',  'c',    'd',  'e',  'f',  'g',
-         'h',  'i',  'j',  'k',    'l',  'm',  'n',  'o',
-         'p',  'q',  'r',  's',    't',  'u',  'v',  'w',
-         'x',  'y',  'z',  '{',    '|',  '}',  '~',  _del
-         );
-      
-          package ASCII is
+	'`',  'a',  'b',  'c',    'd',  'e',  'f',  'g',
+	'h',  'i',  'j',  'k',    'l',  'm',  'n',  'o',
+	'p',  'q',  'r',  's',    't',  'u',  'v',  'w',
+	'x',  'y',  'z',  '{',    '|',  '}',  '~',  _del
+	);
+
+		-----
+    package	ASCII
+    is		-----
          
             NUL  : constant CHARACTER := _nul;  SOH  : constant CHARACTER := _soh;
             STX  : constant CHARACTER := _stx;  ETX  : constant CHARACTER := _etx;
@@ -94,46 +98,50 @@
             LC_U : constant CHARACTER := 'u';   LC_V : constant CHARACTER := 'v';
             LC_W : constant CHARACTER := 'w';   LC_X : constant CHARACTER := 'x';
             LC_Y : constant CHARACTER := 'y';   LC_Z : constant CHARACTER := 'z';
-         
-         end ASCII;
+
+	-----
+    end	ASCII;
+	-----
+
+    subtype NATURAL		is INTEGER range 0 .. 2147483647;
+    subtype POSITIVE	is INTEGER range 1 .. 2147483647;
       
-         subtype NATURAL  is INTEGER range 0 .. 16#7FFF#;
-         subtype POSITIVE is INTEGER range 1 .. 16#7FFF#;
+    type STRING	is array (POSITIVE range <>) of CHARACTER;
+	-- pragma PACK(STRING);
       
-         type STRING is array (POSITIVE range <>) of CHARACTER;
-      -- pragma PACK(STRING);
+    type DURATION	is delta 2#1.0#E-14 range -86_400.0 .. 86_400.0;
       
-         type DURATION is delta 2#1.0#E-14 range -86_400.0 .. 86_400.0;
+    CONSTRAINT_ERROR	: exception;
+    NUMERIC_ERROR	: exception;
+    PROGRAM_ERROR	: exception;
+    STORAGE_ERROR	: exception;
+    TASKING_ERROR	: exception;
       
-         CONSTRAINT_ERROR : exception;
-         NUMERIC_ERROR    : exception;
-         PROGRAM_ERROR    : exception;
-         STORAGE_ERROR    : exception;
-         TASKING_ERROR    : exception;
-      
-      --| Type de base invisible renommé en ADDRESS (le type visible) dans SYSTEM
-         type _address is new LONG_INTEGER;
-      
-      
-      
-      
-      
-      private
+		--| Type de base invisible renommé en ADDRESS (le type visible) dans SYSTEM
+
+    type _address	is new LONG_INTEGER;
+
+
+    private
       
       --| Ce type est invisible, il doit être en minuscules et sert de type de base pour DURATION
-         type _duration is delta 2#1.0#E-14 range - 16#20000.0# .. 16#1FFFF.FFFC#;
+
+    type _duration is delta 2#1.0#E-14 range - 16#20000.0# .. 16#1FFFF.FFFC#;
       
       -- Specification of implementation sizes
-         for BOOLEAN'size	use 1;
-         for CHARACTER'size	use 8;
-         for INTEGER'size	use 16;
-         for LONG_INTEGER'size	use 32;
-         for FLOAT'size	use 32;
-         for LONG_FLOAT'size	use 64;
-         for DURATION'size	use 32;
-         
-      end STANDARD;
+	for BOOLEAN'size		use 1;
+	for CHARACTER'size		use 8;
+	for SHORT_INTEGER'size	use 16;
+	for INTEGER'size		use 16;
+	for LONG_INTEGER'size	use 64;
+	for FLOAT'size		use 32;
+	for LONG_FLOAT'size		use 64;
+	for DURATION'size		use 32;
+
+	--------
+  end	STANDARD;
+	--------
    
-   
-   --|----------------------------------------------------------------------------------------------
-   end _standrd;
+	--------
+end	_standrd;
+	--------

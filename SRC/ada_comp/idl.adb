@@ -495,7 +495,7 @@ is				---
 
 
 		---------
-  procedure	PAR_PHASE		( NOM_TEXTE, LIB_PATH :STRING ) is separate;
+  procedure	PAR_PHASE		( PATH_TEXTE, NOM_TEXTE, LIB_PATH :STRING ) is separate;
 
 		---------
   procedure	LIB_PHASE		is separate;

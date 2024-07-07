@@ -1,4 +1,4 @@
-V "GNAT Lib v13"
+V "GNAT Lib v12"
 M P W=b
 A -g
 A -gnat83
@@ -12,7 +12,7 @@ RV NO_FIXED_POINT
 RV NO_IO
 RV NO_DYNAMIC_SIZED_OBJECTS
 
-U ada_comp%b		ada_comp.adb		772d36f3 NE OO SU IU
+U ada_comp%b		ada_comp.adb		511f767c NE OO SU IU
 Z ada.strings.text_buffers%s  a-sttebu.adb	a-sttebu.ali
 W calendar%s		calendar.ads		calendar.ali
 W code_gen%s		code_gen.adb		code_gen.ali
@@ -22,59 +22,45 @@ Z system.concat_3%s	s-conca3.adb		s-conca3.ali
 Z system.img_int%s	s-imgint.adb		s-imgint.ali
 W text_io%s		text_io.ads		text_io.ali
 
-D ada.ads		20230426070939 76789da1 ada%s
-D a-assert.ads		20230426070939 ba465f5c ada.assertions%s
-D a-calend.ads		20230426070939 f55c50a3 ada.calendar%s
-D a-except.ads		20230426070939 2a7d8d70 ada.exceptions%s
-D a-ioexce.ads		20230426070939 40018c65 ada.io_exceptions%s
-D a-numeri.ads		20230426070939 84bea7a3 ada.numerics%s
-D a-nubinu.ads		20230426070939 93f1f3d1 ada.numerics.big_numbers%s
-D a-nbnbig.ads		20230426070939 711e0174 ada.numerics.big_numbers.big_integers_ghost%s
-D a-stream.ads		20230426070939 119b8fb3 ada.streams%s
-D a-string.ads		20230426070939 90ac6797 ada.strings%s
-D a-sttebu.ads		20230426070939 f1ad67a2 ada.strings.text_buffers%s
-D a-stuten.ads		20230426070939 c6ced0ae ada.strings.utf_encoding%s
-D a-tags.ads		20230426070939 9eaa38c6 ada.tags%s
-D a-textio.ads		20230426070939 5c2c6153 ada.text_io%s
-D a-unccon.ads		20230426070939 0e9b276f ada.unchecked_conversion%s
-D ada_comp.adb		20240622092521 580ed084 ada_comp%b
-D calendar.ads		20230426070939 2cb525cd calendar%s
+D ada.ads		20230508121439 76789da1 ada%s
+D a-calend.ads		20230508121439 f55c50a3 ada.calendar%s
+D a-except.ads		20230508121439 2a7d8d70 ada.exceptions%s
+D a-ioexce.ads		20230508121439 40018c65 ada.io_exceptions%s
+D a-stream.ads		20230508121439 119b8fb3 ada.streams%s
+D a-string.ads		20230508121439 90ac6797 ada.strings%s
+D a-sttebu.ads		20230508121439 18209c64 ada.strings.text_buffers%s
+D a-stuten.ads		20230508121439 33c54060 ada.strings.utf_encoding%s
+D a-tags.ads		20230508121439 9eaa38c6 ada.tags%s
+D a-textio.ads		20230508121439 deada98a ada.text_io%s
+D a-unccon.ads		20230508121439 0e9b276f ada.unchecked_conversion%s
+D ada_comp.adb		20240707113835 c26e6884 ada_comp%b
+D calendar.ads		20230508121439 2cb525cd calendar%s
 D code_gen.ads		20230823210317 9ce3fa93 code_gen%s
 D diana_node_attr_class_names.ads  20240622095819 6d94ff6d diana_node_attr_class_names%s
-D idl.ads		20240622091208 bec7f1b1 idl%s
-D interfac.ads		20230426070939 15f799c2 interfaces%s
-D i-cstrea.ads		20230426070939 e53d8b8e interfaces.c_streams%s
-D system.ads		20230426070939 426dafb8 system%s
-D s-assert.ads		20230426070939 9c4520c7 system.assertions%s
-D s-casuti.ads		20230426070939 cf13d755 system.case_util%s
-D s-conca2.ads		20230426070939 b5fb73f7 system.concat_2%s
-D s-conca3.ads		20230426070939 8a7a19a2 system.concat_3%s
-D s-crtl.ads		20230426070939 8a0692f8 system.crtl%s
-D s-exctab.ads		20230426070939 91bef6ef system.exception_table%s
-D s-ficobl.ads		20230426070939 dc5161d4 system.file_control_block%s
-D s-imagei.ads		20230426070939 c707dfd0 system.image_i%s
-D s-imgint.ads		20230426070939 d4a52a9b system.img_int%s
-D s-parame.ads		20230426070939 d494a4a6 system.parameters%s
-D s-putima.ads		20230426070939 17291fe4 system.put_images%s
-D s-secsta.ads		20230426070939 578279f5 system.secondary_stack%s
-D s-soflin.ads		20230426070939 df77073e system.soft_links%s
-D s-stache.ads		20230426070939 0b81c1fe system.stack_checking%s
-D s-stalib.ads		20230426070939 1c9580f6 system.standard_library%s
-D s-stoele.ads		20230426070939 ab5468e4 system.storage_elements%s
-D s-stoele.adb		20230426070939 8f5a9db6 system.storage_elements%b
-D s-traent.ads		20230426070939 c81cbf8c system.traceback_entries%s
-D s-unstyp.ads		20230426070939 fa2a7f59 system.unsigned_types%s
-D s-valint.ads		20230426070939 1f610d7a system.val_int%s
-D s-valuns.ads		20230426070939 e8a1f424 system.val_uns%s
-D s-valuti.ads		20230426070939 fcd603d8 system.val_util%s
-D s-valuei.ads		20230426070939 11081e09 system.value_i%s
-D s-vaispe.ads		20230426070939 44130d39 system.value_i_spec%s
-D s-valueu.ads		20230426070939 18770347 system.value_u%s
-D s-vauspe.ads		20230426070939 a67b2f28 system.value_u_spec%s
-D s-wchcon.ads		20230426070939 d9032363 system.wch_con%s
-D s-widuns.ads		20230426070939 866a5800 system.wid_uns%s
-D s-widthu.ads		20230426070939 b32f15e2 system.width_u%s
-D text_io.ads		20230426070939 21b2c898 text_io%s
+D idl.ads		20240707112854 0295093e idl%s
+D interfac.ads		20230508121439 edec285f interfaces%s
+D i-cstrea.ads		20230508121439 e53d8b8e interfaces.c_streams%s
+D system.ads		20230508121439 a2da961d system%s
+D s-conca2.ads		20230508121439 3d460502 system.concat_2%s
+D s-conca3.ads		20230508121439 9078e860 system.concat_3%s
+D s-crtl.ads		20230508121439 8a0692f8 system.crtl%s
+D s-exctab.ads		20230508121439 91bef6ef system.exception_table%s
+D s-ficobl.ads		20230508121439 dc5161d4 system.file_control_block%s
+D s-imagei.ads		20230508121439 0d3f86a7 system.image_i%s
+D s-imgint.ads		20230508121439 bdb6f5ec system.img_int%s
+D s-parame.ads		20230508121439 d494a4a6 system.parameters%s
+D s-putima.ads		20230508121439 4e095881 system.put_images%s
+D s-secsta.ads		20230508121439 62cd9202 system.secondary_stack%s
+D s-soflin.ads		20230508121439 df77073e system.soft_links%s
+D s-stache.ads		20230508121439 0b81c1fe system.stack_checking%s
+D s-stalib.ads		20230508121439 1c9580f6 system.standard_library%s
+D s-stoele.ads		20230508121439 6d8e1ff4 system.storage_elements%s
+D s-stoele.adb		20230508121439 8f5a9db6 system.storage_elements%b
+D s-traent.ads		20230508121439 c81cbf8c system.traceback_entries%s
+D s-unstyp.ads		20230508121439 fa2a7f59 system.unsigned_types%s
+D s-wchcon.ads		20230508121439 d9032363 system.wch_con%s
+D text_io.ads		20230508121439 21b2c898 text_io%s
+D unchconv.ads		20230508121439 ca2f9e18 unchecked_conversion%s
 G a e
 G c Z b b [ada_comp standard 9 41 none]
 G r c none [ada_comp standard 9 41 none] [pretty_diana idl 31 13 none]
@@ -84,51 +70,53 @@ G r c none [ada_comp standard 9 41 none] [sem_phase idl 28 13 none]
 G r c none [ada_comp standard 9 41 none] [err_phase idl 29 13 none]
 G r c none [ada_comp standard 9 41 none] [write_lib idl 30 13 none]
 G r c none [ada_comp standard 9 41 none] [code_gen standard 3 15 none]
-X 3 a-calend.ads
-42I9*Time<226I9> 16|17r44
-56V13*Clock{42I9} 16|68s13 80s13
-112V14*"-"{duration} 16|81s56
+X 2 a-calend.ads
+42I9*Time<226I9> 12|19r44
+56V13*Clock{42I9} 12|70s13 95s13
+112V14*"-"{duration} 12|96s56
 226I9 Time_Rep<long_long_integer>
-X 14 a-textio.ads
-519U14*Put 16|81s3
-537U14*Get_Line 16|20s3
-566U14*Put_Line 16|67s3
-X 16 ada_comp.adb
-9U41*ADA_COMP 9b41 84l9 84t17
-12a3 COMMAND{string} 20m13 29r22 31r22 34r57 45r22 47r22 50r43 57r22 58r17
-13i3 CMD_LENGTH{natural} 20m22
-14a3 NOM_TEXTE{string} 50m7 67r25 71r25
-15i3 NOM_TEXTE_LENGTH{natural} 49m7 50r21 67r39 71r39
-16e3 OPTION{character} 58m7 62r6 62r22 62r38 63r23 72r20 73r28 74r28 75r28
-. 76r28
-17i3 TIME_1{3|42I9} 68m3 81r58
-17i11 TIME_2{3|42I9} 80m3 81r49
-23i5 NC1{natural} 29r31 29m45 29r52 30r14 33r40 34r66 44m7 45r31 45m45 45r52
-. 46r14 49r34 50r52 56m7 57r31 57m45 57r52 58r26
-24i5 NC2{natural} 30m7 31r31 31m45 31r52 33r34 34r73 44r14 46m7 47r31 47m45
-. 47r52 49r28 50r59 56r14
-27q1 ISOLE_PROJECT_DIR_PATH 35l9 35e31
-42q1 ISOLE_RELATIVE_SOURCE_PATH 52l9 52e35
-54q1 ISOLE_OPTION 59l9 59e21
-79L3 FIN 72r43 73r51 74r51 75r51 76r51
-X 17 calendar.ads
-18K9*Calendar=18:30 16|5w15 6r15 17r35
-X 18 code_gen.ads
-3U15*Code_Gen 16|7w11 77s3
-X 20 idl.ads
-8K33*IDL 16|7w6 33r7 34r7 34r28 37r5 37r28 37r54 38r5 38r22 39r12 39r35 40r14
-. 63r5 70r3 70r19 70r40 71r59 73r3 74r3 75r3 76r3 20|126e12
-11a3*PROJECT_PATH{string} 16|34m11 39r16 70r23
-12i3*PROJECT_PATH_LENGTH{natural} 16|33m11 34r32 37r32 39r39 70r44
-14a3*LIB_PATH{string} 16|38m9 71r63
-15i3*LIB_PATH_LENGTH{natural} 16|37m9 38r26
-16a3*DEFAULT_LIB_PATH{string} 16|37r58 40r18
-26U13*PAR_PHASE 16|70s7
-27U13*LIB_PHASE 16|73s7
-28U13*SEM_PHASE 16|74s7
-29U13*ERR_PHASE 16|75s7
-30U13*WRITE_LIB 16|76s7
-31U13*PRETTY_DIANA 16|63s9
-X 53 text_io.ads
-24K9*Text_IO=24:29 16|5w6 6r6
+X 10 a-textio.ads
+464U14*Put 12|96s3
+480U14*Get_Line 12|22s3
+507U14*Put_Line 12|69s3
+X 12 ada_comp.adb
+9U41*ADA_COMP 9b41 99l9 99t17
+12a3 COMMAND{string} 22m13 31r22 33r22 36r57 47r22 49r22 52r47 59r22 60r17
+13i3 CMD_LENGTH{natural} 22m22
+15a3 ACCES_TEXTE{string} 52m7 69r25 77r11 82r76 83r17
+16i3 ACCES_TEXTE_LENGTH{natural} 51m7 52r23 69r41 74r44 83r55
+18e3 OPTION{character} 60m7 64r6 64r22 64r38 65r23 85r20 88r28 89r28 90r28
+. 91r28
+19i3 TIME_1{2|42I9} 70m3 96r58
+19i11 TIME_2{2|42I9} 95m3 96r49
+25i5 NC1{natural} 31r31 31m45 31r52 32r14 35r40 36r66 46m7 47r31 47m45 47r52
+. 48r14 51r36 52r56 58m7 59r31 59m45 59r52 60r26
+26i5 NC2{natural} 32m7 33r31 33m45 33r52 35r34 36r73 46r14 48m7 49r31 49m45
+. 49r52 51r30 52r63 58r14
+29q1 ISOLE_PROJECT_DIR_PATH 37l9 37e31
+44q1 ISOLE_RELATIVE_SOURCE_PATH 54l9 54e35
+56q1 ISOLE_OPTION 61l9 61e21
+74i5 POSITION_SEPARATEUR{natural} 77r24 78m7 78r30 79r17 82r94 83r30
+76l1 DEBUT_NOM_TEXTE 80l14 80e29
+94L3 FIN 85r43 88r51 89r51 90r51 91r51
+X 13 calendar.ads
+18K9*Calendar=18:30 12|5w15 6r15 19r35
+X 14 code_gen.ads
+3U15*Code_Gen 12|7w11 92s3
+X 16 idl.ads
+8K33*IDL 12|7w6 35r7 36r7 36r28 39r5 39r28 39r54 40r5 40r22 41r12 41r35 42r14
+. 65r5 82r5 82r25 82r48 84r17 88r3 89r3 90r3 91r3 16|126e12
+11a3*PROJECT_PATH{string} 12|36m11 41r16 82r29
+12i3*PROJECT_PATH_LENGTH{natural} 12|35m11 36r32 39r32 41r39 82r52
+14a3*LIB_PATH{string} 12|40m9 84r21
+15i3*LIB_PATH_LENGTH{natural} 12|39m9 40r26
+16a3*DEFAULT_LIB_PATH{string} 12|39r58 42r18
+26U13*PAR_PHASE 12|82s9
+27U13*LIB_PHASE 12|88s7
+28U13*SEM_PHASE 12|89s7
+29U13*ERR_PHASE 12|90s7
+30U13*WRITE_LIB 12|91s7
+31U13*PRETTY_DIANA 12|65s9
+X 38 text_io.ads
+24K9*Text_IO=24:29 12|5w6 6r6
 
