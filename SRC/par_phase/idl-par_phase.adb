@@ -614,6 +614,8 @@ begin
   D( XD_SOURCE_LIST, TREE_ROOT, SOURCE_LIST.FIRST );					--| STOCKE LA LISTE SOURCE_LIST DANS L'ATTRIBUT XD_SOURCE_LIST
   CLOSE( IFILE );
   CLOSE_PAGE_MANAGER;								--| FERMER LE FICHIER ARBRE
-      
+exception
+  when NAME_ERROR =>
+    PUT_LINE( "Fichier introuvable : " & PATH_TEXTE & NOM_TEXTE );
 --|-------------------------------------------------------------------------------------------------
 end PAR_PHASE;

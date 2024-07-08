@@ -1,7 +1,7 @@
     SEPARATE ( IDL )
     --|---------------------------------------------------------------------------------------------
     --|	PROCEDURE ERR_PHASE
-    PROCEDURE ERR_PHASE IS
+    PROCEDURE ERR_PHASE ( ACCES_TEXTE :STRING ) IS
    
       FULL_LIST		: CONSTANT BOOLEAN	:= FALSE;
       IFILE		: FILE_TYPE;			--| LE FICHIER SOURCE
@@ -12,7 +12,7 @@
       DECLARE
          USER_ROOT	: TREE	:= D ( XD_USER_ROOT, TREE_ROOT );
       BEGIN
-         OPEN ( IFILE, IN_FILE, PRINT_NAME ( DABS ( 1, USER_ROOT ) ) );
+         OPEN ( IFILE, IN_FILE, ACCES_TEXTE );
       END;
       
       DECLARE

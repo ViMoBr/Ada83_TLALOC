@@ -294,7 +294,7 @@ is				---
       end if;
       APOS := APOS + 1;								--| MONTER AU CHAMP SUIVANT
     end loop;
-    PUT_LINE( "!! PROCEDURE D : PAS D ATTRIBUT " & ATTR_IMAGE( AN ) & " DANS " & NODE_REP( T ) );	--| L'ATTRIBUT N'A PA S ETE TROUVE POUR LE NOEUD
+    PUT_LINE( "!! PROCEDURE D : PAS D ATTRIBUT " & ATTR_IMAGE( AN ) & " DANS " & NODE_REP( T ) );	--| L'ATTRIBUT N'A PAS ETE TROUVE POUR LE NOEUD
     raise PROGRAM_ERROR;								--| ERREUR
   end	D;
 	---
@@ -312,7 +312,7 @@ is				---
       end if;
       APOS := APOS + 1;								--| MONTER AU CHAMP SUIVANT
     end loop;
-    PUT_LINE( "!! FUNCTION D : PAS D ATTRIBUT " & ATTR_IMAGE( AN ) & " DANS " & NODE_REP( T ) );	--| L'ATTRIBUT N'A PA S ETE TROUVE POUR LE NOEUD
+    PUT_LINE( "!! FUNCTION D : PAS D ATTRIBUT " & ATTR_IMAGE( AN ) & " DANS " & NODE_REP( T ) );	--| L'ATTRIBUT N'A PAS ETE TROUVE POUR LE NOEUD
     raise PROGRAM_ERROR;								--| ERREUR
   end	 D;
 	---
@@ -504,7 +504,7 @@ is				---
   procedure	SEM_PHASE		is separate;
 
 		---------
-  procedure	ERR_PHASE		is separate;
+  procedure	ERR_PHASE		( ACCES_TEXTE :STRING ) is separate;
 
 		---------
   procedure	WRITE_LIB		is separate;

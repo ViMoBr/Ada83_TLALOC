@@ -12,7 +12,7 @@ RV NO_FIXED_POINT
 RV NO_IO
 RV NO_DYNAMIC_SIZED_OBJECTS
 
-U ada_comp%b		ada_comp.adb		511f767c NE OO SU IU
+U ada_comp%b		ada_comp.adb		d7a97a66 NE OO SU IU
 Z ada.strings.text_buffers%s  a-sttebu.adb	a-sttebu.ali
 W calendar%s		calendar.ads		calendar.ali
 W code_gen%s		code_gen.adb		code_gen.ali
@@ -33,11 +33,11 @@ D a-stuten.ads		20230508121439 33c54060 ada.strings.utf_encoding%s
 D a-tags.ads		20230508121439 9eaa38c6 ada.tags%s
 D a-textio.ads		20230508121439 deada98a ada.text_io%s
 D a-unccon.ads		20230508121439 0e9b276f ada.unchecked_conversion%s
-D ada_comp.adb		20240707113835 c26e6884 ada_comp%b
+D ada_comp.adb		20240707151237 3eeac446 ada_comp%b
 D calendar.ads		20230508121439 2cb525cd calendar%s
 D code_gen.ads		20230823210317 9ce3fa93 code_gen%s
 D diana_node_attr_class_names.ads  20240622095819 6d94ff6d diana_node_attr_class_names%s
-D idl.ads		20240707112854 0295093e idl%s
+D idl.ads		20240707150414 78a7a9e6 idl%s
 D interfac.ads		20230508121439 edec285f interfaces%s
 D i-cstrea.ads		20230508121439 e53d8b8e interfaces.c_streams%s
 D system.ads		20230508121439 a2da961d system%s
@@ -83,10 +83,10 @@ X 12 ada_comp.adb
 9U41*ADA_COMP 9b41 99l9 99t17
 12a3 COMMAND{string} 22m13 31r22 33r22 36r57 47r22 49r22 52r47 59r22 60r17
 13i3 CMD_LENGTH{natural} 22m22
-15a3 ACCES_TEXTE{string} 52m7 69r25 77r11 82r76 83r17
-16i3 ACCES_TEXTE_LENGTH{natural} 51m7 52r23 69r41 74r44 83r55
-18e3 OPTION{character} 60m7 64r6 64r22 64r38 65r23 85r20 88r28 89r28 90r28
-. 91r28
+15a3 ACCES_TEXTE{string} 52m7 69r25 77r11 82r76 83r17 90r19
+16i3 ACCES_TEXTE_LENGTH{natural} 51m7 52r23 69r41 74r44 83r55 90r36
+18e3 OPTION{character} 60m7 64r6 64r22 64r38 65r23 85r20 88r60 89r60 90r68
+. 91r60
 19i3 TIME_1{2|42I9} 70m3 96r58
 19i11 TIME_2{2|42I9} 95m3 96r49
 25i5 NC1{natural} 31r31 31m45 31r52 32r14 35r40 36r66 46m7 47r31 47m45 47r52
@@ -98,7 +98,7 @@ X 12 ada_comp.adb
 56q1 ISOLE_OPTION 61l9 61e21
 74i5 POSITION_SEPARATEUR{natural} 77r24 78m7 78r30 79r17 82r94 83r30
 76l1 DEBUT_NOM_TEXTE 80l14 80e29
-94L3 FIN 85r43 88r51 89r51 90r51 91r51
+94L3 FIN 85r43 88r83 89r83 90r91 91r83
 X 13 calendar.ads
 18K9*Calendar=18:30 12|5w15 6r15 19r35
 X 14 code_gen.ads

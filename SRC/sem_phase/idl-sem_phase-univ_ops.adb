@@ -1,582 +1,576 @@
-WITH UNCHECKED_CONVERSION;
-SEPARATE( IDL.SEM_PHASE )
+with UNCHECKED_CONVERSION;
+separate( IDL.SEM_PHASE )
 --|-------------------------------------------------------------------------------------------------
 --|		UNIV_OPS
 --|-------------------------------------------------------------------------------------------------
-PACKAGE BODY UNIV_OPS IS
+package body UNIV_OPS is
    
-  NUM_VAL		: CONSTANT INTEGER	:= NODE_NAME'POS( DN_NUM_VAL );
+  NUM_VAL		: constant INTEGER	:= NODE_NAME'POS( DN_NUM_VAL );
    
-  TYPE UDIGIT_PAIR_TYPE	IS RECORD
+  type UDIGIT_PAIR_TYPE	is record
 			  U1, U2	: UDIGIT;
-			END RECORD;
-			PRAGMA PACK( UDIGIT_PAIR_TYPE );
+			end record;
+			pragma PACK( UDIGIT_PAIR_TYPE );
             
-  TYPE VECTOR_DIGITS_PAIRS	IS ARRAY(1..LINE_IDX(126)) OF UDIGIT_PAIR_TYPE;
-			PRAGMA PACK( VECTOR_DIGITS_PAIRS );
+  type VECTOR_DIGITS_PAIRS	is array(1..LINE_IDX(126)) of UDIGIT_PAIR_TYPE;
+			pragma PACK( VECTOR_DIGITS_PAIRS );
 
-  TYPE VECTOR_PAIRS		IS RECORD
+  type VECTOR_PAIRS		is record
 			  L	: NATURAL;					--| NOMBRE DE "CHIFFRES" 10_000 AIRES
 			  S	: UDIGIT;						--| SIGNE +1 OR -1
 			  P	: VECTOR_DIGITS_PAIRS;				--| PAIRES DE CHIFFRES
-			END RECORD;			PRAGMA PACK( VECTOR_PAIRS );
+			end record;			pragma PACK( VECTOR_PAIRS );
          
    
 --|-------------------------------------------------------------------------------------------------
 --|		PROCEDURE DIGIT_MUL
 --|
-PROCEDURE DIGIT_MUL ( A, B :IN UDIGIT; HIGH, LOW :OUT UDIGIT ) IS
+procedure DIGIT_MUL ( A, B :in UDIGIT; HIGH, LOW :out UDIGIT ) is
   A1	: UDIGIT	:= A / 100;
   B1	: UDIGIT	:= B / 100;
-  A2	: UDIGIT	:= A MOD 100;
-  B2	: UDIGIT	:= B MOD 100;
+  A2	: UDIGIT	:= A mod 100;
+  B2	: UDIGIT	:= B mod 100;
   XX	: UDIGIT	:= A1 * B2 + A2 * B1;
-  LL	: UDIGIT	:= A2 * B2 + (XX MOD 100) * 100;
-BEGIN
-  LOW  := LL MOD 10_000;
+  LL	: UDIGIT	:= A2 * B2 + (XX mod 100) * 100;
+begin
+  LOW  := LL mod 10_000;
   HIGH := A1 * B1 + LL / 10_000 + XX / 100;
-END DIGIT_MUL;
+end DIGIT_MUL;
 --|------------------------------------------------------------------------------------------------
 --|		FUNCTION DIGIT_DIV
 --|
-FUNCTION DIGIT_DIV ( H, L, A :UDIGIT ) RETURN UDIGIT IS
+function DIGIT_DIV ( H, L, A :UDIGIT ) return UDIGIT is
   QUO	: UDIGIT;
   PH, PL	: UDIGIT;			-- TRIAL PRODUCT
-BEGIN
+begin
 				-- MUST HAVE H < A (OTHERWISE OVERFLOW)      
-  IF H = 0 THEN
-    RETURN L / A;
-  ELSIF A < 100 THEN
+  if H = 0 then
+    return L / A;
+  elsif A < 100 then
 				-- FORCE A >= 100
-    RETURN DIGIT_DIV( H*100+L/100, (L MOD 100)*100, A*100);
-  ELSE
+    return DIGIT_DIV( H*100+L/100, (L mod 100)*100, A*100);
+  else
 				-- ALWAYS REDUCE TO A SIMPLER CASE
-    IF H >= 100 THEN
+    if H >= 100 then
       QUO := (H / ((A+99) / 100)) * 100;
-    ELSE
+    else
       QUO := ((H*100) + (L/100)) / ((A+99) / 100);
-    END IF;
+    end if;
 				-- ASSERT: QUO > 0
     DIGIT_MUL(A, QUO, PH, PL);
 				-- ASSERT: H*10000 + L = QUO*A + PH*10000 + PL
-    IF L >= PL THEN
-      RETURN QUO + DIGIT_DIV(H - PH, L - PL, A);
-    ELSE
-      RETURN QUO + DIGIT_DIV(H - 1 - PH, L + 10000 - PL, A);
-    END IF;
-  END IF;
-END DIGIT_DIV;
+    if L >= PL then
+      return QUO + DIGIT_DIV(H - PH, L - PL, A);
+    else
+      return QUO + DIGIT_DIV(H - 1 - PH, L + 10000 - PL, A);
+    end if;
+  end if;
+end DIGIT_DIV;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 --|		FUNCTION U_INT
 --|
-FUNCTION U_INT ( V :VECTOR ) RETURN TREE IS
-BEGIN
+function U_INT ( V :VECTOR ) return TREE is
+begin
 
 CAS_RETOUR_ELEMENT_HI_SHORT_CODE:							--| QUAND LA VALEUR EST DANS -32768 .. 32767 ON REND UN TREE HI AVEC ABSS ET NSIZ
-  BEGIN
-    IF V.L = 1 THEN									--| UN SEUL UDIGIT : ENTIER DANS -10_000 .. 10_000
-      IF V.D( 1 ) = 0 THEN
-        RETURN (HI, NOTY=> DN_NUM_VAL, ABSS=> 0, NSIZ=> 0 );
-      ELSIF V.S = +1 THEN
-        RETURN (HI, NOTY=> DN_NUM_VAL, ABSS=> POSITIVE_SHORT( V.D( 1 ) ), NSIZ=> 0 );
-      ELSIF V.S = -1 THEN
-        RETURN (HI, NOTY=> DN_NUM_VAL, ABSS=> POSITIVE_SHORT( V.D( 1 ) - 1 ), NSIZ=> 1 );
-      END IF;
+  begin
+    if V.L = 1 then									--| UN SEUL UDIGIT : ENTIER DANS -10_000 .. 10_000
+      if V.D( 1 ) = 0 then
+        return (HI, NOTY=> DN_NUM_VAL, ABSS=> 0, NSIZ=> 0 );
+      elsif V.S = +1 then
+        return (HI, NOTY=> DN_NUM_VAL, ABSS=> POSITIVE_SHORT( V.D( 1 ) ), NSIZ=> 0 );
+      elsif V.S = -1 then
+        return (HI, NOTY=> DN_NUM_VAL, ABSS=> POSITIVE_SHORT( V.D( 1 ) - 1 ), NSIZ=> 1 );
+      end if;
 
-    ELSIF V.L = 2 THEN								--| 2 UDIGITS ET CAS DE L INTERVALLE -32768 .. 32767
-      IF V.S = -1 AND THEN ( V.D( 2 ) = 3 AND V.D( 1 ) = 2_768 ) THEN				--| VALEUR -32_768
-        RETURN (HI, NOTY=> DN_NUM_VAL, ABSS=> 32_767, NSIZ=>1 );
-      END IF;
-      IF V.D( 2 ) <= 2								--| VALEURS ABSOLUES DANS 0 .. 29_999
-         OR ELSE ( V.D( 2 ) = 3 AND V.D( 1 ) <= 2_767 )					--| OU VALEURS ABSOLUES DANS 30_000 .. 32_767	
-      THEN
-        IF V.S = +1 THEN								--| VALEURS POSITIVES
-          RETURN (HI, NOTY=> DN_NUM_VAL,
+    elsif V.L = 2 then								--| 2 UDIGITS ET CAS DE L INTERVALLE -32768 .. 32767
+      if V.S = -1 and then ( V.D( 2 ) = 3 and V.D( 1 ) = 2_768 ) then				--| VALEUR -32_768
+        return (HI, NOTY=> DN_NUM_VAL, ABSS=> 32_767, NSIZ=>1 );
+      end if;
+      if V.D( 2 ) <= 2								--| VALEURS ABSOLUES DANS 0 .. 29_999
+         or else ( V.D( 2 ) = 3 and V.D( 1 ) <= 2_767 )					--| OU VALEURS ABSOLUES DANS 30_000 .. 32_767	
+      then
+        if V.S = +1 then								--| VALEURS POSITIVES
+          return (HI, NOTY=> DN_NUM_VAL,
 		ABSS=> POSITIVE_SHORT( V.D( 2 ) * 10_000 + V.D( 1 ) ), NSIZ=> 0 );
-        ELSIF V.S = -1 THEN								--| VALEURS NEGATIVES
-          RETURN (HI, NOTY=> DN_NUM_VAL,
+        elsif V.S = -1 then								--| VALEURS NEGATIVES
+          return (HI, NOTY=> DN_NUM_VAL,
 		ABSS=> POSITIVE_SHORT( V.D( 2 ) * 10_000 + V.D( 1 ) - 1 ), NSIZ=> 1 );
-        END IF;
-      END IF;
-    END IF;
-  END CAS_RETOUR_ELEMENT_HI_SHORT_CODE;
+        end if;
+      end if;
+    end if;
+  end CAS_RETOUR_ELEMENT_HI_SHORT_CODE;
 
 CAS_RETOUR_BLOC_UDIGITS:       
-  DECLARE
+  declare
     W_LEN		: ATTR_NBR	:= ATTR_NBR( (V.L+1) / 2 );				--| NOMBRE DE MOTS (PAIRES DE UDIGITS) DU BLOC
     R		: TREE		:= MAKE( DN_NUM_VAL, W_LEN );				--| CREER LE NOEUD
-  BEGIN
+  begin
 
 PORTER_LE_SIGNE:
-    DECLARE
+    declare
       ENTETE	: TREE	:= DABS( 0, R );						--| PRENDRE L ENTETE DU NOEUD DN_NUM_VAL
-    BEGIN
-      IF V.S = -1 THEN ENTETE.ABSS := 1;						--| SIGNE NEGATIF INDIQUER DANS LE ABSS
-      ELSE ENTETE.ABSS := 0;
-      END IF;
+    begin
+      if V.S = -1 then ENTETE.ABSS := 1;						--| SIGNE NEGATIF INDIQUER DANS LE ABSS
+      else ENTETE.ABSS := 0;
+      end if;
       DABS( 0, R, ENTETE );								--| REPORTER DANS L ENTETE
-    END PORTER_LE_SIGNE;
+    end PORTER_LE_SIGNE;
 
 COPIE_PAIRES_UDIGITS:
-    DECLARE
+    declare
       ROUND_LEN		: ATTR_NBR	:= ATTR_NBR( V.L / 2 );
-      VDP			: VECTOR_PAIRS;	FOR VDP USE AT V'ADDRESS;
-      FUNCTION CAST_TREE	IS NEW UNCHECKED_CONVERSION( UDIGIT_PAIR_TYPE, TREE );
-    BEGIN
-      FOR I IN 1..ROUND_LEN LOOP
+      VDP			: VECTOR_PAIRS;	for VDP use at V'ADDRESS;
+      function CAST_TREE	is new UNCHECKED_CONVERSION( UDIGIT_PAIR_TYPE, TREE );
+    begin
+      for I in 1..ROUND_LEN loop
         DABS( I, R, CAST_TREE( VDP.P( I ) ) );						--| COPIER UNE PAIRE VDP.P(I)
-      END LOOP;
+      end loop;
 
-      IF V.L MOD 2 = 1 THEN								--| NOMBRE IMPAIR DE MOTS
+      if V.L mod 2 = 1 then								--| NOMBRE IMPAIR DE MOTS
         DABS( ROUND_LEN+1, R, CAST_TREE( (V.D( V.L ), 0) ) );				--| COPIER LE DERNIER UDIGIT SUIVI DE 0
-      END IF;
-    END COPIE_PAIRES_UDIGITS;
+      end if;
+    end COPIE_PAIRES_UDIGITS;
     
-    RETURN R;
-  END CAS_RETOUR_BLOC_UDIGITS;
-END U_INT;
+    return R;
+  end CAS_RETOUR_BLOC_UDIGITS;
+end U_INT;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 --|		FUNCTION U_REAL
 --|
-FUNCTION U_REAL ( NUMER, DENOM :VECTOR ) RETURN TREE IS
+function U_REAL ( NUMER, DENOM :VECTOR ) return TREE is
   R	: TREE	:= MAKE( DN_REAL_VAL );
-BEGIN
+begin
   D( XD_NUMER, R, U_INT( NUMER ) );
   D( XD_DENOM, R, U_INT( DENOM ) );
-  RETURN R;
-END U_REAL;
+  return R;
+end U_REAL;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 --|		FUNCTION U_REAL
 --|
-FUNCTION U_REAL ( NUMER, DENOM :TREE ) RETURN TREE IS
+function U_REAL ( NUMER, DENOM :TREE ) return TREE is
   N_SPREAD, D_SPREAD	: VECTOR;
   THE_REAL		: TREE	:= MAKE( DN_REAL_VAL );
-BEGIN
+begin
   SPREAD( NUMER, N_SPREAD );
   SPREAD( DENOM, D_SPREAD );
       
-  IF D_SPREAD.L = 2 AND THEN D_SPREAD.D( 1 ) = 0 AND THEN D_SPREAD.D( 2 ) = 0 THEN	--| DENOMINATEUR NUL
-    RETURN TREE_VOID;
-  END IF;
+  if D_SPREAD.L = 2 and then D_SPREAD.D( 1 ) = 0 and then D_SPREAD.D( 2 ) = 0 then	--| DENOMINATEUR NUL
+    return TREE_VOID;
+  end if;
 
   N_SPREAD.S := N_SPREAD.S * D_SPREAD.S;
   D_SPREAD.S := +1;
   V_LOWEST_TERMS( N_SPREAD, D_SPREAD );
   D( XD_NUMER, THE_REAL, U_INT( N_SPREAD ) );
   D( XD_DENOM, THE_REAL, U_INT( D_SPREAD ) );
-  RETURN THE_REAL;
-END U_REAL;
+  return THE_REAL;
+end U_REAL;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 --|		PROCEDURE SPREAD
 --|
-PROCEDURE SPREAD ( T :TREE; V :IN OUT VECTOR ) IS
-  BAD_NSIZ, CANNOT_SPREAD, BAD_SIGN	: EXCEPTION;
-BEGIN
-  IF T.PT = HI THEN									--| CAS DE L ENTIER COURT -32768 .. 32767
-    IF T.NOTY = DN_NUM_VAL THEN							--| ASSURER LE BON TYPE DE NOEUD
-      DECLARE
+procedure SPREAD ( T :TREE; V :in out VECTOR ) is
+  BAD_NSIZ, CANNOT_SPREAD, BAD_SIGN	: exception;
+begin
+  if T.PT = HI then									--| CAS DE L ENTIER COURT -32768 .. 32767
+    if T.NOTY = DN_NUM_VAL then							--| ASSURER LE BON TYPE DE NOEUD
+      declare
         IVAL	: INTEGER;
-      BEGIN
-        IF    T.NSIZ = 0  THEN IVAL :=  INTEGER( T.ABSS );					--| INDICATEUR DE SIGNE POSITIF
-        ELSIF T.NSIZ = 1 THEN IVAL := -INTEGER( T.ABSS ) - 1;				--| INDICATEUR DE SIGNE NEGATIF
-        ELSE RAISE BAD_NSIZ;
-        END IF;
+      begin
+        if    T.NSIZ = 0  then IVAL :=  INTEGER( T.ABSS );					--| INDICATEUR DE SIGNE POSITIF
+        elsif T.NSIZ = 1 then IVAL := -INTEGER( T.ABSS ) - 1;				--| INDICATEUR DE SIGNE NEGATIF
+        else raise BAD_NSIZ;
+        end if;
         SPREAD( IVAL, V );
-      END;
-      ELSE RAISE CANNOT_SPREAD;
-    END IF;
+      end;
+      else raise CANNOT_SPREAD;
+    end if;
          
-  ELSE										--| CAS DU POINTEUR VERS BLOC DE UDIGITS
-    IF T.PT /= P OR ELSE T.TY /= DN_NUM_VAL THEN						--| ASSURER LE TYPE POINTEUR ET NOEUD
-      RAISE CANNOT_SPREAD;
-    END IF;
+  else										--| CAS DU POINTEUR VERS BLOC DE UDIGITS
+    if T.PT /= P or else T.TY /= DN_NUM_VAL then						--| ASSURER LE TYPE POINTEUR ET NOEUD
+      raise CANNOT_SPREAD;
+    end if;
 
 PREPARE_VECTOR_FROM_BLOCK:
-    DECLARE
-      ENTETE	: TREE		:= DABS( 0, T );					--| ENTETE CONTIENT LE SIGNE DANS ABSS ET LE NOMBRE DE PAIRES DANS NSIZ
-      VDP		: VECTOR_PAIRS;	FOR VDP USE AT V'ADDRESS;
-      FUNCTION CAST_UDIGIT_PAIR	IS NEW UNCHECKED_CONVERSION( TREE, UDIGIT_PAIR_TYPE );
-    BEGIN
+    declare
+      ENTETE	: TREE		:= DABS( 0, T );					--| ENTETE CONTIENT LE SIGNE DANS ABSS MOD 2 ET LE NOMBRE DE PAIRES DANS NSIZ
+      VDP		: VECTOR_PAIRS;	for VDP use at V'ADDRESS;
+      function CAST_UDIGIT_PAIR	is new UNCHECKED_CONVERSION( TREE, UDIGIT_PAIR_TYPE );
+    begin
       V.L := 2 * NATURAL( ENTETE.NSIZ );
-      IF ENTETE.ABSS = 1 THEN V.S := -1;						--| NOMBRE INDIQUE NEGATIF
-      ELSIF ENTETE.ABSS = 0 THEN V.S := +1;						--| SINON SIGNE POSITIF
-      ELSE RAISE BAD_SIGN;
-      END IF;
-      FOR I IN 1 .. ENTETE.NSIZ LOOP
+      if ENTETE.ABSS mod 2 = 1 then V.S := -1;						--| NOMBRE INDIQUE NEGATIF
+      elsif ENTETE.ABSS mod 2 = 0 then V.S := +1;						--| SINON SIGNE POSITIF
+      end if;
+      for I in 1 .. ENTETE.NSIZ loop
         VDP.P( I ) := CAST_UDIGIT_PAIR( DABS( I, T ) );
-      END LOOP;
-
-    EXCEPTION
-      WHEN BAD_SIGN	=>
-        PUT_LINE( "!! SPREAD ABSS NOT +1/0 =" & POSITIVE_SHORT'IMAGE( ENTETE.ABSS ) );		--| DANS L ENTETE LE SIGNE EST MARQUE PAR 0 (POSITIF) 1 (NEGATIF) DANS ABSS
-        RAISE PROGRAM_ERROR;
-    END PREPARE_VECTOR_FROM_BLOCK;
+      end loop;
+    end PREPARE_VECTOR_FROM_BLOCK;
  
     NORMALIZE( V );
-  END IF;
+  end if;
 
-EXCEPTION
-  WHEN BAD_NSIZ=>         
+exception
+  when BAD_NSIZ=>         
     PUT_LINE( "!! SPREAD NSIZ NOT 0/1 =" & ATTR_NBR'IMAGE( T.NSIZ ) );			--| DANS UN DN_NUM_VAL COURT NSIZ CONTIENT L INDICATION DE SIGNE
-    RAISE PROGRAM_ERROR;
-  WHEN CANNOT_SPREAD=>
-    DECLARE
+    raise PROGRAM_ERROR;
+  when CANNOT_SPREAD=>
+    declare
       NN	: NODE_NAME;
-    BEGIN
-      CASE T.PT IS
-      WHEN HI	=> NN := T.NOTY;
-      WHEN P | L	=> NN := T.TY;
-      WHEN S	=> NN := DN_SOURCELINE;
-      END CASE;
+    begin
+      case T.PT is
+      when HI	=> NN := T.NOTY;
+      when P | L	=> NN := T.TY;
+      when S	=> NN := DN_SOURCELINE;
+      end case;
       PUT_LINE( "!! CANNOT SPREAD " & NODE_NAME'IMAGE( NN ) );
-      RAISE PROGRAM_ERROR;
-    END;
-END SPREAD;
+      raise PROGRAM_ERROR;
+    end;
+end SPREAD;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 --|		PROCEDURE SPREAD
 --|
-PROCEDURE SPREAD ( I :INTEGER; V :IN OUT VECTOR ) IS
-  VAL_POS		: INTEGER		:= ABS( I );
-BEGIN
-  IF I < 0 THEN V.S := -1;								--| ENTIER NEGATIF SIGNE NEGATIF
-  ELSE V.S := +1;									--| SIGNE POSITIF
-  END IF;
+procedure SPREAD ( I :INTEGER; V :in out VECTOR ) is
+  VAL_POS		: INTEGER		:= abs( I );
+begin
+  if I < 0 then V.S := -1;								--| ENTIER NEGATIF SIGNE NEGATIF
+  else V.S := +1;									--| SIGNE POSITIF
+  end if;
 
-  V.D(1) := UDIGIT( VAL_POS MOD 10_000 );						--| 0 .. 1E4 -1
+  V.D(1) := UDIGIT( VAL_POS mod 10_000 );						--| 0 .. 1E4 -1
   V.L := 1;
 
-  IF VAL_POS < 100_000_000 THEN							--| 0 .. 1E8 -1
-    V.D(2) := UDIGIT( (VAL_POS / 10_000) MOD 10_000 );
+  if VAL_POS < 100_000_000 then							--| 0 .. 1E8 -1
+    V.D(2) := UDIGIT( (VAL_POS / 10_000) mod 10_000 );
     V.L := 2;
-  ELSE
-    V.D(2) := UDIGIT( (VAL_POS / 100_000_000) MOD 10_000 );
+  else
+    V.D(2) := UDIGIT( (VAL_POS / 100_000_000) mod 10_000 );
     V.L := 3;									--| TROIS UDIGITS
-  END IF;
+  end if;
      
   NORMALIZE( V );
-END SPREAD;
+end SPREAD;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 --|		PROCEDURE NORMALIZE
 --|
-PROCEDURE NORMALIZE ( V :IN OUT VECTOR ) IS
-BEGIN
-  IF V.L > 252 THEN
+procedure NORMALIZE ( V :in out VECTOR ) is
+begin
+  if V.L > 252 then
     PUT_LINE ( "!! UNIV INTEGER > 1E756 - COMPILER LIMITATION" );
-    RAISE PROGRAM_ERROR;
-  END IF;
+    raise PROGRAM_ERROR;
+  end if;
 
 ENLEVE_ZEROS_NON_SIGNIF:      
-  WHILE V.L > 1 AND V.D( V.L ) = 0 LOOP
+  while V.L > 1 and V.D( V.L ) = 0 loop
     V.L := V.L - 1;
-  END LOOP ENLEVE_ZEROS_NON_SIGNIF;
-END NORMALIZE;
+  end loop ENLEVE_ZEROS_NON_SIGNIF;
+end NORMALIZE;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 --|		PROCEDURE V_ADD
 --|
-PROCEDURE V_ADD ( A :VECTOR; R :IN OUT VECTOR ) IS
+procedure V_ADD ( A :VECTOR; R :in out VECTOR ) is
   ALEN	: INTEGER	:= A.L;
   TEMP	: UDIGIT;
   CARRY	: UDIGIT	:= 0;
-BEGIN
-  IF R.L < A.L THEN
-    FOR I IN R.L + 1 .. A.L LOOP
+begin
+  if R.L < A.L then
+    for I in R.L + 1 .. A.L loop
       R.D( I ) := A.D( I );
-    END LOOP;
+    end loop;
     ALEN := R.L;
     R.L := A.L;
-  END IF;
+  end if;
          
   R.L := R.L + 1;
   R.D( R.L ) := 0;
-  FOR I IN 1 .. ALEN LOOP
+  for I in 1 .. ALEN loop
     TEMP := A.D( I ) + R.D( I ) + CARRY;
-    IF TEMP >= 10_000 THEN
+    if TEMP >= 10_000 then
       CARRY := 1;
       TEMP := TEMP - 10_000;
-    ELSE
+    else
       CARRY := 0;
-    END IF;
+    end if;
     R.D( I ) := TEMP;
-  END LOOP;
+  end loop;
          
-  FOR I IN ALEN + 1 .. R.L LOOP
-    EXIT WHEN CARRY = 0;
+  for I in ALEN + 1 .. R.L loop
+    exit when CARRY = 0;
     TEMP := R.D( I ) + CARRY;
-    IF TEMP >= 10_000 THEN
+    if TEMP >= 10_000 then
       TEMP := TEMP - 10_000;
       CARRY := 1;
-    ELSE
+    else
       CARRY := 0;
-    END IF;
+    end if;
     R.D( I ) := TEMP;
-  END LOOP;
+  end loop;
          
   NORMALIZE( R );
-END V_ADD;
+end V_ADD;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 --|		PROCEDURE V_SUB
 --|
-PROCEDURE V_SUB ( A :VECTOR; R :IN OUT VECTOR ) IS     		--| ON SUPPOSE |A| <= |R| !!!
+procedure V_SUB ( A :VECTOR; R :in out VECTOR ) is     		--| ON SUPPOSE |A| <= |R| !!!
   TEMP	: UDIGIT;
   BORROW	: UDIGIT := 0;
-BEGIN
-  IF A.L = R.L AND THEN A = R THEN
+begin
+  if A.L = R.L and then A = R then
     R.L := 1;
     R.D( 1 ) := 0;
-  END IF;
+  end if;
          
-  FOR I IN 1 .. A.L LOOP
+  for I in 1 .. A.L loop
     TEMP := R.D( I ) - A.D( I ) - BORROW;
-    IF TEMP < 0 THEN
+    if TEMP < 0 then
       BORROW := 1;
       TEMP := TEMP + 10_000;
-    ELSE
+    else
       BORROW := 0;
-    END IF;
+    end if;
     R.D( I ) := TEMP;
-  END LOOP;
+  end loop;
          
-  FOR I IN A.L + 1 .. R.L LOOP
-    EXIT WHEN BORROW = 0;
+  for I in A.L + 1 .. R.L loop
+    exit when BORROW = 0;
     TEMP := R.D( I ) - BORROW;
-    IF TEMP < 0 THEN
+    if TEMP < 0 then
       TEMP := TEMP + 10_000;
       BORROW := 1;
-    ELSE
+    else
       BORROW := 0;
-    END IF;
+    end if;
     R.D( I ) := TEMP;
-  END LOOP;
+  end loop;
          
   NORMALIZE(R);
-END V_SUB;
+end V_SUB;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 --|		PROCEDURE V_MUL
 --|
-PROCEDURE V_MUL ( A, B :VECTOR; R :IN OUT VECTOR ) IS
+procedure V_MUL ( A, B :VECTOR; R :in out VECTOR ) is
   H, L, TEMP, CARRY	: UDIGIT;
   K		: INTEGER;
-BEGIN
+begin
   R.S := +1;
   R.L := A.L + B.L;
-  IF R.L > 252 THEN
+  if R.L > 252 then
     PUT_LINE ( "!! UNIV PRODUCT TOO LARGE");
-    RAISE PROGRAM_ERROR;
-  END IF;
+    raise PROGRAM_ERROR;
+  end if;
          
-  FOR I IN 1 .. R.L LOOP
+  for I in 1 .. R.L loop
     R.D( I ) := 0;
-  END LOOP;
+  end loop;
          
-  FOR I IN 1 .. A.L LOOP
-    FOR J IN 1 .. B.L LOOP
+  for I in 1 .. A.L loop
+    for J in 1 .. B.L loop
       K := I + J - 1;
       DIGIT_MUL ( A.D( I ), B.D( J ), H, L );
       TEMP := R.D( K ) + L;
-      IF TEMP >= 10_000 THEN
+      if TEMP >= 10_000 then
         CARRY := 1;
         TEMP := TEMP - 10_000;
-      ELSE
+      else
         CARRY := 0;
-      END IF;
+      end if;
 
       R.D( K ) := TEMP;
       K := K + 1;
       TEMP := R.D( K ) + H + CARRY;
 
-      IF TEMP >= 10_000 THEN
+      if TEMP >= 10_000 then
         CARRY := 1;
         TEMP := TEMP - 10_000;
-      ELSE
+      else
         CARRY := 0;
-      END IF;
+      end if;
       R.D( K ) := TEMP;
                
-      WHILE CARRY > 0 LOOP
+      while CARRY > 0 loop
         K := K + 1;
         TEMP := R.D( K ) + CARRY;
-        IF TEMP >= 10_000 THEN
+        if TEMP >= 10_000 then
           CARRY := 1;
           TEMP := TEMP - 10_000;
-        ELSE
+        else
           CARRY := 0;
-        END IF;
+        end if;
         R.D( K ) := TEMP;
-      END LOOP;
-    END LOOP;
-  END LOOP;
+      end loop;
+    end loop;
+  end loop;
          
   NORMALIZE ( R );
-END V_MUL;
+end V_MUL;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 --|		PROCEDURE V_SCALE
 --|
-PROCEDURE V_SCALE ( A :INTEGER; R :IN OUT VECTOR ) IS
+procedure V_SCALE ( A :INTEGER; R :in out VECTOR ) is
   H, L	: UDIGIT;
   CARRY	: UDIGIT	:= 0;
-BEGIN
-  FOR I IN 1..R.L LOOP
+begin
+  for I in 1..R.L loop
     DIGIT_MUL ( UDIGIT( A ), R.D( I ), H, L );
     L := L + CARRY;
-    R.D( I ) := L MOD 10_000;
+    R.D( I ) := L mod 10_000;
     CARRY := H + L/10_000;
-  END LOOP;
+  end loop;
          
-  IF CARRY > 0 THEN
+  if CARRY > 0 then
     R.L := R.L + 1;
     R.D( R.L ) := CARRY;
-  END IF;
-END V_SCALE;
+  end if;
+end V_SCALE;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 --|		PROCEDURE V_DIV
 --|
-PROCEDURE V_DIV ( A :VECTOR; R, Q :IN OUT VECTOR ) IS		--| A EST LE DIVISEUR, R LE DIVIDENDE DEVIENT RESTE, Q EST LE QUOTIENT
+procedure V_DIV ( A :VECTOR; R, Q :in out VECTOR ) is		--| A EST LE DIVISEUR, R LE DIVIDENDE DEVIENT RESTE, Q EST LE QUOTIENT
                 -- A POOR LONG-DIVISION ALGORITHM (EXTRA ITERATIONS)
                 -- GOOD ENOUGH FOR GOVERNMENT WORK, FOR NOW
-  A_TRIAL		: CONSTANT UDIGIT := A.D(A.L) + 1;		--| CHIFFRE LE PLUS SIGNIFICATIF DU DIVISEUR +1
+  A_TRIAL		: constant UDIGIT := A.D(A.L) + 1;		--| CHIFFRE LE PLUS SIGNIFICATIF DU DIVISEUR +1
   QDIG, CARRY, TEMP	: UDIGIT;
   R_PREC		: VECTOR;
   PPROD		: VECTOR;
-BEGIN
+begin
       
-  IF A.D( 1 ) = 0 AND THEN A.L = 1 THEN			--| SI LE PREMIER CHIFFRE EST NUL ET LE NOMBRE DE CHIFFRES EST 1 
+  if A.D( 1 ) = 0 and then A.L = 1 then			--| SI LE PREMIER CHIFFRE EST NUL ET LE NOMBRE DE CHIFFRES EST 1 
     PUT_LINE ( "V_DIV: DIVIDE BY ZERO" );			--| DIVISEUR NUL
-    RAISE PROGRAM_ERROR;
-  END IF;
+    raise PROGRAM_ERROR;
+  end if;
       
   R_PREC := R;
   Q.S := +1;
-  DECLARE
+  declare
     DIFF	: INTEGER	:= R.L - A.L + 1;
-  BEGIN
-    IF DIFF <= 0 THEN
+  begin
+    if DIFF <= 0 then
       Q.L := 1;
-    ELSE
+    else
       Q.L := R.L - A.L + 1;
-    END IF;
-  END;
+    end if;
+  end;
          
-  FOR I IN 1 .. Q.L LOOP
+  for I in 1 .. Q.L loop
     Q.D(I) := 0;
-  END LOOP;
+  end loop;
          
-  WHILE NOT V_LESS ( R, A ) LOOP			--| TANT QUE LE RESTE EST SUPERIEUR OU EGAL AU DIVISEUR
-    IF R.L = A.L				--| RESTE ET DIVISEUR ONT MÊME NOMBRE DE CHIFFRES
-       AND THEN R.D( R.L ) = A.D( A.L )			--| ET MÊME CHIFFRE LE PLUS SIGNIFICATIF
-    THEN					--| ON SAIT QUE LE RESTE EST >= AU DIVISEUR
+  while not V_LESS ( R, A ) loop			--| TANT QUE LE RESTE EST SUPERIEUR OU EGAL AU DIVISEUR
+    if R.L = A.L				--| RESTE ET DIVISEUR ONT MÊME NOMBRE DE CHIFFRES
+       and then R.D( R.L ) = A.D( A.L )			--| ET MÊME CHIFFRE LE PLUS SIGNIFICATIF
+    then					--| ON SAIT QUE LE RESTE EST >= AU DIVISEUR
       QDIG := 1;				--| LA DIVISION DES CHIFFRES LES PLUS SIGNIFICATIFS DONNERA 1
       R.L := R.L + 1;				--| ALLONGER LE RESTE
       R.D( R.L ) := 0;				--| POUR UN ZERO NON SIGNIFICATIF
-    ELSE		--| ILS N'ONT PAS MÊME NOMBRE DE CHIFFRES OU PAS MÊME CHIFFRE LE PLUS SIGNIFICATIF
-      IF R.D( R.L ) >= A_TRIAL THEN	
+    else		--| ILS N'ONT PAS MÊME NOMBRE DE CHIFFRES OU PAS MÊME CHIFFRE LE PLUS SIGNIFICATIF
+      if R.D( R.L ) >= A_TRIAL then	
         R.L := R.L + 1;
         R.D( R.L ) := 0;
-      END IF;
+      end if;
       QDIG := DIGIT_DIV ( R.D( R.L ), R.D( R.L-1 ), A_TRIAL );
-    END IF;
+    end if;
             
     CARRY := QDIG;
             
-    FOR I IN R.L - A.L .. Q.L LOOP
+    for I in R.L - A.L .. Q.L loop
       TEMP := Q.D( I ) + CARRY;
-      IF TEMP < 10_000 THEN
+      if TEMP < 10_000 then
         Q.D(I) := TEMP;
-        EXIT;
-      END IF;
+        exit;
+      end if;
       Q.D( I ) := TEMP - 10_000;
       CARRY := 1;
-    END LOOP;
+    end loop;
             
     R := R_PREC;
     V_MUL ( Q, A, PPROD );	--| QUOTIENT * A
-    IF V_LESS ( R, PPROD ) THEN
-      RAISE PROGRAM_ERROR;
-    END IF;
+    if V_LESS ( R, PPROD ) then
+      raise PROGRAM_ERROR;
+    end if;
 
     V_SUB ( PPROD, R );	--| RETIRE DU RESTE PRECEDENT
-  END LOOP;
+  end loop;
   NORMALIZE( Q );
-END V_DIV;
+end V_DIV;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 --|		PROCEDURE V_REM
 --|
-PROCEDURE V_REM ( A :VECTOR; R :IN OUT VECTOR ) IS
+procedure V_REM ( A :VECTOR; R :in out VECTOR ) is
    INUTILE	: VECTOR;
-BEGIN
+begin
   V_DIV ( A, R, INUTILE );
-END V_REM;
+end V_REM;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 --|	PROCEDURE V_GCD
 --|
-PROCEDURE V_GCD ( A, B :VECTOR; R :IN OUT VECTOR ) IS
+procedure V_GCD ( A, B :VECTOR; R :in out VECTOR ) is
   S	: VECTOR	:= B;
-BEGIN
+begin
   R := A;
-  LOOP
+  loop
     V_REM ( R, S );
-    IF S.L = 1 AND THEN S.D( 1 ) = 0 THEN
-      RETURN;
-    END IF;
+    if S.L = 1 and then S.D( 1 ) = 0 then
+      return;
+    end if;
     V_REM ( S, R );
-    IF R.L = 1 AND THEN R.D( 1 ) = 0 THEN
+    if R.L = 1 and then R.D( 1 ) = 0 then
       R := S;
-      RETURN;
-    END IF;
-  END LOOP;
-END V_GCD;
+      return;
+    end if;
+  end loop;
+end V_GCD;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 --|		PROCEDURE V_LOWEST_TERMS
 --|
-PROCEDURE V_LOWEST_TERMS ( A, B :IN OUT VECTOR ) IS
+procedure V_LOWEST_TERMS ( A, B :in out VECTOR ) is
   GCD	: VECTOR;
   TREM	: VECTOR;
   SIGN	: UDIGIT;
-BEGIN
-  IF B.L = 1 AND THEN B.D( 1 ) = 1 THEN
-    RETURN;
-  END IF;
-  IF A.L = 1 AND THEN A.D( 1 ) = 0 THEN
+begin
+  if B.L = 1 and then B.D( 1 ) = 1 then
+    return;
+  end if;
+  if A.L = 1 and then A.D( 1 ) = 0 then
     B.L := 1;
     B.D( 1 ) := 1;
-    RETURN;
-  END IF;
+    return;
+  end if;
   SIGN := A.S * B.S;
   V_GCD ( A, B, GCD );
-  IF GCD.L > 1 OR ELSE GCD.D(1) > 1 THEN
+  if GCD.L > 1 or else GCD.D(1) > 1 then
     TREM := A;
     V_DIV ( GCD, TREM, A );
     TREM := B;
     V_DIV ( GCD, TREM, B );
-  END IF;
+  end if;
   A.S := SIGN;
   B.S := +1;
-END V_LOWEST_TERMS;
+end V_LOWEST_TERMS;
 --|#################################################################################################
 --|		FUNCTION V_EQUAL
 --|
-FUNCTION V_EQUAL ( A, B :VECTOR ) RETURN BOOLEAN IS					--| COMPARAISON EN VALEUR ABSOLUE
-BEGIN
-  IF A.L /= B.L THEN
-    RETURN FALSE;
-  ELSE
-    RETURN A.D(1..A.L) = B.D(1..B.L);
-  END IF;
-END V_EQUAL;
+function V_EQUAL ( A, B :VECTOR ) return BOOLEAN is					--| COMPARAISON EN VALEUR ABSOLUE
+begin
+  if A.L /= B.L then
+    return FALSE;
+  else
+    return A.D(1..A.L) = B.D(1..B.L);
+  end if;
+end V_EQUAL;
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 --|		FUNCTION V_LESS
 --|
-FUNCTION V_LESS ( A, B :VECTOR ) RETURN BOOLEAN IS					--| NE PREND PAS EN COMPTE LE SIGNE
-BEGIN
-  IF A.L /= B.L THEN
-    RETURN A.L < B.L;
-  END IF;
-  FOR I IN REVERSE 1 .. A.L LOOP
-    IF A.D(I) /= B.D(I) THEN
-      RETURN A.D(I) < B.D(I);
-    END IF;
-  END LOOP;
-  RETURN FALSE;
-END V_LESS;
+function V_LESS ( A, B :VECTOR ) return BOOLEAN is					--| NE PREND PAS EN COMPTE LE SIGNE
+begin
+  if A.L /= B.L then
+    return A.L < B.L;
+  end if;
+  for I in reverse 1 .. A.L loop
+    if A.D(I) /= B.D(I) then
+      return A.D(I) < B.D(I);
+    end if;
+  end loop;
+  return FALSE;
+end V_LESS;
    
 --|-------------------------------------------------------------------------------------------------
-END UNIV_OPS;
+end UNIV_OPS;

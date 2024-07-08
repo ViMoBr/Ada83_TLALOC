@@ -230,7 +230,7 @@ BEGIN
   IF RIGHT = TREE_VOID THEN
     RETURN TREE_VOID;
   ELSE
-    RETURN U_VAL( 1 - INTEGER( RIGHT.ABSS ) );
+    RETURN U_VAL( 1 - INTEGER( RIGHT.ABSS mod 2 ) );
   END IF;
 END "NOT";
 --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
@@ -473,8 +473,6 @@ BEGIN
   IF LEFT = TREE_VOID OR RIGHT = TREE_VOID THEN
     RETURN TREE_VOID;
             
-  ELSIF RIGHT.PT = HI THEN							--| CONSTRAINT ERROR SUR LE SECOND ARGUMENT, ENTIER CODE SUR 16 BITS !!!!
-    RETURN TREE_VOID;
             
   ELSIF (LEFT.PT = HI AND THEN LEFT.NOTY = DN_NUM_VAL) OR ELSE LEFT.TY = DN_NUM_VAL THEN
     DECLARE

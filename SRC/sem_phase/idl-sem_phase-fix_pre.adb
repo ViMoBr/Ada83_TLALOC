@@ -1,237 +1,237 @@
-SEPARATE( IDL.SEM_PHASE )
+separate( IDL.SEM_PHASE )
 --|-------------------------------------------------------------------------------------------------
 --|		PROCEDURE FIX_PRE
 --|-------------------------------------------------------------------------------------------------
-PROCEDURE FIX_PRE IS
+procedure FIX_PRE is
    
   --|-----------------------------------------------------------------------------------------------
   --|		FUNCTION COPY_NODE
-  FUNCTION COPY_NODE ( NODE : TREE ) RETURN TREE IS
-  BEGIN
-    IF NODE.PT = HI OR NODE.PT = S THEN RETURN NODE;					--| PAS DE COPIE DE BLOC ATTRIBUTS DANS CES CAS
-    ELSE
-      DECLARE
+  function COPY_NODE ( NODE : TREE ) return TREE is
+  begin
+    if NODE.PT = HI or NODE.PT = S then return NODE;					--| PAS DE COPIE DE BLOC ATTRIBUTS DANS CES CAS
+    else
+      declare
         LEN	: ATTR_NBR	:= DABS( 0, NODE ).NSIZ;
         RESULT	: TREE		:= MAKE( NODE.TY, LEN );
-      BEGIN
-        FOR I IN 1 .. LEN LOOP
+      begin
+        for I in 1 .. LEN loop
           DABS( I, RESULT, DABS( I, NODE ) );
-        END LOOP;
-        RETURN RESULT;
-      END;
-    END IF;
-  END COPY_NODE;
+        end loop;
+        return RESULT;
+      end;
+    end if;
+  end COPY_NODE;
   --|-----------------------------------------------------------------------------------------------
   --|		PROCEDURE ABORT_RUN
-  PROCEDURE ABORT_RUN ( MSG :STRING ) IS
-  BEGIN
+  procedure ABORT_RUN ( MSG :STRING ) is
+  begin
     SET_OUTPUT( STANDARD_OUTPUT );
     PUT( "**** " );
     PUT_LINE( MSG );
-  END ABORT_RUN;
+  end ABORT_RUN;
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE DEFINE_ID
-   PROCEDURE DEFINE_ID ( ID :TREE ) IS
-   BEGIN
-     IF ID.TY NOT IN CLASS_ENUM_LITERAL AND THEN ID.TY /= DN_CONSTANT_ID THEN
+   procedure DEFINE_ID ( ID :TREE ) is
+   begin
+     if ID.TY not in CLASS_ENUM_LITERAL and then ID.TY /= DN_CONSTANT_ID then
        PUT_LINE( PRINT_NAME( D( LX_SYMREP, ID ) ) );
-     END IF;
+     end if;
      LIST( D( LX_SYMREP, ID ), SINGLETON( ID ) );						--| METTRE LE SINGLETON ID DANS LA XD_DEFLIST DU SYMBOLE (DOUBLE CHAÎNAGE ENTRE LES DEUX)
-   END DEFINE_ID;
+   end DEFINE_ID;
    --|----------------------------------------------------------------------------------------------
    --|	PROCEDURE HEAD_DEFN
-   FUNCTION HEAD_DEFN ( USED_ID_OR_SYMREP :TREE ) RETURN TREE IS
+   function HEAD_DEFN ( USED_ID_OR_SYMREP :TREE ) return TREE is
      SYMREP	: TREE	:= USED_ID_OR_SYMREP;
      DEFLIST	: SEQ_TYPE;
-   BEGIN
-     IF USED_ID_OR_SYMREP.TY /= DN_SYMBOL_REP THEN					--| UN USED_NAME_ID OU USED_OBJECT_ID
+   begin
+     if USED_ID_OR_SYMREP.TY /= DN_SYMBOL_REP then					--| UN USED_NAME_ID OU USED_OBJECT_ID
        SYMREP := D( LX_SYMREP, USED_ID_OR_SYMREP );
-     END IF;
+     end if;
      DEFLIST := LIST( SYMREP );
       
-     IF IS_EMPTY( DEFLIST ) THEN
+     if IS_EMPTY( DEFLIST ) then
        PUT( "SYMBOL NOT DEFINED -- " );
        PUT_LINE( PRINT_NAME( SYMREP ) );
-       RETURN TREE_VOID;
-     ELSE
-       RETURN HEAD( DEFLIST );
-     END IF;
-  END HEAD_DEFN;
+       return TREE_VOID;
+     else
+       return HEAD( DEFLIST );
+     end if;
+  end HEAD_DEFN;
     --|---------------------------------------------------------------------------------------------
     --|	PROCEDURE GET_BASE_TYPE
-    FUNCTION GET_BASE_TYPE ( TYPE_SPEC :TREE ) RETURN TREE IS
-    BEGIN
-      IF TYPE_SPEC.TY IN CLASS_NON_TASK THEN
-        RETURN D( SM_BASE_TYPE, TYPE_SPEC );
-      ELSE
-        RETURN TYPE_SPEC;
-      END IF;
-    END GET_BASE_TYPE;
+    function GET_BASE_TYPE ( TYPE_SPEC :TREE ) return TREE is
+    begin
+      if TYPE_SPEC.TY in CLASS_NON_TASK then
+        return D( SM_BASE_TYPE, TYPE_SPEC );
+      else
+        return TYPE_SPEC;
+      end if;
+    end GET_BASE_TYPE;
     --|---------------------------------------------------------------------------------------------
     --|	PROCEDURE TYPE_SPEC_FOR_SUBTYPE
-    FUNCTION TYPE_SPEC_FOR_SUBTYPE ( SUBTYPE_INDICATION :TREE ) RETURN TREE IS
+    function TYPE_SPEC_FOR_SUBTYPE ( SUBTYPE_INDICATION :TREE ) return TREE is
       CONSTRAINT		: TREE;
       NAME		: TREE;
       BASE_TYPE		: TREE;
-      USE MAKE_NOD;
-    BEGIN
-      IF SUBTYPE_INDICATION.TY = DN_SUBTYPE_INDICATION THEN
+      use MAKE_NOD;
+    begin
+      if SUBTYPE_INDICATION.TY = DN_SUBTYPE_INDICATION then
         CONSTRAINT := D( AS_CONSTRAINT, SUBTYPE_INDICATION );
         NAME := D( AS_NAME, SUBTYPE_INDICATION );
-      ELSE
+      else
         CONSTRAINT := TREE_VOID;
         NAME := SUBTYPE_INDICATION;
-      END IF;
+      end if;
       
       BASE_TYPE := D( SM_TYPE_SPEC, D( SM_DEFN, NAME ) );
-      IF CONSTRAINT = TREE_VOID THEN
-        RETURN BASE_TYPE;
-      ELSIF BASE_TYPE.TY = DN_INTEGER THEN
+      if CONSTRAINT = TREE_VOID then
+        return BASE_TYPE;
+      elsif BASE_TYPE.TY = DN_INTEGER then
         D( SM_TYPE_SPEC, CONSTRAINT, BASE_TYPE);
         D( SM_EXP_TYPE, D ( AS_EXP1, CONSTRAINT), BASE_TYPE );
         D( SM_EXP_TYPE, D ( AS_EXP2, CONSTRAINT), BASE_TYPE );
-        RETURN MAKE_INTEGER (
+        return MAKE_INTEGER (
 		SM_RANGE => CONSTRAINT,
                	SM_BASE_TYPE => BASE_TYPE,
                	XD_SOURCE_NAME => D( XD_SOURCE_NAME, BASE_TYPE ) );
-      END IF;
+      end if;
       ABORT_RUN ( "BAD TYPE FOR SUBTYPE_INDICATION" );
-      RAISE PROGRAM_ERROR;
-    END TYPE_SPEC_FOR_SUBTYPE;
+      raise PROGRAM_ERROR;
+    end TYPE_SPEC_FOR_SUBTYPE;
     --|---------------------------------------------------------------------------------------------
     --|	PROCEDURE WALK
-    PROCEDURE WALK ( NODE, PARENT, REGION :TREE ) IS
-      USE MAKE_NOD;
-    BEGIN
-      CASE NODE.TY IS
+    procedure WALK ( NODE, PARENT, REGION :TREE ) is
+      use MAKE_NOD;
+    begin
+      case NODE.TY is
          
-      WHEN DN_VOID =>
-        NULL;
+      when DN_VOID =>
+        null;
          
-      WHEN DN_CONSTANT_ID =>
+      when DN_CONSTANT_ID =>
         DEFINE_ID( NODE );
         D( XD_REGION, NODE, REGION );
          
-      WHEN DN_ENUMERATION_ID | DN_CHARACTER_ID =>
+      when DN_ENUMERATION_ID | DN_CHARACTER_ID =>
         DEFINE_ID( NODE );
         D( XD_REGION, NODE, REGION );
          
-      WHEN DN_TYPE_ID =>
+      when DN_TYPE_ID =>
         DEFINE_ID( NODE );
         D( SM_FIRST, NODE, NODE);
         D( XD_REGION, NODE, REGION );
          
-      WHEN DN_SUBTYPE_ID =>
+      when DN_SUBTYPE_ID =>
         DEFINE_ID( NODE );
         D( XD_REGION, NODE, REGION );
          
-      WHEN DN_PACKAGE_ID =>
+      when DN_PACKAGE_ID =>
         DEFINE_ID( NODE );
         D( SM_FIRST, NODE, NODE);
         D( SM_SPEC, NODE, D ( AS_HEADER, PARENT ) );
         D( SM_UNIT_DESC, NODE, TREE_VOID );
         D( XD_REGION, NODE, REGION );
          
-      WHEN DN_EXCEPTION_ID =>
+      when DN_EXCEPTION_ID =>
         DEFINE_ID( NODE );
         D( SM_RENAMES_EXC, NODE, TREE_VOID );
         D( XD_REGION, NODE, REGION );
          
-      WHEN DN_CONSTANT_DECL =>
-        DECLARE
-          SOURCE_NAME_S	: CONSTANT TREE := D( AS_SOURCE_NAME_S, NODE );
-          EXP		: CONSTANT TREE := D( AS_EXP, NODE );
-          TYPE_DEF		: CONSTANT TREE := D( AS_TYPE_DEF, NODE );
-        BEGIN
+      when DN_CONSTANT_DECL =>
+        declare
+          SOURCE_NAME_S	: constant TREE := D( AS_SOURCE_NAME_S, NODE );
+          EXP		: constant TREE := D( AS_EXP, NODE );
+          TYPE_DEF		: constant TREE := D( AS_TYPE_DEF, NODE );
+        begin
           WALK ( SOURCE_NAME_S, NODE, REGION );
           WALK ( EXP, NODE, REGION );
           WALK ( TYPE_DEF, NODE, REGION );
-          DECLARE
+          declare
             HEAD_SOURCE_NAME	: TREE	:= HEAD( LIST( D( AS_SOURCE_NAME_S, NODE ) ) );
-          BEGIN
+          begin
             D( SM_OBJ_TYPE, HEAD_SOURCE_NAME, TYPE_SPEC_FOR_SUBTYPE( D( AS_TYPE_DEF, NODE ) ) );
             D( SM_INIT_EXP, HEAD_SOURCE_NAME, D( AS_EXP, NODE ) );
-          END;
-        END;
+          end;
+        end;
          
-      WHEN DN_EXCEPTION_DECL =>
-        DECLARE
-          SOURCE_NAME_S	: CONSTANT TREE	:= D( AS_SOURCE_NAME_S, NODE );
-        BEGIN
+      when DN_EXCEPTION_DECL =>
+        declare
+          SOURCE_NAME_S	: constant TREE	:= D( AS_SOURCE_NAME_S, NODE );
+        begin
           WALK( SOURCE_NAME_S, NODE, REGION );
-        END;
+        end;
          
-      WHEN DN_TYPE_DECL =>
-        DECLARE
-          SOURCE_NAME	: CONSTANT TREE	:= D( AS_SOURCE_NAME, NODE );
-          DSCRMT_DECL_S	: CONSTANT TREE	:= D( AS_DSCRMT_DECL_S, NODE );
-          TYPE_DEF		: CONSTANT TREE	:= D( AS_TYPE_DEF, NODE );
-        BEGIN
+      when DN_TYPE_DECL =>
+        declare
+          SOURCE_NAME	: constant TREE	:= D( AS_SOURCE_NAME, NODE );
+          DSCRMT_DECL_S	: constant TREE	:= D( AS_DSCRMT_DECL_S, NODE );
+          TYPE_DEF		: constant TREE	:= D( AS_TYPE_DEF, NODE );
+        begin
           WALK( SOURCE_NAME, NODE, REGION );
           WALK( DSCRMT_DECL_S, NODE, REGION );
           WALK( TYPE_DEF, NODE, REGION );
                
                                         -- SAVE ANCESTOR TYPE NAME FOR DERIVED TYPE (_ADDRESS)
-          IF TYPE_DEF.TY = DN_DERIVED_DEF THEN
+          if TYPE_DEF.TY = DN_DERIVED_DEF then
             D( SM_TYPE_SPEC, SOURCE_NAME, D( SM_DEFN, D( AS_NAME, D ( AS_SUBTYPE_INDICATION, TYPE_DEF) ) ) );
-          END IF;
-        END;
+          end if;
+        end;
          
-      WHEN DN_SUBTYPE_DECL =>
-        DECLARE
-          SOURCE_NAME	: CONSTANT TREE := D( AS_SOURCE_NAME, NODE );
-          SUBTYPE_INDICATION	: CONSTANT TREE := D( AS_SUBTYPE_INDICATION, NODE );
+      when DN_SUBTYPE_DECL =>
+        declare
+          SOURCE_NAME	: constant TREE := D( AS_SOURCE_NAME, NODE );
+          SUBTYPE_INDICATION	: constant TREE := D( AS_SUBTYPE_INDICATION, NODE );
           SUBTYPE_NODE	: TREE;
-        BEGIN
+        begin
           WALK( SOURCE_NAME, NODE, REGION );
           WALK( SUBTYPE_INDICATION, NODE, REGION );
                
           SUBTYPE_NODE := TYPE_SPEC_FOR_SUBTYPE( SUBTYPE_INDICATION );
           D( SM_TYPE_SPEC, D( AS_SOURCE_NAME, NODE ), SUBTYPE_NODE );
                
-          IF D( AS_CONSTRAINT, SUBTYPE_INDICATION ) /= TREE_VOID THEN
+          if D( AS_CONSTRAINT, SUBTYPE_INDICATION ) /= TREE_VOID then
             D( XD_SOURCE_NAME, SUBTYPE_NODE, D(  AS_SOURCE_NAME, NODE ) );
-          END IF;
-        END;
+          end if;
+        end;
          
-            WHEN DN_PACKAGE_DECL =>
-               DECLARE
-                  SOURCE_NAME	: CONSTANT TREE := D ( AS_SOURCE_NAME, NODE );
-                  HEADER	: CONSTANT TREE := D ( AS_HEADER, NODE );
-                  UNIT_KIND	: CONSTANT TREE := D ( AS_UNIT_KIND, NODE );
-               BEGIN
+            when DN_PACKAGE_DECL =>
+               declare
+                  SOURCE_NAME	: constant TREE := D ( AS_SOURCE_NAME, NODE );
+                  HEADER	: constant TREE := D ( AS_HEADER, NODE );
+                  UNIT_KIND	: constant TREE := D ( AS_UNIT_KIND, NODE );
+               begin
                   WALK ( SOURCE_NAME, NODE, REGION );
                   WALK ( HEADER, NODE, REGION => SOURCE_NAME );
                   WALK ( UNIT_KIND, NODE, REGION => SOURCE_NAME );
-               END;
+               end;
          
-            WHEN DN_LENGTH_ENUM_REP =>
-               DECLARE
-                  NAME	: CONSTANT TREE	:= D ( AS_NAME, NODE );
-                  EXP	: CONSTANT TREE	:= D ( AS_EXP, NODE );
-               BEGIN
+            when DN_LENGTH_ENUM_REP =>
+               declare
+                  NAME	: constant TREE	:= D ( AS_NAME, NODE );
+                  EXP	: constant TREE	:= D ( AS_EXP, NODE );
+               begin
                                         --ONLY WALK PREFIX OF ATTRIBUTE, NOT ATTRIBUTE NAME
                   WALK ( D ( AS_NAME, NAME), NODE, REGION );
                   WALK ( EXP, NODE, REGION );
                                         -- IN SOURCE TO INDICATE CD_IMPL_SIZE FOR A TYPE
                                         -- FORM IS: FOR NNN'SIZE USE 999;
                   D ( CD_IMPL_SIZE, D ( SM_TYPE_SPEC, D ( SM_DEFN, D ( AS_NAME, NAME))), D ( SM_VALUE, EXP ) );
-               END;
+               end;
          
-            WHEN DN_PRAGMA =>
-               DECLARE
-                  USED_NAME_ID	: CONSTANT TREE := D ( AS_USED_NAME_ID, NODE );
-                  GENERAL_ASSOC_S	: CONSTANT TREE := D ( AS_GENERAL_ASSOC_S, NODE );
-               BEGIN
+            when DN_PRAGMA =>
+               declare
+                  USED_NAME_ID	: constant TREE := D ( AS_USED_NAME_ID, NODE );
+                  GENERAL_ASSOC_S	: constant TREE := D ( AS_GENERAL_ASSOC_S, NODE );
+               begin
                   WALK ( USED_NAME_ID, NODE, REGION);
                   WALK ( GENERAL_ASSOC_S, NODE, REGION);
                                         -- IN SOURCE TO INDICATE PRAGMA PACKED (STRING)
                   DB ( SM_IS_PACKED, D ( SM_TYPE_SPEC, D ( SM_DEFN, HEAD ( LIST ( GENERAL_ASSOC_S ) ) ) ), TRUE );
-               END;
+               end;
          
-            WHEN DN_ENUMERATION_DEF =>
-               DECLARE
-                  ENUM_LITERAL_S	: CONSTANT TREE	:= D ( AS_ENUM_LITERAL_S, NODE);
+            when DN_ENUMERATION_DEF =>
+               declare
+                  ENUM_LITERAL_S	: constant TREE	:= D ( AS_ENUM_LITERAL_S, NODE);
                   RANGE_NODE	: TREE	:= MAKE ( DN_RANGE );
                   ENUMERATION	: TREE	:= MAKE_ENUMERATION (
                   			SM_LITERAL_S	=> ENUM_LITERAL_S,
@@ -243,20 +243,20 @@ PROCEDURE FIX_PRE IS
                   ENUM_LITERAL_FIRST	: TREE	:= HEAD ( ENUM_LITERAL_LIST );
                   ENUM_LITERAL	: TREE;
                   ENUM_POS	: INTEGER	:= -1;
-               BEGIN
+               begin
                   D ( LX_SRCPOS, RANGE_NODE, TREE_VOID );
                
                   D ( SM_TYPE_SPEC, D ( AS_SOURCE_NAME, PARENT), ENUMERATION );
                   D ( SM_BASE_TYPE, ENUMERATION, ENUMERATION );
                
-                  WHILE NOT IS_EMPTY ( ENUM_LITERAL_LIST) LOOP
+                  while not IS_EMPTY ( ENUM_LITERAL_LIST) loop
                      POP ( ENUM_LITERAL_LIST, ENUM_LITERAL );
                      WALK ( ENUM_LITERAL, ENUM_LITERAL_S, REGION );
                      D ( SM_OBJ_TYPE, ENUM_LITERAL, ENUMERATION );
                      ENUM_POS := ENUM_POS + 1;
                      DI ( SM_POS, ENUM_LITERAL, ENUM_POS );
                      DI ( SM_REP, ENUM_LITERAL, ENUM_POS );
-                  END LOOP;
+                  end loop;
                
                   D ( AS_EXP1, RANGE_NODE, MAKE_USED_OBJECT_ID (
                      	LX_SYMREP	=> D ( LX_SYMREP, ENUM_LITERAL_FIRST ),
@@ -273,13 +273,13 @@ PROCEDURE FIX_PRE IS
                      )
                      );
                   D ( SM_TYPE_SPEC, RANGE_NODE, ENUMERATION );
-               END;
+               end;
          
-            WHEN DN_SUBTYPE_INDICATION =>
-               DECLARE
-                  CONSTRAINT	: CONSTANT TREE	:= D ( AS_CONSTRAINT, NODE );
-                  NAME	: CONSTANT TREE	:= D ( AS_NAME, NODE );
-               BEGIN
+            when DN_SUBTYPE_INDICATION =>
+               declare
+                  CONSTRAINT	: constant TREE	:= D ( AS_CONSTRAINT, NODE );
+                  NAME	: constant TREE	:= D ( AS_NAME, NODE );
+               begin
                   WALK ( CONSTRAINT, NODE, REGION );
                   WALK ( NAME, NODE, REGION );
                   D ( AS_NAME, NODE, MAKE_USED_NAME_ID (
@@ -288,49 +288,49 @@ PROCEDURE FIX_PRE IS
                      LX_SRCPOS	=> D ( LX_SRCPOS, NAME )
                      )
                      );
-               END;
+               end;
          
-            WHEN DN_INTEGER_DEF =>
-               DECLARE
-                  USE UARITH;
-                  CONSTRAINT	: CONSTANT TREE	:= D ( AS_CONSTRAINT, NODE );
+            when DN_INTEGER_DEF =>
+               declare
+                  use UARITH;
+                  CONSTRAINT	: constant TREE	:= D ( AS_CONSTRAINT, NODE );
                   INTEGER_NODE	: TREE	:= MAKE_INTEGER (
                   			SM_RANGE	=> CONSTRAINT,
                   		XD_SOURCE_NAME	=> D ( AS_SOURCE_NAME, PARENT )
                   		);
-               BEGIN
+               begin
                   WALK ( CONSTRAINT, NODE, REGION );
                   D ( SM_TYPE_SPEC, CONSTRAINT, INTEGER_NODE );
                   D ( SM_TYPE_SPEC, D ( AS_SOURCE_NAME, PARENT ), INTEGER_NODE);
                   D ( SM_BASE_TYPE, INTEGER_NODE, INTEGER_NODE);
-               END;
+               end;
          
-            WHEN DN_FLOAT_DEF =>
-               DECLARE
-                  USE UARITH;
+            when DN_FLOAT_DEF =>
+               declare
+                  use UARITH;
                
-                  CONSTRAINT	: CONSTANT TREE	:= D ( AS_CONSTRAINT, NODE );
+                  CONSTRAINT	: constant TREE	:= D ( AS_CONSTRAINT, NODE );
                   RANGE_NODE	: TREE	:= D ( AS_RANGE, CONSTRAINT );
                   FLOAT_NODE	: TREE	:= MAKE_FLOAT (
                   			SM_RANGE	=> RANGE_NODE,
                   		XD_SOURCE_NAME	=> D ( AS_SOURCE_NAME, PARENT )
                   		);
-               BEGIN
+               begin
                   WALK ( CONSTRAINT, NODE, REGION );
                   D ( SM_TYPE_SPEC, CONSTRAINT, FLOAT_NODE );
                   D ( SM_TYPE_SPEC, RANGE_NODE, FLOAT_NODE );
                   D ( SM_ACCURACY, FLOAT_NODE, D ( SM_VALUE, D ( AS_EXP, CONSTRAINT ) ) );
                   D ( SM_TYPE_SPEC, D ( AS_SOURCE_NAME, PARENT ), FLOAT_NODE );
                   D ( SM_BASE_TYPE, FLOAT_NODE, FLOAT_NODE );
-               END;
+               end;
          
-            WHEN DN_FIXED_DEF =>
-               DECLARE
-                  USE UARITH;
-                  CONSTRAINT	: CONSTANT TREE	:= D ( AS_CONSTRAINT, NODE );
+            when DN_FIXED_DEF =>
+               declare
+                  use UARITH;
+                  CONSTRAINT	: constant TREE	:= D ( AS_CONSTRAINT, NODE );
                   RANGE_NODE	: TREE	:= D ( AS_RANGE, CONSTRAINT );
                   FIXED_NODE	: TREE	:= MAKE_FIXED ( SM_RANGE => RANGE_NODE, XD_SOURCE_NAME => D ( AS_SOURCE_NAME, PARENT) );
-               BEGIN
+               begin
                   WALK ( CONSTRAINT, NODE, REGION);
                   D ( SM_TYPE_SPEC, CONSTRAINT, FIXED_NODE );
                   D ( SM_TYPE_SPEC, RANGE_NODE, FIXED_NODE );
@@ -338,69 +338,69 @@ PROCEDURE FIX_PRE IS
                   D ( SM_TYPE_SPEC, D ( AS_SOURCE_NAME, PARENT ), FIXED_NODE );
                   D ( SM_BASE_TYPE, FIXED_NODE, FIXED_NODE );
                   D ( CD_IMPL_SMALL, FIXED_NODE, D ( SM_ACCURACY, FIXED_NODE ) );
-               END;
+               end;
          
-            WHEN DN_UNCONSTRAINED_ARRAY_DEF =>
-               DECLARE
-                  SUBTYPE_INDICATION	: CONSTANT TREE	:= D ( AS_SUBTYPE_INDICATION, NODE );
-                  INDEX_S	: CONSTANT TREE	:= D ( AS_INDEX_S, NODE );
+            when DN_UNCONSTRAINED_ARRAY_DEF =>
+               declare
+                  SUBTYPE_INDICATION	: constant TREE	:= D ( AS_SUBTYPE_INDICATION, NODE );
+                  INDEX_S	: constant TREE	:= D ( AS_INDEX_S, NODE );
                
                   ARRAY_NODE: TREE := MAKE_ARRAY (	SM_INDEX_S	=> INDEX_S,
                   			SM_SIZE	=> TREE_VOID,
                   		XD_SOURCE_NAME	=> D ( AS_SOURCE_NAME, PARENT )
                   	);
-               BEGIN
+               begin
                   WALK ( SUBTYPE_INDICATION, NODE, REGION );
                   WALK ( INDEX_S, NODE, REGION );
                   D ( SM_COMP_TYPE, ARRAY_NODE, TYPE_SPEC_FOR_SUBTYPE ( SUBTYPE_INDICATION ) );
                   D ( SM_TYPE_SPEC, D ( AS_SOURCE_NAME, PARENT ), ARRAY_NODE );
                   D ( SM_BASE_TYPE, ARRAY_NODE, ARRAY_NODE );
-               END;
+               end;
          
-            WHEN DN_USED_CHAR =>
-               DECLARE
+            when DN_USED_CHAR =>
+               declare
                   DEFN: TREE := HEAD_DEFN ( NODE);
-               BEGIN
+               begin
                   D ( SM_DEFN, NODE, DEFN);
                   D ( SM_EXP_TYPE, NODE, D ( 
                                                         SM_OBJ_TYPE,DEFN));
                   D ( SM_VALUE, NODE, UARITH.U_VAL(DI ( 
                                                                 SM_POS,
                                                                 DEFN)));
-               END;
+               end;
          
-            WHEN DN_USED_OBJECT_ID =>
-               DECLARE
+            when DN_USED_OBJECT_ID =>
+               declare
                   DEFN	: TREE	:= HEAD_DEFN ( NODE );
-               BEGIN
+               begin
                   D ( SM_DEFN, NODE, DEFN );
-                  IF DEFN.TY = DN_ENUMERATION_ID THEN
+                  if DEFN.TY = DN_ENUMERATION_ID then
                      D ( SM_EXP_TYPE, NODE, D ( SM_OBJ_TYPE, DEFN ) );
                      D ( SM_VALUE, NODE, UARITH.U_VAL ( DI ( SM_POS, DEFN ) ) );
-                  END IF;
-               END;
+                  end if;
+               end;
          
-            WHEN DN_FUNCTION_CALL =>
-               DECLARE
-                  USE UARITH;
-                  USE PRENAME;
+            when DN_FUNCTION_CALL =>
+               declare
+                  use UARITH;
+                  use PRENAME;
                
-                  NAME	: CONSTANT TREE	:= D ( AS_NAME, NODE );
-                  GENERAL_ASSOC_S	: CONSTANT TREE	:= D ( AS_GENERAL_ASSOC_S, NODE );
+                  NAME	: constant TREE	:= D ( AS_NAME, NODE );
+                  GENERAL_ASSOC_S	: constant TREE	:= D ( AS_GENERAL_ASSOC_S, NODE );
                   PARAM	: TREE	:= HEAD ( LIST ( GENERAL_ASSOC_S ) );
                   PARAM2	: TREE	:= TREE_VOID;
                   BLTN_OPERATOR_ID	: TREE	:= HEAD ( LIST ( D ( LX_SYMREP, NAME ) ) );
-               BEGIN
+               begin
                                         -- ONLY FOR UNARY "-", "*", "**" IN RANGES
                   WALK ( GENERAL_ASSOC_S, NODE, REGION );
                
-                  IF NOT IS_EMPTY ( TAIL ( LIST ( GENERAL_ASSOC_S))) THEN
+                  if not IS_EMPTY ( TAIL ( LIST ( GENERAL_ASSOC_S))) then
                      PARAM2 := HEAD ( TAIL ( LIST ( GENERAL_ASSOC_S ) ) );
-                  END IF;
+                  end if;
                
-                  IF (PARAM2 = TREE_VOID) XOR ( OP_CLASS'VAL ( DI ( SM_OPERATOR, BLTN_OPERATOR_ID ) ) IN CLASS_UNARY_OP ) THEN
+                  if (PARAM2 = TREE_VOID) xor ( OP_CLASS'VAL ( DI ( SM_OPERATOR, BLTN_OPERATOR_ID ) ) in CLASS_UNARY_OP ) then
                      BLTN_OPERATOR_ID := HEAD ( TAIL ( LIST ( D ( LX_SYMREP, NAME ) ) ) );
-                  END IF;
+                  end if;
                
                   D ( AS_NAME, NODE, MAKE_USED_OP (
                      	SM_DEFN	=> BLTN_OPERATOR_ID,
@@ -408,20 +408,22 @@ PROCEDURE FIX_PRE IS
                      	)
                      );
                
-                  IF PRINT_NAME ( D ( LX_SYMREP,NAME)) = """-""" THEN
-                     IF PARAM2 = TREE_VOID THEN
-                        D ( SM_VALUE, NODE, - D ( SM_VALUE, PARAM ) );
-                     ELSE
+                  if PRINT_NAME ( D ( LX_SYMREP, NAME ) ) = """-""" then
+                     if PARAM2 = TREE_VOID then
+                        D ( SM_VALUE, NODE, -D( SM_VALUE, PARAM ) );
+                     else
                         D ( SM_VALUE, NODE, D ( SM_VALUE, PARAM ) - D ( SM_VALUE, PARAM2 ) );
-                     END IF;
-                  ELSIF PRINT_NAME ( D ( LX_SYMREP, NAME ) ) = """*""" THEN
+                     end if;
+                  elsif PRINT_NAME ( D ( LX_SYMREP, NAME ) ) = """*""" then
                      D ( SM_VALUE, NODE, D ( SM_VALUE, PARAM ) * D ( SM_VALUE, PARAM2 ) );
-                  ELSIF PRINT_NAME ( D ( LX_SYMREP, NAME ) ) = """**""" THEN
+
+                  elsif PRINT_NAME ( D ( LX_SYMREP, NAME ) ) = """**""" then
                      D ( SM_VALUE, NODE, D ( SM_VALUE, PARAM ) ** D ( SM_VALUE, PARAM2 ) );
-                  ELSE
+
+                  else
                      ABORT_RUN ( "FUNCTION NOT ALLOWED - " & PRINT_NAME ( D ( LX_SYMREP, NAME ) ) );
-                     RAISE PROGRAM_ERROR;
-                  END IF;
+                     raise PROGRAM_ERROR;
+                  end if;
                
                   D ( SM_EXP_TYPE, NODE, GET_BASE_TYPE ( D ( SM_EXP_TYPE, PARAM ) ) );
                   D ( SM_NORMALIZED_PARAM_S, NODE, MAKE_EXP_S (
@@ -429,92 +431,94 @@ PROCEDURE FIX_PRE IS
                      	LX_SRCPOS	=> D ( LX_SRCPOS, GENERAL_ASSOC_S)
                      	)
                      );
-               END;
+
+
+               end;
          
-            WHEN DN_NUMERIC_LITERAL =>
-               DECLARE
+            when DN_NUMERIC_LITERAL =>
+               declare
                   VALUE	: TREE	:= UARITH.U_VALUE( PRINT_NAME( D( LX_NUMREP, NODE ) ) );
-               BEGIN
-                  IF (VALUE.PT = HI AND THEN VALUE.NOTY = DN_NUM_VAL)
-                     OR (VALUE.PT = P AND THEN VALUE.TY = DN_NUM_VAL)
-                  THEN
+               begin
+                  if (VALUE.PT = HI and then VALUE.NOTY = DN_NUM_VAL)
+                     or (VALUE.PT = P and then VALUE.TY = DN_NUM_VAL)
+                  then
                      D( SM_EXP_TYPE, NODE, MAKE(  DN_UNIVERSAL_INTEGER ) );
-                  ELSE
+                  else
                      D( SM_EXP_TYPE, NODE, MAKE(  DN_UNIVERSAL_REAL ) );
-                  END IF;
+                  end if;
                   D( SM_VALUE, NODE, VALUE );
-               END;
+               end;
          
-            WHEN DN_RANGE =>
-               DECLARE
-                  EXP1	: CONSTANT TREE := D( AS_EXP1, NODE );
-                  EXP2	: CONSTANT TREE := D( AS_EXP2, NODE );
-               BEGIN
+            when DN_RANGE =>
+               declare
+                  EXP1	: constant TREE := D( AS_EXP1, NODE );
+                  EXP2	: constant TREE := D( AS_EXP2, NODE );
+               begin
                   WALK( EXP1, NODE, REGION );
                   WALK( EXP2, NODE, REGION );
                   D( SM_TYPE_SPEC, NODE, GET_BASE_TYPE( D( SM_EXP_TYPE, EXP1 ) ) );
-               END;
+               end;
          
-            WHEN DN_DISCRETE_SUBTYPE =>
-               DECLARE
-                  SUBTYPE_INDICATION	: CONSTANT TREE := D( AS_SUBTYPE_INDICATION, NODE );
-               BEGIN
+            when DN_DISCRETE_SUBTYPE =>
+               declare
+                  SUBTYPE_INDICATION	: constant TREE := D( AS_SUBTYPE_INDICATION, NODE );
+               begin
                   WALK( SUBTYPE_INDICATION, NODE, REGION );
-               END;
+               end;
          
-            WHEN DN_FLOAT_CONSTRAINT =>
-               DECLARE
-                  EXP	: CONSTANT TREE := D( AS_EXP, NODE );
-                  RANGE_NODE	: CONSTANT TREE := D( AS_RANGE, NODE );
-               BEGIN
+            when DN_FLOAT_CONSTRAINT =>
+               declare
+                  EXP	: constant TREE := D( AS_EXP, NODE );
+                  RANGE_NODE	: constant TREE := D( AS_RANGE, NODE );
+               begin
                   WALK( EXP, NODE, REGION );
                   WALK( RANGE_NODE, NODE, REGION );
-               END;
+               end;
          
-            WHEN DN_FIXED_CONSTRAINT =>
-               DECLARE
-                  EXP	: CONSTANT TREE := D( AS_EXP, NODE );
-                  RANGE_NODE	: CONSTANT TREE := D( AS_RANGE, NODE );
-               BEGIN
+            when DN_FIXED_CONSTRAINT =>
+               declare
+                  EXP	: constant TREE := D( AS_EXP, NODE );
+                  RANGE_NODE	: constant TREE := D( AS_RANGE, NODE );
+               begin
                   WALK( EXP, NODE, REGION );
                   WALK( RANGE_NODE, NODE, REGION );
-               END;
+               end;
          
-            WHEN DN_PACKAGE_SPEC =>
-               DECLARE
-                  DECL_S1 : CONSTANT TREE := D ( AS_DECL_S1, NODE );
-                  DECL_S2 : CONSTANT TREE := D ( AS_DECL_S2, NODE );
-               BEGIN
+            when DN_PACKAGE_SPEC =>
+               declare
+                  DECL_S1 : constant TREE := D ( AS_DECL_S1, NODE );
+                  DECL_S2 : constant TREE := D ( AS_DECL_S2, NODE );
+               begin
                   WALK ( DECL_S1, NODE, REGION );
                   WALK ( DECL_S2, NODE, REGION );
                   LIST ( D ( AS_DECL_S2, NODE), (TREE_NIL,TREE_NIL) );		--| PAS DE PARTIE PRIVEE (REP SPECS SEULEMENT)
-               END;
+               end;
          
-            WHEN DN_COMPILATION =>
-               DECLARE
-                  COMPLTN_UNIT_S : CONSTANT TREE := D ( AS_COMPLTN_UNIT_S, NODE );
-               BEGIN
+            when DN_COMPILATION =>
+               declare
+                  COMPLTN_UNIT_S : constant TREE := D ( AS_COMPLTN_UNIT_S, NODE );
+               begin
                   WALK ( COMPLTN_UNIT_S, NODE, REGION );
-               END;
+               end;
          
-            WHEN DN_COMPILATION_UNIT =>
-               DECLARE
-                  CONTEXT_ELEM_S	: CONSTANT TREE := D ( AS_CONTEXT_ELEM_S, NODE );
-                  ALL_DECL	: CONSTANT TREE := D ( AS_ALL_DECL, NODE );
-                  PRAGMA_S	: CONSTANT TREE := D ( AS_PRAGMA_S, NODE );
-               BEGIN
+            when DN_COMPILATION_UNIT =>
+               declare
+                  CONTEXT_ELEM_S	: constant TREE := D ( AS_CONTEXT_ELEM_S, NODE );
+                  ALL_DECL	: constant TREE := D ( AS_ALL_DECL, NODE );
+                  PRAGMA_S	: constant TREE := D ( AS_PRAGMA_S, NODE );
+               begin
                   WALK ( CONTEXT_ELEM_S, NODE, REGION );
                   WALK ( ALL_DECL, NODE, REGION );
                   WALK ( PRAGMA_S, NODE, REGION );
                   DI ( XD_TIMESTAMP, NODE, 1 );
                   LIST ( NODE, (TREE_NIL,TREE_NIL) );
                   D ( XD_LIB_NAME, NODE, STORE_SYM ( "_STANDRD.DCL" ) );
-               END;
+               end;
          
-            WHEN DN_INDEX =>
-               DECLARE
-                  NAME	: CONSTANT TREE := D ( AS_NAME, NODE );
-               BEGIN
+            when DN_INDEX =>
+               declare
+                  NAME	: constant TREE := D ( AS_NAME, NODE );
+               begin
                   WALK ( NAME, NODE, REGION );
                   D ( SM_TYPE_SPEC, NODE, D ( SM_TYPE_SPEC, D (SM_DEFN, NAME ) ) );
                   D ( AS_NAME, NODE, MAKE_USED_NAME_ID (
@@ -523,86 +527,87 @@ PROCEDURE FIX_PRE IS
                      	SM_DEFN	=> D ( SM_DEFN, NAME )
                      	)
                      );
-               END;
+               end;
          
-            WHEN OTHERS =>
-               DECLARE
+            when others =>
+               declare
                   ITEM_LIST	: SEQ_TYPE;
                   ITEM_NODE	: TREE;
-               BEGIN
-                  CASE ARITY ( NODE ) IS
-                     WHEN NULLARY =>
-                        NULL;
-                     WHEN UNARY =>
+               begin
+                  case ARITY ( NODE ) is
+                     when NULLARY =>
+                        null;
+                     when UNARY =>
                         WALK ( SON_1 ( NODE), NODE, REGION );
-                     WHEN BINARY =>
+                     when BINARY =>
                         WALK ( SON_1 ( NODE), NODE, REGION );
                         WALK ( SON_2 ( NODE), NODE, REGION );
-                     WHEN TERNARY =>
+                     when TERNARY =>
                         WALK ( SON_1 ( NODE), NODE, REGION );
                         WALK ( SON_2 ( NODE), NODE, REGION );
                         WALK ( SON_3 ( NODE), NODE, REGION );
-                     WHEN ARBITRARY =>
+                     when ARBITRARY =>
                         ITEM_LIST := LIST ( NODE);
-                        WHILE NOT IS_EMPTY ( ITEM_LIST ) LOOP
+                        while not IS_EMPTY ( ITEM_LIST ) loop
                            POP ( ITEM_LIST, ITEM_NODE );
                            WALK (  ITEM_NODE, NODE, REGION );
-                        END LOOP;
-                  END CASE;
-               END;
+                        end loop;
+                  end case;
+               end;
          
-         END CASE;
-      END WALK;
+         end case;
+
+      end WALK;
       --|-------------------------------------------------------------------------------------------
       --|	PROCEDURE MAKE_PREDEF_IDS
-       PROCEDURE MAKE_PREDEF_IDS ( ID_LIST :OUT SEQ_TYPE ) IS
-         USE PRENAME;
+       procedure MAKE_PREDEF_IDS ( ID_LIST :out SEQ_TYPE ) is
+         use PRENAME;
       
          NEW_ID_LIST	: SEQ_TYPE	:= (TREE_NIL, TREE_NIL);
          NEW_ID		: TREE;
          NEW_ARG_LIST	: SEQ_TYPE;
          NEW_ARG		: TREE;
          ITEM_LENGTH	: NATURAL;
-         USE MAKE_NOD;
-      BEGIN
-         FOR PRAGMA_NAME IN DEFINED_PRAGMAS LOOP
+         use MAKE_NOD;
+      begin
+         for PRAGMA_NAME in DEFINED_PRAGMAS loop
             NEW_ARG_LIST := (TREE_NIL, TREE_NIL);
-            IF PRAGMA_NAME = LIST OR PRAGMA_NAME = PRENAME.DEBUG THEN
-               FOR ARG_NAME IN LIST_ARGUMENTS LOOP
+            if PRAGMA_NAME = LIST or PRAGMA_NAME = PRENAME.DEBUG then
+               for ARG_NAME in LIST_ARGUMENTS loop
                   NEW_ARG := MAKE_ARGUMENT_ID (
                      	LX_SYMREP	=> STORE_SYM ( LIST_ARGUMENTS'IMAGE ( ARG_NAME ) ),
                      	XD_POS	=> LIST_ARGUMENTS'POS ( ARG_NAME )
                      	);
                   NEW_ARG_LIST := APPEND ( NEW_ARG_LIST, NEW_ARG );
-               END LOOP;
-            ELSIF PRAGMA_NAME = OPTIMIZE THEN
-               FOR ARG_NAME IN OPTIMIZE_ARGUMENTS LOOP
+               end loop;
+            elsif PRAGMA_NAME = OPTIMIZE then
+               for ARG_NAME in OPTIMIZE_ARGUMENTS loop
                   NEW_ARG := MAKE_ARGUMENT_ID (
                      	LX_SYMREP	=> STORE_SYM ( OPTIMIZE_ARGUMENTS'IMAGE ( ARG_NAME ) ),
                      	XD_POS	=> OPTIMIZE_ARGUMENTS'POS ( ARG_NAME )
                      	);
                   NEW_ARG_LIST := APPEND ( NEW_ARG_LIST, NEW_ARG );
-               END LOOP;
-            ELSIF PRAGMA_NAME = SUPPRESS THEN
-               FOR ARG_NAME IN SUPPRESS_ARGUMENTS LOOP
+               end loop;
+            elsif PRAGMA_NAME = SUPPRESS then
+               for ARG_NAME in SUPPRESS_ARGUMENTS loop
                   NEW_ARG := MAKE_ARGUMENT_ID (
                      	LX_SYMREP	=> STORE_SYM ( SUPPRESS_ARGUMENTS'IMAGE ( ARG_NAME ) ),
                      	XD_POS	=> SUPPRESS_ARGUMENTS'POS ( ARG_NAME )
                      	);
                   NEW_ARG_LIST := APPEND ( NEW_ARG_LIST, NEW_ARG );
-               END LOOP;
-            ELSIF PRAGMA_NAME = INTERFACE THEN
-               FOR ARG_NAME IN INTERFACE_ARGUMENTS LOOP
+               end loop;
+            elsif PRAGMA_NAME = INTERFACE then
+               for ARG_NAME in INTERFACE_ARGUMENTS loop
                   NEW_ARG := MAKE_ARGUMENT_ID (
                      	LX_SYMREP	=> STORE_SYM ( INTERFACE_ARGUMENTS'IMAGE ( ARG_NAME ) ),
                      	XD_POS	=> INTERFACE_ARGUMENTS'POS ( ARG_NAME )
                      	);
                   NEW_ARG_LIST := APPEND ( NEW_ARG_LIST, NEW_ARG );
-               END LOOP;
-            END IF;
-            DECLARE
+               end loop;
+            end if;
+            declare
                SYM	: TREE	:= STORE_SYM ( DEFINED_PRAGMAS'IMAGE ( PRAGMA_NAME ) );
-            BEGIN
+            begin
                NEW_ID := MAKE_PRAGMA_ID (
                   	LX_SYMREP	=> SYM,
                   	XD_POS	=> DEFINED_PRAGMAS'POS ( PRAGMA_NAME ),
@@ -610,18 +615,18 @@ PROCEDURE FIX_PRE IS
                   	);
                NEW_ID_LIST := APPEND ( NEW_ID_LIST, NEW_ID );
                LIST ( SYM, INSERT ( LIST ( SYM ), NEW_ID ) );
-            END;
-         END LOOP;
+            end;
+         end loop;
       
-         FOR ATTRIBUTE_NAME IN DEFINED_ATTRIBUTES LOOP
-            DECLARE
-               ITEM_NAME	: CONSTANT STRING	:= DEFINED_ATTRIBUTES'IMAGE ( ATTRIBUTE_NAME );
+         for ATTRIBUTE_NAME in DEFINED_ATTRIBUTES loop
+            declare
+               ITEM_NAME	: constant STRING	:= DEFINED_ATTRIBUTES'IMAGE ( ATTRIBUTE_NAME );
                SYM		: TREE;
-            BEGIN
+            begin
                ITEM_LENGTH := ITEM_NAME'LENGTH;
-               IF ITEM_NAME( ITEM_LENGTH - 1 ..ITEM_LENGTH ) = "_X" THEN
+               if ITEM_NAME( ITEM_LENGTH - 1 ..ITEM_LENGTH ) = "_X" then
                   ITEM_LENGTH := ITEM_LENGTH - 2;
-               END IF;
+               end if;
                SYM := STORE_SYM (ITEM_NAME( 1..ITEM_LENGTH ) );
                NEW_ID := MAKE_ATTRIBUTE_ID (
                   		LX_SYMREP	=> SYM,
@@ -629,18 +634,18 @@ PROCEDURE FIX_PRE IS
                   		);
                NEW_ID_LIST := APPEND ( NEW_ID_LIST, NEW_ID );				--| PREFIXER À LA LISTE DES IDS
                LIST ( SYM, INSERT ( LIST ( SYM ), NEW_ID ) );				--| CHANGER LA XD_DEFLIST PAR UNE AUGMENTEE EN FIN DE L'ID CREÉ
-            END;
-         END LOOP;
+            end;
+         end loop;
       
-         FOR OP_NAME IN OP_CLASS LOOP
-            DECLARE
-               ITEM_NAME	: CONSTANT STRING	:= BLTN_TEXT_ARRAY ( OP_NAME );
+         for OP_NAME in OP_CLASS loop
+            declare
+               ITEM_NAME	: constant STRING	:= BLTN_TEXT_ARRAY ( OP_NAME );
                SYM		: TREE;
-            BEGIN
+            begin
                ITEM_LENGTH := 3;
-               WHILE ITEM_NAME( ITEM_LENGTH ) = '!' LOOP
+               while ITEM_NAME( ITEM_LENGTH ) = '!' loop
                   ITEM_LENGTH := ITEM_LENGTH - 1;
-               END LOOP;
+               end loop;
                SYM := STORE_SYM ( '"' & ITEM_NAME( 1..ITEM_LENGTH ) & '"' );
                NEW_ID := MAKE_BLTN_OPERATOR_ID (
                      	LX_SYMREP	=> SYM,
@@ -648,25 +653,25 @@ PROCEDURE FIX_PRE IS
                      	);
                NEW_ID_LIST := APPEND ( NEW_ID_LIST, NEW_ID );				--| PREFIXER À LA LISTE DES IDS
                LIST ( SYM, INSERT ( LIST ( SYM ), NEW_ID ) );				--| CHANGER LA XD_DEFLIST PAR UNE AUGMENTEE EN FIN DE L'ID CREÉ
-            END;
-         END LOOP;
+            end;
+         end loop;
       
          ID_LIST := NEW_ID_LIST;							--| RENDRE LA LISTE DES IDS
          
-      END MAKE_PREDEF_IDS;
+      end MAKE_PREDEF_IDS;
    
    
-BEGIN
-  DECLARE
+begin
+  declare
     USER_ROOT		: TREE;
     PREDEF_ID_LIST		: SEQ_TYPE;
-  BEGIN
+  begin
     USER_ROOT := D( XD_USER_ROOT, TREE_ROOT );
     MAKE_PREDEF_IDS( PREDEF_ID_LIST );							--| NOEUDS STANDARD POUR LES NOMS PREDEFINIS
       
     WALK( D( XD_STRUCTURE, USER_ROOT ), PARENT => TREE_VOID, REGION => TREE_VOID );		--| PARCOURIR L'ARBRE SYNTAXIQUE DU _STANDRD
       
-    DECLARE
+    declare
       INTEGER_ID		: TREE	:= HEAD_DEFN( STORE_SYM( "INTEGER" ) );
       NATURAL_ID		: TREE	:= HEAD_DEFN( STORE_SYM( "NATURAL" ) );
       POSITIVE_ID		: TREE	:= HEAD_DEFN( STORE_SYM( "POSITIVE" ) );
@@ -675,7 +680,7 @@ BEGIN
       DURATION_BASE_ID	: TREE	:= HEAD_DEFN( STORE_SYM( "_DURATION" ) );
       DURATION_SPEC		: TREE	:= D( SM_TYPE_SPEC, DURATION_ID );
       DURATION_BASE_SPEC	: TREE	:= D( SM_TYPE_SPEC, DURATION_BASE_ID );
-    BEGIN
+    begin
       DI( CD_IMPL_SIZE, D( SM_TYPE_SPEC,NATURAL_ID ), INTGR_SIZE );
       DI( CD_IMPL_SIZE, D( SM_TYPE_SPEC,POSITIVE_ID ), INTGR_SIZE);
       DI( CD_IMPL_SIZE, DURATION_BASE_SPEC, DI( CD_IMPL_SIZE, DURATION_SPEC ) );
@@ -683,26 +688,26 @@ BEGIN
       DB( SM_IS_ANONYMOUS, DURATION_BASE_SPEC, TRUE );
       D ( XD_SOURCE_NAME, DURATION_BASE_SPEC, DURATION_ID );
       D ( SM_TYPE_SPEC, D( SM_RANGE, DURATION_SPEC ), DURATION_BASE_SPEC );			--| SOUS TYPE CONTRAINTE D'ETENDUE POUR DURATION
-    END;
+    end;
       
-    DECLARE
+    declare
       ADDRESS_ID	: TREE	:= HEAD_DEFN( STORE_SYM( "_ADDRESS" ) );
       BASE_SPEC	: TREE	:= D( SM_TYPE_SPEC, D( SM_TYPE_SPEC, ADDRESS_ID ) );		--| ID DE TYPE ANCÊTRE DANS SM_TYPE_SPEC
       NEW_SPEC	: TREE	:= COPY_NODE( BASE_SPEC );
-    BEGIN
+    begin
       D( XD_SOURCE_NAME, NEW_SPEC, ADDRESS_ID );
       D( SM_DERIVED, NEW_SPEC, BASE_SPEC );
       D( SM_BASE_TYPE, NEW_SPEC, NEW_SPEC );
       D( SM_TYPE_SPEC, ADDRESS_ID, NEW_SPEC );
-    END;
+    end;
       
-    DECLARE
+    declare
       PACK_SYM	: TREE	:= HEAD_DEFN( STORE_SYM( "_STANDRD" ) );			--| CHERCHER LE SYMBOLE NOM DU PACKAGE _STANDRD EN VERIFIANT QU'IL A UNE DEFLIST
       HEADER		: TREE := D( SM_SPEC, PACK_SYM );
-    BEGIN
+    begin
       LIST( D( AS_DECL_S2, HEADER ), PREDEF_ID_LIST );					--| IDENTIFICATEURS EN PARTIE PRIVEE
-    END;
+    end;
          
-  END;
+  end;
 --|-------------------------------------------------------------------------------------------------
-END FIX_PRE;
+end FIX_PRE;

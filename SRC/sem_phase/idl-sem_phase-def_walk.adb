@@ -206,6 +206,7 @@ package body DEF_WALK is
 
                                                         -- ELSE -- SINCE NOT WITHIN ANY PREDEFINED INTEGER TYPE
             else
+
                                                         -- REPORT ERROR
               ERROR (D (LX_SRCPOS, RANGE_NODE), "INTEGER TYPE TOO LARGE FOR IMPLEMENTATION");
 

@@ -2289,7 +2289,7 @@ procedure SEM_PHASE is
          and then D( LX_SYMREP, ID ).TY = DN_SYMBOL_REP					--| ET QU'IL Y A BIEN UN SYMBOLE ASSOCIE (PAR LIB_PHASE SI L'ID EST UTILISE DANS LA COMPILATION)
       then
         DEF := DEF_UTIL.MAKE_DEF_FOR_ID( ID, INITIAL_H );
-        D ( XD_REGION_DEF, DEF, TREE_VOID );
+        D( XD_REGION_DEF, DEF, TREE_VOID );
         DB( XD_IS_IN_SPEC, DEF, FALSE );
       end if;
     end loop;

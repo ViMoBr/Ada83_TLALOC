@@ -85,10 +85,10 @@ DEBUT_NOM_TEXTE:
 		if OPTION = 'S' then goto FIN; end if;
   end;
 
-  IDL.LIB_PHASE;	if OPTION = 'L' then goto FIN; end if;					--| CHARGEMENT DES WITH
-  IDL.SEM_PHASE;	if OPTION = 'M' then goto FIN; end if;					--| ANALYSE SEMANTIQUE
-  IDL.ERR_PHASE;	if OPTION = 'E' then goto FIN; end if;					--| TRAITEMENT D'ERREURS
-  IDL.WRITE_LIB;	if OPTION = 'W' then goto FIN; end if;					--| ECRITURE EN LIBRAIRIE
+  IDL.LIB_PHASE;					if OPTION = 'L' then goto FIN; end if;	--| CHARGEMENT DES WITH
+  IDL.SEM_PHASE;					if OPTION = 'M' then goto FIN; end if;	--| ANALYSE SEMANTIQUE
+  IDL.ERR_PHASE ( ACCES_TEXTE( 1.. ACCES_TEXTE_LENGTH ) );	if OPTION = 'E' then goto FIN; end if;	--| TRAITEMENT D'ERREURS
+  IDL.WRITE_LIB;					if OPTION = 'W' then goto FIN; end if;	--| ECRITURE EN LIBRAIRIE
   CODE_GEN;
 
 <<FIN>>
