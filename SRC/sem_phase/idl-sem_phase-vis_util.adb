@@ -1,12 +1,57 @@
 separate (IDL.SEM_PHASE)
-    --|----------------------------------------------------------------------------------------------
-    --| VIS_UTIL
-    --|----------------------------------------------------------------------------------------------
-package body VIS_UTIL is
+
+
+					--------
+	package body			VIS_UTIL
+is					--------
+
   use EXP_TYPE;
   use DEF_UTIL;
   use MAKE_NOD;
   use REQ_UTIL;
+
+			-----------------
+	procedure		INIT_PARAM_CURSOR
+			-----------------
+						( CURSOR     :out PARAM_CURSOR_TYPE;
+						  PARAM_LIST :SEQ_TYPE
+						)
+  is
+  begin
+    CURSOR.PARAM_LIST := PARAM_LIST;
+    CURSOR.ID_LIST    := ( TREE_NIL, TREE_NIL );
+
+	-----------------
+  end	INIT_PARAM_CURSOR;
+	-----------------
+
+
+			--------------------
+	procedure		ADVANCE_PARAM_CURSOR
+			--------------------
+						 ( CURSOR :in out PARAM_CURSOR_TYPE )
+  is
+  begin
+    if IS_EMPTY( CURSOR.ID_LIST ) then
+      if IS_EMPTY( CURSOR.PARAM_LIST ) then
+        CURSOR.ID := TREE_VOID;
+        return;
+      else
+        POP( CURSOR.PARAM_LIST, CURSOR.PARAM );
+        if CURSOR.PARAM.TY = DN_NULL_COMP_DECL then
+          CURSOR.ID := TREE_VOID;
+          return;
+        end if;
+        CURSOR.ID_LIST := LIST( D( AS_SOURCE_NAME_S, CURSOR.PARAM ) );
+      end if;
+    end if;
+    POP( CURSOR.ID_LIST, CURSOR.ID );
+
+	--------------------
+  end	ADVANCE_PARAM_CURSOR;
+	--------------------
+
+
 
   procedure REDUCE_NAME_TYPES (DEFSET : in out DEFSET_TYPE; TYPESET : out TYPESET_TYPE);
 
@@ -820,30 +865,5 @@ package body VIS_UTIL is
 
         ----------------------------------------------------------------
 
-  procedure INIT_PARAM_CURSOR (CURSOR : out PARAM_CURSOR_TYPE; PARAM_LIST : SEQ_TYPE) is
-  begin
-    CURSOR.PARAM_LIST := PARAM_LIST;
-    CURSOR.ID_LIST    := (TREE_NIL, TREE_NIL);
-  end INIT_PARAM_CURSOR;
-
-        ----------------------------------------------------------------
-
-  procedure ADVANCE_PARAM_CURSOR (CURSOR : in out PARAM_CURSOR_TYPE) is
-  begin
-    if IS_EMPTY (CURSOR.ID_LIST) then
-      if IS_EMPTY (CURSOR.PARAM_LIST) then
-        CURSOR.ID := TREE_VOID;
-        return;
-      else
-        POP (CURSOR.PARAM_LIST, CURSOR.PARAM);
-        if CURSOR.PARAM.TY = DN_NULL_COMP_DECL then
-          CURSOR.ID := TREE_VOID;
-          return;
-        end if;
-        CURSOR.ID_LIST := LIST (D (AS_SOURCE_NAME_S, CURSOR.PARAM));
-      end if;
-    end if;
-    POP (CURSOR.ID_LIST, CURSOR.ID);
-  end ADVANCE_PARAM_CURSOR;
 
 end VIS_UTIL;

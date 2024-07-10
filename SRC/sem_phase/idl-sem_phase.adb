@@ -1,10 +1,8 @@
 separate( IDL )
---|=================================================================================================|
---|										|
---|				SEM_PHASE						|
---|										|
---|=================================================================================================|
-procedure SEM_PHASE is
+
+					---------
+		procedure			SEM_PHASE
+is					---------
 
   --|------------------------------------------------------------------------------------------------
 
@@ -247,46 +245,61 @@ procedure SEM_PHASE is
     EMPTY_DEFSET		: constant DEFSET_TYPE;
     EMPTY_TYPESET		: constant TYPESET_TYPE;
     NULL_EXTRAINFO		: constant EXTRAINFO_TYPE;
-      
-    function  GET_DEF	( DEFINTERP :DEFINTERP_TYPE )		return TREE;
-    function  IS_NULLARY	( DEFINTERP :DEFINTERP_TYPE )		return BOOLEAN;
-    function  GET_EXTRAINFO	( DEFINTERP :DEFINTERP_TYPE )		return EXTRAINFO_TYPE;
-    function  IS_EMPTY	( DEFSET :DEFSET_TYPE )		return BOOLEAN;
-    function  HEAD		( DEFSET :DEFSET_TYPE )		return DEFINTERP_TYPE;
-    procedure POP		( DEFSET :in out DEFSET_TYPE;
-			  DEFINTERP :out DEFINTERP_TYPE );
-    function  GET_TYPE	( TYPEINTERP :TYPEINTERP_TYPE ) 	return TREE;
-    function  GET_EXTRAINFO	( TYPEINTERP :TYPEINTERP_TYPE )	return EXTRAINFO_TYPE;
-    function  IS_EMPTY	( TYPESET :TYPESET_TYPE )		return BOOLEAN;
-    function  HEAD		( TYPESET :TYPESET_TYPE )		return TYPEINTERP_TYPE;
-    procedure POP		( TYPESET :in out TYPESET_TYPE;
-			  TYPEINTERP :out TYPEINTERP_TYPE);
-      
-    procedure ADD_TO_DEFSET	( DEFSET :in out DEFSET_TYPE; DEFINTERP :DEFINTERP_TYPE );
-    procedure ADD_TO_DEFSET	( DEFSET     :in out DEFSET_TYPE; DEF :TREE;
-			  EXTRAINFO  :EXTRAINFO_TYPE := NULL_EXTRAINFO;
-			  IS_NULLARY :BOOLEAN        := FALSE );
-    procedure ADD_TO_TYPESET	( TYPESET :in out TYPESET_TYPE; TYPEINTERP :TYPEINTERP_TYPE );
-    procedure ADD_TO_TYPESET	( TYPESET :in out TYPESET_TYPE; TYPE_SPEC :TREE; EXTRAINFO :EXTRAINFO_TYPE := NULL_EXTRAINFO );
+
+
+			--  OPERATIONS SUR LES LISTES DE DEFINITIONS  --
+
+    function  IS_EMPTY		( DEFSET     :DEFSET_TYPE )		return BOOLEAN;
+    procedure POP			( DEFSET     :in out DEFSET_TYPE;
+				  DEFINTERP  :out DEFINTERP_TYPE );
+    function  HEAD			( DEFSET     :DEFSET_TYPE )		return DEFINTERP_TYPE;
+    function  GET_THE_ID		( DEFSET     :DEFSET_TYPE )		return TREE;
+    function  THE_ID_IS_NULLARY	( DEFSET     :DEFSET_TYPE )		return BOOLEAN;
+    procedure ADD_TO_DEFSET		( DEFSET     :in out DEFSET_TYPE;
+				  DEF        :TREE;
+				  EXTRAINFO  :EXTRAINFO_TYPE := NULL_EXTRAINFO;
+				  IS_NULLARY :BOOLEAN        := FALSE );
+
+    procedure ADD_TO_DEFSET		( DEFSET     :in out DEFSET_TYPE;
+				  DEFINTERP  :DEFINTERP_TYPE );
+    function  INSERT		( DEFSET     :DEFSET_TYPE;
+				  DEFINTERP :DEFINTERP_TYPE )			return DEFSET_TYPE;
+    function  GET_DEF		( DEFINTERP  :DEFINTERP_TYPE )		return TREE;
+    function  IS_NULLARY		( DEFINTERP  :DEFINTERP_TYPE )		return BOOLEAN;
+    function  GET_EXTRAINFO		( DEFINTERP  :DEFINTERP_TYPE )		return EXTRAINFO_TYPE;
+    procedure ADD_EXTRAINFO		( DEFINTERP  :in out DEFINTERP_TYPE;  EXTRAINFO    :EXTRAINFO_TYPE );
+    procedure ADD_EXTRAINFO		( DEFINTERP  :in out DEFINTERP_TYPE;  EXTRAINFO_OF :TYPEINTERP_TYPE );
+    procedure ADD_EXTRAINFO		( EXTRAINFO  :in out EXTRAINFO_TYPE;  EXTRAINFO_IN :EXTRAINFO_TYPE );
+	
+
+			--  OPERATIONS SUR LES LISTES DE TYPES  --
+
+    function  IS_EMPTY		( TYPESET    :TYPESET_TYPE )		return BOOLEAN;
+    procedure POP			( TYPESET    :in out TYPESET_TYPE;
+				  TYPEINTERP :out TYPEINTERP_TYPE);
+    function  HEAD			( TYPESET    :TYPESET_TYPE )		return TYPEINTERP_TYPE;
+    function  GET_THE_TYPE		( TYPESET    :TYPESET_TYPE )		return TREE;
+    procedure ADD_TO_TYPESET		( TYPESET    :in out TYPESET_TYPE;
+				  TYPE_SPEC  :TREE;
+				  EXTRAINFO  :EXTRAINFO_TYPE := NULL_EXTRAINFO );
+
+    procedure ADD_TO_TYPESET		( TYPESET    :in out TYPESET_TYPE;
+				  TYPEINTERP :TYPEINTERP_TYPE );
+    function  INSERT		( TYPESET    :TYPESET_TYPE;
+				  TYPEINTERP :TYPEINTERP_TYPE )	return TYPESET_TYPE;
+    function  GET_TYPE		( TYPEINTERP :TYPEINTERP_TYPE ) 	return TREE;
+    function  GET_EXTRAINFO		( TYPEINTERP :TYPEINTERP_TYPE )	return EXTRAINFO_TYPE;
+    procedure ADD_EXTRAINFO		( TYPEINTERP :in out TYPEINTERP_TYPE; EXTRAINFO    :EXTRAINFO_TYPE );
+    procedure ADD_EXTRAINFO		( TYPEINTERP :in out TYPEINTERP_TYPE; EXTRAINFO_OF :TYPEINTERP_TYPE );
+
+
+
       
     procedure REQUIRE_UNIQUE_DEF	( EXP :TREE; DEFSET :in out DEFSET_TYPE );
     procedure REQUIRE_UNIQUE_TYPE	( EXP :TREE; TYPESET :in out TYPESET_TYPE );
-      
-    function  GET_THE_ID		( DEFSET :DEFSET_TYPE )		return TREE;
-    function  THE_ID_IS_NULLARY	( DEFSET :DEFSET_TYPE )		return BOOLEAN;
-    function  GET_THE_TYPE		( TYPESET :TYPESET_TYPE )		return TREE;
-      
+
     procedure REDUCE_OPERATOR_DEFS( EXP :TREE; DEFSET :in out DEFSET_TYPE );
-      
-    procedure ADD_EXTRAINFO	( DEFINTERP :in out DEFINTERP_TYPE; EXTRAINFO :EXTRAINFO_TYPE );
-    procedure ADD_EXTRAINFO	( DEFINTERP :in out DEFINTERP_TYPE; EXTRAINFO_OF :TYPEINTERP_TYPE );
-    procedure ADD_EXTRAINFO	( TYPEINTERP :in out TYPEINTERP_TYPE; EXTRAINFO :EXTRAINFO_TYPE );
-    procedure ADD_EXTRAINFO	( TYPEINTERP :in out TYPEINTERP_TYPE; EXTRAINFO_OF :TYPEINTERP_TYPE );
-    procedure ADD_EXTRAINFO	( EXTRAINFO :in out EXTRAINFO_TYPE; EXTRAINFO_IN :EXTRAINFO_TYPE );
-      
-    function  INSERT	( DEFSET :DEFSET_TYPE; DEFINTERP :DEFINTERP_TYPE )	return DEFSET_TYPE;
-    function  INSERT	( TYPESET :TYPESET_TYPE; TYPEINTERP :TYPEINTERP_TYPE )	return TYPESET_TYPE;
-     
+
     procedure STASH_DEFSET	( EXP :TREE; DEFSET :DEFSET_TYPE );
     function  FETCH_DEFSET	( EXP :TREE )			return DEFSET_TYPE;
     procedure STASH_TYPESET	( EXP :TREE; TYPESET :TYPESET_TYPE );
@@ -482,13 +495,17 @@ procedure SEM_PHASE is
 			  ID_LIST		: SEQ_TYPE;
 			  ID		: TREE;
 			end record;
+
+    procedure INIT_PARAM_CURSOR		( CURSOR     :out PARAM_CURSOR_TYPE;
+					  PARAM_LIST :SEQ_TYPE );
+    procedure ADVANCE_PARAM_CURSOR		( CURSOR     :in out PARAM_CURSOR_TYPE );
       
         --- $$$$ TEMPORARY $$$$$$$$$$$$$$
     function IS_OVERLOADABLE_HEADER		( HEADER :TREE )			return BOOLEAN;
         -- $$$$$
       
     procedure FIND_VISIBILITY			( EXP :TREE; DEFSET :out DEFSET_TYPE );
-    procedure FIND_DIRECT_VISIBILITY		( ID :TREE; DEFSET :out DEFSET_TYPE );
+    procedure FIND_DIRECT_VISIBILITY		( ID  :TREE; DEFSET :out DEFSET_TYPE );
     procedure FIND_SELECTED_VISIBILITY		( SELECTED :TREE;
 					  DEFSET :out DEFSET_TYPE );
       
@@ -497,12 +514,9 @@ procedure SEM_PHASE is
     function  MAKE_USED_OP_FROM_STRING		( STRING_NODE :TREE )		return TREE;
     function  EXPRESSION_TYPE_OF_DEF		( DEF :TREE )			return TREE;
     function  ALL_PARAMETERS_HAVE_DEFAULTS	( HEADER :TREE )			return BOOLEAN;
-    function  CAST_TREE			( ARG :SEQ_TYPE )			return TREE;
-    function  CAST_SEQ_TYPE			( ARG :TREE )			return SEQ_TYPE;
+    function  CAST_TREE			( ARG  :SEQ_TYPE )			return TREE;
+    function  CAST_SEQ_TYPE			( ARG  :TREE )			return SEQ_TYPE;
     function  COPY_NODE			( NODE : TREE )			return TREE;
-    procedure INIT_PARAM_CURSOR		( CURSOR :out PARAM_CURSOR_TYPE;
-					  PARAM_LIST :SEQ_TYPE );
-    procedure ADVANCE_PARAM_CURSOR		( CURSOR :in out PARAM_CURSOR_TYPE );
       
   --|--------------------------------------------------------------------------------------------------
   end VIS_UTIL;

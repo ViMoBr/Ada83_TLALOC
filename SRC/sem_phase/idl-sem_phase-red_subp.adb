@@ -4,14 +4,14 @@ separate( IDL.SEM_PHASE)
 --|-------------------------------------------------------------------------------------------------
 package body RED_SUBP is
 
---  DEBUG_RED_SUBP		: BOOLEAN		:= FALSE;					--| COMMUTATEUR DE DEVERMINAGE
+  DEBUG_RED_SUBP		: BOOLEAN		:= TRUE;					--| COMMUTATEUR DE DEVERMINAGE
 
   use VIS_UTIL, EXP_TYPE, EXPRESO, DEF_UTIL, MAKE_NOD, SET_UTIL, REQ_UTIL, DEF_WALK, ATT_WALK, AGGRESO;
 
   type ACTUAL_TYPE	is record
 		  SYM	: TREE;
 		  EXP	: TREE;
-		  TYPESET	: TYPESET_TYPE;
+		  TYPESET	: SET_UTIL.TYPESET_TYPE;
 		end record;
 
   type ACTUAL_ARRAY_TYPE is array( Positive range <>) of ACTUAL_TYPE;
@@ -645,6 +645,9 @@ package body RED_SUBP is
     RESULT_STRUCT		: TREE;
 
     EXTRAINFO		: EXTRAINFO_TYPE;
+
+    debug_defset		: DEFSET_TYPE		:= NAME_DEFSET;
+
   begin
     if INDEX /= TREE_VOID then
       EVAL_EXP_TYPES( INDEX, INDEX_TYPESET );
@@ -741,7 +744,16 @@ package body RED_SUBP is
 
           when DN_PROCEDURE_ID | DN_OPERATOR_ID | DN_BLTN_OPERATOR_ID =>
                                  --$$$$ WORRY ABOUT CONVERSIONS WITH BOOLEAN-VALUED OPS
-            HEADER := D( XD_HEADER, GET_DEF( DEFINTERP ) );
+--            HEADER := D( XD_HEADER, GET_DEF( DEFINTERP ) );
+            HEADER := D( XD_HEADER, NAME_DEF );
+
+if DEBUG_RED_SUBP then
+  put( "REDUCE_APPLY_NAMES DN_PROCEDURE_ID     NAMEDEF.XD_SOURCE_NAME.LX_SYMREP= " );
+  put_line( PRINT_NAME( D( LX_SYMREP, D( XD_SOURCE_NAME, NAME_DEF ) ) ) );
+  print_nod.print_node( NAME_DEF );
+end if;
+
+
             CHECK_ACTUAL_LIST( HEADER, ACTUAL, ACTUALS_OK, EXTRAINFO );
 
             if ACTUALS_OK and not IS_SLICE then
@@ -798,33 +810,128 @@ package body RED_SUBP is
 
       if IS_EMPTY( NEW_DEFSET ) then
         ERROR( D( LX_SRCPOS, NAME), "DESACCORD DE TYPE" );
-print_node( NAME );
+
+
+put_line( "RAPPORT DETAILLE ERREUR" );
+put_line( "L'objet " & print_name( D( LX_SYMREP, NAME ) ) & " n'a pu etre associe par profil de parametres" );
+
+PUT_PARAM_ACTUELS:
+--  print_nod.print_node( GEN_ASSOC_S );
+  declare
+    ASSOC_LIST	: SEQ_TYPE	:= LIST( GEN_ASSOC_S );
+    ASSOC		: TREE;
+  begin
+    put_line( "appel : " ); put( print_name( D( LX_SYMREP, NAME ) ) & " ( " );
+
+    while not IS_EMPTY( ASSOC_LIST ) loop
+      POP( ASSOC_LIST, ASSOC );
+--      new_line; put( "assoc = " ); print_nod.print_node( ASSOC );
+--      new_line; put( "sm_exp_type = " ); print_nod.print_node( D( SM_EXP_TYPE, ASSOC ) );
+--      new_line; put( "xd_source_name = " ); print_nod.print_node( D( XD_SOURCE_NAME, D( SM_EXP_TYPE, ASSOC ) ) );
+      declare
+        EXP_TYPE	: TREE	:= D( SM_EXP_TYPE, ASSOC );
+        SOURCE_NAME	: TREE	:= D( XD_SOURCE_NAME, EXP_TYPE );
+      begin
+
+if ASSOC.TY = DN_USED_OBJECT_ID then
+        put( print_name( D( LX_SYMREP, ASSOC ) ) & " :" & print_name( D( LX_SYMREP, SOURCE_NAME ) ) );
+        if not IS_EMPTY( ASSOC_LIST ) then put( "; " ); end if;
+end if;
+
+      end;
+    end loop;
+    put_line( " )" );
+  end PUT_PARAM_ACTUELS;
+
+
+BALAYE_DEFS:
+declare
+  DEFINTERP	: DEFINTERP_TYPE;
+  NAME_DEF, NAME_ID	: TREE;
+  HEADER		: TREE;
+begin
+  put_line( "definitions trouvees :" );
+  while not IS_EMPTY( debug_defset ) loop
+    POP( debug_defset, DEFINTERP );
+    NAME_DEF := GET_DEF( DEFINTERP );		-- print_nod.print_node( NAME_DEF );
+    NAME_ID  := D( XD_SOURCE_NAME, NAME_DEF );	-- print_nod.print_node( NAME_ID );
+    HEADER   := D( SM_SPEC, NAME_ID );
+--  print_nod.print_node( HEADER );
+
+put( PRINT_NAME( D( LX_SYMREP, NAME_ID ) ) & " ( " );
+
+    declare
+      PARAM_S	: SEQ_TYPE	:= LIST( D( AS_PARAM_S, HEADER) );
+      PARAM	: TREE;
+    begin
+      while not IS_EMPTY( PARAM_S ) loop
+        POP( PARAM_S, PARAM );
+--        print_nod.print_node( PARAM );
+--        print_nod.print_node( D( AS_NAME, PARAM ) );
+        declare
+          NAME_S	: SEQ_TYPE	:= LIST( D( AS_SOURCE_NAME_S, PARAM ) );
+          NAME	: TREE;
+        begin
+          while not IS_EMPTY( NAME_S ) loop
+            POP( NAME_S, NAME );
+--            print_nod.print_node( NAME );
+	  put( PRINT_NAME( D( LX_SYMREP, NAME ) ) );
+	  if not IS_EMPTY( NAME_S ) then put( ", " ); end if;
+
+          end loop;
+        end;
+
+        put( " :" & PRINT_NAME( D( LX_SYMREP, D( AS_NAME, PARAM ) ) ) );
+        if not IS_EMPTY( PARAM_S ) then put( "; " ); end if;
+
+      end loop;
+      put_line( " )" );
+      put_line( "----------------" );
+    end;
+  end loop;
+end BALAYE_DEFS;
+
+
+
+
+
+
      end if;
     end if;
 
     NAME_DEFSET := NEW_DEFSET;
   end REDUCE_APPLY_NAMES;
-  --|-------------------------------------------------------------------------------------------
-  --|
-  procedure CHECK_ACTUAL_LIST( HEADER :TREE; ACTUAL :ACTUAL_ARRAY_TYPE;
-			 ACTUALS_OK :out BOOLEAN; EXTRAINFO :out EXTRAINFO_TYPE ) is
+
+
+				-----------------
+	procedure			CHECK_ACTUAL_LIST
+				-----------------
+						( HEADER		:TREE;
+						  ACTUAL		:ACTUAL_ARRAY_TYPE;
+						  ACTUALS_OK	:out BOOLEAN;
+						  EXTRAINFO	:out EXTRAINFO_TYPE
+						)
+  is
+
     ACTUALS_ACCEPTED	: NATURAL			:= 0;
     NAMED_FIRST		: NATURAL;
 
-    PARAM_CURSOR		: PARAM_CURSOR_TYPE;
+    PARAM_CURSOR		: VIS_UTIL.PARAM_CURSOR_TYPE;
     PARAM_SYM		: TREE;
     NEW_ACTUALS_OK		: BOOLEAN;
     NEW_EXTRAINFO		: EXTRAINFO_TYPE		:= NULL_EXTRAINFO;
     SUB_EXTRAINFO		: EXTRAINFO_TYPE;
     ACTUAL_SEEN		: BOOLEAN;
   begin
-    INIT_PARAM_CURSOR( PARAM_CURSOR, LIST( D( AS_PARAM_S, HEADER ) ) );
+    INIT_PARAM_CURSOR( PARAM_CURSOR, LIST( D( AS_PARAM_S, HEADER ) ) );			-- POINTEUR SUR LES FORMELS DU HEADER
 
-          -- PROCESS POSITIONAL PARAMETERS
+    if DEBUG_RED_SUBP then put_line( "CHECK_ACTUAL_LIST process positional" ); end if;
+
+PROCESS_POSITIONAL_PARAMETER:
     for I in ACTUAL'RANGE loop
-      exit when ACTUAL( I ).SYM /= TREE_VOID;
+      exit when ACTUAL( I ).SYM /= TREE_VOID;						-- RENCONTRE UNE ASSOCIATION NOMMEE FIN DES POSITIONNELLES
 
-      ADVANCE_PARAM_CURSOR( PARAM_CURSOR );
+      ADVANCE_PARAM_CURSOR( PARAM_CURSOR );						-- PRENDRE UN PARAMETRE FORMEL
 
       if PARAM_CURSOR.ID = TREE_VOID then
         ACTUALS_OK := FALSE;
@@ -832,9 +939,37 @@ print_node( NAME );
         return;
       end if;
 
-      CHECK_ACTUAL_TYPE( GET_BASE_TYPE( D( SM_OBJ_TYPE, PARAM_CURSOR.ID ) ), ACTUAL( I ).TYPESET, NEW_ACTUALS_OK, SUB_EXTRAINFO );
+      declare
+        FORMAL_BASE_TYPE	: TREE	:= GET_BASE_TYPE( D( SM_OBJ_TYPE, PARAM_CURSOR.ID ) );
+      begin
+
+        if DEBUG_RED_SUBP then
+	begin
+ 	  put_line( "PARAM_CURSOR.ID " & PRINT_NAME( D( LX_SYMREP, PARAM_CURSOR.ID ) ) );
+	  print_nod.print_node( D( SM_OBJ_TYPE, PARAM_CURSOR.ID ) );
+	  put_line( "CHECK_ACTUAL_TYPE formal base type = " & PRINT_NAME( D( LX_SYMREP, D( XD_SOURCE_NAME, FORMAL_BASE_TYPE ) ) ) );
+	exception
+	when program_error => null;
+	end;
+        end if;
+
+        CHECK_ACTUAL_TYPE( FORMAL_BASE_TYPE, ACTUAL( I ).TYPESET, NEW_ACTUALS_OK, SUB_EXTRAINFO );
+
+        if not NEW_ACTUALS_OK and then DEBUG_RED_SUBP then
+	begin
+            put_line( "CHECK_ACTUAL_TYPE echoue contre formal base type = " & PRINT_NAME( D( LX_SYMREP, D( XD_SOURCE_NAME, FORMAL_BASE_TYPE ) ) ) );
+	  put_line( " node PARAM_CURSOR.ID.SM_OBJ_TYPE" );
+	  print_nod.print_node( D( SM_OBJ_TYPE, PARAM_CURSOR.ID ) );
+	  put_line( " node FORMAL BASE_TYPE" );
+	  print_nod.print_node( FORMAL_BASE_TYPE );
+	exception
+	  when program_error => null;
+	end;
+
+        end if;
+      end;
  
-     if not NEW_ACTUALS_OK then
+      if not NEW_ACTUALS_OK then
         ACTUALS_OK := FALSE;
         EXTRAINFO  := NULL_EXTRAINFO;
         return;
@@ -842,7 +977,9 @@ print_node( NAME );
 
       ADD_EXTRAINFO( NEW_EXTRAINFO, SUB_EXTRAINFO );
       ACTUALS_ACCEPTED := I;
-    end loop;
+    end loop PROCESS_POSITIONAL_PARAMETER;
+
+
 
           --PROCESS DEFAULT AND NAMED PARAMETERS
     NAMED_FIRST := ACTUALS_ACCEPTED + 1;
@@ -874,6 +1011,7 @@ print_node( NAME );
 
       end if;
     end loop;
+
     if ACTUALS_ACCEPTED = ACTUAL'LENGTH then
       ACTUALS_OK := TRUE;
       EXTRAINFO  := NEW_EXTRAINFO;
@@ -881,7 +1019,11 @@ print_node( NAME );
       ACTUALS_OK := FALSE;
       EXTRAINFO  := NULL_EXTRAINFO;
     end if;
-  end CHECK_ACTUAL_LIST;
+
+	-----------------
+  end	CHECK_ACTUAL_LIST;
+	-----------------
+
   --|-------------------------------------------------------------------------------------------
   --|
   procedure REDUCE_ARRAY_PREFIX_TYPES( NAME :TREE; NAME_TYPESET :in out TYPESET_TYPE; GEN_ASSOC_S :TREE; IS_SLICE_OUT :out BOOLEAN ) is
@@ -985,9 +1127,17 @@ print_node( NAME );
     ACTUALS_OK := TRUE;
     EXTRAINFO  := NEW_EXTRAINFO;
   end CHECK_SUBSCRIPT_LIST;
-  --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-  --|
-  procedure CHECK_ACTUAL_TYPE( FORMAL_TYPE :TREE; ACTUAL_TYPESET :TYPESET_TYPE; ACTUALS_OK :out BOOLEAN; EXTRAINFO :out EXTRAINFO_TYPE ) is
+  
+
+				-----------------
+	procedure			CHECK_ACTUAL_TYPE
+				-----------------
+						( FORMAL_TYPE	:TREE;
+						  ACTUAL_TYPESET	:TYPESET_TYPE;
+						  ACTUALS_OK	:out BOOLEAN;
+						  EXTRAINFO	:out EXTRAINFO_TYPE
+						)
+  is
     TYPESET	: TYPESET_TYPE	:= ACTUAL_TYPESET;
     TYPEINTERP	: TYPEINTERP_TYPE;
     TYPE_SPEC	: TREE;
@@ -1002,6 +1152,20 @@ print_node( NAME );
       POP( TYPESET, TYPEINTERP );
 
       TYPE_SPEC := GET_TYPE( TYPEINTERP );
+--      TYPE_SPEC := GET_BASE_TYPE( GET_TYPE( TYPEINTERP ) );
+
+      if DEBUG_RED_SUBP then
+begin
+        put_line( "CHECK_ACTUAL_TYPE actual_type_spec node = " );
+        print_nod.print_node( TYPE_SPEC );
+        put( "CHECK_ACTUAL_TYPE actual_type spec = " & PRINT_NAME( D( LX_SYMREP, D( XD_SOURCE_NAME, TYPE_SPEC ) ) ) );
+        if TYPE_SPEC = FORMAL_TYPE then put( " OK type_spec = formal" ); else put( " !!! type_spec /= formal" ); end if;
+        new_line;
+exception
+  when program_error => null;
+end;
+        
+      end if;
 
       if TYPE_SPEC = FORMAL_TYPE then
         EXTRAINFO := GET_EXTRAINFO( TYPEINTERP );
