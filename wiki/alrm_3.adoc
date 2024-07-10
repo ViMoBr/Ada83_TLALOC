@@ -1,0 +1,5 @@
+== 9.9 **Attributs de tâches et d'entrées**
+
+1. Pour un objet tâche ou une valeur T les attributs suivants sont définis:
+
+2. ```T'CALLABLE``` Fournit la valeur faux lorsque l'exécution de la tâche désignée par T est soit achevée, soit terminée, ou quand la tâche est anormale. Fournit la valeur vrai sinon. La valeur de cet attribut est du type prédéfini BOOLEAN.

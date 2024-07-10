@@ -1,0 +1,177 @@
+## **INTRODUCTION** ##
+
+Le compilateur A83 transforme un fichier texte écrit dans le langage Ada 83 en un fichier exécutable ELF à reliure dynamique.
+
+Le travail de transformation opère en phases bien distinctes qui fabriquent une structure de donnée intermédiaire DIANA (Descriptive Intermediate Attributed Notation for Ada) à partir de laquelle on dérive une structure de données de code intermédiaire optimisable indépendant du matériel MICODE (Machine Independant CODE) et enfin le code exécutable et liable en ELF.
+
+La structure DIANA est stockée par blocs dans un fichier de travail temporaire "$$$.tmp" qui est accessible à toutes les phases.
+
+Le code intermédiaire est conservé dans un fichier ".cod" au format texte qui peut être examiné.
+
+Le format ELF (Executable and Linkable Format) est utilisé pour la forme exécutable à liaison dynamique, pour chaque unité un fichier ".elf" est donc produit.
+
+Enfin un fichier ".dcl" (ou ".sub" pour une sous-unité Ada) contient une description DIANA qui est "withable" dans la phase "lib_phase" de sorte qu'un module puisse en utiliser d'autres en les mentionnant dans une clause "with". Ces fichiers sont stockés dans un répertoire librairie.
+```
+               |------------|
+               |    A83     |
+module.adb --> |------------|
+               | par_phase  |
+               | lib_phase  |
+$$$.tmp <----> | sem_phase  |
+               | err_phase  |
+               | micode_gen | --> module.cod    (code intermédiaire)
+               | code_gen   | --> module.elf    (exécutable)
+               | write_lib  | --> module.dcl    (unité librairie, DIANA withable)
+               |------------|
+```
+Lors d'un appel au compilateur, on doit fournir 3 paramètres :
+* un chemin d'accès à un répertoire "projet" qui contient le répertoire librairie ADA__LIB où seront stockés les ".dcl", ".sub" et ".cod".
+* un accès relatif au texte source à compiler (relatif au répertoire projet)
+* une lettre indiquant la phase après laquelle on s'arrête. On peut en effet vouloir de faire qu'une analyse syntaxique, vérification rapide d'erreurs de frappe par exemple, ou bien s'arrêter après l'analyse sémantique afin d'examiner la structure DIANA.
+
+Comme il n'y a pas de passage de paramètre à un programme Ada 83, il faut fournir la chaîne de paramétrage via le shell et le standard input.
+Il existe donc un fichier script a83.sh prenant 3 paramètres qui sont relayés par une commande :
+```
+ ./ada_comp <<< "$1 $2 $3"
+```
+L'appel au compilateur (exécutable "ada_comp") se fait alors par quelque chose comme :
+```
+ ./a83.sh  ./  ./IDL_TOOLS/diana_node_attr_class_names.ads  W
+```
+Où l'on suppose être dans le répertoire "EXE" contenant a83.sh et qui fait office de répertoire projet de test, contenant donc un répertoire "ADA__LIB". De sorte que le chemin projet est "./", l'accès relatif au source est ici "./IDL_TOOLS/diana_node_attr_class_names.ads" et la lettre d'arrêt est "W" (arrêt après la phase "write_lib").
+
+
+## 1. LES PHASES DE COMPILATION ##
+
+Il y a 7 phases de compilation dont la description détaillée suit.
+
+
+### 1.1 PHASE _"PAR_PHASE"_ ###
+La phase _"par_phase"_ effectue l'analyse lexicale et syntaxique du texte source soumis à compilation. Il s'agit d'un analyseur LALR(1) classique dont les tables sont fabriquées par un système spécifique présent dans un répertoire "SRC/lalr_tools".
+
+La structure logicielle de la phase est la suivante (dans le répertoire SRC/par_phase) :
+```
+                  idl
+                  ^
+|---------------->| par_phase
+|                   ^
+|                   |<-- set_dflt
+|<-- lex
+|<-- grmr_ops
+|<-- grmr_tbl
+
+ fichiers :
+   lex.ads       lex.adb
+   grmr_ops.ads  grmr_ops.adb
+   grmr_tbl.ads
+   idl-par_phase.adb
+   idl-par_phase-set_dflt.adb
+
+```
+
+Le point d'entrée de la phase est la procédure _"idl.par_phase"_ qui est une sous unité séparée du module _"idl"_ dont on parlera plus loin. Sa déclaration a cette forme :
+```
+    procedure PAR_PHASE ( PATH_TEXTE, NOM_TEXTE, LIB_PATH :STRING );
+```
+
+A l'issue de l'éxécution de _"par_phase"_ sur le fichier source, un arbre DIANA ne contenant que les informations de syntaxe est présent dans le fichier de travail "$$$.tmp". un appel de A83 avec une lettre option d'affichage de l'arbre de "$$$.tmp" permet de visualiser l'arbre obtenu.
+
+### 1.2 LIB_PHASE ###
+
+Le langage Ada 83 permet une compilation modulaire : un module peut utiliser des définitions et des services fournis et compilés précédemment par un autre module qui est mentionné dans une clause "with".
+
+Avant de vérifier si la sémantique statique du fichier compilé est correcte, la phase _"lib_phase"_ lit les fichiers ".dcl" et intègre les arbres DIANA de ces modules "withés". Il faut en effet disposer des définitions utilisées et de leurs caractéristiques sémantiques antérieurement obtenues pour vérifier la sémantique du module en cours de compilation.
+
+La phase est contenue dans un seul fichier dans le répertoire SRC/ada_comp :
+```
+ idl.lib_phase.adb
+```
+Cette unité procédure _"idl.par_phase"_ séparée du module "idl" est le point d'entrée de la phase. Elle est sans paramètre (mais incluse et séparée du module _"idl"_) :
+```
+    procedure LIB_PHASE;
+```
+L'arbre contenu dans "$$$.tmp" est complété par les blocs relogés des unités "withées". La lettre d'arrêt après lib_phase est "L".
+
+
+### 1.3 PHASE _"SEM_PHASE"_ ###
+
+La phase _"sem_phase"_ effectue la vérification sémantique statique du module compilé, c'est une phase très complexe répartie en 29 modules (répertoire SRC/sem_phase) et dont le point d'entrée est la procédure _"idl.sem_phase"_ contenue dans le fichier "idl-sem_phase.adb".
+la structure logicielle est une inclusion de sous-unités :
+```
+         idl
+         ^
+         | sem_phase
+           ^
+           |<-- aggreso
+           |<-- att_walk
+           |<-- chk_stat
+           |<-- def_util
+           |<-- def_walk
+           |<-- derived
+           |<-- eval_num
+           |<-- expreso
+           |<-- exp_type
+           |<-- fix_pre
+           |<-- fix_with
+           |<-- gen_subs
+           |<-- hom_unit
+           |<-- instant
+           |<-- make_nod
+           |<-- newsnam
+           |<-- nod_walk
+           |<-- pra_walk
+           |<-- pre_fcns
+           |<-- red_subp
+           |<-- rep_clau
+           |<-- req_util
+           |<-- sem_glob
+           |<-- set_util
+           |<-- stm_walk
+           |<-- uarith
+           |<-- univ_ops
+           |<-- vis_util
+           
+   fichiers dans SRC/sem_phase :
+     idl-sem_phase
+     idl-sem_phase-aggreso.adb       idl-sem_phase-att_walk.adb
+     idl-sem_phase-chk_stat.adb      idl-sem_phase-def_util.adb
+     idl-sem_phase-def_walk.adb      idl-sem_phase-derived.adb
+     idl-sem_phase-eval_num.adb      idl-sem_phase-expreso.adb
+     idl-sem_phase-exp_type.adb      idl-sem_phase-fix_pre.adb
+     idl-sem_phase-fix_with.adb      idl-sem_phase-gen_subs.adb
+     idl-sem_phase-hom_unit.adb      idl-sem_phase-instant.adb
+     idl-sem_phase-make_nod.adb      idl-sem_phase-newsnam.adb
+     idl-sem_phase-nod_walk.adb      idl-sem_phase-pra_walk.adb
+     idl-sem_phase-pre_fcns.adb      idl-sem_phase-red_subp.adb
+     idl-sem_phase-rep_clau.adb      idl-sem_phase-req_util.adb
+     idl-sem_phase-sem_glob.adb      idl-sem_phase-set_util.adb
+     idl-sem_phase-stm_walk.adb      idl-sem_phase-uarith.adb
+     idl-sem_phase-univ_ops.adb      idl-sem_phase-vis_util.adb
+```
+
+### 1.4 PHASE _"ERR_PHASE"_ ###
+
+Les erreurs trouvées dans les phases précédentes sont accumulées dans l'arbre DIANA et présentées dans la phase _"err_phase"_. s'il y a des erreurs, les phases suivantes ne sont pas exécutées.
+La procédure ERR_PHASE sans paramètre est contenue dans le fichier idl-err_phase.adb du répertoire SRC/ada_comp. Elle est séparée du module _"idl"_.
+
+
+### 1.5 PHASE _"MICODE_GEN"_ ###
+
+A partir de l'arbre DIANA vérifié tant syntaxiquement que sémantiquement, une forme de code machine intermédiaire indépendant du matériel cible est élaborée.
+Le premier compilateur ada 83 validé ciblait un interpréteur de machine à pile. Le seul source accessible en langage C est celui de Ada-Ed.
+Un projet ultérieur mené en Pologne (voir le dossier DOC/Thèses_Pologne) utilisait un code intermédiaire de machine à pile, mais avec l'intention de le traduire en assembleur machine 386 (thèse de A.Wierzinska). Le traducteur de DIANA en "A-Code", une extension du traditionnel P-Code de Pascal pour l'Ada, a été construit par M.Cierniak et peut servir d'exemple.
+Cependant, les processeurs actuels (2024) sont des machines à registres et les optimiseurs de code les plus modernes, comme LLVM ou des substituts plus simples tel QUBE, travaillent sur une représentation en opérations à 3 adresses et une approche SSA (Single Static Assignment). la question se pose donc de savoir s'il n'est pas judicieux de viser un code intermédiaire de ce genre, plus facile à traduire en assembleur par exemple pour du RISC-V quia l'avantage d'être une spécification oderne et "propre" comparé à du processeur Amd/Intel x86 très alourdi par son histoire et les cojntraites de compatibilité.
+
+
+### 1.6 PHASE _"CODE_GEN"_ ###
+
+Le code intermédiaire est ensuite traduit en code machine cible porté dans des fichiers ELF qui ont l'avantage d'être on seulement directement exécutables, mais de posséder un mécanisme de liaison dynamique qui permet de se passer d'un relieur (linker) classique.
+
+
+### 1.7 PHASE WRITE_LIB ###
+
+La dernière opération du compilateur consiste à fabriquer un bloc d'arbre DIANA qui peut être intégré à une autre compilation ultérieure qui utiliserait en clause "with" le module que l'on finit de compiler.
+Tout les blocs DIANA du module en cours de compilation ne sont pas à sauvegarder parce que certaines parties de l'arbre dans $$$.tmp proviennent de clauses "with" et donc de fichiers librairies déjà sauvegardés.
+Or la séquence des phases est telle que les blocs d'arbre DIANA à sauvegarder (provenant de l'analyse syntaxique puis de l'analyse sémantique) sont séparé par des blocs "withés à ne pas sauvegarder". Il faut donc reloger les noeuds à sauvegarder et les compacter en une seule plage de blocs dont ont fait le fichier .dcl ou .sub.
+Un algorithme de marquage à la relocation détruit l'ancien arbre (certains pointeurs étant volontairement dénaturés lors du marquage). ce n'est pas grave dans la mesure où il n'y a plus d'opération à faire après cette dernière phase, et que l'examen de l'abre DIANA, s'il faut le faire, peut se faire en stoppant avant la phase _"write_lib"_.
+
