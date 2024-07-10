@@ -1,4 +1,4 @@
-= 10 **Structure de programme et problèmes de compilation**
+### 10. **Structure de programme et problèmes de compilation**
 
 1. La structure globale des programmes et les possibilités de compilation séparée sont décrites dans ce chapitre. Un programme est une collection d'une ou plusieurs unités de compilation soumises à un compilateur en une ou plusieurs compilations. Chaque unité de compilation définit la compilation séparée d'une construction qui peut être une déclaration ou un corps de sous-programme, une déclaration ou un corps de package, une déclaration ou un corps génériques, ou une instantiation générique. Sinon cette construction peut être une sous-unité, auquel cas elle inclut le corps d'un sous-programme, d'un package, d'une unité tâche, ou unité générique déclarée dans une autre unité de compilation. 
 
