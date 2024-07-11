@@ -26,7 +26,7 @@ is					---------
   procedure READ_LIB_CTL_FILE;
   procedure REGENERATE_LIB_CTL_FILE;
   procedure INSERT_XD_LIB_NAME_IN_COMP_UNIT	( COMP_UNIT :TREE );
-  procedure LOAD_RELOC_LIB_BLOCKS_ONE_COMP_UNIT	( COMP_UNIT :TREE );
+  procedure LOAD_RELOC_LIB_BLOCKS		( COMP_UNIT :TREE );
   procedure ENTER_DEFAULT_GENERIC_FORMALS;
   procedure ENTER_USED_DEFINING_IDS;
 
@@ -34,7 +34,7 @@ is					---------
 
 				---------------
 	procedure			START_LIB_PHASE
-is				---------------
+is
 
 begin
   OPEN_IDL_TREE_FILE ( IDL.LIB_PATH( 1..LIB_PATH_LENGTH ) & "$$$.TMP" );
@@ -65,7 +65,7 @@ begin
          PUT_LINE ( "IDL.LIB_PHASE : PAS D'UNITE NE CONTENANT QUE DES PRAGMAS" );
       else
          INSERT_XD_LIB_NAME_IN_COMP_UNIT( COMP_UNIT );
-         LOAD_RELOC_LIB_BLOCKS_ONE_COMP_UNIT( COMP_UNIT );
+         LOAD_RELOC_LIB_BLOCKS( COMP_UNIT );
       end if;
     end loop		LOAD_RELOC_LIB_BLOCKS_ALL_COMP_UNITS;
 
@@ -83,14 +83,15 @@ begin
 << FINISH >>      
   CLOSE_IDL_TREE_FILE;
 
-	---------------
+
 end	START_LIB_PHASE;
 	---------------
 
 
+
 			-----------------
 	procedure		READ_LIB_CTL_FILE
-			-----------------
+
   is
     FCTL			: TEXT_IO.FILE_TYPE;					--| FICHIER DE CONTOLE DE LA LIBRAIRIE
     LIB_CHAR		: CHARACTER;
@@ -156,15 +157,14 @@ end	START_LIB_PHASE;
 
     CLOSE( FCTL );									--| FERMER LE FICHIER CONTROLE LIBRAIRIE
 
-
-	-----------------
   end	READ_LIB_CTL_FILE;
 	-----------------
 
 
+
 			-----------------------
 	procedure		REGENERATE_LIB_CTL_FILE
-is			-----------------------
+is
 
     FCTL			: TEXT_IO.FILE_TYPE;					--| FICHIER CONTROLE
     LIB_PREFIX		: constant STRING	:= GET_LIB_PREFIX;
@@ -203,14 +203,15 @@ is			-----------------------
     NEW_LINE( FCTL );								--| PASSER A LA LIGNE
     CLOSE( FCTL );									--| FERMER LE FICHIER DE CONTROLE LIBRAIRIE
 
-	-----------------------
+
   end	REGENERATE_LIB_CTL_FILE;
 	-----------------------
 
 
+
 			-------------
 	function		MAKE_FILE_SYM		( PRI, SEC :STRING ) return TREE
-			-------------
+
 is
     BASE_UNIT_SYM		: TREE;
     SECSYM		: TREE;
@@ -266,14 +267,13 @@ if debug_lib then put_line( "make_file_sym avec pri=" & PRI
     LIB_INFO_SEQ := APPEND( LIB_INFO_SEQ, LIB_INFO );					--| CHAINER LE LIB_INFO
     return FILESYM;
 
-	-------------
   end	MAKE_FILE_SYM;
 	-------------
 
 
+
 			-------------------------------
 	procedure		INSERT_XD_LIB_NAME_IN_COMP_UNIT	( COMP_UNIT :TREE )
-			-------------------------------
 
   is
     UNIT_BODY		: constant TREE	:= D( AS_ALL_DECL, COMP_UNIT );
@@ -332,87 +332,85 @@ if debug_lib then put_line( "make_file_sym avec pri=" & PRI
          
     D( XD_LIB_NAME, COMP_UNIT, FILE_SYM );
 
-	-------------------------------
+
   end	INSERT_XD_LIB_NAME_IN_COMP_UNIT;
 	-------------------------------
 
 
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE LOAD_UNIT
-  function LOAD_UNIT ( FILESYM_ARG :TREE ) return TREE is    
+			---------
+	function		LOAD_UNIT		( FILESYM_ARG :TREE ) return TREE
+			---------
+  is    
     FILESYM		: TREE		:= FILESYM_ARG;
     UNIT			: TREE		:= TREE_VOID;
-    DLTA			: INTEGER;						--| DECALAGE DE PAGE DU AU CHARGEMENT D'UN ARBRE ANTERIEUREMENT COMPILE
+    DELTA_PG_OLD_TO_NEW	: INTEGER;
     UNIT_TIMESTAMP		: INTEGER;
-    --|---------------------------------------------------------------------------------------------
-    function OFFSET ( T :TREE ) return TREE is						--| DECALE LA PAGE D'UN POINTEUR ANTIQUE (COMPILATION ANTERIEURE) POUR EN FAIRE UN POINTEUR ACTUEL
+
+		------
+    function	OFFSET		( T :TREE ) return TREE
+    is
       TEMP	: TREE	:= T;
     begin
-      TEMP.PG := PAGE_IDX( INTEGER( TEMP.PG ) + DLTA );					--| AJOUTER LE DECALAGE DE PAGE AU CHARGEMENT
+      TEMP.PG := PAGE_IDX( INTEGER( TEMP.PG ) + DELTA_PG_OLD_TO_NEW );
       return TEMP;
-    end OFFSET;
-    --|---------------------------------------------------------------------------------------------
-    procedure LOAD_WITHED_UNIT ( WUNIT :TREE ) is
-      UNIT:	TREE;
-    begin
-      UNIT := LOAD_UNIT( STORE_SYM (							--| APPEL RECURSIF POUR CHARGER UNE UNITE "WITHED" DE CELLE D'ABORD CHARGEE
-	PRINT_NAME( OFFSET( D( TW_FILENAME, OFFSET( WUNIT ) ) ) )
- 	) );
+    end	OFFSET;
+	------
 
-      if UNIT = TREE_VOID then							--| PAS TROUVE L'UNITE A INCLURE
-        raise NAME_ERROR;
-      end if;
-
-      if DI( XD_TIMESTAMP, UNIT) >= UNIT_TIMESTAMP then					--| L'UNITE "WITHED" EST PLUS RECENTE QUE CELLE QUI L'UTILISE (ANORMAL ! )
-        PUT_LINE( "ANOMALIE : " & PRINT_NAME( D( XD_LIB_NAME,UNIT ) )
-		& " PAS ANTERIEURE A " & PRINT_NAME( FILESYM ) );
-        raise NAME_ERROR;
-      end if;
-    end LOAD_WITHED_UNIT;
-    --|---------------------------------------------------------------------------------------------
-    procedure RELOCATE_UNIT ( UNIT :TREE; WUNIT_SEQ :SEQ_TYPE ) is
-      RELOC	: array( VPG_NUM ) of PAGE_IDX	:= (others=> 0);			--| ASSEZ GRAND TABLEAU
+		-------------
+    procedure	RELOCATE_UNIT ( UNIT :TREE; WUNIT_SEQ :SEQ_TYPE ) is
+      RELOC_TABLE	: array( VPG_NUM ) of PAGE_IDX	:= (others=> 0);
       PNTR	: TREE				:= UNIT;
       LAST_PAGE	: PAGE_IDX			:= PNTR.PG
 						+ PAGE_IDX( DI( XD_NBR_PAGES, UNIT ) ) - 1;
       NODE_KIND	: NODE_NAME;
-      --|-------------------------------------------------------------------------------------------
-      procedure RELOC_FOR_WUNIT ( WUNIT :TREE ) is
-        TRANS_WITH	: TREE		:= OFFSET( WUNIT );
-        NEW_UNIT	: TREE		:= LOAD_UNIT(
-			STORE_SYM( PRINT_NAME( OFFSET( D( TW_FILENAME, TRANS_WITH ) ) ) )
-               		);
-        FIRST_PAGE	: PAGE_IDX	:= NEW_UNIT.PG;
-        UNIT_PNTR	: TREE		:= D( TW_COMP_UNIT, TRANS_WITH );			--| L'ANTIQUE POINTEUR (PAS RECALE)
-        DLTA	: INTEGER		:= INTEGER( FIRST_PAGE ) - INTEGER( UNIT_PNTR.PG );	--| DECALAGE DE PAGE
-        NBR_PAGES	: PAGE_IDX	:= PAGE_IDX( DI( XD_NBR_PAGES,
-			(P, TY=> DN_COMPILATION_UNIT, PG=> FIRST_PAGE, LN=> 0) ) );
+    begin
+
+			FILL_RELOC_TABLE_FOR_WITHED:
+      declare
+        WUNIT_LIST		: TREE		:= WUNIT_SEQ.FIRST;
+        WUNIT		: TREE;
+		--------------------
+        procedure	FILL_RELOC_FOR_WUNIT ( WUNIT :TREE ) is
+          WUNIT_RELOCATED	: TREE		:= OFFSET( WUNIT );
+          WUNIT_SYM		: TREE		:= D( TW_FILENAME, WUNIT_RELOCATED );
+          WUNIT_SYM_RELOCATED	: TREE		:= OFFSET( WUNIT_SYM );
+          WUNIT_RECALL_SYMREP	: TREE		:= STORE_SYM( PRINT_NAME( WUNIT_SYM_RELOCATED ) );
+          WUNIT_BLOCK_RECALL	: TREE		:= LOAD_UNIT( WUNIT_RECALL_SYMREP );
+          FIRST_PAGE	: PAGE_IDX	:= WUNIT_BLOCK_RECALL.PG;
+          UNIT_PNTR		: TREE		:= D( TW_COMP_UNIT, WUNIT_RELOCATED );
+          DELTA_PG_OLD_TO_NEW	: INTEGER		:= INTEGER( FIRST_PAGE ) - INTEGER( UNIT_PNTR.PG );
+          NBR_PAGES		: PAGE_IDX	:= PAGE_IDX( DI( XD_NBR_PAGES,
+				(P, TY=> DN_COMPILATION_UNIT, PG=> FIRST_PAGE, LN=> 0) ) );
       begin
         for I in UNIT_PNTR.PG .. UNIT_PNTR.PG + NBR_PAGES - 1 loop
-          RELOC( I ) := PAGE_IDX( INTEGER( I ) + DLTA );
+          RELOC_TABLE( I ) := PAGE_IDX( INTEGER( I ) + DELTA_PG_OLD_TO_NEW );
         end loop;
-      end RELOC_FOR_WUNIT;
-         
-    begin
-      for I in UNIT.PG .. UNIT.PG + PAGE_IDX( DI ( XD_NBR_PAGES, UNIT ) ) - 1 loop
-        RELOC( PAGE_IDX( INTEGER( I ) - DLTA ) ) := I;
-      end loop;
-
-      declare
-        WUNIT_LIST		: TREE		:= WUNIT_SEQ.FIRST;				--| POINTEUR ELEMENT DE LISTE DES UNITES "WITHED"
-        WUNIT		: TREE;							--| UNE UNITE "WITHED" DE L'UNITE CHARGEE
+      end	FILL_RELOC_FOR_WUNIT;
+	--------------------
       begin
         if WUNIT_LIST /= TREE_NIL then
           while WUNIT_LIST.TY = DN_LIST loop
             WUNIT      := D( XD_HEAD, OFFSET( WUNIT_LIST ) );
             WUNIT_LIST := D( XD_TAIL, OFFSET( WUNIT_LIST ) );
-            RELOC_FOR_WUNIT( WUNIT );
+            FILL_RELOC_FOR_WUNIT( WUNIT );
           end loop;
-          RELOC_FOR_WUNIT( WUNIT_LIST );						--| LA DERNIERE DE LA LISTE
+          FILL_RELOC_FOR_WUNIT( WUNIT_LIST );
         end if;
-      end;
+      end			FILL_RELOC_TABLE_FOR_WITHED;
 
-RELOCATE_PNTRS:					-- TABLE IS SET UP, DO THE RELOC
+
+			FILL_RELOC_TABLE_FOR_UNIT:
+
+      for NEW_PAGE in UNIT.PG .. UNIT.PG + PAGE_IDX( DI ( XD_NBR_PAGES, UNIT ) ) - 1 loop
+        declare
+	OLD_PAGE	: PAGE_IDX	:= PAGE_IDX( INTEGER( NEW_PAGE ) - DELTA_PG_OLD_TO_NEW );
+        begin
+          RELOC_TABLE( OLD_PAGE ) := NEW_PAGE;
+        end;
+      end loop		FILL_RELOC_TABLE_FOR_UNIT;
+
+
+			RELOCATE_TREE_POINTERS:
       while PNTR.PG <= LAST_PAGE loop
         declare    
           WORD_ZERO	: TREE	:= DABS( 0, PNTR);						--| ENTETE DE NOEUD
@@ -424,29 +422,26 @@ RELOCATE_PNTRS:					-- TABLE IS SET UP, DO THE RELOC
             NODE_KIND := WORD_ZERO.NOTY;
             PNTR.TY := NODE_KIND;
                   
-            if NODE_KIND = DN_TXTREP or NODE_KIND = DN_NUM_VAL then				--| UN TERMINAL TEXTE OU NOMBRE
-              null;									--| RIEN A FAIRE DEDANS
-            else
+            if NODE_KIND /= DN_TXTREP and NODE_KIND /= DN_NUM_VAL then
+
+				RELOCATE_NODE_FIELDS:
+
               for I in 1 .. WORD_ZERO.NSIZ loop						--| POUR TOUS LES TREES DU NOEUD
                 declare
-                  WORD	: TREE	:= DABS( I, PNTR );					--| PRENDRE LE TREE
+                  FIELD	: TREE	:= DABS( I, PNTR );
                 begin
-                  if WORD.PT = HI then							--| UN HEADER/INTEGER
-                    null;								--| RIEN A LUI FAIRE
-                  elsif WORD.PT = S then						--| UN SOURCE POSITION
-                    WORD.SPG := RELOC( WORD.SPG );					--| DECALER
-                    DABS( I, PNTR, WORD );						--| REECRIRE
-                  else								--| POINTEUR SEGMENTE STANDARD
-		if WORD.PG /= 0 then
-                      WORD.PG := RELOC( WORD.PG );					--| DECALER SA PAGE
-                      DABS( I, PNTR, WORD );						--| REECRIRE
-                      if WORD.TY = DN_GENERIC_DECL then					--| UN POINTEUR A GENERIQUE
-                        GENERIC_LIST := INSERT( GENERIC_LIST, WORD );				--| LE METTRE EN LISTE SPECIALE
+	        if FIELD.PT = S then
+                    FIELD.SPG := RELOC_TABLE( FIELD.SPG );   DABS( I, PNTR, FIELD );
+                  elsif FIELD.PT /= HI then
+		if FIELD.PG /= 0 then
+                      FIELD.PG := RELOC_TABLE( FIELD.PG );   DABS( I, PNTR, FIELD );
+                      if FIELD.TY = DN_GENERIC_DECL then
+                        GENERIC_LIST := INSERT( GENERIC_LIST, FIELD );
 		  end if;
                     end if;
                   end if;
                 end;
-              end loop;
+              end loop		RELOCATE_NODE_FIELDS;
             end if;
                   
             if PNTR.LN < LINE_IDX'LAST - WORD_ZERO.NSIZ then				--| SI RESTE DE LA PLACE
@@ -457,33 +452,30 @@ RELOCATE_PNTRS:					-- TABLE IS SET UP, DO THE RELOC
             end if;
           end if;
         end;
-      end loop RELOCATE_PNTRS;
+      end loop		RELOCATE_TREE_POINTERS;
 
-    end RELOCATE_UNIT;
-      
+    end	RELOCATE_UNIT;
+	-------------
+
   begin
-    if not IS_EMPTY( LIST( FILESYM ) ) then						--| LE SYMBOLE A DEJA UNE UNITE CHARGEE
-      UNIT := HEAD( LIST( FILESYM ) );							--| RETOURNER CELLE-CI
+    if not IS_EMPTY( LIST( FILESYM ) ) then
+      UNIT := HEAD( LIST( FILESYM ) );
       return UNIT;
-    end if;
-         
-LIRE_BLOCS_PAGES:
+    end if;  
+				READ_UNIT_PAGES:
+
     declare
       package SEQ_IO	is new SEQUENTIAL_IO( SECTOR );
       LIB_FILE		: SEQ_IO.FILE_TYPE;
     begin
 
       begin
-        SEQ_IO.OPEN( LIB_FILE, SEQ_IO.IN_FILE, GET_LIB_PREFIX & PRINT_NAME( FILESYM ) );		--| OUVRIR LE FICHIER ARBRE LIBRARISE DE L'UNITE
+        SEQ_IO.OPEN( LIB_FILE, SEQ_IO.IN_FILE, GET_LIB_PREFIX & PRINT_NAME( FILESYM ) );
       exception
-        when NAME_ERROR =>
---      PUT( "PAS TROUVE " & GET_LIB_PREFIX );
---      PUT_LINE( PRINT_NAME( FILESYM ) );
---      LIST( FILESYM, INSERT( (TREE_NIL,TREE_NIL), TREE_VOID ) );
-      return TREE_VOID;
-end;
+        when NAME_ERROR => return TREE_VOID;
+      end;
 
-LECTURES:
+					LECTURES:
       declare
         PAGET	: TREE	:= MAKE( NODE_NAME'VAL( 0 ), ATTR_NBR( LINE_IDX'LAST ) );		--| ALLOUER UN ESPACE D'UNE PAGE (SOUS FORME DE NOEUD) DANS L'ARBRE DE LA COMPILATION
         ENTETE	: TREE;
@@ -497,47 +489,75 @@ LECTURES:
           PAGET := MAKE( NODE_NAME'VAL( 0 ), ATTR_NBR( LINE_IDX'LAST ) );			--| ALLOUER UNE NOUVELLE PAGE (SOUS FORME DE NOEUD) DANS L'ARBRE DE LA COMPILATION
           SEQ_IO.READ( LIB_FILE, PAG( ASSOC_PAGE( PAGET.PG ) ).DATA.all );			--| LIRE LA PAGE
         end loop;
-      end LECTURES;
+      end					LECTURES;
          
-      SEQ_IO.CLOSE( LIB_FILE );							--| FERMER LE FICHIER ARBRE LIBRARISE
-    end LIRE_BLOCS_PAGES;
+      SEQ_IO.CLOSE( LIB_FILE );
+
+    end				READ_UNIT_PAGES;
 
 
     declare      
-      OLD_PTR	: TREE	:= D( XD_LIB_NAME, UNIT );					--| UN ANCIEN POINTEUR DANS LA PREMIERE PAGE
+      OLD_EXAMPLE_PTR	: TREE	:= D( XD_LIB_NAME, UNIT );
     begin
-      DLTA := INTEGER( UNIT.PG ) - INTEGER( OLD_PTR.PG );					--| DECALAGE DE PAGE SUITE AU CHARGEMENT
+      DELTA_PG_OLD_TO_NEW := INTEGER( UNIT.PG ) - INTEGER( OLD_EXAMPLE_PTR.PG );
     end;
-    UNIT_TIMESTAMP := DI( XD_TIMESTAMP, UNIT );						--| RECUPERER L'ESTAMPILLE TEMPORELLE
-      
-LOAD_WITHED:
-    declare
-      WUNIT_SEQ		: SEQ_TYPE	:= LIST( UNIT );				--| LISTE XD_WITH_LIST DES UNITES "WITHED"
-      WUNIT_LIST		: TREE		:= WUNIT_SEQ.FIRST;				--| POINTEUR ELEMENT DE LISTE DES UNITES "WITHED"
-      WUNIT		: TREE;							--| UNE UNITE "WITHED" DE L'UNITE CHARGEE
-    begin
-      if WUNIT_LIST /= TREE_NIL then							--| SI LISTE NON VIDE
-        while WUNIT_LIST.TY = DN_LIST loop						--| TANT QUE LA LISTE SE POURSUIT
-          WUNIT      := D( XD_HEAD, OFFSET( WUNIT_LIST ) );					--| POINTEUR D'UNITE "WITHED" COMPTE TENU DU DÉCALAGE DE PAGE AU CHARGEMENT
-          WUNIT_LIST := D( XD_TAIL, OFFSET( WUNIT_LIST ) );					--| AVANCER LE POINTEUR DE LISTE
-          LOAD_WITHED_UNIT( WUNIT );							--| CHARGER L'UNITE "WITHED" DE CELLE CHARGEE
-        end loop;
-        LOAD_WITHED_UNIT( WUNIT_LIST );							--| CHARGER LA DERNIERE EN QUEUE
-      end if;
-    end LOAD_WITHED;
+    UNIT_TIMESTAMP := DI( XD_TIMESTAMP, UNIT );
 
-    RELOCATE_UNIT( UNIT, LIST( UNIT ) );							--| TRANSLATER LES POINTEURS DE L'UNITE ET DE SES WITHED
-    LOADED_UNIT_LIST := INSERT( LOADED_UNIT_LIST, UNIT );					--| INSERER DANS LA LISTE DES UNITES CHARGEES
-    LIST( FILESYM, INSERT( (TREE_NIL,TREE_NIL), UNIT ) );					--| REPORTER L'UNITE DANS LE SYMBOLE CORRESPONDANT
+
+				LOAD_WITHED_UNITS:
+    declare
+      WUNIT_XD_WITH_LIST	: constant SEQ_TYPE	:= LIST( UNIT );
+      WUNIT_LIST		: TREE		:= WUNIT_XD_WITH_LIST.FIRST;
+      WUNIT		: TREE;
+		----------------
+      procedure	LOAD_WITHED_UNIT	( WUNIT_OLD_PLACE :TREE )
+
+      is
+        RELOCATED_WUNIT	: constant TREE	:= OFFSET   ( WUNIT_OLD_PLACE );
+        OLD_TW_FILENAME	: constant TREE	:= D( TW_FILENAME, RELOCATED_WUNIT );
+        NEW_TW_FILENAME	: constant TREE	:= OFFSET   ( OLD_TW_FILENAME );
+        TW_FILENAME_SYM	: constant TREE	:= STORE_SYM( PRINT_NAME( NEW_TW_FILENAME ) );
+        TW_UNIT		: constant TREE	:= LOAD_UNIT( TW_FILENAME_SYM );
+      begin
+        if TW_UNIT = TREE_VOID then raise NAME_ERROR; end if;
+
+        if DI( XD_TIMESTAMP, TW_UNIT ) >= UNIT_TIMESTAMP then
+          PUT_LINE( "ANOMALIE : " & PRINT_NAME( D( XD_LIB_NAME, TW_UNIT ) )
+		& " PAS ANTERIEURE A " & PRINT_NAME( FILESYM ) );
+          raise NAME_ERROR;
+        end if;
+      end	LOAD_WITHED_UNIT;
+	----------------
+    begin
+      if WUNIT_LIST /= TREE_NIL then
+        while WUNIT_LIST.TY = DN_LIST loop
+          WUNIT      := D( XD_HEAD, OFFSET( WUNIT_LIST ) );
+          WUNIT_LIST := D( XD_TAIL, OFFSET( WUNIT_LIST ) );
+          LOAD_WITHED_UNIT( WUNIT );
+        end loop;
+        LOAD_WITHED_UNIT( WUNIT_LIST );
+      end if;
+    end				LOAD_WITHED_UNITS;
+
+
+    RELOCATE_UNIT( UNIT, LIST( UNIT ) );
+    LOADED_UNIT_LIST := INSERT( LOADED_UNIT_LIST, UNIT );
+    LIST( FILESYM, INSERT( (TREE_NIL,TREE_NIL), UNIT ) );
     return UNIT;
          
-  end LOAD_UNIT;
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE LOAD_UNIT
-  function LOAD_UNIT ( PRI, SEC :STRING ) return TREE is
+  end	LOAD_UNIT;
+	---------
+
+
+			---------
+	function		LOAD_UNIT			( PRI, SEC :STRING ) return TREE
+  is
   begin
     return LOAD_UNIT( MAKE_FILE_SYM( PRI, SEC ) );
-  end LOAD_UNIT;
+  end	LOAD_UNIT;
+	---------
+
+
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE INTEGRER_EN_FERMETURE_DES_WITH
   --|
@@ -598,9 +618,11 @@ INTEGRER_EN_FERMETURE:
     end if;
   end UNSELECTED;
 
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE INCLUDES_PARENTS
-  procedure INCLUDES_PARENTS ( SUBUNIT :TREE ) is
+
+			---------------------
+	procedure		TREAT_SUBUNIT_PARENTS	( SUBUNIT :TREE )
+			---------------------
+  is
     PARENT_NAME_OUT_USED	: TREE	:= D( AS_NAME, SUBUNIT );				--| NAME PARENT DE LA SOUS-UNITE
     ANCESTOR_SYM		: TREE;							--| SYM DE L ANCETRE DE LA SOUS-UNITE (DETERMINE EN FOND DE RECURSION)
 
@@ -742,7 +764,7 @@ MAJ_FILE_CHN:
 --      END;
 
 --    END IF;
-  end INCLUDES_PARENTS;
+  end TREAT_SUBUNIT_PARENTS;
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE CHECK_USE_CLAUSES
   procedure CHECK_USE_CLAUSES ( CONTEXT_LIST_IN :SEQ_TYPE; CONTEXT_ITEM :TREE ) is
@@ -856,9 +878,9 @@ TRAITE_UN_NOM_WITHE:
   end PROCESS_WITH_CLAUSES;
 
 
-			-----------------------------------
-	procedure		LOAD_RELOC_LIB_BLOCKS_ONE_COMP_UNIT	( COMP_UNIT :TREE )
-			-----------------------------------
+			---------------------
+	procedure		LOAD_RELOC_LIB_BLOCKS		( COMP_UNIT :TREE )
+			---------------------
 							
   is
     FILE_SYM		: TREE		:= D( XD_LIB_NAME, COMP_UNIT );
@@ -869,45 +891,45 @@ TRAITE_UN_NOM_WITHE:
   begin
     TRANS_WITH_SEQ := (TREE_NIL, TREE_NIL);						--| FERMETURE TRANSITIVE DES WITH INITIALEMENT VIDE
 
-WITH_STANDARD:
+				TREAT_STANDARD_SPEC:
     declare
-      SPC_STANDRD	: TREE	:= LOAD_UNIT( "_STANDRD", ".DCL" );				--| CHARGER L UNITE PREDEFINIE
+      SPC_STANDRD	: TREE	:= LOAD_UNIT( "_STANDRD", ".DCL" );
     begin
       if SPC_STANDRD = TREE_VOID then
         PUT_LINE( "ERREUR : ENVIRONNEMENT PREDEFINI _STANDRD.DCL INTROUVABLE.");
         raise PROGRAM_ERROR;
       end if;
-      INTEGRER_EN_FERMETURE_DES_WITH( SPC_STANDRD );					--| LA METTRE EN FERMETURE TRANSITIVE
-    end WITH_STANDARD;
+      INTEGRER_EN_FERMETURE_DES_WITH( SPC_STANDRD );
+
+    end				TREAT_STANDARD_SPEC;
       
 					-- CLEAR LIST OF TRANS-WITH UNITS TO AVOID ABORT IF SELF-REFERENCE
     LIST( COMP_UNIT, (TREE_NIL,TREE_NIL) );
       
---|
---|		TRAITEMENT WITH DE LA SPEC POUR UNITE DE COMPILATION CORPS DE PAQUET OU DE SOUS-PROGRAMME
---|_________________________________________________________________________________________________           
---    if UNIT_KIND = DN_SUBPROG_ENTRY_DECL or UNIT_KIND = DN_PACKAGE_DECL
---       or UNIT_KIND = DN_GENERIC_DECL then
---      null;									--| PAS DE TRAITEMENT WITH SPEC POUR UNE SPEC !
---    els
-if UNIT_KIND = DN_PACKAGE_BODY or UNIT_KIND = DN_SUBPROGRAM_BODY then
+
+    if UNIT_KIND = DN_PACKAGE_BODY or UNIT_KIND = DN_SUBPROGRAM_BODY then
+
+
+				TREAT_BODY_SPEC:
 
       declare
         UNIT_PRI	: constant STRING	:= PRINT_NAME( D( LX_SYMREP, SON_1( UNIT_BODY ) ) );	--| LE AS_NAME POUR CHERCHER LA SPEC
       begin
-        SPC_UNIT := LOAD_UNIT( UNIT_PRI, ".DCL" );					--| LA SPEC DU BODY
+        SPC_UNIT := LOAD_UNIT( UNIT_PRI, ".DCL" );
 
 if debug_lib then put_line( "with_for_one_comp_unit load_unit : unit_pri = " & unit_pri ); end if;
 
         if SPC_UNIT /= TREE_VOID and then UNIT_KIND = DN_SUBPROGRAM_BODY then			--| CHARGE UNE SPC POUR UN CORPS DE SOUS-PROGRAMME
 	declare
+	  SPC_UNIT_ALL_DECL	: constant TREE	:= D( AS_ALL_DECL, SPC_UNIT );
+
 	  SPC_UNIT_IS_DECL_NOT_INSTANTIATION	: BOOLEAN	:= 
-		D( AS_ALL_DECL, SPC_UNIT ).TY = DN_SUBPROG_ENTRY_DECL			--| LA SPEC EST UNE DECL
-	 and then D( AS_UNIT_KIND, D( AS_ALL_DECL, SPC_UNIT ) ).TY /= DN_INSTANTIATION;		--| QUI N EST PAS UNE INSTANTIATION
+		SPC_UNIT_ALL_DECL.TY = DN_SUBPROG_ENTRY_DECL
+		and then D( AS_UNIT_KIND, SPC_UNIT_ALL_DECL ).TY /= DN_INSTANTIATION;
 
 	  SPC_UNIT_IS_GENERIC_SUBP_SPEC	: BOOLEAN	:= 
-		D( AS_ALL_DECL, SPC_UNIT ).TY = DN_GENERIC_DECL				--| LA SPEC EST UNE DECL GENERIQUE
-	 and then D( AS_HEADER, D( AS_ALL_DECL, SPC_UNIT ) ).TY in CLASS_SUBP_ENTRY_HEADER;	--| ET UNE SPEC
+		SPC_UNIT_ALL_DECL.TY = DN_GENERIC_DECL
+		and then D( AS_HEADER, SPC_UNIT_ALL_DECL ).TY in CLASS_SUBP_ENTRY_HEADER;
 
 	begin
             if not ( SPC_UNIT_IS_DECL_NOT_INSTANTIATION or SPC_UNIT_IS_GENERIC_SUBP_SPEC )							--|   QUI N A PAS
@@ -937,7 +959,7 @@ if debug_lib then put_line( "with_for_one_comp_unit load_unit : unit_pri = " & u
             end;
           end if;
         end if;
-      end;
+      end				TREAT_BODY_SPEC;
 --|
 --|		TRAITEMENT WITH SCOPE POUR SOUS UNITE DE COMPILATION UNIT_KIND = SUBUNIT
 --|_________________________________________________________________________________________________        
@@ -945,7 +967,7 @@ if debug_lib then put_line( "with_for_one_comp_unit load_unit : unit_pri = " & u
 
 if debug_lib then put_line( "with_for_one_comp_unit INCLUDES_PARENTS : unit_body = " ); PRINT_NOD.PRINT_NODE(UNIT_BODY); end if;
 
-       INCLUDES_PARENTS( UNIT_BODY );						--| CHARGER TOUT CE QUI EST ENTRE LA SOUS UNITE ET SON ANCETRE Y COMPRIS
+       TREAT_SUBUNIT_PARENTS( UNIT_BODY );						--| CHARGER TOUT CE QUI EST ENTRE LA SOUS UNITE ET SON ANCETRE Y COMPRIS
     end if;
       
     CUR_TIMESTAMP := CUR_TIMESTAMP + 1;							--| MARQUEUR TEMPOREL
@@ -957,8 +979,8 @@ if debug_lib then put_line( "with_for_one_comp_unit INCLUDES_PARENTS : unit_body
     LIST( COMP_UNIT, TRANS_WITH_SEQ );
     NEW_UNIT_LIST := APPEND( NEW_UNIT_LIST, COMP_UNIT );
 
-	-----------------------------------
-  end	LOAD_RELOC_LIB_BLOCKS_ONE_COMP_UNIT;
+
+  end	LOAD_RELOC_LIB_BLOCKS;
 	-----------------------------------
 
 
@@ -976,28 +998,28 @@ if debug_lib then put_line( "with_for_one_comp_unit INCLUDES_PARENTS : unit_body
   end COPY_NODE;
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE GENERATE_DUMMY_SPEC
-  procedure GENERATE_DUMMY_SPEC ( COMP_UNIT :TREE ) is
-					-- GENERATE LIBRARY UNIT FOR DEFAULT SUBPROGRAM SPEC
-    SUBP_BODY		: TREE	:= D( AS_ALL_DECL, COMP_UNIT );
-    SUBP_HEADER		: TREE	:= D( AS_HEADER, SUBP_BODY );
-    NEW_UNIT		: TREE	:= COPY_NODE( COMP_UNIT );
-    NEW_ID		: TREE	:= COPY_NODE( SON_1( SUBP_BODY ) );
-    NEW_DECL		: TREE	:= MAKE( DN_SUBPROG_ENTRY_DECL );
-  begin
-    D( SM_SPEC, NEW_ID, NEW_DECL );
-    D( SM_FIRST, NEW_ID, NEW_ID );
-      
-    D( AS_SOURCE_NAME, NEW_DECL, NEW_ID );
-    D( AS_HEADER, NEW_DECL, D( AS_HEADER, SUBP_BODY ) );
-    D( AS_UNIT_KIND, NEW_DECL, TREE_VOID );
-    D( LX_SRCPOS, NEW_DECL, D( LX_SRCPOS, SUBP_BODY ) );
-      
-					-- WORRY ABOUT DUPLICATED CONTEXT AND PRAGMAS $$$$$$$$
-    D( AS_ALL_DECL, NEW_UNIT, NEW_DECL );
-      
-    INSERT_XD_LIB_NAME_IN_COMP_UNIT( NEW_UNIT );
-    LOAD_RELOC_LIB_BLOCKS_ONE_COMP_UNIT( NEW_UNIT );
-  end GENERATE_DUMMY_SPEC;
+--   procedure GENERATE_DUMMY_SPEC ( COMP_UNIT :TREE ) is
+-- 					-- GENERATE LIBRARY UNIT FOR DEFAULT SUBPROGRAM SPEC
+--     SUBP_BODY		: TREE	:= D( AS_ALL_DECL, COMP_UNIT );
+--     SUBP_HEADER		: TREE	:= D( AS_HEADER, SUBP_BODY );
+--     NEW_UNIT		: TREE	:= COPY_NODE( COMP_UNIT );
+--     NEW_ID		: TREE	:= COPY_NODE( SON_1( SUBP_BODY ) );
+--     NEW_DECL		: TREE	:= MAKE( DN_SUBPROG_ENTRY_DECL );
+--   begin
+--     D( SM_SPEC, NEW_ID, NEW_DECL );
+--     D( SM_FIRST, NEW_ID, NEW_ID );
+--       
+--     D( AS_SOURCE_NAME, NEW_DECL, NEW_ID );
+--     D( AS_HEADER, NEW_DECL, D( AS_HEADER, SUBP_BODY ) );
+--     D( AS_UNIT_KIND, NEW_DECL, TREE_VOID );
+--     D( LX_SRCPOS, NEW_DECL, D( LX_SRCPOS, SUBP_BODY ) );
+--       
+-- 					-- WORRY ABOUT DUPLICATED CONTEXT AND PRAGMAS $$$$$$$$
+--     D( AS_ALL_DECL, NEW_UNIT, NEW_DECL );
+--       
+--     INSERT_XD_LIB_NAME_IN_COMP_UNIT( NEW_UNIT );
+--     LOAD_RELOC_LIB_BLOCKS( NEW_UNIT );
+--   end GENERATE_DUMMY_SPEC;
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE ENTER_DEFAULT_GENERIC_FORMALS
   procedure ENTER_DEFAULT_GENERIC_FORMALS is
