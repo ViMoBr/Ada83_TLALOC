@@ -25,8 +25,10 @@ $$$.tmp <----> | sem_phase  |
                |------------|
 ```
 Lors d'un appel au compilateur, on doit fournir 3 paramètres :
-* un chemin d'accès à un répertoire "projet" qui contient le répertoire librairie ADA__LIB où seront stockés les ".dcl", ".sub" et ".cod".
-* un accès relatif au texte source à compiler (relatif au répertoire projet)
+* un chemin d'accès à un répertoire "projet" qui contient le répertoire librairie ADA__LIB où seront stockés les ".dcl", ".sub" et ".cod". Cet accès est soit relatif à l'emplacement de l'exécutable ada_comp appelé par a83.sh, soit absolu.
+
+* un accès au texte source à compiler (accès relatif au répertoire projet)
+
 * une lettre indiquant la phase après laquelle on s'arrête. On peut en effet vouloir de faire qu'une analyse syntaxique, vérification rapide d'erreurs de frappe par exemple, ou bien s'arrêter après l'analyse sémantique afin d'examiner la structure DIANA.
 
 Comme il n'y a pas de passage de paramètre à un programme Ada 83, il faut fournir la chaîne de paramétrage via le shell et le standard input.

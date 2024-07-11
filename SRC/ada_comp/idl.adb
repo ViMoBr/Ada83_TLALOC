@@ -477,19 +477,20 @@ is				---
   function	GET_LIB_PREFIX		return STRING				--| UTILISEE PAR LIB_PHASE ET WRITE_LIB
   is		--------------
 
-    CTL		: TEXT_IO.FILE_TYPE;
-    C		: CHARACTER;
-    LINE		: STRING( 1..256 );
-    LEN		: NATURAL	:= 0;
+--    CTL		: TEXT_IO.FILE_TYPE;
+--    C		: CHARACTER;
+--    LINE		: STRING( 1..256 );
+--    LEN		: NATURAL	:= 0;
   begin
-    OPEN( CTL, IN_FILE, LIB_PATH(1..LIB_PATH_LENGTH) & "ADA__LIB.CTL" );
-    GET ( CTL, C );
-    if C = 'P' then
-      GET	    ( CTL, C );								--| LE BLANC QUI SUIT
-      GET_LINE( CTL, LINE, LEN );							--| LE PREFIXE (CHEMIN) DE LIBRAIRIE
-    end if;
-    CLOSE( CTL );
-    return LINE( 1..LEN );
+--    OPEN( CTL, IN_FILE, LIB_PATH(1..LIB_PATH_LENGTH) & "ADA__LIB.CTL" );
+--    GET ( CTL, C );
+--   if C = 'P' then
+--      GET	    ( CTL, C );								--| LE BLANC QUI SUIT
+--      GET_LINE( CTL, LINE, LEN );							--| LE PREFIXE (CHEMIN) DE LIBRAIRIE
+--    end if;
+--    CLOSE( CTL );
+--    return LINE( 1..LEN );
+    return LIB_PATH( 1 .. LIB_PATH_LENGTH );
   end	GET_LIB_PREFIX;
 	--------------
 

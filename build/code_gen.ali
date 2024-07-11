@@ -17,7 +17,7 @@ RV NO_STANDARD_STORAGE_POOLS
 RV NO_DEFAULT_INITIALIZATION
 RV NO_DYNAMIC_SIZED_OBJECTS
 
-U code_gen%b		code_gen.adb		1dc9c3a3 NE OO SU IU
+U code_gen%b		code_gen.adb		55c6fa3e NE OO SU IU
 Z ada.strings.text_buffers%s  a-sttebu.adb	a-sttebu.ali
 W diana_node_attr_class_names%s  diana_node_attr_class_names.ads  diana_node_attr_class_names.ali
 W emits%s		emits.adb		emits.ali
@@ -45,7 +45,7 @@ D code_gen.ads		20230823210317 9ce3fa93 code_gen%s
 D code_gen.adb		20240622120839 2af3b037 code_gen%b
 D diana_node_attr_class_names.ads  20240622095819 6d94ff6d diana_node_attr_class_names%s
 D emits.ads		20240616165053 9f581714 emits%s
-D idl.ads		20240707150414 78a7a9e6 idl%s
+D idl.ads		20240711120008 30a8907b idl%s
 D interfac.ads		20230508121439 edec285f interfaces%s
 D i-cstrea.ads		20230508121439 e53d8b8e interfaces.c_streams%s
 D system.ads		20230508121439 a2da961d system%s

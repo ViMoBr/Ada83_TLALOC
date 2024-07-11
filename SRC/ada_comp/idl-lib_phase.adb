@@ -23,9 +23,75 @@ is					---------
 
   DEBUG_LIB		: BOOLEAN	:= FALSE;						--| POUR DEVERMINAGE
 
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE OPEN_LIBRARY
-  procedure OPEN_LIBRARY is
+  procedure READ_LIB_CTL_FILE;
+  procedure REGENERATE_LIB_CTL_FILE;
+  procedure INSERT_XD_LIB_NAME_IN_COMP_UNIT	( COMP_UNIT :TREE );
+  procedure LOAD_RELOC_LIB_BLOCKS_ONE_COMP_UNIT	( COMP_UNIT :TREE );
+  procedure ENTER_DEFAULT_GENERIC_FORMALS;
+  procedure ENTER_USED_DEFINING_IDS;
+
+
+
+				---------------
+	procedure			START_LIB_PHASE
+is				---------------
+
+begin
+  OPEN_IDL_TREE_FILE ( IDL.LIB_PATH( 1..LIB_PATH_LENGTH ) & "$$$.TMP" );
+      
+  if DI( XD_ERR_COUNT, TREE_ROOT) > 0 then
+    PUT_LINE( "IDL.LIB_PHASE : LIBPHASE PAS FAIT, IL Y A DES ERREURS ANTERIEURES");
+    GOTO FINISH;
+  end if;
+
+  declare
+    USER_ROOT	: constant TREE	:= D( XD_USER_ROOT, TREE_ROOT );
+    COMPILATION	: constant TREE	:= D( XD_STRUCTURE, USER_ROOT );
+    COMP_UNIT_SEQ	: SEQ_TYPE	:= LIST( D( AS_COMPLTN_UNIT_S, COMPILATION ) );
+    COMP_UNIT	: TREE;
+    SRC_NAME	: constant STRING	:= PRINT_NAME( D( XD_SOURCENAME, USER_ROOT ) );
+  begin
+
+    if SRC_NAME = "_STANDRD.ADA" then goto FINISH; end if;
+
+    READ_LIB_CTL_FILE;
+
+			LOAD_RELOC_LIB_BLOCKS_ALL_COMP_UNITS:            
+
+    while not IS_EMPTY( COMP_UNIT_SEQ ) loop
+
+      POP( COMP_UNIT_SEQ, COMP_UNIT );
+      if D( AS_ALL_DECL, COMP_UNIT ).TY = DN_VOID then
+         PUT_LINE ( "IDL.LIB_PHASE : PAS D'UNITE NE CONTENANT QUE DES PRAGMAS" );
+      else
+         INSERT_XD_LIB_NAME_IN_COMP_UNIT( COMP_UNIT );
+         LOAD_RELOC_LIB_BLOCKS_ONE_COMP_UNIT( COMP_UNIT );
+      end if;
+    end loop		LOAD_RELOC_LIB_BLOCKS_ALL_COMP_UNITS;
+
+            
+    LIST( D( AS_COMPLTN_UNIT_S, COMPILATION ), NEW_UNIT_LIST );
+    if DI( XD_ERR_COUNT, TREE_ROOT ) = 0 then
+       REGENERATE_LIB_CTL_FILE;
+    end if;
+            
+    ENTER_DEFAULT_GENERIC_FORMALS;
+    ENTER_USED_DEFINING_IDS;
+
+    end;
+
+<< FINISH >>      
+  CLOSE_IDL_TREE_FILE;
+
+	---------------
+end	START_LIB_PHASE;
+	---------------
+
+
+			-----------------
+	procedure		READ_LIB_CTL_FILE
+			-----------------
+  is
     FCTL			: TEXT_IO.FILE_TYPE;					--| FICHIER DE CONTOLE DE LA LIBRAIRIE
     LIB_CHAR		: CHARACTER;
     DUMMY_CHAR		: CHARACTER;
@@ -36,17 +102,30 @@ is					---------
     LIB_SHORT_LENGTH	: INTEGER;
     LIB_TEXT_1_LENGTH	: INTEGER;
     LIB_TEXT_2_LENGTH	: INTEGER;
-    LAST			: INTEGER;
     LIB_INFO		: TREE;
     use IDL.INT_IO;
   begin
-    OPEN( FCTL, IN_FILE, IDL.LIB_PATH( 1..LIB_PATH_LENGTH ) & "ADA__LIB.CTL" );			--| OUVRIR LE FICHIER CONTROLE LIBRAIRIE
-         
+
+    declare
+      ACCES_LIB_CTL	:constant STRING	:= IDL.LIB_PATH( 1..LIB_PATH_LENGTH ) & "ADA__LIB.CTL";
+    begin
+      OPEN( FCTL, IN_FILE, ACCES_LIB_CTL );
+    exception
+      when NAME_ERROR =>
+        CREATE    ( FCTL, OUT_FILE, ACCES_LIB_CTL );
+        PUT       ( FCTL, "T " );
+        INT_IO.PUT( FCTL, 1, 0 );
+        NEW_LINE  ( FCTL );
+        PUT_LINE  ( "File " & ACCES_LIB_CTL & " created" );
+        CLOSE     ( FCTL );
+        OPEN      ( FCTL, IN_FILE, ACCES_LIB_CTL );
+    end;
+   
     loop
-      GET( FCTL, LIB_CHAR );								--| PREMIER CARACTERE DE LA LIGNE (TYPE DE LIGNE)
-      if LIB_CHAR = 'T' then								--| LIGNE ETIQUETTE DE VERSION (TIME STAMP)
-        GET( FCTL, LIB_NUM );								--| LIRE LE No DE VERSION
-        INITIAL_TIMESTAMP := LIB_NUM;							--| INITIALISER
+      GET( FCTL, LIB_CHAR );
+      if LIB_CHAR = 'T' then
+        GET( FCTL, LIB_NUM );
+        INITIAL_TIMESTAMP := LIB_NUM;
         CUR_TIMESTAMP     := LIB_NUM;
         exit;									--| SORTIR DE LA BOUCLE, C'EST LA DERNIERE LIGNE DU FICHIER CONTROLE
 
@@ -54,17 +133,14 @@ is					---------
         SKIP_LINE( FCTL );								--| SAUTER (INUTILE ICI)
 
       elsif LIB_CHAR = 'S' or LIB_CHAR = 'U' then						--| LIGNE U OU S (UNITE OU UNITE SEPAREE
-        GET( FCTL, DUMMY_CHAR );							--| PASSER LE BLANC
-        GET_LINE( FCTL, LIB_SHORT, LAST );						--| LIRE LE NOM COURT
-        LIB_SHORT_LENGTH := LAST;							--| LONGUEUR DU NOM INTERNE COURT
-        GET_LINE( FCTL, LIB_TEXT_1, LAST );						--| LIRE LE NOM D'UNITE (SI PAS SEPAREE) OU LE NOM DE PARENTE (SI UNITE SEPAREE)
-        LIB_TEXT_1_LENGTH := LAST;							--| SA LONGUEUR
+        GET      ( FCTL, DUMMY_CHAR );							--| PASSER LE BLANC
+        GET_LINE ( FCTL, LIB_SHORT, LIB_SHORT_LENGTH );					--| LIRE LE NOM COURT
+        GET_LINE ( FCTL, LIB_TEXT_1, LIB_TEXT_1_LENGTH );					--| LIRE LE NOM D'UNITE (SI PAS SEPAREE) OU LE NOM DE PARENTE (SI UNITE SEPAREE)
         if LIB_CHAR = 'U' then							--| LIGNE U (UNSEPARATED UNIT, LES UNITES NON "SEPARATE")
           LIB_TEXT_2( 1..1 ) := "$";							--| NOM SECONDAIRE EN $
           LIB_TEXT_2_LENGTH := 1;							--| LONGUEUR EGALE A UN
         elsif LIB_CHAR = 'S' then							--| LIGNE S (SEPARATED UNIT, LES UNITES "SEPARATE")
-          GET_LINE( FCTL, LIB_TEXT_2, LAST );						--| LIRE LE NOM D'UNITE SEPAREE (PAS CONFONDRE AVEC LE NOM DE SA PARENTE ! )
-          LIB_TEXT_2_LENGTH := LAST;							--| SA LONGUEUR
+          GET_LINE( FCTL, LIB_TEXT_2, LIB_TEXT_2_LENGTH );					--| LIRE LE NOM D'UNITE SEPAREE (PAS CONFONDRE AVEC LE NOM DE SA PARENTE ! )
         else									--| AUTRE PREMIER CARACTERE
           PUT_LINE( "FICHIER DE CONTROLE LIBRAIRIE MAL FORME : LETTRE TYPE LIGNE INCONNUE" );	--| ERREUR SUR LE PREMIER CARACTERE
           raise PROGRAM_ERROR;
@@ -79,10 +155,17 @@ is					---------
     end loop;
 
     CLOSE( FCTL );									--| FERMER LE FICHIER CONTROLE LIBRAIRIE
-  end OPEN_LIBRARY;
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE CLOSE_LIBRARY
-  procedure CLOSE_LIBRARY is
+
+
+	-----------------
+  end	READ_LIB_CTL_FILE;
+	-----------------
+
+
+			-----------------------
+	procedure		REGENERATE_LIB_CTL_FILE
+is			-----------------------
+
     FCTL			: TEXT_IO.FILE_TYPE;					--| FICHIER CONTROLE
     LIB_PREFIX		: constant STRING	:= GET_LIB_PREFIX;
   begin
@@ -103,12 +186,12 @@ is					---------
         begin
           if EXTEN = DOLLAR then							--| SI SECONDAIRE $ (UNITE NON SEPAREE)
             PUT( FCTL, "U ");								--| LIGNE U (UNSEPARATED UNIT)
-            PUT_LINE( FCTL, PRINT_NAME ( D( XD_SHORT, LIB_INFO ) ) );				--| NOM COURT INTERNE	
+            PUT_LINE( FCTL, PRINT_NAME ( D( XD_SHORT,   LIB_INFO ) ) );				--| NOM COURT INTERNE	
             PUT_LINE( FCTL, PRINT_NAME ( D( XD_PRIMARY, LIB_INFO ) ) );			--| ET NOM PRIMAIRE (NOM COMPLET DE L'UNITE)
           else
             PUT( FCTL, "S ");								--| LIGNE S (SEPARATED UNIT)
-            PUT_LINE( FCTL, PRINT_NAME ( D( XD_SHORT, LIB_INFO ) ) );				--| NOM COURT
-            PUT_LINE( FCTL, PRINT_NAME ( D( XD_PRIMARY, LIB_INFO ) ) );			--| NOM PRIMAIRE D'UNITE PARENTE DE SEPAREE
+            PUT_LINE( FCTL, PRINT_NAME ( D( XD_SHORT,     LIB_INFO ) ) );			--| NOM COURT
+            PUT_LINE( FCTL, PRINT_NAME ( D( XD_PRIMARY,   LIB_INFO ) ) );			--| NOM PRIMAIRE D'UNITE PARENTE DE SEPAREE
             PUT_LINE( FCTL, PRINT_NAME ( D( XD_SECONDARY, LIB_INFO ) ) );			--| NOM D'UNITE SEPAREE DANS CE CAS
           end if;
         end;
@@ -119,10 +202,16 @@ is					---------
     INT_IO.PUT( FCTL, CUR_TIMESTAMP, 0 );						--| INDICE TEMPOREL
     NEW_LINE( FCTL );								--| PASSER A LA LIGNE
     CLOSE( FCTL );									--| FERMER LE FICHIER DE CONTROLE LIBRAIRIE
-  end CLOSE_LIBRARY;
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE MAKE_FILE_SYM
-  function MAKE_FILE_SYM ( PRI, SEC :STRING ) return TREE is
+
+	-----------------------
+  end	REGENERATE_LIB_CTL_FILE;
+	-----------------------
+
+
+			-------------
+	function		MAKE_FILE_SYM		( PRI, SEC :STRING ) return TREE
+			-------------
+is
     BASE_UNIT_SYM		: TREE;
     SECSYM		: TREE;
     TEMP_INFO_SEQ		: SEQ_TYPE;
@@ -136,12 +225,7 @@ if debug_lib then put_line( "make_file_sym avec pri=" & PRI
 ); end if;
 
     if SEC = ".DCL" or else SEC = ".BDY" or else SEC = ".SUB" then				--| UNITES DE COMPILATION SPEC / CORPS
---      IF PRI'LENGTH <= 8 THEN							--| NOM DE MOINS DE 8 CARACTERES
-        return STORE_SYM( PRI & SEC );							--| STOCKER LE NOM.EXT ET RETOURNER LE SYMBOLE
---      ELSE									--| NOM DE 9 CARACTERES OU PLUS
---        SECSYM := STORE_SYM( "$" );							--| STOCKER (OU RETROUVER) UN SYMBOLE $ POUR SEC_SYM
---        EXTEN := SEC( SEC'FIRST..SEC'FIRST+3 );						--| JUSTE 4 CARACTERES DE LA CHAINE "SEC"
---      END IF;
+      return STORE_SYM( PRI & SEC );							--| STOCKER LE NOM.EXT ET RETOURNER LE SYMBOLE
     else										--| SOUS UNITE SEPAREE D'UNE UNITE DE LIBRAIRIE
       SECSYM := STORE_SYM( SEC );							--| STOCKER LE NOM DE CORPS SEPARE
       EXTEN := ".SUB";
@@ -158,9 +242,6 @@ if debug_lib then put_line( "make_file_sym avec pri=" & PRI
       end if;
     end loop;
 
-
-
-      					--| SI L'ON EST LA ON A PAS TROUVE DE NOM COURT DANS LA LIBRAIRIE
     declare
       FILETEXT	: STRING( 1 .. 8 )	:= "$$$$$$$$";					--| CHAINE DE 8 CARACTERES
       NUM_WORK	: INTEGER;
@@ -184,59 +265,78 @@ if debug_lib then put_line( "make_file_sym avec pri=" & PRI
     D( XD_SECONDARY, LIB_INFO, SECSYM );						--| PORTER LE $ (UNITES NON SEPAREES) OU LE NOM D'UNITE SEPAREE
     LIB_INFO_SEQ := APPEND( LIB_INFO_SEQ, LIB_INFO );					--| CHAINER LE LIB_INFO
     return FILESYM;
-  end MAKE_FILE_SYM;
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE INSERT_FILE_NAME
-  procedure INSERT_FILE_NAME ( COMP_UNIT :TREE ) is
-    UNIT_BODY		: TREE	:= D( AS_ALL_DECL, COMP_UNIT );
+
+	-------------
+  end	MAKE_FILE_SYM;
+	-------------
+
+
+			-------------------------------
+	procedure		INSERT_XD_LIB_NAME_IN_COMP_UNIT	( COMP_UNIT :TREE )
+			-------------------------------
+
+  is
+    UNIT_BODY		: constant TREE	:= D( AS_ALL_DECL, COMP_UNIT );
     FILE_SYM		: TREE;
   begin
     if UNIT_BODY.TY /= DN_SUBUNIT then							--| SI PAS UNE SOUS UNITE (PAS UNE UNITE "SEPARATE")
---|
---|		CAS UNITE CORPS : PACKAGE BODY / PROCEDURE ... IS
---|_________________________________________________________________________________________________     
-      if UNIT_BODY.TY = DN_PACKAGE_BODY or else UNIT_BODY.TY = DN_SUBPROGRAM_BODY then		--| CORPS SOUS PROGRAMME OU PACKAGE
-        FILE_SYM := MAKE_FILE_SYM(							--| FABRIQUER (OU TROUVER) UNE ENTREE DE LIBRAIRIE (UN LIB_INFO)
-           		PRINT_NAME( D( LX_SYMREP, D( AS_SOURCE_NAME, UNIT_BODY ) ) ),	--| AVEC LE NOM D'UNITE
-                  		".BDY"							--| ET UNE EXTENSION ".BDY"
-                  		);
---|
---|		CAS UNITE SPEC : PACKAGE / PROCEDURE
---|_________________________________________________________________________________________________
-      else									--| SPEC SOUS PROGRAMME, GENERIQUE OU PACKAGE
-        FILE_SYM := MAKE_FILE_SYM(							--| FABRIQUER (OU TROUVER) UNE ENTREE DE LIBRAIRIE (UN LIB_INFO)
-			PRINT_NAME ( D( LX_SYMREP, D( AS_SOURCE_NAME, UNIT_BODY ) ) ),	--| AVEC LE NOM D'UNITE
-			".DCL"							--| ET EXTENSION ".DCL"
-			);
-      end if;
+
+      declare
+        BODY_SOURCE_NAME	: constant TREE	:= D( AS_SOURCE_NAME, UNIT_BODY );
+        BODY_SYMREP		: constant TREE	:= D( LX_SYMREP, BODY_SOURCE_NAME );
+      begin
+--
+--		CAS UNITE CORPS : PACKAGE BODY / PROCEDURE ... IS
+--
+        if UNIT_BODY.TY = DN_PACKAGE_BODY or else UNIT_BODY.TY = DN_SUBPROGRAM_BODY then
+	FILE_SYM := MAKE_FILE_SYM( PRINT_NAME( BODY_SYMREP ), ".BDY");
+--
+--		CAS UNITE SPEC : PACKAGE / PROCEDURE
+--
+        else
+	FILE_SYM := MAKE_FILE_SYM( PRINT_NAME ( BODY_SYMREP ), ".DCL"	);
+        end if;
+
+      end;
 --|
 --|		CAS SEPARATE( X.Y.Z.A ) PACKAGE BODY / PROCEDURE ... IS
 --|_________________________________________________________________________________________________
     else										--| SOUS UNITE (SEPAREE)
 
       declare
-        SUBUNIT_BODY	: TREE	:= D( AS_SUBUNIT_BODY, UNIT_BODY );				--| LE CORPS SEPARE
-        NAME	: TREE	:= D( AS_SOURCE_NAME, SUBUNIT_BODY );				--| LE NOM DU CORPS SEPARE
-        SEP_NAME	: TREE	:= D( AS_NAME, UNIT_BODY );					--| NOM MIS DANS LE "SEPARATE"
+        SUBUNIT_BODY	: constant TREE	:= D( AS_SUBUNIT_BODY, UNIT_BODY );
+        SUBUNIT_NAME	: constant TREE	:= D( AS_SOURCE_NAME,  SUBUNIT_BODY );
+        SUBUNIT_SYMREP	: constant TREE	:= D( LX_SYMREP,       SUBUNIT_NAME );
+        SEPARATE_PATH	: constant TREE	:= D( AS_NAME,         UNIT_BODY );
 
-        function SECTION_NOM ( SELECTOR : TREE ) return STRING is
+        function SECTION_NOM_SEGMENTE ( SELECTOR : TREE ) return STRING is
         begin
 	if SELECTOR.TY = DN_SELECTED then
-	  return SECTION_NOM( D( AS_NAME, SELECTOR ) )
-		& PRINT_NAME( D( LX_SYMREP, D( AS_DESIGNATOR, SELECTOR ) ) ) & "-";
+	  declare
+	    HAUT_SELECTEUR	: constant TREE	:= D( AS_NAME,       SELECTOR );
+	    ELT_DESIGNANT	: constant TREE	:= D( AS_DESIGNATOR, SELECTOR );
+	    CHN_DESIGNANT	: constant TREE	:= D( LX_SYMREP,     ELT_DESIGNANT );
+	  begin
+	    return SECTION_NOM_SEGMENTE( HAUT_SELECTEUR ) & PRINT_NAME( CHN_DESIGNANT ) & "-";
+	  end;
 	else
 	  return PRINT_NAME( D( LX_SYMREP, SELECTOR ) ) & "-";
 	end if;
         end;
 
-    begin
-      FILE_SYM := MAKE_FILE_SYM( SECTION_NOM( SEP_NAME ) & PRINT_NAME( D( LX_SYMREP, NAME ) ) , ".SUB" );
-    end;
+      begin
+        FILE_SYM := MAKE_FILE_SYM( SECTION_NOM_SEGMENTE( SEPARATE_PATH ) & PRINT_NAME( SUBUNIT_SYMREP ) , ".SUB" );
+      end;
 
     end if;
          
-    D( XD_LIB_NAME, COMP_UNIT, FILE_SYM );						--| RANGER LE SYMBOLE DE NOM DANS LE XD_LIB_NAME DU NOEUD DN_COMPILATION_UNIT
-  end INSERT_FILE_NAME;
+    D( XD_LIB_NAME, COMP_UNIT, FILE_SYM );
+
+	-------------------------------
+  end	INSERT_XD_LIB_NAME_IN_COMP_UNIT;
+	-------------------------------
+
+
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE LOAD_UNIT
   function LOAD_UNIT ( FILESYM_ARG :TREE ) return TREE is    
@@ -372,7 +472,17 @@ LIRE_BLOCS_PAGES:
       package SEQ_IO	is new SEQUENTIAL_IO( SECTOR );
       LIB_FILE		: SEQ_IO.FILE_TYPE;
     begin
-      SEQ_IO.OPEN( LIB_FILE, SEQ_IO.IN_FILE, GET_LIB_PREFIX & PRINT_NAME( FILESYM ) );		--| OUVRIR LE FICHIER ARBRE LIBRARISE DE L'UNITE
+
+      begin
+        SEQ_IO.OPEN( LIB_FILE, SEQ_IO.IN_FILE, GET_LIB_PREFIX & PRINT_NAME( FILESYM ) );		--| OUVRIR LE FICHIER ARBRE LIBRARISE DE L'UNITE
+      exception
+        when NAME_ERROR =>
+--      PUT( "PAS TROUVE " & GET_LIB_PREFIX );
+--      PUT_LINE( PRINT_NAME( FILESYM ) );
+--      LIST( FILESYM, INSERT( (TREE_NIL,TREE_NIL), TREE_VOID ) );
+      return TREE_VOID;
+end;
+
 LECTURES:
       declare
         PAGET	: TREE	:= MAKE( NODE_NAME'VAL( 0 ), ATTR_NBR( LINE_IDX'LAST ) );		--| ALLOUER UN ESPACE D'UNE PAGE (SOUS FORME DE NOEUD) DANS L'ARBRE DE LA COMPILATION
@@ -391,6 +501,7 @@ LECTURES:
          
       SEQ_IO.CLOSE( LIB_FILE );							--| FERMER LE FICHIER ARBRE LIBRARISE
     end LIRE_BLOCS_PAGES;
+
 
     declare      
       OLD_PTR	: TREE	:= D( XD_LIB_NAME, UNIT );					--| UN ANCIEN POINTEUR DANS LA PREMIERE PAGE
@@ -420,12 +531,6 @@ LOAD_WITHED:
     LIST( FILESYM, INSERT( (TREE_NIL,TREE_NIL), UNIT ) );					--| REPORTER L'UNITE DANS LE SYMBOLE CORRESPONDANT
     return UNIT;
          
-  exception
-    when NAME_ERROR =>
-      PUT( "PAS TROUVE " & GET_LIB_PREFIX );
-      PUT_LINE( PRINT_NAME( FILESYM ) );
-      LIST( FILESYM, INSERT( (TREE_NIL,TREE_NIL), TREE_VOID ) );
-      return TREE_VOID;
   end LOAD_UNIT;
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE LOAD_UNIT
@@ -749,10 +854,13 @@ TRAITE_UN_NOM_WITHE:
     end loop TRAITE_ELEMENT_DE_CONTEXTE;
 
   end PROCESS_WITH_CLAUSES;
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE WITH_FOR_ONE_COMP_UNIT
-  --|
-  procedure WITH_FOR_ONE_COMP_UNIT ( COMP_UNIT :TREE ) is
+
+
+			-----------------------------------
+	procedure		LOAD_RELOC_LIB_BLOCKS_ONE_COMP_UNIT	( COMP_UNIT :TREE )
+			-----------------------------------
+							
+  is
     FILE_SYM		: TREE		:= D( XD_LIB_NAME, COMP_UNIT );
     UNIT_BODY		: TREE		:= D( AS_ALL_DECL, COMP_UNIT );
     UNIT_KIND		: NODE_NAME	:= UNIT_BODY.TY;
@@ -778,10 +886,12 @@ WITH_STANDARD:
 --|
 --|		TRAITEMENT WITH DE LA SPEC POUR UNITE DE COMPILATION CORPS DE PAQUET OU DE SOUS-PROGRAMME
 --|_________________________________________________________________________________________________           
-    if UNIT_KIND = DN_SUBPROG_ENTRY_DECL or UNIT_KIND = DN_PACKAGE_DECL
-       or UNIT_KIND = DN_GENERIC_DECL then
-      null;									--| PAS DE TRAITEMENT WITH SPEC POUR UNE SPEC !
-    elsif UNIT_KIND = DN_PACKAGE_BODY or UNIT_KIND = DN_SUBPROGRAM_BODY then
+--    if UNIT_KIND = DN_SUBPROG_ENTRY_DECL or UNIT_KIND = DN_PACKAGE_DECL
+--       or UNIT_KIND = DN_GENERIC_DECL then
+--      null;									--| PAS DE TRAITEMENT WITH SPEC POUR UNE SPEC !
+--    els
+if UNIT_KIND = DN_PACKAGE_BODY or UNIT_KIND = DN_SUBPROGRAM_BODY then
+
       declare
         UNIT_PRI	: constant STRING	:= PRINT_NAME( D( LX_SYMREP, SON_1( UNIT_BODY ) ) );	--| LE AS_NAME POUR CHERCHER LA SPEC
       begin
@@ -813,6 +923,7 @@ if debug_lib then put_line( "with_for_one_comp_unit load_unit : unit_pri = " & u
           D( XD_PARENT, COMP_UNIT, SPC_UNIT );						--| LA SPEC EST PARENT DU BDY
 
         else
+
           if UNIT_KIND = DN_PACKAGE_BODY then						--| POUR UN CORPS DE PAQUET
             ERROR( D( LX_SRCPOS, COMP_UNIT ),
 		"CANNOT WITH SPEC FOR " & PRINT_NAME( D( LX_SYMREP, SON_1( UNIT_BODY ) ) ) );
@@ -845,8 +956,13 @@ if debug_lib then put_line( "with_for_one_comp_unit INCLUDES_PARENTS : unit_body
       
     LIST( COMP_UNIT, TRANS_WITH_SEQ );
     NEW_UNIT_LIST := APPEND( NEW_UNIT_LIST, COMP_UNIT );
-         
-  end WITH_FOR_ONE_COMP_UNIT;
+
+	-----------------------------------
+  end	LOAD_RELOC_LIB_BLOCKS_ONE_COMP_UNIT;
+	-----------------------------------
+
+
+
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE COPY_NODE
   function COPY_NODE ( NODE :TREE ) return TREE is
@@ -879,8 +995,8 @@ if debug_lib then put_line( "with_for_one_comp_unit INCLUDES_PARENTS : unit_body
 					-- WORRY ABOUT DUPLICATED CONTEXT AND PRAGMAS $$$$$$$$
     D( AS_ALL_DECL, NEW_UNIT, NEW_DECL );
       
-    INSERT_FILE_NAME( NEW_UNIT );
-    WITH_FOR_ONE_COMP_UNIT( NEW_UNIT );
+    INSERT_XD_LIB_NAME_IN_COMP_UNIT( NEW_UNIT );
+    LOAD_RELOC_LIB_BLOCKS_ONE_COMP_UNIT( NEW_UNIT );
   end GENERATE_DUMMY_SPEC;
   --|-----------------------------------------------------------------------------------------------
   --|	PROCEDURE ENTER_DEFAULT_GENERIC_FORMALS
@@ -987,51 +1103,10 @@ PARCOURS_BLOCS_NOEUDS:
 
     end loop;
   end ENTER_USED_DEFINING_IDS;
-   
-begin
-  OPEN_IDL_TREE_FILE ( IDL.LIB_PATH( 1..LIB_PATH_LENGTH ) & "$$$.TMP" );			--| OUVRIR L'ARBRE DIANA DE TRAVAIL
-      
-  if DI( XD_ERR_COUNT, TREE_ROOT) > 0 then						--| S'IL Y A DES ERREURS
-    PUT_LINE( "IDL.LIB_PHASE : LIBPHASE PAS FAIT, IL Y A DES ERREURS ANTERIEURES");
-  else										--| PAS D'ERREUR
-    declare
-      USER_ROOT	: TREE		:= D( XD_USER_ROOT, TREE_ROOT );			--| RACINE "USER" DU FICHIER
-      COMPILATION	: TREE		:= D( XD_STRUCTURE, USER_ROOT );			--| NOEUD "COMPILATION"
-      COMP_UNIT_SEQ	: SEQ_TYPE	:= LIST( D( AS_COMPLTN_UNIT_S, COMPILATION));		--| LISTE DES UNITES COMPILEES
-      COMP_UNIT	: TREE;
-      SRC_NAME	: constant STRING	:= PRINT_NAME( D( XD_SOURCENAME, USER_ROOT ) );
-    begin
 
-      if SRC_NAME /= "_STANDRD.ADA" then						--| PAS DE LIB_PHASE POUR LE PACKAGE SPECIAL _STANDRD
-        OPEN_LIBRARY;								--| OUVRIR LE FICHIER DE CONTROLE DE LIBRAIRIE ET LIRE LES LIGNES
-            
-        while not IS_EMPTY( COMP_UNIT_SEQ ) loop						--| TANT QU'IL Y A DES UNITES COMPILEES
-          POP( COMP_UNIT_SEQ, COMP_UNIT );						--| PRENDRE UNE UNITE
-          if D( AS_ALL_DECL, COMP_UNIT ).TY = DN_VOID then					--| UNITE NE CONTENANT RIEN
-            PUT_LINE ( "IDL.LIB_PHASE : PAS D'UNITE NE CONTENANT QUE DES PRAGMAS" );
-          else
-            INSERT_FILE_NAME( COMP_UNIT );
---|
---|		TRAITER LES WITH
---|
-            WITH_FOR_ONE_COMP_UNIT( COMP_UNIT );
 
-          end if;
-        end loop;
-            
-        LIST( D( AS_COMPLTN_UNIT_S, COMPILATION ), NEW_UNIT_LIST );
-        if DI( XD_ERR_COUNT, TREE_ROOT ) = 0 then						--| PAS D'ERREUR
-          CLOSE_LIBRARY;								--| MAJ ET FERMER LE FICHIER CONTROLE DE LIBRAIRIE
-        end if;
-            
-        ENTER_DEFAULT_GENERIC_FORMALS;
-        ENTER_USED_DEFINING_IDS;
-      end if;
-    end;
-  end if;
-      
-  CLOSE_IDL_TREE_FILE;								--| FERMER L'ARBRE DE TRAVAIL
-      
+begin   
+  START_LIB_PHASE;     
 	---------
 end	LIB_PHASE;
 	---------

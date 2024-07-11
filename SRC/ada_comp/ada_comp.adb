@@ -79,17 +79,24 @@ DEBUT_NOM_TEXTE:
       exit when POSITION_SEPARATEUR = 0;
     end loop DEBUT_NOM_TEXTE;
 
-    IDL.PAR_PHASE (	IDL.PROJECT_PATH( 1 .. IDL.PROJECT_PATH_LENGTH ) & ACCES_TEXTE( 1 .. POSITION_SEPARATEUR ),
-		ACCES_TEXTE( POSITION_SEPARATEUR+1 .. ACCES_TEXTE_LENGTH ),
-		IDL.LIB_PATH );
-		if OPTION = 'S' then goto FIN; end if;
-  end;
+    declare
+      CHEMIN_TEXTE	:constant STRING	:= IDL.PROJECT_PATH( 1 .. IDL.PROJECT_PATH_LENGTH )
+				      & ACCES_TEXTE( 1 .. POSITION_SEPARATEUR );
+      NOM_TEXTE	:constant STRING	:= ACCES_TEXTE( POSITION_SEPARATEUR+1 .. ACCES_TEXTE_LENGTH );
+    begin
+      IDL.PAR_PHASE (	CHEMIN_TEXTE,
+			NOM_TEXTE,
+			IDL.LIB_PATH );
+						if OPTION = 'S' then goto FIN; end if;
 
-  IDL.LIB_PHASE;					if OPTION = 'L' then goto FIN; end if;	--| CHARGEMENT DES WITH
-  IDL.SEM_PHASE;					if OPTION = 'M' then goto FIN; end if;	--| ANALYSE SEMANTIQUE
-  IDL.ERR_PHASE ( ACCES_TEXTE( 1.. ACCES_TEXTE_LENGTH ) );	if OPTION = 'E' then goto FIN; end if;	--| TRAITEMENT D'ERREURS
-  IDL.WRITE_LIB;					if OPTION = 'W' then goto FIN; end if;	--| ECRITURE EN LIBRAIRIE
-  CODE_GEN;
+      IDL.LIB_PHASE;				if OPTION = 'L' then goto FIN; end if;
+      IDL.SEM_PHASE;				if OPTION = 'M' then goto FIN; end if;
+      IDL.ERR_PHASE ( CHEMIN_TEXTE & NOM_TEXTE );		if OPTION = 'E' then goto FIN; end if;
+      IDL.WRITE_LIB;				if OPTION = 'W' then goto FIN; end if;
+      CODE_GEN;
+
+    end;
+  end;
 
 <<FIN>>
   TIME_2 := CLOCK;									--| TERMINER LE CHRONOMETRAGE

@@ -4,7 +4,7 @@ separate( IDL.SEM_PHASE)
 --|-------------------------------------------------------------------------------------------------
 package body RED_SUBP is
 
-  DEBUG_RED_SUBP		: BOOLEAN		:= TRUE;					--| COMMUTATEUR DE DEVERMINAGE
+  DEBUG_RED_SUBP		: BOOLEAN		:= FALSE;					--| COMMUTATEUR DE DEVERMINAGE
 
   use VIS_UTIL, EXP_TYPE, EXPRESO, DEF_UTIL, MAKE_NOD, SET_UTIL, REQ_UTIL, DEF_WALK, ATT_WALK, AGGRESO;
 
