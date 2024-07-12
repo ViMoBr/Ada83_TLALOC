@@ -4,12 +4,11 @@ separate( IDL )
 		procedure			SEM_PHASE
 is					---------
 
-  --|------------------------------------------------------------------------------------------------
 
-  --		SEM_GLOB
-
-  --|------------------------------------------------------------------------------------------------
-  package SEM_GLOB is
+				--------
+		package		SEM_GLOB
+				--------
+  is
       
     type SB_TYPE	is record								--| SAUVE ET RESTAURE AUTOUR DES CORPS
 		  null;
@@ -67,8 +66,9 @@ is					---------
     procedure INITIALIZE_GLOBAL_DATA;
     procedure INITIALIZE_PREDEFINED_TYPES;
        
-  --|------------------------------------------------------------------------------------------------
-  end SEM_GLOB;
+	--------
+  end	SEM_GLOB;
+	--------
   use SEM_GLOB;
    
    
@@ -2073,13 +2073,13 @@ is					---------
 			  A	: NODE_ARRAY_TYPE	:= (others => TREE_VOID);
 			end record;
       
-    procedure SUBSTITUTE		( NODE :in out TREE; NODE_HASH :in out NODE_HASH_TYPE;
-				  H_IN :H_TYPE );
+    procedure INSERT_NODE_HASH	( NODE_HASH :in out NODE_HASH_TYPE; NEW_NODE :TREE;
+				  OLD_NODE :TREE );
     procedure REPLACE_NODE		( NODE :in out TREE; NODE_HASH :in out NODE_HASH_TYPE );
     procedure SUBSTITUTE_ATTRIBUTES	( NODE :in out TREE; NODE_HASH :in out NODE_HASH_TYPE;
 				  H_IN :H_TYPE );
-    procedure INSERT_NODE_HASH	( NODE_HASH :in out NODE_HASH_TYPE; NEW_NODE :TREE;
-				  OLD_NODE :TREE );
+    procedure SUBSTITUTE		( NODE :in out TREE; NODE_HASH :in out NODE_HASH_TYPE;
+				  H_IN :H_TYPE );
       
   --|------------------------------------------------------------------------------------------------
   end GEN_SUBS;
@@ -2283,11 +2283,13 @@ is					---------
   package body PRE_FCNS	is separate;
   package body RED_SUBP	is separate;
   package body REP_CLAU	is separate;
-   
-       
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE INITIALIZE_PRAGMA_ATTRIBUTE_DEFS
-  procedure INITIALIZE_PRAGMA_ATTRIBUTE_DEFS is
+
+
+
+			--------------------------------
+	procedure		INITIALIZE_PRAGMA_ATTRIBUTE_DEFS
+
+  is
     STD_PACK_SYM		: TREE		:= STORE_SYM( "_STANDRD.DCL" );
     STD_PACK_ID		: TREE		:= HEAD( LIST( STD_PACK_SYM ) );
     ALL_DECL		: TREE		:= D( AS_ALL_DECL, STD_PACK_ID );
@@ -2307,18 +2309,25 @@ is					---------
         DB( XD_IS_IN_SPEC, DEF, FALSE );
       end if;
     end loop;
-  end INITIALIZE_PRAGMA_ATTRIBUTE_DEFS;
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE COMPILE_COMPILATION_UNIT
-  procedure COMPILE_COMPILATION_UNIT ( COMPILATION_UNIT :TREE; H :H_TYPE ) is
+
+  end	INITIALIZE_PRAGMA_ATTRIBUTE_DEFS;
+	--------------------------------
+
+
+
+				------------------------
+	procedure			COMPILE_COMPILATION_UNIT	( COMPILATION_UNIT :TREE;
+							  H	         :H_TYPE )
+  is
     CONTEXT_ELEM_S		: constant TREE	:= D( AS_CONTEXT_ELEM_S, COMPILATION_UNIT );
     ALL_DECL		: constant TREE	:= D( AS_ALL_DECL, COMPILATION_UNIT );
     PRAGMA_S		: constant TREE	:= D( AS_PRAGMA_S, COMPILATION_UNIT );
     WITH_LIST		: constant SEQ_TYPE	:= LIST( COMPILATION_UNIT );
-      
-    --|---------------------------------------------------------------------------------------------
-    --|	PROCEDURE PROCESS_WITH_NAME_S
-    procedure PROCESS_WITH_NAME_S ( NAME_S :TREE ) is					--| TRAITE LES CLAUSES WITH DANS LES CLAUSES DE CONTEXTE, SM_DEFN MISES DANS LIB_PHASE
+
+
+			-------------------
+	procedure		PROCESS_WITH_NAME_S		( NAME_S :TREE )
+    is
       NAME_LIST		: SEQ_TYPE	:= LIST( NAME_S );
       NAME		: TREE;
       NEW_NAME_LIST		: SEQ_TYPE	:= (TREE_NIL, TREE_NIL);
@@ -2336,11 +2345,15 @@ is					---------
         NEW_NAME_LIST := APPEND( NEW_NAME_LIST, NEW_NAME );
       end loop;
          
-      LIST( NAME_S, NEW_NAME_LIST );							--| SAUVER LA NOUVELLE LISTE DE USED_NAME_ID'S
-    end PROCESS_WITH_NAME_S;
-    --|---------------------------------------------------------------------------------------------
-    --|	PROCEDURE PROCESS_WITH_USE_PRAGMA_S
-    procedure PROCESS_WITH_USE_PRAGMA_S ( USE_PRAGMA_S :TREE ) is				--| MODIFIE LES DEFS POUR LES CLAUSES USE DANS LES CLAUSES DE CONTEXTE
+      LIST( NAME_S, NEW_NAME_LIST );
+
+    end	PROCESS_WITH_NAME_S;
+	-------------------
+
+
+			------------------------
+	procedure		PROCESS_WITH_USE_PRAGMA_S	( USE_PRAGMA_S :TREE )
+    is
       USE_PRAGMA_LIST	: SEQ_TYPE	:= LIST( USE_PRAGMA_S );
       USE_PRAGMA		: TREE;
       NAME_LIST		: SEQ_TYPE;
@@ -2372,7 +2385,11 @@ is					---------
         end if;
               
       end loop;
-    end PROCESS_WITH_USE_PRAGMA_S;
+    end	PROCESS_WITH_USE_PRAGMA_S;
+	-------------------------
+
+
+
     --|---------------------------------------------------------------------------------------------
     --|	   PROCEDURE PROCESS_CONTEXT_CLAUSES
     procedure PROCESS_CONTEXT_CLAUSES ( COMPILATION_UNIT :TREE ) is
@@ -2588,13 +2605,13 @@ is					---------
   end CANCEL_TRANS_WITHS;
   --|-----------------------------------------------------------------------------------------------
      
-  --| POUR LE CAS OU L'ON DEMANDE À TRAITER _STANDRD
-  procedure FIX_PRE is separate;
-
+			-------
+	procedure		FIX_PRE		is separate;
+			-------
 begin
   OPEN_IDL_TREE_FILE( IDL.LIB_PATH( 1..LIB_PATH_LENGTH ) & "$$$.TMP" );
       
-  if DI( XD_ERR_COUNT, TREE_ROOT) > 0 then
+  if DI( XD_ERR_COUNT, TREE_ROOT ) > 0 then
     PUT_LINE( "SEMPHASE: PAS FAIT (ERREURS ANTERIEURES)" );
   else
     declare
@@ -2606,15 +2623,18 @@ begin
     begin
         
       if SRC_NAME = "_STANDRD.ADA" then
+
         FIX_PRE;
                
       else
-        INITIALIZE_GLOBAL_DATA;
+        SEM_GLOB.INITIALIZE_GLOBAL_DATA;
         INITIALIZE_PRAGMA_ATTRIBUTE_DEFS;
             
         while not IS_EMPTY( COMPLTN_UNIT_LIST ) loop
           POP( COMPLTN_UNIT_LIST, COMPILATION_UNIT );
+
           COMPILE_COMPILATION_UNIT( COMPILATION_UNIT, INITIAL_H );
+
           if not IS_EMPTY( COMPLTN_UNIT_LIST ) then
             CANCEL_TRANS_WITHS( COMPILATION_UNIT );
           end if;
@@ -2624,5 +2644,6 @@ begin
   end if;
       
   CLOSE_PAGE_MANAGER;
---|=================================================================================================
-end SEM_PHASE;
+
+end	SEM_PHASE;
+	---------

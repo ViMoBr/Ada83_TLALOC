@@ -1,5 +1,5 @@
-P ./ADA__LIB/
+P ././ADA__LIB/
 S IDL$$00K
 IDL
 AGGRESO
-T 501
+T 504
