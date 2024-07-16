@@ -154,7 +154,7 @@ is
       raise PROGRAM_ERROR;
     end if;
 
-    if NODE.PT = HI or NODE.PT = S or (NODE.PG = 0 or else DABS( 0, NODE ).NSIZ = 0) then
+    if (NODE.PT = HI or NODE.PT = S) or else (NODE.PG = 0 or else DABS( 0, NODE ).NSIZ = 0) then
       return;
     end if;
 

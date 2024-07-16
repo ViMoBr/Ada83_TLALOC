@@ -683,42 +683,54 @@ package body DEF_WALK is
 
       when DN_DERIVED_DEF =>
         declare
-          SUBTYPE_INDICATION : TREE := D (AS_SUBTYPE_INDICATION, TYPE_DEF);
+          SUBTYPE_INDICATION	: TREE	:= D( AS_SUBTYPE_INDICATION, TYPE_DEF );
 
-          PARENT_SUBTYPE : TREE;
-          PARENT_TYPE    : TREE;
+          PARENT_SUBTYPE	: TREE;
+          PARENT_TYPE	: TREE;
 
-          SUBTYPE_SPEC : TREE;
+          SUBTYPE_SPEC	: TREE;
         begin
+
+--put_line( "DEF_WALK 694 SUBTYPE_INDICATION" );
+--print_nod.print_node( SUBTYPE_INDICATION );
+
                                         -- EVALUATE THE PARENT TYPE
-          PARENT_TYPE := EVAL_SUBTYPE_INDICATION (SUBTYPE_INDICATION);
-          PARENT_TYPE := GET_BASE_STRUCT (PARENT_TYPE);
-          RESOLVE_SUBTYPE_INDICATION (SUBTYPE_INDICATION, PARENT_SUBTYPE);
+          PARENT_TYPE := EVAL_SUBTYPE_INDICATION( SUBTYPE_INDICATION );
+          PARENT_TYPE := GET_BASE_STRUCT( PARENT_TYPE );
+          RESOLVE_SUBTYPE_INDICATION( SUBTYPE_INDICATION, PARENT_SUBTYPE );
+
+--put_line( "DEF_WALK 702 PARENT_SUBTYPE" );
+--print_nod.print_node( PARENT_TYPE );
 
                                         -- CHECK THAT PARENT TYPE IS DERIVABLE AT THIS POINT
           if PARENT_TYPE.TY not in CLASS_DERIVABLE_SPEC then
-            if PARENT_TYPE.TY = DN_INCOMPLETE and then D (XD_FULL_TYPE_SPEC, PARENT_TYPE) /= TREE_VOID then
+            if PARENT_TYPE.TY = DN_INCOMPLETE and then D( XD_FULL_TYPE_SPEC, PARENT_TYPE ) /= TREE_VOID then
               null;
             else
-              ERROR (D (LX_SRCPOS, SUBTYPE_INDICATION), "TYPE IS NOT DERIVABLE HERE");
+              ERROR( D( LX_SRCPOS, SUBTYPE_INDICATION ), "TYPE IS NOT DERIVABLE HERE" );
               PARENT_TYPE := TREE_VOID;
             end if;
           end if;
 
                                         -- IF PARENT TYPE DECLARATION WAS NOT CORRECT
           if PARENT_TYPE = TREE_VOID then
-
-                                                -- RETURN VOID TO INDICATE ERROR
             return TREE_VOID;
           end if;
 
+--          BASE_TYPE := D( SM_BASE_TYPE, PARENT_TYPE );
+
                                         -- MAKE DERIVED TYPE SPEC
-          TYPE_SPEC := COPY_NODE (GET_BASE_STRUCT (PARENT_TYPE));
-          D (XD_SOURCE_NAME, TYPE_SPEC, ID);
+          TYPE_SPEC := COPY_NODE( GET_BASE_STRUCT( PARENT_TYPE ) );
+          D( XD_SOURCE_NAME, TYPE_SPEC, ID );
           if BASE_TYPE = TREE_VOID then
             BASE_TYPE := TYPE_SPEC;
           end if;
-          D (SM_DERIVED, TYPE_SPEC, PARENT_TYPE);
+          D( SM_DERIVED, TYPE_SPEC, PARENT_TYPE );
+
+--put_line( "DEF_WALK 732 TYPE_SPEC" );
+--print_nod.print_node( TYPE_SPEC );
+
+
 
                                         -- IF TYPE IS AN ENUMERATION TYPE (AND NOT GENERIC (<>))
           if TYPE_SPEC.TY = DN_ENUMERATION and then D (SM_LITERAL_S, TYPE_SPEC) /= TREE_VOID then
@@ -766,14 +778,22 @@ package body DEF_WALK is
             begin
 
                                                         -- ENTER RECORD DECLARATIVE REGION
-              RECORD_REGION_DEF := GET_DEF_FOR_ID (ID);
-              ENTER_REGION (RECORD_REGION_DEF, H, S);
+              RECORD_REGION_DEF := GET_DEF_FOR_ID( ID );
+              ENTER_REGION( RECORD_REGION_DEF, H, S );
+
+
+--put_line( "DEF_WALK 787 TYPE_SPEC" );
+--print_nod.print_node( TYPE_SPEC );
 
                                                         -- COPY THE RECORD STRUCTURE USING GENERIC SUBSTITUTION
-              SUBSTITUTE_ATTRIBUTES (TYPE_SPEC, NODE_HASH, H);
+              SUBSTITUTE_ATTRIBUTES( TYPE_SPEC, NODE_HASH, H );
+
+
+--put_line( "DEF_WALK 794 TYPE_SPEC" );
+--print_nod.print_node( TYPE_SPEC );
 
                                                         -- LEAVE RECORD DECLARATIVE REGION
-              LEAVE_REGION (RECORD_REGION_DEF, S);
+              LEAVE_REGION( RECORD_REGION_DEF, S );
             end;
 
                                                 -- ELSE IF TYPE IS [LIMITED] PRIVATE
@@ -820,17 +840,27 @@ package body DEF_WALK is
             SUBTYPE_SPEC := COPY_NODE (PARENT_SUBTYPE);
 
                                                 -- FIX UP SUBTYPE NODE
-            D (XD_SOURCE_NAME, SUBTYPE_SPEC, ID);
+            D( XD_SOURCE_NAME, SUBTYPE_SPEC, ID );
 
                                                 -- REPLACE RESULT WITH SUBTYPE
             TYPE_SPEC := SUBTYPE_SPEC;
           end if;
 
+
+--put_line( "DEF_WALK 852 TYPE_SPEC" );
+--print_nod.print_node( TYPE_SPEC );
                                         -- ADD BASE TYPE AND SOURCE NAME
                                         -- (DONE AGAIN AFTER THE CASE STATEMENT; NEEDED FOR DERIV SUBP)
           if TYPE_SPEC.TY in CLASS_NON_TASK then
             D (SM_BASE_TYPE, TYPE_SPEC, BASE_TYPE);
           end if;
+
+
+--put_line( "DEF_WALK 861 TYPE_SPEC" );
+--print_nod.print_node( TYPE_SPEC );
+
+
+
           D (XD_SOURCE_NAME, TYPE_SPEC, ID);
 
                                         -- CREATE DERIVED SUBPROGRAMS
@@ -894,6 +924,11 @@ package body DEF_WALK is
       D (SM_BASE_TYPE, TYPE_SPEC, BASE_TYPE);
     end if;
     D (XD_SOURCE_NAME, TYPE_SPEC, ID);
+
+
+--put_line( "DEF_WALK 921 TYPE_SPEC" );
+--print_nod.print_node( TYPE_SPEC );
+
 
                 -- RETURN THE CONSTRUCTED TYPE_SPEC
     return TYPE_SPEC;

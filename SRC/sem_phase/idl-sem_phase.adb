@@ -2302,9 +2302,9 @@ is					---------
     while not IS_EMPTY( ID_LIST ) loop							--| TANT QU'IL Y A DES ELEMENTS PRIVES
       POP( ID_LIST, ID );								--| EN EXTRAIRE UN
       if ID.TY in DN_ATTRIBUTE_ID .. DN_PRAGMA_ID						--| SI C'EST UN ID D'ATTRIBUT OU DE PRAGMA
-         and then D( LX_SYMREP, ID ).TY = DN_SYMBOL_REP					--| ET QU'IL Y A BIEN UN SYMBOLE ASSOCIE (PAR LIB_PHASE SI L'ID EST UTILISE DANS LA COMPILATION)
+         and then D( LX_SYMREP, ID ).TY = DN_SYMBOL_REP
       then
-        DEF := DEF_UTIL.MAKE_DEF_FOR_ID( ID, INITIAL_H );
+        DEF := DEF_UTIL.MAKE_DEF_FOR_ID( ID, SEM_GLOB.INITIAL_H );
         D( XD_REGION_DEF, DEF, TREE_VOID );
         DB( XD_IS_IN_SPEC, DEF, FALSE );
       end if;
@@ -2331,18 +2331,19 @@ is					---------
       NAME_LIST		: SEQ_TYPE	:= LIST( NAME_S );
       NAME		: TREE;
       NEW_NAME_LIST		: SEQ_TYPE	:= (TREE_NIL, TREE_NIL);
-      NEW_NAME		: TREE;
-      NAME_DEFN		: TREE;
-      NAME_DEF		: TREE;
     begin
          
       while not IS_EMPTY( NAME_LIST ) loop
         POP( NAME_LIST, NAME );
-        NAME_DEFN := D( SM_DEFN, NAME );						--| CHERCHER LA DEFINITION CORRESPONDANTE
-        NAME_DEF  := DEF_UTIL.GET_DEF_FOR_ID( NAME_DEFN );
-        D( XD_REGION_DEF, NAME_DEF, DEF_UTIL.GET_DEF_FOR_ID( D( XD_REGION, NAME_DEFN) ) );	--| L'INDIQUER "WITH"EE
-        NEW_NAME := VIS_UTIL.MAKE_USED_NAME_ID_FROM_OBJECT( NAME );				--| REMPLACER LES USED_OBJECT_ID AVEC DES USED_NAME_ID
-        NEW_NAME_LIST := APPEND( NEW_NAME_LIST, NEW_NAME );
+        declare        
+          NAME_DEFN		:constant TREE	:= D( SM_DEFN, NAME );
+          NAME_DEF		:constant TREE	:= DEF_UTIL.GET_DEF_FOR_ID( NAME_DEFN );
+	NEW_NAME		: TREE;
+        begin
+          D( XD_REGION_DEF, NAME_DEF, DEF_UTIL.GET_DEF_FOR_ID( D( XD_REGION, NAME_DEFN ) ) );
+          NEW_NAME := VIS_UTIL.MAKE_USED_NAME_ID_FROM_OBJECT( NAME );
+          NEW_NAME_LIST := APPEND( NEW_NAME_LIST, NEW_NAME );
+        end;
       end loop;
          
       LIST( NAME_S, NEW_NAME_LIST );
@@ -2356,54 +2357,60 @@ is					---------
     is
       USE_PRAGMA_LIST	: SEQ_TYPE	:= LIST( USE_PRAGMA_S );
       USE_PRAGMA		: TREE;
-      NAME_LIST		: SEQ_TYPE;
-      NAME		: TREE;
-      NEW_NAME_LIST		: SEQ_TYPE;
-      NEW_NAME		: TREE;
-      NAME_DEFN		: TREE;
-      NAME_DEF		: TREE;
     begin
-      while not IS_EMPTY( USE_PRAGMA_LIST ) loop						--| POUR CHAQUE CLAUSE USE OU PRAGMA
+
+      while not IS_EMPTY( USE_PRAGMA_LIST ) loop
         POP( USE_PRAGMA_LIST, USE_PRAGMA );
             
-        if USE_PRAGMA.TY = DN_PRAGMA then
-          NOD_WALK.WALK( USE_PRAGMA, INITIAL_H );
+        if USE_PRAGMA.TY = DN_PRAGMA
+        then NOD_WALK.WALK( USE_PRAGMA, INITIAL_H );
+        else
+			CONVERT_USE_NAMES_TO_IDS:
+	declare
+            NAME_LIST	: SEQ_TYPE		:= LIST( D( AS_NAME_S, USE_PRAGMA ) );
+	  NAME		: TREE;
+            NEW_NAME_LIST	: SEQ_TYPE		:= (TREE_NIL,TREE_NIL);
+	begin
+            while not IS_EMPTY( NAME_LIST) loop
+              POP( NAME_LIST, NAME );
+	    declare
+                NAME_DEFN	:constant TREE		:= D( SM_DEFN, NAME );
+                NAME_DEF	:constant TREE		:= DEF_UTIL.GET_DEF_FOR_ID( NAME_DEFN );
+	      NEW_NAME	: TREE;
+	    begin
+                DB( XD_IS_USED, NAME_DEF, TRUE );
+                NEW_NAME      := VIS_UTIL.MAKE_USED_NAME_ID_FROM_OBJECT( NAME );
+                NEW_NAME_LIST := APPEND( NEW_NAME_LIST, NEW_NAME );
+	    end;
+            end loop;
                
-        else									--| POUR CHAQUE NOM DANS LA CLAUSE USE
-          NAME_LIST := LIST( D( AS_NAME_S, USE_PRAGMA ) );
-          NEW_NAME_LIST := (TREE_NIL,TREE_NIL);
-          while not IS_EMPTY( NAME_LIST) loop
-            POP( NAME_LIST, NAME );
-            NAME_DEFN := D( SM_DEFN, NAME );
-            NAME_DEF := DEF_UTIL.GET_DEF_FOR_ID( NAME_DEFN );
-            DB( XD_IS_USED, NAME_DEF, TRUE );						--| L'INDIQUER UTILISEE
-            NEW_NAME := VIS_UTIL.MAKE_USED_NAME_ID_FROM_OBJECT( NAME );			--| REMPLACER USED_OBJECT_ID PAR USED_NAME_ID
-            NEW_NAME_LIST := APPEND( NEW_NAME_LIST, NEW_NAME );
-          end loop;
-               
-          LIST( D( AS_NAME_S, USE_PRAGMA), NEW_NAME_LIST );					--| SAUVER LA NOUVELLE LISTE DE USED_NAME_ID'S 
+            LIST( D( AS_NAME_S, USE_PRAGMA), NEW_NAME_LIST );
+	end		CONVERT_USE_NAMES_TO_IDS;
         end if;
               
       end loop;
+
     end	PROCESS_WITH_USE_PRAGMA_S;
 	-------------------------
 
 
 
-    --|---------------------------------------------------------------------------------------------
-    --|	   PROCEDURE PROCESS_CONTEXT_CLAUSES
-    procedure PROCESS_CONTEXT_CLAUSES ( COMPILATION_UNIT :TREE ) is
+			-----------------------
+	procedure		PROCESS_CONTEXT_CLAUSES		( COMPILATION_UNIT :TREE )
+
+    is
       CONTEXT_ELEM_S	: constant TREE	:= D( AS_CONTEXT_ELEM_S, COMPILATION_UNIT );
       CONTEXT_ELEM_LIST	: SEQ_TYPE	:= LIST( CONTEXT_ELEM_S );
       CONTEXT_ELEM		: TREE;
       TRANS_WITH_LIST	: SEQ_TYPE	:= LIST( COMPILATION_UNIT );
       TRANS_WITH		: TREE;
-      --|-------------------------------------------------------------------------------------------
-      --|	      PROCEDURE PROCESS_ANCESTOR_CONTEXT
-      procedure PROCESS_ANCESTOR_CONTEXT ( ANCESTOR_UNIT, COMPILATION_UNIT :TREE ) is
-      --|-------------------------------------------------------------------------------------------
-      --|	         PROCEDURE IS_ANCESTOR
-        function IS_ANCESTOR ( ANC_ALL_DECL, COMP_ALL_DECL :TREE ) return BOOLEAN is
+
+		------------------------
+      procedure	PROCESS_ANCESTOR_CONTEXT	( ANCESTOR_UNIT, COMPILATION_UNIT :TREE ) is
+
+
+		-----------
+        function	IS_ANCESTOR ( ANC_ALL_DECL, COMP_ALL_DECL :TREE ) return BOOLEAN is
         begin
           if COMP_ALL_DECL.TY in CLASS_SUBUNIT_BODY then
             return (    ANC_ALL_DECL.TY in CLASS_UNIT_DECL
@@ -2427,10 +2434,11 @@ is					---------
             end;
           end if;
           return FALSE;
-        end IS_ANCESTOR;
-        --|----------------------------------------------------------------------------------------
-        --|	          PROCEDURE REPROCESS_CONTEXT
-        procedure REPROCESS_CONTEXT ( CONTEXT_ELEM_S :TREE ) is
+        end	IS_ANCESTOR;
+		-----------
+
+		-----------------
+        procedure	REPROCESS_CONTEXT ( CONTEXT_ELEM_S :TREE ) is
               -- GIVEN CONTEXT_ELEM_S FOR AN ANCESTOR UNIT,
                 -- ... REPROCESS WITH'S AND USE'S IN FOR USE IN CURRENT UNIT
           CONTEXT_ELEM_LIST	: SEQ_TYPE	:= LIST( CONTEXT_ELEM_S );
@@ -2465,13 +2473,15 @@ is					---------
               end loop;
             end if;
           end loop;
-        end REPROCESS_CONTEXT;
+        end	REPROCESS_CONTEXT;
+		-----------------
             
       begin
         if IS_ANCESTOR( D( AS_ALL_DECL, ANCESTOR_UNIT ), D( AS_ALL_DECL, COMPILATION_UNIT ) ) then
           REPROCESS_CONTEXT( D( AS_CONTEXT_ELEM_S, ANCESTOR_UNIT ) );
         end if;
-      end PROCESS_ANCESTOR_CONTEXT;
+      end	PROCESS_ANCESTOR_CONTEXT;
+	------------------------
 
     begin
                 -- FOR EACH CONTEXT_ELEM
@@ -2479,24 +2489,28 @@ is					---------
         POP( CONTEXT_ELEM_LIST, CONTEXT_ELEM );
             
         if CONTEXT_ELEM.TY = DN_WITH then
+
           PROCESS_WITH_NAME_S( D( AS_NAME_S, CONTEXT_ELEM ) );
           PROCESS_WITH_USE_PRAGMA_S( D( AS_USE_PRAGMA_S, CONTEXT_ELEM ) );
                
         else
-          PUT_LINE( "!! $$$$ CONTEXT PRAGMA." );
+          PUT_LINE( "SEM_PHASE.PROCESS_CONTEXT_CLAUSES!! $$$$ CONTEXT PRAGMA." );
           raise PROGRAM_ERROR;
         end if;
       end loop;
          
-      while not IS_EMPTY( TRANS_WITH_LIST ) loop						--| CLAUSES ANCETRES
+      while not IS_EMPTY( TRANS_WITH_LIST ) loop
         POP( TRANS_WITH_LIST, TRANS_WITH);
         PROCESS_ANCESTOR_CONTEXT( D( TW_COMP_UNIT, TRANS_WITH ), COMPILATION_UNIT );
       end loop;
          
-    end PROCESS_CONTEXT_CLAUSES;
-    --|---------------------------------------------------------------------------------------------
-    --|	PROCEDURE ENTER_ANCESTOR_REGION
-    procedure ENTER_ANCESTOR_REGION ( NAME :TREE; H :in out H_TYPE ) is
+    end	PROCESS_CONTEXT_CLAUSES;
+	-----------------------
+
+
+		---------------------
+    procedure	ENTER_ANCESTOR_REGION		( NAME :TREE; H :in out H_TYPE )
+    is
       S			: NOD_WALK.S_TYPE;
       DESIGNATOR		: TREE;
       DEFN		: TREE;
@@ -2504,18 +2518,19 @@ is					---------
       DEFLIST		: SEQ_TYPE;
       DEF			: TREE;
     begin
-      if NAME.TY = DN_SELECTED then							--| LE NOM EST PRECEDE D UN SELECTEUR SEL.NOM
-        ENTER_ANCESTOR_REGION( D( AS_NAME, NAME ), H );					--| Y REMONTER
-        DESIGNATOR := D( AS_DESIGNATOR, NAME );						--| PRENDRE LE DESIGNANT (USED_OBJECT | USED_NAME)
+      if NAME.TY = DN_SELECTED then
+        ENTER_ANCESTOR_REGION( D( AS_NAME, NAME ), H );
+        DESIGNATOR := D( AS_DESIGNATOR, NAME );
       else
-        DESIGNATOR := NAME;								--| PARENT NON SELECTE LE DESIGNANT EST LE NOM
+        DESIGNATOR := NAME;
       end if;
 
       D( SM_DEFN, DESIGNATOR, TREE_VOID );
-      DEFLIST := LIST( D( LX_SYMREP, DESIGNATOR ) );	--| LISTE DES DEFINITIONS DU SYMBOLE DESIGNANT
+      DEFLIST := LIST( D( LX_SYMREP, DESIGNATOR ) );
  
-     while not IS_EMPTY( DEFLIST ) loop
+      while not IS_EMPTY( DEFLIST ) loop
         POP( DEFLIST, DEF );
+
         if D( XD_REGION, D( XD_SOURCE_NAME, DEF ) ) = D( XD_SOURCE_NAME, H.REGION_DEF ) then
           DEFN := D( XD_SOURCE_NAME, DEF);
           if DEFN.TY = DN_TYPE_ID or else DEFN.TY in CLASS_UNIT_NAME then
@@ -2524,6 +2539,7 @@ is					---------
           D( SM_DEFN, DESIGNATOR, DEFN );
           exit;
         end if;
+
       end loop;
 
       DEFN := D( SM_DEFN, DESIGNATOR );
@@ -2534,15 +2550,22 @@ is					---------
       DES_DEF := DEF_UTIL.GET_DEF_FOR_ID( DEFN );
       D( XD_REGION_DEF, DES_DEF, H.REGION_DEF );
       NOD_WALK.ENTER_BODY( DES_DEF, H, S );
-    end ENTER_ANCESTOR_REGION;
-    --|---------------------------------------------------------------------------------------------
-    --|	PROCEDURE WALK_ITEM
-    procedure WALK_ITEM ( ITEM :TREE; H_IN :H_TYPE ) is
+
+    end	ENTER_ANCESTOR_REGION;
+	---------------------
+
+
+
+			---------
+	procedure		WALK_ITEM		( ITEM :TREE; H_IN :H_TYPE )
+    is
       H	: H_TYPE	:= H_IN;
     begin
       NOD_WALK.WALK( ITEM, H );
-    end WALK_ITEM;
-    --|---------------------------------------------------------------------------------------------
+    end	WALK_ITEM;
+	---------
+
+
       
   begin
     if ALL_DECL.TY = DN_VOID then
@@ -2563,6 +2586,7 @@ is					---------
       H.LEX_LEVEL  := 2;
       H.IS_IN_SPEC := TRUE;
       H.IS_IN_BODY := FALSE;
+
       if ALL_DECL.TY = DN_SUBUNIT then
         ENTER_ANCESTOR_REGION( D( AS_NAME, ALL_DECL ), H );
         WALK_ITEM( D( AS_SUBUNIT_BODY, ALL_DECL ), H );
@@ -2578,10 +2602,14 @@ is					---------
       end loop;
     end;
       
-  end COMPILE_COMPILATION_UNIT;
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE CANCEL_TRANS_WITHS
-  procedure CANCEL_TRANS_WITHS ( COMPILATION_UNIT :TREE ) is				--| REND INVISIBLE LES TRANS_WITH DEFS AVANT L'UNITE DE COMPILATION SUIVANTE
+  end	COMPILE_COMPILATION_UNIT;
+	------------------------
+
+
+		------------------
+  procedure	CANCEL_TRANS_WITHS		( COMPILATION_UNIT :TREE )
+
+  is
     use DEF_UTIL;
     TRANS_WITH_LIST		: SEQ_TYPE 	:= LIST( COMPILATION_UNIT );
     TRANS_WITH		: TREE;
@@ -2590,24 +2618,30 @@ is					---------
   begin
     while not IS_EMPTY( TRANS_WITH_LIST ) loop
       POP( TRANS_WITH_LIST, TRANS_WITH );
+
       ALL_DECL := D( AS_ALL_DECL, D( TW_COMP_UNIT, TRANS_WITH ) );
       if ALL_DECL.TY /= DN_SUBUNIT then
         UNIT_ID := D( AS_SOURCE_NAME, ALL_DECL );
         if UNIT_ID.TY in CLASS_UNIT_NAME and then D( SM_FIRST, UNIT_ID ) = UNIT_ID then
-          REMOVE_DEF_FROM_ENVIRONMENT( GET_DEF_FOR_ID( UNIT_ID ) );
+          DEF_UTIL.REMOVE_DEF_FROM_ENVIRONMENT( GET_DEF_FOR_ID( UNIT_ID ) );
         end if;
       else
         UNIT_ID := D( SM_FIRST, D( AS_SOURCE_NAME, D( AS_SUBUNIT_BODY, ALL_DECL ) ) );
         REMOVE_DEF_FROM_ENVIRONMENT( GET_DEF_FOR_ID( UNIT_ID ) );
       end if;
+
     end loop;
     REMOVE_DEF_FROM_ENVIRONMENT( PREDEFINED_STANDARD_DEF );
-  end CANCEL_TRANS_WITHS;
-  --|-----------------------------------------------------------------------------------------------
+
+  end	CANCEL_TRANS_WITHS;
+	------------------
      
 			-------
 	procedure		FIX_PRE		is separate;
 			-------
+
+
+
 begin
   OPEN_IDL_TREE_FILE( IDL.LIB_PATH( 1..LIB_PATH_LENGTH ) & "$$$.TMP" );
       

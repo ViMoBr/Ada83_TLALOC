@@ -928,15 +928,15 @@ PREFIX_STRUCT.TY = DN_ACCESS and then GET_BASE_STRUCT (D (SM_DESIG_TYPE, PREFIX_
             POP (COND_CLAUSE_LIST, COND_CLAUSE);
 
                                                 -- RESOLVE THE CONDITIONAL EXPRESSION
-            EXP := D (AS_EXP, COND_CLAUSE);
-            EVAL_EXP_TYPES (EXP, TYPESET);
-            REQUIRE_BOOLEAN_TYPE (EXP, TYPESET);
-            REQUIRE_UNIQUE_TYPE (EXP, TYPESET);
-            EXP := RESOLVE_EXP (EXP, GET_THE_TYPE (TYPESET));
-            D (AS_EXP, COND_CLAUSE, EXP);
+            EXP := D( AS_EXP, COND_CLAUSE );
+            EVAL_EXP_TYPES( EXP, TYPESET );
+            REQUIRE_BOOLEAN_TYPE( EXP, TYPESET );
+            REQUIRE_UNIQUE_TYPE ( EXP, TYPESET );
+            EXP := RESOLVE_EXP ( EXP, GET_THE_TYPE( TYPESET ) );
+            D( AS_EXP, COND_CLAUSE, EXP );
 
                                                 -- WALK THE SEQUENCE OF STATEMENTS
-            WALK_STM_S (D (AS_STM_S, COND_CLAUSE), H);
+            WALK_STM_S( D( AS_STM_S, COND_CLAUSE ), H );
 
                                                 -- WALK THE (ELSE) SEQUENCE OF STATEMENTS
           end loop;

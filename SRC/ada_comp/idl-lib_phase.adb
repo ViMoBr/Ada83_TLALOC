@@ -41,7 +41,7 @@ begin
       
   if DI( XD_ERR_COUNT, TREE_ROOT) > 0 then
     PUT_LINE( "IDL.LIB_PHASE : LIBPHASE PAS FAIT, IL Y A DES ERREURS ANTERIEURES");
-    GOTO FINISH;
+    goto FINISH;
   end if;
 
   declare
@@ -907,7 +907,12 @@ TRAITE_UN_NOM_WITHE:
     LIST( COMP_UNIT, (TREE_NIL,TREE_NIL) );
       
 
-    if UNIT_KIND = DN_PACKAGE_BODY or UNIT_KIND = DN_SUBPROGRAM_BODY then
+    if UNIT_KIND = DN_SUBPROG_ENTRY_DECL then
+      null;       
+    elsif UNIT_KIND = DN_PACKAGE_DECL or UNIT_KIND = DN_GENERIC_DECL then
+      null;
+
+    elsif UNIT_KIND = DN_PACKAGE_BODY or UNIT_KIND = DN_SUBPROGRAM_BODY then
 
 
 				TREAT_BODY_SPEC:
