@@ -516,7 +516,7 @@ is					---------
     function  ALL_PARAMETERS_HAVE_DEFAULTS	( HEADER :TREE )			return BOOLEAN;
     function  CAST_TREE			( ARG  :SEQ_TYPE )			return TREE;
     function  CAST_SEQ_TYPE			( ARG  :TREE )			return SEQ_TYPE;
-    function  COPY_NODE			( NODE : TREE )			return TREE;
+    function  COPY_NODE			( T : TREE )			return TREE;
       
   --|--------------------------------------------------------------------------------------------------
   end VIS_UTIL;

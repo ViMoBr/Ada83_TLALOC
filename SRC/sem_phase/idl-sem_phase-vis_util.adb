@@ -779,23 +779,32 @@ is					--------
     return SINGLETON (ARG);
   end CAST_SEQ_TYPE;
 
-        ----------------------------------------------------------------
 
-  function COPY_NODE (NODE : TREE) return TREE is
-    RESULT : TREE;
-    LENGTH : ATTR_NBR;
+
+
+			--=====--
+	function		COPY_NODE		( T : TREE ) return TREE
+			--=====--
+  is
   begin
-    if NODE.LN = 0 then
-      return NODE;
+    if T.PT = HI or T.PT = S then
+      return T;
     else
-      LENGTH := DABS (0, NODE).NSIZ;
-      RESULT := MAKE (NODE.TY, LENGTH);
-      for I in 1 .. LENGTH loop
-        DABS (I, RESULT, DABS (I, NODE));
-      end loop;
-      return RESULT;
+      declare
+        LENGTH	: ATTR_NBR	:= DABS( 0, T ).NSIZ;
+        RESULT	: TREE		:= MAKE( T.TY, LENGTH );
+      begin
+        for I in 1 .. LENGTH loop
+          DABS( I, RESULT, DABS( I, T ) );
+        end loop;
+        return RESULT;
+      end;
     end if;
-  end COPY_NODE;
+
+  end	COPY_NODE;
+	--=====--
+
+
 
         ----------------------------------------------------------------
 
@@ -861,9 +870,9 @@ is					--------
     NAME_TYPESET := NEW_TYPESET;
     DEFSET       := NEW_DEFSET;
 
-  end FIND_SELECTED_DEFS;
+  end	FIND_SELECTED_DEFS;
+	------------------
 
-        ----------------------------------------------------------------
 
-
-end VIS_UTIL;
+end	VIS_UTIL;
+	--------

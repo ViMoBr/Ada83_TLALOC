@@ -745,7 +745,7 @@ package body RED_SUBP is
 
           when DN_PROCEDURE_ID | DN_OPERATOR_ID | DN_BLTN_OPERATOR_ID =>
                                  --$$$$ WORRY ABOUT CONVERSIONS WITH BOOLEAN-VALUED OPS
---            HEADER := D( XD_HEADER, GET_DEF( DEFINTERP ) );
+
             HEADER := D( XD_HEADER, NAME_DEF );
 
 
@@ -812,9 +812,23 @@ end if;
 
       if IS_EMPTY( NEW_DEFSET ) then
 
+
 if DEBUG_RED_SUBP and not ACTUALS_OK then
-  put_line( "DESACCORD DE TYPE" );
+  put_line( "DESACCORD DE TYPE sur " ); print_nod.print_node( NAME_DEF );
+  declare
+    PARAM_CURSOR		: VIS_UTIL.PARAM_CURSOR_TYPE;
+    HEADER		: TREE	:= D( XD_HEADER, NAME_DEF );
+
+  begin
+    INIT_PARAM_CURSOR( PARAM_CURSOR, LIST( D( AS_PARAM_S, HEADER ) ) );
+    for I in ACTUAL'RANGE loop
+      ADVANCE_PARAM_CURSOR( PARAM_CURSOR );
+      put( " formal " & INTEGER'IMAGE( I ) & " type node : " );
+      print_nod.print_node( GET_BASE_TYPE( D( SM_OBJ_TYPE, PARAM_CURSOR.ID ) ) );
+    end loop;
+  end;
 end if;
+
 
         ERROR( D( LX_SRCPOS, NAME), "DESACCORD DE TYPE" );
       end if;

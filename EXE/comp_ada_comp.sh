@@ -1,4 +1,13 @@
 #!/bin/bash
+./a83.sh ./ ./_STANDRD.ADA W
+./a83.sh ./ ./SYSTEM.ADA W
+./a83.sh ./ ./CALENDAR.ADA W
+./a83.sh ./ ./UNCHECKED_DEALLOCATION.ADA W
+./a83.sh ./ ./UNCHECKED_CONVERSION.ADA W
+./a83.sh ./ ./IO_EXCEPTIONS.ADA W
+./a83.sh ./ ./TEXT_IO.ADA W
+./a83.sh ./ ./SEQUENTIAL_IO.ADA W
+./a83.sh ./ ./DIRECT_IO.ADA W
 #--------------------------------------------------
 #	IDL
 #--------------------------------------------------
@@ -17,11 +26,11 @@
 ./a83.sh ./ ../SRC/par_phase/grmr_ops.adb W
 ./a83.sh ./ ../SRC/par_phase/lex.ads W
 ./a83.sh ./ ../SRC/par_phase/lex.adb W
-# ./a83.sh ./ ../SRC/par_phase/idl-par_phase.adb W	# PB PARAMETER TYPE MISMATCH  USAGE READ_PARSE_TABLES INSTANTIATION GRMR_TBL_IO SEQUENTIAL_IO
+./a83.sh ./ ../SRC/par_phase/idl-par_phase.adb W
 #--------------------------------------------------
 #	LIB_PHASE
 #--------------------------------------------------
-# ./a83.sh ./ ../SRC/ada_comp/idl-lib_phase.adb W		# PB PARAMETER TYPE MISMATCH USAGE GET INSTANTIATION INT_IO INTEGER_IO
+./a83.sh ./ ../SRC/ada_comp/idl-lib_phase.adb W
 #--------------------------------------------------
 #	SEM_PHASE
 #--------------------------------------------------

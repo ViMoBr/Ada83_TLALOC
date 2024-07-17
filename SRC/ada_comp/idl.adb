@@ -183,6 +183,26 @@ is				---
   package body IDL_MAN		is separate;
 
 
+procedure dbgstop is
+begin null; end;
+
+procedure SNIFFER ( AN :ATTRIBUTE_NAME;  T :TREE ) is
+begin
+  if T = (P, DN_IN_ID, 833, 9) then
+    put( "read attribute : " & ATTRIBUTE_NAME'IMAGE( AN ) & " of tree node : "); print_nod.print_node( T );
+    new_line;
+  end if;
+end SNIFFER;
+
+procedure SNIFFER ( AN :ATTRIBUTE_NAME;  T :TREE; V :TREE ) is
+begin
+  if V = (P, DN_SOURCE_NAME_S, 1340, 40) then
+    put( "write tree node : " ); print_nod.print_node( V );
+    put( "on attribute : " & ATTRIBUTE_NAME'IMAGE( AN ) & " of tree node : "); print_nod.print_node( T );
+    new_line; dbgstop;
+  end if;
+end SNIFFER;
+
 
 			--------------------
   procedure		CREATE_IDL_TREE_FILE		( PAGE_FILE_NAME :STRING )
@@ -287,6 +307,9 @@ is				---
 
     APOS		: INTEGER		:= N_SPEC( T.TY ).NS_FIRST_A;				--| INDICE DE PREMIER ATTRIBUT DANS LA TABLE DE TOUS LES ATTRIBUTS DE TOUS LES NOEUDS
   begin
+
+if DEBUG then SNIFFER( AN, T, V ); end if;
+
     for I in 1 .. N_SPEC( T.TY ).NS_SIZE loop						--| BALAYAGE SUR LES ATTRIBUTS DU NOEUD POINTE PAR T
       if A_SPEC( APOS ).ATTR = AN then							--| SI C'EST L'ATTRIBUT CHERCHE
         DABS( I, T, V );								--| REMPLIR LE CHAMP
@@ -306,6 +329,9 @@ is				---
 
     APOS		: INTEGER		:= N_SPEC( T.TY ).NS_FIRST_A;				--| INDICE DE PREMIER ATTRIBUT DANS LA TABLE DE TOUS LES ATTRIBUTS DE TOUS LES NOEUDS
   begin
+
+if DEBUG then SNIFFER( AN, T ); end if;
+
     for I in 1 .. N_SPEC( T.TY ).NS_SIZE loop						--| BALAYAGE SUR LES ATTRIBUTS DU NOEUD POINTE PAR T
       if A_SPEC( APOS ).ATTR = AN then							--| SI C'EST L'ATTRIBUT CHERCHE
         return DABS( I, T );								--| RENDRE LE CHAMP

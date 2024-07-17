@@ -12,7 +12,7 @@ RV NO_FIXED_POINT
 RV NO_IO
 RV NO_DYNAMIC_SIZED_OBJECTS
 
-U ada_comp%b		ada_comp.adb		f38d3e51 NE OO SU IU
+U ada_comp%b		ada_comp.adb		e8897758 NE OO SU IU
 Z ada.strings.text_buffers%s  a-sttebu.adb	a-sttebu.ali
 W calendar%s		calendar.ads		calendar.ali
 W code_gen%s		code_gen.adb		code_gen.ali
@@ -33,7 +33,7 @@ D a-stuten.ads		20230508121439 33c54060 ada.strings.utf_encoding%s
 D a-tags.ads		20230508121439 9eaa38c6 ada.tags%s
 D a-textio.ads		20230508121439 deada98a ada.text_io%s
 D a-unccon.ads		20230508121439 0e9b276f ada.unchecked_conversion%s
-D ada_comp.adb		20240711130152 52c1b9ec ada_comp%b
+D ada_comp.adb		20240717125254 49c5f0e5 ada_comp%b
 D calendar.ads		20230508121439 2cb525cd calendar%s
 D code_gen.ads		20230823210317 9ce3fa93 code_gen%s
 D diana_node_attr_class_names.ads  20240622095819 6d94ff6d diana_node_attr_class_names%s
@@ -73,22 +73,22 @@ G r c none [ada_comp standard 9 41 none] [code_gen standard 3 15 none]
 X 2 a-calend.ads
 42I9*Time<226I9> 12|19r44
 56V13*Clock{42I9} 12|70s13 102s13
-112V14*"-"{duration} 12|103s56
+112V14*"-"{duration} 12|103s66
 226I9 Time_Rep<long_long_integer>
 X 10 a-textio.ads
-464U14*Put 12|103s3
+464U14*Put 12|69s3
 480U14*Get_Line 12|22s3
-507U14*Put_Line 12|69s3
+507U14*Put_Line 12|103s3
 X 12 ada_comp.adb
 9U41*ADA_COMP 9b41 106l9 106t17
 12a3 COMMAND{string} 22m13 31r22 33r22 36r57 47r22 49r22 52r47 59r22 60r17
 13i3 CMD_LENGTH{natural} 22m22
-15a3 ACCES_TEXTE{string} 52m7 69r25 77r11 84r41 85r44
-16i3 ACCES_TEXTE_LENGTH{natural} 51m7 52r23 69r41 74r44 85r82
+15a3 ACCES_TEXTE{string} 52m7 69r19 77r11 84r41 85r44
+16i3 ACCES_TEXTE_LENGTH{natural} 51m7 52r23 69r35 74r44 85r82
 18e3 OPTION{character} 60m7 64r6 64r22 64r38 65r23 90r52 92r52 93r52 94r68
 . 95r52
-19i3 TIME_1{2|42I9} 70m3 103r58
-19i11 TIME_2{2|42I9} 102m3 103r49
+19i3 TIME_1{2|42I9} 70m3 103r68
+19i11 TIME_2{2|42I9} 102m3 103r59
 25i5 NC1{natural} 31r31 31m45 31r52 32r14 35r40 36r66 46m7 47r31 47m45 47r52
 . 48r14 51r36 52r56 58m7 59r31 59m45 59r52 60r26
 26i5 NC2{natural} 32m7 33r31 33m45 33r52 35r34 36r73 46r14 48m7 49r31 49m45

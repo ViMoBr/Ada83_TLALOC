@@ -1,2 +1,129 @@
+ADA83 ./_STANDRD.ADA
+_STANDRD
+STANDARD
+BOOLEAN
+SHORT_INTEGER
+INTEGER
+LONG_INTEGER
+FLOAT
+LONG_FLOAT
+CHARACTER
+ASCII
+NATURAL
+POSITIVE
+STRING
+DURATION
+CONSTRAINT_ERROR
+NUMERIC_ERROR
+PROGRAM_ERROR
+STORAGE_ERROR
+TASKING_ERROR
+_ADDRESS
+_DURATION
+..Ok 10 msec
+ADA83 ./SYSTEM.ADA
+..Ok 20 msec
+ADA83 ./CALENDAR.ADA
+..Ok 7 msec
+ADA83 ./UNCHECKED_DEALLOCATION.ADA
+..Ok 4 msec
+ADA83 ./UNCHECKED_CONVERSION.ADA
+..Ok 4 msec
+ADA83 ./IO_EXCEPTIONS.ADA
+..Ok 4 msec
+ADA83 ./TEXT_IO.ADA
+..Ok 16 msec
+ADA83 ./SEQUENTIAL_IO.ADA
+..Ok 7 msec
+ADA83 ./DIRECT_IO.ADA
+..Ok 7 msec
+ADA83 ./IDL_TOOLS/diana_node_attr_class_names.ads
+..Ok 26 msec
+ADA83 ../SRC/ada_comp/idl.ads
+..Ok 14 msec
+ADA83 ../SRC/ada_comp/idl.adb
+..Ok 198 msec
+ADA83 ../SRC/communs/idl-page_man.adb
+..Ok 179 msec
+ADA83 ../SRC/communs/idl-idl_tbl.adb
+..Ok 177 msec
+ADA83 ../SRC/communs/idl-idl_man.adb
+..Ok 359 msec
+ADA83 ../SRC/par_phase/grmr_tbl.ads
+..Ok 8 msec
+ADA83 ../SRC/par_phase/grmr_ops.ads
+..Ok 5 msec
+ADA83 ../SRC/par_phase/grmr_ops.adb
+..Ok 15 msec
+ADA83 ../SRC/par_phase/lex.ads
+..Ok 7 msec
+ADA83 ../SRC/par_phase/lex.adb
+..Ok 141 msec
 ADA83 ../SRC/sem_phase/idl-sem_phase.adb
-..Ok 172 msec
+..Ok 533 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-aggreso.adb
+..Ok 1179 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-att_walk.adb
+..Ok 2115 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-chk_stat.adb
+..Ok 188 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-def_util.adb
+..Ok 550 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-def_walk.adb
+..Ok 1575 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-derived.adb
+..Ok 381 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-eval_num.adb
+..Ok 347 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-exp_type.adb
+..Ok 650 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-expreso.adb
+..Ok 1245 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-fix_pre.adb
+..Ok 539 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-fix_with.adb
+..Ok 802 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-gen_subs.adb
+..Ok 345 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-hom_unit.adb
+..Ok 340 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-instant.adb
+..Ok 768 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-make_nod.adb
+..Ok 1331 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-newsnam.adb
+..Ok 424 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-nod_walk.adb
+..Ok 2194 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-pra_walk.adb
+..Ok 756 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-pre_fcns.adb
+..Ok 617 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-red_subp.adb
+..Ok 1782 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-rep_clau.adb
+..Ok 740 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-req_util.adb
+..Ok 1074 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-sem_glob.adb
+..Ok 143 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-set_util.adb
+..Ok 884 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-stm_walk.adb
+..Ok 978 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-uarith.adb
+..Ok 1295 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-univ_ops.adb
+..Ok 1163 msec
+ADA83 ../SRC/sem_phase/idl-sem_phase-vis_util.adb
+..Ok 1174 msec
+ADA83 ../SRC/ada_comp/idl-err_phase.adb
+..Ok 53 msec
+ADA83 ../SRC/ada_comp/idl-write_lib.adb
+..Ok 141 msec
+ADA83 ../SRC/code_gen/emits.ads
+..Ok 28 msec
+ADA83 ../SRC/code_gen/code_gen.ads
+..Ok 4 msec
+ADA83 ../SRC/code_gen/code_gen.adb
+..Ok 1264 msec
