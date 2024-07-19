@@ -996,7 +996,8 @@ if debug_lib then put_line( "with_for_one_comp_unit INCLUDES_PARENTS : unit_body
     WORD_ZERO	: TREE	:= DABS( 0, NODE );
     NEW_NODE	: TREE	:= MAKE( WORD_ZERO.NOTY, WORD_ZERO.NSIZ );
   begin
-    for I in 1 .. WORD_ZERO.NSIZ loop
+--    for I in 1 .. WORD_ZERO.NSIZ loop
+    for I in 0 .. WORD_ZERO.NSIZ loop
       DABS( I, NEW_NODE, DABS( I, NODE ) );
     end loop;
     return NEW_NODE;
