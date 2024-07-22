@@ -14,7 +14,7 @@ procedure FIX_PRE is
         LEN	: ATTR_NBR	:= DABS( 0, NODE ).NSIZ;
         RESULT	: TREE		:= MAKE( NODE.TY, LEN );
       begin
-        for I in 1 .. LEN loop
+        for I in 0 .. LEN loop
           DABS( I, RESULT, DABS( I, NODE ) );
         end loop;
         return RESULT;

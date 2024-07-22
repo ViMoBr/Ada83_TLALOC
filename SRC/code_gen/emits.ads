@@ -1,8 +1,27 @@
+-- La pile abstraite croit vers le bas
+--	---------------------
+--	|    BAS DE PILE 	|
+--	|		|
+--	|        -8	|
+--	|        -4	|
+--	|         0	|
+--	|        +4	|
+--	|		|
+--	---------------------
+
+
+--	PGA	Push Global Address		Unit_num      Offset
+--	PLA	Push Local  Address		Level_delta   Offset
+--	PGD	Push Global Data		Unit_num      Offset
+--	PLD	Push Local  Data		Level_delta   Offset
+--	SGD	Store Global Data
+--	SLD	Store Local Data
 with TEXT_IO, IDL;
 use  TEXT_IO, IDL;
 						-----
 			package			EMITS
 						-----
+
 is
 
   MAX_LABEL			: constant		:= 30_000;				--| NB MAX D'ETIQUETTES DE SAUT
@@ -30,22 +49,21 @@ is
   RELATIVE_RESULT_OFFSET		: constant OFFSET_TYPE	:= 2;
       
   type OP_CODE			is (								--| CODES OPERATION DU ACODE POLONAIS
-		ABO,   ABSV,  ACA,   ACC,   ACT,   ADD,   ALO,   BAND,  CHR,
-		TRAP,  CSTA,  CSTI,  CSTS,  CALL,  DEC,   DIV,   DPL,   EAC,
-		EEX,   ENT,   EQ,    ETD,   ETE,   ETK,   ETR,   EXC,   EXH,
-		EXL,   EXP,   JMPF,  FRE,   GE,    GET,   GT,    INC,   IND,
-		IXA,   LAO,   LCA,   LDA,   LDC,   LDO,   LE,    LT,    LOD,
-		LVB,   MODU,  MOV,   MST,   MUL,   MVV,   NEG,   NEQ,   BNOT,
-		BOR,   PKB,   PKG,   PRO,   PUT,   QUIT,  RAI,   REMN,  RET,
-		RFL,   RFP,   SRO,   STO,   STR,   SUB,   SWP,   JMPT,  JMP,
-		BXOR,  XJP
+		ABO,   ABSV,  ACA,   ACC,   ACT,   ADD,   ALO,   BAND,  CHR,  TRAP,
+		CSTA,  CSTI,  CSTS,  CALL,  DEC,   DIV,   DPL,   EAC,   EEX,  ENT,
+		EQ,    ETD,   ETE,   ETK,   ETR,   EXC,   EXH,   EXL,   EXP,  JMPF,
+		FRE,   GE,    GET,   GT,    INC,   IND,   IXA,   PGA,   LCA,  PLA,
+		LDC,   PGD,   LE,    LT,    PLD,   LVB,   MODU,  MOV,   MST,  MUL,
+		MVV,   NEG,   NEQ,   BNOT,  BOR,   PKB,   PKG,   PRO,   PUT,  QUIT,
+		RAI,   REMN,  RET,   RFL,   RFP,   SGD,   STO,   SLD,   SUB,  SWP,
+		JMPT,  JMP,   BXOR,  XJP
 		);
       
-  package OP_CODE_IO		is new ENUMERATION_IO ( OP_CODE );					--| POUR ECRIRE LES CODES SUR LE FICHIER DE SORTIE
+  package OP_CODE_IO		is new ENUMERATION_IO( OP_CODE );					--| POUR ECRIRE LES CODES SUR LE FICHIER DE SORTIE
    
-  type CODE_TYPE			is ( A, B, C, I );							--| ADDRESS BOOLEAN CHARACTER INTEGER
+  type CODE_DATA_TYPE		is ( A, B, C, I );							--| ADDRESS BOOLEAN CHARACTER INTEGER
       
-  package CODE_TYPE_IO		is new ENUMERATION_IO ( CODE_TYPE );
+  package CODE_DATA_TYPE_IO		is new ENUMERATION_IO( CODE_DATA_TYPE );
    
   type STD_PROC			is (
 		AR1, AR2, CLB, CLN, CNT, CVB, CYA, LBD, LEN, PUA, TRM
@@ -56,8 +74,8 @@ is
   subtype COMP_UNIT_NBR		is NATURAL range 0..255;						--| SOUS TYPE NO D'UNITE DE COMPILATION
    
   CUR_COMP_UNIT			: COMP_UNIT_NBR;							--| NO D'UNITE DE COMPILATION COURANTE
-  GENERATE_CODE			: BOOLEAN	:= TRUE;							--| COMMUTATEUR POUR LA GENERATION DU CODE
-  LEVEL				: LEVEL_TYPE;							--| NIVEAU D'IMBRICATION COURANT
+  GENERATE_CODE			: BOOLEAN		:= TRUE;						--| COMMUTATEUR POUR LA GENERATION DU CODE
+  CUR_LEVEL			: LEVEL_TYPE;							--| NIVEAU D'IMBRICATION COURANT
    
   OFFSET_ACT			: OFFSET_TYPE;
   OFFSET_MAX			: OFFSET_TYPE;
@@ -89,28 +107,40 @@ is
   procedure WRITE_LABEL		( LBL :LABEL_TYPE; COMMENT :STRING := "" );
   procedure GEN_LBL_ASSIGNMENT	( LBL :LABEL_TYPE; N :NATURAL );
   procedure EMIT_COMMENT		( COMMENT :STRING );						--| ESSENTIELLEMENT POUR INDIQUER LES PARTIES RESTANT A FAIRE
-  procedure EMIT			( OC :OP_CODE; COMMENT :STRING := "" );
-  procedure EMIT			( OC :OP_CODE; CT :CODE_TYPE; COMMENT :STRING := "" );
-  procedure EMIT			( OC :OP_CODE; B :BOOLEAN; COMMENT :STRING := "" );
-  procedure EMIT			( OC :OP_CODE; C :CHARACTER; COMMENT :STRING := "" );
-  procedure EMIT			( OC :OP_CODE; LBL :LABEL_TYPE; COMMENT :STRING := "" );
-  procedure EMIT			( OC :OP_CODE; I :INTEGER; COMMENT :STRING := "" );
-  procedure EMIT			( OC :OP_CODE; CT :CODE_TYPE; I :INTEGER; COMMENT :STRING := "" );
-  procedure EMIT			( OC :OP_CODE; S :STRING; COMMENT :STRING := "" );
-  procedure EMIT			( OC :OP_CODE; NUM, LBL :LABEL_TYPE; COMMENT :STRING := "" );
-  procedure EMIT			( OC :OP_CODE; LBL :LABEL_TYPE; S :STRING; COMMENT :STRING := "" );
-  procedure EMIT			( OC :OP_CODE; I :INTEGER; LBL :LABEL_TYPE; COMMENT :STRING := "" );
-  procedure EMIT			( OC :OP_CODE; IA, IB :INTEGER; COMMENT :STRING := "" );
-  procedure EMIT			( OC :OP_CODE; CT :CODE_TYPE; IA, IB :INTEGER; COMMENT :STRING := "" );
-  procedure EMIT			( OC :OP_CODE; I :INTEGER; S :STRING; COMMENT :STRING := "" );
-  procedure EMIT			( P :STD_PROC; COMMENT :STRING := "" );
-  procedure GEN_LOAD_ADDR		( COMP_UNIT_NUMBER :COMP_UNIT_NBR; LVL :LEVEL_TYPE; OFFSET :INTEGER; COMMENT :STRING := "" );
-  procedure GEN_LOAD		( CT :CODE_TYPE; COMP_UNIT_NUMBER :COMP_UNIT_NBR;
-				  LVL :LEVEL_TYPE; OFFSET :INTEGER; COMMENT :STRING := "" );
-  procedure GEN_STORE		( CT :CODE_TYPE; COMP_UNIT_NUMBER :COMP_UNIT_NBR;
-				  LVL :LEVEL_TYPE; OFFSET :INTEGER; COMMENT :STRING := "" );
+  procedure EMIT			( OC :OP_CODE;				COMMENT :STRING := "" );
+  procedure EMIT			( OC :OP_CODE;	CT  :CODE_DATA_TYPE;	COMMENT :STRING := "" );
+  procedure EMIT			( OC :OP_CODE;	B   :BOOLEAN;		COMMENT :STRING := "" );
+  procedure EMIT			( OC :OP_CODE;	C   :CHARACTER;		COMMENT :STRING := "" );
+  procedure EMIT			( OC :OP_CODE;	LBL :LABEL_TYPE;		COMMENT :STRING := "" );
+  procedure EMIT			( OC :OP_CODE;	I   :INTEGER;		COMMENT :STRING := "" );
+  procedure EMIT			( OC :OP_CODE;	CT  :CODE_DATA_TYPE;
+						I   :INTEGER;		COMMENT :STRING := "" );
+  procedure EMIT			( OC :OP_CODE;	S :STRING;		COMMENT :STRING := "" );
+  procedure EMIT			( OC :OP_CODE;	NUM, LBL :LABEL_TYPE;	COMMENT :STRING := "" );
+  procedure EMIT			( OC :OP_CODE;	LBL :LABEL_TYPE;
+						S :STRING;		COMMENT :STRING := "" );
+  procedure EMIT			( OC :OP_CODE;	I :INTEGER;
+						LBL :LABEL_TYPE;		COMMENT :STRING := "" );
+  procedure EMIT			( OC :OP_CODE;	IA, IB :INTEGER;		COMMENT :STRING := "" );
+  procedure EMIT			( OC :OP_CODE;	CT :CODE_DATA_TYPE;
+						IA, IB :INTEGER;		COMMENT :STRING := "" );
+  procedure EMIT			( OC :OP_CODE;	I :INTEGER;
+						S :STRING;		COMMENT :STRING := "" );
+  procedure EMIT			( P :STD_PROC;				COMMENT :STRING := "" );
+
+  procedure GEN_PUSH_ADDR		( COMP_UNIT_NUMBER :COMP_UNIT_NBR;
+				  LVL :LEVEL_TYPE;
+				  OFFSET :INTEGER;				COMMENT :STRING := "" );
+  procedure GEN_PUSH_DATA		( CT :CODE_DATA_TYPE;
+				  COMP_UNIT_NUMBER :COMP_UNIT_NBR;
+				  LVL :LEVEL_TYPE;
+				  OFFSET :INTEGER;				COMMENT :STRING := "" );
+  procedure GEN_STORE		( CT :CODE_DATA_TYPE;
+				  COMP_UNIT_NUMBER :COMP_UNIT_NBR;
+				  LVL :LEVEL_TYPE;
+				  OFFSET :INTEGER;				COMMENT :STRING := "" );
    
-  function  NEXT_LABEL							return LABEL_TYPE;
+  function  NEW_LABEL							return LABEL_TYPE;
   procedure INC_LEVEL;
   procedure DEC_LEVEL;
   procedure INC_OFFSET		( I :INTEGER );
@@ -119,12 +149,12 @@ is
        
   procedure PERFORM_RETURN		( ENCLOSING_BLOCK_BODY :TREE );
   function  TYPE_SIZE		( TYPE_SPEC :TREE )				return NATURAL;
-  function  CODE_TYPE_OF		( EXP_OR_TYPE_SPEC :TREE )			return CODE_TYPE;
+  function  CODE_DATA_TYPE_OF		( EXP_OR_TYPE_SPEC :TREE )			return CODE_DATA_TYPE;
    
-  function  NUMBER_OF_DIMENSIONS	( EXP :TREE )			return NATURAL;
-  procedure GET_CLO			( OBJECT :TREE; COMP_UNIT :out COMP_UNIT_NBR;					--| DONNE L UNITE LE NIVEAU ET L OFFSET D UN OBJET
+  function  NUMBER_OF_DIMENSIONS	( EXP :TREE )				return NATURAL;
+  procedure GET_ULO			( OBJECT :TREE; COMP_UNIT :out COMP_UNIT_NBR;					--| DONNE L UNITE LE NIVEAU ET L OFFSET D UN OBJET
 				  LVL :out LEVEL_TYPE; OFS :out OFFSET_TYPE );
-  function  CONSTRAINED		( TYPE_SPEC :TREE ) 		return BOOLEAN;
+  function  CONSTRAINED		( TYPE_SPEC :TREE ) 			return BOOLEAN;
   procedure LOAD_TYPE_SIZE		( TYPE_SPEC :TREE );
 
 

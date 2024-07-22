@@ -2635,9 +2635,10 @@ is					---------
 
   end	CANCEL_TRANS_WITHS;
 	------------------
-     
+
+
 			-------
-	procedure		FIX_PRE		is separate;
+  procedure		FIX_PRE		is separate;
 			-------
 
 
@@ -2645,9 +2646,7 @@ is					---------
 begin
   OPEN_IDL_TREE_FILE( IDL.LIB_PATH( 1..LIB_PATH_LENGTH ) & "$$$.TMP" );
       
-  if DI( XD_ERR_COUNT, TREE_ROOT ) > 0 then
-    PUT_LINE( "SEMPHASE: PAS FAIT (ERREURS ANTERIEURES)" );
-  else
+  if DI( XD_ERR_COUNT, TREE_ROOT ) = 0 then
     declare
       USER_ROOT		: TREE		:= D( XD_USER_ROOT, TREE_ROOT );
       COMPILATION		: TREE		:= D( XD_STRUCTURE, USER_ROOT );
@@ -2680,4 +2679,4 @@ begin
   CLOSE_PAGE_MANAGER;
 
 end	SEM_PHASE;
-	---------
+	--=====--

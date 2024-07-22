@@ -539,6 +539,7 @@ if DEBUG then SNIFFER( AN, T ); end if;
 		------------
   procedure	PRETTY_DIANA	( OPTION :CHARACTER := 'U' ) is separate;
 
+
 	---
 end	IDL;
 	---

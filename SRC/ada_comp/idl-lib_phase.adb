@@ -39,50 +39,48 @@ is
 begin
   OPEN_IDL_TREE_FILE ( IDL.LIB_PATH( 1..LIB_PATH_LENGTH ) & "$$$.TMP" );
       
-  if DI( XD_ERR_COUNT, TREE_ROOT) > 0 then
-    PUT_LINE( "IDL.LIB_PHASE : LIBPHASE PAS FAIT, IL Y A DES ERREURS ANTERIEURES");
-    goto FINISH;
-  end if;
+  if DI( XD_ERR_COUNT, TREE_ROOT) = 0 then
 
-  declare
-    USER_ROOT	: constant TREE	:= D( XD_USER_ROOT, TREE_ROOT );
-    COMPILATION	: constant TREE	:= D( XD_STRUCTURE, USER_ROOT );
-    COMP_UNIT_SEQ	: SEQ_TYPE	:= LIST( D( AS_COMPLTN_UNIT_S, COMPILATION ) );
-    COMP_UNIT	: TREE;
-    SRC_NAME	: constant STRING	:= PRINT_NAME( D( XD_SOURCENAME, USER_ROOT ) );
-  begin
+    declare
+      USER_ROOT	: constant TREE	:= D( XD_USER_ROOT, TREE_ROOT );
+      COMPILATION	: constant TREE	:= D( XD_STRUCTURE, USER_ROOT );
+      COMP_UNIT_SEQ	: SEQ_TYPE	:= LIST( D( AS_COMPLTN_UNIT_S, COMPILATION ) );
+      COMP_UNIT	: TREE;
+      SRC_NAME	: constant STRING	:= PRINT_NAME( D( XD_SOURCENAME, USER_ROOT ) );
+    begin
 
-    if SRC_NAME = "_STANDRD.ADA" then goto FINISH; end if;
+      if SRC_NAME = "_STANDRD.ADA" then goto FINISH; end if;
 
-    READ_LIB_CTL_FILE;
+      READ_LIB_CTL_FILE;
 
 			LOAD_RELOC_LIB_BLOCKS_ALL_COMP_UNITS:            
 
-    while not IS_EMPTY( COMP_UNIT_SEQ ) loop
+      while not IS_EMPTY( COMP_UNIT_SEQ ) loop
 
-      POP( COMP_UNIT_SEQ, COMP_UNIT );
-      if D( AS_ALL_DECL, COMP_UNIT ).TY = DN_VOID then
-         PUT_LINE ( "IDL.LIB_PHASE : PAS D'UNITE NE CONTENANT QUE DES PRAGMAS" );
-      else
-         INSERT_XD_LIB_NAME_IN_COMP_UNIT( COMP_UNIT );
-         LOAD_RELOC_LIB_BLOCKS( COMP_UNIT );
+        POP( COMP_UNIT_SEQ, COMP_UNIT );
+        if D( AS_ALL_DECL, COMP_UNIT ).TY = DN_VOID then
+          PUT_LINE ( "IDL.LIB_PHASE : PAS D'UNITE NE CONTENANT QUE DES PRAGMAS" );
+        else
+	INSERT_XD_LIB_NAME_IN_COMP_UNIT( COMP_UNIT );
+	LOAD_RELOC_LIB_BLOCKS( COMP_UNIT );
+        end if;
+      end loop		LOAD_RELOC_LIB_BLOCKS_ALL_COMP_UNITS;
+
+            
+      LIST( D( AS_COMPLTN_UNIT_S, COMPILATION ), NEW_UNIT_LIST );
+      if DI( XD_ERR_COUNT, TREE_ROOT ) = 0 then
+        REGENERATE_LIB_CTL_FILE;
       end if;
-    end loop		LOAD_RELOC_LIB_BLOCKS_ALL_COMP_UNITS;
-
             
-    LIST( D( AS_COMPLTN_UNIT_S, COMPILATION ), NEW_UNIT_LIST );
-    if DI( XD_ERR_COUNT, TREE_ROOT ) = 0 then
-       REGENERATE_LIB_CTL_FILE;
-    end if;
-            
-    ENTER_DEFAULT_GENERIC_FORMALS;
-    ENTER_USED_DEFINING_IDS;
+      ENTER_DEFAULT_GENERIC_FORMALS;
+      ENTER_USED_DEFINING_IDS;
 
     end;
 
-<< FINISH >>      
-  CLOSE_IDL_TREE_FILE;
+  end if;
 
+<<FINISH>>     
+  CLOSE_IDL_TREE_FILE;
 
 end	START_LIB_PHASE;
 	---------------
@@ -1134,7 +1132,8 @@ PARCOURS_BLOCS_NOEUDS:
 
 
 begin   
-  START_LIB_PHASE;     
+  START_LIB_PHASE;
+
 	---------
 end	LIB_PHASE;
 	---------

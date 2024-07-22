@@ -1,6 +1,21 @@
 PRO	TEST
-$ 2				--| Etiquette entree
+$ 2				--| ETIQUETTE ENTREE
   ENT  1	$ 4
   ENT  2	$ 5
-EXH	$ 6			--| EXCEPTION HANDLERS
-!! L ATTRIBUT CD_COMP_UNIT DU NOEUD [DN_INTEGER<11.108]> N EST PAS UN ENTIER
+EXH	$ 6			-- EXCEPTION HANDLERS
+	pla	0	0
+	trap	CVB
+sld.i	0	0
+	pla	0	-4
+	trap	CVB
+sld.i	0	-4
+	pla	0	-8
+	trap	CVB
+sld.i	0	-8
+$ 3
+	ret	2
+$ 6
+	eex
+$ 4 = 12
+$ 5 = 16
+  QUIT

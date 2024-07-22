@@ -10,18 +10,18 @@
        procedure INITIALIZE_GLOBAL_DATA is
       begin
       
-         SU.USED_PACKAGE_LIST	:= (TREE_NIL,TREE_NIL);
+         SU.USED_PACKAGE_LIST		:= (TREE_NIL,TREE_NIL);
          SU.INCOMPLETE_TYPE_LIST 	:= (TREE_NIL,TREE_NIL);
-         SU.PRIVATE_TYPE_LIST	:= (TREE_NIL,TREE_NIL);
+         SU.PRIVATE_TYPE_LIST		:= (TREE_NIL,TREE_NIL);
       
          INITIAL_H := (	REGION_DEF	=> TREE_VOID,
-            	LEX_LEVEL	=> 1,
-            IS_IN_SPEC	=> TRUE,
-            IS_IN_BODY	=> FALSE,
-            SUBP_SYMREP	=> TREE_VOID,
-            RETURN_TYPE	=> TREE_VOID,
-            ENCLOSING_LOOP_ID	=> TREE_VOID
-            );
+			LEX_LEVEL		=> 1,
+			IS_IN_SPEC	=> TRUE,
+			IS_IN_BODY	=> FALSE,
+			SUBP_SYMREP	=> TREE_VOID,
+			RETURN_TYPE	=> TREE_VOID,
+			ENCLOSING_LOOP_ID	=> TREE_VOID
+		);
       end INITIALIZE_GLOBAL_DATA;
       --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
       --|

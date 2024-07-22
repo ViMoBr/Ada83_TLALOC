@@ -5,10 +5,12 @@
 with TEXT_IO, CALENDAR;
 use  TEXT_IO, CALENDAR;
 with IDL, CODE_GEN;
-				--------
-	procedure			ADA_COMP
-is				--------
-														
+
+					--====--
+	procedure				ADA_COMP
+
+
+is
   COMMAND			: STRING( 1..512 );						--| PRESENTEE AU STDIN
   CMD_LENGTH		: NATURAL;
 
@@ -88,23 +90,22 @@ DEBUT_NOM_TEXTE:
 			NOM_TEXTE,
 			IDL.LIB_PATH );
 						if OPTION = 'S' then goto FIN; end if;
-
       IDL.LIB_PHASE;				if OPTION = 'L' then goto FIN; end if;
       IDL.SEM_PHASE;				if OPTION = 'M' then goto FIN; end if;
-      IDL.ERR_PHASE ( CHEMIN_TEXTE & NOM_TEXTE );		if OPTION = 'E' then goto FIN; end if;
-      IDL.WRITE_LIB;				if OPTION = 'W' then goto FIN; end if;
-      CODE_GEN;
-
+      CODE_GEN;					if OPTION = 'C' then goto FIN; end if;
+<<FIN>>
+  IDL.ERR_PHASE( CHEMIN_TEXTE & NOM_TEXTE );
     end;
   end;
 
-<<FIN>>
-  TIME_2 := CLOCK;									--| TERMINER LE CHRONOMETRAGE
-  PUT_LINE( " ..... Ok" & INTEGER'IMAGE( INTEGER( 1000 * (TIME_2 - TIME_1) ) ) & " msec" );		--| ET AFFICHER
+  if OPTION = 'W' then IDL.WRITE_LIB; end if;
 
-	--------
+  TIME_2 := CLOCK;
+  PUT_LINE( " ..... Ok" & INTEGER'IMAGE( INTEGER( 1000 * (TIME_2 - TIME_1) ) ) & " msec" );
+
+
 end	ADA_COMP;
-	--------
+	--====--
 
 pragma PAGE;
 
