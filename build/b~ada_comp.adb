@@ -25,18 +25,18 @@ package body ada_main is
    E099 : Short_Integer; pragma Import (Ada, E099, "ada__strings__utf_encoding_E");
    E105 : Short_Integer; pragma Import (Ada, E105, "ada__tags_E");
    E005 : Short_Integer; pragma Import (Ada, E005, "ada__strings__text_buffers_E");
-   E125 : Short_Integer; pragma Import (Ada, E125, "ada__streams_E");
-   E137 : Short_Integer; pragma Import (Ada, E137, "system__file_control_block_E");
-   E136 : Short_Integer; pragma Import (Ada, E136, "system__finalization_root_E");
-   E134 : Short_Integer; pragma Import (Ada, E134, "ada__finalization_E");
-   E133 : Short_Integer; pragma Import (Ada, E133, "system__file_io_E");
+   E133 : Short_Integer; pragma Import (Ada, E133, "ada__streams_E");
+   E145 : Short_Integer; pragma Import (Ada, E145, "system__file_control_block_E");
+   E144 : Short_Integer; pragma Import (Ada, E144, "system__finalization_root_E");
+   E142 : Short_Integer; pragma Import (Ada, E142, "ada__finalization_E");
+   E141 : Short_Integer; pragma Import (Ada, E141, "system__file_io_E");
    E112 : Short_Integer; pragma Import (Ada, E112, "ada__calendar_E");
-   E123 : Short_Integer; pragma Import (Ada, E123, "ada__text_io_E");
+   E131 : Short_Integer; pragma Import (Ada, E131, "ada__text_io_E");
    E163 : Short_Integer; pragma Import (Ada, E163, "system__direct_io_E");
-   E147 : Short_Integer; pragma Import (Ada, E147, "system__sequential_io_E");
-   E143 : Short_Integer; pragma Import (Ada, E143, "grmr_ops_E");
-   E149 : Short_Integer; pragma Import (Ada, E149, "lex_E");
-   E139 : Short_Integer; pragma Import (Ada, E139, "idl_E");
+   E155 : Short_Integer; pragma Import (Ada, E155, "system__sequential_io_E");
+   E151 : Short_Integer; pragma Import (Ada, E151, "grmr_ops_E");
+   E157 : Short_Integer; pragma Import (Ada, E157, "lex_E");
+   E147 : Short_Integer; pragma Import (Ada, E147, "idl_E");
    E118 : Short_Integer; pragma Import (Ada, E118, "codage_intermediaire_E");
    E178 : Short_Integer; pragma Import (Ada, E178, "emits_E");
    E116 : Short_Integer; pragma Import (Ada, E116, "code_gen_E");
@@ -50,7 +50,7 @@ package body ada_main is
 
    procedure finalize_library is
    begin
-      E147 := E147 - 1;
+      E155 := E155 - 1;
       declare
          procedure F1;
          pragma Import (Ada, F1, "system__sequential_io__finalize_spec");
@@ -64,7 +64,7 @@ package body ada_main is
       begin
          F2;
       end;
-      E123 := E123 - 1;
+      E131 := E131 - 1;
       declare
          procedure F3;
          pragma Import (Ada, F3, "ada__text_io__finalize_spec");
@@ -75,7 +75,7 @@ package body ada_main is
          procedure F4;
          pragma Import (Ada, F4, "system__file_io__finalize_body");
       begin
-         E133 := E133 - 1;
+         E141 := E141 - 1;
          F4;
       end;
       declare
@@ -217,31 +217,31 @@ package body ada_main is
       Ada.Strings.Text_Buffers'Elab_Spec;
       E005 := E005 + 1;
       Ada.Streams'Elab_Spec;
-      E125 := E125 + 1;
-      System.File_Control_Block'Elab_Spec;
-      E137 := E137 + 1;
-      System.Finalization_Root'Elab_Spec;
-      E136 := E136 + 1;
-      Ada.Finalization'Elab_Spec;
-      E134 := E134 + 1;
-      System.File_Io'Elab_Body;
       E133 := E133 + 1;
+      System.File_Control_Block'Elab_Spec;
+      E145 := E145 + 1;
+      System.Finalization_Root'Elab_Spec;
+      E144 := E144 + 1;
+      Ada.Finalization'Elab_Spec;
+      E142 := E142 + 1;
+      System.File_Io'Elab_Body;
+      E141 := E141 + 1;
       Ada.Calendar'Elab_Spec;
       Ada.Calendar'Elab_Body;
       E112 := E112 + 1;
       Ada.Text_Io'Elab_Spec;
       Ada.Text_Io'Elab_Body;
-      E123 := E123 + 1;
+      E131 := E131 + 1;
       System.Direct_Io'Elab_Spec;
       E163 := E163 + 1;
       System.Sequential_Io'Elab_Spec;
-      E147 := E147 + 1;
+      E155 := E155 + 1;
       GRMR_OPS'ELAB_BODY;
-      E143 := E143 + 1;
+      E151 := E151 + 1;
       LEX'ELAB_BODY;
-      E149 := E149 + 1;
+      E157 := E157 + 1;
       IDL'ELAB_BODY;
-      E139 := E139 + 1;
+      E147 := E147 + 1;
       CODAGE_INTERMEDIAIRE'ELAB_SPEC;
       CODAGE_INTERMEDIAIRE'ELAB_BODY;
       E118 := E118 + 1;

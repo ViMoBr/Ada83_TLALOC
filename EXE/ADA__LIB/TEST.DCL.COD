@@ -1,19 +1,20 @@
 @TEST
 $ 2				--| ETIQUETTE ENTREE
-	LINK  12
+ 1	BSC << 1>>
+ 2 << 2>>
+sld.i	0	0		-- STO I VAL INIT
+ 2	BSC << 3>>
+ 3 << 1>>
+ 3	BSC << 2>>
+ 4 << 3>>
+ 4	LINK  4
 EXH	$ 4			-- EXCEPTION HANDLERS
 	pla	0	0
 	trap	CVB
 sld.i	0	0
-	pla	0	-4
-	trap	CVB
-sld.i	0	-4
-	pla	0	-8
-	trap	CVB
-sld.i	0	-8
 $ 3
-	UNLINK
-	RTD  0
+ 5	UNLINK
+ 6	RTD  0
 $ 4
 	eex
   QUIT

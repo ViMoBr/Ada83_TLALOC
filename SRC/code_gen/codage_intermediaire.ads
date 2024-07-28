@@ -50,7 +50,7 @@ is
   subtype OPCI_FLOT1	is OPCI range BSC     .. BNE;
 
 
-  type REPRISE		is private;
+  type TARGET_LBL		is private;
   type DESIGNATION		is private;
 
   type DIRECTION_DE_PASSAGE	is ( ENTREE, SORTIE, ENTREE_SORTIE );
@@ -59,29 +59,31 @@ is
   function  NEW_DESIGNATION					return DESIGNATION;
   procedure FREE_DESIGNATION		( D :DESIGNATION );
 
-  function  NEW_REPRISE					return REPRISE;
-  procedure STOCKE_CP		( CASE_REPRISAGE : REPRISE );
+  function  NEW_LBL						return TARGET_LBL;
+  procedure STOCK_CP		( FOR_LBL : TARGET_LBL );
 
   procedure CODE_IMM		( DESIGNE :DESIGNATION; VALEUR_IMM :INTEGER );
   procedure CODE_CST		( DESIGNE :DESIGNATION; CST_DEF :TREE );
 --  procedure CODE_VAR		( DESIGNE :DESIGNATION; NOM :TREE );
   procedure CODE_PRM		( PARAMETRE :DESIGNATION; DIRECTION :DIRECTION_DE_PASSAGE );
-  procedure CODE_ADR1		( RESULTAT :DESIGNATION; OP: OPCI_ARG1; X1: DESIGNATION );
+  procedure CODE_ADR1		( RESULTAT :DESIGNATION; OP: OPCI_ADR1; X1: DESIGNATION );
 
   procedure CODE_FLOT0		( OP :OPCI_FLOT0; ALLOC_DESALLOC :INTEGER := 0 );
+  procedure CODE_FLOT1		( OP :OPCI_FLOT1; TARGET :TARGET_LBL );
 
 
 
   TROP_DE_REPRISES, TROP_DE_DESIGNATIONS, DESIGNATION_INVALIDE,
-  TROP_DE_TEMPORAIRES_A, TROP_DE_TEMPORAIRES_T 		: exception;
+  TROP_DE_TEMPORAIRES_A, TROP_DE_TEMPORAIRES_T, TROP_IFLOTS1 		: exception;
 
 
 
 					-------
 					private
 					-------
+  type INSTR_LOC		is new NATURAL;
 
-  COMPTEUR_PROGRAMME	: NATURAL		:= 1;
+  COMPTEUR_PROGRAMME	: INSTR_LOC		:= 1;
 
 			-- TEMPORAIRES DATA
 
@@ -126,10 +128,15 @@ is
 
 			-- REPRISES DE SAUTS
 
-  NMAX_REPRISES		:constant		:= 150;
-  type REPRISE		is range 0 .. NMAX_REPRISES;
+  MAX_BRANCHS		:constant		:= 150;
+  type NUM_BRANCH		is range 0 .. MAX_BRANCHS;
 
-  TABLE_REPRISES		: array( REPRISE ) of NATURAL;
+  MAX_TARGET_LBLS		:constant		:= 150;
+  type TARGET_LBL		is range 0 .. MAX_TARGET_LBLS;
+
+  BRANCH_ILOC		: array( NUM_BRANCH ) of INSTR_LOC;
+  TARGET_ILOC		: array( TARGET_LBL ) of INSTR_LOC;
+
 
 
 			-- DESIGNATIONS
@@ -161,7 +168,7 @@ is
 
 			-- INSTRUCTIONS
 
-  type INSTRUC_CI ( GENRE :OPCI_CLASS := ARG0 )
+  type INSTRUC ( GENRE :OPCI_CLASS := ARG0 )
 			is record
 			  FIN_BLOC				: BOOLEAN	:= FALSE;
 			  BLOC_ENTREE_LATERALE, BLOC_SORTIE_LATERALE	: INTEGER	:= 0;
@@ -193,7 +200,7 @@ is
 					Ctl2_TYPE			: TREE;
 					Ctl2_X1, I_CTL2_X2		: REC_DESIGNATION;
 
-			   when CTL3 =>	CTL3_OP			: OPCI_CTL3;
+			  when CTL3 =>	CTL3_OP			: OPCI_CTL3;
 					CTL3_TYPE			: TREE;
 					CTL3_X1, I_CTL3_X2, I_CTL3_X3	: REC_DESIGNATION;
 
@@ -201,16 +208,16 @@ is
 					ALLOC_DESALLOC		: INTEGER;
 
 			  when FLOT1 =>	FLOT1_OP			: OPCI_FLOT1;
-					FLOT1_SAUT		: INTEGER;
+					FLOT1_SAUT		: TARGET_LBL;
 
 			  when PRM =>	PARAMETRE			: REC_DESIGNATION;
 			  when CALL =>	UNIT, PROC		: INTEGER;
 			end case;
 			end record;
 
-  NMAX_INSTRUCTIONS		:constant		:= 1500;
+  MAX_INSTRUCTIONS		:constant	INSTR_LOC	:= 1500;
 
-  TABLE_INSTRUCTIONS	: array( 1..NMAX_INSTRUCTIONS ) of INSTRUC_CI;
+  TABLE_INSTRUCTIONS	: array( 1..MAX_INSTRUCTIONS ) of INSTRUC;
 
 
 

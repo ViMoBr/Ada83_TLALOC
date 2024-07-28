@@ -1,10 +1,5 @@
 PROCEDURE TEST IS
-
-  I,J	: INTEGER;
-  K	: INTEGER;
-
+  I	: INTEGER	:= 0;
 BEGIN
-  I := 1;
-  J := I;
-  K := I + J;
+  I := I + 1;
 END;
