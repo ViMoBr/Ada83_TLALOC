@@ -302,13 +302,13 @@ is
     if not GENERATE_CODE then return; end if;
 
     case OC is
-    when PKG | PKB | PRO	=> PUT( OC, 0, UPPER_CASE );
+    when PKG | PKB | PRO	=> PUT( '@' );--PUT( OC, 0, UPPER_CASE );
     when others =>	raise ILLEGAL_OP_CODE;
     end case;
-    PUT ( ASCII.HT & S );
+    PUT ( S );
             
-    TRACK_STACK ( OC );
-    EMIT_COMMENT( COMMENT ); 
+--    TRACK_STACK ( OC );
+--    EMIT_COMMENT( COMMENT ); 
     NEW_LINE;
   end	 EMIT;
 	--==--

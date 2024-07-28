@@ -1,8 +1,7 @@
-PRO	TEST
+@TEST
 $ 2				--| ETIQUETTE ENTREE
-  ENT  1	$ 4
-  ENT  2	$ 5
-EXH	$ 6			-- EXCEPTION HANDLERS
+	LINK  12
+EXH	$ 4			-- EXCEPTION HANDLERS
 	pla	0	0
 	trap	CVB
 sld.i	0	0
@@ -13,9 +12,8 @@ sld.i	0	-4
 	trap	CVB
 sld.i	0	-8
 $ 3
-	ret	2
-$ 6
+	UNLINK
+	RTD  0
+$ 4
 	eex
-$ 4 = 12
-$ 5 = 16
   QUIT

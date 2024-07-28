@@ -1,0 +1,344 @@
+separate ( CODE_GEN )
+				----------
+ 	package body		STRUCTURES
+				----------
+is
+
+				--=================--
+  procedure			CODE_COMPILATION_UNIT	( COMPILATION_UNIT :TREE )
+  is
+  begin
+    EMITS.TOP_ACT	     := 0;
+    EMITS.TOP_MAX	     := 0;
+    EMITS.OFFSET_ACT     := 0;
+    EMITS.OFFSET_MAX     := 0;
+    EMITS.CUR_LEVEL      := 0;
+    EMITS.GENERATE_CODE  := FALSE;
+    EMITS.CUR_COMP_UNIT  := 2;
+    EMITS.ENCLOSING_BODY := TREE_VOID;
+
+    CODE_WITH_CONTEXT( D( AS_CONTEXT_ELEM_S, COMPILATION_UNIT ) );
+
+    EMITS.CUR_COMP_UNIT  := 0;
+    EMITS.GENERATE_CODE  := TRUE;
+
+    declare
+      UNIT_ALL_DECL		: TREE	:= D( AS_ALL_DECL, COMPILATION_UNIT );
+    begin
+      case UNIT_ALL_DECL.TY is
+      when DN_SUBPROGRAM_BODY	=> CODE_SUBPROGRAM_BODY( UNIT_ALL_DECL );
+      when DN_PACKAGE_DECL	=> DECLARATIONS.CODE_PACKAGE_DECL( UNIT_ALL_DECL );
+      when DN_PACKAGE_BODY	=> CODE_PACKAGE_BODY( UNIT_ALL_DECL );
+      when others		=> raise PROGRAM_ERROR;
+      end case;
+    end;
+    EMIT( QUIT );
+
+  end	CODE_COMPILATION_UNIT;
+	--=================--
+
+
+
+				-----------------
+  procedure			CODE_WITH_CONTEXT		( CONTEXT_ELEM_S :TREE )
+  is
+
+    procedure	CODE_WITHED_PKG	( DEFN :TREE )
+    is
+    begin
+      EMIT( RFP, CUR_COMP_UNIT, S=> PRINT_NAME( D( LX_SYMREP, DEFN ) ) );
+      DB( CD_COMPILED, DEFN, TRUE );
+      EMITS.GENERATE_CODE := FALSE;
+      declare
+        SPEC	: TREE		:= D( SM_SPEC, DEFN );
+        DECL_SEQ	: SEQ_TYPE	:= LIST( D( AS_DECL_S1, SPEC ) );
+        DECL	: TREE;
+      begin
+        while not IS_EMPTY( DECL_SEQ ) loop
+	POP( DECL_SEQ, DECL );
+-- CODE_DECL( DECL );
+        end loop;
+      end;
+    end	CODE_WITHED_PKG;
+
+  begin
+
+    CUR_COMP_UNIT := 1;
+-- CODE_WITHED_PKG( STANDARD_DEF );
+
+    declare
+      CONTEXT_ELEM_SEQ	: SEQ_TYPE	:= LIST( CONTEXT_ELEM_S );
+      CONTEXT_ELEM		: TREE;
+    begin
+      while not IS_EMPTY( CONTEXT_ELEM_SEQ ) loop
+        POP( CONTEXT_ELEM_SEQ, CONTEXT_ELEM );
+
+        if CONTEXT_ELEM.TY = DN_WITH then
+	declare
+	  NAME_S		:constant TREE	:= D( AS_NAME_S, CONTEXT_ELEM );
+	  NAME_SEQ	: SEQ_TYPE	:= LIST( NAME_S );
+	  NAME		: TREE;
+	begin
+	  while not IS_EMPTY( NAME_SEQ ) loop
+	    POP( NAME_SEQ, NAME );
+
+	    declare
+	      DEFN	: TREE	:= D( SM_DEFN, NAME );
+	      COMPILED	: BOOLEAN	:= DB( CD_COMPILED, DEFN );
+	    begin
+	      EMITS.GENERATE_CODE := TRUE;
+	      if DEFN.TY = DN_PACKAGE_ID then
+	        CODE_WITHED_PKG( DEFN );
+	        CUR_COMP_UNIT := CUR_COMP_UNIT + 1;
+
+	      elsif DEFN.TY = DN_PROCEDURE_ID then
+	        if not DB( CD_COMPILED, DEFN ) then
+	          EMIT( RFP, I=> 0, S=> PRINT_NAME( D( LX_SYMREP, DEFN ) ) );
+	          declare
+		  SUBP_LBL	: LABEL_TYPE	:= NEW_LABEL;
+	          begin
+		  DI( CD_LABEL,      DEFN,  INTEGER( SUBP_LBL ) );
+		  DI( CD_LEVEL,      DEFN,  1 );
+		  DI( CD_PARAM_SIZE, DEFN,  0 );
+		  DB( CD_COMPILED,   DEFN,  TRUE );
+		  EMIT( RFL, SUBP_LBL );
+		  EMITS.GENERATE_CODE := FALSE;
+	          end;
+	        end if;
+	      end if;
+	    end;
+
+	  end loop;
+	end;
+        end if;
+      end loop;
+    end;
+
+  end	CODE_WITH_CONTEXT;
+	-----------------
+
+
+
+				--------------------
+  procedure			CODE_SUBPROGRAM_BODY	( SUBPROGRAM_BODY :TREE )
+  is
+  begin
+    declare
+       OLD_OFFSET_ACT	: OFFSET_TYPE	:= EMITS.OFFSET_ACT;
+       OLD_OFFSET_MAX	: OFFSET_TYPE	:= EMITS.OFFSET_MAX;
+       SOURCE_NAME		: TREE		:= D( AS_SOURCE_NAME, SUBPROGRAM_BODY );
+       START_LABEL		: LABEL_TYPE	:= NEW_LABEL;
+    begin
+      if EMITS.ENCLOSING_BODY = TREE_VOID then
+        EMIT( PRO, S=> PRINT_NAME( D( LX_SYMREP, SOURCE_NAME ) ) );
+      end if;
+      EMITS.OFFSET_ACT := EMITS.FIRST_PARAM_OFFSET;
+      EMITS.OFFSET_MAX := EMITS.OFFSET_ACT;
+      INC_LEVEL;
+      DI( CD_LABEL, SOURCE_NAME, INTEGER ( START_LABEL ) );
+      DI( CD_LEVEL, SOURCE_NAME, EMITS.CUR_LEVEL );
+      WRITE_LABEL( START_LABEL, "ETIQUETTE ENTREE" );
+
+      DECLARATIONS.CODE_HEADER( D( AS_HEADER, SUBPROGRAM_BODY ) );
+
+      DI( CD_PARAM_SIZE, SOURCE_NAME, PARAM_SIZE );
+      EMITS.OFFSET_ACT := EMITS.FIRST_LOCAL_VAR_OFFSET;
+      EMITS.OFFSET_MAX := EMITS.OFFSET_ACT;
+
+      CODE_BODY( D( AS_BODY, SUBPROGRAM_BODY ) );
+
+      DEC_LEVEL;
+      EMITS.OFFSET_MAX := OLD_OFFSET_MAX;
+      EMITS.OFFSET_ACT := OLD_OFFSET_ACT;
+    end;
+  end	CODE_SUBPROGRAM_BODY;
+	--------------------
+
+
+
+				-----------------
+  procedure			CODE_PACKAGE_BODY		( PACKAGE_BODY :TREE )
+  is
+  begin
+    EMIT( PKB, S=> PRINT_NAME( D( LX_SYMREP, D( AS_SOURCE_NAME, PACKAGE_BODY ) ) ) );
+    EMITS.GENERATE_CODE := FALSE;
+
+    DECLARATIONS.CODE_PACKAGE_SPEC( D( SM_SPEC, D( AS_SOURCE_NAME, PACKAGE_BODY ) ) );
+
+    EMITS.GENERATE_CODE := TRUE;
+    WRITE_LABEL( 1 );
+
+    CODE_BODY( D( AS_BODY, PACKAGE_BODY ) );
+
+  end	CODE_PACKAGE_BODY;
+	-----------------
+
+
+
+				---------
+  procedure			CODE_BODY		( ADA_BODY :TREE )
+  is
+  begin
+
+    if ADA_BODY.TY = DN_BLOCK_BODY
+    then
+      CODE_BLOCK_BODY( ADA_BODY );
+    elsif ADA_BODY.TY = DN_STUB
+    then
+      CODE_STUB( ADA_BODY );
+    end if;
+
+  end	CODE_BODY;
+	---------
+
+
+				---------------
+  procedure			CODE_BLOCK_BODY	( BLOCK_BODY :TREE )
+  is
+  begin
+    declare
+      SAVE_ENCLOSING_BODY	: TREE		:= ENCLOSING_BODY;
+      OLD_TOP_ACT		: OFFSET_TYPE	:= EMITS.TOP_ACT;
+      OLD_TOP_MAX		: OFFSET_TYPE	:= EMITS.TOP_MAX;
+    begin
+      ENCLOSING_BODY := BLOCK_BODY;
+      EMITS.TOP_ACT  := 0;
+      EMITS.TOP_MAX  := 0;
+      DI( CD_LEVEL,        BLOCK_BODY, INTEGER( EMITS.CUR_LEVEL ) );
+      DI( CD_RETURN_LABEL, BLOCK_BODY, INTEGER( NEW_LABEL ) );
+--      declare
+--        ENT_1_LBL	: LABEL_TYPE	:= NEW_LABEL;
+--        ENT_2_LBL	: LABEL_TYPE	:= NEW_LABEL;
+--      begin
+--        EMIT( ENT, INTEGER( 1 ), ENT_1_LBL );
+--        EMIT( ENT, INTEGER( 2 ), ENT_2_LBL );
+        if FUNCTION_RESULT /= TREE_VOID then
+          if FUNCTION_RESULT.TY = DN_ARRAY then
+            GEN_PUSH_ADDR ( DI ( CD_COMP_UNIT, FUNCTION_RESULT ),
+                            DI ( CD_LEVEL, FUNCTION_RESULT ),
+                            DI ( CD_OFFSET, FUNCTION_RESULT )
+                );
+            EMIT( DPL, A );
+            EMIT( SLD, A, 0, FUN_RESULT_OFFSET - EMITS.ADDR_SIZE );
+            EMIT( IND, I, 0 );
+            EMIT( ALO, INTEGER( -1 ) );
+            EMIT( SLD, A, 0, FUN_RESULT_OFFSET );
+          end if;
+        end if;
+
+        CODE_ITEM_S ( D ( AS_ITEM_S, BLOCK_BODY ) );
+
+CODE_FLOT0( LINK, EMITS.OFFSET_MAX );
+
+        declare
+          EXC_LBL	: LABEL_TYPE	:= NEW_LABEL;
+        begin
+	EMIT( EXH, EXC_LBL, COMMENT=> "EXCEPTION HANDLERS" );
+
+	CODE_STM_S( D ( AS_STM_S, BLOCK_BODY ) );
+
+	WRITE_LABEL( LABEL_TYPE( DI( CD_RETURN_LABEL, BLOCK_BODY ) ) );
+--	EMIT( RET, PARAM_SIZE );
+
+CODE_FLOT0( UNLINK );
+CODE_FLOT0( RTD, EMITS.PARAM_SIZE );
+
+	WRITE_LABEL( EXC_LBL );
+        end;
+        if not IS_EMPTY( LIST( D( AS_ALTERNATIVE_S, BLOCK_BODY ) ) )
+        then
+	CODE_ALTERNATIVE_S( D( AS_ALTERNATIVE_S, BLOCK_BODY ) );
+        else
+          EMIT( EEX );
+        end if;
+--        GEN_LBL_ASSIGNMENT( ENT_1_LBL, EMITS.OFFSET_MAX );
+--        GEN_LBL_ASSIGNMENT( ENT_2_LBL, EMITS.OFFSET_MAX + EMITS.TOP_MAX );
+--      end;
+      EMITS.TOP_MAX  := OLD_TOP_MAX;
+      EMITS.TOP_ACT  := OLD_TOP_ACT;
+      ENCLOSING_BODY := SAVE_ENCLOSING_BODY;
+    end;
+
+  end	CODE_BLOCK_BODY;
+	---------------
+
+
+				-----------
+  procedure			CODE_ITEM_S	( ITEM_S :TREE )
+  is
+  begin
+    declare
+      ITEM_SEQ	: SEQ_TYPE	:= LIST ( ITEM_S );
+      ITEM	: TREE;
+    begin
+      while not IS_EMPTY( ITEM_SEQ ) loop
+        POP( ITEM_SEQ, ITEM );
+        CODE_ITEM( ITEM );
+      end loop;
+    end;
+
+  end	CODE_ITEM_S;
+	-----------
+
+
+				---------
+  procedure			CODE_ITEM		( ITEM :TREE )
+  is
+  begin
+
+    if ITEM.TY in CLASS_DECL then
+      DECLARATIONS.CODE_DECL( ITEM );
+
+    elsif ITEM.TY in CLASS_SUBUNIT_BODY then
+      CODE_SUBUNIT_BODY( ITEM );
+
+    end if;
+
+  end	CODE_ITEM;
+	---------
+
+
+			-----------------
+  procedure		CODE_SUBUNIT_BODY		( SUBUNIT_BODY :TREE )
+  is
+  begin
+    declare
+       POST_LBL : LABEL_TYPE;
+    begin
+      if ENCLOSING_BODY /= TREE_VOID then
+        POST_LBL := NEW_LABEL;
+        EMIT ( JMP, POST_LBL, COMMENT=> "CONTOURNEMENT" );
+      end if;
+
+    if SUBUNIT_BODY.TY = DN_SUBPROGRAM_BODY then
+      CODE_SUBPROGRAM_BODY ( SUBUNIT_BODY );
+
+    elsif SUBUNIT_BODY.TY = DN_PACKAGE_BODY then
+      CODE_PACKAGE_BODY ( SUBUNIT_BODY );
+
+    elsif SUBUNIT_BODY.TY = DN_TASK_BODY then
+      CODE_TASK_BODY ( SUBUNIT_BODY );
+
+    end if;
+      if ENCLOSING_BODY /= TREE_VOID then
+        WRITE_LABEL ( POST_LBL, COMMENT=> "FIN DE CONTOURNEMENT" );
+      end if;
+    end;
+
+  end	CODE_SUBUNIT_BODY;
+	-----------------
+
+
+			------------
+  procedure		CODE_SUBUNIT		( SUBUNIT :TREE )
+  is
+  begin
+      CODE_SUBUNIT_BODY ( D ( AS_SUBUNIT_BODY, SUBUNIT ) );
+
+  end	CODE_SUBUNIT;
+	------------
+
+
+	----------
+end	STRUCTURES;
+	----------

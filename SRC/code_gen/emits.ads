@@ -1,11 +1,16 @@
 -- La pile abstraite croit vers le bas
 --	---------------------
 --	|    BAS DE PILE 	|
---	|		|
---	|        -8	|
---	|        -4	|
---	|         0	|
---	|        +4	|
+
+--	|		| param_1
+--	|		| param_2
+
+
+--	|		| param_K
+--	|        -8	| parent_FP
+--	|        -4	| RET_ADDR
+--	|         0	| FP_bck
+--	|        +4	| VAR_LOC_1
 --	|		|
 --	---------------------
 
@@ -46,7 +51,7 @@ is
    
   FIRST_PARAM_OFFSET		: constant OFFSET_TYPE	:= 10;
   FIRST_LOCAL_VAR_OFFSET		: constant OFFSET_TYPE	:= 0;
-  RELATIVE_RESULT_OFFSET		: constant OFFSET_TYPE	:= 2;
+  RELATIVE_RESULT_OFFSET		: constant OFFSET_TYPE	:= 4;
       
   type OP_CODE			is (								--| CODES OPERATION DU ACODE POLONAIS
 		ABO,   ABSV,  ACA,   ACC,   ACT,   ADD,   ALO,   BAND,  CHR,  TRAP,

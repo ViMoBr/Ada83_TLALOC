@@ -1,5 +1,7 @@
 with EMITS, DIANA_NODE_ATTR_CLASS_NAMES, IDL, TEXT_IO;
 use  EMITS, DIANA_NODE_ATTR_CLASS_NAMES, IDL, TEXT_IO;
+with CODAGE_INTERMEDIAIRE;
+use  CODAGE_INTERMEDIAIRE;
 					--------
 			procedure		CODE_GEN
 					--------
@@ -7,29 +9,9 @@ is
 
   procedure CODE_ROOT ( ROOT :TREE );
   procedure CODE_CONTEXT_PRAGMA ( CONTEXT_PRAGMA :TREE );
-  procedure CODE_ALL_DECL ( ALL_DECL :TREE );
-  procedure CODE_SUBUNIT ( SUBUNIT :TREE );
+--  procedure CODE_ALL_DECL ( ALL_DECL :TREE );
   procedure CODE_BLOCK_MASTER ( BLOCK_MASTER :TREE );
-  procedure CODE_ITEM_S ( ITEM_S :TREE );
-  procedure CODE_ITEM ( ITEM :TREE );
-  procedure CODE_SUBUNIT_BODY ( SUBUNIT_BODY :TREE );
-  procedure CODE_SUBPROGRAM_BODY ( SUBPROGRAM_BODY :TREE );
-  procedure CODE_PACKAGE_BODY ( PACKAGE_BODY :TREE );
   procedure CODE_TASK_BODY ( TASK_BODY :TREE );
-  procedure CODE_DECL ( DECL :TREE );
-  procedure CODE_NULL_COMP_DECL ( NULL_COMP_DECL :TREE );
-  procedure CODE_ID_DECL ( ID_DECL :TREE );
-  procedure CODE_TYPE_DECL ( TYPE_DECL :TREE );
-  procedure CODE_SUBTYPE_DECL ( SUBTYPE_DECL :TREE );
-  procedure CODE_TASK_DECL ( TASK_DECL :TREE );
-  procedure CODE_SIMPLE_RENAME_DECL ( SIMPLE_RENAME_DECL :TREE );
-  procedure CODE_RENAMES_OBJ_DECL ( RENAMES_OBJ_DECL :TREE );
-  procedure CODE_RENAMES_EXC_DECL ( RENAMES_EXC_DECL :TREE );
-  procedure CODE_UNIT_DECL ( UNIT_DECL :TREE );
-  procedure CODE_GENERIC_DECL ( GENERIC_DECL :TREE );
-  procedure CODE_NON_GENERIC_DECL ( NON_GENERIC_DECL :TREE );
-  procedure CODE_SUBPROG_ENTRY_DECL ( SUBPROG_ENTRY_DECL :TREE );
-  procedure CODE_PACKAGE_DECL ( PACKAGE_DECL :TREE );
   procedure CODE_USE_PRAGMA ( USE_PRAGMA :TREE );
   procedure CODE_USE ( ADA_USE :TREE );
   procedure CODE_PRAGMA ( ADA_PRAGMA :TREE );
@@ -55,17 +37,9 @@ is
   procedure CODE_IN ( ADA_IN :TREE );
   procedure CODE_IN_OUT ( ADA_IN_OUT :TREE );
   procedure CODE_OUT ( ADA_OUT :TREE );
-  procedure CODE_HEADER ( HEADER :TREE );
-  procedure CODE_PACKAGE_SPEC ( PACKAGE_SPEC :TREE );
-  procedure CODE_DECL_S ( DECL_S :TREE );
-  procedure CODE_SUBP_ENTRY_HEADER ( SUBP_ENTRY_HEADER :TREE );
-  procedure CODE_PROCEDURE_SPEC ( PROCEDURE_SPEC :TREE );
-  procedure CODE_FUNCTION_SPEC ( FUNCTION_SPEC :TREE );
-  procedure CODE_UNIT_DESC ( UNIT_DESC :TREE );
+--  procedure CODE_UNIT_DESC ( UNIT_DESC :TREE );
   procedure CODE_DERIVED_SUBPROG ( DERIVED_SUBPROG :TREE );
   procedure CODE_IMPLICIT_NOT_EQ ( IMPLICIT_NOT_EQ :TREE );
-  procedure CODE_BODY ( ADA_BODY :TREE );
-  procedure CODE_BLOCK_BODY ( BLOCK_BODY :TREE );
   procedure CODE_ALTERNATIVE_S ( ALTERNATIVE_S :TREE );
   procedure CODE_ALTERNATIVE_ELEM ( ALTERNATIVE_ELEM :TREE );
   procedure CODE_ALTERNATIVE ( ALTERNATIVE :TREE );
@@ -226,7 +200,62 @@ is
 
 
 
-  procedure CODE_COMPILATION_UNIT ( COMPILATION_UNIT :TREE );
+				------------
+ 	package			DECLARATIONS
+				------------
+  is
+
+    procedure CODE_HEADER		( HEADER :TREE );
+    procedure CODE_DECL_S		( DECL_S :TREE );
+    procedure CODE_DECL		( DECL :TREE );
+    procedure CODE_PACKAGE_DECL	( PACKAGE_DECL :TREE );
+    procedure CODE_PACKAGE_SPEC	( PACKAGE_SPEC :TREE );
+
+  private
+
+    procedure CODE_SUBP_ENTRY_HEADER	( SUBP_ENTRY_HEADER :TREE );
+
+	------------
+  end	DECLARATIONS;
+	------------
+
+  package body DECLARATIONS is separate;
+
+
+
+
+
+
+				----------
+ 	package			STRUCTURES
+				----------
+  is
+
+    procedure CODE_COMPILATION_UNIT	( COMPILATION_UNIT :TREE );
+    procedure CODE_BLOCK_BODY		( BLOCK_BODY :TREE );
+
+  private
+
+    procedure CODE_WITH_CONTEXT	( CONTEXT_ELEM_S  :TREE );
+    procedure CODE_SUBPROGRAM_BODY	( SUBPROGRAM_BODY :TREE );
+    procedure CODE_PACKAGE_BODY	( PACKAGE_BODY :TREE );
+    procedure CODE_SUBUNIT_BODY	( SUBUNIT_BODY :TREE );
+    procedure CODE_BODY		( ADA_BODY :TREE );
+    procedure CODE_ITEM_S		( ITEM_S :TREE );
+    procedure CODE_ITEM		( ITEM :TREE );
+
+	----------
+  end	STRUCTURES;
+	----------
+
+  package body STRUCTURES is separate;
+
+
+
+
+
+
+
 
 				---------
   procedure			CODE_ROOT			( ROOT :TREE )
@@ -243,7 +272,7 @@ is
         POP( COMPLTN_UNIT_SEQ, COMPLTN_UNIT );
         EMITS.OPEN_OUTPUT_FILE( GET_LIB_PREFIX & PRINT_NAME( D( XD_LIB_NAME, COMPLTN_UNIT ) ) );
 
-        CODE_COMPILATION_UNIT ( COMPLTN_UNIT );
+        STRUCTURES.CODE_COMPILATION_UNIT ( COMPLTN_UNIT );
 
         EMITS.CLOSE_OUTPUT_FILE;
       end loop;
@@ -254,210 +283,16 @@ is
 
 
 
-  procedure CODE_WITH_CONTEXT ( CONTEXT_ELEM_S :TREE );
-
-				---------------------
-  procedure			CODE_COMPILATION_UNIT	( COMPILATION_UNIT :TREE )
-  is
-  begin
-    EMITS.TOP_ACT	     := 0;
-    EMITS.TOP_MAX	     := 0;
-    EMITS.OFFSET_ACT     := 0;
-    EMITS.OFFSET_MAX     := 0;
-    EMITS.CUR_LEVEL          := 0;
-    EMITS.GENERATE_CODE  := FALSE;
-    EMITS.CUR_COMP_UNIT  := 2;
-    EMITS.ENCLOSING_BODY := TREE_VOID;
-
-    CODE_WITH_CONTEXT( D( AS_CONTEXT_ELEM_S, COMPILATION_UNIT ) );
-
-    EMITS.CUR_COMP_UNIT  := 0;
-    EMITS.GENERATE_CODE  := TRUE;
-
-    declare
-      UNIT_ALL_DECL		: TREE	:= D( AS_ALL_DECL, COMPILATION_UNIT );
-    begin
-      case UNIT_ALL_DECL.TY is
-      when DN_SUBPROGRAM_BODY	=> CODE_SUBPROGRAM_BODY( UNIT_ALL_DECL );
-      when DN_PACKAGE_DECL	=> CODE_PACKAGE_DECL( UNIT_ALL_DECL );
-      when DN_PACKAGE_BODY	=> CODE_PACKAGE_BODY( UNIT_ALL_DECL );
-      when others => raise PROGRAM_ERROR;
-      end case;
---    CODE_ALL_DECL( D( AS_ALL_DECL, COMPILATION_UNIT ) );
-    end;
-    EMIT( QUIT );
-
-  end	CODE_COMPILATION_UNIT;
-	---------------------
-
-
-				--------------------
-  procedure			CODE_SUBPROGRAM_BODY	( SUBPROGRAM_BODY :TREE )
-  is
-  begin
-    declare
-       OLD_OFFSET_ACT	: OFFSET_TYPE	:= EMITS.OFFSET_ACT;
-       OLD_OFFSET_MAX	: OFFSET_TYPE	:= EMITS.OFFSET_MAX;
-       SOURCE_NAME		: TREE		:= D( AS_SOURCE_NAME, SUBPROGRAM_BODY );
-       START_LABEL		: LABEL_TYPE	:= NEW_LABEL;
-    begin
-      if EMITS.ENCLOSING_BODY = TREE_VOID then
-        EMIT( PRO, S=> PRINT_NAME( D( LX_SYMREP, SOURCE_NAME ) ) );
-      end if;
-      EMITS.OFFSET_ACT := EMITS.FIRST_PARAM_OFFSET;
-      EMITS.OFFSET_MAX := EMITS.OFFSET_ACT;
-      INC_LEVEL;
-      DI( CD_LABEL, SOURCE_NAME, INTEGER ( START_LABEL ) );
-      DI( CD_LEVEL, SOURCE_NAME, EMITS.CUR_LEVEL );
-      WRITE_LABEL( START_LABEL, "ETIQUETTE ENTREE" );
-
-      CODE_HEADER( D( AS_HEADER, SUBPROGRAM_BODY ) );
-
-      DI( CD_PARAM_SIZE, SOURCE_NAME, PARAM_SIZE );
-      EMITS.OFFSET_ACT := EMITS.FIRST_LOCAL_VAR_OFFSET;
-      EMITS.OFFSET_MAX := EMITS.OFFSET_ACT;
-
-      CODE_BODY( D( AS_BODY, SUBPROGRAM_BODY ) );
-
-      DEC_LEVEL;
-      EMITS.OFFSET_MAX := OLD_OFFSET_MAX;
-      EMITS.OFFSET_ACT := OLD_OFFSET_ACT;
-    end;
-  end	CODE_SUBPROGRAM_BODY;
-	--------------------
 
 
 
-				-----------------
-  procedure			CODE_PACKAGE_DECL		( PACKAGE_DECL :TREE )
-  is
-  begin
-    EMIT( PKG, S=> PRINT_NAME( D( LX_SYMREP, D( AS_SOURCE_NAME, PACKAGE_DECL ) ) ) );
-    WRITE_LABEL ( 1 );
-    declare
-      MAX_OFS_LBL		: LABEL_TYPE	:= NEW_LABEL;
-      TOP_OFS_LBL		: LABEL_TYPE	:= NEW_LABEL;
-    begin
-      EMIT( ENT, INTEGER( 1 ), MAX_OFS_LBL );
-      EMIT( ENT, INTEGER( 2 ), TOP_OFS_LBL );
-      EMITS.OFFSET_ACT := 0;
-      EMITS.OFFSET_MAX := 0;
-
-      CODE_HEADER( D( AS_HEADER, PACKAGE_DECL ) );
-
-      declare
-        EXC_LBL		: LABEL_TYPE	:= NEW_LABEL;
-      begin
-        EMIT( EXH, EXC_LBL, COMMENT=> "ETIQUETTE EXCEPTION HANDLE DU PACKAGE" );
-        EMIT( RET, RELATIVE_RESULT_OFFSET );
-        WRITE_LABEL( EXC_LBL );
-      end;
-      EMIT( EEX );
-      GEN_LBL_ASSIGNMENT( MAX_OFS_LBL, OFFSET_MAX );
-      GEN_LBL_ASSIGNMENT( TOP_OFS_LBL, TOP_MAX + OFFSET_MAX );
-    end;
-
-  end	CODE_PACKAGE_DECL;
-	-----------------
 
 
 
-				-----------------
-  procedure			CODE_PACKAGE_BODY		( PACKAGE_BODY :TREE )
-  is
-  begin
-    EMIT( PKB, S=> PRINT_NAME( D( LX_SYMREP, D( AS_SOURCE_NAME, PACKAGE_BODY ) ) ) );
-    EMITS.GENERATE_CODE := FALSE;
-
-    CODE_PACKAGE_SPEC( D( SM_SPEC, D( AS_SOURCE_NAME, PACKAGE_BODY ) ) );
-
-    EMITS.GENERATE_CODE := TRUE;
-    WRITE_LABEL( 1 );
-
-    CODE_BODY( D( AS_BODY, PACKAGE_BODY ) );
-
-  end	CODE_PACKAGE_BODY;
-	-----------------
 
 
 
-				-----------------
-  procedure			CODE_WITH_CONTEXT		( CONTEXT_ELEM_S :TREE )
-  is
 
-    procedure	CODE_WITHED_PKG	( DEFN :TREE )
-    is
-    begin
-      EMIT( RFP, CUR_COMP_UNIT, S=> PRINT_NAME( D( LX_SYMREP, DEFN ) ) );
-      DB( CD_COMPILED, DEFN, TRUE );
-      EMITS.GENERATE_CODE := FALSE;
-      declare
-        SPEC	: TREE		:= D( SM_SPEC, DEFN );
-        DECL_SEQ	: SEQ_TYPE	:= LIST( D( AS_DECL_S1, SPEC ) );
-        DECL	: TREE;
-      begin
-        while not IS_EMPTY( DECL_SEQ ) loop
-	POP( DECL_SEQ, DECL );
--- CODE_DECL( DECL );
-        end loop;
-      end;
-    end	CODE_WITHED_PKG;
-
-  begin
-
-    CUR_COMP_UNIT := 1;
--- CODE_WITHED_PKG( STANDARD_DEF );
-
-    declare
-      CONTEXT_ELEM_SEQ	: SEQ_TYPE	:= LIST( CONTEXT_ELEM_S );
-      CONTEXT_ELEM		: TREE;
-    begin
-      while not IS_EMPTY( CONTEXT_ELEM_SEQ ) loop
-        POP( CONTEXT_ELEM_SEQ, CONTEXT_ELEM );
-
-        if CONTEXT_ELEM.TY = DN_WITH then
-	declare
-	  NAME_S		:constant TREE	:= D( AS_NAME_S, CONTEXT_ELEM );
-	  NAME_SEQ	: SEQ_TYPE	:= LIST( NAME_S );
-	  NAME		: TREE;
-	begin
-	  while not IS_EMPTY( NAME_SEQ ) loop
-	    POP( NAME_SEQ, NAME );
-
-	    declare
-	      DEFN	: TREE	:= D( SM_DEFN, NAME );
-	      COMPILED	: BOOLEAN	:= DB( CD_COMPILED, DEFN );
-	    begin
-	      EMITS.GENERATE_CODE := TRUE;
-	      if DEFN.TY = DN_PACKAGE_ID then
-	        CODE_WITHED_PKG( DEFN );
-	        CUR_COMP_UNIT := CUR_COMP_UNIT + 1;
-
-	      elsif DEFN.TY = DN_PROCEDURE_ID then
-	        if not DB( CD_COMPILED, DEFN ) then
-	          EMIT( RFP, I=> 0, S=> PRINT_NAME( D( LX_SYMREP, DEFN ) ) );
-	          declare
-		  SUBP_LBL	: LABEL_TYPE	:= NEW_LABEL;
-	          begin
-		  DI( CD_LABEL,      DEFN,  INTEGER( SUBP_LBL ) );
-		  DI( CD_LEVEL,      DEFN,  1 );
-		  DI( CD_PARAM_SIZE, DEFN,  0 );
-		  DB( CD_COMPILED,   DEFN,  TRUE );
-		  EMIT( RFL, SUBP_LBL );
-		  EMITS.GENERATE_CODE := FALSE;
-	          end;
-	        end if;
-	      end if;
-	    end;
-
-	  end loop;
-	end;
-        end if;
-      end loop;
-    end;
-
-  end	CODE_WITH_CONTEXT;
-	-----------------
 
 
 
@@ -470,26 +305,22 @@ is
 
 
   --|-------------------------------------------------------------------------------------------
-  procedure CODE_ALL_DECL ( ALL_DECL :TREE ) is
-  begin
+--  procedure CODE_ALL_DECL ( ALL_DECL :TREE ) is
+--  begin
 
-    if ALL_DECL.TY in CLASS_ITEM then
-      CODE_ITEM ( ALL_DECL );
+--    if ALL_DECL.TY in CLASS_ITEM then
+--      CODE_ITEM ( ALL_DECL );
 
-    elsif ALL_DECL.TY = DN_SUBUNIT then
-      CODE_SUBUNIT ( ALL_DECL );
+--    elsif ALL_DECL.TY = DN_SUBUNIT then
+--      CODE_SUBUNIT ( ALL_DECL );
 
-    elsif ALL_DECL.TY = DN_BLOCK_MASTER then
-      CODE_BLOCK_MASTER ( ALL_DECL );
+--    elsif ALL_DECL.TY = DN_BLOCK_MASTER then
+--      CODE_BLOCK_MASTER ( ALL_DECL );
 
-    end if;
-  end;
+--    end if;
+--  end;
 
   --|-------------------------------------------------------------------------------------------
-  procedure CODE_SUBUNIT ( SUBUNIT :TREE ) is
-  begin
-      CODE_SUBUNIT_BODY ( D ( AS_SUBUNIT_BODY, SUBUNIT ) );
-  end;
 
   --|-------------------------------------------------------------------------------------------
   procedure CODE_BLOCK_MASTER ( BLOCK_MASTER :TREE ) is
@@ -498,58 +329,8 @@ is
   end;
 
   --|-------------------------------------------------------------------------------------------
-  procedure CODE_ITEM_S ( ITEM_S :TREE ) is
-  begin
-    declare
-      ITEM_SEQ : SEQ_TYPE := LIST ( ITEM_S );
-      ITEM : TREE;
-    begin
-      while not IS_EMPTY ( ITEM_SEQ ) loop
-        POP ( ITEM_SEQ, ITEM );
-      CODE_ITEM ( ITEM );
-    end loop;
-    end;
-  end;
 
   --|-------------------------------------------------------------------------------------------
-  procedure CODE_ITEM ( ITEM :TREE ) is
-  begin
-
-    if ITEM.TY in CLASS_DECL then
-      CODE_DECL ( ITEM );
-
-    elsif ITEM.TY in CLASS_SUBUNIT_BODY then
-      CODE_SUBUNIT_BODY ( ITEM );
-
-    end if;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_SUBUNIT_BODY ( SUBUNIT_BODY :TREE ) is
-  begin
-    declare
-       POST_LBL : LABEL_TYPE;
-    begin
-      if ENCLOSING_BODY /= TREE_VOID then
-        POST_LBL := NEW_LABEL;
-        EMIT ( JMP, POST_LBL, COMMENT=> "CONTOURNEMENT" );
-      end if;
-
-    if SUBUNIT_BODY.TY = DN_SUBPROGRAM_BODY then
-      CODE_SUBPROGRAM_BODY ( SUBUNIT_BODY );
-
-    elsif SUBUNIT_BODY.TY = DN_PACKAGE_BODY then
-      CODE_PACKAGE_BODY ( SUBUNIT_BODY );
-
-    elsif SUBUNIT_BODY.TY = DN_TASK_BODY then
-      CODE_TASK_BODY ( SUBUNIT_BODY );
-
-    end if;
-      if ENCLOSING_BODY /= TREE_VOID then
-        WRITE_LABEL ( POST_LBL, COMMENT=> "FIN DE CONTOURNEMENT" );
-      end if;
-    end;
-  end;
 
 
 
@@ -565,178 +346,6 @@ is
   end;
 
   --|-------------------------------------------------------------------------------------------
-  procedure CODE_DECL ( DECL :TREE ) is
-  begin
-
-    if DECL.TY = DN_NULL_COMP_DECL then
-      CODE_NULL_COMP_DECL ( DECL );
-
-    elsif DECL.TY in CLASS_ID_DECL then
-      CODE_ID_DECL ( DECL );
-
-    elsif DECL.TY in CLASS_ID_S_DECL then
-      CODE_ID_S_DECL ( DECL );
-
-    elsif DECL.TY in CLASS_REP then
-      CODE_REP ( DECL );
-
-    elsif DECL.TY in CLASS_USE_PRAGMA then
-      CODE_USE_PRAGMA ( DECL );
-
-    end if;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_NULL_COMP_DECL ( NULL_COMP_DECL :TREE ) is
-  begin
-    null;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_ID_DECL ( ID_DECL :TREE ) is
-  begin
-
-    if ID_DECL.TY = DN_TYPE_DECL then
-      CODE_TYPE_DECL ( ID_DECL );
-
-    elsif ID_DECL.TY = DN_SUBTYPE_DECL then
-      CODE_SUBTYPE_DECL ( ID_DECL );
-
-    elsif ID_DECL.TY = DN_TASK_DECL then
-      CODE_TASK_DECL ( ID_DECL );
-
-    elsif ID_DECL.TY in CLASS_UNIT_DECL then
-      CODE_UNIT_DECL ( ID_DECL );
-
-    elsif ID_DECL.TY in CLASS_SIMPLE_RENAME_DECL then
-      CODE_SIMPLE_RENAME_DECL ( ID_DECL );
-
-    end if;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_TYPE_DECL ( TYPE_DECL :TREE ) is
-  begin
-
-    if TYPE_DECL.TY = DN_TYPE_DECL then
-      CODE_TYPE_DEF ( D ( AS_TYPE_DEF, TYPE_DECL ), TYPE_DECL );
-
-    end if;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_SUBTYPE_DECL ( SUBTYPE_DECL :TREE ) is
-  begin
-    null;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_TASK_DECL ( TASK_DECL :TREE ) is
-  begin
-    null;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_SIMPLE_RENAME_DECL ( SIMPLE_RENAME_DECL :TREE ) is
-  begin
-
-    if SIMPLE_RENAME_DECL.TY = DN_RENAMES_OBJ_DECL then
-      CODE_RENAMES_OBJ_DECL ( SIMPLE_RENAME_DECL );
-
-    elsif SIMPLE_RENAME_DECL.TY = DN_RENAMES_EXC_DECL then
-      CODE_RENAMES_EXC_DECL ( SIMPLE_RENAME_DECL );
-
-    end if;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_RENAMES_OBJ_DECL ( RENAMES_OBJ_DECL :TREE ) is
-  begin
-    null;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_RENAMES_EXC_DECL ( RENAMES_EXC_DECL :TREE ) is
-  begin
-    null;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_UNIT_DECL ( UNIT_DECL :TREE ) is
-  begin
-
-    if UNIT_DECL.TY = DN_GENERIC_DECL then
-      CODE_GENERIC_DECL ( UNIT_DECL );
-
-    elsif UNIT_DECL.TY in CLASS_NON_GENERIC_DECL then
-      CODE_NON_GENERIC_DECL ( UNIT_DECL );
-
-    end if;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_GENERIC_DECL ( GENERIC_DECL :TREE ) is
-  begin
-    null;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_NON_GENERIC_DECL ( NON_GENERIC_DECL :TREE ) is
-  begin
-
-    if NON_GENERIC_DECL.TY = DN_SUBPROG_ENTRY_DECL then
-      CODE_SUBPROG_ENTRY_DECL ( NON_GENERIC_DECL );
-
-    elsif NON_GENERIC_DECL.TY = DN_PACKAGE_DECL then
-      CODE_PACKAGE_DECL ( NON_GENERIC_DECL );
-
-    end if;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_SUBPROG_ENTRY_DECL ( SUBPROG_ENTRY_DECL :TREE ) is
-  begin
-    declare
-      OLD_OFFSET_ACT : OFFSET_TYPE := EMITS.OFFSET_ACT;
-      OLD_OFFSET_MAX : OFFSET_TYPE := EMITS.OFFSET_MAX;
-      SOURCE_NAME    : TREE        := D ( AS_SOURCE_NAME, SUBPROG_ENTRY_DECL );
-      HEADER         : TREE        := D ( AS_HEADER, SUBPROG_ENTRY_DECL );
-    begin
-      EMITS.OFFSET_ACT := EMITS.FIRST_PARAM_OFFSET;
-      EMITS.OFFSET_MAX := EMITS.OFFSET_ACT;
-      INC_LEVEL;
-      if SOURCE_NAME.TY in CLASS_SUBPROG_NAME then
-        declare
-          LBL : LABEL_TYPE := NEW_LABEL;
-        begin
-          DI ( CD_LABEL, SOURCE_NAME, INTEGER ( LBL ) );
-          DI ( CD_LEVEL, SOURCE_NAME, EMITS.CUR_LEVEL );
-          DB ( CD_COMPILED, SOURCE_NAME, TRUE );
-          if not EMITS.GENERATE_CODE then
-            EMITS.GENERATE_CODE := TRUE;
-            EMIT ( RFL, LBL );
-            EMITS.GENERATE_CODE := FALSE;
-          end if;
-
-	CODE_HEADER( D( AS_HEADER, SUBPROG_ENTRY_DECL ) );
-
-          DI( CD_PARAM_SIZE, SOURCE_NAME, OFFSET_ACT - FIRST_PARAM_OFFSET );
-        end;
-        if SOURCE_NAME.TY = DN_FUNCTION_ID or SOURCE_NAME.TY = DN_OPERATOR_ID then
-          declare
-            USED_OBJECT_ID   : TREE := D ( AS_NAME, HEADER );
-            RESULT_TYPE_SPEC : TREE := D ( SM_EXP_TYPE, USED_OBJECT_ID );
-          begin
-            DI ( CD_RESULT_SIZE, SOURCE_NAME, EMITS.TYPE_SIZE( RESULT_TYPE_SPEC ));
-          end;
-        end if;
-      end if;
-      DEC_LEVEL;
-      EMITS.OFFSET_MAX := OLD_OFFSET_MAX;
-      EMITS.OFFSET_ACT := OLD_OFFSET_ACT;
-    end;
-  end;
-
   --|-------------------------------------------------------------------------------------------
 
   --|-------------------------------------------------------------------------------------------
@@ -826,7 +435,7 @@ is
       EMITS.TYPE_SYMREP := D( LX_SYMREP, TYPE_NAME );
       while not IS_EMPTY( SRC_NAME_SEQ ) loop
         POP( SRC_NAME_SEQ, SRC_NAME );
-        CODE_VC_NAME ( SRC_NAME );
+        CODE_VC_NAME( SRC_NAME );
       end loop;
     end;
   end	CODE_OBJECT_DECL;
@@ -927,13 +536,13 @@ is
   procedure CODE_PARAM_S ( PARAM_S :TREE ) is
   begin
     declare
-      PARAM_SEQ : SEQ_TYPE := LIST ( PARAM_S );
-      PARAM : TREE;
+      PARAM_SEQ	: SEQ_TYPE	:= LIST( PARAM_S );
+      PARAM	: TREE;
     begin
       while not IS_EMPTY ( PARAM_SEQ ) loop
-        POP ( PARAM_SEQ, PARAM );
-      CODE_PARAM ( PARAM );
-    end loop;
+        POP( PARAM_SEQ, PARAM );
+        CODE_PARAM( PARAM );
+      end loop;
     end;
   end;
 
@@ -972,88 +581,29 @@ is
   end;
 
   --|-------------------------------------------------------------------------------------------
-  procedure CODE_HEADER ( HEADER :TREE ) is
-  begin
-
-    if HEADER.TY in CLASS_SUBP_ENTRY_HEADER then
-      CODE_PARAM_S ( D ( AS_PARAM_S, HEADER ) );
-      CODE_SUBP_ENTRY_HEADER ( HEADER );
-
-    elsif HEADER.TY = DN_PACKAGE_SPEC then
-      CODE_PACKAGE_SPEC ( HEADER );
-
-    end if;
-  end;
 
   --|-------------------------------------------------------------------------------------------
-  procedure CODE_PACKAGE_SPEC ( PACKAGE_SPEC :TREE ) is
-  begin
-      CODE_DECL_S ( D ( AS_DECL_S1, PACKAGE_SPEC ) );
-  end;
 
   --|-------------------------------------------------------------------------------------------
-  procedure CODE_DECL_S ( DECL_S :TREE ) is
-  begin
-    declare
-      DECL_SEQ : SEQ_TYPE := LIST ( DECL_S );
-      DECL : TREE;
-    begin
-      while not IS_EMPTY ( DECL_SEQ ) loop
-        POP ( DECL_SEQ, DECL );
-      CODE_DECL ( DECL );
-    end loop;
-    end;
-  end;
 
   --|-------------------------------------------------------------------------------------------
-  procedure CODE_SUBP_ENTRY_HEADER ( SUBP_ENTRY_HEADER :TREE ) is
-  begin
-
-    if SUBP_ENTRY_HEADER.TY = DN_PROCEDURE_SPEC then
-      CODE_PROCEDURE_SPEC ( SUBP_ENTRY_HEADER );
-
-    elsif SUBP_ENTRY_HEADER.TY = DN_FUNCTION_SPEC then
-      CODE_FUNCTION_SPEC ( SUBP_ENTRY_HEADER );
-
-    end if;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_PROCEDURE_SPEC ( PROCEDURE_SPEC :TREE ) is
-  begin
-    EMITS.PARAM_SIZE := (EMITS.OFFSET_ACT - EMITS.FIRST_PARAM_OFFSET + EMITS.RELATIVE_RESULT_OFFSET);
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_FUNCTION_SPEC ( FUNCTION_SPEC :TREE ) is
-  begin
-    INC_OFFSET ( EMITS.RELATIVE_RESULT_OFFSET );
-    EMITS.PARAM_SIZE := ( EMITS.OFFSET_ACT - EMITS.FIRST_PARAM_OFFSET );
-    DI ( CD_RESULT_SIZE, D ( AS_NAME, FUNCTION_SPEC ), EMITS.RESULT_SIZE );
-    INC_OFFSET ( EMITS.RESULT_SIZE );
-    ALIGN ( STACK_AL );
-    DI ( CD_RESULT_OFFSET, FUNCTION_SPEC, EMITS.OFFSET_ACT );
-    EMITS.FUN_RESULT_OFFSET := EMITS.OFFSET_ACT;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_UNIT_DESC ( UNIT_DESC :TREE ) is
-  begin
-
-    if UNIT_DESC.TY = DN_DERIVED_SUBPROG then
-      CODE_DERIVED_SUBPROG ( UNIT_DESC );
-
-    elsif UNIT_DESC.TY = DN_IMPLICIT_NOT_EQ then
-      CODE_IMPLICIT_NOT_EQ ( UNIT_DESC );
-
-    elsif UNIT_DESC.TY in CLASS_BODY then
-      CODE_BODY ( UNIT_DESC );
-
-    elsif UNIT_DESC.TY in CLASS_UNIT_KIND then
-      CODE_UNIT_KIND ( UNIT_DESC );
-
-    end if;
-  end;
+--   procedure CODE_UNIT_DESC ( UNIT_DESC :TREE ) is
+--   begin
+-- 
+--     if UNIT_DESC.TY = DN_DERIVED_SUBPROG then
+--       CODE_DERIVED_SUBPROG ( UNIT_DESC );
+-- 
+--     elsif UNIT_DESC.TY = DN_IMPLICIT_NOT_EQ then
+--       CODE_IMPLICIT_NOT_EQ ( UNIT_DESC );
+-- 
+--     elsif UNIT_DESC.TY in CLASS_BODY then
+--       CODE_BODY ( UNIT_DESC );
+-- 
+--     elsif UNIT_DESC.TY in CLASS_UNIT_KIND then
+--       CODE_UNIT_KIND ( UNIT_DESC );
+-- 
+--     end if;
+--   end;
 
   --|-------------------------------------------------------------------------------------------
   procedure CODE_DERIVED_SUBPROG ( DERIVED_SUBPROG :TREE ) is
@@ -1067,86 +617,21 @@ is
     null;
   end;
 
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_BODY ( ADA_BODY :TREE ) is
-  begin
 
-    if ADA_BODY.TY = DN_BLOCK_BODY then
-      CODE_BLOCK_BODY ( ADA_BODY );
 
-    elsif ADA_BODY.TY = DN_STUB then
-      CODE_STUB ( ADA_BODY );
 
-    end if;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_BLOCK_BODY ( BLOCK_BODY :TREE ) is
-  begin
-    declare
-      SAVE_ENCLOSING_BODY : TREE := ENCLOSING_BODY;
-      OLD_TOP_ACT         : OFFSET_TYPE := EMITS.TOP_ACT;
-      OLD_TOP_MAX         : OFFSET_TYPE := EMITS.TOP_MAX;
-    begin
-      ENCLOSING_BODY := BLOCK_BODY;
-      EMITS.TOP_ACT := 0;
-      EMITS.TOP_MAX := 0;
-      DI ( CD_LEVEL, BLOCK_BODY, INTEGER ( EMITS.CUR_LEVEL ) );
-      DI ( CD_RETURN_LABEL, BLOCK_BODY, INTEGER ( NEW_LABEL ) );
-      declare
-        ENT_1_LBL : LABEL_TYPE := NEW_LABEL;
-        ENT_2_LBL : LABEL_TYPE := NEW_LABEL;
-      begin
-        EMIT ( ENT, INTEGER ( 1 ), ENT_1_LBL );
-        EMIT ( ENT, INTEGER ( 2 ), ENT_2_LBL );
-        if FUNCTION_RESULT /= TREE_VOID then
-          if FUNCTION_RESULT.TY = DN_ARRAY then
-            GEN_PUSH_ADDR ( DI ( CD_COMP_UNIT, FUNCTION_RESULT ),
-                            DI ( CD_LEVEL, FUNCTION_RESULT ),
-                            DI ( CD_OFFSET, FUNCTION_RESULT )
-                );
-            EMIT ( DPL, A );
-            EMIT ( SLD, A, 0, FUN_RESULT_OFFSET - EMITS.ADDR_SIZE );
-            EMIT ( IND, I, 0 );
-            EMIT ( ALO, INTEGER ( -1 ) );
-            EMIT ( SLD, A, 0, FUN_RESULT_OFFSET );
-          end if;
-        end if;
-      CODE_ITEM_S ( D ( AS_ITEM_S, BLOCK_BODY ) );
-        declare
-          EXC_LBL : LABEL_TYPE := NEW_LABEL;
-        begin
-          EMIT ( EXH, EXC_LBL, COMMENT=> "EXCEPTION HANDLERS" );
-      CODE_STM_S ( D ( AS_STM_S, BLOCK_BODY ) );
-          WRITE_LABEL ( LABEL_TYPE ( DI ( CD_RETURN_LABEL, BLOCK_BODY ) ) );
-          EMIT ( RET, PARAM_SIZE );
-          WRITE_LABEL ( EXC_LBL );
-        end;
-        if not IS_EMPTY ( LIST ( D ( AS_ALTERNATIVE_S, BLOCK_BODY ) ) ) then
-      CODE_ALTERNATIVE_S ( D ( AS_ALTERNATIVE_S, BLOCK_BODY ) );
-        else
-          EMIT ( EEX );
-        end if;
-        GEN_LBL_ASSIGNMENT ( ENT_1_LBL, EMITS.OFFSET_MAX );
-        GEN_LBL_ASSIGNMENT ( ENT_2_LBL, EMITS.OFFSET_MAX + EMITS.TOP_MAX );
-      end;
-      EMITS.TOP_MAX := OLD_TOP_MAX;
-      EMITS.TOP_ACT := OLD_TOP_ACT;
-      ENCLOSING_BODY := SAVE_ENCLOSING_BODY;
-    end;
-  end;
 
   --|-------------------------------------------------------------------------------------------
   procedure CODE_ALTERNATIVE_S ( ALTERNATIVE_S :TREE ) is
   begin
     declare
-      ALTERNATIVE_SEQ : SEQ_TYPE := LIST ( ALTERNATIVE_S );
-      ALTERNATIVE_ELEM : TREE;
+      ALTERNATIVE_SEQ	: SEQ_TYPE	:= LIST ( ALTERNATIVE_S );
+      ALTERNATIVE_ELEM	: TREE;
     begin
-      while not IS_EMPTY ( ALTERNATIVE_SEQ ) loop
-        POP ( ALTERNATIVE_SEQ, ALTERNATIVE_ELEM );
-      CODE_ALTERNATIVE_ELEM ( ALTERNATIVE_ELEM );
-    end loop;
+      while not IS_EMPTY( ALTERNATIVE_SEQ ) loop
+        POP( ALTERNATIVE_SEQ, ALTERNATIVE_ELEM );
+        CODE_ALTERNATIVE_ELEM( ALTERNATIVE_ELEM );
+      end loop;
     end;
   end;
 
@@ -1154,12 +639,12 @@ is
   procedure CODE_ALTERNATIVE_ELEM ( ALTERNATIVE_ELEM :TREE ) is
   begin
 
-    if ALTERNATIVE_ELEM.TY = DN_ALTERNATIVE then
-      CODE_ALTERNATIVE ( ALTERNATIVE_ELEM );
-
-    elsif ALTERNATIVE_ELEM.TY = DN_ALTERNATIVE_PRAGMA then
-      CODE_ALTERNATIVE_PRAGMA ( ALTERNATIVE_ELEM );
-
+    if ALTERNATIVE_ELEM.TY = DN_ALTERNATIVE
+    then
+      CODE_ALTERNATIVE( ALTERNATIVE_ELEM );
+    elsif ALTERNATIVE_ELEM.TY = DN_ALTERNATIVE_PRAGMA
+    then
+      CODE_ALTERNATIVE_PRAGMA( ALTERNATIVE_ELEM );
     end if;
   end;
 
@@ -1167,19 +652,21 @@ is
   procedure CODE_ALTERNATIVE ( ALTERNATIVE :TREE ) is
   begin
     declare
-      SKIP_LBL          : LABEL_TYPE := NEW_LABEL;
-      HANDLER_BEGIN_LBL : LABEL_TYPE := NEW_LABEL;
-      CHOICE_S          : TREE       := D ( AS_CHOICE_S, ALTERNATIVE );
+      SKIP_LBL		: LABEL_TYPE	:= NEW_LABEL;
+      HANDLER_BEGIN_LBL	: LABEL_TYPE	:= NEW_LABEL;
+      CHOICE_S		: TREE		:= D( AS_CHOICE_S, ALTERNATIVE );
     begin
-      DI ( CD_LABEL, CHOICE_S, INTEGER ( HANDLER_BEGIN_LBL ) );
-      CODE_CHOICE_S ( CHOICE_S );
-      if not CHOICE_OTHERS_FLAG then
-        EMIT ( JMP, SKIP_LBL, COMMENT=> "SKIP ALTERNATIVE SUIVANTE"  );
-        WRITE_LABEL ( HANDLER_BEGIN_LBL, COMMENT=> "LABEL DEBUT INSTRUCTIONS" );
+      DI( CD_LABEL, CHOICE_S, INTEGER ( HANDLER_BEGIN_LBL ) );
+      CODE_CHOICE_S( CHOICE_S );
+      if not CHOICE_OTHERS_FLAG
+      then
+        EMIT( JMP, SKIP_LBL,		COMMENT=> "SKIP ALTERNATIVE SUIVANTE"  );
+        WRITE_LABEL( HANDLER_BEGIN_LBL,	COMMENT=> "LABEL DEBUT INSTRUCTIONS" );
       end if;
-      CODE_STM_S ( D ( AS_STM_S, ALTERNATIVE ) );
-      if not CHOICE_OTHERS_FLAG then
-        WRITE_LABEL ( SKIP_LBL, COMMENT=> "ALTERNATIVE SUIVANTE" );
+      CODE_STM_S( D( AS_STM_S, ALTERNATIVE ) );
+      if not CHOICE_OTHERS_FLAG
+      then
+        WRITE_LABEL( SKIP_LBL,	COMMENT=> "ALTERNATIVE SUIVANTE" );
       end if;
     end;
   end;
@@ -1194,16 +681,16 @@ is
   procedure CODE_CHOICE_S ( CHOICE_S :TREE ) is
   begin
     declare
-      CHOICE_SEQ : SEQ_TYPE := LIST ( CHOICE_S );
-      CHOICE : TREE;
+      CHOICE_SEQ	: SEQ_TYPE	:= LIST( CHOICE_S );
+      CHOICE	: TREE;
     begin
-      while not IS_EMPTY ( CHOICE_SEQ ) loop
-        POP ( CHOICE_SEQ, CHOICE );
-      CODE_CHOICE ( CHOICE );
-    if not CHOICE_OTHERS_FLAG then
-       EMIT ( JMPT, LABEL_TYPE ( DI ( CD_LABEL, CHOICE_S ) ), COMMENT=> "TRAITE EXCEPTION" );
-    end if;
-    end loop;
+      while not IS_EMPTY( CHOICE_SEQ ) loop
+        POP( CHOICE_SEQ, CHOICE );
+        CODE_CHOICE( CHOICE );
+        if not CHOICE_OTHERS_FLAG then
+	EMIT( JMPT, LABEL_TYPE( DI( CD_LABEL, CHOICE_S ) ), COMMENT=> "TRAITE EXCEPTION" );
+        end if;
+      end loop;
     end;
   end;
 
@@ -1226,7 +713,7 @@ is
   --|-------------------------------------------------------------------------------------------
   procedure CODE_CHOICE_EXP ( CHOICE_EXP :TREE ) is
   begin
-      CODE_EXP ( D ( AS_EXP, CHOICE_EXP ) );
+    CODE_EXP( D( AS_EXP, CHOICE_EXP ) );
   end;
 
   --|-------------------------------------------------------------------------------------------
@@ -1984,7 +1471,7 @@ is
 	  EMIT( RFP, EMITS.CUR_COMP_UNIT, S=> PRINT_NAME( SYMREP ) );
 	  EMITS.GENERATE_CODE := FALSE;
 	  DB( CD_COMPILED, DEFN, TRUE );
-	  CODE_DECL_S( D( AS_DECL_S1, PACKAGE_SPEC ) );
+	  DECLARATIONS.CODE_DECL_S( D( AS_DECL_S1, PACKAGE_SPEC ) );
 	end;
         end if;
         EMITS.CUR_COMP_UNIT := CUR_COMP_UNIT + 1;
@@ -2839,7 +2326,7 @@ is
         EMITS.OFFSET_ACT := FIRST_LOCAL_VAR_OFFSET;
         EMITS.OFFSET_MAX := FIRST_LOCAL_VAR_OFFSET;
         INC_LEVEL;
-      CODE_BLOCK_BODY ( D ( AS_BLOCK_BODY, BLOCK ) );
+        STRUCTURES.CODE_BLOCK_BODY ( D ( AS_BLOCK_BODY, BLOCK ) );
         DEC_LEVEL;
         EMITS.OFFSET_ACT := OLD_OFFSET_ACT;
         EMITS.OFFSET_MAX := OLD_OFFSET_MAX;
@@ -3262,10 +2749,9 @@ is
 
 begin
   OPEN_IDL_TREE_FILE( LIB_PATH(1..LIB_PATH_LENGTH) & "$$$.TMP" );
-  if DI( XD_ERR_COUNT, TREE_ROOT ) = 0 then
-
+  if DI( XD_ERR_COUNT, TREE_ROOT ) = 0
+  then
     CODE_ROOT( TREE_ROOT );
-
   end if;
   CLOSE_IDL_TREE_FILE;
 
