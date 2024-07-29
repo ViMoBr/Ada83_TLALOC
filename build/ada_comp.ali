@@ -1,6 +1,6 @@
 V "GNAT Lib v12"
 M P W=b
-A -g
+A -O2
 A -gnat83
 P ZX
 
@@ -10,6 +10,7 @@ RV NO_DELAY
 RV NO_DIRECT_BOOLEAN_OPERATORS
 RV NO_FIXED_POINT
 RV NO_IO
+RV NO_IMPLICIT_CONDITIONALS
 RV NO_DYNAMIC_SIZED_OBJECTS
 
 U ada_comp%b		ada_comp.adb		f5a7e25a NE OO SU IU
@@ -17,8 +18,6 @@ Z ada.strings.text_buffers%s  a-sttebu.adb	a-sttebu.ali
 W calendar%s		calendar.ads		calendar.ali
 W code_gen%s		code_gen.adb		code_gen.ali
 W idl%s			idl.adb			idl.ali
-Z system.concat_2%s	s-conca2.adb		s-conca2.ali
-Z system.concat_3%s	s-conca3.adb		s-conca3.ali
 Z system.img_int%s	s-imgint.adb		s-imgint.ali
 W text_io%s		text_io.ads		text_io.ali
 
@@ -41,8 +40,6 @@ D idl.ads		20240711120008 30a8907b idl%s
 D interfac.ads		20230508121439 edec285f interfaces%s
 D i-cstrea.ads		20230508121439 e53d8b8e interfaces.c_streams%s
 D system.ads		20230508121439 a2da961d system%s
-D s-conca2.ads		20230508121439 3d460502 system.concat_2%s
-D s-conca3.ads		20230508121439 9078e860 system.concat_3%s
 D s-crtl.ads		20230508121439 8a0692f8 system.crtl%s
 D s-exctab.ads		20230508121439 91bef6ef system.exception_table%s
 D s-ficobl.ads		20230508121439 dc5161d4 system.file_control_block%s
@@ -119,6 +116,6 @@ X 16 idl.ads
 29U13*ERR_PHASE 12|97s7
 30U13*WRITE_LIB 12|101s28
 31U13*PRETTY_DIANA 12|67s9
-X 38 text_io.ads
+X 36 text_io.ads
 24K9*Text_IO=24:29 12|5w6 6r6
 

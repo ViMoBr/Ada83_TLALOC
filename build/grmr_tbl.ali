@@ -1,5 +1,5 @@
 V "GNAT Lib v12"
-A -g
+A -O2
 A -gnat83
 P ZX
 

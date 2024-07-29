@@ -22,7 +22,7 @@ s#i0
 s#k0
 s#j0
 s#l0
-!4507;g
+!4644;g
 %\011SRC%spar_phase%sidl-par_phase-set_dflt.adb
 %\011SRC%ssem_phase%sidl-sem_phase-att_walk.adb
 %\011EXE%scomp_ada_comp.sh
@@ -32,6 +32,8 @@ s#l0
 %\011SRC%ssem_phase%sidl-sem_phase-red_subp.adb
 %\011EXE%sSYSTEM.ADA
 %\011SRC%sada_comp%sada_comp.adb
+%\011SRC%scode_gen%scode_gen-expressions.adb
+%\011SRC%scode_gen%scode_gen-instructions.adb
 %\011SRC%scode_gen%semits.adb
 %\011SRC%spar_phase%sgrmr_ops.adb
 %\011SRC%sada_comp%sidl.ads
@@ -54,6 +56,7 @@ s#l0
 %\011SRC%spar_phase%slex.ads
 %\011SRC%spar_phase%sgrmr_ops.ads
 %\011%u%uADA_2023%sAda83_comp%sTh\350ses_Pologne%sMichal_Cierniak-A-code%straduction_Ada%ssrc%scg_private.ads
+%\011SRC%scode_gen%scode_gen-declarations.adb
 %\011SRC%ssem_phase%sidl-sem_phase-vis_util.adb
 %\011%u%uADA_2023%sAda83_comp%sTh\350ses_Pologne%sMichal_Cierniak-A-code%straduction_Ada%ssrc%scg_param.adb
 %\011%u%uADA_2023%sAda83_comp%sTh\350ses_Pologne%sMichal_Cierniak-A-code%straduction_Ada%ssrc%sdiana.ads
@@ -110,7 +113,7 @@ s#l0
 %\011SRC%ssem_phase%sidl-sem_phase-make_nod.adb
 %\011SRC%ssem_phase%sidl-sem_phase-fix_with.adb
 %\011SRC%scode_gen%semits.ads
-!4507;f
+!4644;f
 %\011SRC%spar_phase%sidl-par_phase-set_dflt.adb
 %\011SRC%ssem_phase%sidl-sem_phase-att_walk.adb
 %\011EXE%scomp_ada_comp.sh
@@ -120,6 +123,8 @@ s#l0
 %\011SRC%ssem_phase%sidl-sem_phase-red_subp.adb
 %\011EXE%sSYSTEM.ADA
 %\011SRC%sada_comp%sada_comp.adb
+%\011SRC%scode_gen%scode_gen-expressions.adb
+%\011SRC%scode_gen%scode_gen-instructions.adb
 %\011SRC%scode_gen%semits.adb
 %\011SRC%spar_phase%sgrmr_ops.adb
 %\011SRC%sada_comp%sidl.ads
@@ -142,6 +147,7 @@ s#l0
 %\011SRC%spar_phase%slex.ads
 %\011SRC%spar_phase%sgrmr_ops.ads
 %\011%u%uADA_2023%sAda83_comp%sTh\350ses_Pologne%sMichal_Cierniak-A-code%straduction_Ada%ssrc%scg_private.ads
+%\011SRC%scode_gen%scode_gen-declarations.adb
 %\011SRC%ssem_phase%sidl-sem_phase-vis_util.adb
 %\011%u%uADA_2023%sAda83_comp%sTh\350ses_Pologne%sMichal_Cierniak-A-code%straduction_Ada%ssrc%scg_param.adb
 %\011%u%uADA_2023%sAda83_comp%sTh\350ses_Pologne%sMichal_Cierniak-A-code%straduction_Ada%ssrc%sdiana.ads

@@ -1,5 +1,5 @@
 V "GNAT Lib v12"
-A -g
+A -O2
 A -gnat83
 P SS ZX
 
@@ -30,11 +30,6 @@ Z ada.text_io.integer_aux%s
 Z ada.text_io.integer_io%s
 W diana_node_attr_class_names%s  diana_node_attr_class_names.ads  diana_node_attr_class_names.ali
 W system%s		system.ads		system.ali
-Z system.concat_2%s	s-conca2.adb		s-conca2.ali
-Z system.concat_3%s	s-conca3.adb		s-conca3.ali
-Z system.concat_4%s	s-conca4.adb		s-conca4.ali
-Z system.concat_5%s	s-conca5.adb		s-conca5.ali
-Z system.concat_6%s	s-conca6.adb		s-conca6.ali
 Z system.img_biu%s	s-imgbiu.adb		s-imgbiu.ali
 Z system.img_char%s	s-imgcha.adb		s-imgcha.ali
 Z system.img_int%s	s-imgint.adb		s-imgint.ali
@@ -91,11 +86,6 @@ D interfac.ads		20230508121439 edec285f interfaces%s
 D i-cstrea.ads		20230508121439 e53d8b8e interfaces.c_streams%s
 D system.ads		20230508121439 a2da961d system%s
 D s-casuti.ads		20230508121439 cf13d755 system.case_util%s
-D s-conca2.ads		20230508121439 3d460502 system.concat_2%s
-D s-conca3.ads		20230508121439 9078e860 system.concat_3%s
-D s-conca4.ads		20230508121439 d29d9dac system.concat_4%s
-D s-conca5.ads		20230508121439 47259367 system.concat_5%s
-D s-conca6.ads		20230508121439 c726e2e8 system.concat_6%s
 D s-crtl.ads		20230508121439 8a0692f8 system.crtl%s
 D s-exctab.ads		20230508121439 91bef6ef system.exception_table%s
 D s-ficobl.ads		20230508121439 dc5161d4 system.file_control_block%s
@@ -601,6 +591,6 @@ X 22 idl.ads
 95V13*DI{integer} 21|631s60 638s28 737s14 759s20 760s20 764s20 765s20 768s20
 . 769s20 770s20 773s20 774s20 775s20
 101V13*PRINT_NAME{string} 21|695s60
-X 71 text_io.ads
+X 66 text_io.ads
 24K9*Text_IO=24:29 20|24w6 25r6
 

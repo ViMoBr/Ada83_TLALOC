@@ -25,19 +25,19 @@ package body ada_main is
    E100 : Short_Integer; pragma Import (Ada, E100, "ada__strings__utf_encoding_E");
    E106 : Short_Integer; pragma Import (Ada, E106, "ada__tags_E");
    E006 : Short_Integer; pragma Import (Ada, E006, "ada__strings__text_buffers_E");
-   E123 : Short_Integer; pragma Import (Ada, E123, "ada__streams_E");
-   E135 : Short_Integer; pragma Import (Ada, E135, "system__file_control_block_E");
-   E134 : Short_Integer; pragma Import (Ada, E134, "system__finalization_root_E");
-   E132 : Short_Integer; pragma Import (Ada, E132, "ada__finalization_E");
-   E131 : Short_Integer; pragma Import (Ada, E131, "system__file_io_E");
-   E121 : Short_Integer; pragma Import (Ada, E121, "ada__text_io_E");
-   E157 : Short_Integer; pragma Import (Ada, E157, "system__direct_io_E");
-   E145 : Short_Integer; pragma Import (Ada, E145, "system__sequential_io_E");
-   E141 : Short_Integer; pragma Import (Ada, E141, "grmr_ops_E");
-   E147 : Short_Integer; pragma Import (Ada, E147, "lex_E");
-   E137 : Short_Integer; pragma Import (Ada, E137, "idl_E");
+   E117 : Short_Integer; pragma Import (Ada, E117, "ada__streams_E");
+   E129 : Short_Integer; pragma Import (Ada, E129, "system__file_control_block_E");
+   E128 : Short_Integer; pragma Import (Ada, E128, "system__finalization_root_E");
+   E126 : Short_Integer; pragma Import (Ada, E126, "ada__finalization_E");
+   E125 : Short_Integer; pragma Import (Ada, E125, "system__file_io_E");
+   E115 : Short_Integer; pragma Import (Ada, E115, "ada__text_io_E");
+   E143 : Short_Integer; pragma Import (Ada, E143, "system__direct_io_E");
+   E139 : Short_Integer; pragma Import (Ada, E139, "system__sequential_io_E");
+   E135 : Short_Integer; pragma Import (Ada, E135, "grmr_ops_E");
+   E141 : Short_Integer; pragma Import (Ada, E141, "lex_E");
+   E131 : Short_Integer; pragma Import (Ada, E131, "idl_E");
    E112 : Short_Integer; pragma Import (Ada, E112, "codage_intermediaire_E");
-   E172 : Short_Integer; pragma Import (Ada, E172, "emits_E");
+   E158 : Short_Integer; pragma Import (Ada, E158, "emits_E");
    E002 : Short_Integer; pragma Import (Ada, E002, "code_gen_E");
 
    Sec_Default_Sized_Stacks : array (1 .. 1) of aliased System.Secondary_Stack.SS_Stack (System.Parameters.Runtime_Default_Sec_Stack_Size);
@@ -49,21 +49,21 @@ package body ada_main is
 
    procedure finalize_library is
    begin
-      E145 := E145 - 1;
+      E139 := E139 - 1;
       declare
          procedure F1;
          pragma Import (Ada, F1, "system__sequential_io__finalize_spec");
       begin
          F1;
       end;
-      E157 := E157 - 1;
+      E143 := E143 - 1;
       declare
          procedure F2;
          pragma Import (Ada, F2, "system__direct_io__finalize_spec");
       begin
          F2;
       end;
-      E121 := E121 - 1;
+      E115 := E115 - 1;
       declare
          procedure F3;
          pragma Import (Ada, F3, "ada__text_io__finalize_spec");
@@ -74,7 +74,7 @@ package body ada_main is
          procedure F4;
          pragma Import (Ada, F4, "system__file_io__finalize_body");
       begin
-         E131 := E131 - 1;
+         E125 := E125 - 1;
          F4;
       end;
       declare
@@ -216,33 +216,33 @@ package body ada_main is
       Ada.Strings.Text_Buffers'Elab_Spec;
       E006 := E006 + 1;
       Ada.Streams'Elab_Spec;
-      E123 := E123 + 1;
+      E117 := E117 + 1;
       System.File_Control_Block'Elab_Spec;
-      E135 := E135 + 1;
+      E129 := E129 + 1;
       System.Finalization_Root'Elab_Spec;
-      E134 := E134 + 1;
+      E128 := E128 + 1;
       Ada.Finalization'Elab_Spec;
-      E132 := E132 + 1;
+      E126 := E126 + 1;
       System.File_Io'Elab_Body;
-      E131 := E131 + 1;
+      E125 := E125 + 1;
       Ada.Text_Io'Elab_Spec;
       Ada.Text_Io'Elab_Body;
-      E121 := E121 + 1;
+      E115 := E115 + 1;
       System.Direct_Io'Elab_Spec;
-      E157 := E157 + 1;
+      E143 := E143 + 1;
       System.Sequential_Io'Elab_Spec;
-      E145 := E145 + 1;
+      E139 := E139 + 1;
       GRMR_OPS'ELAB_BODY;
-      E141 := E141 + 1;
+      E135 := E135 + 1;
       LEX'ELAB_BODY;
-      E147 := E147 + 1;
+      E141 := E141 + 1;
       IDL'ELAB_BODY;
-      E137 := E137 + 1;
+      E131 := E131 + 1;
       CODAGE_INTERMEDIAIRE'ELAB_SPEC;
       CODAGE_INTERMEDIAIRE'ELAB_BODY;
       E112 := E112 + 1;
       EMITS'ELAB_SPEC;
-      E172 := E172 + 1;
+      E158 := E158 + 1;
       E002 := E002 + 1;
    end adainit;
 

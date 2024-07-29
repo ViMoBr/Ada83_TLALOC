@@ -1,7 +1,7 @@
 separate ( CODE_GEN )
 				------------
  	package body		DECLARATIONS
-				-------------
+				------------
   is
 
 			-----------

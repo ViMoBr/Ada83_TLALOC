@@ -1,5 +1,5 @@
 V "GNAT Lib v12"
-A -g
+A -O2
 A -gnat83
 P SS ZX
 
@@ -48,13 +48,6 @@ W sequential_io%s
 W system%s		system.ads		system.ali
 Z system.atomic_operations.test_and_set%s  s-aotase.adb  s-aotase.ali
 Z system.byte_swapping%s  s-bytswa.ads		s-bytswa.ali
-Z system.concat_2%s	s-conca2.adb		s-conca2.ali
-Z system.concat_3%s	s-conca3.adb		s-conca3.ali
-Z system.concat_4%s	s-conca4.adb		s-conca4.ali
-Z system.concat_5%s	s-conca5.adb		s-conca5.ali
-Z system.concat_6%s	s-conca6.adb		s-conca6.ali
-Z system.concat_7%s	s-conca7.adb		s-conca7.ali
-Z system.concat_8%s	s-conca8.adb		s-conca8.ali
 Z system.crtl%s		s-crtl.ads		s-crtl.ali
 Z system.direct_io%s	s-direio.adb		s-direio.ali
 Z system.exception_table%s  s-exctab.adb	s-exctab.ali
@@ -159,13 +152,6 @@ D s-aotase.adb		20230508121439 e581b407 system.atomic_operations.test_and_set%b
 D s-atopri.ads		20230508121439 1b132436 system.atomic_primitives%s
 D s-bytswa.ads		20230508121439 1d5476e8 system.byte_swapping%s
 D s-casuti.ads		20230508121439 cf13d755 system.case_util%s
-D s-conca2.ads		20230508121439 3d460502 system.concat_2%s
-D s-conca3.ads		20230508121439 9078e860 system.concat_3%s
-D s-conca4.ads		20230508121439 d29d9dac system.concat_4%s
-D s-conca5.ads		20230508121439 47259367 system.concat_5%s
-D s-conca6.ads		20230508121439 c726e2e8 system.concat_6%s
-D s-conca7.ads		20230508121439 776c8ba6 system.concat_7%s
-D s-conca8.ads		20230508121439 3490e3b0 system.concat_8%s
 D s-crtl.ads		20230508121439 8a0692f8 system.crtl%s
 D s-direio.ads		20230508121439 7c86ede3 system.direct_io%s
 D s-exctab.ads		20230508121439 91bef6ef system.exception_table%s
@@ -361,7 +347,7 @@ G r c none [par_phase idl 26 13 none] [lex_image lex 60 13 none]
 G r c none [par_phase idl 26 13 none] [token_string lex 58 13 none]
 G r c none [par_phase idl 26 13 none] [grmr_op_image grmr_ops 27 13 none]
 X 2 a-direio.ads
-53P9*File_Type<85|81P9> 30|15r35[10]
+53P9*File_Type<78|81P9> 30|15r35[10]
 55E9*File_Mode
 55n32*Inout_File{55E9[30|10]} 30|45r31[10] 62r28[10]
 66I9*Count<long_integer>
@@ -373,7 +359,7 @@ X 2 a-direio.ads
 112U14*Write 30|108s11[10]
 134X4*Name_Error 30|70r16[10]
 X 6 a-sequio.ads
-53P9*File_Type<104|63P9> 28|122r26[115] 132r26[115] 29|467r34[466] 31|50r24[23|39]
+53P9*File_Type<97|63P9> 28|122r26[115] 132r26[115] 29|467r34[466] 31|50r24[23|39]
 . 64|72r34[70]
 55E9*File_Mode
 55n23*In_File{55E9[28|115]} 28|134r24[115] 29|471r39[466] 31|53r24[23|39]
@@ -3069,7 +3055,7 @@ X 25 idl.adb
 465i7 NB_CARS{natural} 468r49
 467A12 SUITE_TREES(24|46R8)<24|39I8> 469r54 472r26
 468A15 CHN{string}<integer> 469r67 470r27
-469V16 TO_CHN[123|20]{string} 472s18
+469V16 TO_CHN[116|20]{string} 472s18
 470a7 THE_CHN{468A15} 472m7 473r14 473r52
 X 26 idl-err_phase.adb
 7b7 FULL_LIST{boolean} 43r22 52r25
@@ -3100,7 +3086,7 @@ X 27 idl-idl_man.adb
 256r5 TT{24|46R8} 261r60 270r12
 257A10 TTREES(24|46R8)<24|39I8> 259r61 262r27
 258A13 LSTR{string}<integer> 259r55 260r27
-259V14 TO_TREES[123|20]{257A10} 265s12
+259V14 TO_TREES[116|20]{257A10} 265s12
 260a5 A_COPIER{258A13} 264m5 265r23
 261i5 START{24|39I8} 267r30
 262a5 TTR{257A10} 265m5 267r44
@@ -3111,11 +3097,11 @@ X 27 idl-idl_man.adb
 279i3 NB_CARS{natural} 282r42
 281A8 TTREES(24|46R8)<24|39I8> 283r69 284r27
 282A11 LSTR{string}<integer> 283r63 285r27
-283V12 TO_TREES[123|20]{281A8} 292s10
+283V12 TO_TREES[116|20]{281A8} 292s10
 284a3 TTR{281A8} 292m3 295r41 314r18
 285a3 A_COPIER{282A11} 291m3 292r20
 287i3 HASH_SUM{integer} 295m5 295r22 299r47
-288V12 TO_INT[123|20]{integer} 295s33
+288V12 TO_INT[116|20]{integer} 295s33
 294i7 I<short_short_integer> 295r46
 299i5 BUCKET{24|39I8} 300r53 328r53
 300r5 HASH_LIST{24|80R8} 302r11 304r42 325m9 325r28
@@ -3675,7 +3661,7 @@ X 34 idl-print_nod.adb
 142V12 TRAITE_NUM_VAL{natural} 142b12 188t6 198s14 210s14
 158r9 ENTETE{24|46R8} 166r12 171r23 176r19
 159A14 DOUBLET(24|36I8)<integer> 160r68 161r27
-160V18 TO_DOUBLET[123|20]{159A14} 161s52 172s17
+160V18 TO_DOUBLET[116|20]{159A14} 161s52 172s17
 161a9 DD{159A14} 172m11 173r36 175r36
 162i9 NB_CARS{integer} 182m11 182r22 184r16
 171i13 I<short_short_integer> 172r35 176r14 177r17
@@ -8993,7 +8979,7 @@ X 62 idl-sem_phase-univ_ops.adb
 120q1 COPIE_PAIRES_UDIGITS 133l9 133e29
 122i7 ROUND_LEN{24|40I11} 126r19 131r15
 123r7 VDP{18R8} 123m53 123r53 127r32
-124V16 CAST_TREE[123|20]{24|46R8} 127s21 131s31
+124V16 CAST_TREE[116|20]{24|46R8} 127s21 131s31
 126i11 I<short_short_integer> 127r15 127r39
 142r3 R{24|46R8} 144r16 145r16 146r10
 152r3 N_SPREAD{35|91R10} 155m18 155r18 162m3 162r17 164m19 164r19 165r33
@@ -9007,7 +8993,7 @@ X 62 idl-sem_phase-univ_ops.adb
 194q1 PREPARE_VECTOR_FROM_BLOCK 207l9 207e34
 196r7 ENTETE{24|46R8} 200r27 201r10 202r13 204r21
 197r7 VDP{18R8} 197m45 197r45 205m9
-198V16 CAST_UDIGIT_PAIR[123|20]{10R8} 205s23
+198V16 CAST_UDIGIT_PAIR[116|20]{10R8} 205s23
 204i11 I<short_short_integer> 205r16 205r47
 218e7 NN{20|12E8} 221m20 222m28 223m20 225r56
 233i3 VAL_POS{integer} 239r21 242r6 243r24 246r24
@@ -9229,14 +9215,14 @@ X 69 sequenio.ads
 X 70 system.ads
 37K9*System 25|5w6 462r11 70|154e11
 71N4*Storage_Unit 25|466r56 466r72
-X 85 s-direio.ads
+X 78 s-direio.ads
 81P9*File_Type(53R9)
-X 104 s-sequio.ads
+X 97 s-sequio.ads
 63P9*File_Type(43R9)
-X 122 text_io.ads
+X 115 text_io.ads
 24K9*Text_IO=24:29 25|6w6 7r6 28|2w6 16r7 29|94r35 167r35 30|256r9 61|1w6
 . 1r20 139r5
-X 123 unchconv.ads
+X 116 unchconv.ads
 20v10*Unchecked_Conversion 25|5w14 469r32 27|1w6 259r32 283r40 288r40 34|1w6
 . 160r40 62|1w6 124r40 198r40
 

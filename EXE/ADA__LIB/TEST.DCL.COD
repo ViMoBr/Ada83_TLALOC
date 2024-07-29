@@ -2,6 +2,7 @@
 $ 2				--| ETIQUETTE ENTREE
  1	BSC << 1>>
  2 << 2>>
+COMPILE_VC_NAME_INTEGER init_exp
 sld.i	0	0		-- STO I VAL INIT
  2	BSC << 3>>
  3 << 1>>
