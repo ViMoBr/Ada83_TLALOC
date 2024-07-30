@@ -1,5 +1,5 @@
 V "GNAT Lib v12"
-A -O2
+A -g
 A -gnat83
 P ZX
 
@@ -19,6 +19,10 @@ RV NO_OBSOLESCENT_FEATURES
 U codage_intermediaire%b  codage_intermediaire.adb  59010e99 OO PK IU
 Z ada.exceptions%s	a-except.adb		a-except.ali
 Z ada.strings.text_buffers%s  a-sttebu.adb	a-sttebu.ali
+Z system.concat_2%s	s-conca2.adb		s-conca2.ali
+Z system.concat_3%s	s-conca3.adb		s-conca3.ali
+Z system.concat_4%s	s-conca4.adb		s-conca4.ali
+Z system.concat_6%s	s-conca6.adb		s-conca6.ali
 Z system.img_int%s	s-imgint.adb		s-imgint.ali
 W text_io%s		text_io.ads		text_io.ali
 
@@ -41,11 +45,15 @@ D a-textio.ads		20230508121439 deada98a ada.text_io%s
 D a-unccon.ads		20230508121439 0e9b276f ada.unchecked_conversion%s
 D codage_intermediaire.ads  20240728215724 f0a114a2 codage_intermediaire%s
 D codage_intermediaire.adb  20240728223645 8812d2a3 codage_intermediaire%b
-D diana_node_attr_class_names.ads  20240622095819 6d94ff6d diana_node_attr_class_names%s
+D diana_node_attr_class_names.ads  20240730152129 6d94ff6d diana_node_attr_class_names%s
 D idl.ads		20240711120008 30a8907b idl%s
 D interfac.ads		20230508121439 edec285f interfaces%s
 D i-cstrea.ads		20230508121439 e53d8b8e interfaces.c_streams%s
 D system.ads		20230508121439 a2da961d system%s
+D s-conca2.ads		20230508121439 3d460502 system.concat_2%s
+D s-conca3.ads		20230508121439 9078e860 system.concat_3%s
+D s-conca4.ads		20230508121439 d29d9dac system.concat_4%s
+D s-conca6.ads		20230508121439 c726e2e8 system.concat_6%s
 D s-crtl.ads		20230508121439 8a0692f8 system.crtl%s
 D s-exctab.ads		20230508121439 91bef6ef system.exception_table%s
 D s-ficobl.ads		20230508121439 dc5161d4 system.file_control_block%s
@@ -343,6 +351,6 @@ X 14 idl.ads
 8K33*IDL 11|1w6 2r6 14|126e12
 46R8*TREE 11|66r66 151r67 178r75 182r75 186r75 196r67 200r75 204r75 12|99r82
 . 14|61e27
-X 34 text_io.ads
+X 38 text_io.ads
 24K9*Text_IO=24:29 12|1w6 2r6
 
