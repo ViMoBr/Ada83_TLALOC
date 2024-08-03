@@ -1,0 +1,21 @@
+@TEST
+$ 2				--| ETIQUETTE ENTREE
+ 1	BRA << 1>>
+ 2 << 2>>
+MAKE_OPRND_IMM     OPERAND= 256  IMM_VAL= 0
+sld.i	0	0		-- STO I VAL INIT
+ 2	BRA << 3>>
+ 3 << 1>>
+ 3	BRA << 2>>
+ 4 << 3>>
+ 4	LINK  4
+EXH	$ 4			-- EXCEPTION HANDLERS
+	pla	0	0
+	trap	CVB
+sld.i	0	0
+$ 3
+ 5	UNLINK
+ 6	RTD  0
+$ 4
+	eex
+  QUIT

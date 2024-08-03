@@ -333,14 +333,15 @@ separate ( CODE_GEN )
 
   procedure			CODE_WHILE		( ADA_WHILE :TREE )
   is
+    OPER		: OPERAND_REF;
   begin
     BEFORE_LOOP_LBL := NEW_LABEL;
     AFTER_LOOP_LBL := NEW_LABEL;
-    WRITE_LABEL ( BEFORE_LOOP_LBL );
-    EXPRESSIONS.CODE_EXP ( D ( AS_EXP, ADA_WHILE ) );
-    EMIT ( JMPF, AFTER_LOOP_LBL );
+    WRITE_LABEL( BEFORE_LOOP_LBL );
+    OPER := EXPRESSIONS.CODE_EXP( D ( AS_EXP, ADA_WHILE ) );
+    EMIT( JMPF, AFTER_LOOP_LBL );
     CODE_STM_S ( LOOP_STM_S );
-    EMIT ( JMP, BEFORE_LOOP_LBL );
+    EMIT( JMP, BEFORE_LOOP_LBL );
 
   end	CODE_WHILE;
 
@@ -514,20 +515,21 @@ separate ( CODE_GEN )
       if EXP /= TREE_VOID then
     STORE_FUNCTION_RESULT:
         declare
-          ENCLOSING_LEVEL : INTEGER := DI ( CD_LEVEL, EMITS.ENCLOSING_BODY );
-          RESULT_OFFSET : INTEGER := DI ( CD_RESULT_OFFSET, EMITS.ENCLOSING_BODY );
-          EXPR_TYPE     : TREE := D ( SM_EXP_TYPE, EXP );
+          ENCLOSING_LEVEL	: INTEGER		:= DI ( CD_LEVEL, EMITS.ENCLOSING_BODY );
+          RESULT_OFFSET	: INTEGER		:= DI ( CD_RESULT_OFFSET, EMITS.ENCLOSING_BODY );
+          EXPR_TYPE		: TREE		:= D ( SM_EXP_TYPE, EXP );
+	OPER		: OPERAND_REF;
         begin
           if EXPR_TYPE.TY = DN_ARRAY then
             EMIT( PLA, EMITS.CUR_LEVEL - ENCLOSING_LEVEL, RESULT_OFFSET );
-            EXPRESSIONS.CODE_EXP( EXP );
+            OPER := EXPRESSIONS.CODE_EXP( EXP );
             EMIT( LDC, I, EMITS.NUMBER_OF_DIMENSIONS ( EXP ) );
             EMIT( PUA );
           elsif EXPR_TYPE.TY = DN_ENUM_LITERAL_S then
-            EXPRESSIONS.CODE_EXP ( EXP );
+            OPER := EXPRESSIONS.CODE_EXP ( EXP );
             EMIT( SLD, EMITS.CODE_DATA_TYPE_OF ( EXP ), EMITS.CUR_LEVEL - ENCLOSING_LEVEL, RESULT_OFFSET );
 	elsif EXPR_TYPE.TY = DN_INTEGER then
-	  EXPRESSIONS.CODE_EXP ( EXP );
+	  OPER := EXPRESSIONS.CODE_EXP ( EXP );
             EMIT( SLD, I, EMITS.CUR_LEVEL - ENCLOSING_LEVEL, RESULT_OFFSET );
           end if;
         end STORE_FUNCTION_RESULT;
@@ -590,6 +592,7 @@ separate ( CODE_GEN )
   begin
     declare
       NAME	: TREE	:= D ( AS_NAME, ASSIGN );
+      OPER	: OPERAND_REF;
 
 		--------
       procedure	STORE_VAL		( TYPE_SPEC :TREE )
@@ -632,12 +635,12 @@ separate ( CODE_GEN )
 
       if NAME.TY = DN_ALL then
         CODE_ADRESSE( D( AS_NAME,     NAME ) );
-        EXPRESSIONS.CODE_EXP    ( D( AS_EXP,      ASSIGN ) );
+        OPER := EXPRESSIONS.CODE_EXP    ( D( AS_EXP,      ASSIGN ) );
         STORE_VAL   ( D( SM_EXP_TYPE, NAME ) );
 
       elsif NAME.TY = DN_INDEXED then
         EXPRESSIONS.CODE_INDEXED( NAME );
-        EXPRESSIONS.CODE_EXP    ( D( AS_EXP, ASSIGN ) );
+        OPER := EXPRESSIONS.CODE_EXP    ( D( AS_EXP, ASSIGN ) );
         STORE_VAL   ( D( SM_EXP_TYPE, NAME ) );
 
 
@@ -652,7 +655,7 @@ separate ( CODE_GEN )
         begin
 
           if NAMEXP.TY = DN_ACCESS then
-	  EXPRESSIONS.CODE_EXP( D( AS_EXP, ASSIGN ) );
+	  OPER := EXPRESSIONS.CODE_EXP( D( AS_EXP, ASSIGN ) );
 	  EMITS.GET_ULO  ( DEFN, COMP_UNIT, LVL, OFS );
 	  EMITS.GEN_STORE( A, COMP_UNIT, LVL, OFS );
 
@@ -667,14 +670,14 @@ separate ( CODE_GEN )
 	      EMIT( LDC, I, NUMBER_OF_DIMENSIONS ( NAMEXP ), COMMENT=>"NB DIM" );
 	      EMIT( CYA );
 	    else
-	      EXPRESSIONS.CODE_EXP ( D ( AS_EXP, ASSIGN ) );
+	      OPER := EXPRESSIONS.CODE_EXP ( D ( AS_EXP, ASSIGN ) );
 	      EMIT( LDC, I, NUMBER_OF_DIMENSIONS ( NAMEXP ), COMMENT=>"NB DIM" );
 	      EMIT( PUA );
               end if;
             end;
 
 	elsif NAMEXP.TY = DN_ENUMERATION then
-	  EXPRESSIONS.CODE_EXP ( D ( AS_EXP, ASSIGN ) );
+	  OPER := EXPRESSIONS.CODE_EXP ( D ( AS_EXP, ASSIGN ) );
 	  EMITS.GET_ULO ( DEFN, COMP_UNIT, LVL, OFS );
 	  declare
 	    CT	: CODE_DATA_TYPE	:= CODE_DATA_TYPE_OF( NAMEXP );
@@ -683,7 +686,7 @@ separate ( CODE_GEN )
 	  end;
 
 	elsif NAMEXP.TY = DN_INTEGER then
-	  EXPRESSIONS.CODE_EXP( D( AS_EXP, ASSIGN ) );
+	  OPER := EXPRESSIONS.CODE_EXP( D( AS_EXP, ASSIGN ) );
 	  if NAMEXP.TY /= DN_UNIVERSAL_INTEGER then
 	    EMITS.GET_ULO( DEFN, COMP_UNIT, LVL, OFS );
 	    GEN_PUSH_ADDR( COMP_UNIT, LVL, OFS );
@@ -705,11 +708,12 @@ separate ( CODE_GEN )
   is
   begin
     declare
-      LVB_LBL          : LABEL_TYPE;
-      EXP              : TREE := D ( AS_EXP, ADA_EXIT );
-      LOOP_STM         : TREE := D ( SM_STM, ADA_EXIT );
-      LOOP_LEVEL       : LEVEL_TYPE := DI ( CD_LEVEL, LOOP_STM );
-      AFTER_LOOP_LABEL : LABEL_TYPE := LABEL_TYPE( DI( CD_AFTER_LOOP, LOOP_STM ) );
+      LVB_LBL		: LABEL_TYPE;
+      EXP			: TREE		:= D ( AS_EXP, ADA_EXIT );
+      LOOP_STM		: TREE		:= D ( SM_STM, ADA_EXIT );
+      LOOP_LEVEL		: LEVEL_TYPE	:= DI ( CD_LEVEL, LOOP_STM );
+      AFTER_LOOP_LABEL	: LABEL_TYPE	:= LABEL_TYPE( DI( CD_AFTER_LOOP, LOOP_STM ) );
+      OPER		: OPERAND_REF;
     begin
       if EXP = TREE_VOID then
         if LOOP_LEVEL /= EMITS.CUR_LEVEL then
@@ -719,7 +723,7 @@ separate ( CODE_GEN )
         end if;
         EMIT ( JMP, AFTER_LOOP_LABEL, COMMENT=> "SORTIE DE BOUCLE" );
       else
-      EXPRESSIONS.CODE_EXP ( EXP );
+        OPER := EXPRESSIONS.CODE_EXP ( EXP );
         if LOOP_LEVEL /= EMITS.CUR_LEVEL then
           declare
             SKIP_LBL : LABEL_TYPE := NEW_LABEL;

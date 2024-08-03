@@ -17,6 +17,7 @@ is
   ACCES_TEXTE		: STRING( 1..256 );
   ACCES_TEXTE_LENGTH	: NATURAL;
 
+  NO_OPTION_GIVEN		: BOOLEAN		:= FALSE;
   OPTION			: CHARACTER;
 
   START_TIME, END_TIME	: CALENDAR.TIME;
@@ -63,22 +64,31 @@ FIND_START_2:
       end loop FIND_START_2;
       POST_CHN := CHN_START + 1;
 FIND_POST_END_2:
-      loop exit when CMD_FROM_STDIN( POST_CHN ) = ' ';  POST_CHN := POST_CHN + 1; end loop FIND_POST_END_2;
+      loop
+        exit when CMD_FROM_STDIN( POST_CHN ) = ' ';
+        POST_CHN := POST_CHN + 1;
+        if POST_CHN > CMD_FROM_STDIN'LAST then
+	NO_OPTION_GIVEN := TRUE;
+        end if;
+      end loop FIND_POST_END_2;
 
       ACCES_TEXTE_LENGTH	:= (POST_CHN - CHN_START);
       ACCES_TEXTE( 1..ACCES_TEXTE_LENGTH ) := CMD_FROM_STDIN( CHN_START .. POST_CHN-1 );
 
     end ISOLE_RELATIVE_SOURCE_PATH;
 
-
+    if NO_OPTION_GIVEN
+    then OPTION := 'S';
+    else
 				ISOLE_OPTION:									--| ISOLER DANS OPTION LE CARACTERE OPTION D'ARRET
-    begin
-      CHN_START := POST_CHN;
+      begin
+        CHN_START := POST_CHN;
 FIND_START_3:
-      loop exit when CMD_FROM_STDIN( CHN_START ) /= ' '; CHN_START := CHN_START + 1; end loop FIND_START_3;
-      OPTION := CMD_FROM_STDIN( CHN_START );
+        loop exit when CMD_FROM_STDIN( CHN_START ) /= ' '; CHN_START := CHN_START + 1; end loop FIND_START_3;
+        OPTION := CMD_FROM_STDIN( CHN_START );
 
-    end ISOLE_OPTION;
+      end ISOLE_OPTION;
+    end if;
   end;
 
   if OPTION = 'u' or OPTION = 'p' or OPTION = 'a' or OPTION = 'U' or OPTION = 'P' or OPTION = 'A' then

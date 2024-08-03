@@ -85,8 +85,6 @@ is
   procedure CODE_OBJECT_NAME ( OBJECT_NAME :TREE );
   procedure CODE_UNIT_NAME ( UNIT_NAME :TREE );
   procedure CODE_VC_NAME ( VC_NAME :TREE );
-  procedure CODE_VARIABLE_ID ( VARIABLE_ID :TREE );
-  procedure CODE_CONSTANT_ID ( CONSTANT_ID :TREE );
   procedure CODE_NUMBER_ID ( NUMBER_ID :TREE );
   procedure CODE_SOURCE_NAME_S ( SOURCE_NAME_S :TREE );
   procedure CODE_TYPE_NAME ( TYPE_NAME :TREE );
@@ -139,14 +137,14 @@ is
 				-----------
   is
 
-    procedure CODE_EXP		( EXP :TREE );
+    function  CODE_EXP		( EXP :TREE )		return OPERAND_REF;
     procedure CODE_INDEXED		( INDEXED :TREE );
     procedure CODE_NAME		( NAME :TREE );
 
 
   private
 
-    procedure CODE_EXP_EXP		( EXP_EXP :TREE );
+    function  CODE_EXP_EXP		( EXP_EXP :TREE )		return OPERAND_REF;
     procedure CODE_DESIGNATOR		( DESIGNATOR :TREE );
     procedure CODE_NAME_EXP		( NAME_EXP :TREE );
     procedure CODE_USED_NAME		( USED_NAME :TREE );
@@ -162,11 +160,11 @@ is
     procedure CODE_MEMBERSHIP		( MEMBERSHIP :TREE );
     procedure CODE_RANGE_MEMBERSHIP	( RANGE_MEMBERSHIP :TREE );
     procedure CODE_TYPE_MEMBERSHIP	( TYPE_MEMBERSHIP :TREE );
-    procedure CODE_EXP_VAL		( EXP_VAL :TREE );
-    procedure CODE_EXP_VAL_EXP	( EXP_VAL_EXP :TREE );
+    function  CODE_EXP_VAL		( EXP_VAL :TREE )		return OPERAND_REF;
+    function  CODE_EXP_VAL_EXP	( EXP_VAL_EXP :TREE )	return OPERAND_REF;
     procedure CODE_AGG_EXP		( AGG_EXP :TREE );
-    procedure CODE_PARENTHESIZED	( PARENTHESIZED :TREE );
-    procedure CODE_NUMERIC_LITERAL	( NUMERIC_LITERAL :TREE );
+    function  CODE_PARENTHESIZED	( PARENTHESIZED :TREE )	return OPERAND_REF;
+    function  CODE_NUMERIC_LITERAL	( NUMERIC_LITERAL :TREE )	return OPERAND_REF;
     procedure CODE_STRING_LITERAL	( STRING_LITERAL :TREE );
     procedure CODE_NULL_ACCESS	( NULL_ACCESS :TREE );
     procedure CODE_QUAL_CONV		( QUAL_CONV :TREE );
@@ -174,6 +172,9 @@ is
     procedure CODE_QUALIFIED		( QUALIFIED :TREE );
     procedure CODE_QUALIFIED_ALLOCATOR	( QUALIFIED_ALLOCATOR :TREE );
     procedure CODE_SUBTYPE_ALLOCATOR	( SUBTYPE_ALLOCATOR :TREE );
+
+    procedure CODE_CONSTANT_ID	( CONSTANT_ID :TREE );
+    procedure CODE_VARIABLE_ID	( VARIABLE_ID :TREE );
 
 	-----------
   end	EXPRESSIONS;
@@ -719,8 +720,9 @@ is
 
   --|-------------------------------------------------------------------------------------------
   procedure CODE_CHOICE_EXP ( CHOICE_EXP :TREE ) is
+    OPER	: OPERAND_REF;
   begin
-    EXPRESSIONS.CODE_EXP( D( AS_EXP, CHOICE_EXP ) );
+    OPER := EXPRESSIONS.CODE_EXP( D( AS_EXP, CHOICE_EXP ) );
   end;
 
   --|-------------------------------------------------------------------------------------------
@@ -973,13 +975,14 @@ is
   procedure CODE_INTEGER_DEF ( INTEGER_DEF, TYPE_DECL :TREE ) is
   begin
     declare
-      TYPE_ID      : TREE := D( AS_SOURCE_NAME, TYPE_DECL );
-      INTEGER_SPEC : TREE := D( SM_TYPE_SPEC, TYPE_ID );
-      LOWER        : OFFSET_TYPE;
-      UPPER        : OFFSET_TYPE;
-      INT_RANGE    : TREE := D( AS_CONSTRAINT, INTEGER_DEF );
-      EXP_BORNE    : TREE;
-     begin
+      TYPE_ID		: TREE		:= D( AS_SOURCE_NAME, TYPE_DECL );
+      INTEGER_SPEC		: TREE		:= D( SM_TYPE_SPEC, TYPE_ID );
+      LOWER		: OFFSET_TYPE;
+      UPPER		: OFFSET_TYPE;
+      INT_RANGE		: TREE		:= D( AS_CONSTRAINT, INTEGER_DEF );
+      EXP_BORNE		: TREE;
+      OPER_1, OPER_2	: OPERAND_REF;
+    begin
       ALIGN( INTG_AL );
       LOWER := - EMITS.OFFSET_ACT;
       INC_OFFSET( INTG_SIZE );
@@ -990,10 +993,10 @@ is
       DI( CD_COMP_UNIT, INTEGER_SPEC, CUR_COMP_UNIT );
       DB( CD_COMPILED,  INTEGER_SPEC, TRUE );
       EXP_BORNE := D( AS_EXP1, INT_RANGE );
-      EXPRESSIONS.CODE_EXP ( EXP_BORNE );
+      OPER_1 := EXPRESSIONS.CODE_EXP( EXP_BORNE );
       GEN_STORE( I, EMITS.CUR_COMP_UNIT, EMITS.CUR_LEVEL, LOWER, "BORNE BASSE" );
       EXP_BORNE := D( AS_EXP2, INT_RANGE );
-      EXPRESSIONS.CODE_EXP ( EXP_BORNE );
+      OPER_2 := EXPRESSIONS.CODE_EXP( EXP_BORNE );
       GEN_STORE( I, EMITS.CUR_COMP_UNIT, EMITS.CUR_LEVEL, UPPER, "BORNE HAUTE" );
     end;
   end;
@@ -1142,13 +1145,14 @@ is
           DI( CD_OFFSET,    VC_NAME, OFS );
           DB( CD_COMPILED,  VC_NAME, TRUE );
           INC_OFFSET( INTG_SIZE );
-          if INIT_EXP /= TREE_VOID then
-
-put_line( "COMPILE_VC_NAME_INTEGER init_exp" );
-
-	  EXPRESSIONS.CODE_EXP ( INIT_EXP );
-	  GEN_STORE( I, CCU, LVL, OFS,
+          if INIT_EXP /= TREE_VOID
+	then
+	  declare
+	    OPER	: OPERAND_REF	:= EXPRESSIONS.CODE_EXP( INIT_EXP );
+	  begin
+	    GEN_STORE( I, CCU, LVL, OFS,
                       "STO " & PRINT_NAME ( D (LX_SYMREP, VC_NAME ) ) & " VAL INIT" );
+	  end;
           end if;
         end;
       end	COMPILE_VC_NAME_INTEGER;
@@ -1168,6 +1172,7 @@ put_line( "COMPILE_VC_NAME_INTEGER init_exp" );
 	  LVL		: LEVEL_TYPE	renames EMITS.CUR_LEVEL;
 	  OFS		: OFFSET_TYPE	:= - EMITS.OFFSET_ACT;
 	  INIT_EXP	: TREE		:= D( SM_INIT_EXP, VC_NAME );
+	  OPER		: OPERAND_REF;
           begin
             DI( CD_COMP_UNIT, VC_NAME, CCU );
             DI( CD_LEVEL,     VC_NAME, LVL );
@@ -1175,7 +1180,7 @@ put_line( "COMPILE_VC_NAME_INTEGER init_exp" );
             DB( CD_COMPILED,  VC_NAME, TRUE );
             INC_OFFSET( SIZ );
             if INIT_EXP /= TREE_VOID then
-	    EXPRESSIONS.CODE_EXP( INIT_EXP );
+	    OPER := EXPRESSIONS.CODE_EXP( INIT_EXP );
             end if;
             GEN_STORE( CT, CCU, LVL, OFS,
 			PRINT_NAME( D( LX_SYMREP, VC_NAME ) ) & " := VAL INIT" );
@@ -1281,10 +1286,11 @@ put_line( "COMPILE_VC_NAME_INTEGER init_exp" );
 	  declare
 	    GENERAL_ASSOC_SEQ	: SEQ_TYPE	:= LIST( D( SM_NORMALIZED_COMP_S, INIT_EXP ) );
 	    COMP_EXP		: TREE;
+	    OPER			: OPERAND_REF;
 	  begin
 	    while not IS_EMPTY( GENERAL_ASSOC_SEQ ) loop
 	      POP( GENERAL_ASSOC_SEQ, COMP_EXP );
-	      EXPRESSIONS.CODE_EXP( COMP_EXP );
+	      OPER := EXPRESSIONS.CODE_EXP( COMP_EXP );
 	    end loop;
 	  end;
 	end if;
@@ -1307,20 +1313,6 @@ put_line( "COMPILE_VC_NAME_INTEGER init_exp" );
     end;
   end	CODE_VC_NAME;
 	------------
-
-
-
-  procedure CODE_VARIABLE_ID ( VARIABLE_ID :TREE ) is
-  begin
-    null;
-  end;
-
-
-
-  procedure CODE_CONSTANT_ID ( CONSTANT_ID :TREE ) is
-  begin
-    null;
-  end;
 
 
 
@@ -1491,10 +1483,11 @@ put_line( "COMPILE_VC_NAME_INTEGER init_exp" );
   procedure CODE_COND_CLAUSE ( COND_CLAUSE :TREE ) is
   begin
     declare
-      EXP : TREE := D ( AS_EXP, COND_CLAUSE );
-      NEXT_CLAUSE_LBL : LABEL_TYPE;
+      EXP			: TREE		:= D( AS_EXP, COND_CLAUSE );
+      NEXT_CLAUSE_LBL	: LABEL_TYPE;
+      OPER		: OPERAND_REF;
     begin
-      EXPRESSIONS.CODE_EXP ( EXP );
+      OPER := EXPRESSIONS.CODE_EXP ( EXP );
       NEXT_CLAUSE_LBL := NEW_LABEL;
       EMIT ( JMPF, NEXT_CLAUSE_LBL, COMMENT=> "NON CONDITION SAUT CLAUSE SUIVANTE" );
       INSTRUCTIONS.CODE_STM_S ( D ( AS_STM_S, COND_CLAUSE ) );

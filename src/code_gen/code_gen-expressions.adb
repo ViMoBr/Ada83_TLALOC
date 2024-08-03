@@ -4,8 +4,12 @@ separate ( CODE_GEN )
 				-----------
 is
 
+
+  package CODI	renames CODAGE_INTERMEDIAIRE;
+
+
 				--====--
-  procedure			CODE_EXP			( EXP :TREE )
+  function			CODE_EXP			( EXP :TREE )		return OPERAND_REF
   is
   begin
 
@@ -15,9 +19,10 @@ is
 
     elsif EXP.TY in CLASS_EXP_EXP
     then
-      CODE_EXP_EXP( EXP );
+      return CODE_EXP_EXP( EXP );
 
     end if;
+    return NO_OPERAND;
 
   end	CODE_EXP;
 	--====--
@@ -87,10 +92,50 @@ is
 				-------------------
   procedure			CODE_USED_OBJECT_ID		( USED_OBJECT_ID :TREE )
   is
+    DEFN		: TREE		:= D( SM_DEFN, USED_OBJECT_ID ) ;
   begin
-    null;
+    case DEFN.TY is
+    when DN_CONSTANT_ID =>                  CODE_CONSTANT_ID( DEFN );
+--               when CONST_ID =>                  Expr_used_object_id_const_id ( nd_used_object_id.C_USED_OBJECT_ID.SM_DEFN );
+--               when VAR_ID =>                  Expr_used_object_id_var_id ( nd_used_object_id.C_USED_OBJECT_ID.SM_DEFN );
+--               when DEF_CHAR =>                  Expr_used_object_id_def_char ( nd_used_object_id.C_USED_OBJECT_ID.SM_DEFN );
+--               when ENUM_ID =>                  Expr_used_object_id_enum_id ( nd_used_object_id.C_USED_OBJECT_ID.SM_DEFN );
+--               when ITERATION_ID =>                  Expr_used_object_id_iteration_id ( nd_used_object_id.C_USED_OBJECT_ID.SM_DEFN );
+--               when IN_ID =>                  Expr_used_object_id_in_id ( nd_used_object_id.C_USED_OBJECT_ID.SM_DEFN );
+--               when IN_OUT_ID =>                  Expr_used_object_id_in_out_id ( nd_used_object_id.C_USED_OBJECT_ID.SM_DEFN );
+--               when OUT_ID =>                  Expr_used_object_id_out_id ( nd_used_object_id.C_USED_OBJECT_ID.SM_DEFN );
+    when others => raise PROGRAM_ERROR;
+    end case;
+
   end	CODE_USED_OBJECT_ID;
 	-------------------
+
+
+
+				----------------
+  procedure			CODE_CONSTANT_ID		( CONSTANT_ID :TREE )
+  is
+    CST_TYPE	: TREE	:= D( SM_OBJ_TYPE, CONSTANT_ID );
+  begin
+    case CST_TYPE.TY is
+    when DN_INTEGER => null;
+    when DN_ARRAY => null;
+    when DN_ACCESS => null;
+    when DN_ENUM_LITERAL_S => null;
+    when others => raise PROGRAM_ERROR;
+    end case;
+  end	CODE_CONSTANT_ID;
+	----------------
+
+
+
+				----------------
+  procedure			CODE_VARIABLE_ID		( VARIABLE_ID :TREE )
+  is
+  begin
+    null;
+  end	CODE_VARIABLE_ID;
+	----------------
 
 
 				--------------
@@ -207,9 +252,10 @@ is
       procedure INDEX ( EXP_SEQ :SEQ_TYPE ) is
         EXP_S	: SEQ_TYPE	:= EXP_SEQ;
         EXP	: TREE;
+        OPER	: OPERAND_REF;
       begin
         POP( EXP_S, EXP );
-        CODE_EXP( EXP );
+        OPER := CODE_EXP( EXP );
         if IS_EMPTY( EXP_S ) then
 	EMIT ( AR2,		COMMENT => "ADRESSE POUR LE DERNIER INDICE (RAPIDE)" );
         else
@@ -259,13 +305,13 @@ is
 
 
 				------------
-  procedure			CODE_EXP_EXP		( EXP_EXP :TREE )
+  function			CODE_EXP_EXP		( EXP_EXP :TREE )		return OPERAND_REF
   is
   begin
 
     if EXP_EXP.TY in CLASS_EXP_VAL
     then
-      CODE_EXP_VAL ( EXP_EXP );
+      return CODE_EXP_VAL ( EXP_EXP );
 
     elsif EXP_EXP.TY in CLASS_AGG_EXP
     then
@@ -280,22 +326,23 @@ is
       CODE_SUBTYPE_ALLOCATOR ( EXP_EXP );
 
     end if;
+    return NO_OPERAND;
 
   end	CODE_EXP_EXP;
 	------------
 
 
 				------------
-  procedure			CODE_EXP_VAL		( EXP_VAL :TREE )
+  function			CODE_EXP_VAL		( EXP_VAL :TREE )		return OPERAND_REF
   is
   begin
 
     if EXP_VAL.TY in CLASS_EXP_VAL_EXP
     then
-      CODE_EXP_VAL_EXP( EXP_VAL );
+      return CODE_EXP_VAL_EXP( EXP_VAL );
 
     elsif EXP_VAL.TY = DN_NUMERIC_LITERAL then
-      CODE_NUMERIC_LITERAL( EXP_VAL );
+      return CODE_NUMERIC_LITERAL( EXP_VAL );
 
     elsif EXP_VAL.TY = DN_NULL_ACCESS then
       CODE_NULL_ACCESS( EXP_VAL );
@@ -304,11 +351,12 @@ is
       CODE_SHORT_CIRCUIT( EXP_VAL );
 
     end if;
+    return NO_OPERAND;
   end	CODE_EXP_VAL;
 	------------
 
 				----------------
-  procedure			CODE_EXP_VAL_EXP		( EXP_VAL_EXP :TREE )
+  function			CODE_EXP_VAL_EXP		( EXP_VAL_EXP :TREE )	return OPERAND_REF
   is
   begin
 
@@ -319,9 +367,11 @@ is
       CODE_MEMBERSHIP( EXP_VAL_EXP );
 
     elsif EXP_VAL_EXP.TY = DN_PARENTHESIZED then
-      CODE_PARENTHESIZED( EXP_VAL_EXP );
+      return CODE_PARENTHESIZED( EXP_VAL_EXP );
 
     end if;
+    return NO_OPERAND;
+
   end	CODE_EXP_VAL_EXP;
 	----------------
 
@@ -364,18 +414,31 @@ is
 
 
 				------------------
-  procedure			CODE_PARENTHESIZED		( PARENTHESIZED :TREE )
+  function			CODE_PARENTHESIZED		( PARENTHESIZED :TREE )	return OPERAND_REF
   is
   begin
-    null;
+    return CODE_EXP( D( AS_EXP, PARENTHESIZED ) );
+
   end	CODE_PARENTHESIZED;
 	------------------
 
 				--------------------
-  procedure			CODE_NUMERIC_LITERAL	( NUMERIC_LITERAL :TREE )
+  function			CODE_NUMERIC_LITERAL	( NUMERIC_LITERAL :TREE )	return OPERAND_REF
   is
+    VAL	: TREE	:= D( SM_VALUE, NUMERIC_LITERAL );
   begin
-    null;
+    if VAL.PT = HI and then VAl.NOTY = DN_NUM_VAL then
+      declare
+        OPER	: OPERAND_REF	:= CODI.NEW_OPERAND;
+      begin
+        CODI.MAKE_OPRND_IMM( OPER, DI( SM_VALUE, NUMERIC_LITERAL ) );
+        return OPER;
+      end;
+    elsif VAL.TY = DN_REAL_VAL then
+      null;			-- A FAIRE
+    end if;
+    return NO_OPERAND;
+
   end	CODE_NUMERIC_LITERAL;
 	--------------------
 
