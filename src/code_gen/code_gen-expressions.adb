@@ -194,20 +194,20 @@ is
 	declare
 	  PACKAGE_SPEC	: TREE	:= D( SM_SPEC, DEFN );
 	begin
-	  EMIT( RFP, EMITS.CUR_COMP_UNIT, S=> PRINT_NAME( SYMREP ) );
-	  EMITS.GENERATE_CODE := FALSE;
+	  EMIT( RFP, CODI.CUR_COMP_UNIT, S=> PRINT_NAME( SYMREP ) );
+	  CODI.GENERATE_CODE := FALSE;
 	  DB( CD_COMPILED, DEFN, TRUE );
 	  DECLARATIONS.CODE_DECL_S( D( AS_DECL_S1, PACKAGE_SPEC ) );
 	end;
         end if;
-        EMITS.CUR_COMP_UNIT := CUR_COMP_UNIT + 1;
+        CODI.CUR_COMP_UNIT := CUR_COMP_UNIT + 1;
 
       elsif DEFN.TY = DN_PROCEDURE_ID then
         if not DB( CD_COMPILED, DEFN ) then
 	declare
 	  PROC_LBL	: LABEL_TYPE	:= NEW_LABEL;
 	begin
-	  EMITS.GENERATE_CODE := TRUE;
+	  CODI.GENERATE_CODE := TRUE;
 	  EMIT( RFP, INTEGER( 0 ), S=> PRINT_NAME ( SYMREP ) );
 	  DI  ( CD_LABEL,      DEFN, INTEGER ( PROC_LBL ) );
 	  DI  ( CD_LEVEL,      DEFN, 1 );
@@ -231,6 +231,9 @@ is
     if NAME_EXP.TY = DN_INDEXED then
       CODE_INDEXED ( NAME_EXP );
 
+    elsif NAME_EXP.TY = DN_FUNCTION_CALL then
+      CODE_FUNCTION_CALL( NAME_EXP );
+
     elsif NAME_EXP.TY = DN_SLICE then
       CODE_SLICE ( NAME_EXP );
 
@@ -241,6 +244,13 @@ is
   end	CODE_NAME_EXP;
 	-------------
 
+				------------------
+  procedure			CODE_FUNCTION_CALL		( FUNCTION_CALL :TREE )
+  is
+  begin
+    null;
+  end	CODE_FUNCTION_CALL;
+	------------------
 
 
 				------------
@@ -429,9 +439,8 @@ is
   begin
     if VAL.PT = HI and then VAl.NOTY = DN_NUM_VAL then
       declare
-        OPER	: OPERAND_REF	:= CODI.NEW_OPERAND;
+        OPER	: OPERAND_REF	:= CODI.LOAD_IMM( DI( SM_VALUE, NUMERIC_LITERAL ) );
       begin
-        CODI.MAKE_OPRND_IMM( OPER, DI( SM_VALUE, NUMERIC_LITERAL ) );
         return OPER;
       end;
     elsif VAL.TY = DN_REAL_VAL then

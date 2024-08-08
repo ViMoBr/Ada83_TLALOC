@@ -1,21 +1,34 @@
 @TEST
 $ 2				--| ETIQUETTE ENTREE
- 1	BRA << 1>>
- 2 << 2>>
-MAKE_OPRND_IMM     OPERAND= 256  IMM_VAL= 0
-sld.i	0	0		-- STO I VAL INIT
- 2	BRA << 3>>
- 3 << 1>>
- 3	BRA << 2>>
- 4 << 3>>
- 4	LINK  4
+ 1	BRA @1
+@2
+	%2 = li.b   0
+ 3	[0| 2|-4] = st.w %2
+	%4 = li.b   1
+ 5	[0| 2|-8] = st.w %4
+	%6 = li.b   2
+ 7	[0| 2|-12] = st.w %6
+ 8	BRA @3
+@1
+ 9	BRA @2
+@3
+ 10	LINK -16
 EXH	$ 4			-- EXCEPTION HANDLERS
-	pla	0	0
+	%11 = li.b   1
+	%12 = la [0| 2|-4]
 	trap	CVB
-sld.i	0	0
+ 13	[0| 2|-4] = st.w %12
+	%14 = li.b   2
+	%15 = la [0| 2|-8]
+	trap	CVB
+ 16	[0| 2|-8] = st.w %15
+	%17 = li.b   3
+	%18 = la [0| 2|-12]
+	trap	CVB
+ 19	[0| 2|-12] = st.w %18
 $ 3
- 5	UNLINK
- 6	RTD  0
+ 20	UNLINK
+ 21	RTD  0
 $ 4
 	eex
   QUIT

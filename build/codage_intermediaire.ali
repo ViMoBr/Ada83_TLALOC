@@ -1,37 +1,71 @@
 V "GNAT Lib v12"
 A -g
 A -gnat83
-P ZX
+P SS ZX
 
 RN
 RV NO_DIRECT_BOOLEAN_OPERATORS
 RV NO_ENUMERATION_MAPS
+RV NO_EXCEPTION_HANDLERS
 RV NO_EXCEPTIONS
 RV NO_IO
 RV NO_IMPLICIT_CONDITIONALS
+RV NO_LOCAL_ALLOCATORS
+RV NO_RECURSION
+RV NO_SECONDARY_STACK
 RV NO_STANDARD_STORAGE_POOLS
 RV NO_DEFAULT_INITIALIZATION
 RV NO_DYNAMIC_SIZED_OBJECTS
+RV NO_IMPLEMENTATION_ASPECT_SPECIFICATIONS
 RV NO_IMPLICIT_LOOPS
 RV NO_ELABORATION_CODE
 RV NO_OBSOLESCENT_FEATURES
 
-U codage_intermediaire%b  codage_intermediaire.adb  900671a0 OO PK IU
+U codage_intermediaire%b  codage_intermediaire.adb  c5f9b867 NE OO PK IU
+W ada%s			ada.ads			ada.ali
 Z ada.exceptions%s	a-except.adb		a-except.ali
 Z ada.strings.text_buffers%s  a-sttebu.adb	a-sttebu.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+Z ada.text_io.generic_aux%s  a-tigeau.adb	a-tigeau.ali
+Z ada.text_io.integer_aux%s
+Z ada.text_io.integer_io%s
+W diana_node_attr_class_names%s  diana_node_attr_class_names.ads  diana_node_attr_class_names.ali
+W system%s		system.ads		system.ali
 Z system.concat_2%s	s-conca2.adb		s-conca2.ali
 Z system.concat_3%s	s-conca3.adb		s-conca3.ali
 Z system.concat_4%s	s-conca4.adb		s-conca4.ali
+Z system.concat_5%s	s-conca5.adb		s-conca5.ali
 Z system.concat_6%s	s-conca6.adb		s-conca6.ali
+Z system.concat_7%s	s-conca7.adb		s-conca7.ali
+Z system.img_biu%s	s-imgbiu.adb		s-imgbiu.ali
+Z system.img_char%s	s-imgcha.adb		s-imgcha.ali
 Z system.img_int%s	s-imgint.adb		s-imgint.ali
-W text_io%s		text_io.ads		text_io.ali
+Z system.img_llb%s	s-imgllb.adb		s-imgllb.ali
+Z system.img_lli%s	s-imglli.adb		s-imglli.ali
+Z system.img_lllb%s	s-imglllb.ads		s-imglllb.ali
+Z system.img_llli%s	s-imgllli.ads		s-imgllli.ali
+Z system.img_lllw%s	s-imglllw.ads		s-imglllw.ali
+Z system.img_llw%s	s-imgllw.adb		s-imgllw.ali
+Z system.img_wiu%s	s-imgwiu.adb		s-imgwiu.ali
+Z system.secondary_stack%s  s-secsta.adb	s-secsta.ali
+Z system.val_int%s	s-valint.adb		s-valint.ali
+Z system.val_lli%s	s-vallli.adb		s-vallli.ali
+Z system.val_llli%s	s-valllli.ads		s-valllli.ali
 
-U codage_intermediaire%s  codage_intermediaire.ads  2816214e EE OO PK IU
+U codage_intermediaire%s  codage_intermediaire.ads  41d8226d EE OO PK IU
+W ada%s			ada.ads			ada.ali
+Z ada.exceptions%s	a-except.adb		a-except.ali
 Z ada.strings.text_buffers%s  a-sttebu.adb	a-sttebu.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+Z ada.text_io.enumeration_aux%s  a-tienau.adb	a-tienau.ali
+Z ada.text_io.enumeration_io%s
 W idl%s			idl.adb			idl.ali
 Z system%s		system.ads		system.ali
 Z system.exception_table%s  s-exctab.adb	s-exctab.ali
 Z system.standard_library%s  s-stalib.adb	s-stalib.ali
+Z system.val_enum_16%s	s-vaen16.ads		s-vaen16.ali
+Z system.val_enum_8%s	s-vaenu8.ads		s-vaenu8.ali
+W text_io%s		text_io.ads		text_io.ali
 
 D ada.ads		20230508121439 76789da1 ada%s
 D a-except.ads		20230508121439 2a7d8d70 ada.exceptions%s
@@ -42,23 +76,45 @@ D a-sttebu.ads		20230508121439 18209c64 ada.strings.text_buffers%s
 D a-stuten.ads		20230508121439 33c54060 ada.strings.utf_encoding%s
 D a-tags.ads		20230508121439 9eaa38c6 ada.tags%s
 D a-textio.ads		20230508121439 deada98a ada.text_io%s
+D a-tienau.ads		20230508121439 6a9c157b ada.text_io.enumeration_aux%s
+D a-tienio.ads		20230508121439 2e79c9bf ada.text_io.enumeration_io%s
+D a-tienio.adb		20230508121439 c9e6b5af ada.text_io.enumeration_io%b
+D a-tigeau.ads		20230508121439 e643cdf3 ada.text_io.generic_aux%s
+D a-tiinau.ads		20230508121439 3ca4fcff ada.text_io.integer_aux%s
+D a-tiinau.adb		20230508121439 199a0c7a ada.text_io.integer_aux%b
+D a-tiinio.ads		20230508121439 390edddb ada.text_io.integer_io%s
+D a-tiinio.adb		20230508121439 b79731f4 ada.text_io.integer_io%b
 D a-unccon.ads		20230508121439 0e9b276f ada.unchecked_conversion%s
-D codage_intermediaire.ads  20240803114220 18beb135 codage_intermediaire%s
-D codage_intermediaire.adb  20240803111111 a90a080d codage_intermediaire%b
+D codage_intermediaire.ads  20240808170956 50c27a8e codage_intermediaire%s
+D codage_intermediaire.adb  20240808173141 f8af3d84 codage_intermediaire%b
 D diana_node_attr_class_names.ads  20240730152129 6d94ff6d diana_node_attr_class_names%s
 D idl.ads		20240711120008 30a8907b idl%s
 D interfac.ads		20230508121439 edec285f interfaces%s
 D i-cstrea.ads		20230508121439 e53d8b8e interfaces.c_streams%s
 D system.ads		20230508121439 a2da961d system%s
+D s-casuti.ads		20230508121439 cf13d755 system.case_util%s
 D s-conca2.ads		20230508121439 3d460502 system.concat_2%s
 D s-conca3.ads		20230508121439 9078e860 system.concat_3%s
 D s-conca4.ads		20230508121439 d29d9dac system.concat_4%s
+D s-conca5.ads		20230508121439 47259367 system.concat_5%s
 D s-conca6.ads		20230508121439 c726e2e8 system.concat_6%s
+D s-conca7.ads		20230508121439 776c8ba6 system.concat_7%s
 D s-crtl.ads		20230508121439 8a0692f8 system.crtl%s
 D s-exctab.ads		20230508121439 91bef6ef system.exception_table%s
 D s-ficobl.ads		20230508121439 dc5161d4 system.file_control_block%s
+D s-imageb.ads		20230508121439 3953e0e6 system.image_b%s
 D s-imagei.ads		20230508121439 0d3f86a7 system.image_i%s
+D s-imagew.ads		20230508121439 9d2dd267 system.image_w%s
+D s-imgbiu.ads		20230508121439 0a8e1c41 system.img_biu%s
+D s-imgcha.ads		20230508121439 9c3458e7 system.img_char%s
 D s-imgint.ads		20230508121439 bdb6f5ec system.img_int%s
+D s-imgllb.ads		20230508121439 47d0db9f system.img_llb%s
+D s-imglli.ads		20230508121439 3723d9ff system.img_lli%s
+D s-imglllb.ads		20230508121439 30212eed system.img_lllb%s
+D s-imgllli.ads		20230508121439 5cf3dc07 system.img_llli%s
+D s-imglllw.ads		20230508121439 9e2b0560 system.img_lllw%s
+D s-imgllw.ads		20230508121439 bf9c9c15 system.img_llw%s
+D s-imgwiu.ads		20230508121439 912a95f2 system.img_wiu%s
 D s-parame.ads		20230508121439 d494a4a6 system.parameters%s
 D s-putima.ads		20230508121439 4e095881 system.put_images%s
 D s-secsta.ads		20230508121439 62cd9202 system.secondary_stack%s
@@ -69,308 +125,733 @@ D s-stoele.ads		20230508121439 6d8e1ff4 system.storage_elements%s
 D s-stoele.adb		20230508121439 8f5a9db6 system.storage_elements%b
 D s-traent.ads		20230508121439 c81cbf8c system.traceback_entries%s
 D s-unstyp.ads		20230508121439 fa2a7f59 system.unsigned_types%s
+D s-vaen16.ads		20230508121439 2b230721 system.val_enum_16%s
+D s-vaenu8.ads		20230508121439 b7b91426 system.val_enum_8%s
+D s-valint.ads		20230508121439 85ddbf9c system.val_int%s
+D s-vallli.ads		20230508121439 88ead33b system.val_lli%s
+D s-valllli.ads		20230508121439 e68d7c3d system.val_llli%s
+D s-vallllu.ads		20230508121439 fcd04714 system.val_lllu%s
+D s-valllu.ads		20230508121439 ca6e26ce system.val_llu%s
+D s-valuns.ads		20230508121439 e8a1f424 system.val_uns%s
+D s-valuti.ads		20230508121439 4d0d41f3 system.val_util%s
+D s-valuei.ads		20230508121439 75953b98 system.value_i%s
+D s-valuen.ads		20230508121439 72b74993 system.value_n%s
+D s-valueu.ads		20230508121439 eb2f4477 system.value_u%s
 D s-wchcon.ads		20230508121439 d9032363 system.wch_con%s
 D text_io.ads		20230508121439 21b2c898 text_io%s
 D unchconv.ads		20230508121439 ca2f9e18 unchecked_conversion%s
 G a e
-G c s s s [s codage_intermediaire 5 9 none]
-G c Z s b [new_operand codage_intermediaire 66 13 none]
-G c Z s b [free codage_intermediaire 67 13 none]
-G c Z s b [new_lbl codage_intermediaire 69 13 none]
-G c Z s b [stock_cp codage_intermediaire 70 13 none]
-G c Z s b [make_oprnd_imm codage_intermediaire 72 13 none]
-G c Z s b [make_oprnd_dat codage_intermediaire 73 13 none]
-G c Z s b [make_oprnd_prm codage_intermediaire 76 13 none]
-G c Z s b [adr1_op codage_intermediaire 78 13 none]
-G c Z s b [adr2_op codage_intermediaire 79 13 none]
-G c Z s b [flot0_op codage_intermediaire 81 13 none]
-G c Z s b [flot1_op codage_intermediaire 82 13 none]
-G c Z s b [frame_op codage_intermediaire 83 13 none]
-G c Z s s [rec_temporaire_tIP codage_intermediaire 104 8 none]
-G c Z s s [Ttable_temporaires_tBIP codage_intermediaire 111 3 none]
-G c Z s s [parametres_accesIP codage_intermediaire 127 8 none]
-G c Z s s [rec_temporaire_aIP codage_intermediaire 133 8 none]
-G c Z s s [Ttable_temporaires_aBIP codage_intermediaire 141 3 none]
-G c Z s s [Tbranch_ilocBIP codage_intermediaire 151 3 none]
-G c Z s s [Ttarget_ilocBIP codage_intermediaire 152 3 none]
-G c Z s s [rec_operandIP codage_intermediaire 161 8 none]
-G c Z s s [instrucIP codage_intermediaire 184 8 none]
-G c Z s s [Ttable_instructionsBIP codage_intermediaire 236 3 none]
-G c Z b b [Ttable_operandsBIP codage_intermediaire 14 3 none]
-G r s tree [s codage_intermediaire 5 9 none] [treeIP idl 46 8 none]
-G r s tree [instrucIP codage_intermediaire 184 8 none] [treeIP idl 46 8 none]
-G r s tree [Ttable_instructionsBIP codage_intermediaire 236 3 none] [treeIP idl 46 8 none]
+G c s s s [s codage_intermediaire 28 9 none]
+G c Z s s [get codage_intermediaire__op_code_io 31 14 76_3]
+G c Z s s [get codage_intermediaire__op_code_io 34 14 76_3]
+G c Z s s [put codage_intermediaire__op_code_io 40 14 76_3]
+G c Z s s [put codage_intermediaire__op_code_io 52 14 76_3]
+G c Z s s [get codage_intermediaire__op_code_io 62 14 76_3]
+G c Z s s [put codage_intermediaire__op_code_io 69 14 76_3]
+G c Z s s [get codage_intermediaire__code_data_type_io 31 14 80_3]
+G c Z s s [get codage_intermediaire__code_data_type_io 34 14 80_3]
+G c Z s s [put codage_intermediaire__code_data_type_io 40 14 80_3]
+G c Z s s [put codage_intermediaire__code_data_type_io 52 14 80_3]
+G c Z s s [get codage_intermediaire__code_data_type_io 62 14 80_3]
+G c Z s s [put codage_intermediaire__code_data_type_io 69 14 80_3]
+G c Z s b [open_output_file codage_intermediaire 117 13 none]
+G c Z s b [close_output_file codage_intermediaire 118 13 none]
+G c Z s b [write_label codage_intermediaire 119 13 none]
+G c Z s b [gen_lbl_assignment codage_intermediaire 120 13 none]
+G c Z s b [emit_comment codage_intermediaire 121 13 none]
+G c Z s b [emit codage_intermediaire 122 13 none]
+G c Z s b [emit codage_intermediaire 123 13 none]
+G c Z s b [emit codage_intermediaire 124 13 none]
+G c Z s b [emit codage_intermediaire 125 13 none]
+G c Z s b [emit codage_intermediaire 126 13 none]
+G c Z s b [emit codage_intermediaire 127 13 none]
+G c Z s b [emit codage_intermediaire 128 13 none]
+G c Z s b [emit codage_intermediaire 130 13 none]
+G c Z s b [emit codage_intermediaire 131 13 none]
+G c Z s b [emit codage_intermediaire 132 13 none]
+G c Z s b [emit codage_intermediaire 134 13 none]
+G c Z s b [emit codage_intermediaire 136 13 none]
+G c Z s b [emit codage_intermediaire 137 13 none]
+G c Z s b [emit codage_intermediaire 139 13 none]
+G c Z s b [emit codage_intermediaire 141 13 none]
+G c Z s b [gen_push_data codage_intermediaire 143 13 none]
+G c Z s b [new_label codage_intermediaire 148 13 none]
+G c Z s b [inc_level codage_intermediaire 149 13 none]
+G c Z s b [dec_level codage_intermediaire 150 13 none]
+G c Z s b [dec_offset codage_intermediaire 151 13 none]
+G c Z s b [align codage_intermediaire 152 13 none]
+G c Z s b [perform_return codage_intermediaire 155 13 none]
+G c Z s b [type_size codage_intermediaire 156 13 none]
+G c Z s b [code_data_type_of codage_intermediaire 157 13 none]
+G c Z s b [number_of_dimensions codage_intermediaire 159 13 none]
+G c Z s b [constrained codage_intermediaire 160 13 none]
+G c Z s b [load_type_size codage_intermediaire 161 13 none]
+G c Z s b [new_lbl codage_intermediaire 216 13 none]
+G c Z s b [stock_cp codage_intermediaire 217 13 none]
+G c Z s b [load_imm codage_intermediaire 219 13 none]
+G c Z s b [load_mem codage_intermediaire 220 13 none]
+G c Z s b [load_adr codage_intermediaire 221 13 none]
+G c Z s b [store codage_intermediaire 222 13 none]
+G c Z s b [operand_type_of codage_intermediaire 223 13 none]
+G c Z s b [make_oprnd_prm codage_intermediaire 225 13 none]
+G c Z s b [arg1_op codage_intermediaire 227 13 none]
+G c Z s b [flot0_op codage_intermediaire 229 13 none]
+G c Z s b [flot1_op codage_intermediaire 230 13 none]
+G c Z s b [frame_op codage_intermediaire 231 13 none]
+G c Z s s [Tbranch_ilocBIP codage_intermediaire 261 3 none]
+G c Z s s [Ttarget_ilocBIP codage_intermediaire 262 3 none]
+G c Z s s [slo_locIP codage_intermediaire 268 8 none]
+G c Z s s [operand_recIP codage_intermediaire 277 8 none]
+G c Z s s [instrucIP codage_intermediaire 299 8 none]
+G c Z s s [Ttable_instructionsBIP codage_intermediaire 339 3 none]
+G c Z s b [get_slo codage_intermediaire 341 13 none]
+G c Z b b [get codage_intermediaire__int_io 51 14 51_3]
+G c Z b b [get codage_intermediaire__int_io 59 14 51_3]
+G c Z b b [put codage_intermediaire__int_io 68 14 51_3]
+G c Z b b [put codage_intermediaire__int_io 80 14 51_3]
+G c Z b b [get codage_intermediaire__int_io 90 14 51_3]
+G c Z b b [put codage_intermediaire__int_io 97 14 51_3]
+G c Z b b [get codage_intermediaire__int_io__aux_int 55 14 48_4_51_3]
+G c Z b b [gets codage_intermediaire__int_io__aux_int 60 14 48_4_51_3]
+G c Z b b [put codage_intermediaire__int_io__aux_int 65 14 48_4_51_3]
+G c Z b b [puts codage_intermediaire__int_io__aux_int 71 14 48_4_51_3]
+G c Z b b [get codage_intermediaire__int_io__aux_lli 55 14 56_4_51_3]
+G c Z b b [gets codage_intermediaire__int_io__aux_lli 60 14 56_4_51_3]
+G c Z b b [put codage_intermediaire__int_io__aux_lli 65 14 56_4_51_3]
+G c Z b b [puts codage_intermediaire__int_io__aux_lli 71 14 56_4_51_3]
+G c Z b b [get codage_intermediaire__int_io__aux_llli 55 14 64_4_51_3]
+G c Z b b [gets codage_intermediaire__int_io__aux_llli 60 14 64_4_51_3]
+G c Z b b [put codage_intermediaire__int_io__aux_llli 65 14 64_4_51_3]
+G c Z b b [puts codage_intermediaire__int_io__aux_llli 71 14 64_4_51_3]
+G c Z b b [get codage_intermediaire__lbl_io 51 14 52_3]
+G c Z b b [get codage_intermediaire__lbl_io 59 14 52_3]
+G c Z b b [put codage_intermediaire__lbl_io 68 14 52_3]
+G c Z b b [put codage_intermediaire__lbl_io 80 14 52_3]
+G c Z b b [get codage_intermediaire__lbl_io 90 14 52_3]
+G c Z b b [put codage_intermediaire__lbl_io 97 14 52_3]
+G c Z b b [get codage_intermediaire__lbl_io__aux_int 55 14 48_4_52_3]
+G c Z b b [gets codage_intermediaire__lbl_io__aux_int 60 14 48_4_52_3]
+G c Z b b [put codage_intermediaire__lbl_io__aux_int 65 14 48_4_52_3]
+G c Z b b [puts codage_intermediaire__lbl_io__aux_int 71 14 48_4_52_3]
+G c Z b b [get codage_intermediaire__lbl_io__aux_lli 55 14 56_4_52_3]
+G c Z b b [gets codage_intermediaire__lbl_io__aux_lli 60 14 56_4_52_3]
+G c Z b b [put codage_intermediaire__lbl_io__aux_lli 65 14 56_4_52_3]
+G c Z b b [puts codage_intermediaire__lbl_io__aux_lli 71 14 56_4_52_3]
+G c Z b b [get codage_intermediaire__lbl_io__aux_llli 55 14 64_4_52_3]
+G c Z b b [gets codage_intermediaire__lbl_io__aux_llli 60 14 64_4_52_3]
+G c Z b b [put codage_intermediaire__lbl_io__aux_llli 65 14 64_4_52_3]
+G c Z b b [puts codage_intermediaire__lbl_io__aux_llli 71 14 64_4_52_3]
+G c Z b b [track_stack codage_intermediaire 85 33 none]
+G c Z b b [gen_oc codage_intermediaire 175 33 none]
+G c Z b b [oper_type_of codage_intermediaire 860 25 none]
+G c Z b b [slo_image codage_intermediaire 902 25 none]
+G c Z b b [oper_type_from codage_intermediaire 915 25 none]
+G r s tree [s codage_intermediaire 28 9 none] [treeIP idl 46 8 none]
+G r c none [perform_return codage_intermediaire 155 13 none] [di idl 95 13 none]
+G r c none [code_data_type_of codage_intermediaire 157 13 none] [d idl 89 13 none]
+G r c none [code_data_type_of codage_intermediaire 157 13 none] [print_name idl 101 13 none]
+G r c none [number_of_dimensions codage_intermediaire 159 13 none] [d idl 89 13 none]
+G r c none [number_of_dimensions codage_intermediaire 159 13 none] [di idl 95 13 none]
+G r c none [load_mem codage_intermediaire 220 13 none] [di idl 95 13 none]
+G r c none [load_mem codage_intermediaire 220 13 none] [d idl 89 13 none]
+G r c none [load_adr codage_intermediaire 221 13 none] [di idl 95 13 none]
+G r c none [store codage_intermediaire 222 13 none] [di idl 95 13 none]
+G r c none [operand_type_of codage_intermediaire 223 13 none] [d idl 89 13 none]
+G r c none [operand_type_of codage_intermediaire 223 13 none] [print_name idl 101 13 none]
+G r c none [get_slo codage_intermediaire 341 13 none] [di idl 95 13 none]
 X 9 a-textio.ads
-263U14*New_Line 12|217s7 266s7
-464U14*Put 12|215s7 216s28 264s7 265s28
-507U14*Put_Line 12|79s7 94s7 112s7 242s7
-X 11 codage_intermediaire.ads
-5K25*CODAGE_INTERMEDIAIRE 95E8 240l9 240e29 12|4b33 283l9 283t29
-9I8*SEGMENT_NUM<short_integer> 9r69 74r40 165r67 12|103r56 113r30
-10I8*LEVEL_NUM<short_short_integer> 74r58 12|103r74 114r30
-11I8*OFFSET_VAL<integer> 11r77 74r74 166r67 171r67 12|103r90 115r30
-14E8*OPCI 35e26 46r36 47r36 48r36 49r36 50r36 51r36 52r36 53r36 54r28 55r28
-. 56r28
-16n25*RAZ{14E8} 46r47 46r58
-18n25*NON{14E8} 47r47
-18n33*OPPS{14E8}
-18n41*OPPR{14E8}
-19n25*CNVS16{14E8}
-19n33*CNVS32{14E8}
-19n41*CNVS64{14E8}
-19n49*CNVR{14E8}
-20n25*TRSF{14E8} 47r58
-22n25*EBA1{14E8} 48r47
-22n33*EBA0{14E8}
-22n41*TEB{14E8}
-23n25*ET{14E8}
-23n33*OU{14E8}
-24n25*DLD{14E8}
-24n33*DLG{14E8}
-24n41*DAD{14E8}
-24n49*DAG{14E8}
-24n57*ROD{14E8}
-24n65*ROG{14E8}
-25n25*ADDS{14E8}
-25n33*ADDR{14E8}
-25n41*SOUS{14E8}
-25n49*SOUR{14E8}
-25n57*MULS{14E8}
-25n65*MULR{14E8}
-25n73*DIVS{14E8}
-25n81*DIVR{14E8} 48r58
-27n25*CHRGA{14E8} 49r47
-27n33*TRSFA{14E8} 49r58
-28n25*ADDA{14E8} 50r47 50r58
-29n25*CMPZ{14E8} 51r47 51r58
-30n25*CMP{14E8} 52r47 52r58
-31n25*BORNES{14E8} 53r47 53r58
-32n25*CALL{14E8} 54r39
-32n33*RTD{14E8} 54r50
-33n25*BRA{14E8} 55r39
-33n33*BGT{14E8}
-33n41*BLT{14E8}
-33n49*BGE{14E8}
-33n57*BLE{14E8}
-33n65*BEQ{14E8}
-33n73*BNE{14E8} 55r50
-34n25*LINK{14E8} 56r39
-34n31*UNLINK{14E8} 56r50 12|216r16 265r16
-37E8*OPCI_CLASS 44e26 184r25
-38n25*ARG0{37E8} 184r39 190r32
-38n33*ARG1{37E8} 194r32
-38n41*ARG2{37E8} 198r32
-39n25*PRM{37E8} 227r32 12|128r68
-40n25*ADR1{37E8} 202r32 12|158r76
-40n33*ADR2{37E8} 205r32 12|189r76
-41n25*CTL1{37E8} 208r32
-41n33*CTL2{37E8} 212r32
-41n41*CTL3{37E8} 216r32
-42n25*FLOT0{37E8} 220r32 12|208r76
-42n33*FLOT1{37E8} 224r32 12|236r76
-43n25*FRAME{37E8} 229r32 12|258r76
-46E11*OPCI_ARG0{14E8} 190r67
-47E11*OPCI_ARG1{14E8} 194r67
-48E11*OPCI_ARG2{14E8} 198r67
-49E11*OPCI_ADR1{14E8} 78r70 202r67 12|141r70
-50E11*OPCI_ADR2{14E8} 79r70 205r67 12|172r70
-51E11*OPCI_CTL1{14E8} 208r67
-52E11*OPCI_CTL2{14E8} 212r67
-53E11*OPCI_CTL3{14E8} 216r67
-54E11*OPCI_FLOT0{14E8} 81r39 220r75 12|204r55 215r63
-55E11*OPCI_FLOT1{14E8} 82r39 224r75 12|227r47 242r68
-56E11*OPCI_FRAME{14E8} 83r39 229r75 12|254r55 264r63
-59I8*TARGET_LBL_REF<short_integer> 69r72 70r45 82r59 149c8 152r34 225r67
-. 12|16r35 18r35 60r56 73r60 79r65 227r67 243r25
-60I8*OPERAND_REF<short_integer> 61r35 66r64 67r52 72r52 73r52 76r53 78r53
-. 78r85 79r53 79r89 173r67 178c8 179r35 12|10r35 14r50 14r73 22r56 24r19
-. 45r60 87r60 94r49 102r60 112r49 125r60 141r53 141r85 172r53 172r89
-61i3*NO_OPERAND{60I8} 179c3
-63E8*DIRECTION_DE_PASSAGE 63e69 76r77 170r67 12|125r84
-63n38*ENTREE{63E8}
-63n46*SORTIE{63E8}
-63n54*ENTREE_SORTIE{63E8}
-66V13*NEW_OPERAND{60I8} 12|22b25 39l9 39t20
-67U13*FREE 67>43 12|45b26 54l10 54t14
-67i43 OPERAND{60I8} 12|45b51 49r9 49r27 51r21 52r22
-69V13*NEW_LBL{59I8} 12|60b25 67l9 67t16
-70U13*STOCK_CP 70>35 12|73b25 81l9 81t17
-70i35 FOR_LBL{59I8} 12|73b51 76r18 79r87
-72U13*MAKE_OPRND_IMM 72>43 72>65 12|87b25 96l9 96t23
-72i43 OPERAND{60I8} 12|87b51 91r21 94r67
-72i65 IMM_VAL{integer} 12|87b73 91r60 94r108
-73U13*MAKE_OPRND_DAT 73>43 74>35 74>53 74>69 75>35 12|102b25 119l9 119t23
-73i43 OPERAND{60I8} 12|102b51 108r21 112r67
-74i35 SEG{9I8} 12|103b51 113r49
-74i53 LVL{10I8} 12|103b69 114r47
-74i69 OFS{11I8} 12|103b85 115r48
-75i35 SIZ{positive} 12|104b51 116r46
-76U13*MAKE_OPRND_PRM 76>43 76>66 12|125b25 136l9 136t23
-76i43 OPERAND{60I8} 12|125b51 129r84
-76e66 DIRECTION{63E8} 12|125b73 132r88
-78U13*ADR1_OP 78>43 78>66 78>81 12|141b25 166l9 166t16
-78i43 RESULTAT{60I8} 12|141b43 144r24 150r23 160r76
-78e66 OP{49E11} 12|141b66 158r93
-78i81 X1{60I8} 12|141b81 159r76
-79U13*ADR2_OP 79>43 79>66 79>81 79>85 12|172b25 198l9 198t16
-79i43 RESULTAT{60I8} 12|172b43 175r24 181r23 192r76
-79e66 OP{50E11} 12|172b66 189r93
-79i81 X1{60I8} 12|172b81 190r76
-79i85 X2{60I8} 12|172b85 191r76
-81U13*FLOT0_OP 81>35 81>51 12|204b25 222l9 222t17
-81e35 OP{54E11} 12|204b51 208r94 215r81 216r10
-81i51 ALLOC_DESALLOC{integer} 12|204b67 209r68 216r54
-82U13*FLOT1_OP 82>35 82>51 12|227b25 248l9 248t17
-82e35 OP{55E11} 12|227b43 236r94 242r86
-82i51 TARGET{59I8} 12|227b59 237r60 243r47
-83U13*FRAME_OP 83>35 83>51 12|254b25 271l9 271t17
-83e35 OP{56E11} 12|254b51 258r94 264r81 265r10
-83i51 ALLOC{integer} 12|254b67 259r60 265r54
-87X3*TROP_DE_REPRISES 12|62r46
-87X21*TROP_D_OPERANDS 12|28r16
-87X38*OPERAND_INVALIDE 12|49r63
-88X3*TROP_DE_TEMPORAIRES_A 12|146r57 177r57
-88X26*TROP_DE_TEMPORAIRES_T
-88X49*TROP_IFLOTS1 12|231r45
-95I8 INSTR_LOC<integer> 97r27 151r54 152r54 234r49 12|79r17 215r12 242r17
-. 264r12
-97i3 COMPTEUR_PROGRAMME{95I8} 12|76r31 79r34 128r25 132r25 134m5 134r27 158r25
-. 164m5 164r27 189r25 196m5 196r27 208r25 215r29 220m5 220r27 234r35 236r25
-. 242r34 246m5 246r27 258r25 264r29 269m5 269r27
-104R8 REC_TEMPORAIRE_T 106e35 111r52
-105i27*LOCALISATIONS{integer} 12|36m43
-105i42*INDICE_UTILISEE{integer}
-108N3 NMAX_TEMPORAIRES_T 109r47 12|27r51
-109I8 TEMPORAIRE_T<short_integer> 111r34 169r75 12|11r43
-111a3 TABLE_TEMPORAIRES_T(104R8) 12|36m5
-116E8 GENRE_ACCES 126e26 128r59
-116n35 DIRECT_REG_D{116E8}
-116n65 DIRECT_REG_A{116E8}
-117n27 ABSOLU{116E8}
-117n65 IMMEDIAT{116E8}
-119n27 INDIRECT{116E8} 12|153r65 184r65
-119n57 INDIRECT_POSTINC{116E8}
-119n97 INDIRECT_PREDEC{116E8}
-120n27 INDIRECT_DEPLACE{116E8}
-120n65 INDIRECT_INDEXE_DEPLACE{116E8}
-120n105 INDIRECT_INDEXE_BASE{116E8}
-121n27 INDIRECT_BASE_POST_INDEXE_DEPLACE{116E8}
-121n65 INDIRECT_BASE_INDEXE_POST_DEPLACE{116E8}
-123n27 CP_BASE_POST_INDEXE_DEPLACE{116E8}
-123n57 CP_BASE_INDEXE_POST_DEPLACE{116E8}
-124n27 CP_DEPLACE{116E8}
-124n57 CP_INDEXE_DEPLACE{116E8}
-124n97 CP_INDEXE_BASE{116E8}
-127R8 PARAMETRES_ACCES 131e35 135r59
-128e27*GENRE{116E8} 12|153m56 184m56
-129i27*REGISTRE{integer}
-129i37*INDEX{integer}
-129i44*ECHELLE{integer}
-130i27*BASE{integer}
-130i33*DEPLACEMENT{integer} 12|154m56 185m56
-130i46*VALEUR_IMMEDIATE{integer}
-133R8 REC_TEMPORAIRE_A 136e35 141r60
-134i27*LOCALISATIONS{integer} 12|152m45 183m45
-134i42*INDICE_UTILISEE{integer}
-135r27*PARAMETRES{127R8} 12|153m45 154m45 184m45 185m45
-138N3 NMAX_TEMPORAIRES_A 139r47 12|146r27 177r27
-139I8 TEMPORAIRE_A<short_integer> 141r42 168r75 12|12r43
-141a3 TABLE_TEMPORAIRES_A(133R8) 12|152m7 153m7 154m7 183m7 184m7 185m7
-145N3 MAX_BRANCHS 146r47 12|231r22
-146I8 NUM_BRANCH<short_integer> 151r34 12|17r35
-148N3 MAX_TARGET_LBLS 149r39 12|62r19
-151a3 BRANCH_ILOC(95I8) 12|234m5
-152a3 TARGET_ILOC(95I8) 12|76m5
-159E8 GENRE_OPERAND 159e69 161r29
-159n30 IMM{159E8} 164r32 12|91r45
-159n35 DAT{159E8} 165r32 12|108r45
-159n40 ADR_TMP{159E8} 168r32 12|150r48 181r48
-159n49 DAT_TMP{159E8} 169r32 12|35r44 144r43 175r43
-159n58 PRM{159E8} 170r32 12|132r70
-159n63 FREE{159E8} 161r46 173r32 12|51r45 279r44
-161R8 REC_OPERAND 161d22 175e35 192r67 196r67 200r75 203r67 206r75 210r67
-. 214r75 218r75 227r75 12|14r95
-161e22*GENRE{159E8} 163r32 12|35m35 51m36 91m36 108m36 132m61 144r35 150m39
-. 175r35 181m39 279m35
-162b27*INACTIF{boolean} 12|35m78 51m79 91m69 109m62 133m69 150m82 181m82
-. 279m75
-164i52*VALEUR{integer} 12|91m50
-165i52*SEG{9I8} 12|109m30
-166i52*OFS{11I8} 12|109m42
-167i52*SIZ{integer} 12|109m52
-168i52*TMP_A{139I8} 12|150m57 181m57
-169i52*TMP_T{109I8} 12|35m53
-170e52*DIRECTION{63E8} 12|132m75
-171i52*PRM_OFS{11I8} 12|133m41
-172i52*PRM_SIZ{integer} 12|133m55
-173i52*NEXT_FREE{60I8} 12|32r49 51m51 279m50
-177N3 NMAX_OPERANDS 178r47 12|49r37 281r20
-184R8 INSTRUC 184d18 232e35 236r59
-184e18*GENRE{37E8} 188r32 12|128m51 158m57 189m57 208m57 236m57 258m57
-186b27*FIN_BLOC{boolean} 12|130m41 161m41 193m41 211m41 238m41 260m41
-187i27*BLOC_ENTREE_LATERALE{integer} 12|131m41 162m41 194m41 212m41 239m41
-. 261m41
-187i49*BLOC_SORTIE_LATERALE{integer} 12|131m68 162m68 194m68 212m68 239m68
-. 261m68
-190e41*ARG0_OP{46E11}
-191r41*ARG0_TYPE{14|46R8}
-192r41*ARG0_RESULT{161R8}
-194e41*ARG1_OP{47E11}
-195r41*ARG1_TYPE{14|46R8}
-196r41*ARG1_RESULT{161R8}
-196r54*ARG1_X1{161R8}
-198e41*ARG2_OP{48E11}
-199r41*ARG2_TYPE{14|46R8}
-200r41*ARG2_RESULT{161R8}
-200r54*ARG2_X1{161R8}
-200r63*ARG2_X2{161R8}
-202e41*ADR1_OP{49E11} 12|158m82
-203r41*ADR1_RESULT{161R8} 12|160m41
-203r54*ADR1_X1{161R8} 12|159m41
-205e41*ADR2_OP{50E11} 12|189m82
-206r41*ADR2_RESULT{161R8} 12|192m41
-206r54*ADR2_X1{161R8} 12|190m41
-206r63*ADR2_X2{161R8} 12|191m41
-208e41*CTL1_OP{51E11}
-209r41*CTL1_aType{14|46R8}
-210r41*CTL1_X1{161R8}
-212e41*CTL2_OP{52E11}
-213r41*Ctl2_TYPE{14|46R8}
-214r41*Ctl2_X1{161R8}
-214r50*I_CTL2_X2{161R8}
-216e41*CTL3_OP{53E11}
-217r41*CTL3_TYPE{14|46R8}
-218r41*CTL3_X1{161R8}
-218r50*I_CTL3_X2{161R8}
-218r61*I_CTL3_X3{161R8}
-220e41*FLOT0_OP{54E11} 12|208m83
-221i41*DESALLOC{integer} 12|209m41
-222i41*UNIT{integer} 12|210m41
-222i47*PROC{integer} 12|210m52
-224e41*FLOT1_OP{55E11} 12|236m83
-225i41*FLOT1_SAUT{59I8} 12|237m41
-227r41*PARAMETRE{161R8} 12|129m41 132m46
-229e41*FRAME_OP{56E11} 12|258m83
-230i41*ALLOC{integer} 12|259m41
-234i3 MAX_INSTRUCTIONS{95I8} 236r37
-236a3 TABLE_INSTRUCTIONS(184R8) 12|128m5 132m5 158m5 189m5 208m5 236m5 258m5
-X 12 codage_intermediaire.adb
-8b3 DEBUG{boolean} 78r8 93r8 111r8 214r8 241r8 263r8
-10i3 OPERAND_DISPO{11|60I8} 27r8 31r23 32m5 51r64 52m5 281m3
-11i3 LAST_OPERAND_T{11|109I8} 27r34 34m5 34r23 35r62 36r26 90m5 90r23 107m5
-. 107r23 148m7 148r25 179m7 179r25
-12i3 LAST_OPERAND_A{11|139I8} 146r10 149m7 149r25 150r66 152r28 153r28 154r28
-. 177r10 180m7 180r25 181r66 183r28 184r28 185r28
-14a3 TABLE_OPERANDS(11|161R8) 32r23 35m5 51m5 91m5 108m5 129r68 144r8 150m7
-. 159r60 160r60 175r8 181m7 190r60 191r60 192r60 278r17 279m5
-16i3 LAST_LBL{11|59I8} 62r8 64m5 64r17 65r12
-17i3 LAST_BRANCH{11|146I8} 231r8 233m5 233r20 234r18
-18i3 DERNIERE_REPRISE_CALL{11|59I8}
-24i5 ALLOUEE{11|60I8} 31m5 32r39 35r21 37r12
-278i7 INDICE<short_integer> 279r21 279r63
-X 14 idl.ads
-8K33*IDL 11|1w6 2r6 14|126e12
-46R8*TREE 11|191r75 195r75 199r75 209r67 213r75 217r75 14|61e27
-X 38 text_io.ads
-24K9*Text_IO=24:29 12|1w6 2r6
+66P9*File_Type 20|17r19
+68n32*Out_File{68E9} 20|30r18
+92n22*Lower_Case{92E9} 20|135r66 162r56 165r30 180r50 234r56 264r40 266r48
+. 290r48 293r30 335r32 384r40 410r19 439r19 444r17 500r19
+92n34*Upper_Case{92E9} 20|136r66 235r56 361r32 385r54 471r19
+98U14*Create 20|30s5
+128U14*Close 20|44s5
+173U14*Set_Output 20|31s5 43s5
+177V13*Standard_Output{66P9} 20|43s18
+263U14*New_Line 20|65s5 77s5 141s5 168s5 184s5 201s5 218s5 247s5 273s5 297s5
+. 320s5 344s5 367s5 392s5 421s5 452s5 480s5 508s5 979s9 1068s7 1119s7
+391U14*Put 20|135s36 156s5 165s5 180s20 243s9 262s5 266s63 293s5 293s45 313s36
+. 407s5 414s5 416s5 443s5 445s5 447s5 499s5
+464U14*Put 20|60s5 63s8 76s5 76s37 118s7 136s36 198s20 216s20 234s71 235s71
+. 245s7 264s55 316s5 336s20 337s20 362s20 362s61 385s28 388s5 470s7 476s5
+. 501s5 976s9 1066s7 1067s28 1117s7 1118s28
+507U14*Put_Line 20|627s7 650s11 682s11 688s7 709s11 741s11 747s7 771s7 792s7
+. 820s7 852s9 891s9 946s9 1004s9 1095s9
+X 11 a-tienio.ads
+26k21*Enumeration_IO 76e31 19|76r40 80r48
+52U14*Put 20|135s54[19|76] 136s54[19|76] 162s44[19|76] 165s18[19|80] 180s38[19|76]
+. 234s44[19|76] 235s44[19|76] 264s28[19|76] 266s36[19|76] 290s36[19|76] 293s18[19|80]
+. 335s20[19|76] 361s20[19|76] 384s28[19|76] 385s42[19|76] 410s7[19|76] 439s7[19|76]
+. 444s5[19|80] 471s7[19|76] 500s5[19|76]
+X 16 a-tiinio.ads
+46k21*Integer_IO 108e27 20|51r32 52r32
+80U14 Put 20|60s20[52] 76s20[52] 76s53[51] 238s5[52] 269s5[51] 293s63[51]
+. 336s45[52] 337s45[52] 362s45[52] 384s55[51] 385s69[51] 388s30[52] 415s5[51]
+. 417s5[51] 446s5[51] 448s5[51] 475s5[51]
+X 19 codage_intermediaire.ads
+28K25*CODAGE_INTERMEDIAIRE 248E8 344l9 344e29 20|5b25 1128l9 1128t29
+33I8*OPERAND_REF<248I8> 34r35 219r88 220r88 221r88 222r91 225r53 227r53 227r85
+. 288r67 293c8 294r35 20|875r88 895r12 930r88 952r12 961r74 974r60 990r88
+. 1010r12 1018r60 1034r61 1034r93
+34i3*NO_OPERAND{33I8} 294c3
+36E8*OPERAND_TYPE 36e120 222r67 223r104 275r42 279r51 20|697r64 860r65 878r19
+. 915r65 935r19 960r74
+36n38*UNKNOWN{36E8} 20|1022r105 1024r87 1043r98 1044r98
+36n47*BYTE_TYP{36E8} 20|729r22 731r22 863r37 918r29
+36n57*HALF_TYP{36E8} 20|864r45 919r37
+36n67*WORD_TYP{36E8} 20|733r22 738r18 865r45 920r37
+36n77*LONG_TYP{36E8} 20|866r45 921r37
+36n87*SINGLE_TYP{36E8}
+36n99*DOUBLE_TYP{36E8}
+36n111*ADR_TYP{36E8} 20|720r18 994r61
+38N3*MAX_LABEL 42r74
+39N3*MAX_OFFSET 43r64 43r78
+40N3*MAX_LEVEL 44r72 44r85
+42I8*LABEL_TYPE<integer> 103r43 107r35 109r43 110r43 119r40 120r40 126r62
+. 131r67 132r62 135r54 148r80 20|16r19 52r45 57r64 73r72 227r66 328r69 353r66
+. 377r66 536r72 602r27 610r16
+43I11*OFFSET_VAL{integer} 61r44 62r52 63r52 92r35 93r35 94r43 95r43 99r43
+. 271r43 286r67 20|87r64 491r55 575r32 590r11 786r56 789r100 906r44
+44I8*LEVEL_NUM<integer> 90r35 145r40 270r43 20|517r74 603r35 603r60 786r19
+. 789r59 905r44 964r19
+46I11*SEGMENT_NUM{integer} 88r35 144r53 269r43 20|516r82 789r16 904r44
+49N3*ADDR_SIZE 20|623r51 624r55 994r89
+50N3*ADDR_AL
+51N3*BOOL_SIZE
+52N3*BOOL_AL
+53N3*CHAR_SIZE
+54N3*CHAR_AL
+55N3*INTG_SIZE 20|625r51
+56N3*INTG_AL
+57N3*STACK_AL
+58N3*ARRAY_AL
+59N3*RECORD_AL
+61i3*FIRST_PARAM_OFFSET{43I11}
+62i3*FIRST_LOCAL_VAR_OFFSET{43I11}
+63i3*RELATIVE_RESULT_OFFSET{43I11}
+65E8*OP_CODE 74e18 76r56 112r43 113r35 122r47 123r47 124r47 125r47 126r47
+. 127r47 128r47 130r47 131r47 132r47 134r47 136r47 137r47 139r47 20|85r63
+. 87r51 127r66 149r66 175r68 191r66 209r66 226r66 255r66 281r66 305r66 327r67
+. 352r66 375r66 400r66 429r66 460r66
+66n17*ABO{65E8} 20|88r17
+66n24*ABSV{65E8} 20|88r33
+66n31*ACA{65E8} 20|88r49
+66n38*ACC{65E8} 20|88r65
+66n45*ACT{65E8} 20|88r81
+66n52*ADD{65E8} 20|89r17 158r11
+66n59*ALO{65E8} 20|89r33 265r11
+66n66*BAND{65E8} 20|89r49 134r11
+66n73*CHR{65E8} 20|89r65
+66n79*TRAP{65E8} 20|89r81 500r10
+67n17*CSTA{65E8} 20|90r17
+67n24*CSTI{65E8} 20|90r33
+67n31*CSTS{65E8} 20|90r49
+67n38*CALL{65E8} 20|90r65 384r10
+67n45*DEC{65E8} 20|90r81 290r10
+67n52*DIV{65E8} 20|91r17 158r33
+67n59*DPL{65E8} 20|91r33 162r11
+67n66*EAC{65E8} 20|91r49
+67n73*EEX{65E8} 20|91r65 135r11
+67n79*ENT{65E8} 20|91r81 385r10
+68n17*EQ{65E8} 20|92r17 160r11
+68n24*ETD{65E8} 20|92r33
+68n31*ETE{65E8} 20|92r49
+68n38*ETK{65E8} 20|92r65
+68n45*ETR{65E8} 20|92r81
+68n52*EXC{65E8} 20|93r17 335r10
+68n59*EXH{65E8} 20|93r33 235r10 242r15
+68n66*EXL{65E8} 20|93r49 361r10
+68n73*EXP{65E8} 20|93r65 159r25
+68n79*JMPF{65E8} 20|93r81 234r17
+69n17*FRE{65E8} 20|94r17
+69n24*GE{65E8} 20|94r33 161r11
+69n31*GET{65E8} 20|94r49 265r17
+69n38*GT{65E8} 20|94r65 161r18
+69n45*INC{65E8} 20|94r81 290r16
+69n52*IND{65E8} 20|95r17 290r22
+69n59*IXA{65E8} 20|95r33 265r23
+69n66*PGA{65E8} 20|95r49 409r16
+69n73*LCA{65E8} 20|95r65
+69n79*PLA{65E8} 20|95r81 409r10
+70n17*LDC{65E8} 20|96r17 180r10 290r28 818r13
+70n24*PGD{65E8} 20|96r33 438r10 523r13
+70n31*LE{65E8} 20|96r49 161r25
+70n38*LT{65E8} 20|96r65 161r31
+70n45*PLD{65E8} 20|96r81 438r16 525r13
+70n52*LVB{65E8} 20|97r17 234r30 607r13
+70n59*MODU{65E8} 20|97r33 159r11
+70n66*MOV{65E8} 20|97r49
+70n73*MST{65E8} 20|97r65 266r11 409r22
+70n79*MUL{65E8} 20|97r81 158r27
+71n17*MVV{65E8} 20|98r17
+71n24*NEG{65E8} 20|98r33
+71n31*NEQ{65E8} 20|98r49 160r18
+71n38*BNOT{65E8} 20|98r65 134r24
+71n45*BOR{65E8} 20|98r81 134r18
+71n52*PKB{65E8} 20|99r17 313r16
+71n59*PKG{65E8} 20|99r33 313r10
+71n66*PRO{65E8} 20|99r49 313r22
+71n73*PUT{65E8} 20|99r65 266r17
+71n79*QUIT{65E8} 20|99r81 136r10
+72n17*RAI{65E8} 20|100r17 135r18 264r10
+72n24*REMN{65E8} 20|100r33 159r18
+72n31*RET{65E8} 20|100r49 266r23
+72n38*RFL{65E8} 20|100r65 235r17 242r27
+72n45*RFP{65E8} 20|100r81 469r10
+72n52*SGD{65E8} 20|101r17 438r22
+72n59*STO{65E8} 20|101r33 162r25
+72n66*SLD{65E8} 20|101r49 438r28
+72n73*SUB{65E8} 20|101r65 158r20
+72n79*SWP{65E8} 20|101r81 162r18
+73n17*JMPT{65E8} 20|102r17 234r10
+73n24*JMP{65E8} 20|102r33 234r24 610r11
+73n31*BXOR{65E8} 20|102r49 134r31
+73n38*XJP{65E8} 20|102r65
+76K11*OP_CODE_IO[11|26] 20|9r7
+78E8*CODE_DATA_TYPE 78e50 80r64 123r62 128r62 137r61 143r47 157r96 20|150r66
+. 282r66 430r66 515r74 638r64
+78n38*A{78E8} 20|661r18
+78n41*B{78E8} 20|670r22
+78n44*C{78E8} 20|672r22
+78n47*I{78E8} 20|674r22 679r18 818r18
+80K11*CODE_DATA_TYPE_IO[11|26] 20|10r7
+82E8*STD_PROC 84e18 141r46 20|488r66 491r42 501r21
+83n17*AR1{82E8} 20|492r25
+83n22*AR2{82E8} 20|492r41
+83n27*CLB{82E8} 20|492r57
+83n32*CLN{82E8} 20|492r73
+83n37*CNT{82E8} 20|493r25
+83n42*CVB{82E8} 20|493r41
+83n47*CYA{82E8} 20|493r57
+83n52*LBD{82E8} 20|493r73
+83n57*LEN{82E8} 20|494r25
+83n62*PUA{82E8} 20|494r41
+83n67*TRM{82E8} 20|494r57
+86b3*COMMENTS_ON{boolean} 20|62r8 117r8 241r8
+88i3*CUR_COMP_UNIT{46I11}
+89b3*GENERATE_CODE{boolean} 20|131r12 154r12 196r12 214r12 231r12 260r12
+. 287r12 310r12 332r12 358r12 381r12 405r12 435r12 466r12 497r12
+90i3*CUR_LEVEL{44I8} 20|525r30 551m5 551r18 564m5 564r18 605r27 608r44 969r30
+92i3*OFFSET_ACT{43I11} 20|575m5 575r19 576r21 577r21 590r28
+93i3*OFFSET_MAX{43I11} 20|576r8 577m7
+94i3*TOP_ACT{43I11} 20|105m5 105r16 106r18 106r42 503m5 503r16 504r18 505r18
+95i3*TOP_MAX{43I11} 20|106r8 106m31 504r8 505m7
+97i3*PARAM_SIZE{natural}
+98i3*RESULT_SIZE{natural}
+99i3*FUN_RESULT_OFFSET{43I11}
+100r3*FUNCTION_RESULT{22|46R8}
+103i3*SKIP_LBL{42I8}
+103i13*HANDLER_BEGIN_LBL{42I8}
+104r3*ENCLOSING_BODY{22|46R8}
+105b3*CHOICE_OTHERS_FLAG{boolean}
+107i3*AFTER_IF_LBL{42I8}
+109i3*BEFORE_LOOP_LBL{42I8}
+110i3*AFTER_LOOP_LBL{42I8}
+111r3*LOOP_STM_S{22|46R8}
+112e3*LOOP_OP_INC_DEC{65E8}
+113e3*LOOP_OP_GT_LT{65E8}
+115r3*TYPE_SYMREP{22|46R8}
+117U13*OPEN_OUTPUT_FILE 117>43 20|27b33 34l9 34t25
+117a43 FILE_NAME{string} 20|27b67 30r28
+118U13*CLOSE_OUTPUT_FILE 20|40b33 46l9 46t26
+119U13*WRITE_LABEL 119>35 119>52 20|57b33 67l9 67t20
+119i35 LBL{42I8} 20|57b59 60r26
+119a52 COMMENT{string} 20|57b76 62r24 63r67
+120U13*GEN_LBL_ASSIGNMENT 120>35 120>52 20|73b33 79l9 79t27 608s7
+120i35 LBL{42I8} 20|73b67 76r26
+120i52 N{natural} 20|73b84 76r59
+121U13*EMIT_COMMENT 121>43 20|114b33 121l9 121t21 140s5 167s5 183s5 200s5
+. 217s5 272s5 296s5 343s5 366s5 391s5 420s5 451s5 479s5 507s5
+121a43 COMMENT{string} 20|114b59 117r24 118r42
+122U13*EMIT 122>43 122>81 20|127b34 143l10 143t14
+122e43 OC{65E8} 20|127b59 133r11 135r59 136r59 139r19
+122a81 COMMENT{string} 20|128b59 140r19
+123U13*EMIT 123>43 123>57 123>81 20|149b34 170l10 170t14
+123e43 OC{65E8} 20|149b59 157r10 162r49 166r19
+123e57 CT{78E8} 20|150b59 165r23
+123a81 COMMENT{string} 20|151b59 167r19
+124U13*EMIT 124>43 124>57 124>81 20|191b34 203l10 203t14
+124e43 OC{65E8} 20|191b59 198r13 199r19
+124b57 B{boolean} 20|192b59 198r58
+124a81 COMMENT{string} 20|193b59 200r19
+125U13*EMIT 125>43 125>57 125>81 20|209b34 220l10 220t14
+125e43 OC{65E8} 20|209b59 216r13
+125e57 C{character} 20|210b59 216r66
+125a81 COMMENT{string} 20|211b59 217r19
+126U13*EMIT 126>43 126>57 126>89 20|226b34 249l10 249t14 607s7 610s5
+126e43 OC{65E8} 20|226b59 233r10 234r49 235r49 239r18 242r10 242r22
+126i57 LBL{42I8} 20|227b59 238r18
+126a89 COMMENT{string} 20|228b59 241r24 245r43
+127U13*EMIT 127>43 127>57 127>81 20|255b34 275l10 275t14
+127e43 OC{65E8} 20|255b59 263r10 264r33 266r41 271r19
+127i57 I{integer} 20|256b59 269r10
+127a81 COMMENT{string} 20|257b59 272r19
+128U13*EMIT 128>43 128>57 129>49 129>73 20|281b34 299l10 299t14 818s7
+128e43 OC{65E8} 20|281b59 289r10 290r41 295r19
+128e57 CT{78E8} 20|282b59 293r23
+129i49 I{integer} 20|283b59 293r68
+129a73 COMMENT{string} 20|284b59 296r19
+130U13*EMIT 130>43 130>57 130>81 20|305b34 321l10 321t14
+130e43 OC{65E8} 20|305b59 312r10
+130a57 S{string} 20|306b59 316r11
+130a81 COMMENT{string} 20|307b59
+131U13*EMIT 131>43 131>57 131>62 131>81 20|327b34 346l10 346t14
+131e43 OC{65E8} 20|327b59 334r10 335r25 342r19
+131i57 NUM{42I8} 20|328b59 336r50
+131i62 LBL{42I8} 20|328b64 337r50
+131a81 COMMENT{string} 20|329b59 343r19
+132U13*EMIT 132>43 132>57 133>49 133>73 20|352b34 369l10 369t14
+132e43 OC{65E8} 20|352b59 360r10 361r25 365r19
+132i57 LBL{42I8} 20|353b59 362r50
+133a49 S{string} 20|354b59 362r77
+133a73 COMMENT{string} 20|355b59 366r19
+134U13*EMIT 134>43 134>57 135>49 135>81 20|375b34 394l10 394t14
+134e43 OC{65E8} 20|375b59 383r10 384r33 385r47 390r19
+134i57 I{integer} 20|376b59 384r60 385r74
+135i49 LBL{42I8} 20|377b59 388r35
+135a81 COMMENT{string} 20|378b59 391r19
+136U13*EMIT 136>43 136>57 136>61 136>89 20|400b34 423l10 423t14
+136e43 OC{65E8} 20|400b59 408r10 410r12 419r19
+136i57 IA{integer} 20|401b59 415r10
+136i61 IB{integer} 20|401b63 417r10
+136a89 COMMENT{string} 20|402b59 420r19
+137U13*EMIT 137>43 137>57 138>49 138>53 138>81 20|429b34 454l10 454t14 523s7
+. 525s7
+137e43 OC{65E8} 20|429b59 437r10 439r12 450r19
+137e57 CT{78E8} 20|430b59 444r10
+138i49 IA{integer} 20|431b59 446r10
+138i53 IB{integer} 20|431b63 448r10
+138a81 COMMENT{string} 20|432b59 451r19
+139U13*EMIT 139>43 139>57 140>49 140>73 20|460b34 482l10 482t14
+139e43 OC{65E8} 20|460b59 468r10 471r12 478r19
+139i57 I{integer} 20|461b59 475r10
+140a49 S{string} 20|462b59 476r21
+140a73 COMMENT{string} 20|463b59 479r19
+141U13*EMIT 141>43 141>81 20|488b34 510l10 510t14
+141e43 P{82E8} 20|488b59 501r38 503r46
+141a81 COMMENT{string} 20|489b59 507r19
+143U13*GEN_PUSH_DATA 143>43 144>35 145>35 146>35 146>81 20|515b33 528l9 528t22
+143e43 CT{78E8} 20|515b59 523r18 525r18
+144i35 COMP_UNIT_NUMBER{46I11} 20|516b59 523r30
+145i35 LVL{44I8} 20|517b59 522r8 525r42
+146i35 OFFSET{integer} 20|518b59 523r49 525r48
+146a81 COMMENT{string} 20|519b59 523r57 525r56
+148V13*NEW_LABEL{42I8} 20|536b33 542l9 542t18 606s17
+149U13*INC_LEVEL 20|548b33 555l9 555t18
+150U13*DEC_LEVEL 20|561b33 568l9 568t18
+151U13*DEC_OFFSET 151>35 20|572b33 582l9 582t19
+151i35 I{natural} 20|572b59 575r44
+152U13*ALIGN 152>43 20|588b34 594l10 594t15
+152i43 AL{integer} 20|588b59 590r41
+155U13*PERFORM_RETURN 155>43 20|600b33 612l9 612t23
+155r43 ENCLOSING_BLOCK_BODY{22|46R8} 20|600b59 603r85 610r49
+156V13*TYPE_SIZE{natural} 156>35 20|618b33 631l9 631t18 818s21
+156r35 TYPE_SPEC{22|46R8} 20|618b67 622r10 627r80
+157V13*CODE_DATA_TYPE_OF{78E8} 157>43 20|637b33 647s18 692l9 692t26
+157r43 EXP_OR_TYPE_SPEC{22|46R8} 20|637b67 641r8 643r33 655r11 657r41 688r94
+159V13*NUMBER_OF_DIMENSIONS{natural} 159>43 20|757b33 762s14 765s14 775l9
+. 775t29
+159r43 EXP{22|46R8} 20|757b59 761r8 762r53 764r11 764r40 765r52 767r11 768r33
+. 771r93
+160V13*CONSTRAINED{boolean} 160>35 20|802b33 808l9 808t20 817s8
+160r35 TYPE_SPEC{22|46R8} 20|802b59 806r18
+161U13*LOAD_TYPE_SIZE 161>43 20|814b33 824l9 824t23
+161r43 TYPE_SPEC{22|46R8} 20|814b59 817r21 818r32
+169E8*OPCI 187e26 197r36 198r36 199r36 200r36 201r36 202r36 203r28 204r28
+. 205r28
+171n25*RAZ{169E8} 197r47
+171n33*LIMM{169E8} 20|882r44
+171n41*LOAD{169E8} 20|938r45
+171n49*STORE{169E8}
+171n57*LEA{169E8} 197r58 20|996r45
+173n25*NON{169E8} 198r47
+173n33*OPPS{169E8}
+173n41*OPPR{169E8}
+174n25*CNVS16{169E8}
+174n33*CNVS32{169E8}
+174n41*CNVS64{169E8}
+174n49*CNVR{169E8} 198r58
+176n25*EBA1{169E8} 199r47
+176n33*EBA0{169E8}
+176n41*TEB{169E8}
+177n25*ET{169E8}
+177n33*OU{169E8}
+178n25*DLD{169E8}
+178n33*DLG{169E8}
+178n41*DAD{169E8}
+178n49*DAG{169E8}
+178n57*ROD{169E8}
+178n65*ROG{169E8}
+179n25*ADDS{169E8}
+179n33*ADDR{169E8}
+179n41*SOUS{169E8}
+179n49*SOUR{169E8}
+179n57*MULS{169E8}
+179n65*MULR{169E8}
+179n73*DIVS{169E8}
+179n81*DIVR{169E8} 199r58
+181n25*CMPZ{169E8} 200r47 200r58
+182n25*CMP{169E8} 201r47 201r58
+183n25*BORNES{169E8} 202r47 202r58
+184n25*CALL{169E8} 203r39
+184n33*RTD{169E8} 203r50
+185n25*BRA{169E8} 204r39
+185n33*BGT{169E8}
+185n41*BLT{169E8}
+185n49*BGE{169E8}
+185n57*BLE{169E8}
+185n65*BEQ{169E8}
+185n73*BNE{169E8} 204r50
+186n25*LINK{169E8} 205r39
+186n33*UNLINK{169E8} 205r50 20|1067r16 1118r16
+189E8*OPCI_CLASS 195e26 299r25
+190n25*ARG0{189E8} 299r39 305r32 20|882r38 938r39 996r39
+190n33*ARG1{189E8} 308r32 20|1042r57
+190n41*ARG2{189E8} 311r32
+191n25*PRM{189E8} 330r32 20|1021r68
+192n25*CTL1{189E8} 314r32
+192n33*CTL2{189E8} 317r32
+192n41*CTL3{189E8} 320r32
+193n25*FLOT0{189E8} 323r32 20|1060r51
+193n33*FLOT1{189E8} 327r32 20|1087r57
+194n25*FRAME{189E8} 332r32 20|1112r57
+197E11*OPCI_ARG0{169E8} 305r67
+198E11*OPCI_ARG1{169E8} 227r70 308r67 20|1034r78
+199E11*OPCI_ARG2{169E8} 311r67
+200E11*OPCI_CTL1{169E8} 314r67
+201E11*OPCI_CTL2{169E8} 317r67
+202E11*OPCI_CTL3{169E8} 320r67
+203E11*OPCI_FLOT0{169E8} 229r39 323r75 20|1056r55 1066r63
+204E11*OPCI_FLOT1{169E8} 230r39 327r75 20|1078r47 1095r70
+205E11*OPCI_FRAME{169E8} 231r39 332r75 20|1108r55 1117r63
+208I8*TARGET_LBL_REF<short_integer> 216r96 217r45 230r59 259c8 262r34 328r67
+. 20|19r35 21r35 830r56 843r60 850r45 1078r67 1093r45
+210E8*DIRECTION_DE_PASSAGE 210e69 225r77 285r67 20|1018r84
+210n38*ENTREE{210E8}
+210n46*SORTIE{210E8}
+210n54*ENTREE_SORTIE{210E8}
+216V13*NEW_LBL{208I8} 20|830b25 837l9 837t16
+217U13*STOCK_CP 217>35 20|843b25 855l9 855t17
+217i35 FOR_LBL{208I8} 20|843b51 846r18 850r67
+219V13*LOAD_IMM{33I8} 219>35 20|875b25 897l9 897t17
+219i35 IMM_VAL{integer} 20|875b59 878r50 879r72 889r83 891r149
+220V13*LOAD_MEM{33I8} 220>35 20|930b25 954l9 954t17
+220r35 DEFN{22|46R8} 20|930b51 933r53 934r78
+221V13*LOAD_ADR{33I8} 221>35 20|990b33 1012l9 1012t17
+221r35 DEFN{22|46R8} 20|990b67 993r53
+222U13*STORE 222>43 222>60 222>81 20|959b33 985l9 985t14
+222r43 DEST_DEFN{22|46R8} 20|959b59 963r53
+222e60 OTYPE{36E8} 20|960b59 977r42
+222i81 SRC_OPER{33I8} 20|961b59 974r79
+223V13*OPERAND_TYPE_OF{36E8} 223>43 20|696b33 706s18 751l9 751t24
+223r43 EXP_OR_TYPE_SPEC{22|46R8} 20|696b59 700r8 702r33 714r11 716r41 747r94
+225U13*MAKE_OPRND_PRM 225>43 225>66 20|1018b25 1028l9 1028t23
+225i43 OPERAND{33I8} 20|1018b51
+225e66 DIRECTION{210E8} 20|1018b73 1024r109
+227U13*ARG1_OP 227>43 227>66 227>81 20|1034b25 1050l9 1050t16
+227i43 RESULTAT{33I8} 20|1034b51
+227e66 OP{198E11} 20|1034b74 1042r63
+227i81 X1{33I8} 20|1034b89
+229U13*FLOT0_OP 229>35 229>51 20|1056b25 1073l9 1073t17
+229e35 OP{203E11} 20|1056b51 1060r58 1066r81 1067r10
+229i51 ALLOC_DESALLOC{integer} 20|1056b67 1061r68 1067r54
+230U13*FLOT1_OP 230>35 230>51 20|1078b25 1102l9 1102t17
+230e35 OP{204E11} 20|1078b43 1087r64 1095r88
+230i51 TARGET{208I8} 20|1078b59 1088r60 1093r67
+231U13*FRAME_OP 231>35 231>51 20|1108b25 1124l9 1124t17
+231e35 OP{205E11} 20|1108b51 1112r64 1117r81 1118r10
+231i51 ALLOC{integer} 20|1108b67 1113r60 1118r54
+235X3*TROP_DE_REPRISES 20|832r46
+235X21*TROP_D_OPERANDS
+235X38*OPERAND_INVALIDE
+236X3*TROP_DE_TEMPORAIRES_A
+236X26*TROP_DE_TEMPORAIRES_T
+236X49*TROP_IFLOTS1 20|1082r45
+237X3*OPERAND_OVERFLOW 20|867r16 922r16
+240X3*ILLEGAL_OP_CODE 20|137r42 163r42 181r26 236r42 267r34 291r42 314r31
+. 339r26 363r26 386r34 412r13 441r13 473r13
+240X20*STATIC_LEVEL_OVERFLOW 20|553r36
+240X43*STATIC_LEVEL_UNDERFLOW 20|566r36
+241X3*STATIC_OFFSET_OVERFLOW 20|580r36
+248I8 INSTR_LOC<integer> 250r27 261r54 262r54 284r75 293r40 337r49 20|877r27
+. 888r68 932r27 944r68 976r14 992r27 1002r68 1066r12 1095r19 1117r12
+250i3 COMPTEUR_PROGRAMME{248I8} 20|846r31 877r44 884m5 884r27 932r44 940m5
+. 940r27 976r31 983m5 983r27 992r44 998m5 998r27 1021r25 1024r25 1026m5 1026r27
+. 1042r27 1046m7 1046r29 1060r25 1066r29 1071m5 1071r27 1085r35 1087r25 1095r36
+. 1100m5 1100r27 1112r25 1117r29 1122m5 1122r27
+255N3 MAX_BRANCHS 256r47 20|1082r22
+256I8 NUM_BRANCH<short_integer> 261r34 20|20r35
+258N3 MAX_TARGET_LBLS 259r39 20|832r19
+261a3 BRANCH_ILOC(248I8) 20|1085m5
+262a3 TARGET_ILOC(248I8) 20|846m5
+268R8 SLO_LOC 272e35 282r67 341r64 20|781r88 902r57 933r19 963r19 993r19
+269i27*SEG{46I11} 20|904r67
+270i27*LVL{44I8} 20|905r67 966r12 967r24 969r24
+271i27*OFS{43I11} 20|906r67
+274E8 GENRE_OPERAND 274e56 277r29
+274n30 IMM{274E8} 281r32 20|879r37
+274n35 MEM{274E8} 282r32 20|936r46 994r46
+274n40 TMP{274E8} 284r32
+274n45 PRM{274E8} 285r32 20|1024r70
+274n50 FREE{274E8} 277r46 288r32 20|1022r70 1043r70 1044r70
+275a3 OPERAND_TYPE_IMAGE(character) 20|891r94 946r93 977r22
+277R8 OPERAND_REC 277d22 290e35 306r67 309r67 312r75 315r67 318r75 321r75
+. 330r75 20|879r19 936r27 994r27
+277e22*GENRE{274E8} 280r32 20|1024m61
+278b27*INACTIF{boolean} 20|1022m76 1025m69
+279e27*OPER_TYP{36E8} 20|1022m93 1024m75 1043m86 1044m86
+281i52*VALEUR{integer} 20|879m62
+282r52*LOC{268R8} 20|936m71 994m70
+283i52*SIZ{integer} 20|936m83 994m82
+284i52*DEFINING_ILOC{248I8}
+285e52*DIRECTION{210E8} 20|1024m96
+286i52*PRM_OFS{43I11} 20|1025m41
+287i52*PRM_SIZ{integer} 20|1025m55
+288i52*NEXT_FREE{33I8} 20|1022m114 1043m107 1044m107
+292N3 NMAX_OPERANDS
+299R8 INSTRUC 299d18 335e35 339r59
+299e18*GENRE{189E8} 303r32 20|1021m51
+305e41*ARG0_OP{197E11}
+306r41*ARG0_X1{277R8}
+308e41*ARG1_OP{198E11}
+309r41*ARG1_RESULT{277R8} 20|1044m49
+309r54*ARG1_X1{277R8} 20|1043m49
+311e41*ARG2_OP{199E11}
+312r41*ARG2_RESULT{277R8}
+312r54*ARG2_X1{277R8}
+312r63*ARG2_X2{277R8}
+314e41*CTL1_OP{200E11}
+315r41*CTL1_X1{277R8}
+317e41*CTL2_OP{201E11}
+318r41*Ctl2_X1{277R8}
+318r50*I_CTL2_X2{277R8}
+320e41*CTL3_OP{202E11}
+321r41*CTL3_X1{277R8}
+321r50*I_CTL3_X2{277R8}
+321r61*I_CTL3_X3{277R8}
+323e41*FLOT0_OP{203E11}
+324i41*DESALLOC{integer} 20|1061m41
+325i41*UNIT{integer} 20|1062m41
+325i47*PROC{integer} 20|1062m52
+327e41*FLOT1_OP{204E11}
+328i41*FLOT1_SAUT{208I8} 20|1088m41
+330r41*PARAMETRE{277R8} 20|1022m41 1024m46
+332e41*FRAME_OP{205E11}
+333i41*ALLOC{integer} 20|1113m41
+337i3 MAX_INSTRUCTIONS{248I8} 339r37
+339a3 TABLE_INSTRUCTIONS(299R8) 20|882m5 938m5 996m5 1021m5 1024m5 1042m7
+. 1060m5 1087m5 1112m5
+341V13 GET_SLO{268R8} 341>35 20|781b33 796l9 796t16 933s44 963s44 993s44
+341r35 OBJECT{22|46R8} 20|781b59 784r10 786r44 786r83 789r47 789r88 789r130
+. 792r76
+X 20 codage_intermediaire.adb
+12b3 DEBUG{boolean} 848r8 886r8 942r8 972r8 1000r8 1065r8 1091r8 1116r8
+14b3 INACTIVE=14:29{boolean} 879r42 936r51 994r51 1043r76 1044r76
+16i3 INT_LABEL{19|42I8} 32m5 539m5 539r18 540r12
+17p3 FS{9|66P9} 30m14 30r14 31r18 44m13 44r13
+19i3 LAST_LBL{19|208I8} 832r8 834m5 834r17 835r12
+20i3 LAST_BRANCH{19|256I8} 1082r8 1084m5 1084r20 1085r18
+21i3 DERNIERE_REPRISE_CALL{19|208I8}
+51K11 INT_IO[16|46] 51r60
+52K11 LBL_IO[16|46] 52r63
+85U33 TRACK_STACK 85b33 85>59 108l9 108t20 139s5 166s5 199s5 239s5 271s5
+. 295s5 342s5 365s5 390s5 419s5 450s5 478s5
+85e59 OC{19|65E8} 105r40
+87a5 STK_OP_DELTA(19|43I11) 105r26
+175U33 GEN_OC 175b33 175>59 176>59 186l9 186t15 198s5 216s5
+175e59 OC{19|65E8} 179r10 180r43
+176a59 COMMENT{string} 183r19
+491a5 STK_STD_PROC_DELTA(19|43I11) 503r26
+590i5 TMP{19|43I11}
+602i5 LVBLBL{19|42I8} 606m7 607r18 608r27
+603i5 ENCLOSING_LEVEL{19|44I8} 605r8 608r56
+643r9 EXP=643:33{22|46R8} 645r14 647r53 650r86
+657r9 TYPE_SPEC=657:41{22|46R8} 659r14 665r71 682r92
+665r13 TYPE_SOURCE_NAME{22|46R8} 666r58
+666r13 TYPE_SYMREP{22|46R8} 667r72
+667a13 NAME{string} 669r16 671r19
+702r9 EXP=702:33{22|46R8} 704r14 706r51 709r86
+716r9 TYPE_SPEC=716:41{22|46R8} 718r14 724r71 741r92
+724r13 TYPE_SOURCE_NAME{22|46R8} 725r58
+725r13 TYPE_SYMREP{22|46R8} 726r72
+726a13 NAME{string} 728r16 730r19
+850a9 TARGET_IMG{string} 852r25 852r40
+860V25 OPER_TYPE_OF{19|36E8} 860b25 860>43 869l9 869t21 878s36
+860i43 VAL{integer} 863r8 864r11 865r11 866r11
+877i5 I_LOC{19|248I8} 882r25 888r85 895r25
+878e5 OPER_TYP{19|36E8} 879r52 891r114
+879r5 IMM_OPRND{19|277R8} 882r50
+888a9 DEFINING_ILOC_IMG{string} 891r36 891r57
+889a9 IMM_VAL_IMG{string}
+902V25 SLO_IMAGE{string} 902b25 902>51 910l9 910t18 947s19 976s65 1005s30
+902r51 SLO{19|268R8} 904r63 905r63 906r63
+904a5 SEG_IMG{string} 908r18 908r30
+905a5 LVL_IMG{string} 908r53
+906a5 OFS_IMG{string} 908r69
+915V25 OPER_TYPE_FROM{19|36E8} 915b25 915>43 925l9 925t23 935s36
+915i43 SIZ{natural} 918r7 919r11 920r11 921r11
+932i5 I_LOC{19|248I8} 938r25 944r85 952r25
+933r5 SLO{19|268R8} 936r78 947r30
+934i5 SIZ{natural} 935r52 936r90
+935e5 OPER_TYP{19|36E8} 936r61 946r113
+936r5 MEM_REF_OPRND{19|277R8} 938r51
+944a9 DEFINING_ILOC_IMG{string} 946r36 946r58
+963r5 SLO{19|268R8} 966r8 967r20 969r20 976r76
+964i5 INDIC_LVL{19|44I8} 967m7 969m7
+974a9 OPER_IMG{string} 977r59 977r72
+992i5 I_LOC{19|248I8} 996r25 1002r85 1010r25
+993r5 SLO{19|268R8} 994r77 1005r41
+994r5 MEM_REF_OPRND{19|277R8} 996r50
+1002a9 DEFINING_ILOC_IMG{string} 1004r36 1004r58
+1036b5 TERMINE{boolean} 1041r12
+1093a9 TARGET_IMG{string} 1096r24 1096r39
+X 21 diana_node_attr_class_names.ads
+4K9*diana_NODE_ATTR_CLASS_NAMES 20|1w6 2r6 21|205e32
+6E8*NODE_NAME 20|627r63 650r69 682r75 688r76 709r69 741r75 747r76 771r76
+. 792r59 21|60e10
+9n41*DN_VARIABLE_ID{6E8} 20|788r23
+10n73*DN_IN_OUT_ID{6E8} 20|785r18
+10n89*DN_OUT_ID{6E8} 20|785r33
+16n9*DN_IN{6E8} 20|785r10
+36n41*DN_USED_OBJECT_ID{6E8} 20|646r52 705r52 764r49
+37n41*DN_FUNCTION_CALL{6E8} 20|646r14 705r14 764r20
+38n41*DN_NUMERIC_LITERAL{6E8} 20|678r27 737r27
+39n65*DN_PARENTHESIZED{6E8} 20|646r33 705r33
+51n65*DN_ENUMERATION{6E8} 20|625r10 663r14 722r14
+52n9*DN_INTEGER{6E8} 20|625r27 678r14 737r14 788r10
+52n57*DN_ARRAY{6E8} 20|767r20
+53n9*DN_ACCESS{6E8} 20|623r10 660r14 719r14
+53n25*DN_CONSTRAINED_ARRAY{6E8} 20|624r10
+66n57*LX_SYMREP{63E8} 20|666r47 725r47
+67n9*SM_OBJ_TYPE{63E8} 20|934r65
+69n41*CD_COMP_UNIT{63E8} 20|789r33
+69n57*CD_LEVEL{63E8} 20|603r75 786r34 789r74
+69n73*CD_OFFSET{63E8} 20|786r72 789r116
+71n9*XD_SOURCE_NAME{63E8} 20|665r55 724r55
+71n65*SM_BASE_TYPE{63E8} 20|762r39
+72n9*CD_IMPL_SIZE{63E8} 20|934r48
+77n49*CD_DIMENSIONS{63E8} 20|768r18
+82n25*SM_EXP_TYPE{63E8} 20|647r40 706r38 765r39
+86n73*CD_RETURN_LABEL{63E8} 20|610r32
+153E11*CLASS_EXP{6E8} 20|641r31 700r31
+190E11*CLASS_TYPE_SPEC{6E8} 20|655r34 714r34
+196E11*CLASS_UNCONSTRAINED{6E8} 20|806r34
+198E11*CLASS_CONSTRAINED{6E8} 20|761r18
+X 22 idl.ads
+8K33*IDL 19|24w15 25r15 22|126e12
+46R8*TREE 19|100r43 104r43 111r35 115r35 155r65 156r46 157r61 159r48 160r46
+. 161r54 220r41 221r41 222r54 223r61 341r43 20|600r81 618r78 637r85 643r19
+. 657r27 665r35 666r27 696r77 702r19 716r27 724r35 725r27 757r64 781r74 802r70
+. 814r70 930r57 959r74 990r73 22|61e27
+49e21*TY{21|6E8} 20|622r20 627r90 641r25 645r18 650r90 655r28 659r24 682r102
+. 688r111 700r25 704r18 709r90 714r28 718r24 741r102 747r111 761r12 764r15
+. 764r44 767r15 771r97 784r17 792r83 806r28
+89V13*D{46R8} 20|647s37 665s52 666s44 706s35 724s52 725s44 762s36 765s36
+. 934s62
+95V13*DI{integer} 20|603s71 610s28 768s14 786s30 786s68 789s29 789s70 789s112
+. 934s44
+101V13*PRINT_NAME{string} 20|667s60 726s60
+X 72 text_io.ads
+24K9*Text_IO=24:29 19|24w6 25r6
 

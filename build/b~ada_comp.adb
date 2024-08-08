@@ -25,20 +25,19 @@ package body ada_main is
    E099 : Short_Integer; pragma Import (Ada, E099, "ada__strings__utf_encoding_E");
    E105 : Short_Integer; pragma Import (Ada, E105, "ada__tags_E");
    E005 : Short_Integer; pragma Import (Ada, E005, "ada__strings__text_buffers_E");
-   E133 : Short_Integer; pragma Import (Ada, E133, "ada__streams_E");
-   E145 : Short_Integer; pragma Import (Ada, E145, "system__file_control_block_E");
-   E144 : Short_Integer; pragma Import (Ada, E144, "system__finalization_root_E");
-   E142 : Short_Integer; pragma Import (Ada, E142, "ada__finalization_E");
-   E141 : Short_Integer; pragma Import (Ada, E141, "system__file_io_E");
+   E122 : Short_Integer; pragma Import (Ada, E122, "ada__streams_E");
+   E134 : Short_Integer; pragma Import (Ada, E134, "system__file_control_block_E");
+   E133 : Short_Integer; pragma Import (Ada, E133, "system__finalization_root_E");
+   E131 : Short_Integer; pragma Import (Ada, E131, "ada__finalization_E");
+   E130 : Short_Integer; pragma Import (Ada, E130, "system__file_io_E");
    E112 : Short_Integer; pragma Import (Ada, E112, "ada__calendar_E");
-   E131 : Short_Integer; pragma Import (Ada, E131, "ada__text_io_E");
-   E163 : Short_Integer; pragma Import (Ada, E163, "system__direct_io_E");
-   E155 : Short_Integer; pragma Import (Ada, E155, "system__sequential_io_E");
-   E151 : Short_Integer; pragma Import (Ada, E151, "grmr_ops_E");
-   E157 : Short_Integer; pragma Import (Ada, E157, "lex_E");
-   E147 : Short_Integer; pragma Import (Ada, E147, "idl_E");
+   E120 : Short_Integer; pragma Import (Ada, E120, "ada__text_io_E");
+   E180 : Short_Integer; pragma Import (Ada, E180, "system__direct_io_E");
+   E173 : Short_Integer; pragma Import (Ada, E173, "system__sequential_io_E");
+   E169 : Short_Integer; pragma Import (Ada, E169, "grmr_ops_E");
+   E175 : Short_Integer; pragma Import (Ada, E175, "lex_E");
+   E167 : Short_Integer; pragma Import (Ada, E167, "idl_E");
    E118 : Short_Integer; pragma Import (Ada, E118, "codage_intermediaire_E");
-   E178 : Short_Integer; pragma Import (Ada, E178, "emits_E");
    E116 : Short_Integer; pragma Import (Ada, E116, "code_gen_E");
 
    Sec_Default_Sized_Stacks : array (1 .. 1) of aliased System.Secondary_Stack.SS_Stack (System.Parameters.Runtime_Default_Sec_Stack_Size);
@@ -50,21 +49,21 @@ package body ada_main is
 
    procedure finalize_library is
    begin
-      E155 := E155 - 1;
+      E173 := E173 - 1;
       declare
          procedure F1;
          pragma Import (Ada, F1, "system__sequential_io__finalize_spec");
       begin
          F1;
       end;
-      E163 := E163 - 1;
+      E180 := E180 - 1;
       declare
          procedure F2;
          pragma Import (Ada, F2, "system__direct_io__finalize_spec");
       begin
          F2;
       end;
-      E131 := E131 - 1;
+      E120 := E120 - 1;
       declare
          procedure F3;
          pragma Import (Ada, F3, "ada__text_io__finalize_spec");
@@ -75,7 +74,7 @@ package body ada_main is
          procedure F4;
          pragma Import (Ada, F4, "system__file_io__finalize_body");
       begin
-         E141 := E141 - 1;
+         E130 := E130 - 1;
          F4;
       end;
       declare
@@ -217,36 +216,33 @@ package body ada_main is
       Ada.Strings.Text_Buffers'Elab_Spec;
       E005 := E005 + 1;
       Ada.Streams'Elab_Spec;
-      E133 := E133 + 1;
+      E122 := E122 + 1;
       System.File_Control_Block'Elab_Spec;
-      E145 := E145 + 1;
+      E134 := E134 + 1;
       System.Finalization_Root'Elab_Spec;
-      E144 := E144 + 1;
+      E133 := E133 + 1;
       Ada.Finalization'Elab_Spec;
-      E142 := E142 + 1;
+      E131 := E131 + 1;
       System.File_Io'Elab_Body;
-      E141 := E141 + 1;
+      E130 := E130 + 1;
       Ada.Calendar'Elab_Spec;
       Ada.Calendar'Elab_Body;
       E112 := E112 + 1;
       Ada.Text_Io'Elab_Spec;
       Ada.Text_Io'Elab_Body;
-      E131 := E131 + 1;
+      E120 := E120 + 1;
       System.Direct_Io'Elab_Spec;
-      E163 := E163 + 1;
+      E180 := E180 + 1;
       System.Sequential_Io'Elab_Spec;
-      E155 := E155 + 1;
+      E173 := E173 + 1;
       GRMR_OPS'ELAB_BODY;
-      E151 := E151 + 1;
+      E169 := E169 + 1;
       LEX'ELAB_BODY;
-      E157 := E157 + 1;
+      E175 := E175 + 1;
       IDL'ELAB_BODY;
-      E147 := E147 + 1;
+      E167 := E167 + 1;
       CODAGE_INTERMEDIAIRE'ELAB_SPEC;
-      CODAGE_INTERMEDIAIRE'ELAB_BODY;
       E118 := E118 + 1;
-      EMITS'ELAB_SPEC;
-      E178 := E178 + 1;
       E116 := E116 + 1;
    end adainit;
 
@@ -291,7 +287,6 @@ package body ada_main is
    --   ./lex.o
    --   ./idl.o
    --   ./codage_intermediaire.o
-   --   ./emits.o
    --   ./code_gen.o
    --   ./ada_comp.o
    --   -L./
