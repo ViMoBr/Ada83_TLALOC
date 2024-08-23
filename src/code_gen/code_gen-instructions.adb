@@ -270,24 +270,24 @@ separate ( CODE_GEN )
       when B =>
         ALIGN ( BOOL_AL );
         COUNTER := -CODI.OFFSET_ACT;
-        DeC_OFFSET ( BOOL_SIZE);
+        ALTER_OFFSET ( BOOL_SIZE);
         ALIGN ( BOOL_AL);
         TEMP := -CODI.OFFSET_ACT;
-        DEC_OFFSET ( BOOL_SIZE );
+        ALTER_OFFSET ( BOOL_SIZE );
       when C =>
         ALIGN ( CHAR_AL );
         COUNTER := -CODI.OFFSET_ACT;
-        DEC_OFFSET ( CHAR_SIZE );
+        ALTER_OFFSET ( CHAR_SIZE );
         ALIGN ( CHAR_AL);
         TEMP := -CODI.OFFSET_ACT;
-        DEC_OFFSET ( CHAR_SIZE );
+        ALTER_OFFSET ( CHAR_SIZE );
       when I =>
         ALIGN ( INTG_AL );
         COUNTER := -CODI.OFFSET_ACT;
-        DEC_OFFSET ( INTG_SIZE );
+        ALTER_OFFSET ( INTG_SIZE );
         ALIGN ( INTG_AL );
         TEMP := -CODI.OFFSET_ACT;
-        DEC_OFFSET ( INTG_SIZE );
+        ALTER_OFFSET ( INTG_SIZE );
       when A =>
         PUT_LINE ( "!!! COMPILE_STM_LOOP_REVERSE ACT ILLICITE " & CODE_DATA_TYPE'IMAGE ( ACT ) );
         raise PROGRAM_ERROR;
@@ -679,14 +679,7 @@ separate ( CODE_GEN )
 
 	elsif NAMEXP.TY = DN_INTEGER then
 	  OPER := EXPRESSIONS.CODE_EXP( D( AS_EXP, ASSIGN ) );
-	  if NAMEXP.TY /= DN_UNIVERSAL_INTEGER then
-	    OPER := LOAD_ADR( DEFN );
-	    EMIT( CVB );
-	  end if;
             CODI.STORE( DEFN, WORD_TYP, OPER );
---RESULT := CODI.NEW_OPERAND;
---CODI.MAKE_OPRND_DAT( OPERAND => RESULT, SEG => COMP_UNIT, LVL => LVL, OFS => OFS, SIZ => DI( CD_IMPL_SIZE, D( SM_OBJ_TYPE, DEFN ) ) );
---CODI.ARG1_OP( RESULT, TRSF, OPER );
           end if;
 
         end;

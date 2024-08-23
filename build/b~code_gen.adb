@@ -31,11 +31,11 @@ package body ada_main is
    E125 : Short_Integer; pragma Import (Ada, E125, "ada__finalization_E");
    E124 : Short_Integer; pragma Import (Ada, E124, "system__file_io_E");
    E114 : Short_Integer; pragma Import (Ada, E114, "ada__text_io_E");
-   E174 : Short_Integer; pragma Import (Ada, E174, "system__direct_io_E");
-   E165 : Short_Integer; pragma Import (Ada, E165, "system__sequential_io_E");
-   E161 : Short_Integer; pragma Import (Ada, E161, "grmr_ops_E");
-   E167 : Short_Integer; pragma Import (Ada, E167, "lex_E");
-   E159 : Short_Integer; pragma Import (Ada, E159, "idl_E");
+   E176 : Short_Integer; pragma Import (Ada, E176, "system__direct_io_E");
+   E171 : Short_Integer; pragma Import (Ada, E171, "system__sequential_io_E");
+   E167 : Short_Integer; pragma Import (Ada, E167, "grmr_ops_E");
+   E173 : Short_Integer; pragma Import (Ada, E173, "lex_E");
+   E165 : Short_Integer; pragma Import (Ada, E165, "idl_E");
    E112 : Short_Integer; pragma Import (Ada, E112, "codage_intermediaire_E");
    E002 : Short_Integer; pragma Import (Ada, E002, "code_gen_E");
 
@@ -48,14 +48,14 @@ package body ada_main is
 
    procedure finalize_library is
    begin
-      E165 := E165 - 1;
+      E171 := E171 - 1;
       declare
          procedure F1;
          pragma Import (Ada, F1, "system__sequential_io__finalize_spec");
       begin
          F1;
       end;
-      E174 := E174 - 1;
+      E176 := E176 - 1;
       declare
          procedure F2;
          pragma Import (Ada, F2, "system__direct_io__finalize_spec");
@@ -228,15 +228,15 @@ package body ada_main is
       Ada.Text_Io'Elab_Body;
       E114 := E114 + 1;
       System.Direct_Io'Elab_Spec;
-      E174 := E174 + 1;
+      E176 := E176 + 1;
       System.Sequential_Io'Elab_Spec;
-      E165 := E165 + 1;
+      E171 := E171 + 1;
       GRMR_OPS'ELAB_BODY;
-      E161 := E161 + 1;
-      LEX'ELAB_BODY;
       E167 := E167 + 1;
+      LEX'ELAB_BODY;
+      E173 := E173 + 1;
       IDL'ELAB_BODY;
-      E159 := E159 + 1;
+      E165 := E165 + 1;
       CODAGE_INTERMEDIAIRE'ELAB_SPEC;
       E112 := E112 + 1;
       E002 := E002 + 1;

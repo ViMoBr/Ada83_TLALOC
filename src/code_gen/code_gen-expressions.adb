@@ -13,13 +13,38 @@ is
   is
   begin
 
-    if EXP.TY in CLASS_NAME
-    then
-      CODE_NAME( EXP );
+--put_line( "EXP.TY " & NODE_NAME'IMAGE( EXP.TY ) );
 
-    elsif EXP.TY in CLASS_EXP_EXP
+    if EXP.TY = DN_NUMERIC_LITERAL
     then
-      return CODE_EXP_EXP( EXP );
+      return CODE_NUMERIC_LITERAL( EXP );
+
+    elsif EXP.TY = DN_USED_OBJECT_ID
+    then
+      return CODE_USED_OBJECT_ID( EXP );
+
+    elsif EXP.TY = DN_PARENTHESIZED
+    then
+      return CODE_EXP( D( AS_EXP, EXP ) );
+
+    elsif EXP.TY = DN_INDEXED then
+      CODE_INDEXED ( EXP );
+
+    elsif EXP.TY = DN_FUNCTION_CALL then
+      return CODE_FUNCTION_CALL( EXP );
+
+    elsif EXP.TY = DN_USED_OP then
+      return CODE_USED_OP( EXP );
+
+    elsif EXP.TY = DN_USED_CHAR
+    then
+      return CODE_USED_CHAR( EXP );
+
+
+
+-- elsif EXP.TY in CLASS_EXP_EXP
+--     then
+--       return CODE_EXP_EXP( EXP );
 
     end if;
     return NO_OPERAND;
@@ -28,139 +53,183 @@ is
 	--====--
 
 
-				---------
-  procedure			CODE_NAME			( NAME :TREE )
+				--------------------
+  function			CODE_NUMERIC_LITERAL	( NUMERIC_LITERAL :TREE )	return OPERAND_REF
   is
+    VAL	: TREE	:= D( SM_VALUE, NUMERIC_LITERAL );
   begin
-    if NAME.TY in CLASS_DESIGNATOR
-    then
-      CODE_DESIGNATOR( NAME );
-
-    elsif NAME.TY in CLASS_NAME_EXP
-    then
-      CODE_NAME_EXP( NAME );
-
+    if VAL.PT = HI and then VAl.NOTY = DN_NUM_VAL then
+      declare
+        OPER	: OPERAND_REF	:= CODI.LOAD_IMM( DI( SM_VALUE, NUMERIC_LITERAL ) );
+      begin
+        return OPER;
+      end;
+    elsif VAL.TY = DN_REAL_VAL then
+      null;			-- A FAIRE
     end if;
-  end	CODE_NAME;
-	---------
+    return NO_OPERAND;
 
-
-				---------------
-  procedure			CODE_DESIGNATOR		( DESIGNATOR :TREE )
-  is
-  begin
-    if DESIGNATOR.TY in CLASS_USED_OBJECT
-    then
-      CODE_USED_OBJECT( DESIGNATOR );
-
-    elsif DESIGNATOR.TY in CLASS_USED_NAME
-    then
-      CODE_USED_NAME( DESIGNATOR );
-
-    end if;
-  end	CODE_DESIGNATOR;
-	---------------
-
-
-				----------------
-  procedure			CODE_USED_OBJECT		( USED_OBJECT :TREE )
-  is
-  begin
-
-    if USED_OBJECT.TY = DN_USED_CHAR
-    then
-      CODE_USED_CHAR( USED_OBJECT );
-
-    elsif USED_OBJECT.TY = DN_USED_OBJECT_ID
-    then
-      CODE_USED_OBJECT_ID( USED_OBJECT );
-
-    end if;
-  end	CODE_USED_OBJECT;
-	----------------
-
-
-				--------------
-  procedure			CODE_USED_CHAR		( USED_CHAR :TREE )
-  is
-  begin
-    null;
-  end	CODE_USED_CHAR;
-	--------------
+  end	CODE_NUMERIC_LITERAL;
+	--------------------
 
 
 				-------------------
-  procedure			CODE_USED_OBJECT_ID		( USED_OBJECT_ID :TREE )
+  function			CODE_USED_OBJECT_ID		( USED_OBJECT_ID :TREE )	return OPERAND_REF
   is
     DEFN		: TREE		:= D( SM_DEFN, USED_OBJECT_ID ) ;
   begin
     case DEFN.TY is
-    when DN_CONSTANT_ID =>                  CODE_CONSTANT_ID( DEFN );
---               when CONST_ID =>                  Expr_used_object_id_const_id ( nd_used_object_id.C_USED_OBJECT_ID.SM_DEFN );
---               when VAR_ID =>                  Expr_used_object_id_var_id ( nd_used_object_id.C_USED_OBJECT_ID.SM_DEFN );
---               when DEF_CHAR =>                  Expr_used_object_id_def_char ( nd_used_object_id.C_USED_OBJECT_ID.SM_DEFN );
---               when ENUM_ID =>                  Expr_used_object_id_enum_id ( nd_used_object_id.C_USED_OBJECT_ID.SM_DEFN );
---               when ITERATION_ID =>                  Expr_used_object_id_iteration_id ( nd_used_object_id.C_USED_OBJECT_ID.SM_DEFN );
---               when IN_ID =>                  Expr_used_object_id_in_id ( nd_used_object_id.C_USED_OBJECT_ID.SM_DEFN );
---               when IN_OUT_ID =>                  Expr_used_object_id_in_out_id ( nd_used_object_id.C_USED_OBJECT_ID.SM_DEFN );
---               when OUT_ID =>                  Expr_used_object_id_out_id ( nd_used_object_id.C_USED_OBJECT_ID.SM_DEFN );
+    when DN_CONSTANT_ID | DN_VARIABLE_ID	=> return CODE_VC_ID( DEFN );
+    when DN_ITERATION_ID			=> return LOAD_MEM( DEFN );
+    when DN_ENUMERATION_ID			=> return LOAD_IMM( DI( SM_REP, DEFN ) );
+    when DN_CHARACTER_ID			=> return LOAD_IMM( DI( SM_REP, DEFN ) );
+--    when IN_ID | IN_OUT_ID | OUT_ID		=> CODE_PRM_ID( DEFN );
     when others => raise PROGRAM_ERROR;
     end case;
-
+ 
   end	CODE_USED_OBJECT_ID;
 	-------------------
 
 
-
-				----------------
-  procedure			CODE_CONSTANT_ID		( CONSTANT_ID :TREE )
+				----------
+  function			CODE_VC_ID		( CONSTANT_ID :TREE )	return OPERAND_REF
   is
     CST_TYPE	: TREE	:= D( SM_OBJ_TYPE, CONSTANT_ID );
   begin
     case CST_TYPE.TY is
-    when DN_INTEGER => null;
     when DN_ARRAY => null;
-    when DN_ACCESS => null;
-    when DN_ENUM_LITERAL_S => null;
-    when others => raise PROGRAM_ERROR;
+    when DN_INTEGER | DN_ACCESS | DN_ENUMERATION => return LOAD_MEM( CONSTANT_ID );
+    when others =>
+--put_line( "CODE_VC_ID ERR " & NODE_NAME'IMAGE( CST_TYPE.TY ) );
+      raise PROGRAM_ERROR;
     end case;
-  end	CODE_CONSTANT_ID;
-	----------------
+    return NO_OPERAND;
+  end	CODE_VC_ID;
+	----------
+
+
+				------------------
+  function			CODE_FUNCTION_CALL		( FUNCTION_CALL :TREE )	return OPERAND_REF
+  is
+    NAME		: TREE		:= D( AS_NAME,		FUNCTION_CALL );
+    PARAMS	: TREE		:= D( SM_NORMALIZED_PARAM_S,	FUNCTION_CALL );
+    DEFN		: TREE		:= D( SM_DEFN,		NAME );
+    OPER		: OPERAND_REF	:= NO_OPERAND;
+
+  begin
+
+    if DEFN.TY = DN_BLTN_OPERATOR_ID then
+      declare
+        OP_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, DEFN ) );
+        X1, X2	: OPERAND_REF	:= NO_OPERAND;
+      begin
+        if OP_STR = """+""" then
+
+	declare
+	  PRM_S	: SEQ_TYPE	:= LIST( PARAMS );
+	  PRM	: TREE;
+	begin
+--      while not IS_EMPTY( PRM_S ) loop
+	  POP( PRM_S, PRM );
+	  X1 := CODE_EXP( PRM );
+	  POP( PRM_S, PRM );
+	  X2 := CODE_EXP( PRM );
+if not IS_EMPTY( PRM_S ) then put_line(  "PARAM NUM 3 !!" ); end if;
+--      end loop;
+	end;
+
+          OPER := CODI.ARG2_OP( ADD, X1, X2 );
+--put_line( "CODE_FUNCTION_CALL CALL + " & NODE_NAME'IMAGE( DEFN.TY ) & " " & OP_STR );
+        end if;
+      end;
+    end if;
+    return OPER;
+  end	CODE_FUNCTION_CALL;
+	------------------
 
 
 
-				----------------
-  procedure			CODE_VARIABLE_ID		( VARIABLE_ID :TREE )
+				------------
+  procedure			CODE_INDEXED	( INDEXED :TREE )
   is
   begin
-    null;
-  end	CODE_VARIABLE_ID;
-	----------------
+    declare
+
+      procedure INDEX ( EXP_SEQ :SEQ_TYPE ) is
+        EXP_S	: SEQ_TYPE	:= EXP_SEQ;
+        EXP	: TREE;
+        OPER	: OPERAND_REF;
+      begin
+        POP( EXP_S, EXP );
+        OPER := CODE_EXP( EXP );
+        if IS_EMPTY( EXP_S ) then
+	EMIT ( AR2,		COMMENT => "ADRESSE POUR LE DERNIER INDICE (RAPIDE)" );
+        else
+	EMIT ( AR1,		COMMENT => "ADRESSE POUR INDICE INTERMEDIAIRE" );
+	EMIT ( DEC, A, 3*INTG_SIZE,	COMMENT => "PTR DESCRIPTEUR AU TRIPLET INDICE SUIVANT" );
+	INDEX( EXP_S );
+	EMIT ( ADD, I,		COMMENT => "AJOUTER LE DECALAGE A L ADRESSE DES INDICES PRECEDENTS" );
+        end if;
+      end INDEX;
+
+    begin
+      CODE_OBJECT( D ( AS_NAME, INDEXED ) );
+      EMIT( DPL, A,		  COMMENT => "DUP ADRESSE OBJET" );
+      EMIT( IND, A, 0,	  COMMENT => "CHARGE INDEXE D ADRESSE TABLEAU" );
+      EMIT( SWP, A,		  COMMENT => "ADRESSE OBJET AU TOP" );
+      EMIT( IND, A, -ADDR_SIZE, COMMENT => "CHARGE INDEXE ADRESSE DU DESCRIPTEUR TABLEAU" );
+      EMIT( DEC, A, INTG_SIZE,  COMMENT => "ADRESSE DESCRIPTEUR - TAILLE ENTIER" );
+      declare
+        EXP_SEQ	: SEQ_TYPE	:= LIST( D( AS_EXP_S, INDEXED ) );
+      begin
+        if not IS_EMPTY( EXP_SEQ ) then
+	INDEX( EXP_SEQ );
+        end if;
+      end;
+      EMIT( IXA, INTEGER( 1 ) );
+    end;
+  end	CODE_INDEXED;
+	------------
 
 
 				--------------
-  procedure			CODE_USED_NAME		( USED_NAME :TREE )
+  function			CODE_USED_NAME		( USED_NAME :TREE )		RETURN OPERAND_REF
   is
   begin
 
     if USED_NAME.TY = DN_USED_OP then
-      CODE_USED_OP ( USED_NAME );
+      return CODE_USED_OP ( USED_NAME );
 
     elsif USED_NAME.TY = DN_USED_NAME_ID then
       CODE_USED_NAME_ID ( USED_NAME );
 
     end if;
+    return NO_OPERAND;
   end	CODE_USED_NAME;
 	--------------
 
 
 				------------
-  procedure			CODE_USED_OP		( USED_OP :TREE )
+  function			CODE_USED_OP		( USED_OP :TREE )		RETURN OPERAND_REF
   is
+    DEFN		: TREE		:= D( SM_DEFN, USED_OP ) ;
+    SYM		: TREE		:= D( LX_SYMREP, DEFN );
   begin
-    null;
+    put_line( "used op " & PRINT_NAME( SYM ) );
+    return NO_OPERAND;
   end	CODE_USED_OP;
 	------------
+
+
+
+				--------------
+  function			CODE_USED_CHAR		( USED_CHAR :TREE )		return OPERAND_REF
+  is
+    OPER		: OPERAND_REF	:= CODI.LOAD_IMM( DI( SM_VALUE, USED_CHAR ) );
+  begin
+    return OPER;
+  end	CODE_USED_CHAR;
+	--------------
 
 
 
@@ -224,7 +293,7 @@ is
 
 
 				-------------
-  procedure			CODE_NAME_EXP		( NAME_EXP :TREE )
+  function			CODE_NAME_EXP		( NAME_EXP :TREE )	return OPERAND_REF
   is
   begin
 
@@ -232,7 +301,7 @@ is
       CODE_INDEXED ( NAME_EXP );
 
     elsif NAME_EXP.TY = DN_FUNCTION_CALL then
-      CODE_FUNCTION_CALL( NAME_EXP );
+      return CODE_FUNCTION_CALL( NAME_EXP );
 
     elsif NAME_EXP.TY = DN_SLICE then
       CODE_SLICE ( NAME_EXP );
@@ -241,59 +310,12 @@ is
       CODE_ALL ( NAME_EXP );
 
     end if;
+    return NO_OPERAND;
   end	CODE_NAME_EXP;
 	-------------
 
-				------------------
-  procedure			CODE_FUNCTION_CALL		( FUNCTION_CALL :TREE )
-  is
-  begin
-    null;
-  end	CODE_FUNCTION_CALL;
-	------------------
 
 
-				------------
-  procedure			CODE_INDEXED	( INDEXED :TREE )
-  is
-  begin
-    declare
-
-      procedure INDEX ( EXP_SEQ :SEQ_TYPE ) is
-        EXP_S	: SEQ_TYPE	:= EXP_SEQ;
-        EXP	: TREE;
-        OPER	: OPERAND_REF;
-      begin
-        POP( EXP_S, EXP );
-        OPER := CODE_EXP( EXP );
-        if IS_EMPTY( EXP_S ) then
-	EMIT ( AR2,		COMMENT => "ADRESSE POUR LE DERNIER INDICE (RAPIDE)" );
-        else
-	EMIT ( AR1,		COMMENT => "ADRESSE POUR INDICE INTERMEDIAIRE" );
-	EMIT ( DEC, A, 3*INTG_SIZE,	COMMENT => "PTR DESCRIPTEUR AU TRIPLET INDICE SUIVANT" );
-	INDEX( EXP_S );
-	EMIT ( ADD, I,		COMMENT => "AJOUTER LE DECALAGE A L ADRESSE DES INDICES PRECEDENTS" );
-        end if;
-      end INDEX;
-
-    begin
-      CODE_OBJECT( D ( AS_NAME, INDEXED ) );
-      EMIT( DPL, A,		  COMMENT => "DUP ADRESSE OBJET" );
-      EMIT( IND, A, 0,	  COMMENT => "CHARGE INDEXE D ADRESSE TABLEAU" );
-      EMIT( SWP, A,		  COMMENT => "ADRESSE OBJET AU TOP" );
-      EMIT( IND, A, -ADDR_SIZE, COMMENT => "CHARGE INDEXE ADRESSE DU DESCRIPTEUR TABLEAU" );
-      EMIT( DEC, A, INTG_SIZE,  COMMENT => "ADRESSE DESCRIPTEUR - TAILLE ENTIER" );
-      declare
-        EXP_SEQ	: SEQ_TYPE	:= LIST( D( AS_EXP_S, INDEXED ) );
-      begin
-        if not IS_EMPTY( EXP_SEQ ) then
-	INDEX( EXP_SEQ );
-        end if;
-      end;
-      EMIT( IXA, INTEGER( 1 ) );
-    end;
-  end	CODE_INDEXED;
-	------------
 
 
 				----------
@@ -351,8 +373,8 @@ is
     then
       return CODE_EXP_VAL_EXP( EXP_VAL );
 
-    elsif EXP_VAL.TY = DN_NUMERIC_LITERAL then
-      return CODE_NUMERIC_LITERAL( EXP_VAL );
+--    elsif EXP_VAL.TY = DN_NUMERIC_LITERAL then
+--      return CODE_NUMERIC_LITERAL( EXP_VAL );
 
     elsif EXP_VAL.TY = DN_NULL_ACCESS then
       CODE_NULL_ACCESS( EXP_VAL );
@@ -376,8 +398,8 @@ is
     elsif EXP_VAL_EXP.TY in CLASS_MEMBERSHIP then
       CODE_MEMBERSHIP( EXP_VAL_EXP );
 
-    elsif EXP_VAL_EXP.TY = DN_PARENTHESIZED then
-      return CODE_PARENTHESIZED( EXP_VAL_EXP );
+--    elsif EXP_VAL_EXP.TY = DN_PARENTHESIZED then
+--      return CODE_PARENTHESIZED( EXP_VAL_EXP );
 
     end if;
     return NO_OPERAND;
@@ -423,33 +445,7 @@ is
 	--------------------
 
 
-				------------------
-  function			CODE_PARENTHESIZED		( PARENTHESIZED :TREE )	return OPERAND_REF
-  is
-  begin
-    return CODE_EXP( D( AS_EXP, PARENTHESIZED ) );
 
-  end	CODE_PARENTHESIZED;
-	------------------
-
-				--------------------
-  function			CODE_NUMERIC_LITERAL	( NUMERIC_LITERAL :TREE )	return OPERAND_REF
-  is
-    VAL	: TREE	:= D( SM_VALUE, NUMERIC_LITERAL );
-  begin
-    if VAL.PT = HI and then VAl.NOTY = DN_NUM_VAL then
-      declare
-        OPER	: OPERAND_REF	:= CODI.LOAD_IMM( DI( SM_VALUE, NUMERIC_LITERAL ) );
-      begin
-        return OPER;
-      end;
-    elsif VAL.TY = DN_REAL_VAL then
-      null;			-- A FAIRE
-    end if;
-    return NO_OPERAND;
-
-  end	CODE_NUMERIC_LITERAL;
-	--------------------
 
 
 				----------------

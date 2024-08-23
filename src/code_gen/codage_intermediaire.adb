@@ -549,6 +549,9 @@ is
   is
   begin
     CUR_LEVEL := CUR_LEVEL + 1;
+
+--    if DEBUG then put_line( "inc lvl cur= " & LEVEL_NUM'IMAGE( CUR_LEVEL ) ); end if;
+
   exception
     when CONSTRAINT_ERROR => raise STATIC_LEVEL_OVERFLOW;
 
@@ -562,6 +565,9 @@ is
   is
   begin
     CUR_LEVEL := CUR_LEVEL - 1;
+
+--    if DEBUG then put_line( "dec lvl cur= " & LEVEL_NUM'IMAGE( CUR_LEVEL ) ); end if;
+
   exception
     when CONSTRAINT_ERROR => raise STATIC_LEVEL_UNDERFLOW;
 
@@ -569,17 +575,24 @@ is
 	--=====--
 
 				--======--
-  procedure			DEC_OFFSET		( I :NATURAL )
+  procedure			ALTER_OFFSET		( I :NATURAL )
   is
   begin
-    OFFSET_ACT := OFFSET_ACT - OFFSET_VAL( I );
-    if OFFSET_MAX > OFFSET_ACT then
-      OFFSET_MAX := OFFSET_ACT;
+    if CUR_LEVEL = 1 then
+      OFFSET_ACT := OFFSET_ACT + OFFSET_VAL( I );
+      if OFFSET_MAX < OFFSET_ACT then
+        OFFSET_MAX := OFFSET_ACT;
+      end if;
+    else
+      OFFSET_ACT := OFFSET_ACT - OFFSET_VAL( I );
+      if OFFSET_MAX > OFFSET_ACT then
+        OFFSET_MAX := OFFSET_ACT;
+      end if;
     end if;
   exception
     when CONSTRAINT_ERROR => raise STATIC_OFFSET_OVERFLOW;
 
-  end	DEC_OFFSET;
+  end	ALTER_OFFSET;
 	--======--
 
 
@@ -692,6 +705,7 @@ null;
   end	CODE_DATA_TYPE_OF;
    	--=============--
 
+
 				--===========--
   function			OPERAND_TYPE_OF		( EXP_OR_TYPE_SPEC :TREE )
 							return OPERAND_TYPE
@@ -782,11 +796,14 @@ null;
   is
   begin
     case OBJECT.TY is
-    when DN_IN | DN_IN_OUT_ID | DN_OUT_ID =>
+    when DN_IN | DN_IN_OUT_ID | DN_OUT_ID | DN_ITERATION_ID =>
       return ( 0, LEVEL_NUM( DI( CD_LEVEL, OBJECT ) ), OFFSET_VAL( DI( CD_OFFSET, OBJECT ) ) );
          
     when DN_INTEGER | DN_VARIABLE_ID =>
-      return ( SEGMENT_NUM( DI( CD_COMP_UNIT, OBJECT ) ), LEVEL_NUM( DI( CD_LEVEL,     OBJECT ) ), OFFSET_VAL( DI( CD_OFFSET,    OBJECT ) ) );
+
+-- if DEBUG then put_line( "get_slo LVL=" & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) ); end if;
+
+      return ( SEGMENT_NUM( DI( CD_COMP_UNIT, OBJECT ) ), LEVEL_NUM( DI( CD_LEVEL, OBJECT ) ), OFFSET_VAL( DI( CD_OFFSET, OBJECT ) ) );
                   
     when others =>
       PUT_LINE ( "ERREUR GET_ULO : OBJECT.TY ILLICITE " & NODE_NAME'IMAGE( OBJECT.TY ) );
@@ -888,7 +905,7 @@ null;
         DEFINING_ILOC_IMG	:constant STRING		:= INSTR_LOC'IMAGE( I_LOC );
         IMM_VAL_IMG		:constant STRING		:= INTEGER'IMAGE( IMM_VAL );
       begin
-        PUT_LINE( ASCII.HT & '%' & DEFINING_ILOC_IMG(2..DEFINING_ILOC_IMG'LAST) & " = li." & OPERAND_TYPE_IMAGE( OPER_TYP ) & "  " & INTEGER'IMAGE( IMM_VAL ) );
+        PUT_LINE( ASCII.HT & '%' & DEFINING_ILOC_IMG(2..DEFINING_ILOC_IMG'LAST) & " = LI:" & OPERAND_TYPE_IMAGE( OPER_TYP ) & INTEGER'IMAGE( IMM_VAL ) );
       end;
     end if;
 
@@ -899,14 +916,23 @@ null;
 
 
 			---------
-  function		SLO_IMAGE		( SLO : SLO_LOC)	return STRING
+  function		SLO_IMAGE		( SLO :SLO_LOC)	return STRING
   is
     SEG_IMG	:constant STRING	:= SEGMENT_NUM'IMAGE( SLO.SEG );
-    LVL_IMG	:constant STRING	:= LEVEL_NUM'IMAGE  ( SLO.LVL );
     OFS_IMG	:constant STRING	:= OFFSET_VAL'IMAGE ( SLO.OFS );
+    INDIC_LVL	: LEVEL_NUM;
   begin
-    return '[' & SEG_IMG( 2..SEG_IMG'LAST ) & '|' & LVL_IMG & '|' & OFS_IMG & ']';
+    if SLO.LVL = 1 then
+      INDIC_LVL := SLO.LVL;
+    else
+      INDIC_LVL := SLO.LVL - CUR_LEVEL;
+    end if;
 
+    declare
+      INDIC_LVL_IMG		:constant STRING	:= LEVEL_NUM'IMAGE( INDIC_LVL );
+    begin
+      return OFS_IMG & '[' & SEG_IMG( 2..SEG_IMG'LAST ) & '|' & INDIC_LVL_IMG & ']';
+    end;
   end	SLO_IMAGE;
 	---------
 
@@ -943,8 +969,8 @@ null;
       declare
         DEFINING_ILOC_IMG	:constant STRING		:= INSTR_LOC'IMAGE( I_LOC );
       begin
-        PUT_LINE( ASCII.HT & '%' & DEFINING_ILOC_IMG( 2..DEFINING_ILOC_IMG'LAST ) & " =." & OPERAND_TYPE_IMAGE( OPER_TYP )
-		& SLO_IMAGE( SLO )
+        PUT_LINE( ASCII.HT & '%' & DEFINING_ILOC_IMG( 2..DEFINING_ILOC_IMG'LAST )
+		& " = LD:" & OPERAND_TYPE_IMAGE( OPER_TYP ) & ' ' & SLO_IMAGE( SLO ) 
 	    );
       end;
     end if;
@@ -961,20 +987,14 @@ null;
 							  SRC_OPER	:OPERAND_REF )
   is
     SLO		: SLO_LOC		:= GET_SLO( DEST_DEFN );
-    INDIC_LVL	: LEVEL_NUM;
   begin
-    if SLO.LVL = 1 then
-      INDIC_LVL := SLO.LVL;
-    else
-      INDIC_LVL := SLO.LVL - CUR_LEVEL;
-    end if;
 
     if DEBUG then
       declare
         OPER_IMG	:constant STRING		:= OPERAND_REF'IMAGE( SRC_OPER );
       begin
-        PUT( INSTR_LOC'IMAGE( COMPTEUR_PROGRAMME ) & ASCII.HT & SLO_IMAGE( SLO )
-	& " = st." & OPERAND_TYPE_IMAGE( OTYPE ) & " %" & OPER_IMG( 2..OPER_IMG'LAST ) );
+        PUT( ASCII.HT & SLO_IMAGE( SLO ) 
+	   & " = ST:" & OPERAND_TYPE_IMAGE( OTYPE ) & " %" & OPER_IMG( 2..OPER_IMG'LAST ) );
 
         NEW_LINE;
       end;
@@ -1002,7 +1022,7 @@ null;
         DEFINING_ILOC_IMG	:constant STRING		:= INSTR_LOC'IMAGE( I_LOC );
       begin
         PUT_LINE( ASCII.HT & '%' & DEFINING_ILOC_IMG( 2..DEFINING_ILOC_IMG'LAST )
-		& " = la " & SLO_IMAGE( SLO )
+		& " = LA " & SLO_IMAGE( SLO )
 	    );
       end;
     end if;
@@ -1014,8 +1034,8 @@ null;
 
 
 
-			--==========--
-  procedure		MAKE_OPRND_PRM		( OPERAND :OPERAND_REF; DIRECTION :DIRECTION_DE_PASSAGE )
+				--==========--
+  procedure			MAKE_OPRND_PRM		( OPERAND :OPERAND_REF; DIRECTION :DIRECTION_DE_PASSAGE )
   is
   begin
     TABLE_INSTRUCTIONS( COMPTEUR_PROGRAMME ) := ( GENRE		=> PRM,
@@ -1030,24 +1050,55 @@ null;
 
 
 
-			--===--
-  procedure		ARG1_OP			( RESULTAT :OPERAND_REF; OP: OPCI_ARG1; X1: OPERAND_REF )
+				--===--
+  function			ARG1_OP			( OP: OPCI_ARG1; X1: OPERAND_REF )	return OPERAND_REF
   is
-    TERMINE	: BOOLEAN		:= FALSE;
+    I_LOC		: INSTR_LOC	:= COMPTEUR_PROGRAMME;
   begin
---     if OP /= TRSF then
--- null;
---     end if;
-    if not TERMINE then
-      TABLE_INSTRUCTIONS( COMPTEUR_PROGRAMME ) := (	ARG1, OP,
-						ARG1_X1		=> ( FREE, INACTIVE, OPER_TYP => UNKNOWN, NEXT_FREE => 0 ),
-						ARG1_RESULT	=> ( FREE, INACTIVE, OPER_TYP => UNKNOWN, NEXT_FREE => 0 )
-						);
-      COMPTEUR_PROGRAMME := COMPTEUR_PROGRAMME + 1;
+    TABLE_INSTRUCTIONS( I_LOC ) := ( ARG1, OP, X1 );
+    COMPTEUR_PROGRAMME := COMPTEUR_PROGRAMME + 1;
+
+    if DEBUG then
+      declare
+        DEFINING_ILOC_IMG	:constant STRING		:= INSTR_LOC'IMAGE( I_LOC );
+        OPER_IMG		:constant STRING		:= OPERAND_REF'IMAGE( X1 );
+      begin
+        PUT_LINE( ASCII.HT & '%' & DEFINING_ILOC_IMG( 2..DEFINING_ILOC_IMG'LAST )
+		& " = " & OPCI_ARG1'IMAGE( OP ) & '%' & OPER_IMG( 2..OPER_IMG'LAST )
+	    );
+      end;
     end if;
 
+    return OPERAND_REF( I_LOC );
 
   end	ARG1_OP;
+	--===--
+
+
+
+				--===--
+  function			ARG2_OP			( OP: OPCI_ARG2; X1, X2: OPERAND_REF )	return OPERAND_REF
+  is
+    I_LOC		: INSTR_LOC	:= COMPTEUR_PROGRAMME;
+  begin
+    TABLE_INSTRUCTIONS( I_LOC ) := ( ARG2, OP, X1, X2 );
+    COMPTEUR_PROGRAMME := COMPTEUR_PROGRAMME + 1;
+
+    if DEBUG then
+      declare
+        DEFINING_ILOC_IMG	:constant STRING		:= INSTR_LOC'IMAGE( I_LOC );
+        OPER1_IMG		:constant STRING		:= OPERAND_REF'IMAGE( X1 );
+        OPER2_IMG		:constant STRING		:= OPERAND_REF'IMAGE( X2 );
+      begin
+        PUT_LINE( ASCII.HT & '%' & DEFINING_ILOC_IMG( 2..DEFINING_ILOC_IMG'LAST )
+		& " = " & OPCI_ARG1'IMAGE( OP ) & " %" & OPER1_IMG( 2..OPER1_IMG'LAST ) & " %" & OPER2_IMG( 2..OPER2_IMG'LAST )
+	    );
+      end;
+    end if;
+
+    return OPERAND_REF( I_LOC );
+
+  end	ARG2_OP;
 	--===--
 
 
@@ -1063,7 +1114,7 @@ null;
 					);
 
     if DEBUG then
-      PUT( INSTR_LOC'IMAGE( COMPTEUR_PROGRAMME ) & ASCII.HT & OPCI_FLOT0'IMAGE( OP ) );
+      PUT( ASCII.HT & OPCI_FLOT0'IMAGE( OP ) );
       if OP /= UNLINK then PUT( ' ' & INTEGER'IMAGE( ALLOC_DESALLOC ) ); end if;
       NEW_LINE;
     end if;
@@ -1092,7 +1143,7 @@ null;
       declare
         TARGET_IMG	:constant STRING := TARGET_LBL_REF'IMAGE( TARGET );
       begin
-        PUT_LINE( INSTR_LOC'IMAGE( COMPTEUR_PROGRAMME ) & ASCII.HT & OPCI_FLOT1'IMAGE( OP )
+        PUT_LINE( ASCII.HT & OPCI_FLOT1'IMAGE( OP )
 	      & " @" & TARGET_IMG( 2..TARGET_IMG'LAST ) );
       end;
     end if;
@@ -1114,7 +1165,7 @@ null;
 					);
 
     if DEBUG then
-      PUT( INSTR_LOC'IMAGE( COMPTEUR_PROGRAMME ) & ASCII.HT & OPCI_FRAME'IMAGE( OP ) );
+      PUT( ASCII.HT & OPCI_FRAME'IMAGE( OP ) );
       if OP /= UNLINK then PUT( ' ' & INTEGER'IMAGE( ALLOC ) ); end if;
       NEW_LINE;
     end if;

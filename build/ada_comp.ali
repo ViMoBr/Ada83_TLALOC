@@ -14,7 +14,7 @@ RV NO_FIXED_POINT
 RV NO_IO
 RV NO_DYNAMIC_SIZED_OBJECTS
 
-U ada_comp%b		ada_comp.adb		54ded28f NE OO SU IU
+U ada_comp%b		ada_comp.adb		56bb5128 NE OO SU IU
 Z ada.strings.text_buffers%s  a-sttebu.adb	a-sttebu.ali
 W calendar%s		calendar.ads		calendar.ali
 W code_gen%s		code_gen.adb		code_gen.ali
@@ -35,7 +35,7 @@ D a-stuten.ads		20230508121439 33c54060 ada.strings.utf_encoding%s
 D a-tags.ads		20230508121439 9eaa38c6 ada.tags%s
 D a-textio.ads		20230508121439 deada98a ada.text_io%s
 D a-unccon.ads		20230508121439 0e9b276f ada.unchecked_conversion%s
-D ada_comp.adb		20240808121234 f5925532 ada_comp%b
+D ada_comp.adb		20240811190906 f7f7d695 ada_comp%b
 D calendar.ads		20230508121439 2cb525cd calendar%s
 D code_gen.ads		20230823210317 9ce3fa93 code_gen%s
 D diana_node_attr_class_names.ads  20240730152129 6d94ff6d diana_node_attr_class_names%s
@@ -89,8 +89,8 @@ X 12 ada_comp.adb
 17a3 ACCES_TEXTE{string} 76m7 108r11 116r41 117r44
 18i3 ACCES_TEXTE_LENGTH{natural} 75m7 76r23 104r44 117r82
 20b3 NO_OPTION_GIVEN{boolean} 71m9 80r8
-21e3 OPTION{character} 81m10 88m9 94r6 94r22 94r38 94r54 94r70 94r86 95r23
-. 122r52 122r68 123r52 123r68 124r52 124r68 126r10 126r26 133r10 133r26 133r42
+21e3 OPTION{character} 81m10 88m9 94r6 94r22 94r38 95r23 122r52 122r68 123r52
+. 123r68 124r52 124r68 126r10 126r26 133r10 133r26 133r42
 23i3 START_TIME{2|42I9} 99m3 136r74
 23i15 END_TIME{2|42I9} 135m7 136r63
 29i5 CHN_START{natural} 38r35 38m55 38r68 40r19 46r47 48r44 61m7 63r38 63m58

@@ -1,0 +1,347 @@
+;				-----------------------------
+;				MACROS FASMG POUR CODI x86 64
+;				-----------------------------
+
+	; sur processeur x86 64 les push et pop se font en 64 bits (qword)
+	; mais on a choisi de faire les opérations en 32 bits pour rester comme sur une architecture 32 bits
+
+
+virtual at 0				; zone alternative pour le traitement des constantes
+  CST::
+end virtual
+
+macro show description, value
+
+ 	repeat 1, d:value
+	  display description,`d,13,10
+	end repeat
+
+end macro
+
+
+macro push_T
+  db 0x50					; push rax
+end macro
+
+macro DROP
+  db 0x58					; pop rax
+end macro
+
+macro push_stk
+  db 0x53, 0x89, 0xC3			; push rbx     mov EBX, EAX (attention registres 32 bits)
+end macro
+
+macro pop_N
+  db 0x5B					; pop rbx
+end macro
+
+macro align4
+  desalign = $ mod 4
+  if desalign <> 0
+    repeat 4-desalign
+      db 0x90
+    end repeat
+  end if
+end macro
+
+macro align8
+  desalign = $ mod 8
+  if desalign <> 0
+    repeat 8-desalign
+      db 0x90
+    end repeat
+  end if
+end macro
+
+;			-------
+macro			PUT_STR		; affiche une chaine sur stdout
+;			-------
+  db 0x48, 0x89, 0xC6			; mov rsi, rax  (esi=T  adresse des caracteres a afficher)
+  db 0x8B, 0x50, 0xFC			; mov EDX, dword ptr[rax-4]   EDX=last
+  db 0xFF, 0xC2				; inc EDX
+  db 0x2B, 0x50, 0xF8			; sub EDX, dword ptr [rax-8]   EDX=length
+  db 0x6A, 0x01				; push 1 (sys_write rax=1)
+  db 0x58					; pop rax
+  db 0x48, 0x89,0xC7			; mov rdi,rax (stdout=1)
+  db 0x0F, 0x05				; syscall
+  DROP					; pop rax   T:=N
+end macro
+
+
+;			-------
+macro			SYSEXIT		; retour au systeme
+;			-------
+  db 0x6A, 0x3C				; push x3C  (sys_exit rax=60)
+  db 0x58					; pop rax
+  db 0x31, 0xFF				; xor edi, edi (err_code=0)
+  db 0x0F, 0x05				; syscall
+
+end macro
+;				---------------------
+;				CONSTANTES IMMEDIATES
+
+;			----
+macro			LDIW	val
+;			----
+  push_T
+  db 0xB8					; mov EAX, val32   T:=val
+  dd val
+
+end macro
+;				-----------------------
+;				LOAD LOCAL (relatif FP)
+
+
+;			----
+macro			LDLW	disp	; Load Local (paramètres ou variables locales)
+;			----
+  ofs = -disp				; pile croissante vers adresses decroissantes
+  push_T
+  if ofs > -128 & ofs < 127
+    db 0x8B, 0x45				; mov EAX, dword ptr [rbp+ofs8]   T:=ofs(FP)
+    db ofs
+  else
+    db 0x8B, 0x85				; mov EAX, dword ptr [rbp+ofs32]
+    dd ofs
+  end if
+
+end macro
+
+
+;			----
+macro			LDLA	disp	; Load Local (paramètres ou variables locales)
+;			----
+  ofs = -disp				; pile croissante vers adresses decroissantes
+  push_T
+  if ofs > -128 & ofs < 127
+    db 0x48, 0x8B, 0x45			; mov RAX, qword ptr [rbp+ofs8]   T:=ofs(FP)
+    db ofs
+  else
+    db 0x48, 0x8B, 0x85			; mov RAX, qword ptr [rbp+ofs32]
+    dd ofs
+  end if
+
+end macro
+
+				;----------------------
+				; STORE LOCAL (relatif FP)
+
+
+;			----
+macro			STLW	disp	; Load Local (paramètres ou variables locales)
+;			----
+  ofs = -disp				; pile croissante vers adresses decroissantes
+  if ofs > -128 & ofs < 127
+    db 0x89, 0x45				; mov dword ptr [rbp+ofs8], EAX
+    db ofs
+  else
+    db 0x89, 0x85				; mov dword ptr [rbp+ofs32], EAX
+    dd ofs
+  end if
+  DROP
+
+end macro
+
+
+;			----
+macro			STLA	disp	; Load Local (paramètres ou variables locales)
+;			----
+  ofs = -disp				; pile croissante vers adresses decroissantes
+  if ofs > -128 & ofs < 127
+    db 0x48, 0x89, 0x45		; mov qword ptr [rbp+ofs8], rax
+    db ofs
+  else
+    db 0x48, 0x89, 0x85		; mov qword ptr [rbp+ofs32], rax
+    dd ofs
+  end if
+  DROP
+
+end macro
+
+				;--------------------
+				; OPERATIONS LOGIQUES
+
+macro		AND
+
+  pop_N
+  db 0x21, 0xD8		; and EAX, EBX   T:=T^N
+
+end macro
+
+macro		OR
+
+  pop_N
+  db 0x09, 0xD8		; or EAX, EBX   T:=TvN
+
+end macro
+
+
+macro		NOT
+
+  db 0xF7, 0xD0		; not EAX   T:=~T
+
+end macro
+
+
+macro		XOR
+  pop_N
+  db 0x31, 0xD8		; xor EAX, EBX   T:=T°N
+
+end macro
+				;--------------------------------
+				; OPERATIONS ARITHMETIQUE ENTIERE
+macro		ADD
+
+  pop_N
+  db 0x01, 0xD8		; add EAX, EBX   T:=T+N
+
+end macro
+
+macro		SUB
+
+  pop_N
+  db 0x29, 0xD8		; sub EAX, EBX  T:=T-N
+
+end macro
+
+macro		MUL
+
+  pop_N
+  db 0xF7, 0xEB		; imul EBX  T:=low32(T*N)
+  db 0x52			; push rdx  N:=high32(T*N)
+
+end macro
+
+macro		DIV
+
+  pop_N			; pop N   divisor
+  db 0x31, 0xD2		; xor EDX, EDX   clear high32(dividend)
+  db 0xF7, 0xFB		; idiv EBX  T:=quotient(T/N)
+  db 0x52			; push rdx  N:=reste(TN)
+
+end macro
+				;----------------------------
+				; OPERATIONS CONTROLE DE FLOT
+
+macro		BRA	lbl
+
+  local disp
+  if disp < 256
+    db 0xEB		; jmp rel8
+    db disp
+  else
+    db 0xE9		; jmp rel32
+    dd disp
+  end if
+  disp = lbl-$
+
+end macro
+
+
+macro		BZ	lbl
+
+  db 0x09, 0xC0		; or eax, eax
+  local disp
+  if disp < 256
+    db 0x74		; jz rel8
+    db disp
+  else
+    db 0x0F, 0x84		; jz rel32
+    dd disp
+  end if
+  disp = lbl-$
+
+end macro
+
+
+macro		BSR	lbl
+
+  local disp
+  db 0xE8
+  dd disp
+  disp = lbl-$
+
+end macro
+
+
+;			----
+macro			LINK	alloc			; ALLOCATION POUR VARIABLES LOCALES SOUS FRAME PTR
+;			----
+  db 0x55					; push rbp   store FP
+  db 0x48, 0x89, 0xE5			; mov rbp, rsp   update FP
+  assert alloc >= 0
+  if alloc <> 0
+    if alloc < 256
+      db 0x48, 0x83, 0xEC, alloc
+    else
+      db 0x48, 0x81, 0xEC
+      dd alloc
+    end if
+  end if
+
+end macro
+
+
+;			------
+macro			UNLINK				; DISPOSE VARS LOCALES ET RESTORE FRAME PTR
+;			------
+  db 0x48, 0x89, 0xEC			; mov rsp, rbp   throw locals
+  db 0x5D					; pop rbp  restore stored FP
+
+end macro
+
+
+macro		RTD	prm_size
+
+  assert prm_size >= 0 & prm_size < 32768
+  if prm_size = 0
+    db 0xC3
+  else
+    db 0xC2
+    dw prm_size
+  end if
+
+end macro
+
+;				---------------------------------------------
+;				MISE EN PLACE ENTETE ELF 64 POUR LINUX X86-64
+;				---------------------------------------------
+
+ELFCLASS64	= 2
+ELFDATA2LSB	= 1
+EV_CURRENT	= 1
+ET_EXEC		= 2
+SYSTEM_V		= 0
+EM_X86_64		= 62
+
+org 0x400000				; adresse entree programme linux
+
+Elf64_Header:
+	e_ident		db 0x7F,'ELF', ELFCLASS64, ELFDATA2LSB, EV_CURRENT, SYSTEM_V, (0x400010-$) dup 0
+	e_type		dw ET_EXEC
+	e_machine		dw EM_X86_64
+	e_version		dd EV_CURRENT
+	e_entry		dq 0x00400078
+	e_phoff		dq 64
+	e_shoff		dq 0
+	e_flags		dd 0
+	e_ehsize		dw 64
+	e_phentsize	dw 56
+	e_phnum		dw 1
+	e_shentsize	dw 0
+	e_shnum		dw 0
+	e_shstrndx	dw 0
+Elf64_Phdr:
+	p_type		dd 1		; PT_LOAD
+	p_flags		dd 7		; RWX
+	p_offset		dq 0x78
+	p_vaddr		dq 0x00400078
+	p_paddr		dq 0
+	p_filesz		dq ASM_SIZE
+	p_memsz		dq 1024*1024
+	p_align		dq 4096
+
+postpone					; sera fait en toute toute fin car c'est le premier postpone
+  ASM_SIZE = $-0x400078
+end postpone
+

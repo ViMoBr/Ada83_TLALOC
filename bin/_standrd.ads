@@ -132,7 +132,7 @@ is				--------
 	for BOOLEAN'size		use 1;
 	for CHARACTER'size		use 8;
 	for SHORT_INTEGER'size	use 16;
-	for INTEGER'size		use 16;
+	for INTEGER'size		use 32;
 	for LONG_INTEGER'size	use 64;
 	for FLOAT'size		use 32;
 	for LONG_FLOAT'size		use 64;

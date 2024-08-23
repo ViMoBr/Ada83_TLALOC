@@ -19,12 +19,12 @@ RV NO_IMPLICIT_LOOPS
 RV NO_ELABORATION_CODE
 RV NO_OBSOLESCENT_FEATURES
 
-U ada_main%b		b~code_gen.adb		ca834424 OO PK IL
+U ada_main%b		b~code_gen.adb		2b1b6a4a OO PK IL
 W ada%s			ada.ads			ada.ali
 W ada.exceptions%s	a-except.adb		a-except.ali
 Z system%s		system.ads		system.ali
 
-U ada_main%s		b~code_gen.ads		ec7d07fe EE NE OO PK IL
+U ada_main%s		b~code_gen.ads		cc6ced95 EE NE OO PK IL
 W system%s		system.ads		system.ali
 W system.parameters%s	s-parame.adb		s-parame.ali
 W system.secondary_stack%s  s-secsta.adb	s-secsta.ali
@@ -32,8 +32,8 @@ W system.secondary_stack%s  s-secsta.adb	s-secsta.ali
 D ada.ads		20230508121439 76789da1 ada%s
 D a-except.ads		20230508121439 2a7d8d70 ada.exceptions%s
 D a-unccon.ads		20230508121439 0e9b276f ada.unchecked_conversion%s
-D b~code_gen.ads	20240808123509 f8fea747 ada_main%s
-D b~code_gen.adb	20240808123509 18006e13 ada_main%b
+D b~code_gen.ads	20240814164331 d8ef4d2c ada_main%s
+D b~code_gen.adb	20240814164331 d989aa16 ada_main%b
 D system.ads		20230508121439 a2da961d system%s
 D s-parame.ads		20230508121439 d494a4a6 system.parameters%s
 D s-secsta.ads		20230508121439 62cd9202 system.secondary_stack%s
@@ -52,7 +52,7 @@ X 1 ada.ads
 X 2 a-except.ads
 44K13*Exceptions 295e19 5|6w10
 X 4 b~code_gen.ads
-6K9*ada_main 581l5 581e13 5|8b14 296l5 296t13
+6K9*ada_main 587l5 587e13 5|8b14 296l5 296t13
 8i4*gnat_argc{integer} 12m22 12r22 5|265r10 266m10
 9m4*gnat_argv{6|67M9} 13m22 13r22 5|267m10
 10m4*gnat_envp{6|67M9} 14m22 14r22 5|269m7
@@ -82,7 +82,7 @@ X 4 b~code_gen.ads
 . 331r22 333r22 335r22 337r22 339r22 341r22 343r22 345r22 347r22 349r22 351r22
 . 353r22 355r22 357r22 359r22 361r22 363r22 365r22 367r22 369r22 371r22 373r22
 . 375r22 377r22 379r22 381r22 383r22 385r22 387r22 389r22 391r22 393r22 395r22
-. 397r22
+. 397r22 399r22 401r22
 43m4*u00001{42M9} 44r22
 45m4*u00002{42M9} 46r22
 47m4*u00003{42M9} 48r22
@@ -261,6 +261,8 @@ X 4 b~code_gen.ads
 393m4*u00176{42M9} 394r22
 395m4*u00177{42M9} 396r22
 397m4*u00178{42M9} 398r22
+399m4*u00179{42M9} 400r22
+401m4*u00180{42M9} 402r22
 X 5 b~code_gen.adb
 10i4 E069{short_integer} 10m46 10r46 203m7 203r15
 11i4 E017{short_integer} 11m46 11r46 209m7 209r15
@@ -286,11 +288,11 @@ X 5 b~code_gen.adb
 31i4 E125{short_integer} 31m46 31r46 224m7 224r15
 32i4 E124{short_integer} 32m46 32r46 76m10 76r18 226m7 226r15
 33i4 E114{short_integer} 33m46 33r46 65m7 65r15 229m7 229r15
-34i4 E174{short_integer} 34m46 34r46 58m7 58r15 231m7 231r15
-35i4 E165{short_integer} 35m46 35r46 51m7 51r15 233m7 233r15
-36i4 E161{short_integer} 36m46 36r46 235m7 235r15
-37i4 E167{short_integer} 37m46 37r46 237m7 237r15
-38i4 E159{short_integer} 38m46 38r46 239m7 239r15
+34i4 E176{short_integer} 34m46 34r46 58m7 58r15 231m7 231r15
+35i4 E171{short_integer} 35m46 35r46 51m7 51r15 233m7 233r15
+36i4 E167{short_integer} 36m46 36r46 235m7 235r15
+37i4 E173{short_integer} 37m46 37r46 237m7 237r15
+38i4 E165{short_integer} 38m46 38r46 239m7 239r15
 39i4 E112{short_integer} 39m46 39r46 241m7 241r15
 40i4 E002{short_integer} 40m46 40r46 242m7 242r15
 42a4 Sec_Default_Sized_Stacks(8|43R9) 174m32 174r32

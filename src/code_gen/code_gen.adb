@@ -11,6 +11,11 @@ is
   package CODI	renames CODAGE_INTERMEDIAIRE;
 
 
+  procedure CODE_ENUMERATION_ID	( ENUMERATION_ID :TREE );
+  procedure CODE_ITERATION_ID		( ITERATION_ID :TREE );
+  function  CODE_NAME		( NAME		:TREE )		return OPERAND_REF;
+  function  CODE_DESIGNATOR		( DESIGNATOR	:TREE )		return OPERAND_REF;
+
   procedure CODE_ROOT ( ROOT :TREE );
   procedure CODE_CONTEXT_PRAGMA ( CONTEXT_PRAGMA :TREE );
 --  procedure CODE_ALL_DECL ( ALL_DECL :TREE );
@@ -19,12 +24,6 @@ is
   procedure CODE_USE_PRAGMA ( USE_PRAGMA :TREE );
   procedure CODE_USE ( ADA_USE :TREE );
   procedure CODE_PRAGMA ( ADA_PRAGMA :TREE );
-  procedure CODE_ID_S_DECL ( ID_S_DECL :TREE );
-  procedure CODE_EXCEPTION_DECL ( EXCEPTION_DECL :TREE );
-  procedure CODE_DEFERRED_CONSTANT_DECL ( DEFERRED_CONSTANT_DECL :TREE );
-  procedure CODE_EXP_DECL ( EXP_DECL :TREE );
-  procedure CODE_NUMBER_DECL ( NUMBER_DECL :TREE );
-  procedure CODE_OBJECT_DECL ( OBJECT_DECL :TREE );
   procedure CODE_CONSTANT_DECL ( CONSTANT_DECL :TREE );
   procedure CODE_VARIABLE_DECL ( VARIABLE_DECL :TREE );
   procedure CODE_REP ( REP :TREE );
@@ -66,7 +65,6 @@ is
   procedure CODE_ENUMERATION_DEF ( ENUMERATION_DEF :TREE );
   procedure CODE_ENUM_LITERAL_S ( ENUM_LITERAL_S :TREE );
   procedure CODE_ENUM_LITERAL ( ENUM_LITERAL :TREE );
-  procedure CODE_ENUMERATION_ID ( ENUMERATION_ID :TREE );
   procedure CODE_CHARACTER_ID ( CHARACTER_ID :TREE );
   procedure CODE_FORMAL_INTEGER_DEF ( FORMAL_INTEGER_DEF :TREE );
   procedure CODE_FORMAL_FIXED_DEF ( FORMAL_FIXED_DEF :TREE );
@@ -85,12 +83,8 @@ is
   procedure CODE_UNCONSTRAINED_ARRAY_DEF ( UNCONSTRAINED_ARRAY_DEF :TREE );
   procedure CODE_ACCESS_DEF ( ACCESS_DEF :TREE );
   procedure CODE_DERIVED_DEF ( DERIVED_DEF :TREE );
-  procedure CODE_SOURCE_NAME ( SOURCE_NAME :TREE );
-  procedure CODE_OBJECT_NAME ( OBJECT_NAME :TREE );
   procedure CODE_UNIT_NAME ( UNIT_NAME :TREE );
-  procedure CODE_VC_NAME ( VC_NAME :TREE );
   procedure CODE_NUMBER_ID ( NUMBER_ID :TREE );
-  procedure CODE_SOURCE_NAME_S ( SOURCE_NAME_S :TREE );
   procedure CODE_TYPE_NAME ( TYPE_NAME :TREE );
   procedure CODE_TYPE_ID ( TYPE_ID :TREE );
   procedure CODE_SUBTYPE_ID ( SUBTYPE_ID :TREE );
@@ -103,7 +97,6 @@ is
   procedure CODE_ADRESSE ( ADRESSE :TREE );
   procedure CODE_TEST_CLAUSE ( TEST_CLAUSE :TREE );
   procedure CODE_COND_CLAUSE ( COND_CLAUSE :TREE );
-  procedure CODE_ITERATION_ID ( ITERATION_ID :TREE );
   procedure CODE_NON_TASK_NAME ( NON_TASK_NAME :TREE );
   procedure CODE_SUBPROG_PACK_NAME ( SUBPROG_PACK_NAME :TREE );
   procedure CODE_SUBPROG_NAME ( SUBPROG_NAME :TREE );
@@ -111,7 +104,6 @@ is
   procedure CODE_FUNCTION_ID ( FUNCTION_ID :TREE );
   procedure CODE_OPERATOR_ID ( OPERATOR_ID :TREE );
   procedure CODE_BLOCK_LOOP_ID ( BLOCK_LOOP_ID :TREE );
-  procedure CODE_INIT_OBJECT_NAME ( INIT_OBJECT_NAME :TREE );
   procedure CODE_PARAM_NAME ( PARAM_NAME :TREE );
   procedure CODE_PARAM_IO_O ( PARAM_IO_O :TREE );
   procedure CODE_IN_ID ( IN_ID :TREE );
@@ -142,21 +134,18 @@ is
 
     function  CODE_EXP		( EXP		:TREE )		return OPERAND_REF;
     procedure CODE_INDEXED		( INDEXED		:TREE );
-    procedure CODE_NAME		( NAME		:TREE );
 
 
   private
 
     function  CODE_EXP_EXP		( EXP_EXP		:TREE )		return OPERAND_REF;
-    procedure CODE_DESIGNATOR		( DESIGNATOR	:TREE );
-    procedure CODE_NAME_EXP		( NAME_EXP	:TREE );
-    procedure CODE_FUNCTION_CALL	( FUNCTION_CALL	:TREE );
-    procedure CODE_USED_NAME		( USED_NAME	:TREE );
-    procedure CODE_USED_OP		( USED_OP		:TREE );
+    function  CODE_VC_ID		( CONSTANT_ID :TREE )		return OPERAND_REF;
+    function  CODE_NAME_EXP		( NAME_EXP	:TREE )		return OPERAND_REF;
+    function  CODE_FUNCTION_CALL	( FUNCTION_CALL	:TREE )		return OPERAND_REF;
+    function  CODE_USED_NAME		( USED_NAME	:TREE )		return OPERAND_REF;
+    function  CODE_USED_OP		( USED_OP		:TREE )		return OPERAND_REF;
     procedure CODE_USED_NAME_ID	( USED_NAME_ID	:TREE );
-    procedure CODE_USED_OBJECT	( USED_OBJECT	:TREE );
-    procedure CODE_USED_CHAR		( USED_CHAR	:TREE );
-    procedure CODE_USED_OBJECT_ID	( USED_OBJECT_ID	:TREE );
+    function  CODE_USED_OBJECT_ID	( USED_OBJECT_ID	:TREE )		return OPERAND_REF;
     procedure CODE_SLICE		( SLICE		:TREE );
     procedure CODE_ALL		( ADA_ALL		:TREE );
     procedure CODE_AGGREGATE		( AGGREGATE	:TREE );
@@ -167,7 +156,6 @@ is
     function  CODE_EXP_VAL		( EXP_VAL		:TREE )		return OPERAND_REF;
     function  CODE_EXP_VAL_EXP	( EXP_VAL_EXP	:TREE )		return OPERAND_REF;
     procedure CODE_AGG_EXP		( AGG_EXP		:TREE );
-    function  CODE_PARENTHESIZED	( PARENTHESIZED	:TREE )		return OPERAND_REF;
     function  CODE_NUMERIC_LITERAL	( NUMERIC_LITERAL	:TREE )		return OPERAND_REF;
     procedure CODE_STRING_LITERAL	( STRING_LITERAL	:TREE );
     procedure CODE_NULL_ACCESS	( NULL_ACCESS	:TREE );
@@ -177,8 +165,7 @@ is
     procedure CODE_QUALIFIED_ALLOCATOR	( QUALIFIED_ALLOCATOR:TREE );
     procedure CODE_SUBTYPE_ALLOCATOR	( SUBTYPE_ALLOCATOR :TREE );
 
-    procedure CODE_CONSTANT_ID	( CONSTANT_ID :TREE );
-    procedure CODE_VARIABLE_ID	( VARIABLE_ID :TREE );
+    function  CODE_USED_CHAR		( USED_CHAR :TREE )			return OPERAND_REF;
 
 	-----------
   end	EXPRESSIONS;
@@ -202,6 +189,15 @@ is
   private
 
     procedure CODE_SUBP_ENTRY_HEADER	( SUBP_ENTRY_HEADER :TREE );
+    procedure CODE_VC_NAME		( VC_NAME :TREE );
+    procedure CODE_ID_S_DECL		( ID_S_DECL :TREE );
+    procedure CODE_EXCEPTION_DECL	( EXCEPTION_DECL :TREE );
+    procedure CODE_DEFERRED_CONSTANT_DECL ( DEFERRED_CONSTANT_DECL :TREE );
+    procedure CODE_EXP_DECL		( EXP_DECL :TREE );
+    procedure CODE_NUMBER_DECL	( NUMBER_DECL :TREE );
+    procedure CODE_OBJECT_DECL	( OBJECT_DECL :TREE );
+    procedure CODE_INIT_OBJECT_NAME	( INIT_OBJECT_NAME :TREE );
+    procedure CODE_OBJECT_NAME	( OBJECT_NAME :TREE );
 
 	------------
   end	DECLARATIONS;
@@ -283,7 +279,6 @@ is
     procedure CODE_SUBUNIT_BODY	( SUBUNIT_BODY :TREE );
     procedure CODE_BODY		( ADA_BODY :TREE );
     procedure CODE_ITEM_S		( ITEM_S :TREE );
-    procedure CODE_ITEM		( ITEM :TREE );
 
 	----------
   end	STRUCTURES;
@@ -389,72 +384,10 @@ is
   end;
 
   --|-------------------------------------------------------------------------------------------
-  procedure CODE_ID_S_DECL ( ID_S_DECL :TREE ) is
-  begin
-
-    if ID_S_DECL.TY in CLASS_EXP_DECL then
-      CODE_EXP_DECL( ID_S_DECL );
-
-    elsif ID_S_DECL.TY = DN_EXCEPTION_DECL then
-      CODE_EXCEPTION_DECL( ID_S_DECL );
-
-    elsif ID_S_DECL.TY = DN_DEFERRED_CONSTANT_DECL then
-      CODE_DEFERRED_CONSTANT_DECL( ID_S_DECL );
-
-    end if;
-  end;
 
   --|-------------------------------------------------------------------------------------------
-  procedure CODE_EXCEPTION_DECL ( EXCEPTION_DECL :TREE ) is
-  begin
-      CODE_SOURCE_NAME_S ( D ( AS_SOURCE_NAME_S, EXCEPTION_DECL ) );
-  end;
 
   --|-------------------------------------------------------------------------------------------
-  procedure CODE_DEFERRED_CONSTANT_DECL ( DEFERRED_CONSTANT_DECL :TREE ) is
-  begin
-    null;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_EXP_DECL ( EXP_DECL :TREE ) is
-  begin
-
-    if EXP_DECL.TY in CLASS_OBJECT_DECL then
-      CODE_OBJECT_DECL ( EXP_DECL );
-
-    elsif EXP_DECL.TY = DN_NUMBER_DECL then
-      CODE_NUMBER_DECL ( EXP_DECL );
-
-    end if;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_NUMBER_DECL ( NUMBER_DECL :TREE ) is
-  begin
-    null;
-  end;
-
-
-
-				----------------
-  procedure			CODE_OBJECT_DECL		( OBJECT_DECL :TREE )
-  is
-  begin
-    declare
-      SRC_NAME_SEQ	: SEQ_TYPE	:= LIST( D( AS_SOURCE_NAME_S, OBJECT_DECL ) );
-      SRC_NAME	: TREE;
-      TYPE_DEF	: TREE		:= D( AS_TYPE_DEF, OBJECT_DECL );
-      TYPE_NAME	: TREE		:= D( AS_NAME, TYPE_DEF );
-    begin
-      CODI.TYPE_SYMREP := D( LX_SYMREP, TYPE_NAME );
-      while not IS_EMPTY( SRC_NAME_SEQ ) loop
-        POP( SRC_NAME_SEQ, SRC_NAME );
-        CODE_VC_NAME( SRC_NAME );
-      end loop;
-    end;
-  end	CODE_OBJECT_DECL;
-	----------------
 
 
 
@@ -881,6 +814,12 @@ is
     end;
   end;
 
+  procedure			CODE_ENUMERATION_ID		( ENUMERATION_ID :TREE )
+  is
+  begin
+    null;
+  end	CODE_ENUMERATION_ID;
+
   --|-------------------------------------------------------------------------------------------
   procedure CODE_ENUM_LITERAL ( ENUM_LITERAL :TREE ) is
   begin
@@ -895,10 +834,6 @@ is
   end;
 
   --|-------------------------------------------------------------------------------------------
-  procedure CODE_ENUMERATION_ID ( ENUMERATION_ID :TREE ) is
-  begin
-    null;
-  end;
 
   --|-------------------------------------------------------------------------------------------
   procedure CODE_CHARACTER_ID ( CHARACTER_ID :TREE ) is
@@ -989,9 +924,9 @@ is
     begin
       ALIGN( INTG_AL );
       LOWER := - CODI.OFFSET_ACT;
-      DEC_OFFSET( INTG_SIZE );
+      ALTER_OFFSET( INTG_SIZE );
       UPPER := - CODI.OFFSET_ACT;
-      DEC_OFFSET( INTG_SIZE );
+      ALTER_OFFSET( INTG_SIZE );
       DI( CD_OFFSET,    INTEGER_SPEC, LOWER );
       DI( CD_LEVEL,     INTEGER_SPEC, INTEGER( CODI.CUR_LEVEL ) );
       DI( CD_COMP_UNIT, INTEGER_SPEC, CUR_COMP_UNIT );
@@ -1069,46 +1004,14 @@ is
 
 
 
-  procedure CODE_SOURCE_NAME ( SOURCE_NAME :TREE ) is
+
+
+  procedure			CODE_ITERATION_ID		( ITERATION_ID :TREE )
+  is
   begin
+    null;
+  end	CODE_ITERATION_ID;
 
-    if SOURCE_NAME.TY in CLASS_OBJECT_NAME then
-      CODE_OBJECT_NAME ( SOURCE_NAME );
-
-    elsif SOURCE_NAME.TY in CLASS_TYPE_NAME then
-      CODE_TYPE_NAME ( SOURCE_NAME );
-
-    elsif SOURCE_NAME.TY in CLASS_UNIT_NAME then
-      CODE_UNIT_NAME ( SOURCE_NAME );
-
-    elsif SOURCE_NAME.TY in CLASS_LABEL_NAME then
-      CODE_LABEL_NAME ( SOURCE_NAME );
-
-    elsif SOURCE_NAME.TY = DN_ENTRY_ID then
-      CODE_ENTRY_ID ( SOURCE_NAME );
-
-    elsif SOURCE_NAME.TY = DN_EXCEPTION_ID then
-      CODE_EXCEPTION_ID ( SOURCE_NAME );
-
-    end if;
-  end;
-
-
-
-  procedure CODE_OBJECT_NAME ( OBJECT_NAME :TREE ) is
-  begin
-
-    if OBJECT_NAME.TY = DN_ITERATION_ID then
-      CODE_ITERATION_ID ( OBJECT_NAME );
-
-    elsif OBJECT_NAME.TY in CLASS_INIT_OBJECT_NAME then
-      CODE_INIT_OBJECT_NAME ( OBJECT_NAME );
-
-    elsif OBJECT_NAME.TY in CLASS_ENUM_LITERAL then
-      CODE_ENUM_LITERAL ( OBJECT_NAME );
-
-    end if;
-  end;
 
 
 
@@ -1126,198 +1029,6 @@ is
 
 
 
-				------------
-  procedure			CODE_VC_NAME		( VC_NAME :TREE )
-  is
-  begin
-    declare
-      TYPE_SPEC	: TREE	:= D( SM_OBJ_TYPE, VC_NAME );
-
-		-----------------------
-      procedure	COMPILE_VC_NAME_INTEGER	( VC_NAME :TREE )
-      is
-      begin
-        ALIGN( INTG_AL );
-        declare
-	CCU	: SEGMENT_NUM	renames CODI.CUR_COMP_UNIT;
-	LVL	: LEVEL_NUM	renames CODI.CUR_LEVEL;
-	OFS	: OFFSET_VAL	:= CODI.OFFSET_ACT;
-	INIT_EXP	: TREE		:= D( SM_INIT_EXP, VC_NAME );
-        begin
-          DI( CD_COMP_UNIT, VC_NAME, INTEGER( CCU ) );
-          DI( CD_LEVEL,     VC_NAME, INTEGER( LVL ) );
-          DI( CD_OFFSET,    VC_NAME, OFS );
-          DB( CD_COMPILED,  VC_NAME, TRUE );
-          DEC_OFFSET( INTG_SIZE );
-          if INIT_EXP /= TREE_VOID
-	then
-	  declare
-	    OPER	: OPERAND_REF	:= EXPRESSIONS.CODE_EXP( INIT_EXP );
-	  begin
-	    STORE( VC_NAME, WORD_TYP, OPER );
-	  end;
-          end if;
-        end;
-      end	COMPILE_VC_NAME_INTEGER;
-	-----------------------
-
-		---------------------------
-      procedure	COMPILE_VC_NAME_ENUMERATION	( VC_NAME, TYPE_SPEC :TREE )
-      is
-        NAME	:constant STRING	:= PRINT_NAME( CODI.TYPE_SYMREP );
-
-		-------------------------
-        procedure	COMPILE_VC_NAME_BOOL_CHAR	( VC_NAME :TREE; OTYPE :OPERAND_TYPE; SIZ, ALI :NATURAL ) is
-        begin
-          ALIGN( ALI );
-          declare
-	  CCU		: SEGMENT_NUM	renames CODI.CUR_COMP_UNIT;
-	  LVL		: LEVEL_NUM	renames CODI.CUR_LEVEL;
-	  OFS		: OFFSET_VAL	:= - CODI.OFFSET_ACT;
-	  INIT_EXP	: TREE		:= D( SM_INIT_EXP, VC_NAME );
-	  OPER		: OPERAND_REF;
-          begin
-            DI( CD_COMP_UNIT, VC_NAME, CCU );
-            DI( CD_LEVEL,     VC_NAME, INTEGER( LVL ) );
-            DI( CD_OFFSET,    VC_NAME, OFS );
-            DB( CD_COMPILED,  VC_NAME, TRUE );
-            DEC_OFFSET( SIZ );
-            if INIT_EXP /= TREE_VOID then
-	    OPER := EXPRESSIONS.CODE_EXP( INIT_EXP );
-            end if;
-            STORE( VC_NAME, OTYPE, OPER );
-          end;
-        end	COMPILE_VC_NAME_BOOL_CHAR;
-		-------------------------
-
-      begin
-        if NAME = "BOOLEAN" then
-          COMPILE_VC_NAME_BOOL_CHAR( VC_NAME, BYTE_TYP, BOOL_SIZE, BOOL_AL );
-        elsif NAME = "CHARACTER" then
-          COMPILE_VC_NAME_BOOL_CHAR( VC_NAME, BYTE_TYP, CHAR_SIZE, CHAR_AL );
-        else
-          COMPILE_VC_NAME_INTEGER( VC_NAME );
-        end if;
-
-      end	COMPILE_VC_NAME_ENUMERATION;
-	---------------------------
-
-		------------------
-      procedure	COMPILE_ACCESS_VAR	( VAR_ID, TYPE_SPEC :TREE )
-      is
-      begin
-        ALIGN( ADDR_AL );
-        declare
-	CCU	: SEGMENT_NUM	renames CODI.CUR_COMP_UNIT;
-	LVL	: LEVEL_NUM	renames CODI.CUR_LEVEL;
-	OFS	: OFFSET_VAL	:= CODI.OFFSET_ACT;
-	OPER	: OPERAND_REF	:= NO_OPERAND;
-        begin
-	DI( CD_COMP_UNIT, VAR_ID, CCU );
-	DI( CD_LEVEL,     VAR_ID, INTEGER( LVL ) );
-	DI( CD_OFFSET,    VAR_ID, OFS );
-          DB( CD_COMPILED, VAR_ID, TRUE );
-          DEC_OFFSET( ADDR_SIZE );
-          declare
-            INIT_EXP	: TREE	:= D( SM_INIT_EXP, VAR_ID );
-          begin
-            if INIT_EXP = TREE_VOID then
-OPER := LOAD_IMM( -1 );
---              EMIT( LDC, A, -1, "INIT NIL DE " & PRINT_NAME( D( LX_SYMREP, VAR_ID ) ) );
-            else
-              LOAD_TYPE_SIZE( TYPE_SPEC  );
-              EMIT( ALO, INTEGER( LEVEL_NUM( DI( CD_LEVEL, TYPE_SPEC ) ) - LVL )  );
-            end if;
-          end;
-          STORE( VAR_ID, ADR_TYP, OPER );
-        end;
-      end	COMPILE_ACCESS_VAR;
-	------------------
-
-
-		-----------------
-      procedure	COMPILE_ARRAY_VAR	( VC_NAME, TYPE_SPEC :TREE )
-      is
-        DESCR_PTR	: OFFSET_VAL;
-      begin
-        ALIGN ( ADDR_AL );
-        declare
-	CCU	: SEGMENT_NUM	renames CODI.CUR_COMP_UNIT;
-          LVL	: LEVEL_NUM	renames CODI.CUR_LEVEL;
-          VALUE_PTR	: OFFSET_VAL	:= CODI.OFFSET_ACT;
-	OPER	: OPERAND_REF	:= NO_OPERAND;
-        begin
-	DI( CD_COMP_UNIT, VC_NAME, CCU );
-	DI( CD_LEVEL, VC_NAME, INTEGER( LVL ) );
-	DI( CD_OFFSET, VC_NAME, VALUE_PTR );
-	DB( CD_COMPILED, VC_NAME, TRUE );
-	DeC_OFFSET( ADDR_SIZE );
-	ALIGN     ( ADDR_AL );
-	DESCR_PTR := CODI.OFFSET_ACT;
-	DEC_OFFSET( ADDR_SIZE );
-	if DB( CD_COMPILED, TYPE_SPEC ) then
-	  OPER := LOAD_ADR( TYPE_SPEC );
-	  EMIT( DPL, A, "DUPLICATE " & PRINT_NAME ( D (LX_SYMREP, VC_NAME ) ) & " ARRAY DESCRIPTOR TYPE_SPEC" );
-	  STORE( VC_NAME, ADR_TYP, OPER );
-	  EMIT( IND, I, 0, "CHARGE INDEXE TAILLE TABLEAU DE DESCRIPTEUR" );
-	  EMIT( ALO, INTEGER ( 0 ), COMMENT=> "ALLOC TABLEAU" );
-	  STORE( VC_NAME, ADR_TYP, OPER );
-	else
-	  PUT_LINE( "!!! COMPILE_ARRAY_VAR : TYPE_SPEC NON COMPILE" );
-	  raise PROGRAM_ERROR;
-	end if;
-        end;
-      end	COMPILE_ARRAY_VAR;
-	-----------------
-
-
-		------------------
-      procedure	COMPILE_RECORD_VAR		( VC_NAME, TYPE_SPEC :TREE )
-      is
-        INIT_EXP	: TREE	:= D( SM_INIT_EXP, VC_NAME );
-      begin
-        ALIGN( RECORD_AL );
-        declare
-	CCU	: SEGMENT_NUM	renames CODI.CUR_COMP_UNIT;
-	LVL	: LEVEL_NUM	renames CODI.CUR_LEVEL;
-	OFS	: OFFSET_VAL	:= CODI.OFFSET_ACT;
-        begin
-	DI( CD_COMP_UNIT, VC_NAME, CCU );
-	DI( CD_LEVEL,     VC_NAME, INTEGER( LVL ) );
-	DI( CD_OFFSET,    VC_NAME, OFS );
-          DB( CD_COMPILED,  VC_NAME, TRUE );
-	if INIT_EXP.TY = DN_AGGREGATE then
-	  declare
-	    GENERAL_ASSOC_SEQ	: SEQ_TYPE	:= LIST( D( SM_NORMALIZED_COMP_S, INIT_EXP ) );
-	    COMP_EXP		: TREE;
-	    OPER			: OPERAND_REF;
-	  begin
-	    while not IS_EMPTY( GENERAL_ASSOC_SEQ ) loop
-	      POP( GENERAL_ASSOC_SEQ, COMP_EXP );
-	      OPER := EXPRESSIONS.CODE_EXP( COMP_EXP );
-	    end loop;
-	  end;
-	end if;
-        end;
-      end	COMPILE_RECORD_VAR;
-	------------------
-
-
-    begin
-      case TYPE_SPEC.TY is
-      when DN_ENUMERATION	  => COMPILE_VC_NAME_ENUMERATION( VC_NAME, TYPE_SPEC );
-      when DN_INTEGER	  => COMPILE_VC_NAME_INTEGER(	    VC_NAME );
-      when DN_ACCESS	  => COMPILE_ACCESS_VAR(	    VC_NAME, TYPE_SPEC );
-      when DN_RECORD	  => COMPILE_RECORD_VAR(	    VC_NAME, TYPE_SPEC );
-      when DN_CONSTRAINED_ARRAY => COMPILE_ARRAY_VAR(	    VC_NAME, TYPE_SPEC );
-      when others =>
-        PUT_LINE( "ERREUR CODE_VC_NAME, TYPE_SPEC.TY = " & NODE_NAME'IMAGE( TYPE_SPEC.TY ) );
-        raise PROGRAM_ERROR;
-      end case;
-    end;
-  end	CODE_VC_NAME;
-	------------
-
 
 
   procedure CODE_NUMBER_ID ( NUMBER_ID :TREE ) is
@@ -1327,18 +1038,6 @@ OPER := LOAD_IMM( -1 );
 
 
 
-  procedure CODE_SOURCE_NAME_S ( SOURCE_NAME_S :TREE ) is
-  begin
-    declare
-      SOURCE_NAME_SEQ : SEQ_TYPE := LIST ( SOURCE_NAME_S );
-      SOURCE_NAME : TREE;
-    begin
-      while not IS_EMPTY( SOURCE_NAME_SEQ ) loop
-        POP( SOURCE_NAME_SEQ, SOURCE_NAME );
-        CODE_SOURCE_NAME( SOURCE_NAME );
-      end loop;
-    end;
-  end;
 
 
 
@@ -1509,10 +1208,6 @@ OPER := LOAD_IMM( -1 );
 
 
 
-  procedure CODE_ITERATION_ID ( ITERATION_ID :TREE ) is
-  begin
-    null;
-  end;
 
 
 
@@ -1576,23 +1271,6 @@ OPER := LOAD_IMM( -1 );
   end;
 
   --|-------------------------------------------------------------------------------------------
-  procedure CODE_INIT_OBJECT_NAME ( INIT_OBJECT_NAME :TREE ) is
-  begin
-
-    if INIT_OBJECT_NAME.TY = DN_NUMBER_ID then
-      CODE_NUMBER_ID ( INIT_OBJECT_NAME );
-
-    elsif INIT_OBJECT_NAME.TY in CLASS_VC_NAME then
-      CODE_VC_NAME ( INIT_OBJECT_NAME );
-
-    elsif INIT_OBJECT_NAME.TY in CLASS_COMP_NAME then
-      CODE_COMP_NAME ( INIT_OBJECT_NAME );
-
-    elsif INIT_OBJECT_NAME.TY in CLASS_PARAM_NAME then
-      CODE_PARAM_NAME ( INIT_OBJECT_NAME );
-
-    end if;
-  end;
 
   --|-------------------------------------------------------------------------------------------
   procedure CODE_PARAM_NAME ( PARAM_NAME :TREE ) is
@@ -1726,20 +1404,56 @@ OPER := LOAD_IMM( -1 );
     null;
   end;
 
+				---------
+  function			CODE_NAME			( NAME :TREE )		return OPERAND_REF
+  is
+  begin
+    if NAME.TY in CLASS_DESIGNATOR
+    then
+      return CODE_DESIGNATOR( NAME );
+
+--     elsif NAME.TY in CLASS_NAME_EXP
+--     then
+--       return CODE_NAME_EXP( NAME );
+
+    end if;
+    return NO_OPERAND;
+  end	CODE_NAME;
+	---------
 
 
   procedure CODE_NAME_S ( NAME_S :TREE ) is
   begin
     declare
-      NAME_SEQ : SEQ_TYPE := LIST( NAME_S );
-      NAME : TREE;
+      NAME_SEQ	: SEQ_TYPE := LIST( NAME_S );
+      NAME	: TREE;
+      OPER	: OPERAND_REF;
     begin
       while not IS_EMPTY( NAME_SEQ ) loop
         POP( NAME_SEQ, NAME );
-        EXPRESSIONS.CODE_NAME( NAME );
+        OPER := CODE_NAME( NAME );
     end loop;
     end;
   end;
+
+
+
+				---------------
+  function			CODE_DESIGNATOR		( DESIGNATOR :TREE )	return OPERAND_REF
+  is
+  begin
+--     if DESIGNATOR.TY in CLASS_USED_OBJECT
+--     then
+--       return CODE_USED_OBJECT( DESIGNATOR );
+-- 
+--     elsif DESIGNATOR.TY in CLASS_USED_NAME
+--     then
+--       return CODE_USED_NAME( DESIGNATOR );
+-- 
+--     end if;
+    return NO_OPERAND;
+  end	CODE_DESIGNATOR;
+	---------------
 
 
 

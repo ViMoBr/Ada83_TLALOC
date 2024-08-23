@@ -1,34 +1,29 @@
 @TEST
-$ 2				--| ETIQUETTE ENTREE
- 1	BRA @1
+	BRA @1
 @2
-	%2 = li.b   0
- 3	[0| 2|-4] = st.w %2
-	%4 = li.b   1
- 5	[0| 2|-8] = st.w %4
-	%6 = li.b   2
- 7	[0| 2|-12] = st.w %6
- 8	BRA @3
+	%2 = LI:b 0
+	-4[0| 0] = ST:w %2
+	%4 = LI:b 1
+	-8[0| 0] = ST:w %4
+	%6 = LI:b 65
+	-12[0| 0] = ST:b %6
+	BRA @3
 @1
- 9	BRA @2
+	BRA @2
 @3
- 10	LINK -16
+	LINK -14
 EXH	$ 4			-- EXCEPTION HANDLERS
-	%11 = li.b   1
-	%12 = la [0| 2|-4]
-	trap	CVB
- 13	[0| 2|-4] = st.w %12
-	%14 = li.b   2
-	%15 = la [0| 2|-8]
-	trap	CVB
- 16	[0| 2|-8] = st.w %15
-	%17 = li.b   3
-	%18 = la [0| 2|-12]
-	trap	CVB
- 19	[0| 2|-12] = st.w %18
+	%11 = LD:h -8[0| 0]
+	%12 = LI:b 1
+	%13 = ADD %11 %12
+	-4[0| 0] = ST:w %13
+	%15 = LI:b 66
+	-13[0| 0] = ST:b %15
+	%17 = LD:b -12[0| 0]
+	-13[0| 0] = ST:b %17
 $ 3
- 20	UNLINK
- 21	RTD  0
+	UNLINK
+	RTD  0
 $ 4
 	eex
   QUIT

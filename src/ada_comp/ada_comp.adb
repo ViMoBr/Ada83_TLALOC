@@ -91,7 +91,7 @@ FIND_START_3:
     end if;
   end;
 
-  if OPTION = 'u' or OPTION = 'p' or OPTION = 'a' or OPTION = 'U' or OPTION = 'P' or OPTION = 'A' then
+  if OPTION = 'U' or OPTION = 'P' or OPTION = 'A' then
     IDL.PRETTY_DIANA( OPTION );
     return;
   end if;

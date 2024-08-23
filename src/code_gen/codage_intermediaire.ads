@@ -1,26 +1,3 @@
--- La pile abstraite croit vers le bas
---	---------------------
---	|    BAS DE PILE 	|
-
---	|		| param_1
---	|		| param_2
-
-
---	|		| param_K
---	|        -8	| parent_FP
---	|        -4	| RET_ADDR
---	|         0	| FP_bck
---	|        +4	| VAR_LOC_1
---	|		|
---	---------------------
-
-
---	PGA	Push Global Address		Unit_num      Offset
---	PLA	Push Local  Address		Level_delta   Offset
---	PGD	Push Global Data		Unit_num      Offset
---	PLD	Push Local  Data		Level_delta   Offset
---	SGD	Store Global Data
---	SLD	Store Local Data
 with TEXT_IO, IDL;
 use  TEXT_IO, IDL;
 
@@ -148,7 +125,7 @@ is
   function  NEW_LABEL							return LABEL_TYPE;
   procedure INC_LEVEL;
   procedure DEC_LEVEL;
-  procedure DEC_OFFSET		( I :NATURAL );
+  procedure ALTER_OFFSET		( I :NATURAL );
   procedure ALIGN			( AL :INTEGER );
        
        
@@ -176,7 +153,7 @@ is
 			EBA1,	EBA0,	TEB,
 			ET,	OU,
 			DLD,	DLG,	DAD,	DAG,	ROD,	ROG,
-			ADDS,	ADDR,	SOUS,	SOUR,	MULS,	MULR,	DIVS,	DIVR,
+			ADD,	ADDR,	SOUS,	SOUR,	MULS,	MULR,	DIVS,	DIVR,
 
 			CMPZ,							-- ctl 0
 			CMP,							-- ctl 1
@@ -220,11 +197,12 @@ is
   function  LOAD_MEM		( DEFN :TREE )					return OPERAND_REF;
   function  LOAD_ADR		( DEFN :TREE )					return OPERAND_REF;
   procedure STORE			( DEST_DEFN :TREE; OTYPE :OPERAND_TYPE; SRC_OPER :OPERAND_REF );
-  function  OPERAND_TYPE_OF		( EXP_OR_TYPE_SPEC :TREE )				return OPErAND_TYPE;
+  function  OPERAND_TYPE_OF		( EXP_OR_TYPE_SPEC :TREE )				return OPERAND_TYPE;
 
   procedure MAKE_OPRND_PRM		( OPERAND  :OPERAND_REF; DIRECTION :DIRECTION_DE_PASSAGE );
 
-  procedure ARG1_OP			( RESULTAT :OPERAND_REF; OP: OPCI_ARG1; X1: OPERAND_REF );
+  function  ARG1_OP			( OP: OPCI_ARG1; X1: OPERAND_REF )			return OPERAND_REF;
+  function  ARG2_OP			( OP: OPCI_ARG2; X1, X2: OPERAND_REF )			return OPERAND_REF;
 
   procedure FLOT0_OP		( OP :OPCI_FLOT0; ALLOC_DESALLOC :INTEGER := 0 );
   procedure FLOT1_OP		( OP :OPCI_FLOT1; TARGET :TARGET_LBL_REF );
@@ -306,19 +284,19 @@ is
 					ARG0_X1			: OPERAND_REC;
 
 			  when ARG1 =>	ARG1_OP			: OPCI_ARG1;
-					ARG1_RESULT, ARG1_X1	: OPERAND_REC;
+					ARG1_X1			: OPERAND_REF;
 
 			  when ARG2 =>	ARG2_OP			: OPCI_ARG2;
-					ARG2_RESULT, ARG2_X1, ARG2_X2	: OPERAND_REC;
+					ARG2_X1, ARG2_X2		: OPERAND_REF;
 
 			  when CTL1 =>	CTL1_OP			: OPCI_CTL1;
 					CTL1_X1			: OPERAND_REC;
 
 			  when CTL2 =>	CTL2_OP			: OPCI_CTL2;
-					Ctl2_X1, I_CTL2_X2		: OPERAND_REC;
+					Ctl2_X1, CTL2_X2		: OPERAND_REF;
 
 			  when CTL3 =>	CTL3_OP			: OPCI_CTL3;
-					CTL3_X1, I_CTL3_X2, I_CTL3_X3	: OPERAND_REC;
+					CTL3_X1, CTL3_X2, CTL3_X3	: OPERAND_REF;
 
 			  when FLOT0 =>	FLOT0_OP			: OPCI_FLOT0;
 					DESALLOC			: INTEGER;

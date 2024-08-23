@@ -60,7 +60,7 @@ is
       begin
         while not IS_EMPTY( DECL_SEQ ) loop
 	POP( DECL_SEQ, DECL );
--- CODE_DECL( DECL );
+	DECLARATIONS.CODE_DECL( DECL );
         end loop;
       end;
     end	CODE_WITHED_PKG;
@@ -141,15 +141,15 @@ is
       INC_LEVEL;
       DI( CD_LABEL, SOURCE_NAME, INTEGER( START_LABEL ) );
       DI( CD_LEVEL, SOURCE_NAME, INTEGER( CODI.CUR_LEVEL ) );
-      WRITE_LABEL( START_LABEL, "ETIQUETTE ENTREE" );
+--      WRITE_LABEL( START_LABEL, "ETIQUETTE ENTREE" );
 
-      DECLARATIONS.CODE_HEADER( D( AS_HEADER, SUBPROGRAM_BODY ) );
+	DECLARATIONS.CODE_HEADER( D( AS_HEADER, SUBPROGRAM_BODY ) );
 
       DI( CD_PARAM_SIZE, SOURCE_NAME, PARAM_SIZE );
       CODI.OFFSET_ACT := CODI.FIRST_LOCAL_VAR_OFFSET;
       CODI.OFFSET_MAX := CODI.OFFSET_ACT;
 
-      CODE_BODY( D( AS_BODY, SUBPROGRAM_BODY ) );
+	CODE_BODY( D( AS_BODY, SUBPROGRAM_BODY ) );
 
       DEC_LEVEL;
       CODI.OFFSET_MAX := OLD_OFFSET_MAX;
@@ -167,7 +167,7 @@ is
     EMIT( PKB, S=> PRINT_NAME( D( LX_SYMREP, D( AS_SOURCE_NAME, PACKAGE_BODY ) ) ) );
     CODI.GENERATE_CODE := FALSE;
 
-    DECLARATIONS.CODE_PACKAGE_SPEC( D( SM_SPEC, D( AS_SOURCE_NAME, PACKAGE_BODY ) ) );
+	DECLARATIONS.CODE_PACKAGE_SPEC( D( SM_SPEC, D( AS_SOURCE_NAME, PACKAGE_BODY ) ) );
 
     CODI.GENERATE_CODE := TRUE;
     WRITE_LABEL( 1 );
@@ -214,66 +214,57 @@ is
       CODI.TOP_MAX  := 0;
       DI( CD_LEVEL,        BLOCK_BODY, INTEGER( CODI.CUR_LEVEL ) );
       DI( CD_RETURN_LABEL, BLOCK_BODY, INTEGER( NEW_LABEL ) );
---      declare
---        ENT_1_LBL	: LABEL_TYPE	:= NEW_LABEL;
---        ENT_2_LBL	: LABEL_TYPE	:= NEW_LABEL;
---      begin
---        EMIT( ENT, INTEGER( 1 ), ENT_1_LBL );
---        EMIT( ENT, INTEGER( 2 ), ENT_2_LBL );
-        if FUNCTION_RESULT /= TREE_VOID then
-          if FUNCTION_RESULT.TY = DN_ARRAY then
-            OPER := LOAD_ADR( FUNCTION_RESULT );
-            EMIT( DPL, A );
-            EMIT( SLD, A, 0, FUN_RESULT_OFFSET - CODI.ADDR_SIZE );
-            EMIT( IND, I, 0 );
-            EMIT( ALO, INTEGER( -1 ) );
-            EMIT( SLD, A, 0, FUN_RESULT_OFFSET );
-          end if;
+
+      if FUNCTION_RESULT /= TREE_VOID then
+        if FUNCTION_RESULT.TY = DN_ARRAY then
+          OPER := LOAD_ADR( FUNCTION_RESULT );
+          EMIT( DPL, A );
+          EMIT( SLD, A, 0, FUN_RESULT_OFFSET - CODI.ADDR_SIZE );
+          EMIT( IND, I, 0 );
+          EMIT( ALO, INTEGER( -1 ) );
+          EMIT( SLD, A, 0, FUN_RESULT_OFFSET );
         end if;
+      end if;
 
-        ELAB_END_LBL := NEW_LBL;
-        CODI.FLOT1_OP( BRA, ELAB_END_LBL );
+      ELAB_END_LBL := NEW_LBL;
+      CODI.FLOT1_OP( BRA, ELAB_END_LBL );
 
-        ELAB_LBL := NEW_LBL;
-        CODI.STOCK_CP( ELAB_LBL );
+      ELAB_LBL := NEW_LBL;
+      CODI.STOCK_CP( ELAB_LBL );
 
-        CODI.OFFSET_ACT := - ADDR_SIZE;
+      CODI.OFFSET_ACT := - ADDR_SIZE;
 
-        CODE_ITEM_S ( D ( AS_ITEM_S, BLOCK_BODY ) );
+		CODE_ITEM_S ( D ( AS_ITEM_S, BLOCK_BODY ) );
 
-        BEGIN_LBL := NEW_LBL;
-        CODI.FLOT1_OP( BRA, BEGIN_LBL );
+      BEGIN_LBL := NEW_LBL;
+      CODI.FLOT1_OP( BRA, BEGIN_LBL );
 
-        STOCK_CP( ELAB_END_LBL );
-        CODI.FLOT1_OP( BRA, ELAB_LBL );
+      STOCK_CP( ELAB_END_LBL );
+      CODI.FLOT1_OP( BRA, ELAB_LBL );
 
-        STOCK_CP( BEGIN_LBL );
-        CODI.FRAME_OP( LINK, CODI.OFFSET_MAX );
+      STOCK_CP( BEGIN_LBL );
+      CODI.FRAME_OP( LINK, CODI.OFFSET_MAX );
 
-        declare
-          EXC_LBL	: LABEL_TYPE	:= NEW_LABEL;
-        begin
-	EMIT( EXH, EXC_LBL, COMMENT=> "EXCEPTION HANDLERS" );
+      declare
+        EXC_LBL	: LABEL_TYPE	:= NEW_LABEL;
+      begin
+        EMIT( EXH, EXC_LBL, COMMENT=> "EXCEPTION HANDLERS" );
 
-	INSTRUCTIONS.CODE_STM_S( D ( AS_STM_S, BLOCK_BODY ) );
+		INSTRUCTIONS.CODE_STM_S( D ( AS_STM_S, BLOCK_BODY ) );
 
-	WRITE_LABEL( LABEL_TYPE( DI( CD_RETURN_LABEL, BLOCK_BODY ) ) );
---	EMIT( RET, PARAM_SIZE );
+        WRITE_LABEL( LABEL_TYPE( DI( CD_RETURN_LABEL, BLOCK_BODY ) ) );
 
-	CODI.FRAME_OP( UNLINK );
-	CODI.FLOT0_OP( RTD, CODI.PARAM_SIZE );
+        CODI.FRAME_OP( UNLINK );
+        CODI.FLOT0_OP( RTD, CODI.PARAM_SIZE );
 
-	WRITE_LABEL( EXC_LBL );
-        end;
-        if not IS_EMPTY( LIST( D( AS_ALTERNATIVE_S, BLOCK_BODY ) ) )
-        then
-	CODE_ALTERNATIVE_S( D( AS_ALTERNATIVE_S, BLOCK_BODY ) );
-        else
-          EMIT( EEX );
-        end if;
---        GEN_LBL_ASSIGNMENT( ENT_1_LBL, CODI.OFFSET_MAX );
---        GEN_LBL_ASSIGNMENT( ENT_2_LBL, CODI.OFFSET_MAX + CODI.TOP_MAX );
---      end;
+        WRITE_LABEL( EXC_LBL );
+      end;
+      if not IS_EMPTY( LIST( D( AS_ALTERNATIVE_S, BLOCK_BODY ) ) )
+      then
+        CODE_ALTERNATIVE_S( D( AS_ALTERNATIVE_S, BLOCK_BODY ) );
+      else
+        EMIT( EEX );
+      end if;
       CODI.TOP_MAX  := OLD_TOP_MAX;
       CODI.TOP_ACT  := OLD_TOP_ACT;
       ENCLOSING_BODY := SAVE_ENCLOSING_BODY;
@@ -284,7 +275,7 @@ is
 
 
 				-----------
-  procedure			CODE_ITEM_S	( ITEM_S :TREE )
+  procedure			CODE_ITEM_S		( ITEM_S :TREE )
   is
   begin
     declare
@@ -293,31 +284,22 @@ is
     begin
       while not IS_EMPTY( ITEM_SEQ ) loop
         POP( ITEM_SEQ, ITEM );
-        CODE_ITEM( ITEM );
+
+        if ITEM.TY in CLASS_DECL
+        then
+	DECLARATIONS.CODE_DECL( ITEM );
+
+        elsif ITEM.TY in CLASS_SUBUNIT_BODY
+        then
+	CODE_SUBUNIT_BODY( ITEM );
+
+        end if;
+
       end loop;
     end;
 
   end	CODE_ITEM_S;
 	-----------
-
-
-				---------
-  procedure			CODE_ITEM		( ITEM :TREE )
-  is
-  begin
-
-    if ITEM.TY in CLASS_DECL
-    then
-      DECLARATIONS.CODE_DECL( ITEM );
-
-    elsif ITEM.TY in CLASS_SUBUNIT_BODY
-    then
-      CODE_SUBUNIT_BODY( ITEM );
-
-    end if;
-
-  end	CODE_ITEM;
-	---------
 
 
 			-----------------
