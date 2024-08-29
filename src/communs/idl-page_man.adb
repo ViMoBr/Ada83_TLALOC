@@ -296,7 +296,17 @@ begin
 if PAGE_MAN_DEBUG then PUT_LINE( "page_man : close_page_manager" ); end if;
 
   PAGE_IO.CLOSE( WORK_FILE );								--| FERMER LE FICHIER DE PAGES
-end CLOSE_PAGE_MANAGER;
+  end	CLOSE_PAGE_MANAGER;
+	------------------
+
+			--===============--
+  procedure		DELETE_PAGE_MANAGER
+  is
+  begin
+    PAGE_IO.DELETE( WORK_FILE );							--| DETRUIRE LE FICHIER DE PAGES (EN FIN DE WRITELIB)
+
+  end	DELETE_PAGE_MANAGER;
+	-------------------
 
 --|=================================================================================================
 end PAGE_MAN;

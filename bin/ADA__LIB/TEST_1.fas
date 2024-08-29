@@ -1,0 +1,6 @@
+include '../../src/code_gen/fasmg/codi_x86_64.fas'
+
+	CALL	TEST_1_L1.elab
+	SYSEXIT
+
+include 'TEST_1.DCL.COD'

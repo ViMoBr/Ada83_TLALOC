@@ -1,29 +1,36 @@
-@TEST
-	BRA @1
-@2
-	%2 = LI:b 0
-	-4[0| 0] = ST:w %2
-	%4 = LI:b 1
-	-8[0| 0] = ST:w %4
-	%6 = LI:b 65
-	-12[0| 0] = ST:b %6
-	BRA @3
-@1
-	BRA @2
-@3
-	LINK -14
-EXH	$ 4			-- EXCEPTION HANDLERS
-	%11 = LD:h -8[0| 0]
-	%12 = LI:b 1
-	%13 = ADD %11 %12
-	-4[0| 0] = ST:w %13
-	%15 = LI:b 66
-	-13[0| 0] = ST:b %15
-	%17 = LD:b -12[0| 0]
-	-13[0| 0] = ST:b %17
-$ 3
-	UNLINK
-	RTD  0
-$ 4
-	eex
-  QUIT
+namespace TEST
+elab:
+  virtual at 8
+    LOC::
+  end virtual
+	LINK 1,	loc_siz
+
+  virtual LOC
+    align_w
+    I_disp = $
+    dw ?
+  end virtual
+	LDI	 0
+	STw  1,	I_disp
+
+  virtual LOC
+    align_w
+    J_disp = $
+    dw ?
+  end virtual
+	LDI	 1
+	STw  1,	J_disp
+
+  virtual LOC
+    loc_siz = $
+  end virtual
+begin:
+	LDw  1,	J_disp
+	LDI	 1
+	ADD
+	STw  1,	I_disp
+	UNLINK 1
+	RTD
+excep:
+;  end exception bloc
+end namespace 

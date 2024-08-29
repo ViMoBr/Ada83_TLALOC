@@ -6,36 +6,41 @@
 	; mais on a choisi de faire les opérations en 32 bits pour rester comme sur une architecture 32 bits
 
 
-virtual at 0				; zone alternative pour le traitement des constantes
-  CST::
-end virtual
-
 macro show description, value
 
- 	repeat 1, d:value
-	  display description,`d,13,10
-	end repeat
+  repeat 1, d:value
+    display description,`d,13,10
+  end repeat
 
 end macro
 
 
 macro push_T
-  db 0x50					; push rax
+  db 0x50						; push rax
 end macro
+
 
 macro DROP
-  db 0x58					; pop rax
+  db 0x58						; pop rax
 end macro
 
-macro push_stk
-  db 0x53, 0x89, 0xC3			; push rbx     mov EBX, EAX (attention registres 32 bits)
-end macro
 
 macro pop_N
-  db 0x5B					; pop rbx
+  db 0x5B						; pop rbx
 end macro
 
-macro align4
+
+macro align_w
+  desalign = $ mod 2
+  if desalign <> 0
+    repeat 2-desalign
+      db 0x90
+    end repeat
+  end if
+end macro
+
+
+macro align_d
   desalign = $ mod 4
   if desalign <> 0
     repeat 4-desalign
@@ -44,7 +49,8 @@ macro align4
   end if
 end macro
 
-macro align8
+
+macro align_q
   desalign = $ mod 8
   if desalign <> 0
     repeat 8-desalign
@@ -53,226 +59,318 @@ macro align8
   end if
 end macro
 
+
 ;			-------
-macro			PUT_STR		; affiche une chaine sur stdout
+macro			PUT_STR			; affiche une chaine sur stdout
 ;			-------
-  db 0x48, 0x89, 0xC6			; mov rsi, rax  (esi=T  adresse des caracteres a afficher)
-  db 0x8B, 0x50, 0xFC			; mov EDX, dword ptr[rax-4]   EDX=last
-  db 0xFF, 0xC2				; inc EDX
-  db 0x2B, 0x50, 0xF8			; sub EDX, dword ptr [rax-8]   EDX=length
-  db 0x6A, 0x01				; push 1 (sys_write rax=1)
-  db 0x58					; pop rax
-  db 0x48, 0x89,0xC7			; mov rdi,rax (stdout=1)
-  db 0x0F, 0x05				; syscall
-  DROP					; pop rax   T:=N
+  db 0x48, 0x89, 0xC6				; mov rsi, rax  (esi=T  adresse des caracteres a afficher)
+  db 0x8B, 0x50, 0xFC				; mov EDX, dword ptr[rax-4]   EDX=last
+  db 0xFF, 0xC2					; inc EDX
+  db 0x2B, 0x50, 0xF8				; sub EDX, dword ptr [rax-8]   EDX=length
+  db 0x6A, 0x01					; push 1 (sys_write rax=1)
+  db 0x58						; pop rax
+  db 0x48, 0x89,0xC7				; mov rdi,rax (stdout=1)
+  db 0x0F, 0x05					; syscall
+  DROP						; pop rax   T:=N
 end macro
 
 
 ;			-------
-macro			SYSEXIT		; retour au systeme
+macro			SYSEXIT			; retour au systeme
 ;			-------
-  db 0x6A, 0x3C				; push x3C  (sys_exit rax=60)
-  db 0x58					; pop rax
-  db 0x31, 0xFF				; xor edi, edi (err_code=0)
-  db 0x0F, 0x05				; syscall
+  db 0x6A, 0x3C					; push x3C  (sys_exit rax=60)
+  db 0x58						; pop rax
+  db 0x31, 0xFF					; xor edi, edi (err_code=0)
+  db 0x0F, 0x05					; syscall
 
 end macro
-;				---------------------
+
+;				--------------------------------------------------------------------------------
 ;				CONSTANTES IMMEDIATES
+;				--------------------------------------------------------------------------------
 
-;			----
-macro			LDIW	val
-;			----
+;			-------------
+macro			LDI	val
+;			-------------
   push_T
-  db 0xB8					; mov EAX, val32   T:=val
-  dd val
-
+  if val > -128 & val < 127
+    db 0x6A, val					; push byte val8
+  else
+    db 0x68					; push double val32
+    dd val
+  end if
 end macro
-;				-----------------------
-;				LOAD LOCAL (relatif FP)
+;				--------------------------------------------------------------------------------
+;				LOAD (relatif pointeurs de frame du display R8..r15 suivant lvl)
+;				--------------------------------------------------------------------------------
 
-
-;			----
-macro			LDLW	disp	; Load Local (paramètres ou variables locales)
-;			----
-  ofs = -disp				; pile croissante vers adresses decroissantes
+;			-------------------
+macro			LDb	lvl, disp		; Load BYTE (paramètres ou variables locales)
+;			-------------------
+  assert lvl >= 0 & lvl <= 7
+    ofs = -disp					; pile croissante vers adresses decroissantes
   push_T
-  if ofs > -128 & ofs < 127
-    db 0x8B, 0x45				; mov EAX, dword ptr [rbp+ofs8]   T:=ofs(FP)
-    db ofs
-  else
-    db 0x8B, 0x85				; mov EAX, dword ptr [rbp+ofs32]
+;  if ofs > -128 & ofs < 127
+;    db 0x49, 0x0F, 0xBE, 0x40+lvl			; movsx rax, byte ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
+;    db ofs
+;  else
+    db 0x49, 0x0F, 0xBE, 0x80+lvl			; movsx rax, byte ptr [r(8+lvl)+ofs32]
     dd ofs
-  end if
+;  end if
+  db 0x50						; push rax
 
 end macro
 
-
-;			----
-macro			LDLA	disp	; Load Local (paramètres ou variables locales)
-;			----
-  ofs = -disp				; pile croissante vers adresses decroissantes
+;			-------------------
+macro			LDw	lvl, disp		; Load WORD 16 bits
+;			-------------------
+  assert lvl >= 0 & lvl <= 7
+    ofs = -disp					; pile croissante vers adresses decroissantes
   push_T
-  if ofs > -128 & ofs < 127
-    db 0x48, 0x8B, 0x45			; mov RAX, qword ptr [rbp+ofs8]   T:=ofs(FP)
-    db ofs
-  else
-    db 0x48, 0x8B, 0x85			; mov RAX, qword ptr [rbp+ofs32]
+;  if ofs > -128 & ofs < 127
+;    db 0x49, 0x0F, 0xBF, 0x40+lvl			; movsx rax, word ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
+;    db ofs
+;  else
+    db 0x49, 0x0F, 0xBF, 0x80+lvl			; movsx rax, word ptr [r(8+lvl)+ofs32]
     dd ofs
-  end if
+;  end if
+  db 0x50						; push rax
 
 end macro
 
-				;----------------------
-				; STORE LOCAL (relatif FP)
-
-
-;			----
-macro			STLW	disp	; Load Local (paramètres ou variables locales)
-;			----
-  ofs = -disp				; pile croissante vers adresses decroissantes
-  if ofs > -128 & ofs < 127
-    db 0x89, 0x45				; mov dword ptr [rbp+ofs8], EAX
-    db ofs
-  else
-    db 0x89, 0x85				; mov dword ptr [rbp+ofs32], EAX
+;			-------------------
+macro			LDd	lvl, disp		; Load DOUBLEWORD 32 bits
+;			-------------------
+  assert lvl >= 0 & lvl <= 7
+    ofs = -disp					; pile croissante vers adresses decroissantes
+  push_T
+;  if ofs > -128 & ofs < 127
+;    db 0x49, 0x63, 0x40+lvl				; movsx rax, dword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
+;    db ofs
+;  else
+    db 0x49, 0x63, 0x80+lvl				; movsx rax, dword ptr [r(8+lvl)+ofs32]
     dd ofs
-  end if
-  DROP
+;  end if
+  db 0x50						; push rax
 
 end macro
 
-
-;			----
-macro			STLA	disp	; Load Local (paramètres ou variables locales)
-;			----
-  ofs = -disp				; pile croissante vers adresses decroissantes
-  if ofs > -128 & ofs < 127
-    db 0x48, 0x89, 0x45		; mov qword ptr [rbp+ofs8], rax
-    db ofs
-  else
-    db 0x48, 0x89, 0x85		; mov qword ptr [rbp+ofs32], rax
+;			-------------------
+macro			LDa	lvl, disp		; Load address QUADWORD 64 bits
+;			-------------------
+  assert lvl >= 0 & lvl <= 7
+  ofs = -disp					; pile croissante vers adresses decroissantes
+  push_T
+;  if ofs > -128 & ofs < 127
+;    db 0x49, 0x8B, 0x40+lvl				; mov rax, qword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
+;    db ofs
+;  else
+    db 0x49, 0x8B, 0x80+lvl				; mov rax, qword ptr [r(8=lvl)+ofs32]
     dd ofs
-  end if
-  DROP
+;  end if
+  db 0x50						; push rax
 
 end macro
 
-				;--------------------
-				; OPERATIONS LOGIQUES
+;				--------------------------------------------------------------------------------
+;				STORE (relatif pointeurs de frame du display R8..r15 suivant lvl)
+;				--------------------------------------------------------------------------------
 
-macro		AND
-
-  pop_N
-  db 0x21, 0xD8		; and EAX, EBX   T:=T^N
-
-end macro
-
-macro		OR
-
-  pop_N
-  db 0x09, 0xD8		; or EAX, EBX   T:=TvN
-
-end macro
-
-
-macro		NOT
-
-  db 0xF7, 0xD0		; not EAX   T:=~T
+;			-------------------
+macro			STb	lvl, disp		; Store BYTE (paramètres ou variables locales)
+;			-------------------
+  assert lvl >= 0 & lvl <= 7
+  ofs = -disp					; pile croissante vers adresses decroissantes
+  db 0x58						; pop rax
+;  if ofs > -128 & ofs < 127
+;    db 0x41, 0x88, 0x40+lvl				; mov byte ptr [r(8+lvl)+ofs8], AL
+;    db ofs
+;  else
+    db 0x41, 0x88, 0x80+lvl				; mov byte ptr [r(8+lvl)+ofs32], AL
+    dd ofs
+;  end if
 
 end macro
 
-
-macro		XOR
-  pop_N
-  db 0x31, 0xD8		; xor EAX, EBX   T:=T°N
-
-end macro
-				;--------------------------------
-				; OPERATIONS ARITHMETIQUE ENTIERE
-macro		ADD
-
-  pop_N
-  db 0x01, 0xD8		; add EAX, EBX   T:=T+N
-
-end macro
-
-macro		SUB
-
-  pop_N
-  db 0x29, 0xD8		; sub EAX, EBX  T:=T-N
+;			-------------------
+macro			STw	lvl, disp		; Store WORD 16 bits (paramètres ou variables locales)
+;			-------------------
+  assert lvl >= 0 & lvl <= 7
+  ofs = -disp					; pile croissante vers adresses decroissantes
+  db 0x58						; pop rax
+;  if ofs > -128 & ofs < 127
+;    db 0x66, 0x41, 0x89, 0x40+lvl			; mov word ptr [r(8+lvl)+ofs8], AX
+;    db ofs
+;  else
+    db 0x66, 0x41, 0x89, 0x80+lvl			; mov word ptr [r(8+lvl)+ofs32], AX
+    dd ofs
+;  end if
 
 end macro
 
-macro		MUL
-
-  pop_N
-  db 0xF7, 0xEB		; imul EBX  T:=low32(T*N)
-  db 0x52			; push rdx  N:=high32(T*N)
+;			-------------------
+macro			STd	lvl, disp		; Store DOUBLEWORD (paramètres ou variables locales)
+;			-------------------
+  assert lvl >= 0 & lvl <= 7
+  ofs = -disp					; pile croissante vers adresses decroissantes
+  db 0x58						; pop rax
+;  if ofs > -128 & ofs < 127
+;    db 0x41, 0x89, 0x40+lvl				; mov dword ptr [r(8+lvl)+ofs8], EAX
+;    db ofs
+;  else
+    db 0x41, 0x89, 0x80+lvl				; mov dword ptr [r(8+lvl)+ofs32], EAX
+    dd ofs
+;  end if
 
 end macro
 
-macro		DIV
-
-  pop_N			; pop N   divisor
-  db 0x31, 0xD2		; xor EDX, EDX   clear high32(dividend)
-  db 0xF7, 0xFB		; idiv EBX  T:=quotient(T/N)
-  db 0x52			; push rdx  N:=reste(TN)
+;			-------------------
+macro			STa	lvl, disp		; Store address QUADWORD (paramètres ou variables locales)
+;			-------------------
+  assert lvl >= 0 & lvl <= 7
+  ofs = -disp					; pile croissante vers adresses decroissantes
+  db 0x58						; pop rax
+;  if ofs > -128 & ofs < 127
+;    db 0x49, 0x89, 0x40+lvl				; mov qword ptr [rbp+ofs8], rax
+;    db ofs
+;  else
+    db 0x49, 0x89, 0x80+lvl				; mov qword ptr [rbp+ofs32], rax
+    dd ofs
+;  end if
 
 end macro
-				;----------------------------
-				; OPERATIONS CONTROLE DE FLOT
 
-macro		BRA	lbl
+;				--------------------------------------------------------------------------------
+;				OPERATIONS LOGIQUES
+;				--------------------------------------------------------------------------------
+;			---
+macro			AND
+;			---
+  db 0x58, 0x21, 0x04, 0x24				; pop rax     and dword ptr [rsp], eax
 
+end macro
+
+;			--
+macro			OR
+;			--
+  db 0x58, 0x09, 0x04, 0x24				; pop rax     or dword ptr [rsp], eax
+
+end macro
+
+;			---
+macro			NOT
+;			---
+  db 0xF7, 0x14, 0x24				; not dword ptr [rsp]
+
+end macro
+
+;			---
+macro			XOR
+;			---
+  db 0x58, 0x31, 0x04, 0x24				; pop rax     xor dword ptr [rsp], eax
+
+end macro
+
+;				--------------------------------------------------------------------------------
+;				OPERATIONS ARITHMETIQUE ENTIERE
+;				--------------------------------------------------------------------------------
+
+;			---
+macro			NEG
+;			---
+  db 0xF7, 0x1C, 0x24				; neg dword ptr [rsp]
+end macro
+
+;			---
+macro			ADD
+;			---
+  db 0x58, 0x01, 0x04, 0x24				; pop rax     add dword ptr [rsp], eax
+end macro
+
+;			---
+macro			SUB
+;			---
+  db 0x58, 0x29, 0x04, 0x24				; pop rax     sub dword ptr [rsp], eax
+
+end macro
+
+;			---
+macro			MUL
+;			---
+  db 0x58						; pop rax
+  db 0xF7, 0x2C, 0x24				; imul dword ptr [rsp]
+  db 0x50						; push rax
+
+end macro
+
+;			---
+macro			DIV
+;			--
+  db 0x5B						; pop rbx
+  db 0x58						; pop rax
+  db 0x48, 0xF7, 0xFB				; idiv rbx
+  db 0x50						; push rax
+
+end macro
+
+;				--------------------------------------------------------------------------------
+;				OPERATIONS CONTROLE DE FLOT
+;				--------------------------------------------------------------------------------
+
+;			-------------
+macro			BRA	lbl
+;			-------------
   local disp
-  if disp < 256
-    db 0xEB		; jmp rel8
-    db disp
-  else
-    db 0xE9		; jmp rel32
+;  if disp > -128 & disp < 127
+;    db 0xEB					; jmp rel8
+;    db disp
+;  else
+    db 0xE9					; jmp rel32
     dd disp
-  end if
+;  end if
+  disp = lbl-$
+
+end macro
+
+;			-------------
+macro			BZ	lbl
+;			-------------
+  db 0x09, 0xC0					; or eax, eax
+  local disp
+;  if disp > -128 & disp < 127
+;    db 0x74					; jz rel8
+;    db disp
+;  else
+    db 0x0F, 0x84					; jz rel32
+    dd disp
+;  end if
   disp = lbl-$
 
 end macro
 
 
-macro		BZ	lbl
 
-  db 0x09, 0xC0		; or eax, eax
-  local disp
-  if disp < 256
-    db 0x74		; jz rel8
-    db disp
-  else
-    db 0x0F, 0x84		; jz rel32
-    dd disp
-  end if
-  disp = lbl-$
-
-end macro
-
-
-macro		BSR	lbl
-
+;			---------------
+macro			CALL	entry
+;			---------------
   local disp
   db 0xE8
   dd disp
-  disp = lbl-$
+  disp = entry-$
 
 end macro
 
 
-;			----
-macro			LINK	alloc			; ALLOCATION POUR VARIABLES LOCALES SOUS FRAME PTR
-;			----
-  db 0x55					; push rbp   store FP
-  db 0x48, 0x89, 0xE5			; mov rbp, rsp   update FP
+;			--------------------
+macro			LINK	lvl, alloc	; ALLOCATION POUR VARIABLES LOCALES SOUS FRAME PTR
+;			--------------------
+  assert lvl>=1 & lvl<=7
+  db 0x41, 0x50+lvl					; push r(8+lvl)   store FP(lvl)
+  db 0x49, 0x89, 0xE0+lvl				; mov rbp, rsp   update FP
   assert alloc >= 0
   if alloc <> 0
     if alloc < 256
-      db 0x48, 0x83, 0xEC, alloc
+      db 0x48, 0x83, 0xEC, alloc			; sub rsp, alloc
     else
       db 0x48, 0x81, 0xEC
       dd alloc
@@ -282,23 +380,23 @@ macro			LINK	alloc			; ALLOCATION POUR VARIABLES LOCALES SOUS FRAME PTR
 end macro
 
 
-;			------
-macro			UNLINK				; DISPOSE VARS LOCALES ET RESTORE FRAME PTR
-;			------
-  db 0x48, 0x89, 0xEC			; mov rsp, rbp   throw locals
-  db 0x5D					; pop rbp  restore stored FP
+;			-------------
+macro			UNLINK	lvl		; DISPOSE VARS LOCALES ET RESTORE FRAME PTR
+;			-------------
+  db 0x4C, 0x89, 0xC4+8*lvl				; mov rsp, r(8+lvl)   throw locals
+  db 0x41, 0x58+lvl					; pop r(8+lvl)  restore stored FP
 
 end macro
 
-
-macro		RTD	prm_size
-
-  assert prm_size >= 0 & prm_size < 32768
-  if prm_size = 0
-    db 0xC3
-  else
+;			--------------------
+macro			RTD	prm_size:0
+;			--------------------
+  if prm_size <> 0
+    assert prm_size > 0 & prm_size < 32768
     db 0xC2
     dw prm_size
+  else
+    db 0xC3
   end if
 
 end macro
@@ -340,6 +438,12 @@ Elf64_Phdr:
 	p_filesz		dq ASM_SIZE
 	p_memsz		dq 1024*1024
 	p_align		dq 4096
+
+
+virtual at 0
+  VAR::
+  VAR.DISP = $
+end virtual
 
 postpone					; sera fait en toute toute fin car c'est le premier postpone
   ASM_SIZE = $-0x400078

@@ -14,7 +14,7 @@ RV NO_FIXED_POINT
 RV NO_IO
 RV NO_DYNAMIC_SIZED_OBJECTS
 
-U ada_comp%b		ada_comp.adb		56bb5128 NE OO SU IU
+U ada_comp%b		ada_comp.adb		9090b67a NE OO SU IU
 Z ada.strings.text_buffers%s  a-sttebu.adb	a-sttebu.ali
 W calendar%s		calendar.ads		calendar.ali
 W code_gen%s		code_gen.adb		code_gen.ali
@@ -39,7 +39,7 @@ D ada_comp.adb		20240811190906 f7f7d695 ada_comp%b
 D calendar.ads		20230508121439 2cb525cd calendar%s
 D code_gen.ads		20230823210317 9ce3fa93 code_gen%s
 D diana_node_attr_class_names.ads  20240730152129 6d94ff6d diana_node_attr_class_names%s
-D idl.ads		20240711120008 30a8907b idl%s
+D idl.ads		20240827192311 f6837729 idl%s
 D interfac.ads		20230508121439 edec285f interfaces%s
 D i-cstrea.ads		20230508121439 e53d8b8e interfaces.c_streams%s
 D system.ads		20230508121439 a2da961d system%s
@@ -65,13 +65,13 @@ D text_io.ads		20230508121439 21b2c898 text_io%s
 D unchconv.ads		20230508121439 ca2f9e18 unchecked_conversion%s
 G a e
 G c Z b b [ada_comp standard 10 49 none]
-G r c none [ada_comp standard 10 49 none] [pretty_diana idl 31 13 none]
-G r c none [ada_comp standard 10 49 none] [par_phase idl 26 13 none]
-G r c none [ada_comp standard 10 49 none] [lib_phase idl 27 13 none]
-G r c none [ada_comp standard 10 49 none] [sem_phase idl 28 13 none]
+G r c none [ada_comp standard 10 49 none] [pretty_diana idl 32 13 none]
+G r c none [ada_comp standard 10 49 none] [par_phase idl 27 13 none]
+G r c none [ada_comp standard 10 49 none] [lib_phase idl 28 13 none]
+G r c none [ada_comp standard 10 49 none] [sem_phase idl 29 13 none]
 G r c none [ada_comp standard 10 49 none] [code_gen standard 3 15 none]
-G r c none [ada_comp standard 10 49 none] [err_phase idl 29 13 none]
-G r c none [ada_comp standard 10 49 none] [write_lib idl 30 13 none]
+G r c none [ada_comp standard 10 49 none] [err_phase idl 30 13 none]
+G r c none [ada_comp standard 10 49 none] [write_lib idl 31 13 none]
 X 2 a-calend.ads
 42I9*Time<226I9> 12|23r36
 56V13*Clock{42I9} 12|99s17 135s19
@@ -117,18 +117,18 @@ X 14 code_gen.ads
 3U15*Code_Gen 12|7w11 127s9
 X 16 idl.ads
 8K33*IDL 12|7w6 46r7 47r7 47r28 52r5 52r28 52r54 53r5 53r22 54r28 54r51 55r30
-. 95r5 115r52 115r75 119r7 121r25 123r7 124r7 131r7 133r60 16|126e12
+. 95r5 115r52 115r75 119r7 121r25 123r7 124r7 131r7 133r60 16|127e12
 11a3*PROJECT_PATH{string} 12|47m11 54r32 115r56
 12i3*PROJECT_PATH_LENGTH{natural} 12|46m11 47r32 52r32 54r55 115r79
 14a3*LIB_PATH{string} 12|53m9 121r29
 15i3*LIB_PATH_LENGTH{natural} 12|52m9 53r26
 16a3*DEFAULT_LIB_PATH{string} 12|52r58 55r34
-26U13*PAR_PHASE 12|119s11
-27U13*LIB_PHASE 12|123s11
-28U13*SEM_PHASE 12|124s11
-29U13*ERR_PHASE 12|131s11
-30U13*WRITE_LIB 12|133s64
-31U13*PRETTY_DIANA 12|95s9
+27U13*PAR_PHASE 12|119s11
+28U13*LIB_PHASE 12|123s11
+29U13*SEM_PHASE 12|124s11
+30U13*ERR_PHASE 12|131s11
+31U13*WRITE_LIB 12|133s64
+32U13*PRETTY_DIANA 12|95s9
 X 38 text_io.ads
 24K9*Text_IO=24:29 12|5w6 6r6
 

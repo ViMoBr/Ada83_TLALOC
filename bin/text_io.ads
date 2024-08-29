@@ -303,7 +303,7 @@ is					-------
 private
 
   type FILE_TYPE		is record
-			  null; -- for front end only
+			  FILE_REF	: INTEGER;
 			end record;
 
 	-------

@@ -1,0 +1,19 @@
+include 'TEXT_IO.BDY.COD'
+;	---------- SOUS-PROGRAMME ---------- 
+namespace TEST_1_L1
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+end namespace 

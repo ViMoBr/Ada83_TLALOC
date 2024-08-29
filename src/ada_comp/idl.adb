@@ -44,6 +44,7 @@ is				---
     procedure NEW_BLOCK;								--| FORCERA L ALLOCATION D UN NOUVEAU BLOC
     procedure ALLOC_PAGE		( AR :AREA_IDX; REQUESTED_SIZE :LINE_NBR );
     procedure CLOSE_PAGE_MANAGER;							--| FERMETURE DU FICHIER DE PAGINATION
+    procedure DELETE_PAGE_MANAGER;
 
 
     type SECTOR		is array( LINE_IDX ) of TREE;					--| TREE DE 0 A 127
@@ -292,6 +293,16 @@ end SNIFFER;
     PAGE_MAN.CLOSE_PAGE_MANAGER;
   end	CLOSE_IDL_TREE_FILE;
 	-------------------
+
+
+			--------------------
+  procedure		DELETE_IDL_TREE_FILE
+  is
+  begin
+    PAGE_MAN.DELETE_PAGE_MANAGER;
+
+  end	DELETE_IDL_TREE_FILE;
+	--------------------
 
 			----
   function		MAKE		( NN :NODE_NAME )	return TREE

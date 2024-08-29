@@ -1,0 +1,1923 @@
+;	---------- PACKAGE ---------- 
+namespace TEXT_IO
+elab_spec:
+  virtual VAR
+    align_d
+    COUNT_lower_disp = $
+    dd ?
+    COUNT_upper_disp = $
+    dd ?
+  end virtual
+	LDI	 0
+	STd  0,	COUNT_lower_disp
+	STd  0,	COUNT_upper_disp
+;	---------- variable entiere ---------- 
+  virtual VAR
+    align_w
+    UNBOUNDED_disp = $
+    dw ?
+  end virtual
+	LDI	 0
+	STw  0,	UNBOUNDED_disp
+
+;	---------- package bdy ----------
+	BRA	L1
+;	---------- SOUS-PROGRAMME ---------- 
+namespace CREATE_L2
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub CREATE ----------
+end namespace 
+L1:
+	BRA	L3
+;	---------- SOUS-PROGRAMME ---------- 
+namespace OPEN_L4
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub OPEN ----------
+end namespace 
+L3:
+	BRA	L5
+;	---------- SOUS-PROGRAMME ---------- 
+namespace CLOSE_L6
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub CLOSE ----------
+end namespace 
+L5:
+	BRA	L7
+;	---------- SOUS-PROGRAMME ---------- 
+namespace DELETE_L8
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub DELETE ----------
+end namespace 
+L7:
+	BRA	L9
+;	---------- SOUS-PROGRAMME ---------- 
+namespace RESET_L10
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub RESET ----------
+end namespace 
+L9:
+	BRA	L11
+;	---------- SOUS-PROGRAMME ---------- 
+namespace RESET_L12
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub RESET ----------
+end namespace 
+L11:
+	BRA	L13
+;	---------- SOUS-PROGRAMME ---------- 
+namespace MODE_L14
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub MODE ----------
+end namespace 
+L13:
+	BRA	L15
+;	---------- SOUS-PROGRAMME ---------- 
+namespace NAME_L16
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub NAME ----------
+end namespace 
+L15:
+	BRA	L17
+;	---------- SOUS-PROGRAMME ---------- 
+namespace FORM_L18
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub FORM ----------
+end namespace 
+L17:
+	BRA	L19
+;	---------- SOUS-PROGRAMME ---------- 
+namespace IS_OPEN_L20
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub IS_OPEN ----------
+end namespace 
+L19:
+	BRA	L21
+;	---------- SOUS-PROGRAMME ---------- 
+namespace SET_INPUT_L22
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub SET_INPUT ----------
+end namespace 
+L21:
+	BRA	L23
+;	---------- SOUS-PROGRAMME ---------- 
+namespace SET_OUTPUT_L24
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub SET_OUTPUT ----------
+end namespace 
+L23:
+	BRA	L25
+;	---------- SOUS-PROGRAMME ---------- 
+namespace STANDARD_INPUT_L26
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub STANDARD_INPUT ----------
+end namespace 
+L25:
+	BRA	L27
+;	---------- SOUS-PROGRAMME ---------- 
+namespace STANDARD_OUTPUT_L28
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub STANDARD_OUTPUT ----------
+end namespace 
+L27:
+	BRA	L29
+;	---------- SOUS-PROGRAMME ---------- 
+namespace CURRENT_INPUT_L30
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub CURRENT_INPUT ----------
+end namespace 
+L29:
+	BRA	L31
+;	---------- SOUS-PROGRAMME ---------- 
+namespace CURRENT_OUTPUT_L32
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub CURRENT_OUTPUT ----------
+end namespace 
+L31:
+	BRA	L33
+;	---------- SOUS-PROGRAMME ---------- 
+namespace SET_LINE_LENGTH_L34
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub SET_LINE_LENGTH ----------
+end namespace 
+L33:
+	BRA	L35
+;	---------- SOUS-PROGRAMME ---------- 
+namespace SET_LINE_LENGTH_L36
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub SET_LINE_LENGTH ----------
+end namespace 
+L35:
+	BRA	L37
+;	---------- SOUS-PROGRAMME ---------- 
+namespace SET_PAGE_LENGTH_L38
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub SET_PAGE_LENGTH ----------
+end namespace 
+L37:
+	BRA	L39
+;	---------- SOUS-PROGRAMME ---------- 
+namespace SET_PAGE_LENGTH_L40
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub SET_PAGE_LENGTH ----------
+end namespace 
+L39:
+	BRA	L41
+;	---------- SOUS-PROGRAMME ---------- 
+namespace LINE_LENGTH_L42
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub LINE_LENGTH ----------
+end namespace 
+L41:
+	BRA	L43
+;	---------- SOUS-PROGRAMME ---------- 
+namespace LINE_LENGTH_L44
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub LINE_LENGTH ----------
+end namespace 
+L43:
+	BRA	L45
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PAGE_LENGTH_L46
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PAGE_LENGTH ----------
+end namespace 
+L45:
+	BRA	L47
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PAGE_LENGTH_L48
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PAGE_LENGTH ----------
+end namespace 
+L47:
+	BRA	L49
+;	---------- SOUS-PROGRAMME ---------- 
+namespace NEW_LINE_L50
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub NEW_LINE ----------
+end namespace 
+L49:
+	BRA	L51
+;	---------- SOUS-PROGRAMME ---------- 
+namespace NEW_LINE_L52
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub NEW_LINE ----------
+end namespace 
+L51:
+	BRA	L53
+;	---------- SOUS-PROGRAMME ---------- 
+namespace SKIP_LINE_L54
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub SKIP_LINE ----------
+end namespace 
+L53:
+	BRA	L55
+;	---------- SOUS-PROGRAMME ---------- 
+namespace SKIP_LINE_L56
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub SKIP_LINE ----------
+end namespace 
+L55:
+	BRA	L57
+;	---------- SOUS-PROGRAMME ---------- 
+namespace END_OF_LINE_L58
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub END_OF_LINE ----------
+end namespace 
+L57:
+	BRA	L59
+;	---------- SOUS-PROGRAMME ---------- 
+namespace END_OF_LINE_L60
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub END_OF_LINE ----------
+end namespace 
+L59:
+	BRA	L61
+;	---------- SOUS-PROGRAMME ---------- 
+namespace NEW_PAGE_L62
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub NEW_PAGE ----------
+end namespace 
+L61:
+	BRA	L63
+;	---------- SOUS-PROGRAMME ---------- 
+namespace NEW_PAGE_L64
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub NEW_PAGE ----------
+end namespace 
+L63:
+	BRA	L65
+;	---------- SOUS-PROGRAMME ---------- 
+namespace SKIP_PAGE_L66
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub SKIP_PAGE ----------
+end namespace 
+L65:
+	BRA	L67
+;	---------- SOUS-PROGRAMME ---------- 
+namespace SKIP_PAGE_L68
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub SKIP_PAGE ----------
+end namespace 
+L67:
+	BRA	L69
+;	---------- SOUS-PROGRAMME ---------- 
+namespace END_OF_PAGE_L70
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub END_OF_PAGE ----------
+end namespace 
+L69:
+	BRA	L71
+;	---------- SOUS-PROGRAMME ---------- 
+namespace END_OF_PAGE_L72
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub END_OF_PAGE ----------
+end namespace 
+L71:
+	BRA	L73
+;	---------- SOUS-PROGRAMME ---------- 
+namespace END_OF_FILE_L74
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub END_OF_FILE ----------
+end namespace 
+L73:
+	BRA	L75
+;	---------- SOUS-PROGRAMME ---------- 
+namespace END_OF_FILE_L76
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub END_OF_FILE ----------
+end namespace 
+L75:
+	BRA	L77
+;	---------- SOUS-PROGRAMME ---------- 
+namespace SET_COL_L78
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub SET_COL ----------
+end namespace 
+L77:
+	BRA	L79
+;	---------- SOUS-PROGRAMME ---------- 
+namespace SET_COL_L80
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub SET_COL ----------
+end namespace 
+L79:
+	BRA	L81
+;	---------- SOUS-PROGRAMME ---------- 
+namespace SET_LINE_L82
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub SET_LINE ----------
+end namespace 
+L81:
+	BRA	L83
+;	---------- SOUS-PROGRAMME ---------- 
+namespace SET_LINE_L84
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub SET_LINE ----------
+end namespace 
+L83:
+	BRA	L85
+;	---------- SOUS-PROGRAMME ---------- 
+namespace COL_L86
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub COL ----------
+end namespace 
+L85:
+	BRA	L87
+;	---------- SOUS-PROGRAMME ---------- 
+namespace COL_L88
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub COL ----------
+end namespace 
+L87:
+	BRA	L89
+;	---------- SOUS-PROGRAMME ---------- 
+namespace LINE_L90
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub LINE ----------
+end namespace 
+L89:
+	BRA	L91
+;	---------- SOUS-PROGRAMME ---------- 
+namespace LINE_L92
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub LINE ----------
+end namespace 
+L91:
+	BRA	L93
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PAGE_L94
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PAGE ----------
+end namespace 
+L93:
+	BRA	L95
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PAGE_L96
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PAGE ----------
+end namespace 
+L95:
+	BRA	L97
+;	---------- SOUS-PROGRAMME ---------- 
+namespace GET_L98
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub GET ----------
+end namespace 
+L97:
+	BRA	L99
+;	---------- SOUS-PROGRAMME ---------- 
+namespace GET_L100
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub GET ----------
+end namespace 
+L99:
+	BRA	L101
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PUT_L102
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PUT ----------
+end namespace 
+L101:
+	BRA	L103
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PUT_L104
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PUT ----------
+end namespace 
+L103:
+	BRA	L105
+;	---------- SOUS-PROGRAMME ---------- 
+namespace GET_L106
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub GET ----------
+end namespace 
+L105:
+	BRA	L107
+;	---------- SOUS-PROGRAMME ---------- 
+namespace GET_L108
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub GET ----------
+end namespace 
+L107:
+	BRA	L109
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PUT_L110
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PUT ----------
+end namespace 
+L109:
+	BRA	L111
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PUT_L112
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PUT ----------
+end namespace 
+L111:
+	BRA	L113
+;	---------- SOUS-PROGRAMME ---------- 
+namespace GET_LINE_L114
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub GET_LINE ----------
+end namespace 
+L113:
+	BRA	L115
+;	---------- SOUS-PROGRAMME ---------- 
+namespace GET_LINE_L116
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub GET_LINE ----------
+end namespace 
+L115:
+	BRA	L117
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PUT_LINE_L118
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PUT_LINE ----------
+end namespace 
+L117:
+	BRA	L119
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PUT_LINE_L120
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PUT_LINE ----------
+end namespace 
+L119:
+	BRA	L121
+;	---------- PACKAGE ---------- 
+namespace INTEGER_IO
+elab_spec:
+;	---------- variable entiere ---------- 
+  virtual VAR
+    align_w
+    DEFAULT_WIDTH_disp = $
+    dw ?
+  end virtual
+	STw  0,	DEFAULT_WIDTH_disp
+
+;	---------- variable entiere ---------- 
+  virtual VAR
+    align_w
+    DEFAULT_BASE_disp = $
+    dw ?
+  end virtual
+	LDI	 10
+	STw  0,	DEFAULT_BASE_disp
+
+;	---------- package bdy ----------
+	BRA	L122
+;	---------- SOUS-PROGRAMME ---------- 
+namespace GET_L123
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub GET ----------
+end namespace 
+L122:
+	BRA	L124
+;	---------- SOUS-PROGRAMME ---------- 
+namespace GET_L125
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub GET ----------
+end namespace 
+L124:
+	BRA	L126
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PUT_L127
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PUT ----------
+end namespace 
+L126:
+	BRA	L128
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PUT_L129
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PUT ----------
+end namespace 
+L128:
+	BRA	L130
+;	---------- SOUS-PROGRAMME ---------- 
+namespace GET_L131
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub GET ----------
+end namespace 
+L130:
+	BRA	L132
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PUT_L133
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PUT ----------
+end namespace 
+L132:
+;	---------- package bdy begin ----------
+begin:
+;  end exception bloc
+;	---------- end package bdy INTEGER_IO ----------
+end namespace 
+L121:
+	BRA	L134
+;	---------- PACKAGE ---------- 
+namespace FLOAT_IO
+elab_spec:
+;	---------- variable entiere ---------- 
+  virtual VAR
+    align_w
+    DEFAULT_FORE_disp = $
+    dw ?
+  end virtual
+	LDI	 2
+	STw  0,	DEFAULT_FORE_disp
+
+;	---------- variable entiere ---------- 
+  virtual VAR
+    align_w
+    DEFAULT_AFT_disp = $
+    dw ?
+  end virtual
+	LDI	 1
+	SUB
+	STw  0,	DEFAULT_AFT_disp
+
+;	---------- variable entiere ---------- 
+  virtual VAR
+    align_w
+    DEFAULT_EXP_disp = $
+    dw ?
+  end virtual
+	LDI	 3
+	STw  0,	DEFAULT_EXP_disp
+
+;	---------- package bdy ----------
+	BRA	L135
+;	---------- SOUS-PROGRAMME ---------- 
+namespace GET_L136
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub GET ----------
+end namespace 
+L135:
+	BRA	L137
+;	---------- SOUS-PROGRAMME ---------- 
+namespace GET_L138
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub GET ----------
+end namespace 
+L137:
+	BRA	L139
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PUT_L140
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PUT ----------
+end namespace 
+L139:
+	BRA	L141
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PUT_L142
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PUT ----------
+end namespace 
+L141:
+	BRA	L143
+;	---------- SOUS-PROGRAMME ---------- 
+namespace GET_L144
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub GET ----------
+end namespace 
+L143:
+	BRA	L145
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PUT_L146
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PUT ----------
+end namespace 
+L145:
+;	---------- package bdy begin ----------
+begin:
+;  end exception bloc
+;	---------- end package bdy FLOAT_IO ----------
+end namespace 
+L134:
+	BRA	L147
+;	---------- PACKAGE ---------- 
+namespace FIXED_IO
+elab_spec:
+;	---------- variable entiere ---------- 
+  virtual VAR
+    align_w
+    DEFAULT_FORE_disp = $
+    dw ?
+  end virtual
+	STw  0,	DEFAULT_FORE_disp
+
+;	---------- variable entiere ---------- 
+  virtual VAR
+    align_w
+    DEFAULT_AFT_disp = $
+    dw ?
+  end virtual
+	STw  0,	DEFAULT_AFT_disp
+
+;	---------- variable entiere ---------- 
+  virtual VAR
+    align_w
+    DEFAULT_EXP_disp = $
+    dw ?
+  end virtual
+	LDI	 0
+	STw  0,	DEFAULT_EXP_disp
+
+;	---------- package bdy ----------
+	BRA	L148
+;	---------- SOUS-PROGRAMME ---------- 
+namespace GET_L149
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub GET ----------
+end namespace 
+L148:
+	BRA	L150
+;	---------- SOUS-PROGRAMME ---------- 
+namespace GET_L151
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub GET ----------
+end namespace 
+L150:
+	BRA	L152
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PUT_L153
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PUT ----------
+end namespace 
+L152:
+	BRA	L154
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PUT_L155
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PUT ----------
+end namespace 
+L154:
+	BRA	L156
+;	---------- SOUS-PROGRAMME ---------- 
+namespace GET_L157
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub GET ----------
+end namespace 
+L156:
+	BRA	L158
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PUT_L159
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PUT ----------
+end namespace 
+L158:
+;	---------- package bdy begin ----------
+begin:
+;  end exception bloc
+;	---------- end package bdy FIXED_IO ----------
+end namespace 
+L147:
+	BRA	L160
+;	---------- PACKAGE ---------- 
+namespace ENUMERATION_IO
+elab_spec:
+;	---------- variable entiere ---------- 
+  virtual VAR
+    align_w
+    DEFAULT_WIDTH_disp = $
+    dw ?
+  end virtual
+	LDI	 0
+	STw  0,	DEFAULT_WIDTH_disp
+
+;	---------- variable entiere ---------- 
+  virtual VAR
+    DEFAULT_SETTING_disp = $
+    db ?
+  end virtual
+	LDI	 1
+	STb  0,	DEFAULT_SETTING_disp
+
+;	---------- package bdy ----------
+	BRA	L161
+;	---------- SOUS-PROGRAMME ---------- 
+namespace GET_L162
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub GET ----------
+end namespace 
+L161:
+	BRA	L163
+;	---------- SOUS-PROGRAMME ---------- 
+namespace GET_L164
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub GET ----------
+end namespace 
+L163:
+	BRA	L165
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PUT_L166
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PUT ----------
+end namespace 
+L165:
+	BRA	L167
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PUT_L168
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PUT ----------
+end namespace 
+L167:
+	BRA	L169
+;	---------- SOUS-PROGRAMME ---------- 
+namespace GET_L170
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub GET ----------
+end namespace 
+L169:
+	BRA	L171
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PUT_L172
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PUT ----------
+end namespace 
+L171:
+;	---------- package bdy begin ----------
+begin:
+;  end exception bloc
+;	---------- end package bdy ENUMERATION_IO ----------
+end namespace 
+L160:
+;	---------- package bdy begin ----------
+begin:
+;  end exception bloc
+;	---------- end package bdy TEXT_IO ----------
+end namespace 

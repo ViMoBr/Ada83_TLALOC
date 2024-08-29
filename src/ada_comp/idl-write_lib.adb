@@ -223,6 +223,6 @@ TRAITE_LES_UNITES_DE_COMPILATION:
     end;
   end if;
       
-  CLOSE_IDL_TREE_FILE;
+  DELETE_IDL_TREE_FILE;								--| LE FICHIER $$$.TMP EST ABIME PAR LE PROCESSUS DE MARQUAGE
 --|-------------------------------------------------------------------------------------------------
 end WRITE_LIB;

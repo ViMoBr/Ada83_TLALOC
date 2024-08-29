@@ -1,17 +1,17 @@
 
 include 'codi_x86_64.fas'
 
-namespace TEST
+namespace MODEL_1
 
 elab:
-	LINK	loc_siz			; allocation (taille connue plus bas)
+	LINK 1,	loc_siz			; allocation (taille connue plus bas)
 
   virtual at 0				; offsets de locales apres FP
     LOC::					; marqueur zone locales
   end virtual
 
   virtual LOC
-    align8				; lieu d'une adresse
+    align_q				; lieu d'une adresse
     MSG_ptr_disp = $			; deplacement de l'adresse de chaine cte
     dq ?
   end virtual
@@ -22,20 +22,20 @@ elab:
     db	'Bonjour !', 10			; caracteres de la chaine constante
   end postpone
 
-	LDIW	MSG_ptr			; adresse des caractères de chaine
-	STLA	MSG_ptr_disp		; (FP-STR_) := @STR
+	LDI	MSG_ptr			; adresse des caractères de chaine
+	STa 1,	MSG_ptr_disp		; (FP1-MSG_ptr_disp) := MSG_ptr
 
   virtual LOC
     loc_siz = $				; taille des locales
   end virtual
 
 begin:
-	LDLA	MSG_ptr_disp
+	LDa 1,	MSG_ptr_disp
 	PUT_STR
-	UNLINK
+	UNLINK  1
 	SYSEXIT
 
 end namespace
 
-align8
+align_q
 

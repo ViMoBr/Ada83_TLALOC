@@ -1,7 +1,7 @@
 separate ( CODE_GEN )
 				-----------
  	package body		EXPRESSIONS
-				-----------
+				-----------ldlw
 is
 
 
@@ -9,80 +9,64 @@ is
 
 
 				--====--
-  function			CODE_EXP			( EXP :TREE )		return OPERAND_REF
+  procedure			CODE_EXP			( EXP :TREE )
   is
   begin
 
 --put_line( "EXP.TY " & NODE_NAME'IMAGE( EXP.TY ) );
 
-    if EXP.TY = DN_NUMERIC_LITERAL
-    then
-      return CODE_NUMERIC_LITERAL( EXP );
+    if EXP.TY = DN_NUMERIC_LITERAL	then CODE_NUMERIC_LITERAL( EXP );
 
-    elsif EXP.TY = DN_USED_OBJECT_ID
-    then
-      return CODE_USED_OBJECT_ID( EXP );
+    elsif EXP.TY = DN_USED_OBJECT_ID	then CODE_USED_OBJECT_ID( EXP );
 
-    elsif EXP.TY = DN_PARENTHESIZED
-    then
-      return CODE_EXP( D( AS_EXP, EXP ) );
+    elsif EXP.TY = DN_PARENTHESIZED	then CODE_EXP( D( AS_EXP, EXP ) );
 
-    elsif EXP.TY = DN_INDEXED then
-      CODE_INDEXED ( EXP );
+    elsif EXP.TY = DN_INDEXED		then CODE_INDEXED ( EXP );
 
-    elsif EXP.TY = DN_FUNCTION_CALL then
-      return CODE_FUNCTION_CALL( EXP );
+    elsif EXP.TY = DN_FUNCTION_CALL	then CODE_FUNCTION_CALL( EXP );
 
-    elsif EXP.TY = DN_USED_OP then
-      return CODE_USED_OP( EXP );
+    elsif EXP.TY = DN_USED_OP		then CODE_USED_OP( EXP );
 
-    elsif EXP.TY = DN_USED_CHAR
-    then
-      return CODE_USED_CHAR( EXP );
-
-
+    elsif EXP.TY = DN_USED_CHAR	then CODE_USED_CHAR( EXP );
 
 -- elsif EXP.TY in CLASS_EXP_EXP
 --     then
 --       return CODE_EXP_EXP( EXP );
 
     end if;
-    return NO_OPERAND;
 
   end	CODE_EXP;
 	--====--
 
 
 				--------------------
-  function			CODE_NUMERIC_LITERAL	( NUMERIC_LITERAL :TREE )	return OPERAND_REF
+  procedure			CODE_NUMERIC_LITERAL	( NUMERIC_LITERAL :TREE )
   is
     VAL	: TREE	:= D( SM_VALUE, NUMERIC_LITERAL );
   begin
-    if VAL.PT = HI and then VAl.NOTY = DN_NUM_VAL then
-      declare
-        OPER	: OPERAND_REF	:= CODI.LOAD_IMM( DI( SM_VALUE, NUMERIC_LITERAL ) );
-      begin
-        return OPER;
-      end;
-    elsif VAL.TY = DN_REAL_VAL then
-      null;			-- A FAIRE
+    if VAL.PT = HI and then VAl.NOTY = DN_NUM_VAL
+    then
+      PUT_LINE( tab & "LDI" & tab & INTEGER'IMAGE( DI( SM_VALUE, NUMERIC_LITERAL ) ) );
+
+    elsif VAL.TY = DN_REAL_VAL
+    then
+      PUT_LINE( ';' & tab & "CODE_GEN-EXPRESSIONS.CODE_NUMERIC_LITERAL : DN_REAL_VAL (TODO)" );
+
     end if;
-    return NO_OPERAND;
 
   end	CODE_NUMERIC_LITERAL;
 	--------------------
 
 
 				-------------------
-  function			CODE_USED_OBJECT_ID		( USED_OBJECT_ID :TREE )	return OPERAND_REF
+  procedure			CODE_USED_OBJECT_ID		( USED_OBJECT_ID :TREE )
   is
     DEFN		: TREE		:= D( SM_DEFN, USED_OBJECT_ID ) ;
   begin
     case DEFN.TY is
-    when DN_CONSTANT_ID | DN_VARIABLE_ID	=> return CODE_VC_ID( DEFN );
-    when DN_ITERATION_ID			=> return LOAD_MEM( DEFN );
-    when DN_ENUMERATION_ID			=> return LOAD_IMM( DI( SM_REP, DEFN ) );
-    when DN_CHARACTER_ID			=> return LOAD_IMM( DI( SM_REP, DEFN ) );
+    when DN_CONSTANT_ID | DN_VARIABLE_ID	=> CODE_VC_ID( DEFN );
+    when DN_ITERATION_ID			=> LOAD_MEM( DEFN );
+    when DN_ENUMERATION_ID | DN_CHARACTER_ID	=> PUT_LINE( ASCII.HT & "LDI" & ASCII.HT & INTEGER'IMAGE( DI( SM_REP, DEFN ) ) );
 --    when IN_ID | IN_OUT_ID | OUT_ID		=> CODE_PRM_ID( DEFN );
     when others => raise PROGRAM_ERROR;
     end case;
@@ -92,24 +76,28 @@ is
 
 
 				----------
-  function			CODE_VC_ID		( CONSTANT_ID :TREE )	return OPERAND_REF
+  procedure			CODE_VC_ID		( CONSTANT_ID :TREE )
   is
     CST_TYPE	: TREE	:= D( SM_OBJ_TYPE, CONSTANT_ID );
   begin
     case CST_TYPE.TY is
     when DN_ARRAY => null;
-    when DN_INTEGER | DN_ACCESS | DN_ENUMERATION => return LOAD_MEM( CONSTANT_ID );
-    when others =>
---put_line( "CODE_VC_ID ERR " & NODE_NAME'IMAGE( CST_TYPE.TY ) );
+    when DN_INTEGER | DN_ACCESS | DN_ENUMERATION
+    =>
+      LOAD_MEM( CONSTANT_ID );
+--      PUT_LINE( tab & "LDW" & ' ' & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & tab & PRINT_NAME( D(LX_SYMREP, CONSTANT_ID ) ) & "_disp" );
+    when others
+    =>
+      PUT_LINE( ';' & tab & "CODE_VC_ID ERROR " & NODE_NAME'IMAGE( CST_TYPE.TY ) );
       raise PROGRAM_ERROR;
     end case;
-    return NO_OPERAND;
+
   end	CODE_VC_ID;
 	----------
 
 
 				------------------
-  function			CODE_FUNCTION_CALL		( FUNCTION_CALL :TREE )	return OPERAND_REF
+  procedure			CODE_FUNCTION_CALL		( FUNCTION_CALL :TREE )
   is
     NAME		: TREE		:= D( AS_NAME,		FUNCTION_CALL );
     PARAMS	: TREE		:= D( SM_NORMALIZED_PARAM_S,	FUNCTION_CALL );
@@ -121,29 +109,25 @@ is
     if DEFN.TY = DN_BLTN_OPERATOR_ID then
       declare
         OP_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, DEFN ) );
-        X1, X2	: OPERAND_REF	:= NO_OPERAND;
+        PRM_S	: SEQ_TYPE	:= LIST( PARAMS );
+        PRM	: TREE;
       begin
-        if OP_STR = """+""" then
-
-	declare
-	  PRM_S	: SEQ_TYPE	:= LIST( PARAMS );
-	  PRM	: TREE;
-	begin
---      while not IS_EMPTY( PRM_S ) loop
-	  POP( PRM_S, PRM );
-	  X1 := CODE_EXP( PRM );
-	  POP( PRM_S, PRM );
-	  X2 := CODE_EXP( PRM );
-if not IS_EMPTY( PRM_S ) then put_line(  "PARAM NUM 3 !!" ); end if;
---      end loop;
-	end;
-
-          OPER := CODI.ARG2_OP( ADD, X1, X2 );
---put_line( "CODE_FUNCTION_CALL CALL + " & NODE_NAME'IMAGE( DEFN.TY ) & " " & OP_STR );
-        end if;
+        POP( PRM_S, PRM );
+        CODE_EXP( PRM );
+        if IS_EMPTY( PRM_S ) then goto UNARY; end if;
+        POP( PRM_S, PRM );
+        CODE_EXP( PRM );
+        if OP_STR = """+""" then  PUT_LINE( ASCII.HT & "ADD" ); end if;
+        if OP_STR = """-""" then  PUT_LINE( ASCII.HT & "SUB" ); end if;
+        if OP_STR = """*""" then  PUT_LINE( ASCII.HT & "MUL" ); end if;
+        if OP_STR = """/""" then  PUT_LINE( ASCII.HT & "DIV" ); end if;
+        return;
+<<UNARY>>
+        if OP_STR = """-""" then PUT_LINE( ASCII.HT & "NEG" ); end if;
       end;
+
     end if;
-    return OPER;
+
   end	CODE_FUNCTION_CALL;
 	------------------
 
@@ -158,10 +142,9 @@ if not IS_EMPTY( PRM_S ) then put_line(  "PARAM NUM 3 !!" ); end if;
       procedure INDEX ( EXP_SEQ :SEQ_TYPE ) is
         EXP_S	: SEQ_TYPE	:= EXP_SEQ;
         EXP	: TREE;
-        OPER	: OPERAND_REF;
       begin
         POP( EXP_S, EXP );
-        OPER := CODE_EXP( EXP );
+        CODE_EXP( EXP );
         if IS_EMPTY( EXP_S ) then
 	EMIT ( AR2,		COMMENT => "ADRESSE POUR LE DERNIER INDICE (RAPIDE)" );
         else
@@ -193,41 +176,38 @@ if not IS_EMPTY( PRM_S ) then put_line(  "PARAM NUM 3 !!" ); end if;
 
 
 				--------------
-  function			CODE_USED_NAME		( USED_NAME :TREE )		RETURN OPERAND_REF
+  procedure			CODE_USED_NAME		( USED_NAME :TREE )
   is
   begin
 
-    if USED_NAME.TY = DN_USED_OP then
-      return CODE_USED_OP ( USED_NAME );
+    if USED_NAME.TY = DN_USED_OP
+    then CODE_USED_OP ( USED_NAME );
 
-    elsif USED_NAME.TY = DN_USED_NAME_ID then
-      CODE_USED_NAME_ID ( USED_NAME );
+    elsif USED_NAME.TY = DN_USED_NAME_ID
+    then CODE_USED_NAME_ID ( USED_NAME );
 
     end if;
-    return NO_OPERAND;
   end	CODE_USED_NAME;
 	--------------
 
 
 				------------
-  function			CODE_USED_OP		( USED_OP :TREE )		RETURN OPERAND_REF
+  procedure			CODE_USED_OP		( USED_OP :TREE )
   is
     DEFN		: TREE		:= D( SM_DEFN, USED_OP ) ;
     SYM		: TREE		:= D( LX_SYMREP, DEFN );
   begin
-    put_line( "used op " & PRINT_NAME( SYM ) );
-    return NO_OPERAND;
+    put_line( "; used op " & PRINT_NAME( SYM ) );
   end	CODE_USED_OP;
 	------------
 
 
 
 				--------------
-  function			CODE_USED_CHAR		( USED_CHAR :TREE )		return OPERAND_REF
+  procedure			CODE_USED_CHAR		( USED_CHAR :TREE )
   is
-    OPER		: OPERAND_REF	:= CODI.LOAD_IMM( DI( SM_VALUE, USED_CHAR ) );
   begin
-    return OPER;
+    PUT_LINE( tab & "LDI" & tab & INTEGER'IMAGE( DI( SM_VALUE, USED_CHAR ) ) );
   end	CODE_USED_CHAR;
 	--------------
 
@@ -244,14 +224,14 @@ if not IS_EMPTY( PRM_S ) then put_line(  "PARAM NUM 3 !!" ); end if;
       if DEFN.TY = DN_EXCEPTION_ID then
         declare
 	LABEL	: TREE := D( CD_LABEL, DEFN );
-	LBL	: LABEL_TYPE;
+--	LBL	: LABEL_TYPE;
         begin
-	if LABEL.TY /= DN_NUM_VAL then
-	  LBL := NEW_LABEL;
-	  DI( CD_LABEL, DEFN, INTEGER( LBL ) );
-	  EMIT( EXL, LBL, S=> PRINT_NAME( SYMREP ),
-			COMMENT=> "NUM D EXCEPTION EXTERNE ATTRIBUE SUR USED_NAME_ID" );
-	end if;
+--	if LABEL.TY /= DN_NUM_VAL then
+--	  LBL := NEW_LABEL;
+--	  DI( CD_LABEL, DEFN, INTEGER( LBL ) );
+--	  EMIT( EXL, LBL, S=> PRINT_NAME( SYMREP ),
+--			COMMENT=> "NUM D EXCEPTION EXTERNE ATTRIBUE SUR USED_NAME_ID" );
+--	end if;
 	EMIT( DPL, I,	COMMENT=> "CODE D EXCEPTION EMPILE" );
 	EMIT( LDC, I, DI( CD_LABEL, DEFN ),
 			COMMENT=> "EXCEPTION " & PRINT_NAME ( SYMREP ));
@@ -263,26 +243,28 @@ if not IS_EMPTY( PRM_S ) then put_line(  "PARAM NUM 3 !!" ); end if;
 	declare
 	  PACKAGE_SPEC	: TREE	:= D( SM_SPEC, DEFN );
 	begin
-	  EMIT( RFP, CODI.CUR_COMP_UNIT, S=> PRINT_NAME( SYMREP ) );
+--	  EMIT( RFP, CODI.CUR_COMP_UNIT, S=> PRINT_NAME( SYMREP ) );
+	  PUT_LINE( "; RFP" & PRINT_NAME( SYMREP ) );
 	  CODI.GENERATE_CODE := FALSE;
 	  DB( CD_COMPILED, DEFN, TRUE );
 	  DECLARATIONS.CODE_DECL_S( D( AS_DECL_S1, PACKAGE_SPEC ) );
 	end;
         end if;
-        CODI.CUR_COMP_UNIT := CUR_COMP_UNIT + 1;
+--        CODI.CUR_COMP_UNIT := CUR_COMP_UNIT + 1;
 
       elsif DEFN.TY = DN_PROCEDURE_ID then
         if not DB( CD_COMPILED, DEFN ) then
 	declare
-	  PROC_LBL	: LABEL_TYPE	:= NEW_LABEL;
+	  PROC_LBL	:constant STRING	:= NEW_LABEL;
 	begin
 	  CODI.GENERATE_CODE := TRUE;
 	  EMIT( RFP, INTEGER( 0 ), S=> PRINT_NAME ( SYMREP ) );
-	  DI  ( CD_LABEL,      DEFN, INTEGER ( PROC_LBL ) );
+--	  DI  ( CD_LABEL,      DEFN, INTEGER ( PROC_LBL ) );
 	  DI  ( CD_LEVEL,      DEFN, 1 );
 	  DI  ( CD_PARAM_SIZE, DEFN, 0 );
 	  DB  ( CD_COMPILED,   DEFN, TRUE );
-	  EMIT( RFL, PROC_LBL );
+PUT_LINE( "; RFP" & tab & PROC_LBL );
+--	  EMIT( RFL, PROC_LBL );
 	end;
         end if;
       end if;
@@ -293,24 +275,23 @@ if not IS_EMPTY( PRM_S ) then put_line(  "PARAM NUM 3 !!" ); end if;
 
 
 				-------------
-  function			CODE_NAME_EXP		( NAME_EXP :TREE )	return OPERAND_REF
+  procedure			CODE_NAME_EXP		( NAME_EXP :TREE )
   is
   begin
 
     if NAME_EXP.TY = DN_INDEXED then
       CODE_INDEXED ( NAME_EXP );
 
-    elsif NAME_EXP.TY = DN_FUNCTION_CALL then
-      return CODE_FUNCTION_CALL( NAME_EXP );
+    elsif NAME_EXP.TY = DN_FUNCTION_CALL
+    then CODE_FUNCTION_CALL( NAME_EXP );
 
-    elsif NAME_EXP.TY = DN_SLICE then
-      CODE_SLICE ( NAME_EXP );
+    elsif NAME_EXP.TY = DN_SLICE
+    then CODE_SLICE ( NAME_EXP );
 
-    elsif NAME_EXP.TY = DN_ALL then
-      CODE_ALL ( NAME_EXP );
+    elsif NAME_EXP.TY = DN_ALL
+    then CODE_ALL ( NAME_EXP );
 
     end if;
-    return NO_OPERAND;
   end	CODE_NAME_EXP;
 	-------------
 
@@ -337,58 +318,51 @@ if not IS_EMPTY( PRM_S ) then put_line(  "PARAM NUM 3 !!" ); end if;
 
 
 				------------
-  function			CODE_EXP_EXP		( EXP_EXP :TREE )		return OPERAND_REF
+  procedure			CODE_EXP_EXP		( EXP_EXP :TREE )
   is
   begin
 
     if EXP_EXP.TY in CLASS_EXP_VAL
-    then
-      return CODE_EXP_VAL ( EXP_EXP );
+    then CODE_EXP_VAL ( EXP_EXP );
 
     elsif EXP_EXP.TY in CLASS_AGG_EXP
-    then
-      CODE_AGG_EXP ( EXP_EXP );
+    then CODE_AGG_EXP ( EXP_EXP );
 
     elsif EXP_EXP.TY = DN_QUALIFIED_ALLOCATOR
-    then
-      CODE_QUALIFIED_ALLOCATOR ( EXP_EXP );
+    then CODE_QUALIFIED_ALLOCATOR ( EXP_EXP );
 
     elsif EXP_EXP.TY = DN_SUBTYPE_ALLOCATOR
-    then
-      CODE_SUBTYPE_ALLOCATOR ( EXP_EXP );
+    then CODE_SUBTYPE_ALLOCATOR ( EXP_EXP );
 
     end if;
-    return NO_OPERAND;
 
   end	CODE_EXP_EXP;
 	------------
 
 
 				------------
-  function			CODE_EXP_VAL		( EXP_VAL :TREE )		return OPERAND_REF
+  procedure			CODE_EXP_VAL		( EXP_VAL :TREE )
   is
   begin
 
     if EXP_VAL.TY in CLASS_EXP_VAL_EXP
-    then
-      return CODE_EXP_VAL_EXP( EXP_VAL );
+    then CODE_EXP_VAL_EXP( EXP_VAL );
 
 --    elsif EXP_VAL.TY = DN_NUMERIC_LITERAL then
 --      return CODE_NUMERIC_LITERAL( EXP_VAL );
 
-    elsif EXP_VAL.TY = DN_NULL_ACCESS then
-      CODE_NULL_ACCESS( EXP_VAL );
+    elsif EXP_VAL.TY = DN_NULL_ACCESS
+    then CODE_NULL_ACCESS( EXP_VAL );
 
-    elsif EXP_VAL.TY = DN_SHORT_CIRCUIT then
-      CODE_SHORT_CIRCUIT( EXP_VAL );
+    elsif EXP_VAL.TY = DN_SHORT_CIRCUIT
+    then CODE_SHORT_CIRCUIT( EXP_VAL );
 
     end if;
-    return NO_OPERAND;
   end	CODE_EXP_VAL;
 	------------
 
 				----------------
-  function			CODE_EXP_VAL_EXP		( EXP_VAL_EXP :TREE )	return OPERAND_REF
+  procedure			CODE_EXP_VAL_EXP		( EXP_VAL_EXP :TREE )
   is
   begin
 
@@ -402,7 +376,6 @@ if not IS_EMPTY( PRM_S ) then put_line(  "PARAM NUM 3 !!" ); end if;
 --      return CODE_PARENTHESIZED( EXP_VAL_EXP );
 
     end if;
-    return NO_OPERAND;
 
   end	CODE_EXP_VAL_EXP;
 	----------------

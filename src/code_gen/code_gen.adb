@@ -95,8 +95,8 @@ is
   procedure CODE_LABEL_ID ( LABEL_ID :TREE );
   procedure CODE_OBJECT ( OBJECT :TREE );
   procedure CODE_ADRESSE ( ADRESSE :TREE );
-  procedure CODE_TEST_CLAUSE ( TEST_CLAUSE :TREE );
-  procedure CODE_COND_CLAUSE ( COND_CLAUSE :TREE );
+  procedure CODE_TEST_CLAUSE ( TEST_CLAUSE :TREE; LBL :STRING );
+  procedure CODE_COND_CLAUSE ( COND_CLAUSE :TREE; AFTER_IF_LBL :STRING );
   procedure CODE_NON_TASK_NAME ( NON_TASK_NAME :TREE );
   procedure CODE_SUBPROG_PACK_NAME ( SUBPROG_PACK_NAME :TREE );
   procedure CODE_SUBPROG_NAME ( SUBPROG_NAME :TREE );
@@ -116,8 +116,8 @@ is
   procedure CODE_TASK_BODY_ID ( TASK_BODY_ID :TREE );
   procedure CODE_ENTRY_ID ( ENTRY_ID :TREE );
   procedure CODE_ENTRY_CALL ( ENTRY_CALL :TREE );
-  procedure CODE_TEST_CLAUSE_ELEM ( TEST_CLAUSE_ELEM :TREE );
-  procedure CODE_TEST_CLAUSE_ELEM_S ( TEST_CLAUSE_ELEM_S :TREE );
+  procedure CODE_TEST_CLAUSE_ELEM ( TEST_CLAUSE_ELEM :TREE; LBL :STRING );
+  procedure CODE_TEST_CLAUSE_ELEM_S ( TEST_CLAUSE_ELEM_S :TREE; LBL :STRING );
   procedure CODE_SELECT_ALTERNATIVE ( SELECT_ALTERNATIVE :TREE );
   procedure CODE_SELECT_ALT_PRAGMA ( SELECT_ALT_PRAGMA :TREE );
   procedure CODE_NAME_S ( NAME_S :TREE );
@@ -132,20 +132,20 @@ is
 				-----------
   is
 
-    function  CODE_EXP		( EXP		:TREE )		return OPERAND_REF;
+    procedure CODE_EXP		( EXP		:TREE );
     procedure CODE_INDEXED		( INDEXED		:TREE );
 
 
   private
 
-    function  CODE_EXP_EXP		( EXP_EXP		:TREE )		return OPERAND_REF;
-    function  CODE_VC_ID		( CONSTANT_ID :TREE )		return OPERAND_REF;
-    function  CODE_NAME_EXP		( NAME_EXP	:TREE )		return OPERAND_REF;
-    function  CODE_FUNCTION_CALL	( FUNCTION_CALL	:TREE )		return OPERAND_REF;
-    function  CODE_USED_NAME		( USED_NAME	:TREE )		return OPERAND_REF;
-    function  CODE_USED_OP		( USED_OP		:TREE )		return OPERAND_REF;
+    procedure CODE_EXP_EXP		( EXP_EXP		:TREE );
+    procedure CODE_VC_ID		( CONSTANT_ID	:TREE );
+    procedure CODE_NAME_EXP		( NAME_EXP	:TREE );
+    procedure CODE_FUNCTION_CALL	( FUNCTION_CALL	:TREE );
+    procedure CODE_USED_NAME		( USED_NAME	:TREE );
+    procedure CODE_USED_OP		( USED_OP		:TREE );
     procedure CODE_USED_NAME_ID	( USED_NAME_ID	:TREE );
-    function  CODE_USED_OBJECT_ID	( USED_OBJECT_ID	:TREE )		return OPERAND_REF;
+    procedure CODE_USED_OBJECT_ID	( USED_OBJECT_ID	:TREE );
     procedure CODE_SLICE		( SLICE		:TREE );
     procedure CODE_ALL		( ADA_ALL		:TREE );
     procedure CODE_AGGREGATE		( AGGREGATE	:TREE );
@@ -153,10 +153,10 @@ is
     procedure CODE_MEMBERSHIP		( MEMBERSHIP	:TREE );
     procedure CODE_RANGE_MEMBERSHIP	( RANGE_MEMBERSHIP	:TREE );
     procedure CODE_TYPE_MEMBERSHIP	( TYPE_MEMBERSHIP	:TREE );
-    function  CODE_EXP_VAL		( EXP_VAL		:TREE )		return OPERAND_REF;
-    function  CODE_EXP_VAL_EXP	( EXP_VAL_EXP	:TREE )		return OPERAND_REF;
+    procedure CODE_EXP_VAL		( EXP_VAL		:TREE );
+    procedure CODE_EXP_VAL_EXP	( EXP_VAL_EXP	:TREE );
     procedure CODE_AGG_EXP		( AGG_EXP		:TREE );
-    function  CODE_NUMERIC_LITERAL	( NUMERIC_LITERAL	:TREE )		return OPERAND_REF;
+    procedure CODE_NUMERIC_LITERAL	( NUMERIC_LITERAL	:TREE );
     procedure CODE_STRING_LITERAL	( STRING_LITERAL	:TREE );
     procedure CODE_NULL_ACCESS	( NULL_ACCESS	:TREE );
     procedure CODE_QUAL_CONV		( QUAL_CONV	:TREE );
@@ -165,7 +165,7 @@ is
     procedure CODE_QUALIFIED_ALLOCATOR	( QUALIFIED_ALLOCATOR:TREE );
     procedure CODE_SUBTYPE_ALLOCATOR	( SUBTYPE_ALLOCATOR :TREE );
 
-    function  CODE_USED_CHAR		( USED_CHAR :TREE )			return OPERAND_REF;
+    procedure CODE_USED_CHAR		( USED_CHAR :TREE );
 
 	-----------
   end	EXPRESSIONS;
@@ -597,21 +597,21 @@ is
   procedure CODE_ALTERNATIVE ( ALTERNATIVE :TREE ) is
   begin
     declare
-      SKIP_LBL		: LABEL_TYPE	:= NEW_LABEL;
-      HANDLER_BEGIN_LBL	: LABEL_TYPE	:= NEW_LABEL;
+      SKIP_LBL		:constant STRING	:= NEW_LABEL;
+      HANDLER_BEGIN_LBL	:constant STRING	:= NEW_LABEL;
       CHOICE_S		: TREE		:= D( AS_CHOICE_S, ALTERNATIVE );
     begin
-      DI( CD_LABEL, CHOICE_S, INTEGER ( HANDLER_BEGIN_LBL ) );
+--      DI( CD_LABEL, CHOICE_S, INTEGER ( HANDLER_BEGIN_LBL ) );
       CODE_CHOICE_S( CHOICE_S );
       if not CHOICE_OTHERS_FLAG
       then
-        EMIT( JMP, SKIP_LBL,		COMMENT=> "SKIP ALTERNATIVE SUIVANTE"  );
-        WRITE_LABEL( HANDLER_BEGIN_LBL,	COMMENT=> "LABEL DEBUT INSTRUCTIONS" );
+        PUT_LINE( tab & "BRA" & tab & SKIP_LBL );
+        PUT_LINE( HANDLER_BEGIN_LBL & ':' );
       end if;
       INSTRUCTIONS.CODE_STM_S( D( AS_STM_S, ALTERNATIVE ) );
       if not CHOICE_OTHERS_FLAG
       then
-        WRITE_LABEL( SKIP_LBL,	COMMENT=> "ALTERNATIVE SUIVANTE" );
+        PUT_LINE( SKIP_LBL & ':' );
       end if;
     end;
   end;
@@ -657,9 +657,8 @@ is
 
   --|-------------------------------------------------------------------------------------------
   procedure CODE_CHOICE_EXP ( CHOICE_EXP :TREE ) is
-    OPER	: OPERAND_REF;
   begin
-    OPER := EXPRESSIONS.CODE_EXP( D( AS_EXP, CHOICE_EXP ) );
+    EXPRESSIONS.CODE_EXP( D( AS_EXP, CHOICE_EXP ) );
   end;
 
   --|-------------------------------------------------------------------------------------------
@@ -916,27 +915,28 @@ is
     declare
       TYPE_ID		: TREE		:= D( AS_SOURCE_NAME, TYPE_DECL );
       INTEGER_SPEC		: TREE		:= D( SM_TYPE_SPEC, TYPE_ID );
-      LOWER		: OFFSET_VAL;
-      UPPER		: OFFSET_VAL;
+      LOWER_STR		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, D( AS_SOURCE_NAME, TYPE_DECL ) ) ) & "_lower_disp";
+      UPPER_STR		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, D( AS_SOURCE_NAME, TYPE_DECL ) ) ) & "_upper_disp";
       INT_RANGE		: TREE		:= D( AS_CONSTRAINT, INTEGER_DEF );
       EXP_BORNE		: TREE;
-      OPER_1, OPER_2	: OPERAND_REF;
     begin
-      ALIGN( INTG_AL );
-      LOWER := - CODI.OFFSET_ACT;
-      ALTER_OFFSET( INTG_SIZE );
-      UPPER := - CODI.OFFSET_ACT;
-      ALTER_OFFSET( INTG_SIZE );
-      DI( CD_OFFSET,    INTEGER_SPEC, LOWER );
+      PUT_LINE( "  virtual VAR" );
+      PUT_LINE( "    align_d" );
+      PUT_LINE( "    " & LOWER_STR & " = $" );
+      PUT_LINE( "    dd" & " ?" );
+      PUT_LINE( "    " & UPPER_STR & " = $" );
+      PUT_LINE( "    dd" & " ?" );
+      PUT_LINE( "  end virtual" );
+
       DI( CD_LEVEL,     INTEGER_SPEC, INTEGER( CODI.CUR_LEVEL ) );
-      DI( CD_COMP_UNIT, INTEGER_SPEC, CUR_COMP_UNIT );
+
       DB( CD_COMPILED,  INTEGER_SPEC, TRUE );
       EXP_BORNE := D( AS_EXP1, INT_RANGE );
-      OPER_1 := EXPRESSIONS.CODE_EXP( EXP_BORNE );
-      STORE( INTEGER_SPEC, WORD_TYP, OPER_1 );
+      EXPRESSIONS.CODE_EXP( EXP_BORNE );
+      PUT_LINE( tab & "ST" & 'd' & ' ' & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & ',' & tab & LOWER_STR );
       EXP_BORNE := D( AS_EXP2, INT_RANGE );
-      OPER_2 := EXPRESSIONS.CODE_EXP( EXP_BORNE );
-      STORE( INTEGER_SPEC, WORD_TYP, OPER_2 );
+      EXPRESSIONS.CODE_EXP( EXP_BORNE );
+      PUT_LINE( tab & "ST" & 'd' & ' ' & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & ',' & tab & UPPER_STR );
     end;
   end;
 
@@ -1125,14 +1125,14 @@ is
 
 
   procedure CODE_OBJECT ( OBJECT :TREE ) is
-    OPER		: OPERAND_REF;
   begin
       case OBJECT.TY is
        when DN_VARIABLE_ID =>
-          OPER := LOAD_ADR( OBJECT );
+         LOAD_ADR( OBJECT );
        when DN_IN_ID =>
-         EMIT ( PLA, INTEGER( LEVEL_NUM( DI ( CD_LEVEL, OBJECT ) ) - CUR_LEVEL ), DI ( CD_OFFSET, OBJECT ),
-                      "EMPILE ADRESSE DE PARAM IN" );
+PUT_LINE( tab & "LDA " & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, OBJECT ) ) );
+--         EMIT ( PLA, INTEGER( LEVEL_NUM( DI ( CD_LEVEL, OBJECT ) ) - CUR_LEVEL ), DI ( CD_OFFSET, OBJECT ),
+--                      "EMPILE ADRESSE DE PARAM IN" );
        when DN_IN_OUT_ID | DN_OUT_ID =>
          EMIT ( PLA, INTEGER( LEVEL_NUM( DI ( CD_LEVEL, OBJECT ) ) - CUR_LEVEL), DI ( CD_VAL_OFFSET, OBJECT ),
                       "EMPILE ADRESSE PARAM IN_OUT/OUT" );
@@ -1169,11 +1169,11 @@ is
 
 
 
-  procedure CODE_TEST_CLAUSE ( TEST_CLAUSE :TREE ) is
+  procedure CODE_TEST_CLAUSE ( TEST_CLAUSE :TREE; LBL :STRING ) is
   begin
 
     if TEST_CLAUSE.TY = DN_COND_CLAUSE then
-      CODE_COND_CLAUSE ( TEST_CLAUSE );
+      CODE_COND_CLAUSE ( TEST_CLAUSE, LBL );
 
     elsif TEST_CLAUSE.TY = DN_SELECT_ALTERNATIVE then
       CODE_SELECT_ALTERNATIVE ( TEST_CLAUSE );
@@ -1183,19 +1183,17 @@ is
 
 
 
-  procedure CODE_COND_CLAUSE ( COND_CLAUSE :TREE ) is
+  procedure CODE_COND_CLAUSE ( COND_CLAUSE :TREE; AFTER_IF_LBL :STRING ) is
   begin
     declare
       EXP			: TREE		:= D( AS_EXP, COND_CLAUSE );
-      NEXT_CLAUSE_LBL	: LABEL_TYPE;
-      OPER		: OPERAND_REF;
+      NEXT_CLAUSE_LBL	:constant STRING	:= NEW_LABEL;
     begin
-      OPER := EXPRESSIONS.CODE_EXP ( EXP );
-      NEXT_CLAUSE_LBL := NEW_LABEL;
-      EMIT ( JMPF, NEXT_CLAUSE_LBL, COMMENT=> "NON CONDITION SAUT CLAUSE SUIVANTE" );
+      EXPRESSIONS.CODE_EXP ( EXP );
+      PUT_LINE( tab & "BRZ" & tab & NEXT_CLAUSE_LBL );
       INSTRUCTIONS.CODE_STM_S ( D ( AS_STM_S, COND_CLAUSE ) );
-      EMIT ( JMP, CODI.AFTER_IF_LBL, COMMENT=> "SAUT END IF" );
-      WRITE_LABEL ( NEXT_CLAUSE_LBL, COMMENT=> "LBL CONDITION SUIVANTE" );
+      PUT_LINE( tab & "BRZ" & tab & AFTER_IF_LBL );
+      PUT_LINE( NEXT_CLAUSE_LBL & ':' );
     end;
   end;
 
@@ -1365,11 +1363,11 @@ is
 
 
 
-  procedure CODE_TEST_CLAUSE_ELEM ( TEST_CLAUSE_ELEM :TREE ) is
+  procedure CODE_TEST_CLAUSE_ELEM ( TEST_CLAUSE_ELEM :TREE; LBL :STRING ) is
   begin
 
     if TEST_CLAUSE_ELEM.TY in CLASS_TEST_CLAUSE then
-      CODE_TEST_CLAUSE ( TEST_CLAUSE_ELEM );
+      CODE_TEST_CLAUSE ( TEST_CLAUSE_ELEM, LBL );
 
     elsif TEST_CLAUSE_ELEM.TY = DN_SELECT_ALT_PRAGMA then
       CODE_SELECT_ALT_PRAGMA ( TEST_CLAUSE_ELEM );
@@ -1379,16 +1377,16 @@ is
 
 
 
-  procedure CODE_TEST_CLAUSE_ELEM_S ( TEST_CLAUSE_ELEM_S :TREE ) is
+  procedure CODE_TEST_CLAUSE_ELEM_S ( TEST_CLAUSE_ELEM_S :TREE; LBL :STRING ) is
   begin
     declare
       TEST_CLAUSE_ELEM_SEQ : SEQ_TYPE := LIST ( TEST_CLAUSE_ELEM_S );
       TEST_CLAUSE_ELEM : TREE;
     begin
       while not IS_EMPTY ( TEST_CLAUSE_ELEM_SEQ ) loop
-        POP ( TEST_CLAUSE_ELEM_SEQ, TEST_CLAUSE_ELEM );
-      CODE_TEST_CLAUSE_ELEM ( TEST_CLAUSE_ELEM );
-    end loop;
+        POP( TEST_CLAUSE_ELEM_SEQ, TEST_CLAUSE_ELEM );
+        CODE_TEST_CLAUSE_ELEM ( TEST_CLAUSE_ELEM, LBL );
+      end loop;
     end;
   end;
 
@@ -1460,11 +1458,12 @@ is
   procedure CODE_EXCEPTION_ID ( EXCEPTION_ID :TREE ) is
   begin
     declare
-      LBL : LABEL_TYPE := NEW_LABEL;
+      LBL :constant STRING := NEW_LABEL;
     begin
-      DI ( CD_LABEL, EXCEPTION_ID, INTEGER ( LBL ) );
-      EMIT ( EXL, LBL, S=> PRINT_NAME ( D ( LX_SYMREP, EXCEPTION_ID ) ),
-             COMMENT=> "NUMERO D EXCEPTION SUR DECLARATION" );
+--      DI ( CD_LABEL, EXCEPTION_ID, INTEGER ( LBL ) );
+PUT_LINE( "; EXL" & tab & LBL );
+--      EMIT ( EXL, LBL, S=> PRINT_NAME ( D ( LX_SYMREP, EXCEPTION_ID ) ),
+--             COMMENT=> "NUMERO D EXCEPTION SUR DECLARATION" );
     end;
   end;
 

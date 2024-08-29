@@ -9,8 +9,6 @@ is
   use OP_CODE_IO;
   use CODE_DATA_TYPE_IO;
  
-  DEBUG				: BOOLEAN	:= TRUE;
-
   INACTIVE :BOOLEAN renames TRUE;
 
   INT_LABEL	: LABEL_TYPE	:= 1;
@@ -102,9 +100,9 @@ is
 		JMPT => -4,	JMP  =>  0,	BXOR => -4,	XJP  => -4
 			);
   begin
-    TOP_ACT := TOP_ACT + STK_OP_DELTA( OC );
-    if TOP_MAX < TOP_ACT then TOP_MAX := TOP_ACT; end if;
-
+--    TOP_ACT := TOP_ACT + STK_OP_DELTA( OC );
+--    if TOP_MAX < TOP_ACT then TOP_MAX := TOP_ACT; end if;
+null;
   end	TRACK_STACK;
 	--=======--
 
@@ -500,10 +498,10 @@ is
     PUT( TRAP, 0, LOWER_CASE );
     PUT( ASCII.HT & STD_PROC'IMAGE ( P ) );
             
-    TOP_ACT := TOP_ACT + STK_STD_PROC_DELTA( P );
-    if TOP_MAX < TOP_ACT then
-      TOP_MAX := TOP_ACT;
-    end if;
+--    TOP_ACT := TOP_ACT + STK_STD_PROC_DELTA( P );
+--    if TOP_MAX < TOP_ACT then
+--      TOP_MAX := TOP_ACT;
+--    end if;
     EMIT_COMMENT( COMMENT ); 
     NEW_LINE;
 
@@ -531,16 +529,39 @@ is
 
 
 
-
 				--====--
   function			NEW_LABEL			return LABEL_TYPE
   is
+    LBL	: LABEL_TYPE	:= INT_LABEL;
   begin
     INT_LABEL := INT_LABEL + 1;
-    return INT_LABEL;
+    return LBL;
 
   end	NEW_LABEL;
 	--====--
+
+
+				--====--
+  function			NEW_LABEL			return STRING
+  is
+    LSTR	:constant STRING	:= LABEL_TYPE'IMAGE( INT_LABEL );
+  begin
+    INT_LABEL := INT_LABEL + 1;
+    return 'L' & LSTR( LSTR'FIRST+1 .. LSTR'LAST );
+
+  end	NEW_LABEL;
+	--====--
+
+
+				--=====--
+  function			LABEL_STR		( LBL : LABEL_TYPE )	return STRING
+  is
+    LSTR	:constant STRING	:= LABEL_TYPE'IMAGE( LBL );
+  begin
+    return 'L' & LSTR( LSTR'FIRST+1 .. LSTR'LAST );
+
+  end	LABEL_STR;
+	--=====--
 
 
 
@@ -578,17 +599,18 @@ is
   procedure			ALTER_OFFSET		( I :NATURAL )
   is
   begin
-    if CUR_LEVEL = 1 then
-      OFFSET_ACT := OFFSET_ACT + OFFSET_VAL( I );
-      if OFFSET_MAX < OFFSET_ACT then
-        OFFSET_MAX := OFFSET_ACT;
-      end if;
-    else
-      OFFSET_ACT := OFFSET_ACT - OFFSET_VAL( I );
-      if OFFSET_MAX > OFFSET_ACT then
-        OFFSET_MAX := OFFSET_ACT;
-      end if;
-    end if;
+null;
+--    if CUR_LEVEL = 1 then
+--      OFFSET_ACT := OFFSET_ACT + OFFSET_VAL( I );
+--      if OFFSET_MAX < OFFSET_ACT then
+--        OFFSET_MAX := OFFSET_ACT;
+--      end if;
+--    else
+--      OFFSET_ACT := OFFSET_ACT - OFFSET_VAL( I );
+--      if OFFSET_MAX > OFFSET_ACT then
+--        OFFSET_MAX := OFFSET_ACT;
+--      end if;
+--    end if;
   exception
     when CONSTRAINT_ERROR => raise STATIC_OFFSET_OVERFLOW;
 
@@ -600,7 +622,7 @@ is
 				--===--
   procedure			 ALIGN			( AL :INTEGER )
   is
-    TMP	: OFFSET_VAL	:= OFFSET_ACT - AL + 1;
+--    TMP	: OFFSET_VAL	:= OFFSET_ACT - AL + 1;
   begin
 --    OFFSET_ACT := - TMP + TMP mod AL;
 null;
@@ -612,16 +634,16 @@ null;
 				--==========--
   procedure			PERFORM_RETURN		( ENCLOSING_BLOCK_BODY :TREE )
   is
-    LVBLBL		: LABEL_TYPE;
-    ENCLOSING_LEVEL		: LEVEL_NUM		:= LEVEL_NUM( DI( CD_LEVEL, ENCLOSING_BLOCK_BODY ) );
+--    LVBLBL		: LABEL_TYPE;
+--    ENCLOSING_LEVEL		: LEVEL_NUM		:= LEVEL_NUM( DI( CD_LEVEL, ENCLOSING_BLOCK_BODY ) );
   begin
-    if ENCLOSING_LEVEL /= CUR_LEVEL then
-      LVBLBL := NEW_LABEL;
-      EMIT( LVB, LVBLBL);
-      GEN_LBL_ASSIGNMENT( LVBLBL, INTEGER( CUR_LEVEL - ENCLOSING_LEVEL ) );
-    end if;
-    EMIT( JMP, LABEL_TYPE( DI( CD_RETURN_LABEL, ENCLOSING_BLOCK_BODY ) ) );
-
+--    if ENCLOSING_LEVEL /= CUR_LEVEL then
+--      LVBLBL := NEW_LABEL;
+--      EMIT( LVB, LVBLBL);
+--      GEN_LBL_ASSIGNMENT( LVBLBL, INTEGER( CUR_LEVEL - ENCLOSING_LEVEL ) );
+--    end if;
+--    EMIT( JMP, LABEL_TYPE( DI( CD_RETURN_LABEL, ENCLOSING_BLOCK_BODY ) ) );
+null;
   end	PERFORM_RETURN;
 	--==========--
 
@@ -634,13 +656,14 @@ null;
   begin
     case TYPE_SPEC.TY is
     when DN_ACCESS			=> return ADDR_SIZE;
-    when DN_CONSTRAINED_ARRAY		=> return 2 * ADDR_SIZE;
+    when DN_ARRAY			=> return 2 * ADDR_SIZE;
     when DN_ENUMERATION | DN_INTEGER	=> return INTG_SIZE;
+    when DN_L_PRIVATE		=> return TYPE_SIZE( D( SM_TYPE_SPEC, TYPE_SPEC ) );
     when others =>
-      PUT_LINE( "ERREUR TYPE_SIZE : TYPE_SPEC.TY ILLICITE " & NODE_NAME'IMAGE( TYPE_SPEC.TY ) );
-      raise PROGRAM_ERROR;
+      PUT_LINE( "CODAGE_INTERMEDIAIRE.TYPE_SIZE : TYPE_SPEC.TY ILLICITE " & NODE_NAME'IMAGE( TYPE_SPEC.TY ) );
+--      raise PROGRAM_ERROR;
     end case;
-
+    return 0;
   end	TYPE_SIZE;
 	--=====--
 
@@ -795,21 +818,21 @@ null;
   function			GET_SLO			( OBJECT	:TREE )	return SLO_LOC
   is
   begin
-    case OBJECT.TY is
-    when DN_IN | DN_IN_OUT_ID | DN_OUT_ID | DN_ITERATION_ID =>
-      return ( 0, LEVEL_NUM( DI( CD_LEVEL, OBJECT ) ), OFFSET_VAL( DI( CD_OFFSET, OBJECT ) ) );
+--    case OBJECT.TY is
+--    when DN_IN | DN_IN_OUT_ID | DN_OUT_ID | DN_ITERATION_ID =>
+--      return ( 0, LEVEL_NUM( DI( CD_LEVEL, OBJECT ) ), OFFSET_VAL( DI( CD_OFFSET, OBJECT ) ) );
          
-    when DN_INTEGER | DN_VARIABLE_ID =>
+--    when DN_INTEGER | DN_VARIABLE_ID =>
 
 -- if DEBUG then put_line( "get_slo LVL=" & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) ); end if;
 
-      return ( SEGMENT_NUM( DI( CD_COMP_UNIT, OBJECT ) ), LEVEL_NUM( DI( CD_LEVEL, OBJECT ) ), OFFSET_VAL( DI( CD_OFFSET, OBJECT ) ) );
+--      return ( SEGMENT_NUM( DI( CD_COMP_UNIT, OBJECT ) ), LEVEL_NUM( DI( CD_LEVEL, OBJECT ) ), OFFSET_VAL( DI( CD_OFFSET, OBJECT ) ) );
                   
-    when others =>
-      PUT_LINE ( "ERREUR GET_ULO : OBJECT.TY ILLICITE " & NODE_NAME'IMAGE( OBJECT.TY ) );
-      raise PROGRAM_ERROR;
-    end case;
-
+--    when others =>
+--      PUT_LINE ( "ERREUR GET_ULO : OBJECT.TY ILLICITE " & NODE_NAME'IMAGE( OBJECT.TY ) );
+--      raise PROGRAM_ERROR;
+--    end case;
+return (0,0,0);
   end	GET_SLO;
 	--===--
 
@@ -832,7 +855,8 @@ null;
   is
   begin
     if CONSTRAINED( TYPE_SPEC ) then
-      EMIT( LDC, I, TYPE_SIZE( TYPE_SPEC ), "LOAD TYPE SIZE" );
+      PUT_LINE( ASCII.HT & "LDI" & ASCII.HT &  INTEGER'IMAGE( TYPE_SIZE( TYPE_SPEC ) ) );
+
     else
       PUT_LINE( "ERREUR LOAD_TYPE_SIZE : TYPE_SPEC NON CONTRAINT" );
       raise PROGRAM_ERROR;
@@ -938,13 +962,14 @@ null;
 
 
 			--------------
-  function		OPER_TYPE_FROM	( SIZ :NATURAL ) return OPERAND_TYPE
+  function		OPER_TYPE_FROM	( DEFN :TREE ) return CHARACTER
   is
+    SIZ		: NATURAL		:= DI( CD_IMPL_SIZE, D( SM_OBJ_TYPE, DEFN ) );
   begin
-   if SIZ <= 8	then return BYTE_TYP;
-    elsif SIZ <= 16	then return HALF_TYP;
-    elsif SIZ <= 32	then return WORD_TYP;
-    elsif SIZ <= 64	then return LONG_TYP;
+   if SIZ <= 8	then return 'b';
+    elsif SIZ <= 16	then return 'w';
+    elsif SIZ <= 32	then return 'd';
+    elsif SIZ <= 64	then return 'q';
     else raise OPERAND_OVERFLOW;
     end if;
 
@@ -953,82 +978,48 @@ null;
 
 
 			--====--
-  function		LOAD_MEM		( DEFN :TREE )			return OPERAND_REF
+  procedure		LOAD_MEM		( DEFN :TREE )
   is
-    I_LOC		: INSTR_LOC	:= COMPTEUR_PROGRAMME;
-    SLO		: SLO_LOC		:= GET_SLO( DEFN );
-    SIZ		: NATURAL		:= DI( CD_IMPL_SIZE, D( SM_OBJ_TYPE, DEFN ) );
-    OPER_TYP	: OPERAND_TYPE	:= OPER_TYPE_FROM( SIZ );
-    MEM_REF_OPRND	: OPERAND_REC	:= ( MEM, INACTIVE, OPER_TYP, LOC => SLO, SIZ => SIZ );
+    SIZ_CHAR	: CHARACTER	:= OPER_TYPE_FROM( DEFN );
   begin
-    TABLE_INSTRUCTIONS( I_LOC ) := (  ARG0, LOAD, MEM_REF_OPRND  );
-
-    COMPTEUR_PROGRAMME := COMPTEUR_PROGRAMME + 1;
-
-    if DEBUG then
-      declare
-        DEFINING_ILOC_IMG	:constant STRING		:= INSTR_LOC'IMAGE( I_LOC );
-      begin
-        PUT_LINE( ASCII.HT & '%' & DEFINING_ILOC_IMG( 2..DEFINING_ILOC_IMG'LAST )
-		& " = LD:" & OPERAND_TYPE_IMAGE( OPER_TYP ) & ' ' & SLO_IMAGE( SLO ) 
-	    );
-      end;
-    end if;
-
-    return OPERAND_REF( I_LOC );
+      PUT_LINE( tab & "LD" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_disp" );
 
   end	LOAD_MEM;
 	--====--
 
 
 				--=--
-  procedure			STORE			( DEST_DEFN	:TREE;
-							  OTYPE		:OPERAND_TYPE;
-							  SRC_OPER	:OPERAND_REF )
+  procedure			STORE			( DEST_DEFN	:TREE )
   is
-    SLO		: SLO_LOC		:= GET_SLO( DEST_DEFN );
+    SIZ_CHAR	: CHARACTER	:= OPER_TYPE_FROM( DEST_DEFN );
   begin
-
-    if DEBUG then
-      declare
-        OPER_IMG	:constant STRING		:= OPERAND_REF'IMAGE( SRC_OPER );
-      begin
-        PUT( ASCII.HT & SLO_IMAGE( SLO ) 
-	   & " = ST:" & OPERAND_TYPE_IMAGE( OTYPE ) & " %" & OPER_IMG( 2..OPER_IMG'LAST ) );
-
-        NEW_LINE;
-      end;
-    end if;
-
-    COMPTEUR_PROGRAMME := COMPTEUR_PROGRAMME + 1;
+      PUT_LINE( tab & "ST" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEST_DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEST_DEFN ) ) & "_disp" );
 
   end	STORE; 
 	--=--
 	
 
 				--====--
-  function			LOAD_ADR			( DEFN :TREE )	return OPERAND_REF
+  procedure			LOAD_ADR			( DEFN :TREE )
   is
-    I_LOC		: INSTR_LOC	:= COMPTEUR_PROGRAMME;
-    SLO		: SLO_LOC		:= GET_SLO( DEFN );
-    MEM_REF_OPRND	: OPERAND_REC	:= ( MEM, INACTIVE, ADR_TYP, LOC => SLO, SIZ => ADDR_SIZE * 8 );
+--    I_LOC		: INSTR_LOC	:= COMPTEUR_PROGRAMME;
+--    SLO		: SLO_LOC		:= GET_SLO( DEFN );
+--    MEM_REF_OPRND	: OPERAND_REC	:= ( MEM, INACTIVE, ADR_TYP, LOC => SLO, SIZ => ADDR_SIZE * 8 );
   begin
-    TABLE_INSTRUCTIONS( I_LOC ) := (  ARG0, LEA, MEM_REF_OPRND  );
+--    TABLE_INSTRUCTIONS( I_LOC ) := (  ARG0, LEA, MEM_REF_OPRND  );
 
-    COMPTEUR_PROGRAMME := COMPTEUR_PROGRAMME + 1;
+--    COMPTEUR_PROGRAMME := COMPTEUR_PROGRAMME + 1;
 
-    if DEBUG then
-      declare
-        DEFINING_ILOC_IMG	:constant STRING		:= INSTR_LOC'IMAGE( I_LOC );
-      begin
-        PUT_LINE( ASCII.HT & '%' & DEFINING_ILOC_IMG( 2..DEFINING_ILOC_IMG'LAST )
-		& " = LA " & SLO_IMAGE( SLO )
-	    );
-      end;
-    end if;
-
-    return OPERAND_REF( I_LOC );
-
+--    if DEBUG then
+--      declare
+--        DEFINING_ILOC_IMG	:constant STRING		:= INSTR_LOC'IMAGE( I_LOC );
+--      begin
+--        PUT_LINE( ASCII.HT & '%' & DEFINING_ILOC_IMG( 2..DEFINING_ILOC_IMG'LAST )
+--		& " = LA " & SLO_IMAGE( SLO )
+--	    );
+--      end;
+--    end if;
+null;
   end	LOAD_ADR;
 	--====--
 

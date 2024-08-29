@@ -1,0 +1,79 @@
+
+include 'codi_x86_64.fas'
+
+	CALL	MODEL_2.elab
+
+;			procedure MODEL_2
+namespace MODEL_2
+	BRA	post			; inutile ici mais si mis sytématiquement
+elab:
+  virtual at 0				; offsets de locales apres FP
+    LOC::					; marqueur zone locales
+  end virtual
+	LINK 1,	loc_siz			; allocation (taille connue plus bas)
+
+  virtual LOC
+    align_q				; lieu d'une adresse
+    MSG_ptr_disp = $			; deplacement de l'adresse de chaine cte
+    dq ?
+  end virtual
+
+  postpone				; constante définie en fin
+    dd	1, 10				; first, last
+    MSG_ptr = $				; deviendra l'adresse
+    db	'Bonjour !', 10			; caracteres de la chaine constante
+  end postpone
+	LDI	MSG_ptr			; adresse des caractères de chaine
+	STa 1,	MSG_ptr_disp		; (FP1-MSG_ptr_disp) := MSG_ptr
+
+
+;-----------------------------------------------------------------------------------------------------------------------
+;			function INSIDE ( MSG ) return ERR
+namespace INSIDE
+  virtual at 16				; disp de parametres
+    MSG_		= $
+    rq 1
+    param_siz	= $-$$			; taille des parametres hormis le resultat
+    result	= $
+    rq 1
+  end virtual
+end namespace
+
+namespace INSIDE
+	BRA	post			; contournement par elab superieur
+elab:
+  virtual at 0				; offsets de locales apres FP
+    LOC::					; marqueur zone locales
+  end virtual
+	LINK 2,	loc_siz			; allocation (taille connue plus bas)
+
+  virtual LOC
+    loc_siz = $				; taille des locales
+  end virtual
+begin:
+	LDa 2,	-MSG_
+	PUT_STR
+	LDI	0			; noerr
+	STw 2,	-result			; resultat écrit comme 16 bits
+	UNLINK  2
+	RTD	param_siz
+post:
+end namespace
+;-----------------------------------------------------------------------------------------------------------------------
+
+  virtual LOC
+    loc_siz = $				; taille des locales
+  end virtual
+begin:
+	LDI	0			; place du resultat
+	LDa 1,	MSG_ptr_disp		; parametre
+	CALL	INSIDE.elab
+	UNLINK  1
+	RTD
+post:
+end namespace
+
+	SYSEXIT
+
+align_q
+

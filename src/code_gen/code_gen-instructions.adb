@@ -155,15 +155,11 @@ separate ( CODE_GEN )
 
   procedure			CODE_IF			( ADA_IF :TREE )
   is
+    AFTER_IF_LBL	:constant STRING	:= NEW_LABEL;
   begin
-    declare
-      OLD_AFTER_IF_LBL	: LABEL_TYPE	:= CODI.AFTER_IF_LBL;
-    begin
-      CODI.AFTER_IF_LBL := NEW_LABEL;
-      CODE_TEST_CLAUSE_ELEM_S ( D ( AS_TEST_CLAUSE_ELEM_S, ADA_IF ) );
-      WRITE_LABEL( CODI.AFTER_IF_LBL, COMMENT=> "ETIQUETTE END IF" );
-      CODI.AFTER_IF_LBL := OLD_AFTER_IF_LBL;
-    end;
+    CODE_TEST_CLAUSE_ELEM_S ( D ( AS_TEST_CLAUSE_ELEM_S, ADA_IF ), AFTER_IF_LBL );
+    PUT_LINE( AFTER_IF_LBL & ':' );
+
   end	CODE_IF;
 
 
@@ -197,30 +193,25 @@ separate ( CODE_GEN )
   is
   begin
     declare
-      OLD_LOOP_STM_S	: TREE		:= CODI.LOOP_STM_S;
-      OLD_BEFORE_LOOP_LBL	: LABEL_TYPE	:= CODI.BEFORE_LOOP_LBL;
-      OLD_AFTER_LOOP_LBL	: LABEL_TYPE	:= CODI.AFTER_LOOP_LBL;
+      LOOP_STM_S		: TREE		:= D( AS_STM_S, ADA_LOOP );
+      BEFORE_LOOP_LBL	:constant STRING	:= NEW_LABEL;
+      AFTER_LOOP_LBL	:constant STRING	:= NEW_LABEL;
     begin
-      LOOP_STM_S := D ( AS_STM_S, ADA_LOOP );
-      CODI.BEFORE_LOOP_LBL := NEW_LABEL;
-      CODI.AFTER_LOOP_LBL := NEW_LABEL;
-      DI( CD_AFTER_LOOP, ADA_LOOP, INTEGER( AFTER_LOOP_LBL) );
+      LOOP_STM_S := D( AS_STM_S, ADA_LOOP );
+--      DI( CD_AFTER_LOOP, ADA_LOOP, INTEGER( AFTER_LOOP_LBL) );
       DI( CD_LEVEL, ADA_LOOP, INTEGER( CODI.CUR_LEVEL ) );
       declare
         ITERATION : TREE := D( AS_ITERATION, ADA_LOOP );
       begin
         if ITERATION = TREE_VOID then
-          WRITE_LABEL( BEFORE_LOOP_LBL );
+          PUT_LINE( BEFORE_LOOP_LBL & ':' );
           CODE_STM_S( LOOP_STM_S );
-          EMIT( JMP, BEFORE_LOOP_LBL );
+          PUT_LINE( tab & "BRA" & tab & BEFORE_LOOP_LBL );
         else
           CODE_ITERATION( D( AS_ITERATION, ADA_LOOP ) );
         end if;
       end;
-      WRITE_LABEL( AFTER_LOOP_LBL );
-      CODI.BEFORE_LOOP_LBL := OLD_BEFORE_LOOP_LBL;
-      CODI.AFTER_LOOP_LBL := OLD_AFTER_LOOP_LBL;
-      CODI.LOOP_STM_S := OLD_LOOP_STM_S;
+      PUT_LINE( AFTER_LOOP_LBL & ':' );
     end;
   end	CODE_LOOP;
 
@@ -247,8 +238,8 @@ separate ( CODE_GEN )
     declare
       OLD_LOOP_OP_INC_DEC   : OP_CODE      := CODI.LOOP_OP_INC_DEC;
       OLD_LOOP_OP_GT_LT     : OP_CODE      := CODI.LOOP_OP_GT_LT;
-      COUNTER, TEMP         : INTEGER;
-      OLD_OFFSET_ACT        : OFFSET_VAL  := CODI.OFFSET_ACT;
+      COUNTER, TEMP         : INTEGER	:= 0;
+--      OLD_OFFSET_ACT        : OFFSET_VAL  := CODI.OFFSET_ACT;
       ITERATION_ID          : TREE         := D ( AS_SOURCE_NAME, FOR_REV );
       ACT                   : CODE_DATA_TYPE    := CODI.CODE_DATA_TYPE_OF ( D ( SM_OBJ_TYPE, ITERATION_ID ) );
       procedure LOAD_DSCRT_RANGE ( DSCRT_RANGE : TREE ) is
@@ -256,8 +247,8 @@ separate ( CODE_GEN )
         null;
       end;
     begin
-      CODI.BEFORE_LOOP_LBL := NEW_LABEL;
-      CODI.AFTER_LOOP_LBL := NEW_LABEL;
+--      CODI.BEFORE_LOOP_LBL := NEW_LABEL;
+--      CODI.AFTER_LOOP_LBL := NEW_LABEL;
 
     if FOR_REV.TY = DN_FOR then
       CODE_FOR ( FOR_REV );
@@ -269,25 +260,25 @@ separate ( CODE_GEN )
       case ACT is
       when B =>
         ALIGN ( BOOL_AL );
-        COUNTER := -CODI.OFFSET_ACT;
-        ALTER_OFFSET ( BOOL_SIZE);
-        ALIGN ( BOOL_AL);
-        TEMP := -CODI.OFFSET_ACT;
-        ALTER_OFFSET ( BOOL_SIZE );
+--        COUNTER := -CODI.OFFSET_ACT;
+--        ALTER_OFFSET ( BOOL_SIZE);
+--        ALIGN ( BOOL_AL);
+--        TEMP := -CODI.OFFSET_ACT;
+--        ALTER_OFFSET ( BOOL_SIZE );
       when C =>
         ALIGN ( CHAR_AL );
-        COUNTER := -CODI.OFFSET_ACT;
-        ALTER_OFFSET ( CHAR_SIZE );
-        ALIGN ( CHAR_AL);
-        TEMP := -CODI.OFFSET_ACT;
-        ALTER_OFFSET ( CHAR_SIZE );
+--        COUNTER := -CODI.OFFSET_ACT;
+--        ALTER_OFFSET ( CHAR_SIZE );
+--        ALIGN ( CHAR_AL);
+--        TEMP := -CODI.OFFSET_ACT;
+--        ALTER_OFFSET ( CHAR_SIZE );
       when I =>
         ALIGN ( INTG_AL );
-        COUNTER := -CODI.OFFSET_ACT;
-        ALTER_OFFSET ( INTG_SIZE );
-        ALIGN ( INTG_AL );
-        TEMP := -CODI.OFFSET_ACT;
-        ALTER_OFFSET ( INTG_SIZE );
+--        COUNTER := -CODI.OFFSET_ACT;
+--        ALTER_OFFSET ( INTG_SIZE );
+--        ALIGN ( INTG_AL );
+--        TEMP := -CODI.OFFSET_ACT;
+--        ALTER_OFFSET ( INTG_SIZE );
       when A =>
         PUT_LINE ( "!!! COMPILE_STM_LOOP_REVERSE ACT ILLICITE " & CODE_DATA_TYPE'IMAGE ( ACT ) );
         raise PROGRAM_ERROR;
@@ -296,18 +287,18 @@ separate ( CODE_GEN )
       DI ( CD_OFFSET, ITERATION_ID, COUNTER );
       LOAD_DSCRT_RANGE ( D ( AS_DISCRETE_RANGE, FOR_REV ) );
       EMIT ( SLD, ACT, 0, TEMP );
-      WRITE_LABEL ( CODI.BEFORE_LOOP_LBL );
+--      WRITE_LABEL ( CODI.BEFORE_LOOP_LBL );
       EMIT ( SLD, ACT, 0, COUNTER );
       EMIT ( PLD, ACT, 0, COUNTER );
       EMIT ( PLD, ACT, 0, TEMP );
       EMIT ( CODI.LOOP_OP_GT_LT, ACT );
-      EMIT ( JMPT, CODI.AFTER_LOOP_LBL );
+--      EMIT ( JMPT, CODI.AFTER_LOOP_LBL );
       CODE_STM_S ( LOOP_STM_S );
       EMIT ( PLD, ACT, 0, COUNTER );
       EMIT ( CODI.LOOP_OP_INC_DEC, ACT, 1 );
-      EMIT ( JMP, CODI.BEFORE_LOOP_LBL );
-      WRITE_LABEL ( CODI.AFTER_LOOP_LBL );
-      CODI.OFFSET_ACT := OLD_OFFSET_ACT;
+--      EMIT ( JMP, CODI.BEFORE_LOOP_LBL );
+--      WRITE_LABEL ( CODI.AFTER_LOOP_LBL );
+--      CODI.OFFSET_ACT := OLD_OFFSET_ACT;
       CODI.LOOP_OP_INC_DEC := OLD_LOOP_OP_INC_DEC;
       CODI.LOOP_OP_GT_LT := OLD_LOOP_OP_GT_LT;
     end;
@@ -332,49 +323,36 @@ separate ( CODE_GEN )
   end	CODE_REVERSE;
 
 
-
+				----------
   procedure			CODE_WHILE		( ADA_WHILE :TREE )
   is
-    OPER		: OPERAND_REF;
+    BEFORE_LOOP_LBL	:constant STRING	:= NEW_LABEL;
+    AFTER_LOOP_LBL	:constant STRING	:= NEW_LABEL;
   begin
-    BEFORE_LOOP_LBL := NEW_LABEL;
-    AFTER_LOOP_LBL := NEW_LABEL;
-    WRITE_LABEL( BEFORE_LOOP_LBL );
-    OPER := EXPRESSIONS.CODE_EXP( D ( AS_EXP, ADA_WHILE ) );
-    EMIT( JMPF, AFTER_LOOP_LBL );
-    CODE_STM_S ( LOOP_STM_S );
-    EMIT( JMP, BEFORE_LOOP_LBL );
-
+    PUT_LINE( BEFORE_LOOP_LBL );
+    EXPRESSIONS.CODE_EXP( D ( AS_EXP, ADA_WHILE ) );
+    PUT_LINE( tab & "BRZ" & tab & AFTER_LOOP_LBL );
+    CODE_STM_S( LOOP_STM_S );
+    PUT_LINE( tab & "BRA" & tab & BEFORE_LOOP_LBL );
   end	CODE_WHILE;
+	----------
 
 
 
   procedure			CODE_BLOCK		( BLOCK :TREE )
   is
+    AFTER_BLOCK_LBL :constant STRING := NEW_LABEL;
+    PROC_LBL        :constant STRING := NEW_LABEL;
   begin
-    declare
-      AFTER_BLOCK_LBL : LABEL_TYPE := NEW_LABEL;
-      PROC_LBL        : LABEL_TYPE := NEW_LABEL;
-    begin
       EMIT ( MST, INTEGER ( 0 ), INTEGER( 0 ), COMMENT=> "POUR BLOC" );
-      EMIT ( CALL, CODI.RELATIVE_RESULT_OFFSET, PROC_LBL,
-             COMMENT=> "APPEL DE BLOC" );
-      EMIT ( JMP, AFTER_BLOCK_LBL, COMMENT=> "SAUT POST BLOC" );
-      WRITE_LABEL ( PROC_LBL);
-      declare
-        OLD_OFFSET_ACT : OFFSET_VAL := CODI.OFFSET_ACT;
-        OLD_OFFSET_MAX : OFFSET_VAL := CODI.OFFSET_MAX;
-      begin
-        CODI.OFFSET_ACT := FIRST_LOCAL_VAR_OFFSET;
-        CODI.OFFSET_MAX := FIRST_LOCAL_VAR_OFFSET;
+--      EMIT ( CALL, CODI.RELATIVE_RESULT_OFFSET, PROC_LBL,
+--             COMMENT=> "APPEL DE BLOC" );
+      PUT_LINE( tab & "BRA" & tab & AFTER_BLOCK_LBL );
+      PUT_LINE( PROC_LBL & ':' );
         INC_LEVEL;
         STRUCTURES.CODE_BLOCK_BODY ( D ( AS_BLOCK_BODY, BLOCK ) );
         DEC_LEVEL;
-        CODI.OFFSET_ACT := OLD_OFFSET_ACT;
-        CODI.OFFSET_MAX := OLD_OFFSET_MAX;
-      end;
-      WRITE_LABEL ( AFTER_BLOCK_LBL );
-    end;
+      PUT_LINE( AFTER_BLOCK_LBL & ':' );
 
   end	CODE_BLOCK;
 
@@ -451,13 +429,14 @@ separate ( CODE_GEN )
       else
         declare
 	EXCEPTION_ID	: TREE		:= D( SM_DEFN, NAME );
-	LBL		: LABEL_TYPE;
+--	LBL		: LABEL_TYPE;
         begin
 	if D( CD_LABEL, EXCEPTION_ID ).TY /= DN_NUM_VAL then
-	  LBL := NEW_LABEL;
-	  DI  ( CD_LABEL, EXCEPTION_ID, INTEGER( LBL ) );
-	  EMIT( EXL, LBL, S=> PRINT_NAME( D( LX_SYMREP, NAME ) ),
-				COMMENT=> "NUMERO D EXCEPTION EXTERNE SUR RAISE" );
+null;
+--	  LBL := NEW_LABEL;
+--	  DI  ( CD_LABEL, EXCEPTION_ID, INTEGER( LBL ) );
+--	  EMIT( EXL, LBL, S=> PRINT_NAME( D( LX_SYMREP, NAME ) ),
+--				COMMENT=> "NUMERO D EXCEPTION EXTERNE SUR RAISE" );
 	end if;
           EMIT( RAI, DI( CD_LABEL, EXCEPTION_ID ) );
         end;
@@ -520,18 +499,17 @@ separate ( CODE_GEN )
           ENCLOSING_LEVEL	: INTEGER		:= DI ( CD_LEVEL, CODI.ENCLOSING_BODY );
           RESULT_OFFSET	: INTEGER		:= DI ( CD_RESULT_OFFSET, CODI.ENCLOSING_BODY );
           EXPR_TYPE		: TREE		:= D ( SM_EXP_TYPE, EXP );
-	OPER		: OPERAND_REF;
         begin
           if EXPR_TYPE.TY = DN_ARRAY then
             EMIT( PLA, INTEGER( LEVEL_NUM( ENCLOSING_LEVEL ) - CODI.CUR_LEVEL ), RESULT_OFFSET );
-            OPER := EXPRESSIONS.CODE_EXP( EXP );
+            EXPRESSIONS.CODE_EXP( EXP );
             EMIT( LDC, I, CODI.NUMBER_OF_DIMENSIONS ( EXP ) );
             EMIT( PUA );
           elsif EXPR_TYPE.TY = DN_ENUM_LITERAL_S then
-            OPER := EXPRESSIONS.CODE_EXP ( EXP );
+            EXPRESSIONS.CODE_EXP ( EXP );
             EMIT( SLD, CODI.CODE_DATA_TYPE_OF ( EXP ), INTEGER( LEVEL_NUM( ENCLOSING_LEVEL) - CODI.CUR_LEVEL ), RESULT_OFFSET );
 	elsif EXPR_TYPE.TY = DN_INTEGER then
-	  OPER := EXPRESSIONS.CODE_EXP ( EXP );
+	  EXPRESSIONS.CODE_EXP ( EXP );
             EMIT( SLD, I, INTEGER( LEVEL_NUM( ENCLOSING_LEVEL) - CODI.CUR_LEVEL ), RESULT_OFFSET );
           end if;
         end STORE_FUNCTION_RESULT;
@@ -594,7 +572,6 @@ separate ( CODE_GEN )
   begin
     declare
       NAME	: TREE	:= D ( AS_NAME, ASSIGN );
-      OPER	: OPERAND_REF;
 
 		--------
       procedure	STORE_VAL		( TYPE_SPEC :TREE )
@@ -617,7 +594,7 @@ separate ( CODE_GEN )
         when DN_INTEGER =>
           EMIT ( STO, I );
         when DN_UNIVERSAL_INTEGER =>
-          OPER := LOAD_ADR( TYPE_SPEC );
+          LOAD_ADR( TYPE_SPEC );
           EMIT( CVB );
           EMIT( STO, I );
         when others =>
@@ -631,14 +608,14 @@ separate ( CODE_GEN )
 
       if NAME.TY = DN_ALL then
 --        CODE_ADRESSE( D( AS_NAME,     NAME ) );
-        OPER := EXPRESSIONS.CODE_EXP( D( AS_EXP,      ASSIGN ) );
+        EXPRESSIONS.CODE_EXP( D( AS_EXP,      ASSIGN ) );
 --CODI.ARG1_OP( RESULT, TRSF, OPER );
         STORE_VAL   ( D( SM_EXP_TYPE, NAME ) );
 
       elsif NAME.TY = DN_INDEXED then
         EXPRESSIONS.CODE_INDEXED( NAME );
-        OPER := EXPRESSIONS.CODE_EXP    ( D( AS_EXP, ASSIGN ) );
-        STORE_VAL   ( D( SM_EXP_TYPE, NAME ) );
+        EXPRESSIONS.CODE_EXP    ( D( AS_EXP, ASSIGN ) );
+        STORE_VAL( D( SM_EXP_TYPE, NAME ) );
 
 
       elsif NAME.TY = DN_USED_OBJECT_ID then
@@ -649,8 +626,8 @@ separate ( CODE_GEN )
         begin
 
           if NAMEXP.TY = DN_ACCESS then
-	  OPER := EXPRESSIONS.CODE_EXP( D( AS_EXP, ASSIGN ) );
-	  CODI.STORE( DEFN, ADR_TYP, OPER );
+	  EXPRESSIONS.CODE_EXP( D( AS_EXP, ASSIGN ) );
+	  CODI.STORE( DEFN );
 
 	elsif NAMEXP.TY = DN_ARRAY then
 	  CODE_OBJECT( DEFN );
@@ -663,23 +640,23 @@ separate ( CODE_GEN )
 	      EMIT( LDC, I, NUMBER_OF_DIMENSIONS ( NAMEXP ), COMMENT=>"NB DIM" );
 	      EMIT( CYA );
 	    else
-	      OPER := EXPRESSIONS.CODE_EXP( D( AS_EXP, ASSIGN ) );
+	      EXPRESSIONS.CODE_EXP( D( AS_EXP, ASSIGN ) );
 	      EMIT( LDC, I, NUMBER_OF_DIMENSIONS ( NAMEXP ), COMMENT=>"NB DIM" );
 	      EMIT( PUA );
               end if;
             end;
 
 	elsif NAMEXP.TY = DN_ENUMERATION then
-	  OPER := EXPRESSIONS.CODE_EXP ( D ( AS_EXP, ASSIGN ) );
+	  EXPRESSIONS.CODE_EXP ( D ( AS_EXP, ASSIGN ) );
 	  declare
 	    OTYPE	: OPERAND_TYPE	:= OPERAND_TYPE_OF( NAMEXP );
 	  begin
-	    STORE( DEFN, OTYPE, OPER );
+	    STORE( DEFN );
 	  end;
 
 	elsif NAMEXP.TY = DN_INTEGER then
-	  OPER := EXPRESSIONS.CODE_EXP( D( AS_EXP, ASSIGN ) );
-            CODI.STORE( DEFN, WORD_TYP, OPER );
+	  EXPRESSIONS.CODE_EXP( D( AS_EXP, ASSIGN ) );
+            CODI.STORE( DEFN );
           end if;
 
         end;
@@ -694,32 +671,31 @@ separate ( CODE_GEN )
   is
   begin
     declare
-      LVB_LBL		: LABEL_TYPE;
+      LVB_LBL		:constant STRING	:= NEW_LABEL;
       EXP			: TREE		:= D ( AS_EXP, ADA_EXIT );
       LOOP_STM		: TREE		:= D ( SM_STM, ADA_EXIT );
       LOOP_LEVEL		: LEVEL_NUM	:= LEVEL_NUM( DI( CD_LEVEL, LOOP_STM ) );
       AFTER_LOOP_LABEL	: LABEL_TYPE	:= LABEL_TYPE( DI( CD_AFTER_LOOP, LOOP_STM ) );
-      OPER		: OPERAND_REF;
     begin
       if EXP = TREE_VOID then
         if LOOP_LEVEL /= CODI.CUR_LEVEL then
-             LVB_LBL := NEW_LABEL;
+null;
 --             EMIT ( LVB, LVB_LBL, COMMENT=> "NOMBRE DE NIVEAUX REMONTES" );
 --             GEN_LBL_ASSIGNMENT ( LVB_LBL, INTEGER(CODI.CUR_LEVEL - LOOP_LEVEL) );
         end if;
         EMIT ( JMP, AFTER_LOOP_LABEL, COMMENT=> "SORTIE DE BOUCLE" );
       else
-        OPER := EXPRESSIONS.CODE_EXP ( EXP );
+        EXPRESSIONS.CODE_EXP ( EXP );
         if LOOP_LEVEL /= CODI.CUR_LEVEL then
           declare
-            SKIP_LBL : LABEL_TYPE := NEW_LABEL;
+            SKIP_LBL :constant STRING := NEW_LABEL;
           begin
             EMIT ( JMPF, SKIP_LBL, COMMENT=> "PAS D EXIT SI CONDITION FAUSSE" );
-            LVB_LBL := NEW_LABEL;
-            EMIT ( LVB, LVB_LBL, COMMENT=> "NOMBRE DE NIVEAUX REMONTES" );
+--            LVB_LBL := NEW_LABEL;
+--            EMIT ( LVB, LVB_LBL, COMMENT=> "NOMBRE DE NIVEAUX REMONTES" );
 --            GEN_LBL_ASSIGNMENT ( LVB_LBL, INTEGER(CODI.CUR_LEVEL - LOOP_LEVEL) );
             EMIT ( JMP, AFTER_LOOP_LABEL, COMMENT=> "SORTIE DE BOUCLE" );
-            WRITE_LABEL ( SKIP_LBL, COMMENT=> "LABEL NO EXIT" );
+            PUT_LINE( SKIP_LBL & ':' );
           end;
         else
           EMIT ( JMPT, AFTER_LOOP_LABEL );
