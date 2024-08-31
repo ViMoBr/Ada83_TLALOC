@@ -61,7 +61,7 @@ end macro
 
 
 ;			-------
-macro			PUT_STR			; affiche une chaine sur stdout
+macro			PUT_STR?			; affiche une chaine sur stdout
 ;			-------
   db 0x48, 0x89, 0xC6				; mov rsi, rax  (esi=T  adresse des caracteres a afficher)
   db 0x8B, 0x50, 0xFC				; mov EDX, dword ptr[rax-4]   EDX=last
@@ -76,7 +76,7 @@ end macro
 
 
 ;			-------
-macro			SYSEXIT			; retour au systeme
+macro			SYSEXIT?			; retour au systeme
 ;			-------
   db 0x6A, 0x3C					; push x3C  (sys_exit rax=60)
   db 0x58						; pop rax
@@ -90,7 +90,7 @@ end macro
 ;				--------------------------------------------------------------------------------
 
 ;			-------------
-macro			LDI	val
+macro			LDI?	val
 ;			-------------
   push_T
   if val > -128 & val < 127
@@ -105,7 +105,7 @@ end macro
 ;				--------------------------------------------------------------------------------
 
 ;			-------------------
-macro			LDb	lvl, disp		; Load BYTE (paramètres ou variables locales)
+macro			LDb?	lvl, disp		; Load BYTE (paramètres ou variables locales)
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
     ofs = -disp					; pile croissante vers adresses decroissantes
@@ -122,7 +122,7 @@ macro			LDb	lvl, disp		; Load BYTE (paramètres ou variables locales)
 end macro
 
 ;			-------------------
-macro			LDw	lvl, disp		; Load WORD 16 bits
+macro			LDw?	lvl, disp		; Load WORD 16 bits
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
     ofs = -disp					; pile croissante vers adresses decroissantes
@@ -139,7 +139,7 @@ macro			LDw	lvl, disp		; Load WORD 16 bits
 end macro
 
 ;			-------------------
-macro			LDd	lvl, disp		; Load DOUBLEWORD 32 bits
+macro			LDd?	lvl, disp		; Load DOUBLEWORD 32 bits
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
     ofs = -disp					; pile croissante vers adresses decroissantes
@@ -156,7 +156,7 @@ macro			LDd	lvl, disp		; Load DOUBLEWORD 32 bits
 end macro
 
 ;			-------------------
-macro			LDa	lvl, disp		; Load address QUADWORD 64 bits
+macro			LDa?	lvl, disp		; Load address QUADWORD 64 bits
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   ofs = -disp					; pile croissante vers adresses decroissantes
@@ -177,7 +177,7 @@ end macro
 ;				--------------------------------------------------------------------------------
 
 ;			-------------------
-macro			STb	lvl, disp		; Store BYTE (paramètres ou variables locales)
+macro			STb?	lvl, disp		; Store BYTE (paramètres ou variables locales)
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   ofs = -disp					; pile croissante vers adresses decroissantes
@@ -193,7 +193,7 @@ macro			STb	lvl, disp		; Store BYTE (paramètres ou variables locales)
 end macro
 
 ;			-------------------
-macro			STw	lvl, disp		; Store WORD 16 bits (paramètres ou variables locales)
+macro			STw?	lvl, disp		; Store WORD 16 bits (paramètres ou variables locales)
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   ofs = -disp					; pile croissante vers adresses decroissantes
@@ -209,7 +209,7 @@ macro			STw	lvl, disp		; Store WORD 16 bits (paramètres ou variables locales)
 end macro
 
 ;			-------------------
-macro			STd	lvl, disp		; Store DOUBLEWORD (paramètres ou variables locales)
+macro			STd?	lvl, disp		; Store DOUBLEWORD (paramètres ou variables locales)
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   ofs = -disp					; pile croissante vers adresses decroissantes
@@ -225,7 +225,7 @@ macro			STd	lvl, disp		; Store DOUBLEWORD (paramètres ou variables locales)
 end macro
 
 ;			-------------------
-macro			STa	lvl, disp		; Store address QUADWORD (paramètres ou variables locales)
+macro			STa?	lvl, disp		; Store address QUADWORD (paramètres ou variables locales)
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   ofs = -disp					; pile croissante vers adresses decroissantes
@@ -244,28 +244,28 @@ end macro
 ;				OPERATIONS LOGIQUES
 ;				--------------------------------------------------------------------------------
 ;			---
-macro			AND
+macro			ET?
 ;			---
   db 0x58, 0x21, 0x04, 0x24				; pop rax     and dword ptr [rsp], eax
 
 end macro
 
 ;			--
-macro			OR
+macro			OU?
 ;			--
   db 0x58, 0x09, 0x04, 0x24				; pop rax     or dword ptr [rsp], eax
 
 end macro
 
 ;			---
-macro			NOT
+macro			NON?
 ;			---
   db 0xF7, 0x14, 0x24				; not dword ptr [rsp]
 
 end macro
 
 ;			---
-macro			XOR
+macro			OUX?
 ;			---
   db 0x58, 0x31, 0x04, 0x24				; pop rax     xor dword ptr [rsp], eax
 
@@ -276,26 +276,26 @@ end macro
 ;				--------------------------------------------------------------------------------
 
 ;			---
-macro			NEG
+macro			NEG?
 ;			---
   db 0xF7, 0x1C, 0x24				; neg dword ptr [rsp]
 end macro
 
 ;			---
-macro			ADD
+macro			ADD?
 ;			---
   db 0x58, 0x01, 0x04, 0x24				; pop rax     add dword ptr [rsp], eax
 end macro
 
 ;			---
-macro			SUB
+macro			SUB?
 ;			---
   db 0x58, 0x29, 0x04, 0x24				; pop rax     sub dword ptr [rsp], eax
 
 end macro
 
 ;			---
-macro			MUL
+macro			MUL?
 ;			---
   db 0x58						; pop rax
   db 0xF7, 0x2C, 0x24				; imul dword ptr [rsp]
@@ -304,7 +304,7 @@ macro			MUL
 end macro
 
 ;			---
-macro			DIV
+macro			DIV?
 ;			--
   db 0x5B						; pop rbx
   db 0x58						; pop rax
@@ -318,7 +318,7 @@ end macro
 ;				--------------------------------------------------------------------------------
 
 ;			-------------
-macro			BRA	lbl
+macro			BRA?	lbl
 ;			-------------
   local disp
 ;  if disp > -128 & disp < 127
@@ -333,7 +333,7 @@ macro			BRA	lbl
 end macro
 
 ;			-------------
-macro			BZ	lbl
+macro			BZ?	lbl
 ;			-------------
   db 0x09, 0xC0					; or eax, eax
   local disp
@@ -351,7 +351,7 @@ end macro
 
 
 ;			---------------
-macro			CALL	entry
+macro			CALL?	entry
 ;			---------------
   local disp
   db 0xE8
@@ -362,7 +362,7 @@ end macro
 
 
 ;			--------------------
-macro			LINK	lvl, alloc	; ALLOCATION POUR VARIABLES LOCALES SOUS FRAME PTR
+macro			LINK?	lvl, alloc	; ALLOCATION POUR VARIABLES LOCALES SOUS FRAME PTR
 ;			--------------------
   assert lvl>=1 & lvl<=7
   db 0x41, 0x50+lvl					; push r(8+lvl)   store FP(lvl)
@@ -381,7 +381,7 @@ end macro
 
 
 ;			-------------
-macro			UNLINK	lvl		; DISPOSE VARS LOCALES ET RESTORE FRAME PTR
+macro			UNLINK?	lvl		; DISPOSE VARS LOCALES ET RESTORE FRAME PTR
 ;			-------------
   db 0x4C, 0x89, 0xC4+8*lvl				; mov rsp, r(8+lvl)   throw locals
   db 0x41, 0x58+lvl					; pop r(8+lvl)  restore stored FP
@@ -389,7 +389,7 @@ macro			UNLINK	lvl		; DISPOSE VARS LOCALES ET RESTORE FRAME PTR
 end macro
 
 ;			--------------------
-macro			RTD	prm_size:0
+macro			RTD?	prm_size:0
 ;			--------------------
   if prm_size <> 0
     assert prm_size > 0 & prm_size < 32768

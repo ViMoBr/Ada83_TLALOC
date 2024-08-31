@@ -1,0 +1,91 @@
+;	---------- SOUS-PROGRAMME ---------- 
+namespace TEST_3_L1
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- variable entiere ---------- 
+  virtual VAR
+    align_w
+    INT_disp = $
+    dw ?
+  end virtual
+	LDI	 5
+	STw  1,	INT_disp
+;	---------- variable bool char ---------- 
+  virtual VAR
+    OK_disp = $
+    db ?
+  end virtual
+	LDI	 1
+	STb  1,	OK_disp
+;	---------- variable bool char ---------- 
+  virtual VAR
+    CA_disp = $
+    db ?
+  end virtual
+	BRA	L2
+;	---------- SOUS-PROGRAMME ---------- 
+namespace APPELEE_L3
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    P1_adrofs = $
+    dq ?
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    C1_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in out ---------- 
+  virtual PRM
+    B1_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 2,	loc_siz
+;	---------- variable entiere ---------- 
+  virtual VAR
+    align_w
+    JA_disp = $
+    dw ?
+  end virtual
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	LDI	 65
+	STb  2,	C1_adrofs
+	LDI	 0
+	STb  2,	B1_adrofs
+	LDw  2,	P1_adrofs
+	STw  2,	JA_disp
+	UNLINK 2
+	RTD
+excep:
+;	---------- end sub APPELEE ----------
+end namespace 
+L2:
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub TEST_3 ----------
+end namespace 

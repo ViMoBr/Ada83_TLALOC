@@ -15,11 +15,12 @@ is
   begin
     if HEADER.TY in CLASS_SUBP_ENTRY_HEADER
     then
-      CODE_PARAM_S( D( AS_PARAM_S, HEADER ) );
-      CODE_SUBP_ENTRY_HEADER( HEADER );
+	CODE_PARAM_S( D( AS_PARAM_S, HEADER ) );
+	CODE_SUBP_ENTRY_HEADER( HEADER );
 
-    elsif HEADER.TY = DN_PACKAGE_SPEC then
-      CODE_PACKAGE_SPEC( HEADER );
+    elsif HEADER.TY = DN_PACKAGE_SPEC
+    then
+	CODE_PACKAGE_SPEC( HEADER );
 
     end if;
 
@@ -63,7 +64,6 @@ null;
 
 
 
-
 			-----------
   procedure		CODE_DECL_S		( DECL_S :TREE )
   is
@@ -75,15 +75,17 @@ null;
       while not IS_EMPTY( DECL_SEQ ) loop
         POP( DECL_SEQ, DECL );
         CODE_DECL( DECL );
-    end loop;
+      end loop;
     end;
 
   end	CODE_DECL_S;
 	-----------
 
 
+
   procedure CODE_NULL_COMP_DECL	( NULL_COMP_DECL :TREE );
   procedure CODE_ID_DECL		( ID_DECL :TREE );
+
 
 			---------
   procedure		CODE_DECL			( DECL :TREE )
@@ -274,6 +276,7 @@ null;
         INIT_EXP	: TREE		:= D( SM_INIT_EXP, VC_NAME );
       begin
         if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- variable entiere ---------- " ); end if;
+
         PUT_LINE( "  virtual VAR" );
         if OPER_TYPE /= 'b' then
           PUT_LINE( "    align_" & OPER_TYPE );
@@ -287,7 +290,6 @@ null;
 	EXPRESSIONS.CODE_EXP( INIT_EXP );
 	CODI.STORE( VC_NAME );
         end if;
-        NEW_LINE;
 
       end	COMPILE_VC_NAME_INTEGER;
 	-----------------------
@@ -302,7 +304,8 @@ null;
           OPER_TYPE	: CHARACTER	:= OPER_TYPE_FROM( VC_NAME );
 	INIT_EXP	: TREE		:= D( SM_INIT_EXP, VC_NAME );
         begin
-        if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- variable bool char ---------- " ); end if;
+          if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- variable bool char ---------- " ); end if;
+
 	PUT_LINE( "  virtual VAR" );
 	PUT_LINE( "    " & PRINT_NAME( D( LX_SYMREP, VC_NAME ) ) & "_disp = $" );
 	PUT_LINE( "    db ?" );
@@ -314,7 +317,6 @@ null;
 	  EXPRESSIONS.CODE_EXP( INIT_EXP );
 	  CODI.STORE( VC_NAME );
           end if;
-	NEW_LINE;
 
         end	COMPILE_VC_NAME_BOOL_CHAR;
 		-------------------------
@@ -406,6 +408,8 @@ null;
 	LVL	: LEVEL_NUM	renames CODI.CUR_LEVEL;
 --	OFS	: OFFSET_VAL	:= CODI.OFFSET_ACT;
         begin
+          if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- variable record ---------- " ); end if;
+
 	PUT_LINE( "  virtual VAR" );
 	PUT_LINE( "    " & PRINT_NAME( D( LX_SYMREP, VC_NAME ) ) & "_disp = $" );
 	PUT_LINE( "    db ? " & INTEGER'IMAGE( DI( CD_IMPL_SIZE, TYPE_SPEC ) ) & "dup" );

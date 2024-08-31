@@ -1,0 +1,45 @@
+include 'MACHINE_CODE.BDY.COD'
+;	---------- SOUS-PROGRAMME ---------- 
+namespace TEST_2_L1
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+
+;	---------- bdy ----------
+	BRA	L2
+;	---------- SOUS-PROGRAMME ---------- 
+namespace CALL_SYS_L3
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 2,	loc_siz
+
+;	---------- bdy ----------
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+	LDI	1
+	PUT_STR
+	STW	1,	8
+	DB	0xC3
+;  end exception bloc
+	UNLINK 2
+	RTD
+excep:
+;	---------- end sub CALL_SYS ----------
+end namespace 
+L2:
+  virtual VAR
+    loc_siz = $
+  end virtual
+begin:
+;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub TEST_2 ----------
+end namespace 

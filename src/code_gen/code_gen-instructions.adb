@@ -557,13 +557,73 @@ null;
   end	CODE_STM_WITH_EXP_NAME;
 
 
-
+				---------
   procedure			CODE_CODE			( CODE :TREE )
   is
+    OP_TYPE_STR		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, D( AS_NAME, CODE ) ) );
+    AGGREG		: TREE		:= D( AS_EXP, CODE );
+    NAMED_ASSOC_LIST	: SEQ_TYPE	:= LIST( D( AS_GENERAL_ASSOC_S, AGGREG ) );
+    NAMED_ASSOC		: TREE;
   begin
-    null;
-  end	CODE_CODE;
 
+    while not IS_EMPTY( NAMED_ASSOC_LIST ) loop
+      POP( NAMED_ASSOC_LIST, NAMED_ASSOC );
+      declare
+        CHOICE_LIST		: SEQ_TYPE	:= LIST( D( AS_CHOICE_S, NAMED_ASSOC ) );
+        CHOICE_EXP		: TREE;
+        USED_OBJECT_ID	: TREE		:= D( AS_EXP, NAMED_ASSOC );
+      begin
+
+				-- OPERATION ASM 0 PARAMETRE
+
+        if OP_TYPE_STR = "ASM_OP_0" then
+	POP( CHOICE_LIST, CHOICE_EXP );
+	if PRINT_NAME( D( LX_SYMREP, D( AS_EXP, CHOICE_EXP ) ) ) = "OPCODE" then
+	  PUT_LINE( tab & PRINT_NAME( D( LX_SYMREP, USED_OBJECT_ID ) ) );
+	end if;
+
+				-- OPERATION ASM 1 PARAMETRE
+
+        elsif OP_TYPE_STR = "ASM_OP_1" then
+	POP( CHOICE_LIST, CHOICE_EXP );
+	if PRINT_NAME( D( LX_SYMREP, D( AS_EXP, CHOICE_EXP ) ) ) = "OPCODE" then
+	  PUT( tab & PRINT_NAME( D( LX_SYMREP, USED_OBJECT_ID ) ) );
+	end if;
+
+	if PRINT_NAME( D( LX_SYMREP, D( AS_EXP, CHOICE_EXP ) ) ) = "VAL" then
+	  declare
+	    NUM_REP	:constant STRING	:= PRINT_NAME( D( LX_NUMREP, USED_OBJECT_ID ) );
+	  begin
+	    if NUM_REP'LENGTH >= 4 and then NUM_REP( NUM_REP'FIRST .. NUM_REP'FIRST+2) = "16#" then
+	      PUT_LINE( tab & "0x" & NUM_REP( NUM_REP'FIRST+3 .. NUM_REP'LAST-1 ) );
+	    else
+	      PUT_LINE( tab & NUM_REP );
+	    end if;
+	  end;
+	end if;
+
+				-- OPERATION ASM 2 PARAMETRES
+
+        elsif OP_TYPE_STR = "ASM_OP_2" then
+	POP( CHOICE_LIST, CHOICE_EXP );
+	if PRINT_NAME( D( LX_SYMREP, D( AS_EXP, CHOICE_EXP ) ) ) = "OPCODE" then
+	  PUT( tab & PRINT_NAME( D( LX_SYMREP, USED_OBJECT_ID ) ) );
+	end if;
+
+	if PRINT_NAME( D( LX_SYMREP, D( AS_EXP, CHOICE_EXP ) ) ) = "LVL" then
+	  PUT( tab & PRINT_NAME( D( LX_NUMREP, USED_OBJECT_ID ) ) & ',' );
+	end if;
+
+	if PRINT_NAME( D( LX_SYMREP, D( AS_EXP, CHOICE_EXP ) ) ) = "OFS" then
+	  PUT_LINE( tab & PRINT_NAME( D( LX_NUMREP, USED_OBJECT_ID ) ) );
+	end if;
+        end if;
+
+      end;
+    end loop;
+
+  end	CODE_CODE;
+	---------
 
 
 				-----------

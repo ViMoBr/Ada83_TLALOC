@@ -67,7 +67,8 @@ is
     when DN_CONSTANT_ID | DN_VARIABLE_ID	=> CODE_VC_ID( DEFN );
     when DN_ITERATION_ID			=> LOAD_MEM( DEFN );
     when DN_ENUMERATION_ID | DN_CHARACTER_ID	=> PUT_LINE( ASCII.HT & "LDI" & ASCII.HT & INTEGER'IMAGE( DI( SM_REP, DEFN ) ) );
---    when IN_ID | IN_OUT_ID | OUT_ID		=> CODE_PRM_ID( DEFN );
+    when DN_IN_ID | DN_IN_OUT_ID		=> LOAD_MEM( DEFN );
+--    when DN_OUT_ID				=> CODE_PRM_ID( DEFN );
     when others => raise PROGRAM_ERROR;
     end case;
  

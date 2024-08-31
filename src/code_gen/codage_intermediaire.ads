@@ -27,8 +27,8 @@ is
   subtype SEGMENT_NUM		is INTEGER		range 0 .. 32767;
 
 
-  ADDR_SIZE			: constant		:= 4;					--| ADRESSES SUR 32 BITS
-  ADDR_AL				: constant		:= 4;					--| ALIGNEMENT ADRESSE SUR 4 OCTETS
+  ADDR_SIZE			: constant		:= 8;					--| ADRESSES SUR 32 BITS
+  ADDR_AL				: constant		:= 8;					--| ALIGNEMENT ADRESSE SUR 4 OCTETS
   BOOL_SIZE			: constant		:= 1;					--| BOOLEEN SUR 1 OCTET
   BOOL_AL				: constant		:= 1;					--| ALIGNEMENT BOOLEEN SUR 1 OCTET
   CHAR_SIZE			: constant		:= 1;					--| CARACTERE SUR 8 BITS

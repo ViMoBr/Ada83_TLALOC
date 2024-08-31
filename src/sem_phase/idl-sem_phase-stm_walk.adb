@@ -493,9 +493,9 @@ package body STM_WALK is
       when DN_CODE =>
         declare
         begin
-
+null;
                                         -- ERROR -- NOT SUPPORTED
-          ERROR (D (LX_SRCPOS, STM), "CODE STATEMENT NOT SUPPORTED");
+--          ERROR (D (LX_SRCPOS, STM), "CODE STATEMENT NOT SUPPORTED");
         end;
 
                         -- FOR A CASE STATEMENT

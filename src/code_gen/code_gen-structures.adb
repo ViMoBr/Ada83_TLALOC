@@ -136,15 +136,14 @@ PUT_LINE( "; RFP" & tab & SUBP_LBL );
 
       if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- SOUS-PROGRAMME ---------- " ); end if;
       PUT_LINE( "namespace " & SUB_NAME & '_' & LABEL_STR( LBL ) );
-      PUT_LINE( "elab:" );
 
       DECLARATIONS.CODE_HEADER( D( AS_HEADER, SUBPROGRAM_BODY ) );
 
+      PUT_LINE( "elab:" );
       PUT_LINE( "  virtual at 0" );
       PUT_LINE( "    VAR::" );
       PUT_LINE( "  end virtual" );
       PUT_LINE( tab & "LINK" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & ',' & tab & "loc_siz" );
-      NEW_LINE;
 
       ENCLOSING_BODY := SUBPROGRAM_BODY;
       CODE_BODY( D( AS_BODY, SUBPROGRAM_BODY ) );
@@ -211,13 +210,6 @@ PUT_LINE( "; RFP" & tab & SUBP_LBL );
   procedure			CODE_BLOCK_BODY	( BLOCK_BODY :TREE )
   is
   begin
-    if CODI.DEBUG then
-      PUT( ';' & tab & "---------- " );
-      if ENCLOSING_BODY.TY = DN_SUBPROGRAM_BODY then PUT( "bdy" );
-      elsif ENCLOSING_BODY.TY = DN_PACKAGE_BODY then PUT( "package bdy" );
-      end if;
-      PUT_LINE( " ----------" );
-    end if;
     DI( CD_LEVEL, BLOCK_BODY, INTEGER( CODI.CUR_LEVEL ) );
 
     if FUNCTION_RESULT /= TREE_VOID then
@@ -232,17 +224,25 @@ PUT_LINE( "; RFP" & tab & SUBP_LBL );
     end if;
 
 
-declare
-  SAVE_ENCLOSING	: TREE	:= ENCLOSING_BODY;
-begin
-    CODE_ITEM_S ( D ( AS_ITEM_S, BLOCK_BODY ) );
-ENCLOSING_BODY := SAVE_ENCLOSING;
-end;
+    declare
+      SAVE_ENCLOSING	: TREE	:= ENCLOSING_BODY;
+    begin
+      CODE_ITEM_S ( D ( AS_ITEM_S, BLOCK_BODY ) );
+      ENCLOSING_BODY := SAVE_ENCLOSING;
+    end;
 
     if ENCLOSING_BODY.TY = DN_SUBPROGRAM_BODY then
       PUT_LINE( "  virtual VAR" );
       PUT_LINE( "    loc_siz = $" );
       PUT_LINE( "  end virtual" );
+    end if;
+
+    if CODI.DEBUG then
+      PUT( ';' & tab & "---------- " );
+      if ENCLOSING_BODY.TY = DN_SUBPROGRAM_BODY then PUT( "bdy" );
+      elsif ENCLOSING_BODY.TY = DN_PACKAGE_BODY then PUT( "package bdy" );
+      end if;
+      PUT_LINE( " ----------" );
     end if;
 
     if CODI.DEBUG and then ENCLOSING_BODY.TY = DN_PACKAGE_BODY then
@@ -256,8 +256,6 @@ end;
     if not IS_EMPTY( LIST( D( AS_ALTERNATIVE_S, BLOCK_BODY ) ) )
     then
       CODE_ALTERNATIVE_S( D( AS_ALTERNATIVE_S, BLOCK_BODY ) );
-    else
-      PUT_LINE( ";  end exception bloc" );
     end if;
 
   end	CODE_BLOCK_BODY;

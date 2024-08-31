@@ -977,13 +977,16 @@ return (0,0,0);
 	--------------
 
 
-			--====--
-  procedure		LOAD_MEM		( DEFN :TREE )
+				--====--
+  procedure			LOAD_MEM			( DEFN :TREE )
   is
     SIZ_CHAR	: CHARACTER	:= OPER_TYPE_FROM( DEFN );
   begin
+    if DEFN.TY = DN_IN_ID or DEFN.TY = DN_IN_OUT_ID then
+      PUT_LINE( tab & "LD" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_adrofs" );
+    else
       PUT_LINE( tab & "LD" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_disp" );
-
+    end if;
   end	LOAD_MEM;
 	--====--
 
@@ -993,8 +996,11 @@ return (0,0,0);
   is
     SIZ_CHAR	: CHARACTER	:= OPER_TYPE_FROM( DEST_DEFN );
   begin
+    if DEST_DEFN.TY = DN_OUT_ID or DEST_DEFN.TY = DN_IN_OUT_ID then
+      PUT_LINE( tab & "ST" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEST_DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEST_DEFN ) ) & "_adrofs" );
+    else
       PUT_LINE( tab & "ST" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEST_DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEST_DEFN ) ) & "_disp" );
-
+    end if;
   end	STORE; 
 	--=--
 	
