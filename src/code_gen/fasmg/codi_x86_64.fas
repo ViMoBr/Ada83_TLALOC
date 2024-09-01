@@ -110,13 +110,45 @@ macro			LDb?	lvl, disp		; Load BYTE (paramètres ou variables locales)
   assert lvl >= 0 & lvl <= 7
     ofs = -disp					; pile croissante vers adresses decroissantes
   push_T
-;  if ofs > -128 & ofs < 127
-;    db 0x49, 0x0F, 0xBE, 0x40+lvl			; movsx rax, byte ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
-;    db ofs
-;  else
+  if ofs > -128 & ofs < 127
+    db 0x49, 0x0F, 0xBE, 0x40+lvl			; movsx rax, byte ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
+    db ofs
+  else
     db 0x49, 0x0F, 0xBE, 0x80+lvl			; movsx rax, byte ptr [r(8+lvl)+ofs32]
     dd ofs
-;  end if
+  end if
+  db 0x50						; push rax
+
+end macro
+
+;			-------------------
+macro			ILDb?	lvl, disp		; INDIRECT Load BYTE (paramètres ou variables locales)
+;			-------------------
+  assert lvl >= 0 & lvl <= 7
+  if disp > -128 & disp < 127
+    db 0x49, 0x8B, 0x40+lvl				; mov rax, qword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
+    db disp
+  else
+    db 0x49, 0x8B, 0x80+lvl				; mov rax, qword ptr [r(8=lvl)+ofs32]
+    dd disp
+  end if
+  db 0x48, 0x0F, 0xBE, 0x00				; movsx rax, byte ptr [rax]
+  db 0x50						; push rax
+
+end macro
+
+;			-------------------
+macro			ILDw?	lvl, disp		; INDIRECT Load WORD (paramètres ou variables locales)
+;			-------------------
+  assert lvl >= 0 & lvl <= 7
+  if disp > -128 & disp < 127
+    db 0x49, 0x8B, 0x40+lvl				; mov rax, qword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
+    db disp
+  else
+    db 0x49, 0x8B, 0x80+lvl				; mov rax, qword ptr [r(8=lvl)+ofs32]
+    dd disp
+  end if
+  db 0x48, 0x0F, 0xBF, 0x00				; movsx rax, word ptr [rax]
   db 0x50						; push rax
 
 end macro
@@ -127,13 +159,13 @@ macro			LDw?	lvl, disp		; Load WORD 16 bits
   assert lvl >= 0 & lvl <= 7
     ofs = -disp					; pile croissante vers adresses decroissantes
   push_T
-;  if ofs > -128 & ofs < 127
-;    db 0x49, 0x0F, 0xBF, 0x40+lvl			; movsx rax, word ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
-;    db ofs
-;  else
+  if ofs > -128 & ofs < 127
+    db 0x49, 0x0F, 0xBF, 0x40+lvl			; movsx rax, word ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
+    db ofs
+  else
     db 0x49, 0x0F, 0xBF, 0x80+lvl			; movsx rax, word ptr [r(8+lvl)+ofs32]
     dd ofs
-;  end if
+  end if
   db 0x50						; push rax
 
 end macro
@@ -144,30 +176,47 @@ macro			LDd?	lvl, disp		; Load DOUBLEWORD 32 bits
   assert lvl >= 0 & lvl <= 7
     ofs = -disp					; pile croissante vers adresses decroissantes
   push_T
-;  if ofs > -128 & ofs < 127
-;    db 0x49, 0x63, 0x40+lvl				; movsx rax, dword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
-;    db ofs
-;  else
+  if ofs > -128 & ofs < 127
+    db 0x49, 0x63, 0x40+lvl				; movsx rax, dword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
+    db ofs
+  else
     db 0x49, 0x63, 0x80+lvl				; movsx rax, dword ptr [r(8+lvl)+ofs32]
     dd ofs
-;  end if
+  end if
   db 0x50						; push rax
 
 end macro
 
 ;			-------------------
-macro			LDa?	lvl, disp		; Load address QUADWORD 64 bits
+macro			LDq?	lvl, disp		; Load QUADWORD 64 bits
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   ofs = -disp					; pile croissante vers adresses decroissantes
   push_T
-;  if ofs > -128 & ofs < 127
-;    db 0x49, 0x8B, 0x40+lvl				; mov rax, qword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
-;    db ofs
-;  else
+  if ofs > -128 & ofs < 127
+    db 0x49, 0x8B, 0x40+lvl				; mov rax, qword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
+    db ofs
+  else
     db 0x49, 0x8B, 0x80+lvl				; mov rax, qword ptr [r(8=lvl)+ofs32]
     dd ofs
-;  end if
+  end if
+  db 0x50						; push rax
+
+end macro
+
+;			-------------------
+macro			LEA?	lvl, disp		; Load address pour lvl et disp
+;			-------------------
+  assert lvl >= 0 & lvl <= 7
+  ofs = -disp					; pile croissante vers adresses decroissantes
+  push_T
+  if ofs > -128 & ofs < 127
+    db 0x49, 0x8D, 0x40+lvl				; lea rax, [r(8+lvl)+ofs8]   T:=ofs(FP)
+    db ofs
+  else
+    db 0x49, 0x8D, 0x80+lvl				; lea rax, qword ptr [r(8=lvl)+ofs32]
+    dd ofs
+  end if
   db 0x50						; push rax
 
 end macro
@@ -182,13 +231,29 @@ macro			STb?	lvl, disp		; Store BYTE (paramètres ou variables locales)
   assert lvl >= 0 & lvl <= 7
   ofs = -disp					; pile croissante vers adresses decroissantes
   db 0x58						; pop rax
-;  if ofs > -128 & ofs < 127
-;    db 0x41, 0x88, 0x40+lvl				; mov byte ptr [r(8+lvl)+ofs8], AL
-;    db ofs
-;  else
+  if ofs > -128 & ofs < 127
+    db 0x41, 0x88, 0x40+lvl				; mov byte ptr [r(8+lvl)+ofs8], AL
+    db ofs
+  else
     db 0x41, 0x88, 0x80+lvl				; mov byte ptr [r(8+lvl)+ofs32], AL
     dd ofs
-;  end if
+  end if
+
+end macro
+
+;			-------------------
+macro			ISTb?	lvl, disp		; INDIRECT Store BYTE (paramètres ou variables locales)
+;			-------------------
+  assert lvl >= 0 & lvl <= 7
+  db 0x58						; pop rax
+  if disp > -128 & disp < 127
+    db 0x49, 0x8B, 0x40+lvl				; mov rax, qword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
+    db disp
+  else
+    db 0x49, 0x8B, 0x80+lvl				; mov rax, qword ptr [r(8=lvl)+ofs32]
+    dd disp
+  end if
+  db 0x88, 0x00					; mov byte ptr [rax], AL
 
 end macro
 
@@ -198,13 +263,29 @@ macro			STw?	lvl, disp		; Store WORD 16 bits (paramètres ou variables locales)
   assert lvl >= 0 & lvl <= 7
   ofs = -disp					; pile croissante vers adresses decroissantes
   db 0x58						; pop rax
-;  if ofs > -128 & ofs < 127
-;    db 0x66, 0x41, 0x89, 0x40+lvl			; mov word ptr [r(8+lvl)+ofs8], AX
-;    db ofs
-;  else
+  if ofs > -128 & ofs < 127
+    db 0x66, 0x41, 0x89, 0x40+lvl			; mov word ptr [r(8+lvl)+ofs8], AX
+    db ofs
+  else
     db 0x66, 0x41, 0x89, 0x80+lvl			; mov word ptr [r(8+lvl)+ofs32], AX
     dd ofs
-;  end if
+  end if
+
+end macro
+
+;			-------------------
+macro			ISTw?	lvl, disp		; INDIRECT Store WORD (paramètres ou variables locales)
+;			-------------------
+  assert lvl >= 0 & lvl <= 7
+  db 0x58						; pop rax
+  if disp > -128 & disp < 127
+    db 0x49, 0x8B, 0x40+lvl				; mov rax, qword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
+    db disp
+  else
+    db 0x49, 0x8B, 0x80+lvl				; mov rax, qword ptr [r(8=lvl)+ofs32]
+    dd disp
+  end if
+  db 0x66, 0x89, 0x00				; mov word ptr [rax], AX
 
 end macro
 
@@ -214,13 +295,13 @@ macro			STd?	lvl, disp		; Store DOUBLEWORD (paramètres ou variables locales)
   assert lvl >= 0 & lvl <= 7
   ofs = -disp					; pile croissante vers adresses decroissantes
   db 0x58						; pop rax
-;  if ofs > -128 & ofs < 127
-;    db 0x41, 0x89, 0x40+lvl				; mov dword ptr [r(8+lvl)+ofs8], EAX
-;    db ofs
-;  else
+  if ofs > -128 & ofs < 127
+    db 0x41, 0x89, 0x40+lvl				; mov dword ptr [r(8+lvl)+ofs8], EAX
+    db ofs
+  else
     db 0x41, 0x89, 0x80+lvl				; mov dword ptr [r(8+lvl)+ofs32], EAX
     dd ofs
-;  end if
+  end if
 
 end macro
 
@@ -230,13 +311,13 @@ macro			STa?	lvl, disp		; Store address QUADWORD (paramètres ou variables local
   assert lvl >= 0 & lvl <= 7
   ofs = -disp					; pile croissante vers adresses decroissantes
   db 0x58						; pop rax
-;  if ofs > -128 & ofs < 127
-;    db 0x49, 0x89, 0x40+lvl				; mov qword ptr [rbp+ofs8], rax
-;    db ofs
-;  else
+  if ofs > -128 & ofs < 127
+    db 0x49, 0x89, 0x40+lvl				; mov qword ptr [rbp+ofs8], rax
+    db ofs
+  else
     db 0x49, 0x89, 0x80+lvl				; mov qword ptr [rbp+ofs32], rax
     dd ofs
-;  end if
+  end if
 
 end macro
 
@@ -321,13 +402,13 @@ end macro
 macro			BRA?	lbl
 ;			-------------
   local disp
-;  if disp > -128 & disp < 127
-;    db 0xEB					; jmp rel8
-;    db disp
-;  else
+  if disp > -128 & disp < 127
+    db 0xEB					; jmp rel8
+    db disp
+  else
     db 0xE9					; jmp rel32
     dd disp
-;  end if
+  end if
   disp = lbl-$
 
 end macro
@@ -337,13 +418,13 @@ macro			BZ?	lbl
 ;			-------------
   db 0x09, 0xC0					; or eax, eax
   local disp
-;  if disp > -128 & disp < 127
-;    db 0x74					; jz rel8
-;    db disp
-;  else
+  if disp > -128 & disp < 127
+    db 0x74					; jz rel8
+    db disp
+  else
     db 0x0F, 0x84					; jz rel32
     dd disp
-;  end if
+  end if
   disp = lbl-$
 
 end macro

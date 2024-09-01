@@ -8,11 +8,11 @@ elab:
 ;	---------- variable entiere ---------- 
   virtual VAR
     align_w
-    INT_disp = $
+    INT_L1_disp = $
     dw ?
   end virtual
 	LDI	 5
-	STw  1,	INT_disp
+	STw  1,	INT_L1_disp
 ;	---------- variable bool char ---------- 
   virtual VAR
     OK_disp = $
@@ -22,7 +22,7 @@ elab:
 	STb  1,	OK_disp
 ;	---------- variable bool char ---------- 
   virtual VAR
-    CA_disp = $
+    CAR_disp = $
     db ?
   end virtual
 	BRA	L2
@@ -34,17 +34,21 @@ namespace APPELEE_L3
   end virtual
 ;	---------- param in ---------- 
   virtual PRM
-    P1_adrofs = $
+    INTA_adrofs = $
+    dq ?
+  end virtual
+  virtual PRM
+    INTB_adrofs = $
     dq ?
   end virtual
 ;	---------- param out ---------- 
   virtual PRM
-    C1_adrofs = $
+    PRM_C_adrofs = $
     dq ?
   end virtual
 ;	---------- param in out ---------- 
   virtual PRM
-    B1_adrofs = $
+    PRM_B_adrofs = $
     dq ?
   end virtual
 ;	---------- fin parametrage ---------- 
@@ -59,7 +63,13 @@ elab:
 ;	---------- variable entiere ---------- 
   virtual VAR
     align_w
-    JA_disp = $
+    INT_L21_disp = $
+    dw ?
+  end virtual
+;	---------- variable entiere ---------- 
+  virtual VAR
+    align_w
+    INT_L22_disp = $
     dw ?
   end virtual
   virtual VAR
@@ -68,11 +78,17 @@ elab:
 ;	---------- bdy ----------
 begin:
 	LDI	 65
-	STb  2,	C1_adrofs
+	ISTb  2,	PRM_C_adrofs
 	LDI	 0
-	STb  2,	B1_adrofs
-	LDw  2,	P1_adrofs
-	STw  2,	JA_disp
+	ISTb  2,	PRM_B_adrofs
+	ILDw  2,	INTA_adrofs
+	LDI	 3
+	ADD
+	STw  2,	INT_L21_disp
+	ILDw  2,	INTB_adrofs
+	LDw  2,	INT_L21_disp
+	ADD
+	STw  2,	INT_L22_disp
 	UNLINK 2
 	RTD
 excep:
@@ -84,6 +100,11 @@ L2:
   end virtual
 ;	---------- bdy ----------
 begin:
+	LEA  1,	OK_disp
+	LEA  1,	CAR_disp
+	LDI	 0
+	LEA  1,	INT_L1_disp
+	CALL	APPELEE_L3.elab
 	UNLINK 1
 	RTD
 excep:

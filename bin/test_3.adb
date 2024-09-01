@@ -1,17 +1,18 @@
 procedure TEST_3 is
 
-  INT	: INTEGER	:= 5;
+  INT_L1	: INTEGER	:= 5;
   OK	: BOOLEAN	:= TRUE;
-  CA	: CHARACTER;
+  CAR	: CHARACTER;
 
-  procedure APPELEE ( P1 :in INTEGER; C1 :out CHARACTER; B1 :in out Boolean ) is
-    JA	: INTEGER;
+  procedure APPELEE ( INTA, INTB :in INTEGER:= 0; PRM_C :out CHARACTER; PRM_B :in out Boolean ) is
+    INT_L21, INT_L22	: INTEGER;
   begin
-    C1 := 'A';
-    B1 := FALSE;
-    JA := P1;
+    PRM_C:= 'A';
+    PRM_B := FALSE;
+    INT_L21 := INTA+3;
+    INT_L22 := INTB+INT_L21;
   end;
 
 begin
-  APPELEE( INT, CA, OK );
+  APPELEE( INT_L1, PRM_C => CAR, PRM_B => OK );
 end;

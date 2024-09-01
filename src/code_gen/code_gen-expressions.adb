@@ -81,12 +81,12 @@ is
   is
     CST_TYPE	: TREE	:= D( SM_OBJ_TYPE, CONSTANT_ID );
   begin
+
     case CST_TYPE.TY is
     when DN_ARRAY => null;
     when DN_INTEGER | DN_ACCESS | DN_ENUMERATION
     =>
       LOAD_MEM( CONSTANT_ID );
---      PUT_LINE( tab & "LDW" & ' ' & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & tab & PRINT_NAME( D(LX_SYMREP, CONSTANT_ID ) ) & "_disp" );
     when others
     =>
       PUT_LINE( ';' & tab & "CODE_VC_ID ERROR " & NODE_NAME'IMAGE( CST_TYPE.TY ) );

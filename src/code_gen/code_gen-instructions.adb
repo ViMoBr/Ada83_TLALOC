@@ -460,6 +460,44 @@ null;
     end if;
   end	CODE_CALL_STM;
 
+				-------------------
+  procedure			CODE_PROCEDURE_CALL		( PROCEDURE_CALL :TREE )
+  is
+    NORM_ACT_PRM_S	: SEQ_TYPE	:= LIST( D( SM_NORMALIZED_PARAM_S, PROCEDURE_CALL ) );
+    USED_NAME_ID	: TREE		:= D( AS_NAME, PROCEDURE_CALL );
+    SUB_NAME	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, USED_NAME_ID ) );
+
+    PROC_ID	: TREE		:= D( SM_DEFN, USED_NAME_ID );
+    LBL		: LABEL_TYPE	:= LABEL_TYPE( DI( CD_LABEL, PROC_ID ) );
+
+    procedure INVERSE_RECURSE
+    is
+      ACT_PRM	: TREE;
+    begin
+
+      while not IS_EMPTY( NORM_ACT_PRM_S ) loop
+        POP( NORM_ACT_PRM_S, ACT_PRM );
+        INVERSE_RECURSE;
+        if ACT_PRM.TY = DN_USED_OBJECT_ID then
+	declare
+	  DEFN	: TREE	:= D( SM_DEFN, ACT_PRM );
+	begin
+	  PUT_LINE( tab & "LEA" & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_disp" );
+	end;
+        else
+	EXPRESSIONS.CODE_EXP( ACT_PRM );
+        end if;
+      end loop;
+    end INVERSE_RECURSE;
+
+
+  begin
+    INVERSE_RECURSE;
+    PUT_LINE( tab & "CALL" & tab & SUB_NAME & '_' & LABEL_STR( LBL ) & ".elab" );
+
+  end	CODE_PROCEDURE_CALL;
+	-------------------
+
 
 
   procedure			CODE_STM_WITH_EXP		( STM_WITH_EXP :TREE )

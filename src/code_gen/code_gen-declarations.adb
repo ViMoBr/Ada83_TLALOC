@@ -27,6 +27,83 @@ is
   end	CODE_HEADER;
 	-----------
 
+  procedure CODE_PARAM_S ( PARAM_S :TREE ) is
+  begin
+    declare
+      PARAM_SEQ	: SEQ_TYPE	:= LIST( PARAM_S );
+      PARAM	: TREE;
+      NO_PARAM	: BOOLEAN		:= IS_EMPTY( PARAM_SEQ );
+    begin
+      if NO_PARAM then return; end if;
+
+      if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- debut parametrage ---------- " ); end if;
+      PUT_LINE( "  virtual at" & INTEGER'IMAGE( 2 * CODI.ADDR_SIZE ) );
+      PUT_LINE( "    PRM::" );
+      PUT_LINE( "  end virtual" );
+
+      while not IS_EMPTY( PARAM_SEQ ) loop
+        POP( PARAM_SEQ, PARAM );
+        CODE_PARAM( PARAM );
+      end loop;
+
+      if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- fin parametrage ---------- " ); end if;
+      PUT_LINE( "  virtual PRM" );
+      PUT_LINE( "    prm_siz = $" );
+      PUT_LINE( "  end virtual" );
+
+    end;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_PARAM ( PARAM :TREE ) is
+  begin
+
+    if PARAM.TY = DN_IN then
+      CODE_IN ( PARAM );
+
+    elsif PARAM.TY = DN_OUT then
+      CODE_OUT ( PARAM );
+
+    elsif PARAM.TY = DN_IN_OUT then
+      CODE_IN_OUT ( PARAM );
+
+    end if;
+
+    declare
+      ID_LIST	: SEQ_TYPE	:= LIST( D( AS_SOURCE_NAME_S, PARAM ) );
+      ID		: TREE;
+    begin
+      while not IS_EMPTY( ID_LIST ) loop
+        POP( ID_LIST, ID );
+
+        DI( CD_LEVEL, ID, INTEGER( CODI.CUR_LEVEL ) );
+
+        PUT_LINE( "  virtual PRM" );
+        PUT_LINE( "    " & PRINT_NAME( D( LX_SYMREP, ID ) ) & "_adrofs = $" );
+        PUT_LINE( "    dq ?" );
+        PUT_LINE( "  end virtual" );
+      end loop;
+    end;
+
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_IN ( ADA_IN :TREE ) is
+  begin
+    if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- param in ---------- " ); end if;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_IN_OUT ( ADA_IN_OUT :TREE ) is
+  begin
+    if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- param in out ---------- " ); end if;
+  end;
+
+  --|-------------------------------------------------------------------------------------------
+  procedure CODE_OUT ( ADA_OUT :TREE ) is
+  begin
+    if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- param out ---------- " ); end if;
+  end;
 
 			----------------------
   procedure		CODE_SUBP_ENTRY_HEADER	( SUBP_ENTRY_HEADER :TREE )

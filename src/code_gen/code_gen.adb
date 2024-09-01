@@ -35,11 +35,6 @@ is
   procedure CODE_LENGTH_ENUM_REP ( LENGTH_ENUM_REP :TREE );
   procedure CODE_DSCRMT_DECL_S ( DSCRMT_DECL_S :TREE );
   procedure CODE_DSCRMT_DECL ( DSCRMT_DECL :TREE );
-  procedure CODE_PARAM_S ( PARAM_S :TREE );
-  procedure CODE_PARAM ( PARAM :TREE );
-  procedure CODE_IN ( ADA_IN :TREE );
-  procedure CODE_IN_OUT ( ADA_IN_OUT :TREE );
-  procedure CODE_OUT ( ADA_OUT :TREE );
 --  procedure CODE_UNIT_DESC ( UNIT_DESC :TREE );
   procedure CODE_DERIVED_SUBPROG ( DERIVED_SUBPROG :TREE );
   procedure CODE_IMPLICIT_NOT_EQ ( IMPLICIT_NOT_EQ :TREE );
@@ -109,7 +104,6 @@ is
   procedure CODE_IN_ID ( IN_ID :TREE );
   procedure CODE_IN_OUT_ID ( IN_OUT_ID :TREE );
   procedure CODE_OUT_ID ( OUT_ID :TREE );
-  procedure CODE_PROCEDURE_CALL ( PROCEDURE_CALL :TREE );
   procedure CODE_PACKAGE_ID ( PACKAGE_ID :TREE );
   procedure CODE_PRIVATE_TYPE_ID ( PRIVATE_TYPE_ID :TREE );
   procedure CODE_L_PRIVATE_TYPE_ID ( L_PRIVATE_TYPE_ID :TREE );
@@ -189,6 +183,11 @@ is
   private
 
     procedure CODE_SUBP_ENTRY_HEADER	( SUBP_ENTRY_HEADER :TREE );
+    procedure CODE_PARAM_S		( PARAM_S :TREE );
+    procedure CODE_PARAM		( PARAM :TREE );
+    procedure CODE_IN		( ADA_IN :TREE );
+    procedure CODE_IN_OUT		( ADA_IN_OUT :TREE );
+    procedure CODE_OUT		( ADA_OUT :TREE );
     procedure CODE_VC_NAME		( VC_NAME :TREE );
     procedure CODE_ID_S_DECL		( ID_S_DECL :TREE );
     procedure CODE_EXCEPTION_DECL	( EXCEPTION_DECL :TREE );
@@ -220,6 +219,7 @@ is
 
   private
 
+    procedure CODE_PROCEDURE_CALL	( PROCEDURE_CALL :TREE );
     procedure CODE_STM_ELEM		( STM_ELEM :TREE );
     procedure CODE_STM_PRAGMA		( STM_PRAGMA :TREE );
     procedure CODE_LABELED		( LABELED :TREE );
@@ -481,83 +481,6 @@ is
   end;
 
   --|-------------------------------------------------------------------------------------------
-  procedure CODE_PARAM_S ( PARAM_S :TREE ) is
-  begin
-    declare
-      PARAM_SEQ	: SEQ_TYPE	:= LIST( PARAM_S );
-      PARAM	: TREE;
-      NO_PARAM	: BOOLEAN		:= IS_EMPTY( PARAM_SEQ );
-    begin
-      if NO_PARAM then return; end if;
-
-      if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- debut parametrage ---------- " ); end if;
-      PUT_LINE( "  virtual at" & INTEGER'IMAGE( 2 * CODI.ADDR_SIZE ) );
-      PUT_LINE( "    PRM::" );
-      PUT_LINE( "  end virtual" );
-
-      while not IS_EMPTY( PARAM_SEQ ) loop
-        POP( PARAM_SEQ, PARAM );
-        CODE_PARAM( PARAM );
-      end loop;
-
-      if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- fin parametrage ---------- " ); end if;
-      PUT_LINE( "  virtual PRM" );
-      PUT_LINE( "    prm_siz = $" );
-      PUT_LINE( "  end virtual" );
-
-    end;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_PARAM ( PARAM :TREE ) is
-  begin
-
-    if PARAM.TY = DN_IN then
-      CODE_IN ( PARAM );
-
-    elsif PARAM.TY = DN_OUT then
-      CODE_OUT ( PARAM );
-
-    elsif PARAM.TY = DN_IN_OUT then
-      CODE_IN_OUT ( PARAM );
-
-    end if;
-
-    declare
-      ID_LIST	: SEQ_TYPE	:= LIST( D( AS_SOURCE_NAME_S, PARAM ) );
-      ID		: TREE;
-    begin
-      while not IS_EMPTY( ID_LIST ) loop
-        POP( ID_LIST, ID );
-
-        DI( CD_LEVEL, ID, INTEGER( CODI.CUR_LEVEL ) );
-
-        PUT_LINE( "  virtual PRM" );
-        PUT_LINE( "    " & PRINT_NAME( D( LX_SYMREP, ID ) ) & "_adrofs = $" );
-        PUT_LINE( "    dq ?" );
-        PUT_LINE( "  end virtual" );
-      end loop;
-    end;
-
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_IN ( ADA_IN :TREE ) is
-  begin
-    if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- param in ---------- " ); end if;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_IN_OUT ( ADA_IN_OUT :TREE ) is
-  begin
-    if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- param in out ---------- " ); end if;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_OUT ( ADA_OUT :TREE ) is
-  begin
-    if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- param out ---------- " ); end if;
-  end;
 
   --|-------------------------------------------------------------------------------------------
 
@@ -1161,12 +1084,11 @@ is
        when DN_VARIABLE_ID =>
          LOAD_ADR( OBJECT );
        when DN_IN_ID =>
-PUT_LINE( tab & "LDA " & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, OBJECT ) ) );
---         EMIT ( PLA, INTEGER( LEVEL_NUM( DI ( CD_LEVEL, OBJECT ) ) - CUR_LEVEL ), DI ( CD_OFFSET, OBJECT ),
---                      "EMPILE ADRESSE DE PARAM IN" );
+	PUT_LINE( tab & "LDA " & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, OBJECT ) ) );
+
        when DN_IN_OUT_ID | DN_OUT_ID =>
-         EMIT ( PLA, INTEGER( LEVEL_NUM( DI ( CD_LEVEL, OBJECT ) ) - CUR_LEVEL), DI ( CD_VAL_OFFSET, OBJECT ),
-                      "EMPILE ADRESSE PARAM IN_OUT/OUT" );
+	PUT_LINE( tab & "LDA " & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, OBJECT ) ) );
+
        when DN_INDEXED =>
          EXPRESSIONS.CODE_INDEXED ( OBJECT );
        when DN_USED_OBJECT_ID =>
@@ -1344,16 +1266,6 @@ PUT_LINE( tab & "LDA " & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) & ',' & tab & P
   begin
     null;
   end;
-
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_PROCEDURE_CALL ( PROCEDURE_CALL :TREE ) is
-  begin
-
-
-    null;
-  end;
-
-  --|-------------------------------------------------------------------------------------------
 
   --|-------------------------------------------------------------------------------------------
   procedure CODE_PACKAGE_ID ( PACKAGE_ID :TREE ) is
