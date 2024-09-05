@@ -10,13 +10,13 @@ elab:
   virtual VAR
     align_q
     MSG_disp = $
-    dq	MSG_ptr
+    dq ?
   end virtual
 ;	---------- constante string ---------- 
   postpone
-    dd	1, 9
+    dd	1, 18
     MSG_ptr = $
-    db	'Bonjour'
+    db	'Salut les gars !'
   end postpone
 	LCA	MSG_ptr
 	STQ	 1,	MSG_disp

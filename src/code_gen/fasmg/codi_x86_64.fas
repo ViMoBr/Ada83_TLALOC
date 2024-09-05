@@ -104,7 +104,7 @@ end macro
 ;			-------------
 macro			LCA?	ptr		; Load Constant Address
 ;			-------------
-  db 0x48, 0x8B, 0x04, 0x25				; mov rax, qword ptr [ptr]
+  db 0x48, 0x8D, 0x04, 0x25				; lea rax, qword ptr [ptr]
   dd ptr
   db 0x50						; push rax
 end macro
@@ -114,7 +114,7 @@ end macro
 ;				--------------------------------------------------------------------------------
 
 ;			-------------------
-macro			LDb?	lvl, disp		; Load BYTE (paramètres ou variables locales)
+macro			LDB?	lvl, disp		; Load BYTE (paramètres ou variables locales)
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
     ofs = -disp					; pile croissante vers adresses decroissantes
@@ -131,7 +131,7 @@ macro			LDb?	lvl, disp		; Load BYTE (paramètres ou variables locales)
 end macro
 
 ;			-------------------
-macro			ILDb?	lvl, disp		; INDIRECT Load BYTE (paramètres ou variables locales)
+macro			ILDB?	lvl, disp		; INDIRECT Load BYTE (paramètres ou variables locales)
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   if disp > -128 & disp < 127
@@ -147,7 +147,7 @@ macro			ILDb?	lvl, disp		; INDIRECT Load BYTE (paramètres ou variables locales)
 end macro
 
 ;			-------------------
-macro			LDw?	lvl, disp		; Load WORD 16 bits
+macro			LDW?	lvl, disp		; Load WORD 16 bits
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
     ofs = -disp					; pile croissante vers adresses decroissantes
@@ -164,7 +164,7 @@ macro			LDw?	lvl, disp		; Load WORD 16 bits
 end macro
 
 ;			-------------------
-macro			ILDw?	lvl, disp		; INDIRECT Load WORD (paramètres ou variables locales)
+macro			ILDW?	lvl, disp		; INDIRECT Load WORD (paramètres ou variables locales)
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   if disp > -128 & disp < 127
@@ -180,7 +180,7 @@ macro			ILDw?	lvl, disp		; INDIRECT Load WORD (paramètres ou variables locales)
 end macro
 
 ;			-------------------
-macro			LDd?	lvl, disp		; Load DOUBLEWORD 32 bits
+macro			LDD?	lvl, disp		; Load DOUBLEWORD 32 bits
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
     ofs = -disp					; pile croissante vers adresses decroissantes
@@ -197,7 +197,7 @@ macro			LDd?	lvl, disp		; Load DOUBLEWORD 32 bits
 end macro
 
 ;			-------------------
-macro			ILDd?	lvl, disp		; INDIRECT Load DOUBLEWORD
+macro			ILDD?	lvl, disp		; INDIRECT Load DOUBLEWORD
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   if disp > -128 & disp < 127
@@ -213,7 +213,7 @@ macro			ILDd?	lvl, disp		; INDIRECT Load DOUBLEWORD
 end macro
 
 ;			-------------------
-macro			LDq?	lvl, disp		; Load QUADWORD 64 bits
+macro			LDQ?	lvl, disp		; Load QUADWORD 64 bits
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   ofs = -disp					; pile croissante vers adresses decroissantes
@@ -230,7 +230,7 @@ macro			LDq?	lvl, disp		; Load QUADWORD 64 bits
 end macro
 
 ;			-------------------
-macro			ILDq?	lvl, disp		; INDIRECT Load QUADWORD
+macro			ILDQ?	lvl, disp		; INDIRECT Load QUADWORD
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   if disp > -128 & disp < 127
@@ -267,7 +267,7 @@ end macro
 ;				--------------------------------------------------------------------------------
 
 ;			-------------------
-macro			STb?	lvl, disp		; Store BYTE (paramètres ou variables locales)
+macro			STB?	lvl, disp		; Store BYTE (paramètres ou variables locales)
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   ofs = -disp					; pile croissante vers adresses decroissantes
@@ -283,7 +283,7 @@ macro			STb?	lvl, disp		; Store BYTE (paramètres ou variables locales)
 end macro
 
 ;			-------------------
-macro			ISTb?	lvl, disp		; INDIRECT Store BYTE (paramètres ou variables locales)
+macro			ISTB?	lvl, disp		; INDIRECT Store BYTE (paramètres ou variables locales)
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   db 0x5B						; pop rbx
@@ -299,7 +299,7 @@ macro			ISTb?	lvl, disp		; INDIRECT Store BYTE (paramètres ou variables locales
 end macro
 
 ;			-------------------
-macro			STw?	lvl, disp		; Store WORD 16 bits (paramètres ou variables locales)
+macro			STW?	lvl, disp		; Store WORD 16 bits (paramètres ou variables locales)
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   ofs = -disp					; pile croissante vers adresses decroissantes
@@ -315,7 +315,7 @@ macro			STw?	lvl, disp		; Store WORD 16 bits (paramètres ou variables locales)
 end macro
 
 ;			-------------------
-macro			ISTw?	lvl, disp		; INDIRECT Store WORD (paramètres ou variables locales)
+macro			ISTW?	lvl, disp		; INDIRECT Store WORD (paramètres ou variables locales)
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   db 0x5B						; pop rbx
@@ -331,7 +331,7 @@ macro			ISTw?	lvl, disp		; INDIRECT Store WORD (paramètres ou variables locales
 end macro
 
 ;			-------------------
-macro			STd?	lvl, disp		; Store DOUBLEWORD (paramètres ou variables locales)
+macro			STD?	lvl, disp		; Store DOUBLEWORD (paramètres ou variables locales)
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   ofs = -disp					; pile croissante vers adresses decroissantes
@@ -347,7 +347,7 @@ macro			STd?	lvl, disp		; Store DOUBLEWORD (paramètres ou variables locales)
 end macro
 
 ;			-------------------
-macro			ISTd?	lvl, disp		; INDIRECT Store DOUBLEWORD (paramètres ou variables locales)
+macro			ISTD?	lvl, disp		; INDIRECT Store DOUBLEWORD (paramètres ou variables locales)
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   db 0x5B						; pop rbx
@@ -363,7 +363,7 @@ macro			ISTd?	lvl, disp		; INDIRECT Store DOUBLEWORD (paramètres ou variables l
 end macro
 
 ;			-------------------
-macro			STq?	lvl, disp		; Store address QUADWORD (paramètres ou variables locales)
+macro			STQ?	lvl, disp		; Store address QUADWORD (paramètres ou variables locales)
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   ofs = -disp					; pile croissante vers adresses decroissantes
@@ -379,7 +379,7 @@ macro			STq?	lvl, disp		; Store address QUADWORD (paramètres ou variables local
 end macro
 
 ;			-------------------
-macro			ISTq?	lvl, disp		; INDIRECT Store QUADWORD (paramètres ou variables locales)
+macro			ISTQ?	lvl, disp		; INDIRECT Store QUADWORD (paramètres ou variables locales)
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   db 0x5B						; pop rbx

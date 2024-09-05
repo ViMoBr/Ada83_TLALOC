@@ -185,8 +185,11 @@ PUT_LINE( "; RFP" & tab & SUBP_LBL );
 				-----------------
   procedure			CODE_PACKAGE_BODY		( PACKAGE_BODY :TREE )
   is
-    PACK_NAME	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, D( AS_SOURCE_NAME, PACKAGE_BODY ) ) );
+    PACK_ID	: TREE		:= D( AS_SOURCE_NAME, PACKAGE_BODY );
+    PACK_NAME	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, PACK_ID ) );
+    PACK_DEF	: TREE		:= D( SM_FIRST, PACK_ID );
   begin
+    if PACK_DEF.TY = DN_GENERIC_ID then return; end if;
 
     if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- PACKAGE ---------- " ); end if;
     PUT_LINE( "namespace " & PACK_NAME );

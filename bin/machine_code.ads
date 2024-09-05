@@ -4,9 +4,11 @@
 
 is
 
-  type ASM_OPCODE		is (ET, OU, NON, OUX, SYSCALL, PUT_STR, DB, LDI, LINK, UNLINK,
-			    LDB, LDW, LDD, LDQ, ILDB, ILDW, ILDD, ILDQ,
-			    STB, STW, STD, STA);
+  type ASM_OPCODE		is (ET,	OU,	NON,	OUX,	SYSCALL,	PUT_STR,
+			    DB,	LDI,	LCA,	LINK,	UNLINK,
+			    LDB,	LDW,	LDD,	LDQ,	ILDB,	ILDW,	ILDD,	ILDQ,
+			    STB,	STW,	STD,	STQ
+			   );
 
   subtype ASM_OPCODE_0	is ASM_OPCODE range ET .. PUT_STR;
   subtype ASM_OPCODE_1	is ASM_OPCODE range DB .. UNLINK;
