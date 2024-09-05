@@ -123,42 +123,60 @@ PUT_LINE( "; RFP" & tab & SUBP_LBL );
 				--------------------
   procedure			CODE_SUBPROGRAM_BODY	( SUBPROGRAM_BODY :TREE )
   is
-    LBL	: LABEL_TYPE	:= NEW_LABEL;
+    LBL	: LABEL_TYPE;
+    SOURCE_NAME		: TREE		:= D( AS_SOURCE_NAME, SUBPROGRAM_BODY );
+    SUB_NAME		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, SOURCE_NAME ) );
+    DECL_ID		: TREE		:= D( SM_FIRST, SOURCE_NAME );
+    POST_LBL 		:constant STRING	:= NEW_LABEL;
+    SAVE_ENCLOSING	: TREE	:= ENCLOSING_BODY;
   begin
-    declare
-      SOURCE_NAME		: TREE		:= D( AS_SOURCE_NAME, SUBPROGRAM_BODY );
-      SUB_NAME		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, SOURCE_NAME ) );
-    begin
 
-      INC_LEVEL;
+    INC_LEVEL;
+    if DECL_ID = SOURCE_NAME then
+      LBL := NEW_LABEL;
       DI( CD_LEVEL, SOURCE_NAME, INTEGER( CODI.CUR_LEVEL ) );
-      DI( CD_LABEL, SOURCE_NAME, INTEGER( LBL ) );
+    else
+      LBL := LABEL_TYPE( DI( CD_LABEL, DECL_ID ) );
+      DI( CD_LEVEL, SOURCE_NAME, DI( CD_LEVEL, DECL_ID ) );
+    end if;
 
-      if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- SOUS-PROGRAMME ---------- " ); end if;
-      PUT_LINE( "namespace " & SUB_NAME & '_' & LABEL_STR( LBL ) );
+    DI( CD_LABEL, SOURCE_NAME, INTEGER( LBL ) );
 
-      DECLARATIONS.CODE_HEADER( D( AS_HEADER, SUBPROGRAM_BODY ) );
 
-      PUT_LINE( "elab:" );
-      PUT_LINE( "  virtual at 0" );
-      PUT_LINE( "    VAR::" );
-      PUT_LINE( "  end virtual" );
-      PUT_LINE( tab & "LINK" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & ',' & tab & "loc_siz" );
+    if ENCLOSING_BODY /= TREE_VOID then
+      PUT_LINE( "if defined " & SUB_NAME & '_' & LABEL_STR( LBL ) & '_' );
+      PUT_LINE( tab & "BRA" & tab & POST_LBL );
+    end if;
 
-      ENCLOSING_BODY := SUBPROGRAM_BODY;
-      CODE_BODY( D( AS_BODY, SUBPROGRAM_BODY ) );
+    if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- SOUS-PROGRAMME ---------- " ); end if;
+    PUT_LINE( "namespace " & SUB_NAME & '_' & LABEL_STR( LBL ) );
 
-      PUT_LINE( tab & "UNLINK" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );
-      PUT_LINE( tab & "RTD" ); --& INTEGER'IMAGE( PARAM_SIZ ) );
-      PUT_LINE( "excep:" );
-      if CODI.DEBUG then
-        PUT_LINE( ';' & tab & "---------- end sub " & SUB_NAME & " ----------" );
-      end if;
-      PUT_LINE( "end namespace " );
+    DECLARATIONS.CODE_HEADER( D( AS_HEADER, SUBPROGRAM_BODY ) );
 
-      DEC_LEVEL;
+    PUT_LINE( "elab:" );
+    PUT_LINE( "  virtual at 0" );
+    PUT_LINE( "    VAR::" );
+    PUT_LINE( "  end virtual" );
+    PUT_LINE( tab & "LINK" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & ',' & tab & "loc_siz" );
 
-    end;
+    ENCLOSING_BODY := SUBPROGRAM_BODY;
+    CODE_BODY( D( AS_BODY, SUBPROGRAM_BODY ) );
+
+    PUT_LINE( tab & "UNLINK" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );
+    PUT_LINE( tab & "RTD" ); --& INTEGER'IMAGE( PARAM_SIZ ) );
+    PUT_LINE( "excep:" );
+    if CODI.DEBUG then
+      PUT_LINE( ';' & tab & "---------- end sub " & SUB_NAME & " ----------" );
+    end if;
+    PUT_LINE( "end namespace " );
+
+    DEC_LEVEL;
+    ENCLOSING_BODY := SAVE_ENCLOSING;
+    if ENCLOSING_BODY /= TREE_VOID then
+      PUT_LINE( POST_LBL & ':' );
+      PUT_LINE( "end if" );
+    end if;
+
   end	CODE_SUBPROGRAM_BODY;
 	--------------------
 
@@ -232,6 +250,7 @@ PUT_LINE( "; RFP" & tab & SUBP_LBL );
     end;
 
     if ENCLOSING_BODY.TY = DN_SUBPROGRAM_BODY then
+      if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- calcul taille variables ---------- " ); end if;
       PUT_LINE( "  virtual VAR" );
       PUT_LINE( "    loc_siz = $" );
       PUT_LINE( "  end virtual" );
@@ -293,11 +312,11 @@ PUT_LINE( "; RFP" & tab & SUBP_LBL );
 			-----------------
   procedure		CODE_SUBUNIT_BODY		( SUBUNIT_BODY :TREE )
   is
-    POST_LBL :constant STRING	:= NEW_LABEL;
+ --   POST_LBL :constant STRING	:= NEW_LABEL;
   begin
-    if ENCLOSING_BODY /= TREE_VOID then
-      PUT_LINE( tab & "BRA" & tab & POST_LBL );
-    end if;
+--    if ENCLOSING_BODY /= TREE_VOID then
+--      PUT_LINE( tab & "BRA" & tab & POST_LBL );
+--    end if;
 
     if SUBUNIT_BODY.TY = DN_SUBPROGRAM_BODY then
       CODE_SUBPROGRAM_BODY ( SUBUNIT_BODY );
@@ -310,9 +329,9 @@ PUT_LINE( "; RFP" & tab & SUBP_LBL );
 
     end if;
 
-    if ENCLOSING_BODY /= TREE_VOID then
-      PUT_LINE( POST_LBL & ':' );
-    end if;
+--    if ENCLOSING_BODY /= TREE_VOID then
+--      PUT_LINE( POST_LBL & ':' );
+--    end if;
 
   end	CODE_SUBUNIT_BODY;
 	-----------------

@@ -1,3 +1,4 @@
+include 'MACHINE_CODE.BDY.COD'
 ;	---------- PACKAGE ---------- 
 namespace TEXT_IO
 elab_spec:
@@ -19,1269 +20,2033 @@ elab_spec:
   end virtual
 	LDI	 0
 	STw  0,	UNBOUNDED_disp
-
-;	---------- package bdy ----------
-	BRA	L1
+if defined CREATE_L1_
+	BRA	L61
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace CREATE_L2
+namespace CREATE_L1
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in out ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    MODE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    NAME_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FORM_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub CREATE ----------
 end namespace 
-L1:
-	BRA	L3
+L61:
+end if
+if defined OPEN_L2_
+	BRA	L62
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace OPEN_L4
+namespace OPEN_L2
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in out ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    MODE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    NAME_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FORM_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub OPEN ----------
 end namespace 
-L3:
-	BRA	L5
+L62:
+end if
+if defined CLOSE_L3_
+	BRA	L63
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace CLOSE_L6
+namespace CLOSE_L3
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in out ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub CLOSE ----------
 end namespace 
-L5:
-	BRA	L7
+L63:
+end if
+if defined DELETE_L4_
+	BRA	L64
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace DELETE_L8
+namespace DELETE_L4
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in out ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub DELETE ----------
 end namespace 
-L7:
-	BRA	L9
+L64:
+end if
+if defined RESET_L5_
+	BRA	L65
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace RESET_L10
+namespace RESET_L5
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in out ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    MODE_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub RESET ----------
 end namespace 
-L9:
-	BRA	L11
+L65:
+end if
+if defined RESET_L6_
+	BRA	L66
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace RESET_L12
+namespace RESET_L6
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in out ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub RESET ----------
 end namespace 
-L11:
-	BRA	L13
+L66:
+end if
+if defined MODE_L7_
+	BRA	L67
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace MODE_L14
+namespace MODE_L7
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub MODE ----------
 end namespace 
-L13:
-	BRA	L15
+L67:
+end if
+if defined NAME_L8_
+	BRA	L68
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace NAME_L16
+namespace NAME_L8
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub NAME ----------
 end namespace 
-L15:
-	BRA	L17
+L68:
+end if
+if defined FORM_L9_
+	BRA	L69
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace FORM_L18
+namespace FORM_L9
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub FORM ----------
 end namespace 
-L17:
-	BRA	L19
+L69:
+end if
+if defined IS_OPEN_L10_
+	BRA	L70
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace IS_OPEN_L20
+namespace IS_OPEN_L10
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub IS_OPEN ----------
 end namespace 
-L19:
-	BRA	L21
+L70:
+end if
+if defined SET_INPUT_L11_
+	BRA	L71
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace SET_INPUT_L22
+namespace SET_INPUT_L11
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub SET_INPUT ----------
 end namespace 
-L21:
-	BRA	L23
+L71:
+end if
+if defined SET_OUTPUT_L12_
+	BRA	L72
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace SET_OUTPUT_L24
+namespace SET_OUTPUT_L12
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub SET_OUTPUT ----------
 end namespace 
-L23:
-	BRA	L25
+L72:
+end if
+if defined STANDARD_INPUT_L13_
+	BRA	L73
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace STANDARD_INPUT_L26
+namespace STANDARD_INPUT_L13
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub STANDARD_INPUT ----------
 end namespace 
-L25:
-	BRA	L27
+L73:
+end if
+if defined STANDARD_OUTPUT_L14_
+	BRA	L74
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace STANDARD_OUTPUT_L28
+namespace STANDARD_OUTPUT_L14
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub STANDARD_OUTPUT ----------
 end namespace 
-L27:
-	BRA	L29
+L74:
+end if
+if defined CURRENT_INPUT_L15_
+	BRA	L75
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace CURRENT_INPUT_L30
+namespace CURRENT_INPUT_L15
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub CURRENT_INPUT ----------
 end namespace 
-L29:
-	BRA	L31
+L75:
+end if
+if defined CURRENT_OUTPUT_L16_
+	BRA	L76
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace CURRENT_OUTPUT_L32
+namespace CURRENT_OUTPUT_L16
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub CURRENT_OUTPUT ----------
 end namespace 
-L31:
-	BRA	L33
-;	---------- SOUS-PROGRAMME ---------- 
-namespace SET_LINE_LENGTH_L34
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub SET_LINE_LENGTH ----------
-end namespace 
-L33:
-	BRA	L35
-;	---------- SOUS-PROGRAMME ---------- 
-namespace SET_LINE_LENGTH_L36
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub SET_LINE_LENGTH ----------
-end namespace 
-L35:
-	BRA	L37
-;	---------- SOUS-PROGRAMME ---------- 
-namespace SET_PAGE_LENGTH_L38
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub SET_PAGE_LENGTH ----------
-end namespace 
-L37:
-	BRA	L39
-;	---------- SOUS-PROGRAMME ---------- 
-namespace SET_PAGE_LENGTH_L40
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub SET_PAGE_LENGTH ----------
-end namespace 
-L39:
-	BRA	L41
-;	---------- SOUS-PROGRAMME ---------- 
-namespace LINE_LENGTH_L42
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub LINE_LENGTH ----------
-end namespace 
-L41:
-	BRA	L43
-;	---------- SOUS-PROGRAMME ---------- 
-namespace LINE_LENGTH_L44
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub LINE_LENGTH ----------
-end namespace 
-L43:
-	BRA	L45
-;	---------- SOUS-PROGRAMME ---------- 
-namespace PAGE_LENGTH_L46
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub PAGE_LENGTH ----------
-end namespace 
-L45:
-	BRA	L47
-;	---------- SOUS-PROGRAMME ---------- 
-namespace PAGE_LENGTH_L48
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub PAGE_LENGTH ----------
-end namespace 
-L47:
-	BRA	L49
-;	---------- SOUS-PROGRAMME ---------- 
-namespace NEW_LINE_L50
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub NEW_LINE ----------
-end namespace 
-L49:
-	BRA	L51
-;	---------- SOUS-PROGRAMME ---------- 
-namespace NEW_LINE_L52
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub NEW_LINE ----------
-end namespace 
-L51:
-	BRA	L53
-;	---------- SOUS-PROGRAMME ---------- 
-namespace SKIP_LINE_L54
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub SKIP_LINE ----------
-end namespace 
-L53:
-	BRA	L55
-;	---------- SOUS-PROGRAMME ---------- 
-namespace SKIP_LINE_L56
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub SKIP_LINE ----------
-end namespace 
-L55:
-	BRA	L57
-;	---------- SOUS-PROGRAMME ---------- 
-namespace END_OF_LINE_L58
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub END_OF_LINE ----------
-end namespace 
-L57:
-	BRA	L59
-;	---------- SOUS-PROGRAMME ---------- 
-namespace END_OF_LINE_L60
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub END_OF_LINE ----------
-end namespace 
-L59:
-	BRA	L61
-;	---------- SOUS-PROGRAMME ---------- 
-namespace NEW_PAGE_L62
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub NEW_PAGE ----------
-end namespace 
-L61:
-	BRA	L63
-;	---------- SOUS-PROGRAMME ---------- 
-namespace NEW_PAGE_L64
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub NEW_PAGE ----------
-end namespace 
-L63:
-	BRA	L65
-;	---------- SOUS-PROGRAMME ---------- 
-namespace SKIP_PAGE_L66
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub SKIP_PAGE ----------
-end namespace 
-L65:
-	BRA	L67
-;	---------- SOUS-PROGRAMME ---------- 
-namespace SKIP_PAGE_L68
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub SKIP_PAGE ----------
-end namespace 
-L67:
-	BRA	L69
-;	---------- SOUS-PROGRAMME ---------- 
-namespace END_OF_PAGE_L70
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub END_OF_PAGE ----------
-end namespace 
-L69:
-	BRA	L71
-;	---------- SOUS-PROGRAMME ---------- 
-namespace END_OF_PAGE_L72
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub END_OF_PAGE ----------
-end namespace 
-L71:
-	BRA	L73
-;	---------- SOUS-PROGRAMME ---------- 
-namespace END_OF_FILE_L74
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub END_OF_FILE ----------
-end namespace 
-L73:
-	BRA	L75
-;	---------- SOUS-PROGRAMME ---------- 
-namespace END_OF_FILE_L76
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub END_OF_FILE ----------
-end namespace 
-L75:
+L76:
+end if
+if defined SET_LINE_LENGTH_L17_
 	BRA	L77
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace SET_COL_L78
+namespace SET_LINE_LENGTH_L17
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    TO_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
-;	---------- end sub SET_COL ----------
+;	---------- end sub SET_LINE_LENGTH ----------
 end namespace 
 L77:
-	BRA	L79
+end if
+if defined SET_LINE_LENGTH_L18_
+	BRA	L78
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace SET_COL_L80
+namespace SET_LINE_LENGTH_L18
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    TO_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub SET_LINE_LENGTH ----------
+end namespace 
+L78:
+end if
+if defined SET_PAGE_LENGTH_L19_
+	BRA	L79
+;	---------- SOUS-PROGRAMME ---------- 
+namespace SET_PAGE_LENGTH_L19
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    TO_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub SET_PAGE_LENGTH ----------
+end namespace 
+L79:
+end if
+if defined SET_PAGE_LENGTH_L20_
+	BRA	L80
+;	---------- SOUS-PROGRAMME ---------- 
+namespace SET_PAGE_LENGTH_L20
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    TO_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub SET_PAGE_LENGTH ----------
+end namespace 
+L80:
+end if
+if defined LINE_LENGTH_L21_
+	BRA	L81
+;	---------- SOUS-PROGRAMME ---------- 
+namespace LINE_LENGTH_L21
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub LINE_LENGTH ----------
+end namespace 
+L81:
+end if
+if defined LINE_LENGTH_L22_
+	BRA	L82
+;	---------- SOUS-PROGRAMME ---------- 
+namespace LINE_LENGTH_L22
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub LINE_LENGTH ----------
+end namespace 
+L82:
+end if
+if defined PAGE_LENGTH_L23_
+	BRA	L83
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PAGE_LENGTH_L23
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PAGE_LENGTH ----------
+end namespace 
+L83:
+end if
+if defined PAGE_LENGTH_L24_
+	BRA	L84
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PAGE_LENGTH_L24
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PAGE_LENGTH ----------
+end namespace 
+L84:
+end if
+if defined NEW_LINE_L25_
+	BRA	L85
+;	---------- SOUS-PROGRAMME ---------- 
+namespace NEW_LINE_L25
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    SPACING_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub NEW_LINE ----------
+end namespace 
+L85:
+end if
+if defined NEW_LINE_L26_
+	BRA	L86
+;	---------- SOUS-PROGRAMME ---------- 
+namespace NEW_LINE_L26
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    SPACING_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub NEW_LINE ----------
+end namespace 
+L86:
+end if
+if defined SKIP_LINE_L27_
+	BRA	L87
+;	---------- SOUS-PROGRAMME ---------- 
+namespace SKIP_LINE_L27
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    SPACING_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub SKIP_LINE ----------
+end namespace 
+L87:
+end if
+if defined SKIP_LINE_L28_
+	BRA	L88
+;	---------- SOUS-PROGRAMME ---------- 
+namespace SKIP_LINE_L28
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    SPACING_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub SKIP_LINE ----------
+end namespace 
+L88:
+end if
+if defined END_OF_LINE_L29_
+	BRA	L89
+;	---------- SOUS-PROGRAMME ---------- 
+namespace END_OF_LINE_L29
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub END_OF_LINE ----------
+end namespace 
+L89:
+end if
+if defined END_OF_LINE_L30_
+	BRA	L90
+;	---------- SOUS-PROGRAMME ---------- 
+namespace END_OF_LINE_L30
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub END_OF_LINE ----------
+end namespace 
+L90:
+end if
+if defined NEW_PAGE_L31_
+	BRA	L91
+;	---------- SOUS-PROGRAMME ---------- 
+namespace NEW_PAGE_L31
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub NEW_PAGE ----------
+end namespace 
+L91:
+end if
+if defined NEW_PAGE_L32_
+	BRA	L92
+;	---------- SOUS-PROGRAMME ---------- 
+namespace NEW_PAGE_L32
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub NEW_PAGE ----------
+end namespace 
+L92:
+end if
+if defined SKIP_PAGE_L33_
+	BRA	L93
+;	---------- SOUS-PROGRAMME ---------- 
+namespace SKIP_PAGE_L33
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub SKIP_PAGE ----------
+end namespace 
+L93:
+end if
+if defined SKIP_PAGE_L34_
+	BRA	L94
+;	---------- SOUS-PROGRAMME ---------- 
+namespace SKIP_PAGE_L34
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub SKIP_PAGE ----------
+end namespace 
+L94:
+end if
+if defined END_OF_PAGE_L35_
+	BRA	L95
+;	---------- SOUS-PROGRAMME ---------- 
+namespace END_OF_PAGE_L35
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub END_OF_PAGE ----------
+end namespace 
+L95:
+end if
+if defined END_OF_PAGE_L36_
+	BRA	L96
+;	---------- SOUS-PROGRAMME ---------- 
+namespace END_OF_PAGE_L36
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub END_OF_PAGE ----------
+end namespace 
+L96:
+end if
+if defined END_OF_FILE_L37_
+	BRA	L97
+;	---------- SOUS-PROGRAMME ---------- 
+namespace END_OF_FILE_L37
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub END_OF_FILE ----------
+end namespace 
+L97:
+end if
+if defined END_OF_FILE_L38_
+	BRA	L98
+;	---------- SOUS-PROGRAMME ---------- 
+namespace END_OF_FILE_L38
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub END_OF_FILE ----------
+end namespace 
+L98:
+end if
+if defined SET_COL_L39_
+	BRA	L99
+;	---------- SOUS-PROGRAMME ---------- 
+namespace SET_COL_L39
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    TO_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub SET_COL ----------
 end namespace 
-L79:
-	BRA	L81
-;	---------- SOUS-PROGRAMME ---------- 
-namespace SET_LINE_L82
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub SET_LINE ----------
-end namespace 
-L81:
-	BRA	L83
-;	---------- SOUS-PROGRAMME ---------- 
-namespace SET_LINE_L84
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub SET_LINE ----------
-end namespace 
-L83:
-	BRA	L85
-;	---------- SOUS-PROGRAMME ---------- 
-namespace COL_L86
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub COL ----------
-end namespace 
-L85:
-	BRA	L87
-;	---------- SOUS-PROGRAMME ---------- 
-namespace COL_L88
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub COL ----------
-end namespace 
-L87:
-	BRA	L89
-;	---------- SOUS-PROGRAMME ---------- 
-namespace LINE_L90
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub LINE ----------
-end namespace 
-L89:
-	BRA	L91
-;	---------- SOUS-PROGRAMME ---------- 
-namespace LINE_L92
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub LINE ----------
-end namespace 
-L91:
-	BRA	L93
-;	---------- SOUS-PROGRAMME ---------- 
-namespace PAGE_L94
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub PAGE ----------
-end namespace 
-L93:
-	BRA	L95
-;	---------- SOUS-PROGRAMME ---------- 
-namespace PAGE_L96
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub PAGE ----------
-end namespace 
-L95:
-	BRA	L97
-;	---------- SOUS-PROGRAMME ---------- 
-namespace GET_L98
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub GET ----------
-end namespace 
-L97:
-	BRA	L99
-;	---------- SOUS-PROGRAMME ---------- 
-namespace GET_L100
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub GET ----------
-end namespace 
 L99:
+end if
+if defined SET_COL_L40_
+	BRA	L100
+;	---------- SOUS-PROGRAMME ---------- 
+namespace SET_COL_L40
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    TO_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub SET_COL ----------
+end namespace 
+L100:
+end if
+if defined SET_LINE_L41_
 	BRA	L101
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace PUT_L102
+namespace SET_LINE_L41
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    TO_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
-;	---------- end sub PUT ----------
+;	---------- end sub SET_LINE ----------
 end namespace 
 L101:
+end if
+if defined SET_LINE_L42_
+	BRA	L102
+;	---------- SOUS-PROGRAMME ---------- 
+namespace SET_LINE_L42
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    TO_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub SET_LINE ----------
+end namespace 
+L102:
+end if
+if defined COL_L43_
 	BRA	L103
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace PUT_L104
+namespace COL_L43
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
-;	---------- end sub PUT ----------
+;	---------- end sub COL ----------
 end namespace 
 L103:
+end if
+if defined COL_L44_
+	BRA	L104
+;	---------- SOUS-PROGRAMME ---------- 
+namespace COL_L44
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub COL ----------
+end namespace 
+L104:
+end if
+if defined LINE_L45_
 	BRA	L105
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace GET_L106
+namespace LINE_L45
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
-;	---------- end sub GET ----------
+;	---------- end sub LINE ----------
 end namespace 
 L105:
-	BRA	L107
+end if
+if defined LINE_L46_
+	BRA	L106
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace GET_L108
+namespace LINE_L46
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub LINE ----------
+end namespace 
+L106:
+end if
+if defined PAGE_L47_
+	BRA	L107
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PAGE_L47
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PAGE ----------
+end namespace 
+L107:
+end if
+if defined PAGE_L48_
+	BRA	L108
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PAGE_L48
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PAGE ----------
+end namespace 
+L108:
+end if
+if defined GET_L49_
+	BRA	L109
+;	---------- SOUS-PROGRAMME ---------- 
+namespace GET_L49
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub GET ----------
 end namespace 
-L107:
-	BRA	L109
+L109:
+end if
+if defined GET_L50_
+	BRA	L110
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace PUT_L110
+namespace GET_L50
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
-;	---------- end sub PUT ----------
+;	---------- end sub GET ----------
 end namespace 
-L109:
+L110:
+end if
+if defined PUT_L51_
 	BRA	L111
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace PUT_L112
+namespace PUT_L51
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub PUT ----------
 end namespace 
 L111:
+end if
+if defined PUT_L52_
+	BRA	L112
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PUT_L52
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PUT ----------
+end namespace 
+L112:
+end if
+if defined GET_L53_
 	BRA	L113
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace GET_LINE_L114
+namespace GET_L53
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
-;	---------- end sub GET_LINE ----------
+;	---------- end sub GET ----------
 end namespace 
 L113:
-	BRA	L115
+end if
+if defined GET_L54_
+	BRA	L114
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace GET_LINE_L116
+namespace GET_L54
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub GET ----------
+end namespace 
+L114:
+end if
+if defined PUT_L55_
+	BRA	L115
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PUT_L55
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PUT ----------
+end namespace 
+L115:
+end if
+if defined PUT_L56_
+	BRA	L116
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PUT_L56
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	ILDQ	1,	16
+	PUT_STR
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PUT ----------
+end namespace 
+L116:
+end if
+if defined GET_LINE_L57_
+	BRA	L117
+;	---------- SOUS-PROGRAMME ---------- 
+namespace GET_LINE_L57
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    LAST_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub GET_LINE ----------
 end namespace 
-L115:
-	BRA	L117
+L117:
+end if
+if defined GET_LINE_L58_
+	BRA	L118
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace PUT_LINE_L118
+namespace GET_LINE_L58
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    LAST_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
-;	---------- end sub PUT_LINE ----------
+;	---------- end sub GET_LINE ----------
 end namespace 
-L117:
+L118:
+end if
+if defined PUT_LINE_L59_
 	BRA	L119
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace PUT_LINE_L120
+namespace PUT_LINE_L59
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub PUT_LINE ----------
 end namespace 
 L119:
-	BRA	L121
+end if
+if defined PUT_LINE_L60_
+	BRA	L120
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PUT_LINE_L60
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	ILDQ	1,	16
+	PUT_STR
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PUT_LINE ----------
+end namespace 
+L120:
+end if
 ;	---------- PACKAGE ---------- 
 namespace INTEGER_IO
 elab_spec:
@@ -1292,7 +2057,6 @@ elab_spec:
     dw ?
   end virtual
 	STw  0,	DEFAULT_WIDTH_disp
-
 ;	---------- variable entiere ---------- 
   virtual VAR
     align_w
@@ -1301,141 +2065,281 @@ elab_spec:
   end virtual
 	LDI	 10
 	STw  0,	DEFAULT_BASE_disp
-
-;	---------- package bdy ----------
-	BRA	L122
+if defined GET_L121_
+	BRA	L127
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace GET_L123
+namespace GET_L121
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    WIDTH_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub GET ----------
 end namespace 
-L122:
-	BRA	L124
-;	---------- SOUS-PROGRAMME ---------- 
-namespace GET_L125
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub GET ----------
-end namespace 
-L124:
-	BRA	L126
-;	---------- SOUS-PROGRAMME ---------- 
-namespace PUT_L127
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub PUT ----------
-end namespace 
-L126:
+L127:
+end if
+if defined GET_L122_
 	BRA	L128
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace PUT_L129
+namespace GET_L122
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    WIDTH_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub PUT ----------
-end namespace 
-L128:
-	BRA	L130
-;	---------- SOUS-PROGRAMME ---------- 
-namespace GET_L131
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
 ;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub GET ----------
 end namespace 
-L130:
-	BRA	L132
+L128:
+end if
+if defined PUT_L123_
+	BRA	L129
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace PUT_L133
+namespace PUT_L123
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    WIDTH_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    BASE_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PUT ----------
+end namespace 
+L129:
+end if
+if defined PUT_L124_
+	BRA	L130
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PUT_L124
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    WIDTH_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    BASE_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PUT ----------
+end namespace 
+L130:
+end if
+if defined GET_L125_
+	BRA	L131
+;	---------- SOUS-PROGRAMME ---------- 
+namespace GET_L125
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FROM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    LAST_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub GET ----------
+end namespace 
+L131:
+end if
+if defined PUT_L126_
+	BRA	L132
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PUT_L126
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    TO_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    BASE_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub PUT ----------
 end namespace 
 L132:
+end if
+;	---------- package bdy ----------
 ;	---------- package bdy begin ----------
 begin:
-;  end exception bloc
 ;	---------- end package bdy INTEGER_IO ----------
 end namespace 
-L121:
-	BRA	L134
 ;	---------- PACKAGE ---------- 
 namespace FLOAT_IO
 elab_spec:
@@ -1447,7 +2351,6 @@ elab_spec:
   end virtual
 	LDI	 2
 	STw  0,	DEFAULT_FORE_disp
-
 ;	---------- variable entiere ---------- 
   virtual VAR
     align_w
@@ -1457,7 +2360,6 @@ elab_spec:
 	LDI	 1
 	SUB
 	STw  0,	DEFAULT_AFT_disp
-
 ;	---------- variable entiere ---------- 
   virtual VAR
     align_w
@@ -1466,141 +2368,296 @@ elab_spec:
   end virtual
 	LDI	 3
 	STw  0,	DEFAULT_EXP_disp
-
-;	---------- package bdy ----------
-	BRA	L135
-;	---------- SOUS-PROGRAMME ---------- 
-namespace GET_L136
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub GET ----------
-end namespace 
-L135:
-	BRA	L137
-;	---------- SOUS-PROGRAMME ---------- 
-namespace GET_L138
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub GET ----------
-end namespace 
-L137:
+if defined GET_L133_
 	BRA	L139
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace PUT_L140
+namespace GET_L133
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    WIDTH_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
-;	---------- end sub PUT ----------
+;	---------- end sub GET ----------
 end namespace 
 L139:
-	BRA	L141
+end if
+if defined GET_L134_
+	BRA	L140
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace PUT_L142
+namespace GET_L134
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    WIDTH_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub GET ----------
+end namespace 
+L140:
+end if
+if defined PUT_L135_
+	BRA	L141
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PUT_L135
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FORE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    AFT_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    EXP_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub PUT ----------
 end namespace 
 L141:
-	BRA	L143
+end if
+if defined PUT_L136_
+	BRA	L142
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace GET_L144
+namespace PUT_L136
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FORE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    AFT_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    EXP_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub PUT ----------
+end namespace 
+L142:
+end if
+if defined GET_L137_
+	BRA	L143
+;	---------- SOUS-PROGRAMME ---------- 
+namespace GET_L137
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FROM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    LAST_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub GET ----------
 end namespace 
 L143:
-	BRA	L145
+end if
+if defined PUT_L138_
+	BRA	L144
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace PUT_L146
+namespace PUT_L138
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    TO_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    AFT_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    EXP_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub PUT ----------
 end namespace 
-L145:
+L144:
+end if
+;	---------- package bdy ----------
 ;	---------- package bdy begin ----------
 begin:
-;  end exception bloc
 ;	---------- end package bdy FLOAT_IO ----------
 end namespace 
-L134:
-	BRA	L147
 ;	---------- PACKAGE ---------- 
 namespace FIXED_IO
 elab_spec:
@@ -1611,7 +2668,6 @@ elab_spec:
     dw ?
   end virtual
 	STw  0,	DEFAULT_FORE_disp
-
 ;	---------- variable entiere ---------- 
   virtual VAR
     align_w
@@ -1619,7 +2675,6 @@ elab_spec:
     dw ?
   end virtual
 	STw  0,	DEFAULT_AFT_disp
-
 ;	---------- variable entiere ---------- 
   virtual VAR
     align_w
@@ -1628,141 +2683,296 @@ elab_spec:
   end virtual
 	LDI	 0
 	STw  0,	DEFAULT_EXP_disp
-
-;	---------- package bdy ----------
-	BRA	L148
+if defined GET_L145_
+	BRA	L151
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace GET_L149
+namespace GET_L145
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    WIDTH_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub GET ----------
 end namespace 
-L148:
-	BRA	L150
-;	---------- SOUS-PROGRAMME ---------- 
-namespace GET_L151
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub GET ----------
-end namespace 
-L150:
+L151:
+end if
+if defined GET_L146_
 	BRA	L152
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace PUT_L153
+namespace GET_L146
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    WIDTH_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub GET ----------
+end namespace 
+L152:
+end if
+if defined PUT_L147_
+	BRA	L153
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PUT_L147
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FORE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    AFT_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    EXP_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub PUT ----------
 end namespace 
-L152:
+L153:
+end if
+if defined PUT_L148_
 	BRA	L154
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace PUT_L155
+namespace PUT_L148
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FORE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    AFT_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    EXP_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub PUT ----------
 end namespace 
 L154:
-	BRA	L156
+end if
+if defined GET_L149_
+	BRA	L155
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace GET_L157
+namespace GET_L149
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FROM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    LAST_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub GET ----------
 end namespace 
-L156:
-	BRA	L158
+L155:
+end if
+if defined PUT_L150_
+	BRA	L156
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace PUT_L159
+namespace PUT_L150
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    TO_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    AFT_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    EXP_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub PUT ----------
 end namespace 
-L158:
+L156:
+end if
+;	---------- package bdy ----------
 ;	---------- package bdy begin ----------
 begin:
-;  end exception bloc
 ;	---------- end package bdy FIXED_IO ----------
 end namespace 
-L147:
-	BRA	L160
 ;	---------- PACKAGE ---------- 
 namespace ENUMERATION_IO
 elab_spec:
@@ -1774,7 +2984,6 @@ elab_spec:
   end virtual
 	LDI	 0
 	STw  0,	DEFAULT_WIDTH_disp
-
 ;	---------- variable entiere ---------- 
   virtual VAR
     DEFAULT_SETTING_disp = $
@@ -1782,142 +2991,273 @@ elab_spec:
   end virtual
 	LDI	 1
 	STb  0,	DEFAULT_SETTING_disp
-
-;	---------- package bdy ----------
-	BRA	L161
-;	---------- SOUS-PROGRAMME ---------- 
-namespace GET_L162
-elab:
-  virtual at 0
-    VAR::
-  end virtual
-	LINK 1,	loc_siz
-
-;	---------- bdy ----------
-  virtual VAR
-    loc_siz = $
-  end virtual
-begin:
-;  end exception bloc
-	UNLINK 1
-	RTD
-excep:
-;	---------- end sub GET ----------
-end namespace 
-L161:
+if defined GET_L157_
 	BRA	L163
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace GET_L164
+namespace GET_L157
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub GET ----------
 end namespace 
 L163:
-	BRA	L165
+end if
+if defined GET_L158_
+	BRA	L164
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace PUT_L166
+namespace GET_L158
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
+	UNLINK 1
+	RTD
+excep:
+;	---------- end sub GET ----------
+end namespace 
+L164:
+end if
+if defined PUT_L159_
+	BRA	L165
+;	---------- SOUS-PROGRAMME ---------- 
+namespace PUT_L159
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FILE_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    WIDTH_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    SET_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
+elab:
+  virtual at 0
+    VAR::
+  end virtual
+	LINK 1,	loc_siz
+;	---------- calcul taille variables ---------- 
+  virtual VAR
+    loc_siz = $
+  end virtual
+;	---------- bdy ----------
+begin:
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub PUT ----------
 end namespace 
 L165:
-	BRA	L167
+end if
+if defined PUT_L160_
+	BRA	L166
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace PUT_L168
+namespace PUT_L160
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    WIDTH_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    SET_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub PUT ----------
 end namespace 
-L167:
-	BRA	L169
+L166:
+end if
+if defined GET_L161_
+	BRA	L167
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace GET_L170
+namespace GET_L161
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    FROM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    LAST_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub GET ----------
 end namespace 
-L169:
-	BRA	L171
+L167:
+end if
+if defined PUT_L162_
+	BRA	L168
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace PUT_L172
+namespace PUT_L162
+;	---------- debut parametrage ---------- 
+  virtual at 16
+    PRM::
+  end virtual
+;	---------- param out ---------- 
+  virtual PRM
+    TO_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    ITEM_adrofs = $
+    dq ?
+  end virtual
+;	---------- param in ---------- 
+  virtual PRM
+    SET_adrofs = $
+    dq ?
+  end virtual
+;	---------- fin parametrage ---------- 
+  virtual PRM
+    prm_siz = $
+  end virtual
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
 	UNLINK 1
 	RTD
 excep:
 ;	---------- end sub PUT ----------
 end namespace 
-L171:
+L168:
+end if
+;	---------- package bdy ----------
 ;	---------- package bdy begin ----------
 begin:
-;  end exception bloc
 ;	---------- end package bdy ENUMERATION_IO ----------
 end namespace 
-L160:
+;	---------- package bdy ----------
 ;	---------- package bdy begin ----------
 begin:
-;  end exception bloc
 ;	---------- end package bdy TEXT_IO ----------
 end namespace 

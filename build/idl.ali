@@ -104,8 +104,8 @@ D a-tiinio.adb		20230508121439 b79731f4 ada.text_io.integer_io%b
 D a-unccon.ads		20230508121439 0e9b276f ada.unchecked_conversion%s
 D diana_node_attr_class_names.ads  20240730152129 6d94ff6d diana_node_attr_class_names%s
 D directio.ads		20230508121439 d9b35108 direct_io%s
-D grmr_ops.ads		20231101164938 b71cdc9b grmr_ops%s
-D grmr_tbl.ads		20231031175013 a179c727 grmr_tbl%s
+D grmr_ops.ads		20240902162658 b71cdc9b grmr_ops%s
+D grmr_tbl.ads		20240902162714 a179c727 grmr_tbl%s
 D idl.ads		20240827192311 f6837729 idl%s
 D idl.adb		20240827192118 ddd2f5b3 idl%b
 D idl-err_phase.adb	20240711125817 16467066 idl.err_phase
@@ -116,7 +116,7 @@ D idl-page_man.adb	20240827191856 62f04f21 idl.page_man
 D idl-par_phase.adb	20240730161747 2e66a3c3 idl.par_phase
 D idl-par_phase-set_dflt.adb  20231030134957 7618fee5 idl.par_phase.set_dflt
 D idl-pretty_diana.adb	20240713212109 820ef342 idl.pretty_diana
-D idl-print_nod.adb	20240708113736 f3b5c82f idl.print_nod
+D idl-print_nod.adb	20240902193202 f3b5c82f idl.print_nod
 D idl-sem_phase.adb	20240730162515 e5fbc02e idl.sem_phase
 D idl-sem_phase-aggreso.adb  20231117130847 da26acfd idl.sem_phase.aggreso
 D idl-sem_phase-att_walk.adb  20231117130947 a7aa9cb5 idl.sem_phase.att_walk
@@ -150,7 +150,7 @@ D idl-write_lib.adb	20240827192247 f23c33d9 idl.write_lib
 D interfac.ads		20230508121439 edec285f interfaces%s
 D i-c.ads		20230508121439 2284bf7c interfaces.c%s
 D i-cstrea.ads		20230508121439 e53d8b8e interfaces.c_streams%s
-D lex.ads		20231029201611 4a8a9889 lex%s
+D lex.ads		20240902142146 4a8a9889 lex%s
 D sequenio.ads		20230508121439 46f09bdc sequential_io%s
 D system.ads		20230508121439 a2da961d system%s
 D s-atoope.ads		20230508121439 c7637a25 system.atomic_operations%s

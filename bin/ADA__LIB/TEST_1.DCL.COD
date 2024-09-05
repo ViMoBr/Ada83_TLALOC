@@ -1,19 +1,38 @@
 include 'TEXT_IO.BDY.COD'
 ;	---------- SOUS-PROGRAMME ---------- 
-namespace TEST_1_L1
+namespace TEST_1_L2
 elab:
   virtual at 0
     VAR::
   end virtual
 	LINK 1,	loc_siz
-
-;	---------- bdy ----------
+;	---------- variable ptr str ---------- 
+  virtual VAR
+    align_q
+    MSG_disp = $
+    dq	MSG_ptr
+  end virtual
+;	---------- constante string ---------- 
+  postpone
+    dd	1, 9
+    MSG_ptr = $
+    db	'Bonjour'
+  end postpone
+	LCA	MSG_ptr
+	STQ	 1,	MSG_disp
+;	---------- calcul taille variables ---------- 
   virtual VAR
     loc_siz = $
   end virtual
+;	---------- bdy ----------
 begin:
-;  end exception bloc
+	LEA  1,	MSG_disp
+  postpone
+	PUT_LINE_L60_ = TEXT_IO.PUT_LINE_L60.elab
+  end postpone
+	CALL	PUT_LINE_L60_
 	UNLINK 1
 	RTD
 excep:
+;	---------- end sub TEST_1 ----------
 end namespace 

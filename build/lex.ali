@@ -13,12 +13,12 @@ RV NO_IMPLICIT_LOOPS
 RV NO_ELABORATION_CODE
 RV NO_OBSOLESCENT_FEATURES
 
-U lex%b			lex.adb			4046b062 OO PK IU KU
+U lex%b			lex.adb			4046b062 OO PK IU
 Z ada.strings.text_buffers%s  a-sttebu.adb	a-sttebu.ali
 Z system.secondary_stack%s  s-secsta.adb	s-secsta.ali
 W text_io%s		text_io.ads		text_io.ali
 
-U lex%s			lex.ads			4a8a9889 EE NE OO PK IU KU
+U lex%s			lex.ads			4a8a9889 EE NE OO PK IU
 Z ada.strings.text_buffers%s  a-sttebu.adb	a-sttebu.ali
 
 D ada.ads		20230508121439 76789da1 ada%s
@@ -33,8 +33,8 @@ D a-textio.ads		20230508121439 deada98a ada.text_io%s
 D a-unccon.ads		20230508121439 0e9b276f ada.unchecked_conversion%s
 D interfac.ads		20230508121439 edec285f interfaces%s
 D i-cstrea.ads		20230508121439 e53d8b8e interfaces.c_streams%s
-D lex.ads		20231029201611 4a8a9889 lex%s
-D lex.adb		20231109124229 2b7ee073 lex%b
+D lex.ads		20240902142146 4a8a9889 lex%s
+D lex.adb		20240902142136 2b7ee073 lex%b
 D system.ads		20230508121439 a2da961d system%s
 D s-crtl.ads		20230508121439 8a0692f8 system.crtl%s
 D s-exctab.ads		20230508121439 91bef6ef system.exception_table%s

@@ -493,7 +493,16 @@ null;
 
   begin
     INVERSE_RECURSE;
-    PUT_LINE( tab & "CALL" & tab & SUB_NAME & '_' & LABEL_STR( LBL ) & ".elab" );
+
+    PUT_LINE( "  postpone" );
+    declare
+      REGION	: TREE	:= D( XD_REGION, PROC_ID );
+      RGN_NAME :constant STRING	:= PRINT_NAME( D( LX_SYMREP, REGION ) );
+    begin
+      PUT_LINE( tab & SUB_NAME & '_' & LABEL_STR( LBL ) & "_ = " & RGN_NAME & '.' & SUB_NAME & '_' & LABEL_STR( LBL ) & ".elab" );
+    end;
+    PUT_LINE( "  end postpone" );
+    PUT_LINE( tab & "CALL" & tab & SUB_NAME & '_' & LABEL_STR( LBL ) & '_' );
 
   end	CODE_PROCEDURE_CALL;
 	-------------------

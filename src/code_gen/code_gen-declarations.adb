@@ -444,21 +444,47 @@ null;
 		-----------------
       procedure	COMPILE_ARRAY_VAR	( VC_NAME, TYPE_SPEC :TREE )
       is
---        DESCR_PTR	: OFFSET_VAL;
+        VC_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, VC_NAME ) );
       begin
---        ALIGN ( ADDR_AL );
         declare
---	SEG	: SEGMENT_NUM	renames CODI.CUR_COMP_UNIT;
           LVL	: LEVEL_NUM	renames CODI.CUR_LEVEL;
         begin
---	DI( CD_COMP_UNIT,	VC_NAME, SEG );
+
+	if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- variable ptr str ---------- " ); end if;
+	PUT_LINE( "  virtual VAR" );
+          PUT_LINE( "    align_q" );
+	PUT_LINE( "    " & VC_STR & "_disp = $" );
+	PUT_LINE( "    dq ?" );
+	PUT_LINE( "  end virtual" );
+          DI( CD_LEVEL, VC_NAME, INTEGER( LVL ) );
+
+	declare
+	  INIT_EXP	: TREE	:= D( SM_INIT_EXP, VC_NAME );
+	begin
+            if INIT_EXP /= TREE_VOID then
+	    if INIT_EXP.TY = DN_STRING_LITERAL then
+	      declare
+	        CST_CHN	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, INIT_EXP ) );
+	      begin
+	        if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- constante string ---------- " ); end if;
+	        PUT_LINE( "  postpone" );
+	        PUT_LINE( "    dd" & tab & "1," & NATURAL'IMAGE( CST_CHN'LENGTH ) );
+	        PUT_LINE( "    " & VC_STR & "_ptr = $" );
+	        PUT_LINE( "    db" & tab & ''' & CST_CHN( CST_CHN'FIRST+1 .. CST_CHN'LAST-1 ) & ''' );
+	        PUT_LINE( "  end postpone" );
+	      end;
+
+	      PUT_LINE( tab & "LCA" & tab & VC_STR & "_ptr" );						-- LOAD CONSTANT ADDRESS
+	      PUT_LINE( tab & "STQ" & tab & LEVEL_NUM'IMAGE( LVL ) & ',' & tab & VC_STR & "_disp" );
+
+	    end if;
+	  end if;
+
+	end;
+
 	DI( CD_LEVEL,	VC_NAME, INTEGER( LVL ) );
---	DI( CD_OFFSET,	VC_NAME, VALUE_PTR );
 	DB( CD_COMPILED,	VC_NAME, TRUE );
---	ALTER_OFFSET( ADDR_SIZE );
---	ALIGN       ( ADDR_AL );
 --	DESCR_PTR := CODI.OFFSET_ACT;
---	ALTER_OFFSET( ADDR_SIZE );
 -- 	if DB( CD_COMPILED, TYPE_SPEC ) then
 -- 	  OPER := LOAD_ADR( TYPE_SPEC );
 -- 	  EMIT( DPL, A, "DUPLICATE " & PRINT_NAME ( D (LX_SYMREP, VC_NAME ) ) & " ARRAY DESCRIPTOR TYPE_SPEC" );
@@ -638,32 +664,31 @@ null;
   procedure		CODE_NON_GENERIC_DECL	( NON_GENERIC_DECL :TREE )
   is
   begin
---    if NON_GENERIC_DECL.TY = DN_SUBPROG_ENTRY_DECL
---    then
---      CODE_SUBPROG_ENTRY_DECL( NON_GENERIC_DECL );
+    if NON_GENERIC_DECL.TY = DN_SUBPROG_ENTRY_DECL
+    then
+      CODE_SUBPROG_ENTRY_DECL( NON_GENERIC_DECL );
 
---    else
-    if NON_GENERIC_DECL.TY = DN_PACKAGE_DECL
+    elsif NON_GENERIC_DECL.TY = DN_PACKAGE_DECL
     then
       CODE_PACKAGE_DECL( NON_GENERIC_DECL );
     end if;
   end;
 
 			-----------------------
---   procedure		CODE_SUBPROG_ENTRY_DECL	( SUBPROG_ENTRY_DECL :TREE )
---   is
---   begin
---     declare
---       SOURCE_NAME    : TREE        := D ( AS_SOURCE_NAME, SUBPROG_ENTRY_DECL );
+  procedure		CODE_SUBPROG_ENTRY_DECL	( SUBPROG_ENTRY_DECL :TREE )
+  is
+  begin
+    declare
+      SOURCE_NAME    : TREE        := D ( AS_SOURCE_NAME, SUBPROG_ENTRY_DECL );
 --       HEADER         : TREE        := D ( AS_HEADER, SUBPROG_ENTRY_DECL );
---     begin
---       INC_LEVEL;
---       if SOURCE_NAME.TY in CLASS_SUBPROG_NAME then
---         declare
---           LBL :constant STRING := NEW_LABEL;
---         begin
---          DI ( CD_LABEL, SOURCE_NAME, INTEGER( LBL ) );
---           DI ( CD_LEVEL, SOURCE_NAME, INTEGER( CODI.CUR_LEVEL ) );
+    begin
+      INC_LEVEL;
+      if SOURCE_NAME.TY in CLASS_SUBPROG_NAME then
+        declare
+	LBL	: LABEL_TYPE	:= NEW_LABEL;
+        begin
+	DI ( CD_LABEL, SOURCE_NAME, INTEGER( LBL ) );
+	DI ( CD_LEVEL, SOURCE_NAME, INTEGER( CODI.CUR_LEVEL ) );
 --           DB ( CD_COMPILED, SOURCE_NAME, TRUE );
 --           if not CODI.GENERATE_CODE then
 --             CODI.GENERATE_CODE := TRUE;
@@ -674,7 +699,7 @@ null;
 --		CODE_HEADER( D( AS_HEADER, SUBPROG_ENTRY_DECL ) );
 
 --          DI( CD_PARAM_SIZE, SOURCE_NAME, OFFSET_ACT - FIRST_PARAM_OFFSET );
---         end;
+        end;
 --         if SOURCE_NAME.TY = DN_FUNCTION_ID or SOURCE_NAME.TY = DN_OPERATOR_ID then
 --           declare
 --             USED_OBJECT_ID	: TREE := D( AS_NAME, HEADER );
@@ -684,11 +709,11 @@ null;
 --             DI( CD_RESULT_SIZE, SOURCE_NAME, CODI.TYPE_SIZE( RESULT_TYPE_SPEC ) );
 --           end;
 --         end if;
---       end if;
---       DEC_LEVEL;
---     end;
--- 
---   end	CODE_SUBPROG_ENTRY_DECL;
+       end if;
+       DEC_LEVEL;
+     end;
+ 
+   end	CODE_SUBPROG_ENTRY_DECL;
 	-----------------------
 
 
@@ -696,7 +721,7 @@ null;
   procedure			CODE_PACKAGE_DECL		( PACKAGE_DECL :TREE )
   is
   begin
-    EMIT( PKG, S=> PRINT_NAME( D( LX_SYMREP, D( AS_SOURCE_NAME, PACKAGE_DECL ) ) ) );
+--    EMIT( PKG, S=> PRINT_NAME( D( LX_SYMREP, D( AS_SOURCE_NAME, PACKAGE_DECL ) ) ) );
     begin
 
 	CODE_HEADER( D( AS_HEADER, PACKAGE_DECL ) );
@@ -704,8 +729,8 @@ null;
       declare
         EXC_LBL		:constant STRING	:= NEW_LABEL;
       begin
-        EMIT( EXH, EXC_LBL, COMMENT=> "ETIQUETTE EXCEPTION HANDLE DU PACKAGE" );
-        EMIT( RET, RELATIVE_RESULT_OFFSET );
+--        EMIT( EXH, EXC_LBL, COMMENT=> "ETIQUETTE EXCEPTION HANDLE DU PACKAGE" );
+--        EMIT( RET, RELATIVE_RESULT_OFFSET );
 PUT_LINE( "; EXC_LBL" & tab & EXC_LBL );
       end;
 --      EMIT( EEX );

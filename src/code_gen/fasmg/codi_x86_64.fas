@@ -90,7 +90,7 @@ end macro
 ;				--------------------------------------------------------------------------------
 
 ;			-------------
-macro			LDI?	val
+macro			LDI?	val		; Load Immediate
 ;			-------------
   push_T
   if val > -128 & val < 127
@@ -100,6 +100,15 @@ macro			LDI?	val
     dd val
   end if
 end macro
+
+;			-------------
+macro			LCA?	ptr		; Load Constant Address
+;			-------------
+  db 0x48, 0x8B, 0x04, 0x25				; mov rax, qword ptr [ptr]
+  dd ptr
+  db 0x50						; push rax
+end macro
+
 ;				--------------------------------------------------------------------------------
 ;				LOAD (relatif pointeurs de frame du display R8..r15 suivant lvl)
 ;				--------------------------------------------------------------------------------
@@ -138,22 +147,6 @@ macro			ILDb?	lvl, disp		; INDIRECT Load BYTE (paramètres ou variables locales)
 end macro
 
 ;			-------------------
-macro			ILDw?	lvl, disp		; INDIRECT Load WORD (paramètres ou variables locales)
-;			-------------------
-  assert lvl >= 0 & lvl <= 7
-  if disp > -128 & disp < 127
-    db 0x49, 0x8B, 0x40+lvl				; mov rax, qword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
-    db disp
-  else
-    db 0x49, 0x8B, 0x80+lvl				; mov rax, qword ptr [r(8=lvl)+ofs32]
-    dd disp
-  end if
-  db 0x48, 0x0F, 0xBF, 0x00				; movsx rax, word ptr [rax]
-  db 0x50						; push rax
-
-end macro
-
-;			-------------------
 macro			LDw?	lvl, disp		; Load WORD 16 bits
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
@@ -166,6 +159,22 @@ macro			LDw?	lvl, disp		; Load WORD 16 bits
     db 0x49, 0x0F, 0xBF, 0x80+lvl			; movsx rax, word ptr [r(8+lvl)+ofs32]
     dd ofs
   end if
+  db 0x50						; push rax
+
+end macro
+
+;			-------------------
+macro			ILDw?	lvl, disp		; INDIRECT Load WORD (paramètres ou variables locales)
+;			-------------------
+  assert lvl >= 0 & lvl <= 7
+  if disp > -128 & disp < 127
+    db 0x49, 0x8B, 0x40+lvl				; mov rax, qword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
+    db disp
+  else
+    db 0x49, 0x8B, 0x80+lvl				; mov rax, qword ptr [r(8=lvl)+ofs32]
+    dd disp
+  end if
+  db 0x48, 0x0F, 0xBF, 0x00				; movsx rax, word ptr [rax]
   db 0x50						; push rax
 
 end macro
@@ -188,6 +197,22 @@ macro			LDd?	lvl, disp		; Load DOUBLEWORD 32 bits
 end macro
 
 ;			-------------------
+macro			ILDd?	lvl, disp		; INDIRECT Load DOUBLEWORD
+;			-------------------
+  assert lvl >= 0 & lvl <= 7
+  if disp > -128 & disp < 127
+    db 0x49, 0x8B, 0x40+lvl				; mov rax, qword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
+    db disp
+  else
+    db 0x49, 0x8B, 0x80+lvl				; mov rax, qword ptr [r(8=lvl)+ofs32]
+    dd disp
+  end if
+  db 0x48, 0x63, 0x00				; movsx rax, dword ptr [rax]
+  db 0x50						; push rax
+
+end macro
+
+;			-------------------
 macro			LDq?	lvl, disp		; Load QUADWORD 64 bits
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
@@ -200,6 +225,22 @@ macro			LDq?	lvl, disp		; Load QUADWORD 64 bits
     db 0x49, 0x8B, 0x80+lvl				; mov rax, qword ptr [r(8=lvl)+ofs32]
     dd ofs
   end if
+  db 0x50						; push rax
+
+end macro
+
+;			-------------------
+macro			ILDq?	lvl, disp		; INDIRECT Load QUADWORD
+;			-------------------
+  assert lvl >= 0 & lvl <= 7
+  if disp > -128 & disp < 127
+    db 0x49, 0x8B, 0x40+lvl				; mov rax, qword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
+    db disp
+  else
+    db 0x49, 0x8B, 0x80+lvl				; mov rax, qword ptr [r(8=lvl)+ofs32]
+    dd disp
+  end if
+  db 0x48, 0x8B, 0x00				; mov rax, qword ptr [rax]
   db 0x50						; push rax
 
 end macro
@@ -245,7 +286,7 @@ end macro
 macro			ISTb?	lvl, disp		; INDIRECT Store BYTE (paramètres ou variables locales)
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
-  db 0x58						; pop rax
+  db 0x5B						; pop rbx
   if disp > -128 & disp < 127
     db 0x49, 0x8B, 0x40+lvl				; mov rax, qword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
     db disp
@@ -253,7 +294,7 @@ macro			ISTb?	lvl, disp		; INDIRECT Store BYTE (paramètres ou variables locales
     db 0x49, 0x8B, 0x80+lvl				; mov rax, qword ptr [r(8=lvl)+ofs32]
     dd disp
   end if
-  db 0x88, 0x00					; mov byte ptr [rax], AL
+  db 0x88, 0x18					; mov byte ptr [rax], BL
 
 end macro
 
@@ -277,7 +318,7 @@ end macro
 macro			ISTw?	lvl, disp		; INDIRECT Store WORD (paramètres ou variables locales)
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
-  db 0x58						; pop rax
+  db 0x5B						; pop rbx
   if disp > -128 & disp < 127
     db 0x49, 0x8B, 0x40+lvl				; mov rax, qword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
     db disp
@@ -285,7 +326,7 @@ macro			ISTw?	lvl, disp		; INDIRECT Store WORD (paramètres ou variables locales
     db 0x49, 0x8B, 0x80+lvl				; mov rax, qword ptr [r(8=lvl)+ofs32]
     dd disp
   end if
-  db 0x66, 0x89, 0x00				; mov word ptr [rax], AX
+  db 0x66, 0x89, 0x18				; mov word ptr [rax], BX
 
 end macro
 
@@ -306,7 +347,23 @@ macro			STd?	lvl, disp		; Store DOUBLEWORD (paramètres ou variables locales)
 end macro
 
 ;			-------------------
-macro			STa?	lvl, disp		; Store address QUADWORD (paramètres ou variables locales)
+macro			ISTd?	lvl, disp		; INDIRECT Store DOUBLEWORD (paramètres ou variables locales)
+;			-------------------
+  assert lvl >= 0 & lvl <= 7
+  db 0x5B						; pop rbx
+  if disp > -128 & disp < 127
+    db 0x49, 0x8B, 0x40+lvl				; mov rax, qword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
+    db disp
+  else
+    db 0x49, 0x8B, 0x80+lvl				; mov rax, qword ptr [r(8=lvl)+ofs32]
+    dd disp
+  end if
+  db 0x89, 0x18					; mov dword ptr [rax], EBX
+
+end macro
+
+;			-------------------
+macro			STq?	lvl, disp		; Store address QUADWORD (paramètres ou variables locales)
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   ofs = -disp					; pile croissante vers adresses decroissantes
@@ -318,6 +375,22 @@ macro			STa?	lvl, disp		; Store address QUADWORD (paramètres ou variables local
     db 0x49, 0x89, 0x80+lvl				; mov qword ptr [rbp+ofs32], rax
     dd ofs
   end if
+
+end macro
+
+;			-------------------
+macro			ISTq?	lvl, disp		; INDIRECT Store QUADWORD (paramètres ou variables locales)
+;			-------------------
+  assert lvl >= 0 & lvl <= 7
+  db 0x5B						; pop rbx
+  if disp > -128 & disp < 127
+    db 0x49, 0x8B, 0x40+lvl				; mov rax, qword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
+    db disp
+  else
+    db 0x49, 0x8B, 0x80+lvl				; mov rax, qword ptr [r(8=lvl)+ofs32]
+    dd disp
+  end if
+  db 0x48, 0x89, 0x18				; mov qword ptr [rax], rbx
 
 end macro
 

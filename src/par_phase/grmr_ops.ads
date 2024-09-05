@@ -1,9 +1,9 @@
 --|-------------------------------------------------------------------------------------------------
 --|	GRMR_OPS
 --|-------------------------------------------------------------------------------------------------
-PACKAGE GRMR_OPS IS
+package GRMR_OPS is
       
-  TYPE GRMR_OP	IS (
+  type GRMR_OP	is (
 	G_ERROR,		N_0,		N_DEF,		N_1,
 	N_2,		N_N2,		N_V2,		N_3,
 	N_N3,		N_V3,		N_L,		G_INFIX,
@@ -13,18 +13,18 @@ PACKAGE GRMR_OPS IS
 	G_EXCH_2,		G_CHECK_NAME,	G_CHECK_SUBP_NAME,	G_CHECK_ACCEPT_NAME
 	);
 
-  SUBTYPE GRMR_OP_NODE	IS GRMR_OP RANGE N_0 .. N_L;
-  SUBTYPE GRMR_OP_NULLARY	IS GRMR_OP RANGE N_0 .. N_DEF;
-  SUBTYPE GRMR_OP_UNARY	IS GRMR_OP RANGE N_1 .. N_1;
-  SUBTYPE GRMR_OP_BINARY	IS GRMR_OP RANGE N_2 .. N_V2;
-  SUBTYPE GRMR_OP_TERNARY	IS GRMR_OP RANGE N_3 .. N_V3;
-  SUBTYPE GRMR_OP_ARBITRARY	IS GRMR_OP RANGE N_L .. N_L;
-  SUBTYPE GRMR_OP_QUOTE	IS GRMR_OP RANGE G_INFIX .. G_UNARY;
-  SUBTYPE GRMR_OP_NOARG	IS GRMR_OP RANGE G_LX_SYMREP .. GRMR_OP'LAST;
+  subtype GRMR_OP_NODE	is GRMR_OP range N_0 .. N_L;
+  subtype GRMR_OP_NULLARY	is GRMR_OP range N_0 .. N_DEF;
+  subtype GRMR_OP_UNARY	is GRMR_OP range N_1 .. N_1;
+  subtype GRMR_OP_BINARY	is GRMR_OP range N_2 .. N_V2;
+  subtype GRMR_OP_TERNARY	is GRMR_OP range N_3 .. N_V3;
+  subtype GRMR_OP_ARBITRARY	is GRMR_OP range N_L .. N_L;
+  subtype GRMR_OP_QUOTE	is GRMR_OP range G_INFIX .. G_UNARY;
+  subtype GRMR_OP_NOARG	is GRMR_OP range G_LX_SYMREP .. GRMR_OP'LAST;
       
       
-  FUNCTION  GRMR_OP_VALUE	( S :STRING )	RETURN GRMR_OP;
-  FUNCTION  GRMR_OP_IMAGE	( GO :GRMR_OP )	RETURN STRING;
+  function  GRMR_OP_VALUE	( S :STRING )	return GRMR_OP;
+  function  GRMR_OP_IMAGE	( GO :GRMR_OP )	return STRING;
       
 --|-------------------------------------------------------------------------------------------------
-END GRMR_OPS;
+end GRMR_OPS;

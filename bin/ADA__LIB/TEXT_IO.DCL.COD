@@ -1,0 +1,20 @@
+include 'IO_EXCEPTIONS.BDY.COD'
+  virtual VAR
+    align_d
+    COUNT_lower_disp = $
+    dd ?
+    COUNT_upper_disp = $
+    dd ?
+  end virtual
+	LDI	 0
+	STd  0,	COUNT_lower_disp
+	STd  0,	COUNT_upper_disp
+;	---------- variable entiere ---------- 
+  virtual VAR
+    align_w
+    UNBOUNDED_disp = $
+    dw ?
+  end virtual
+	LDI	 0
+	STw  0,	UNBOUNDED_disp
+; EXC_LBL	L61

@@ -1,15 +1,15 @@
-WITH SEQUENTIAL_IO;
+with SEQUENTIAL_IO;
 --|-------------------------------------------------------------------------------------------------
 --|		PACKAGE GRMR_TBL
 --|-------------------------------------------------------------------------------------------------
-PACKAGE GRMR_TBL IS
+package GRMR_TBL is
       
-  TYPE AC_BYTE		IS RANGE 0..16#FF#;			FOR AC_BYTE'SIZE USE 8;
-  TYPE AC_SHORT		IS RANGE -16#8000# .. 16#7FFF#;	FOR AC_SHORT'SIZE USE 16;
+  type AC_BYTE		is range 0..16#FF#;			for AC_BYTE'SIZE use 8;
+  type AC_SHORT		is range -16#8000# .. 16#7FFF#;	for AC_SHORT'SIZE use 16;
       
-  TYPE ST_TBL_TYPE		IS ARRAY (1 .. 1000) OF INTEGER;				--| TABLE D'ETATS
-  TYPE AC_SYM_TYPE		IS ARRAY (1 .. 4800) OF AC_BYTE;				--| TABLE D'ACTIONS
-  TYPE AC_TBL_TYPE		IS ARRAY (1 .. 6000) OF AC_SHORT;
+  type ST_TBL_TYPE		is array (1 .. 1000) of INTEGER;				--| TABLE D'ETATS
+  type AC_SYM_TYPE		is array (1 .. 4800) of AC_BYTE;				--| TABLE D'ACTIONS
+  type AC_TBL_TYPE		is array (1 .. 6000) of AC_SHORT;
       --| VALEURS DANS AC_TBL
       --| VAL DANS 1..999  ETAT DE DECALAGE SUR LA PILE
       --| VAL DANS 1_000..SHORT'LAST FAIRE K:= (VAL-1)/1_000 ET OPERER SUIVANT GRMR_OP'VAL(K) AVEC ARGUMENT GRMR_OP'VAL(1) SAUF POUR INFIX ET UNARY : ARG PAGE PUIS LINE AU MOT SUIVANT
@@ -19,10 +19,10 @@ PACKAGE GRMR_TBL IS
       
       -- NONTER TABLE
       -- INFO TO BUILD TXTREP FOR NONTER (FOR DEBUG PURPOSES)
-  TYPE NTER_PG_TYPE		IS ARRAY (1 .. 255) OF AC_BYTE;
-  TYPE NTER_LN_TYPE		IS ARRAY (1 .. 255) OF AC_BYTE;
+  type NTER_PG_TYPE		is array (1 .. 255) of AC_BYTE;
+  type NTER_LN_TYPE		is array (1 .. 255) of AC_BYTE;
       
-  TYPE GRMR_TBL_RECORD	IS RECORD
+  type GRMR_TBL_RECORD	is record
 			  ST_TBL		: ST_TBL_TYPE;				--| TABLE D ETATS
 			  ST_TBL_LAST	: INTEGER;				--| DERNIER ETAT
 			  AC_SYM		: AC_SYM_TYPE;				--| TABLE DE CODES SYMBOLES
@@ -32,11 +32,11 @@ PACKAGE GRMR_TBL IS
 			  NTER_PG		: NTER_PG_TYPE;				--| PAGE NON TERM
 			  NTER_LN		: NTER_LN_TYPE;				--| LIGNE NON TERM
 			  NTER_LAST	: INTEGER;
-			END RECORD;
+			end record;
       
   GRMR	: GRMR_TBL_RECORD;
       
-  PACKAGE GRMR_TBL_IO	IS NEW SEQUENTIAL_IO( GRMR_TBL_RECORD );
+  package GRMR_TBL_IO	is new SEQUENTIAL_IO( GRMR_TBL_RECORD );
       
 --|-------------------------------------------------------------------------------------------------
-END GRMR_TBL;
+end GRMR_TBL;

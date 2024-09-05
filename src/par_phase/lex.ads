@@ -1,9 +1,9 @@
 --|-------------------------------------------------------------------------------------------------
 --|	LEX
 --|-------------------------------------------------------------------------------------------------
-PACKAGE LEX IS
+package LEX is
        
-  TYPE LEX_TYPE IS (								--| TYPE D UNITE LEXICALE
+  type LEX_TYPE is (								--| TYPE D UNITE LEXICALE
          LT_ERROR,									--| ULEX ERREUR
 
          LT_ABORT,		LT_ABS,		LT_ACCEPT,	LT_ACCESS,		--| UNITES LEXICALES TERMINALES MOTS RESERVES
@@ -33,18 +33,18 @@ PACKAGE LEX IS
          LT_END_MARK								--| ULEX FIN DE SOURCE
          );
       
-  SUBTYPE LT_RESERVED	IS LEX_TYPE RANGE LT_ABORT      .. LT_XOR;
-  SUBTYPE LT_SYMBOL		IS LEX_TYPE RANGE LT_AMPERSAND  .. LT_BOX;
-  SUBTYPE LT_TERMINAL	IS LEX_TYPE RANGE LT_ABORT      .. LT_BOX;
-  SUBTYPE LT_WITH_SEMANTICS	IS LEX_TYPE RANGE LT_IDENTIFIER .. LT_CHAR_LIT;
+  subtype LT_RESERVED	is LEX_TYPE range LT_ABORT      .. LT_XOR;
+  subtype LT_SYMBOL		is LEX_TYPE range LT_AMPERSAND  .. LT_BOX;
+  subtype LT_TERMINAL	is LEX_TYPE range LT_ABORT      .. LT_BOX;
+  subtype LT_WITH_SEMANTICS	is LEX_TYPE range LT_IDENTIFIER .. LT_CHAR_LIT;
 
 
-  MAX_STRING	: CONSTANT POSITIVE	:= 255;						--| CHAINE DE 256 CARACTERES MAXIMUM
+  MAX_STRING	: constant POSITIVE	:= 255;						--| CHAINE DE 256 CARACTERES MAXIMUM
       
-  TYPE LINE_OF_SOURCE	IS RECORD
+  type LINE_OF_SOURCE	is record
 			  LEN	: NATURAL;
 			  BDY	: STRING( 1 .. MAX_STRING );
-			END RECORD;
+			end record;
       
   SLINE		: LINE_OF_SOURCE;							--| LIGNE COURANTE LUE
   LAST		: NATURAL;							--| NOMBRE DE CARACTERES LUS
@@ -54,10 +54,10 @@ PACKAGE LEX IS
   LTYPE		: LEX_TYPE;							--| TYPE DU LEXEME
    
     
-  PROCEDURE LEX_SCAN;
-  FUNCTION  TOKEN_STRING				RETURN STRING;
+  procedure LEX_SCAN;
+  function  TOKEN_STRING				return STRING;
 
-  FUNCTION  LEX_IMAGE	( LT :LEX_TYPE )		RETURN STRING;
+  function  LEX_IMAGE	( LT :LEX_TYPE )		return STRING;
       
 --|-------------------------------------------------------------------------------------------------
-END LEX;
+end LEX;

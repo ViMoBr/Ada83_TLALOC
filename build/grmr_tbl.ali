@@ -12,7 +12,7 @@ RV NO_DYNAMIC_SIZED_OBJECTS
 RV NO_IMPLEMENTATION_ATTRIBUTES
 RV NO_IMPLEMENTATION_PRAGMAS
 
-U grmr_tbl%s		grmr_tbl.ads		e7895cfb NE OO PK IU KU
+U grmr_tbl%s		grmr_tbl.ads		e7895cfb NE OO PK IU
 W ada%s			ada.ads			ada.ali
 Z ada.io_exceptions%s	a-ioexce.ads		a-ioexce.ali
 Z ada.strings.text_buffers%s  a-sttebu.adb	a-sttebu.ali
@@ -39,7 +39,7 @@ D a-sttebu.ads		20230508121439 18209c64 ada.strings.text_buffers%s
 D a-stuten.ads		20230508121439 33c54060 ada.strings.utf_encoding%s
 D a-tags.ads		20230508121439 9eaa38c6 ada.tags%s
 D a-unccon.ads		20230508121439 0e9b276f ada.unchecked_conversion%s
-D grmr_tbl.ads		20231031175013 a179c727 grmr_tbl%s
+D grmr_tbl.ads		20240902162714 a179c727 grmr_tbl%s
 D interfac.ads		20230508121439 edec285f interfaces%s
 D i-cstrea.ads		20230508121439 e53d8b8e interfaces.c_streams%s
 D sequenio.ads		20230508121439 46f09bdc sequential_io%s

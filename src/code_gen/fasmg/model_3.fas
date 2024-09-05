@@ -1,0 +1,11 @@
+
+A = N1.essai
+B = N2.def2
+
+namespace N1
+  essai:
+end namespace
+
+namespace N2
+  def2 = A
+end namespace;

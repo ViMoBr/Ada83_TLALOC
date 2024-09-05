@@ -1,67 +1,67 @@
 --|-------------------------------------------------------------------------------------------------
 --|	GRMR_OPS
 --|-------------------------------------------------------------------------------------------------
-PACKAGE BODY GRMR_OPS IS
+package body GRMR_OPS is
    
-  TYPE HASH_BYTE	IS RANGE 0..255;	FOR HASH_BYTE'SIZE USE 8;
+  type HASH_BYTE	is range 0..255;	for HASH_BYTE'SIZE use 8;
    
-  HSIZE		: CONSTANT := 37;
+  HSIZE		: constant := 37;
   HCODE		: INTEGER;
       
-  TYPE HTABLE_TYPE	IS RECORD
-		  HN	: STRING(1 .. 17)	:= (OTHERS=>' ');
+  type HTABLE_TYPE	is record
+		  HN	: STRING(1 .. 17)	:= (others=>' ');
 		  HP	: GRMR_OP	:= G_ERROR;
-		END RECORD;
-  HTABLE		: ARRAY (0 .. INTEGER(HSIZE-1)) OF HTABLE_TYPE;
-  ITABLE		: ARRAY (GRMR_OP) OF HASH_BYTE;					--| POUR LA FONCTION IMAGE
+		end record;
+  HTABLE		: array (0 .. INTEGER(HSIZE-1)) of HTABLE_TYPE;
+  ITABLE		: array (GRMR_OP) of HASH_BYTE;					--| POUR LA FONCTION IMAGE
    
 --|-------------------------------------------------------------------------------------------------
 --|	PROCEDURE HASH_SEARCH
-PROCEDURE HASH_SEARCH ( S :STRING ) IS
-  A_17	: STRING( 1 .. 17 )	:= (OTHERS => ' ');
-BEGIN
-  IF S'LENGTH <= 17 THEN
+procedure HASH_SEARCH ( S :STRING ) is
+  A_17	: STRING( 1 .. 17 )	:= (others => ' ');
+begin
+  if S'LENGTH <= 17 then
     A_17( 1 .. S'LENGTH ) := S;
-  END IF;
-  HCODE := (S'LENGTH + CHARACTER'POS( S( S'LAST ) ) ) MOD HSIZE;
+  end if;
+  HCODE := (S'LENGTH + CHARACTER'POS( S( S'LAST ) ) ) mod HSIZE;
       
-  WHILE A_17 /= HTABLE( HCODE ).HN AND THEN HTABLE( HCODE ).HP /= G_ERROR LOOP
-    HCODE := (HCODE + 1) MOD HSIZE;
-  END LOOP;
-END HASH_SEARCH;
+  while A_17 /= HTABLE( HCODE ).HN and then HTABLE( HCODE ).HP /= G_ERROR loop
+    HCODE := (HCODE + 1) mod HSIZE;
+  end loop;
+end HASH_SEARCH;
 --|#################################################################################################
 --|	FUNCTION GRMR_OP_VALUE
-FUNCTION GRMR_OP_VALUE ( S :STRING ) RETURN GRMR_OP IS
-BEGIN
+function GRMR_OP_VALUE ( S :STRING ) return GRMR_OP is
+begin
   HASH_SEARCH( S );
-  RETURN HTABLE( HCODE ).HP;
-END;
+  return HTABLE( HCODE ).HP;
+end;
 --|#################################################################################################
 --|	FUNCTION GRMR_OP_IMAGE
-FUNCTION GRMR_OP_IMAGE ( GO :GRMR_OP ) RETURN STRING IS
+function GRMR_OP_IMAGE ( GO :GRMR_OP ) return STRING is
   LL	: INTEGER	:= 17;
   TXT	: STRING( 1..17 )	:= HTABLE( INTEGER( ITABLE( GO ) ) ).HN;
-BEGIN
-  WHILE TXT( LL ) = ' ' LOOP
+begin
+  while TXT( LL ) = ' ' loop
     LL := LL - 1;
-  END LOOP;
-  RETURN TXT( 1 .. LL + 1 );
-END GRMR_OP_IMAGE;
+  end loop;
+  return TXT( 1 .. LL + 1 );
+end GRMR_OP_IMAGE;
 --|#################################################################################################
    
-BEGIN
-  DECLARE
+begin
+  declare
 
-    PROCEDURE STASH ( P :GRMR_OP; S :STRING ) IS
-      A_17	: STRING( 1 .. 17 )	:= (OTHERS => ' ');
-    BEGIN
+    procedure STASH ( P :GRMR_OP; S :STRING ) is
+      A_17	: STRING( 1 .. 17 )	:= (others => ' ');
+    begin
       HASH_SEARCH( S );
       A_17( 1 .. S'LENGTH ) := S;
       HTABLE( HCODE ) := (HN=> A_17, HP=> P);
       ITABLE( P ) := HASH_BYTE( HCODE );
-    END STASH;
+    end STASH;
       
-  BEGIN
+  begin
     STASH ( N_0,			"$0"		);
     STASH ( N_DEF,			"$DEF" 		);
     STASH ( N_1,			"$1"		);
@@ -89,6 +89,6 @@ BEGIN
     STASH ( G_CHECK_NAME,		"check_name"	);
     STASH ( G_CHECK_SUBP_NAME,	"check_subp_name"	);
     STASH ( G_CHECK_ACCEPT_NAME,	"check_accept_name"	);
-  END;
+  end;
 --|-------------------------------------------------------------------------------------------------
-END GRMR_OPS;
+end GRMR_OPS;

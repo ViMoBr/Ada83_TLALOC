@@ -182,6 +182,7 @@ is
 
   private
 
+    procedure CODE_SUBPROG_ENTRY_DECL	( SUBPROG_ENTRY_DECL :TREE );
     procedure CODE_SUBP_ENTRY_HEADER	( SUBP_ENTRY_HEADER :TREE );
     procedure CODE_PARAM_S		( PARAM_S :TREE );
     procedure CODE_PARAM		( PARAM :TREE );
