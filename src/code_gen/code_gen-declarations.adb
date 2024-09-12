@@ -32,24 +32,29 @@ is
     declare
       PARAM_SEQ	: SEQ_TYPE	:= LIST( PARAM_S );
       PARAM	: TREE;
-      NO_PARAM	: BOOLEAN		:= IS_EMPTY( PARAM_SEQ );
     begin
-      if NO_PARAM then return; end if;
+      CODI.NO_SUBP_PARAMS := IS_EMPTY( PARAM_SEQ );
+      if CODI.NO_SUBP_PARAMS then return; end if;
 
-      if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- debut parametrage ---------- " ); end if;
-      PUT_LINE( "  virtual at" & INTEGER'IMAGE( 2 * CODI.ADDR_SIZE ) );
-      PUT_LINE( "    PRM::" );
-      PUT_LINE( "  end virtual" );
+      PUT( "PRMS" );
+      if CODI.DEBUG then PUT( tab50 & ";    debut parametrage" ); end if;
+      NEW_LINE;
+
+--      PUT_LINE( "  virtual at" & INTEGER'IMAGE( 2 * CODI.ADDR_SIZE ) );
+--      PUT_LINE( "    PRM::" );
+--      PUT_LINE( "  end virtual" );
 
       while not IS_EMPTY( PARAM_SEQ ) loop
         POP( PARAM_SEQ, PARAM );
         CODE_PARAM( PARAM );
       end loop;
 
-      if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- fin parametrage ---------- " ); end if;
-      PUT_LINE( "  virtual PRM" );
-      PUT_LINE( "    prm_siz = $" );
-      PUT_LINE( "  end virtual" );
+      PUT( "endPRMS" );
+      if CODI.DEBUG then PUT( tab50 & ";    fin parametrage" ); end if;
+      NEW_LINE;
+--      PUT_LINE( "  virtual PRM" );
+--      PUT_LINE( "    prm_siz = $" );
+--      PUT_LINE( "  end virtual" );
 
     end;
   end;
@@ -58,16 +63,6 @@ is
   procedure CODE_PARAM ( PARAM :TREE ) is
   begin
 
-    if PARAM.TY = DN_IN then
-      CODE_IN ( PARAM );
-
-    elsif PARAM.TY = DN_OUT then
-      CODE_OUT ( PARAM );
-
-    elsif PARAM.TY = DN_IN_OUT then
-      CODE_IN_OUT ( PARAM );
-
-    end if;
 
     declare
       ID_LIST	: SEQ_TYPE	:= LIST( D( AS_SOURCE_NAME_S, PARAM ) );
@@ -78,10 +73,22 @@ is
 
         DI( CD_LEVEL, ID, INTEGER( CODI.CUR_LEVEL ) );
 
-        PUT_LINE( "  virtual PRM" );
-        PUT_LINE( "    " & PRINT_NAME( D( LX_SYMREP, ID ) ) & "_adrofs = $" );
-        PUT_LINE( "    dq ?" );
-        PUT_LINE( "  end virtual" );
+        PUT( "PRM " & PRINT_NAME( D( LX_SYMREP, ID ) ) & "_adrofs" );
+        if PARAM.TY = DN_IN then
+	CODE_IN ( PARAM );
+
+        elsif PARAM.TY = DN_OUT then
+	CODE_OUT ( PARAM );
+
+        elsif PARAM.TY = DN_IN_OUT then
+	CODE_IN_OUT ( PARAM );
+
+        end if;
+        NEW_LINE;
+--        PUT_LINE( "  virtual PRM" );
+--        PUT_LINE( "    " & PRINT_NAME( D( LX_SYMREP, ID ) ) & "_adrofs = $" );
+--        PUT_LINE( "    dq ?" );
+--        PUT_LINE( "  end virtual" );
       end loop;
     end;
 
@@ -90,19 +97,19 @@ is
   --|-------------------------------------------------------------------------------------------
   procedure CODE_IN ( ADA_IN :TREE ) is
   begin
-    if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- param in ---------- " ); end if;
+    if CODI.DEBUG then PUT( tab50 & "; in" ); end if;
   end;
 
   --|-------------------------------------------------------------------------------------------
   procedure CODE_IN_OUT ( ADA_IN_OUT :TREE ) is
   begin
-    if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- param in out ---------- " ); end if;
+    if CODI.DEBUG then PUT( tab50 & "; in out" ); end if;
   end;
 
   --|-------------------------------------------------------------------------------------------
   procedure CODE_OUT ( ADA_OUT :TREE ) is
   begin
-    if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- param out ---------- " ); end if;
+    if CODI.DEBUG then PUT( tab50 & "; out" ); end if;
   end;
 
 			----------------------
@@ -111,17 +118,9 @@ is
   begin
     if SUBP_ENTRY_HEADER.TY = DN_PROCEDURE_SPEC
     then
- --     CODI.PARAM_SIZE := CODI.OFFSET_ACT - CODI.FIRST_PARAM_OFFSET;
 null;
     elsif SUBP_ENTRY_HEADER.TY = DN_FUNCTION_SPEC
     then
---      ALTER_OFFSET( CODI.RELATIVE_RESULT_OFFSET );
---      CODI.PARAM_SIZE := CODI.OFFSET_ACT - CODI.FIRST_PARAM_OFFSET;
---      DI( CD_RESULT_SIZE, D( AS_NAME, SUBP_ENTRY_HEADER ), CODI.RESULT_SIZE );
---      ALTER_OFFSET( CODI.RESULT_SIZE );
---      ALIGN( STACK_AL );
---      DI( CD_RESULT_OFFSET, SUBP_ENTRY_HEADER, CODI.OFFSET_ACT );
---      CODI.FUN_RESULT_OFFSET := CODI.OFFSET_ACT;
 null;
     end if;
   end	CODE_SUBP_ENTRY_HEADER;
@@ -352,15 +351,10 @@ null;
         OPER_TYPE	: CHARACTER	:= OPER_TYPE_FROM( VC_NAME );
         INIT_EXP	: TREE		:= D( SM_INIT_EXP, VC_NAME );
       begin
-        if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- variable entiere ---------- " ); end if;
 
-        PUT_LINE( "  virtual VAR" );
-        if OPER_TYPE /= 'b' then
-          PUT_LINE( "    align_" & OPER_TYPE );
-        end if;
-        PUT_LINE( "    " & PRINT_NAME( D( LX_SYMREP, VC_NAME ) ) & "_disp = $" );
-        PUT_LINE( "    d" & OPER_TYPE & " ?" );
-        PUT_LINE( "  end virtual" );
+        PUT( "VAR " & PRINT_NAME( D( LX_SYMREP, VC_NAME ) ) & "_disp, " & OPER_TYPE );
+        if CODI.DEBUG then PUT( tab50 & "; variable entiere" ); end if;
+        NEW_LINE;
         DI( CD_LEVEL,     VC_NAME, INTEGER( CODI.CUR_LEVEL ) );
 
         if INIT_EXP /= TREE_VOID then
@@ -371,22 +365,45 @@ null;
       end	COMPILE_VC_NAME_INTEGER;
 	-----------------------
 
+		-----------------------
+      procedure	COMPILE_VC_NAME_FLOAT	( VC_NAME :TREE )
+      is
+        OPER_TYPE	: CHARACTER	:= OPER_TYPE_FROM( VC_NAME );
+        INIT_EXP	: TREE		:= D( SM_INIT_EXP, VC_NAME );
+      begin
+
+        PUT( "VAR " & PRINT_NAME( D( LX_SYMREP, VC_NAME ) ) & "_disp, " & OPER_TYPE );
+        if CODI.DEBUG then PUT( tab50 & "; variable flottante" ); end if;
+        NEW_LINE;
+        DI( CD_LEVEL,     VC_NAME, INTEGER( CODI.CUR_LEVEL ) );
+
+        if INIT_EXP /= TREE_VOID then
+	EXPRESSIONS.CODE_EXP( INIT_EXP );
+	CODI.STORE( VC_NAME );
+        end if;
+
+      end	COMPILE_VC_NAME_FLOAT;
+	-----------------------
+
 		---------------------------
       procedure	COMPILE_VC_NAME_ENUMERATION	( VC_NAME, TYPE_SPEC :TREE )
       is
         NAME	:constant STRING	:= PRINT_NAME( CODI.TYPE_SYMREP );
 
 		-------------------------
-        procedure	COMPILE_VC_NAME_BOOL_CHAR	( VC_NAME :TREE; OTYPE :OPERAND_TYPE; SIZ, ALI :NATURAL ) is
+        procedure	COMPILE_VC_NAME_BOOL_CHAR	( VC_NAME :TREE ) is
           OPER_TYPE	: CHARACTER	:= OPER_TYPE_FROM( VC_NAME );
 	INIT_EXP	: TREE		:= D( SM_INIT_EXP, VC_NAME );
         begin
-          if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- variable bool char ---------- " ); end if;
 
-	PUT_LINE( "  virtual VAR" );
-	PUT_LINE( "    " & PRINT_NAME( D( LX_SYMREP, VC_NAME ) ) & "_disp = $" );
-	PUT_LINE( "    db ?" );
-	PUT_LINE( "  end virtual" );
+	PUT( "VAR " & PRINT_NAME( D( LX_SYMREP, VC_NAME ) ) & "_disp, b" );
+          if CODI.DEBUG then PUT( tab50 & "; variable bool char" ); end if;
+	NEW_LINE;
+--	PUT_LINE( "  virtual VAR" );
+--	PUT_LINE( "    " & PRINT_NAME( D( LX_SYMREP, VC_NAME ) ) & "_disp = $" );
+--	PUT_LINE( "    db ?" );
+--	PUT_LINE( "  end virtual" );
+
 	DI( CD_LEVEL,     VC_NAME, INTEGER( CODI.CUR_LEVEL ) );
 	DB( CD_COMPILED,  VC_NAME, TRUE );
 
@@ -400,10 +417,10 @@ null;
 
       begin
         if NAME = "BOOLEAN"
-        then COMPILE_VC_NAME_BOOL_CHAR( VC_NAME, BYTE_TYP, BOOL_SIZE, BOOL_AL );
+        then COMPILE_VC_NAME_BOOL_CHAR( VC_NAME );
 
         elsif NAME = "CHARACTER"
-        then COMPILE_VC_NAME_BOOL_CHAR( VC_NAME, BYTE_TYP, CHAR_SIZE, CHAR_AL );
+        then COMPILE_VC_NAME_BOOL_CHAR( VC_NAME );
 
         else COMPILE_VC_NAME_INTEGER( VC_NAME );
         end if;
@@ -415,25 +432,22 @@ null;
       procedure	COMPILE_ACCESS_VAR	( VAR_ID, TYPE_SPEC :TREE )
       is
       begin
-        ALIGN( ADDR_AL );
         declare
 	LVL	: LEVEL_NUM	renames CODI.CUR_LEVEL;
---	OFS	: OFFSET_VAL	:= CODI.OFFSET_ACT;
         begin
 	DI( CD_LEVEL,     VAR_ID, INTEGER( LVL ) );
---	DI( CD_OFFSET,    VAR_ID, OFS );
           DB( CD_COMPILED,  VAR_ID, TRUE );
           declare
             INIT_EXP	: TREE	:= D( SM_INIT_EXP, VAR_ID );
           begin
             if INIT_EXP = TREE_VOID then
-	    PUT_LINE( ASCII.HT & "LDI" & ASCII.HT & INTEGER'IMAGE( -1 ) );
+	    PUT_LINE( ASCII.HT & "LI" & ASCII.HT & INTEGER'IMAGE( -1 ) );
 
             else
-              LOAD_TYPE_SIZE( TYPE_SPEC  );
-              EMIT( ALO, INTEGER( LVL - LEVEL_NUM( DI( CD_LEVEL, TYPE_SPEC ) ) ) );
+null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
+      --       EMIT( ALO, INTEGER( LVL - LEVEL_NUM( DI( CD_LEVEL, TYPE_SPEC ) ) ) );
             end if;
-	  PUT_LINE( tab & "STA" & ' ' & LEVEL_NUM'IMAGE( LVL ) & ',' & ASCII.HT & INTEGER'IMAGE( -1 ) );
+	  PUT_LINE( tab & "Sa" & ' ' & LEVEL_NUM'IMAGE( LVL ) & ',' & ASCII.HT & INTEGER'IMAGE( -1 ) );
 
           end;
         end;
@@ -450,12 +464,14 @@ null;
           LVL	: LEVEL_NUM	renames CODI.CUR_LEVEL;
         begin
 
-	if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- variable ptr str ---------- " ); end if;
-	PUT_LINE( "  virtual VAR" );
-          PUT_LINE( "    align_q" );
-	PUT_LINE( "    " & VC_STR & "_disp = $" );
-	PUT_LINE( "    dq ?" );
-	PUT_LINE( "  end virtual" );
+	PUT( "VAR " & VC_STR & "_disp, q" );
+	if CODI.DEBUG then PUT( tab50 & "; variable ptr str" ); end if;
+	NEW_LINE;
+--	PUT_LINE( "  virtual VAR" );
+--        PUT_LINE( "    align_q" );
+--	PUT_LINE( "    " & VC_STR & "_disp = $" );
+--	PUT_LINE( "    dq ?" );
+--	PUT_LINE( "  end virtual" );
           DI( CD_LEVEL, VC_NAME, INTEGER( LVL ) );
 
 	declare
@@ -466,7 +482,7 @@ null;
 	      declare
 	        CST_CHN	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, INIT_EXP ) );
 	      begin
-	        if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- constante string ---------- " ); end if;
+	        if CODI.DEBUG then PUT_LINE( tab50 & "; constante string" ); end if;
 	        PUT_LINE( "  postpone" );
 	        PUT_LINE( "    dd" & tab & "1," & NATURAL'IMAGE( CST_CHN'LENGTH ) );
 	        PUT_LINE( "    " & VC_STR & "_ptr = $" );
@@ -475,7 +491,7 @@ null;
 	      end;
 
 	      PUT_LINE( tab & "LCA" & tab & VC_STR & "_ptr" );						-- LOAD CONSTANT ADDRESS
-	      PUT_LINE( tab & "STQ" & tab & LEVEL_NUM'IMAGE( LVL ) & ',' & tab & VC_STR & "_disp" );
+	      PUT_LINE( tab & "Sa" & tab & LEVEL_NUM'IMAGE( LVL ) & ',' & tab & VC_STR & "_disp" );
 
 	    end if;
 	  end if;
@@ -506,19 +522,17 @@ null;
       is
         INIT_EXP	: TREE	:= D( SM_INIT_EXP, VC_NAME );
       begin
-        ALIGN( RECORD_AL );
         declare
 	LVL	: LEVEL_NUM	renames CODI.CUR_LEVEL;
---	OFS	: OFFSET_VAL	:= CODI.OFFSET_ACT;
         begin
-          if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- variable record ---------- " ); end if;
+          if CODI.DEBUG then PUT_LINE( tab50 & "; variable record" ); end if;
 
-	PUT_LINE( "  virtual VAR" );
+	PUT_LINE( "  virtual VARzone" );
 	PUT_LINE( "    " & PRINT_NAME( D( LX_SYMREP, VC_NAME ) ) & "_disp = $" );
 	PUT_LINE( "    db ? " & INTEGER'IMAGE( DI( CD_IMPL_SIZE, TYPE_SPEC ) ) & "dup" );
 	PUT_LINE( "  end virtual" );
+
 	DI( CD_LEVEL,     VC_NAME, INTEGER( LVL ) );
---	DI( CD_OFFSET,    VC_NAME, OFS );
           DB( CD_COMPILED,  VC_NAME, TRUE );
 
 	if INIT_EXP.TY = DN_AGGREGATE then
@@ -541,6 +555,7 @@ null;
       case TYPE_SPEC.TY is
       when DN_ENUMERATION	=> COMPILE_VC_NAME_ENUMERATION( VC_NAME, TYPE_SPEC );
       when DN_INTEGER	=> COMPILE_VC_NAME_INTEGER(	    VC_NAME );
+      when DN_FLOAT		=> COMPILE_VC_NAME_FLOAT(	    VC_NAME );
       when DN_ACCESS	=> COMPILE_ACCESS_VAR(	    VC_NAME, TYPE_SPEC );
       when DN_RECORD	=> COMPILE_RECORD_VAR(	    VC_NAME, TYPE_SPEC );
       when DN_ARRAY		=> COMPILE_ARRAY_VAR(	    VC_NAME, TYPE_SPEC );

@@ -1,0 +1,785 @@
+include 'MACHINE_CODE.FINC'
+					;---------- PACKAGE
+namespace TEXT_IO
+elab_spec:
+  virtual VARzone
+    align_d
+    COUNT_lower_disp = $
+    dd ?
+    COUNT_upper_disp = $
+    dd ?
+  end virtual
+	LI	 0
+	Sd  0,	COUNT_lower_disp
+	Sd  0,	COUNT_upper_disp
+VAR UNBOUNDED_disp, w			; variable entiere
+	LI	 0
+	Sw  0,	UNBOUNDED_disp
+if defined CREATE_L1_
+SUBP CREATE_L1				;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in out
+PRM MODE_adrofs				; in
+PRM NAME_adrofs				; in
+PRM FORM_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+VAR I_disp, w				; variable entiere
+	LI	 0
+	Sw  1,	I_disp
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB CREATE
+end if
+if defined OPEN_L2_
+SUBP OPEN_L2				;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in out
+PRM MODE_adrofs				; in
+PRM NAME_adrofs				; in
+PRM FORM_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB OPEN
+end if
+if defined CLOSE_L3_
+SUBP CLOSE_L3				;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in out
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB CLOSE
+end if
+if defined DELETE_L4_
+SUBP DELETE_L4				;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in out
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB DELETE
+end if
+if defined RESET_L5_
+SUBP RESET_L5				;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in out
+PRM MODE_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB RESET
+end if
+if defined RESET_L6_
+SUBP RESET_L6				;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in out
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB RESET
+end if
+if defined MODE_L7_
+SUBP MODE_L7				;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB MODE
+end if
+if defined NAME_L8_
+SUBP NAME_L8				;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB NAME
+end if
+if defined FORM_L9_
+SUBP FORM_L9				;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB FORM
+end if
+if defined IS_OPEN_L10_
+SUBP IS_OPEN_L10				;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB IS_OPEN
+end if
+if defined SET_INPUT_L11_
+SUBP SET_INPUT_L11				;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB SET_INPUT
+end if
+if defined SET_OUTPUT_L12_
+SUBP SET_OUTPUT_L12				;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB SET_OUTPUT
+end if
+if defined STANDARD_INPUT_L13_
+SUBP STANDARD_INPUT_L13			;---------- SUB
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB STANDARD_INPUT
+end if
+if defined STANDARD_OUTPUT_L14_
+SUBP STANDARD_OUTPUT_L14			;---------- SUB
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB STANDARD_OUTPUT
+end if
+if defined CURRENT_INPUT_L15_
+SUBP CURRENT_INPUT_L15			;---------- SUB
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB CURRENT_INPUT
+end if
+if defined CURRENT_OUTPUT_L16_
+SUBP CURRENT_OUTPUT_L16			;---------- SUB
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB CURRENT_OUTPUT
+end if
+if defined SET_LINE_LENGTH_L17_
+SUBP SET_LINE_LENGTH_L17			;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+PRM TO_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB SET_LINE_LENGTH
+end if
+if defined SET_LINE_LENGTH_L18_
+SUBP SET_LINE_LENGTH_L18			;---------- SUB
+PRMS					;    debut parametrage
+PRM TO_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB SET_LINE_LENGTH
+end if
+if defined SET_PAGE_LENGTH_L19_
+SUBP SET_PAGE_LENGTH_L19			;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+PRM TO_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB SET_PAGE_LENGTH
+end if
+if defined SET_PAGE_LENGTH_L20_
+SUBP SET_PAGE_LENGTH_L20			;---------- SUB
+PRMS					;    debut parametrage
+PRM TO_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB SET_PAGE_LENGTH
+end if
+if defined LINE_LENGTH_L21_
+SUBP LINE_LENGTH_L21			;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB LINE_LENGTH
+end if
+if defined LINE_LENGTH_L22_
+SUBP LINE_LENGTH_L22			;---------- SUB
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB LINE_LENGTH
+end if
+if defined PAGE_LENGTH_L23_
+SUBP PAGE_LENGTH_L23			;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB PAGE_LENGTH
+end if
+if defined PAGE_LENGTH_L24_
+SUBP PAGE_LENGTH_L24			;---------- SUB
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB PAGE_LENGTH
+end if
+if defined NEW_LINE_L25_
+SUBP NEW_LINE_L25				;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+PRM SPACING_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB NEW_LINE
+end if
+if defined NEW_LINE_L26_
+SUBP NEW_LINE_L26				;---------- SUB
+PRMS					;    debut parametrage
+PRM SPACING_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB NEW_LINE
+end if
+if defined SKIP_LINE_L27_
+SUBP SKIP_LINE_L27				;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+PRM SPACING_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB SKIP_LINE
+end if
+if defined SKIP_LINE_L28_
+SUBP SKIP_LINE_L28				;---------- SUB
+PRMS					;    debut parametrage
+PRM SPACING_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB SKIP_LINE
+end if
+if defined END_OF_LINE_L29_
+SUBP END_OF_LINE_L29			;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB END_OF_LINE
+end if
+if defined END_OF_LINE_L30_
+SUBP END_OF_LINE_L30			;---------- SUB
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB END_OF_LINE
+end if
+if defined NEW_PAGE_L31_
+SUBP NEW_PAGE_L31				;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB NEW_PAGE
+end if
+if defined NEW_PAGE_L32_
+SUBP NEW_PAGE_L32				;---------- SUB
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB NEW_PAGE
+end if
+if defined SKIP_PAGE_L33_
+SUBP SKIP_PAGE_L33				;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB SKIP_PAGE
+end if
+if defined SKIP_PAGE_L34_
+SUBP SKIP_PAGE_L34				;---------- SUB
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB SKIP_PAGE
+end if
+if defined END_OF_PAGE_L35_
+SUBP END_OF_PAGE_L35			;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB END_OF_PAGE
+end if
+if defined END_OF_PAGE_L36_
+SUBP END_OF_PAGE_L36			;---------- SUB
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB END_OF_PAGE
+end if
+if defined END_OF_FILE_L37_
+SUBP END_OF_FILE_L37			;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB END_OF_FILE
+end if
+if defined END_OF_FILE_L38_
+SUBP END_OF_FILE_L38			;---------- SUB
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB END_OF_FILE
+end if
+if defined SET_COL_L39_
+SUBP SET_COL_L39				;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+PRM TO_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB SET_COL
+end if
+if defined SET_COL_L40_
+SUBP SET_COL_L40				;---------- SUB
+PRMS					;    debut parametrage
+PRM TO_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB SET_COL
+end if
+if defined SET_LINE_L41_
+SUBP SET_LINE_L41				;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+PRM TO_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB SET_LINE
+end if
+if defined SET_LINE_L42_
+SUBP SET_LINE_L42				;---------- SUB
+PRMS					;    debut parametrage
+PRM TO_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB SET_LINE
+end if
+if defined COL_L43_
+SUBP COL_L43				;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB COL
+end if
+if defined COL_L44_
+SUBP COL_L44				;---------- SUB
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB COL
+end if
+if defined LINE_L45_
+SUBP LINE_L45				;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB LINE
+end if
+if defined LINE_L46_
+SUBP LINE_L46				;---------- SUB
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB LINE
+end if
+if defined PAGE_L47_
+SUBP PAGE_L47				;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB PAGE
+end if
+if defined PAGE_L48_
+SUBP PAGE_L48				;---------- SUB
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB PAGE
+end if
+if defined GET_L49_
+SUBP GET_L49				;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+PRM ITEM_adrofs				; out
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB GET
+end if
+if defined GET_L50_
+SUBP GET_L50				;---------- SUB
+PRMS					;    debut parametrage
+PRM ITEM_adrofs				; out
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB GET
+end if
+if defined PUT_L51_
+SUBP PUT_L51				;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+PRM ITEM_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB PUT
+end if
+if defined PUT_L52_
+SUBP PUT_L52				;---------- SUB
+PRMS					;    debut parametrage
+PRM ITEM_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB PUT
+end if
+if defined GET_L53_
+SUBP GET_L53				;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+PRM ITEM_adrofs				; out
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB GET
+end if
+if defined GET_L54_
+SUBP GET_L54				;---------- SUB
+PRMS					;    debut parametrage
+PRM ITEM_adrofs				; out
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB GET
+end if
+if defined PUT_L55_
+SUBP PUT_L55				;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+PRM ITEM_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB PUT
+end if
+if defined PUT_L56_
+SUBP PUT_L56				;---------- SUB
+PRMS					;    debut parametrage
+PRM ITEM_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	ILDQ	1,	16
+	PUT_STR
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB PUT
+end if
+if defined GET_LINE_L57_
+SUBP GET_LINE_L57				;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+PRM ITEM_adrofs				; out
+PRM LAST_adrofs				; out
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB GET_LINE
+end if
+if defined GET_LINE_L58_
+SUBP GET_LINE_L58				;---------- SUB
+PRMS					;    debut parametrage
+PRM ITEM_adrofs				; out
+PRM LAST_adrofs				; out
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB GET_LINE
+end if
+if defined PUT_LINE_L59_
+SUBP PUT_LINE_L59				;---------- SUB
+PRMS					;    debut parametrage
+PRM FILE_adrofs				; in
+PRM ITEM_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB PUT_LINE
+end if
+if defined PUT_LINE_L60_
+SUBP PUT_LINE_L60				;---------- SUB
+PRMS					;    debut parametrage
+PRM ITEM_adrofs				; in
+endPRMS					;    fin parametrage
+ELAB 1					;    vars
+endELAB					;    end vars
+begin:					;---------- BDY
+	ILQ	1,	16
+	PUT_STR
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB PUT_LINE
+end if
+begin:					;---------- package BDY
+end namespace 				;---------- end package BDY TEXT_IO

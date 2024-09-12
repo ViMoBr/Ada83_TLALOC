@@ -13,12 +13,12 @@ is
   is
   begin
     CODI.CUR_LEVEL      := 0;
-    CODI.GENERATE_CODE  := FALSE;
+--    CODI.GENERATE_CODE  := FALSE;
     CODI.ENCLOSING_BODY := TREE_VOID;
 
     CODE_WITH_CONTEXT( D( AS_CONTEXT_ELEM_S, COMPILATION_UNIT ) );
 
-    CODI.GENERATE_CODE  := TRUE;
+--    CODI.GENERATE_CODE  := TRUE;
 
     declare
       UNIT_ALL_DECL		: TREE	:= D( AS_ALL_DECL, COMPILATION_UNIT );
@@ -43,10 +43,10 @@ is
     procedure	CODE_WITHED_PKG	( DEFN :TREE )
     is
     begin
-      PUT_LINE( "include '" & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & ".BDY.COD'" );
+      PUT_LINE( "include '" & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & ".FINC'" );
 --      EMIT( RFP, CUR_COMP_UNIT, S=> PRINT_NAME( D( LX_SYMREP, DEFN ) ) );
       DB( CD_COMPILED, DEFN, TRUE );
-      CODI.GENERATE_CODE := FALSE;
+--      CODI.GENERATE_CODE := FALSE;
 --      declare
 --        SPEC	: TREE		:= D( SM_SPEC, DEFN );
 --        DECL_SEQ	: SEQ_TYPE	:= LIST( D( AS_DECL_S1, SPEC ) );
@@ -84,7 +84,7 @@ is
 	      DEFN	: TREE	:= D( SM_DEFN, NAME );
 --	      COMPILED	: BOOLEAN	:= DB( CD_COMPILED, DEFN );
 	    begin
-	      CODI.GENERATE_CODE := TRUE;
+--	      CODI.GENERATE_CODE := TRUE;
 	      if DEFN.TY = DN_PACKAGE_ID then
 null;
 	        CODE_WITHED_PKG( DEFN );
@@ -92,8 +92,7 @@ null;
 
 	      elsif DEFN.TY = DN_PROCEDURE_ID then
 	        if not DB( CD_COMPILED, DEFN ) then
---	          EMIT( RFP, I=> 0, S=> PRINT_NAME( D( LX_SYMREP, DEFN ) ) );
-      PUT_LINE( "include '" & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & ".fas'" );
+--      PUT_LINE( "include '" & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & ".fas'" );
 	          declare
 		  SUBP_LBL	:constant STRING	:= NEW_LABEL;
 	          begin
@@ -101,9 +100,7 @@ null;
 		  DI( CD_LEVEL,      DEFN,  1 );
 		  DI( CD_PARAM_SIZE, DEFN,  0 );
 		  DB( CD_COMPILED,   DEFN,  TRUE );
-PUT_LINE( "; RFP" & tab & SUBP_LBL );
---		  EMIT( RFL, SUBP_LBL );
-		  CODI.GENERATE_CODE := FALSE;
+--		  CODI.GENERATE_CODE := FALSE;
 	          end;
 	        end if;
 	      end if;
@@ -127,11 +124,11 @@ PUT_LINE( "; RFP" & tab & SUBP_LBL );
     SOURCE_NAME		: TREE		:= D( AS_SOURCE_NAME, SUBPROGRAM_BODY );
     SUB_NAME		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, SOURCE_NAME ) );
     DECL_ID		: TREE		:= D( SM_FIRST, SOURCE_NAME );
-    POST_LBL 		:constant STRING	:= NEW_LABEL;
-    SAVE_ENCLOSING	: TREE	:= ENCLOSING_BODY;
+    SAVE_ENCLOSING		: TREE		:= ENCLOSING_BODY;
   begin
 
     INC_LEVEL;
+
     if DECL_ID = SOURCE_NAME then
       LBL := NEW_LABEL;
       DI( CD_LEVEL, SOURCE_NAME, INTEGER( CODI.CUR_LEVEL ) );
@@ -139,41 +136,35 @@ PUT_LINE( "; RFP" & tab & SUBP_LBL );
       LBL := LABEL_TYPE( DI( CD_LABEL, DECL_ID ) );
       DI( CD_LEVEL, SOURCE_NAME, DI( CD_LEVEL, DECL_ID ) );
     end if;
-
     DI( CD_LABEL, SOURCE_NAME, INTEGER( LBL ) );
-
 
     if ENCLOSING_BODY /= TREE_VOID then
       PUT_LINE( "if defined " & SUB_NAME & '_' & LABEL_STR( LBL ) & '_' );
-      PUT_LINE( tab & "BRA" & tab & POST_LBL );
     end if;
 
-    if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- SOUS-PROGRAMME ---------- " ); end if;
-    PUT_LINE( "namespace " & SUB_NAME & '_' & LABEL_STR( LBL ) );
+    PUT( "SUBP " & SUB_NAME & '_' & LABEL_STR( LBL ) );
+    if CODI.DEBUG then PUT( tab50 & ";---------- SUB" ); end if;
+    NEW_LINE;
 
     DECLARATIONS.CODE_HEADER( D( AS_HEADER, SUBPROGRAM_BODY ) );
 
-    PUT_LINE( "elab:" );
-    PUT_LINE( "  virtual at 0" );
-    PUT_LINE( "    VAR::" );
-    PUT_LINE( "  end virtual" );
-    PUT_LINE( tab & "LINK" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & ',' & tab & "loc_siz" );
-
     ENCLOSING_BODY := SUBPROGRAM_BODY;
+
     CODE_BODY( D( AS_BODY, SUBPROGRAM_BODY ) );
 
     PUT_LINE( tab & "UNLINK" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );
-    PUT_LINE( tab & "RTD" ); --& INTEGER'IMAGE( PARAM_SIZ ) );
+    PUT( tab & "RTD" );
+    if CODI.NO_SUBP_PARAMS = FALSE then PUT( tab & "prm_siz" ); end if;
+    NEW_LINE;
     PUT_LINE( "excep:" );
-    if CODI.DEBUG then
-      PUT_LINE( ';' & tab & "---------- end sub " & SUB_NAME & " ----------" );
-    end if;
-    PUT_LINE( "end namespace " );
+
+    PUT( "endSUBP" );
+    if CODI.DEBUG then PUT( tab50 & ";---------- end SUB " & SUB_NAME); end if;
+    NEW_LINE;
 
     DEC_LEVEL;
     ENCLOSING_BODY := SAVE_ENCLOSING;
     if ENCLOSING_BODY /= TREE_VOID then
-      PUT_LINE( POST_LBL & ':' );
       PUT_LINE( "end if" );
     end if;
 
@@ -191,7 +182,7 @@ PUT_LINE( "; RFP" & tab & SUBP_LBL );
   begin
     if PACK_DEF.TY = DN_GENERIC_ID then return; end if;
 
-    if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- PACKAGE ---------- " ); end if;
+    if CODI.DEBUG then PUT_LINE( tab50 & ";---------- PACKAGE" ); end if;
     PUT_LINE( "namespace " & PACK_NAME );
     PUT_LINE( "elab_spec:" );
 
@@ -200,10 +191,11 @@ PUT_LINE( "; RFP" & tab & SUBP_LBL );
     ENCLOSING_BODY := PACKAGE_BODY;
     CODE_BODY( D( AS_BODY, PACKAGE_BODY ) );
 
+    PUT( "end namespace " );
     if CODI.DEBUG then
-      PUT_LINE( ';' & tab & "---------- end package bdy " & PACK_NAME & " ----------" );
+      PUT( tab50 & ";---------- end package BDY " & PACK_NAME );
     end if;
-    PUT_LINE( "end namespace " );
+    NEW_LINE;
 
   end	CODE_PACKAGE_BODY;
 	-----------------
@@ -233,16 +225,20 @@ PUT_LINE( "; RFP" & tab & SUBP_LBL );
   begin
     DI( CD_LEVEL, BLOCK_BODY, INTEGER( CODI.CUR_LEVEL ) );
 
-    if FUNCTION_RESULT /= TREE_VOID then
-      if FUNCTION_RESULT.TY = DN_ARRAY then
-        LOAD_ADR( FUNCTION_RESULT );
-        EMIT( DPL, A );
-        EMIT( SLD, A, 0, FUN_RESULT_OFFSET - CODI.ADDR_SIZE );
-        EMIT( IND, I, 0 );
-        EMIT( ALO, INTEGER( -1 ) );
-        EMIT( SLD, A, 0, FUN_RESULT_OFFSET );
-      end if;
-    end if;
+    PUT( "ELAB" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );
+    if CODI.DEBUG then PUT( tab50 & ";    vars" ); end if;
+    NEW_LINE;
+
+--     if FUNCTION_RESULT /= TREE_VOID then
+--       if FUNCTION_RESULT.TY = DN_ARRAY then
+--         LOAD_ADR( FUNCTION_RESULT );
+--         EMIT( DPL, A );
+--         EMIT( SLD, A, 0, FUN_RESULT_OFFSET - CODI.ADDR_SIZE );
+--         EMIT( IND, I, 0 );
+--         EMIT( ALO, INTEGER( -1 ) );
+--         EMIT( SLD, A, 0, FUN_RESULT_OFFSET );
+--       end if;
+--     end if;
 
 
     declare
@@ -253,25 +249,21 @@ PUT_LINE( "; RFP" & tab & SUBP_LBL );
     end;
 
     if ENCLOSING_BODY.TY = DN_SUBPROGRAM_BODY then
-      if CODI.DEBUG then PUT_LINE( ';' & tab & "---------- calcul taille variables ---------- " ); end if;
-      PUT_LINE( "  virtual VAR" );
-      PUT_LINE( "    loc_siz = $" );
-      PUT_LINE( "  end virtual" );
+
+      PUT( "endELAB" );
+      if CODI.DEBUG then PUT( tab50 & ";    end vars" ); end if;
+      NEW_LINE;
+
     end if;
 
+    PUT( "begin:" );
     if CODI.DEBUG then
-      PUT( ';' & tab & "---------- " );
-      if ENCLOSING_BODY.TY = DN_SUBPROGRAM_BODY then PUT( "bdy" );
-      elsif ENCLOSING_BODY.TY = DN_PACKAGE_BODY then PUT( "package bdy" );
+      PUT( tab50 & ";---------- " );
+      if ENCLOSING_BODY.TY = DN_SUBPROGRAM_BODY then PUT( "BDY" );
+      elsif ENCLOSING_BODY.TY = DN_PACKAGE_BODY then PUT( "package BDY" );
       end if;
-      PUT_LINE( " ----------" );
     end if;
-
-    if CODI.DEBUG and then ENCLOSING_BODY.TY = DN_PACKAGE_BODY then
-      PUT_LINE( ';' & tab & "---------- package bdy begin ----------" );
-    end if;
-
-    PUT_LINE( "begin:" );
+    NEW_LINE;
 
     INSTRUCTIONS.CODE_STM_S( D ( AS_STM_S, BLOCK_BODY ) );
 
@@ -315,11 +307,7 @@ PUT_LINE( "; RFP" & tab & SUBP_LBL );
 			-----------------
   procedure		CODE_SUBUNIT_BODY		( SUBUNIT_BODY :TREE )
   is
- --   POST_LBL :constant STRING	:= NEW_LABEL;
   begin
---    if ENCLOSING_BODY /= TREE_VOID then
---      PUT_LINE( tab & "BRA" & tab & POST_LBL );
---    end if;
 
     if SUBUNIT_BODY.TY = DN_SUBPROGRAM_BODY then
       CODE_SUBPROGRAM_BODY ( SUBUNIT_BODY );
@@ -331,10 +319,6 @@ PUT_LINE( "; RFP" & tab & SUBP_LBL );
       CODE_TASK_BODY ( SUBUNIT_BODY );
 
     end if;
-
---    if ENCLOSING_BODY /= TREE_VOID then
---      PUT_LINE( POST_LBL & ':' );
---    end if;
 
   end	CODE_SUBUNIT_BODY;
 	-----------------

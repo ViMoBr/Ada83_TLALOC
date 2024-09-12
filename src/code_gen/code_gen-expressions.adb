@@ -46,11 +46,13 @@ is
   begin
     if VAL.PT = HI and then VAl.NOTY = DN_NUM_VAL
     then
-      PUT_LINE( tab & "LDI" & tab & INTEGER'IMAGE( DI( SM_VALUE, NUMERIC_LITERAL ) ) );
+      PUT_LINE( tab & "LI" & tab & INTEGER'IMAGE( DI( SM_VALUE, NUMERIC_LITERAL ) ) );
 
     elsif VAL.TY = DN_REAL_VAL
     then
-      PUT_LINE( ';' & tab & "CODE_GEN-EXPRESSIONS.CODE_NUMERIC_LITERAL : DN_REAL_VAL (TODO)" );
+      PUT_LINE( tab & "LIF" & tab & PRINT_NAME( D( LX_NUMREP, NUMERIC_LITERAL ) ) );
+
+--      PUT_LINE( ';' & tab & "CODE_GEN-EXPRESSIONS.CODE_NUMERIC_LITERAL : DN_REAL_VAL (TODO)" );
 
     end if;
 
@@ -65,8 +67,18 @@ is
   begin
     case DEFN.TY is
     when DN_CONSTANT_ID | DN_VARIABLE_ID	=> CODE_VC_ID( DEFN );
-    when DN_ITERATION_ID			=> LOAD_MEM( DEFN );
-    when DN_ENUMERATION_ID | DN_CHARACTER_ID	=> PUT_LINE( ASCII.HT & "LDI" & ASCII.HT & INTEGER'IMAGE( DI( SM_REP, DEFN ) ) );
+    when DN_ITERATION_ID			=>
+      declare
+        ITERATION_ID	: TREE	renames DEFN;
+        ITERATION_ID_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, ITERATION_ID ) );
+        ITERATION_ID_TAG	: LABEL_TYPE	:= LABEL_TYPE( DI( CD_OFFSET, ITERATION_ID ) );
+        ITERATION_ID_VARSTR	:constant STRING	:= ITERATION_ID_STR & LABEL_STR( ITERATION_ID_TAG ) & "_disp";
+        TYPE_CHAR		: CHARACTER	:= OPER_TYPE_FROM( ITERATION_ID );
+      begin
+        PUT_LINE( tab & "L" & TYPE_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, ITERATION_ID ) ) & ',' & tab & ITERATION_ID_VARSTR );
+      end;
+
+    when DN_ENUMERATION_ID | DN_CHARACTER_ID	=> PUT_LINE( ASCII.HT & "LI" & ASCII.HT & INTEGER'IMAGE( DI( SM_REP, DEFN ) ) );
     when DN_IN_ID | DN_IN_OUT_ID		=> LOAD_MEM( DEFN );
 --    when DN_OUT_ID				=> CODE_PRM_ID( DEFN );
     when others => raise PROGRAM_ERROR;
@@ -84,7 +96,7 @@ is
 
     case CST_TYPE.TY is
     when DN_ARRAY => null;
-    when DN_INTEGER | DN_ACCESS | DN_ENUMERATION
+    when DN_INTEGER | DN_ACCESS | DN_ENUMERATION | DN_FLOAT
     =>
       LOAD_MEM( CONSTANT_ID );
     when others
@@ -103,7 +115,6 @@ is
     NAME		: TREE		:= D( AS_NAME,		FUNCTION_CALL );
     PARAMS	: TREE		:= D( SM_NORMALIZED_PARAM_S,	FUNCTION_CALL );
     DEFN		: TREE		:= D( SM_DEFN,		NAME );
-    OPER		: OPERAND_REF	:= NO_OPERAND;
 
   begin
 
@@ -147,22 +158,22 @@ is
         POP( EXP_S, EXP );
         CODE_EXP( EXP );
         if IS_EMPTY( EXP_S ) then
-	EMIT ( AR2,		COMMENT => "ADRESSE POUR LE DERNIER INDICE (RAPIDE)" );
+null;--	EMIT ( AR2,		COMMENT => "ADRESSE POUR LE DERNIER INDICE (RAPIDE)" );
         else
-	EMIT ( AR1,		COMMENT => "ADRESSE POUR INDICE INTERMEDIAIRE" );
-	EMIT ( DEC, A, 3*INTG_SIZE,	COMMENT => "PTR DESCRIPTEUR AU TRIPLET INDICE SUIVANT" );
-	INDEX( EXP_S );
-	EMIT ( ADD, I,		COMMENT => "AJOUTER LE DECALAGE A L ADRESSE DES INDICES PRECEDENTS" );
+null;--	EMIT ( AR1,		COMMENT => "ADRESSE POUR INDICE INTERMEDIAIRE" );
+--	EMIT ( DEC, A, 3*INTG_SIZE,	COMMENT => "PTR DESCRIPTEUR AU TRIPLET INDICE SUIVANT" );
+--	INDEX( EXP_S );
+--	EMIT ( ADD, I,		COMMENT => "AJOUTER LE DECALAGE A L ADRESSE DES INDICES PRECEDENTS" );
         end if;
       end INDEX;
 
     begin
       CODE_OBJECT( D ( AS_NAME, INDEXED ) );
-      EMIT( DPL, A,		  COMMENT => "DUP ADRESSE OBJET" );
-      EMIT( IND, A, 0,	  COMMENT => "CHARGE INDEXE D ADRESSE TABLEAU" );
-      EMIT( SWP, A,		  COMMENT => "ADRESSE OBJET AU TOP" );
-      EMIT( IND, A, -ADDR_SIZE, COMMENT => "CHARGE INDEXE ADRESSE DU DESCRIPTEUR TABLEAU" );
-      EMIT( DEC, A, INTG_SIZE,  COMMENT => "ADRESSE DESCRIPTEUR - TAILLE ENTIER" );
+--      EMIT( DPL, A,		  COMMENT => "DUP ADRESSE OBJET" );
+--      EMIT( IND, A, 0,	  COMMENT => "CHARGE INDEXE D ADRESSE TABLEAU" );
+--      EMIT( SWP, A,		  COMMENT => "ADRESSE OBJET AU TOP" );
+--      EMIT( IND, A, -ADDR_SIZE, COMMENT => "CHARGE INDEXE ADRESSE DU DESCRIPTEUR TABLEAU" );
+--      EMIT( DEC, A, INTG_SIZE,  COMMENT => "ADRESSE DESCRIPTEUR - TAILLE ENTIER" );
       declare
         EXP_SEQ	: SEQ_TYPE	:= LIST( D( AS_EXP_S, INDEXED ) );
       begin
@@ -170,7 +181,7 @@ is
 	INDEX( EXP_SEQ );
         end if;
       end;
-      EMIT( IXA, INTEGER( 1 ) );
+--      EMIT( IXA, INTEGER( 1 ) );
     end;
   end	CODE_INDEXED;
 	------------
@@ -208,7 +219,7 @@ is
   procedure			CODE_USED_CHAR		( USED_CHAR :TREE )
   is
   begin
-    PUT_LINE( tab & "LDI" & tab & INTEGER'IMAGE( DI( SM_VALUE, USED_CHAR ) ) );
+    PUT_LINE( tab & "LI" & tab & INTEGER'IMAGE( DI( SM_VALUE, USED_CHAR ) ) );
   end	CODE_USED_CHAR;
 	--------------
 
@@ -223,21 +234,21 @@ is
       SYMREP	: TREE	:= D( LX_SYMREP, USED_NAME_ID );
     begin
       if DEFN.TY = DN_EXCEPTION_ID then
-        declare
-	LABEL	: TREE := D( CD_LABEL, DEFN );
+null;--        declare
+--	LABEL	: TREE := D( CD_LABEL, DEFN );
 --	LBL	: LABEL_TYPE;
-        begin
+--        begin
 --	if LABEL.TY /= DN_NUM_VAL then
 --	  LBL := NEW_LABEL;
 --	  DI( CD_LABEL, DEFN, INTEGER( LBL ) );
 --	  EMIT( EXL, LBL, S=> PRINT_NAME( SYMREP ),
 --			COMMENT=> "NUM D EXCEPTION EXTERNE ATTRIBUE SUR USED_NAME_ID" );
 --	end if;
-	EMIT( DPL, I,	COMMENT=> "CODE D EXCEPTION EMPILE" );
-	EMIT( LDC, I, DI( CD_LABEL, DEFN ),
-			COMMENT=> "EXCEPTION " & PRINT_NAME ( SYMREP ));
-	EMIT( EQ, I );
-        end;
+--	EMIT( DPL, I,	COMMENT=> "CODE D EXCEPTION EMPILE" );
+--	EMIT( LDC, I, DI( CD_LABEL, DEFN ),
+--			COMMENT=> "EXCEPTION " & PRINT_NAME ( SYMREP ));
+--	EMIT( EQ, I );
+--        end;
 
       elsif DEFN.TY = DN_PACKAGE_ID then
         if not DB( CD_COMPILED, DEFN ) then
@@ -246,7 +257,7 @@ is
 	begin
 --	  EMIT( RFP, CODI.CUR_COMP_UNIT, S=> PRINT_NAME( SYMREP ) );
 	  PUT_LINE( "; RFP" & PRINT_NAME( SYMREP ) );
-	  CODI.GENERATE_CODE := FALSE;
+--	  CODI.GENERATE_CODE := FALSE;
 	  DB( CD_COMPILED, DEFN, TRUE );
 	  DECLARATIONS.CODE_DECL_S( D( AS_DECL_S1, PACKAGE_SPEC ) );
 	end;
@@ -258,13 +269,12 @@ is
 	declare
 	  PROC_LBL	:constant STRING	:= NEW_LABEL;
 	begin
-	  CODI.GENERATE_CODE := TRUE;
-	  EMIT( RFP, INTEGER( 0 ), S=> PRINT_NAME ( SYMREP ) );
+--	  CODI.GENERATE_CODE := TRUE;
+--	  EMIT( RFP, INTEGER( 0 ), S=> PRINT_NAME ( SYMREP ) );
 --	  DI  ( CD_LABEL,      DEFN, INTEGER ( PROC_LBL ) );
 	  DI  ( CD_LEVEL,      DEFN, 1 );
 	  DI  ( CD_PARAM_SIZE, DEFN, 0 );
 	  DB  ( CD_COMPILED,   DEFN, TRUE );
-PUT_LINE( "; RFP" & tab & PROC_LBL );
 --	  EMIT( RFL, PROC_LBL );
 	end;
         end if;

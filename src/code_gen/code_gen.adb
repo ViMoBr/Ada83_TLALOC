@@ -13,8 +13,8 @@ is
 
   procedure CODE_ENUMERATION_ID	( ENUMERATION_ID :TREE );
   procedure CODE_ITERATION_ID		( ITERATION_ID :TREE );
-  function  CODE_NAME		( NAME		:TREE )		return OPERAND_REF;
-  function  CODE_DESIGNATOR		( DESIGNATOR	:TREE )		return OPERAND_REF;
+  procedure CODE_NAME		( NAME		:TREE );
+  procedure CODE_DESIGNATOR		( DESIGNATOR	:TREE );
 
   procedure CODE_ROOT ( ROOT :TREE );
   procedure CODE_CONTEXT_PRAGMA ( CONTEXT_PRAGMA :TREE );
@@ -230,15 +230,13 @@ is
     procedure CODE_STM_WITH_NAME	( STM_WITH_NAME :TREE );
     procedure CODE_CALL_STM		( CALL_STM :TREE );
     procedure CODE_BLOCK_LOOP		( BLOCK_LOOP :TREE );
-    procedure CODE_ITERATION		( ITERATION :TREE );
     procedure CODE_LOOP		( ADA_LOOP :TREE );
-    procedure CODE_FOR_REV		( FOR_REV :TREE );
-    procedure CODE_FOR		( ADA_FOR :TREE );
-    procedure CODE_REVERSE		( ADA_REVERSE :TREE );
+--    procedure CODE_FOR_REV		( FOR_REV :TREE );
+--    procedure CODE_FOR		( ADA_FOR :TREE );
+--    procedure CODE_REVERSE		( ADA_REVERSE :TREE );
     procedure CODE_ASSIGN		( ASSIGN :TREE );
     procedure CODE_IF		( ADA_IF :TREE );
     procedure CODE_CASE		( ADA_CASE :TREE );
-    procedure CODE_WHILE		( ADA_WHILE :TREE );
     procedure CODE_BLOCK		( BLOCK :TREE );
     procedure CODE_EXIT		( ADA_EXIT :TREE );
     procedure CODE_RETURN		( ADA_RETURN :TREE );
@@ -588,7 +586,7 @@ is
         POP( CHOICE_SEQ, CHOICE );
         CODE_CHOICE( CHOICE );
         if not CHOICE_OTHERS_FLAG then
-	EMIT( JMPT, LABEL_TYPE( DI( CD_LABEL, CHOICE_S ) ), COMMENT=> "TRAITE EXCEPTION" );
+null;--	EMIT( JMPT, LABEL_TYPE( DI( CD_LABEL, CHOICE_S ) ), COMMENT=> "TRAITE EXCEPTION" );
         end if;
       end loop;
     end;
@@ -875,7 +873,7 @@ is
       INT_RANGE		: TREE		:= D( AS_CONSTRAINT, INTEGER_DEF );
       EXP_BORNE		: TREE;
     begin
-      PUT_LINE( "  virtual VAR" );
+      PUT_LINE( "  virtual VARzone" );
       PUT_LINE( "    align_d" );
       PUT_LINE( "    " & LOWER_STR & " = $" );
       PUT_LINE( "    dd" & " ?" );
@@ -888,10 +886,10 @@ is
       DB( CD_COMPILED,  INTEGER_SPEC, TRUE );
       EXP_BORNE := D( AS_EXP1, INT_RANGE );
       EXPRESSIONS.CODE_EXP( EXP_BORNE );
-      PUT_LINE( tab & "ST" & 'd' & ' ' & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & ',' & tab & LOWER_STR );
+      PUT_LINE( tab & "S" & 'd' & ' ' & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & ',' & tab & LOWER_STR );
       EXP_BORNE := D( AS_EXP2, INT_RANGE );
       EXPRESSIONS.CODE_EXP( EXP_BORNE );
-      PUT_LINE( tab & "ST" & 'd' & ' ' & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & ',' & tab & UPPER_STR );
+      PUT_LINE( tab & "S" & 'd' & ' ' & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & ',' & tab & UPPER_STR );
     end;
   end;
 
@@ -1083,17 +1081,19 @@ is
   begin
       case OBJECT.TY is
        when DN_VARIABLE_ID =>
-         LOAD_ADR( OBJECT );
+null;--         LOAD_ADR( OBJECT );
        when DN_IN_ID =>
-	PUT_LINE( tab & "LDA " & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, OBJECT ) ) );
+	PUT_LINE( tab & "LVA " & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, OBJECT ) ) );
 
        when DN_IN_OUT_ID | DN_OUT_ID =>
-	PUT_LINE( tab & "LDA " & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, OBJECT ) ) );
+	PUT_LINE( tab & "LVA " & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, OBJECT ) ) );
 
        when DN_INDEXED =>
          EXPRESSIONS.CODE_INDEXED ( OBJECT );
+
        when DN_USED_OBJECT_ID =>
          CODE_OBJECT ( D ( SM_DEFN, OBJECT ) );
+
        when others =>
          PUT_LINE ( "!!! LOAD_OBJECT_ADDRESS : OBJECT.TY ILLICITE " & NODE_NAME'IMAGE ( OBJECT.TY ) );
          raise PROGRAM_ERROR;
@@ -1106,11 +1106,11 @@ is
   begin
     case ADRESSE.TY is
     when DN_VARIABLE_ID =>
-      GEN_PUSH_DATA ( A, DI (CD_COMP_UNIT, ADRESSE ), LEVEL_NUM(DI ( CD_LEVEL, ADRESSE )), DI ( CD_OFFSET, ADRESSE ) );
+null;--      GEN_PUSH_DATA ( A, DI (CD_COMP_UNIT, ADRESSE ), LEVEL_NUM(DI ( CD_LEVEL, ADRESSE )), DI ( CD_OFFSET, ADRESSE ) );
     when DN_IN_ID =>
-      GEN_PUSH_DATA ( A, 0,  LEVEL_NUM(DI ( CD_LEVEL, ADRESSE )), DI ( CD_OFFSET, ADRESSE ) );
+null;--      GEN_PUSH_DATA ( A, 0,  LEVEL_NUM(DI ( CD_LEVEL, ADRESSE )), DI ( CD_OFFSET, ADRESSE ) );
     when DN_IN_OUT_ID | DN_OUT_ID =>
-      GEN_PUSH_DATA ( A, 0, LEVEL_NUM(DI( CD_LEVEL, ADRESSE )), DI( CD_VAL_OFFSET, ADRESSE ) );
+null;--      GEN_PUSH_DATA ( A, 0, LEVEL_NUM(DI( CD_LEVEL, ADRESSE )), DI( CD_VAL_OFFSET, ADRESSE ) );
     when DN_INDEXED =>
       EXPRESSIONS.CODE_INDEXED ( ADRESSE );
     when DN_USED_OBJECT_ID =>
@@ -1349,19 +1349,18 @@ is
   end;
 
 				---------
-  function			CODE_NAME			( NAME :TREE )		return OPERAND_REF
+  procedure			CODE_NAME			( NAME :TREE )
   is
   begin
     if NAME.TY in CLASS_DESIGNATOR
     then
-      return CODE_DESIGNATOR( NAME );
+      CODE_DESIGNATOR( NAME );
 
 --     elsif NAME.TY in CLASS_NAME_EXP
 --     then
 --       return CODE_NAME_EXP( NAME );
 
     end if;
-    return NO_OPERAND;
   end	CODE_NAME;
 	---------
 
@@ -1371,19 +1370,18 @@ is
     declare
       NAME_SEQ	: SEQ_TYPE := LIST( NAME_S );
       NAME	: TREE;
-      OPER	: OPERAND_REF;
     begin
       while not IS_EMPTY( NAME_SEQ ) loop
         POP( NAME_SEQ, NAME );
-        OPER := CODE_NAME( NAME );
-    end loop;
+        CODE_NAME( NAME );
+      end loop;
     end;
   end;
 
 
 
 				---------------
-  function			CODE_DESIGNATOR		( DESIGNATOR :TREE )	return OPERAND_REF
+  procedure			CODE_DESIGNATOR		( DESIGNATOR :TREE )
   is
   begin
 --     if DESIGNATOR.TY in CLASS_USED_OBJECT
@@ -1395,7 +1393,7 @@ is
 --       return CODE_USED_NAME( DESIGNATOR );
 -- 
 --     end if;
-    return NO_OPERAND;
+    null;
   end	CODE_DESIGNATOR;
 	---------------
 

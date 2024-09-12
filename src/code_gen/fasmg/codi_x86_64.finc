@@ -5,6 +5,9 @@
 	; sur processeur x86 64 les push et pop se font en 64 bits (qword)
 	; mais on a choisi de faire les opérations en 32 bits pour rester comme sur une architecture 32 bits
 
+postpone					; sera fait en toute toute fin car c'est le premier postpone
+  ASM_SIZE = $-0x400078
+end postpone
 
 macro show description, value
 
@@ -29,6 +32,9 @@ macro pop_N
   db 0x5B						; pop rbx
 end macro
 
+
+macro align_b
+end macro
 
 macro align_w
   desalign = $ mod 2
@@ -59,6 +65,8 @@ macro align_q
   end if
 end macro
 
+last_instr_was_POP = 0				; sert à faire du peep-hole sur POP - PUSH
+last_instr_was_PUSH = 0				; sert à faire du peep-hole sur PUSH - POP
 
 ;			-------
 macro			PUT_STR?			; affiche une chaine sur stdout
@@ -90,11 +98,22 @@ end macro
 ;				--------------------------------------------------------------------------------
 
 ;			-------------
-macro			LDI?	val		; Load Immediate
+macro			LI?	val		; Load Immediate
 ;			-------------
   push_T
   if val > -128 & val < 127
     db 0x6A, val					; push byte val8
+  else
+    db 0x68					; push double val32
+    dd val
+  end if
+end macro
+
+;			-------------
+macro			LIF?	val		; Load Immediate Float
+;			-------------
+  if val = 1.0
+    db 0xD9, 0xE8					; fld1
   else
     db 0x68					; push double val32
     dd val
@@ -114,7 +133,7 @@ end macro
 ;				--------------------------------------------------------------------------------
 
 ;			-------------------
-macro			LDB?	lvl, disp		; Load BYTE (paramètres ou variables locales)
+macro			LB?	lvl, disp		; Load Byte 8 bits
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
     ofs = -disp					; pile croissante vers adresses decroissantes
@@ -131,7 +150,7 @@ macro			LDB?	lvl, disp		; Load BYTE (paramètres ou variables locales)
 end macro
 
 ;			-------------------
-macro			ILDB?	lvl, disp		; INDIRECT Load BYTE (paramètres ou variables locales)
+macro			ILB?	lvl, disp		; Indirect Load Byte
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   if disp > -128 & disp < 127
@@ -147,7 +166,7 @@ macro			ILDB?	lvl, disp		; INDIRECT Load BYTE (paramètres ou variables locales)
 end macro
 
 ;			-------------------
-macro			LDW?	lvl, disp		; Load WORD 16 bits
+macro			LW?	lvl, disp		; Load Word 16 bits
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
     ofs = -disp					; pile croissante vers adresses decroissantes
@@ -164,7 +183,7 @@ macro			LDW?	lvl, disp		; Load WORD 16 bits
 end macro
 
 ;			-------------------
-macro			ILDW?	lvl, disp		; INDIRECT Load WORD (paramètres ou variables locales)
+macro			ILW?	lvl, disp		; Indirect Load Word 
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   if disp > -128 & disp < 127
@@ -180,7 +199,7 @@ macro			ILDW?	lvl, disp		; INDIRECT Load WORD (paramètres ou variables locales)
 end macro
 
 ;			-------------------
-macro			LDD?	lvl, disp		; Load DOUBLEWORD 32 bits
+macro			LD?	lvl, disp		; Load Doubleword 32 bits
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
     ofs = -disp					; pile croissante vers adresses decroissantes
@@ -197,7 +216,7 @@ macro			LDD?	lvl, disp		; Load DOUBLEWORD 32 bits
 end macro
 
 ;			-------------------
-macro			ILDD?	lvl, disp		; INDIRECT Load DOUBLEWORD
+macro			ILD?	lvl, disp		; Indirect Load Doubleword
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   if disp > -128 & disp < 127
@@ -213,7 +232,7 @@ macro			ILDD?	lvl, disp		; INDIRECT Load DOUBLEWORD
 end macro
 
 ;			-------------------
-macro			LDQ?	lvl, disp		; Load QUADWORD 64 bits
+macro			LQ?	lvl, disp		; Load Quadword 64 bits
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   ofs = -disp					; pile croissante vers adresses decroissantes
@@ -230,7 +249,7 @@ macro			LDQ?	lvl, disp		; Load QUADWORD 64 bits
 end macro
 
 ;			-------------------
-macro			ILDQ?	lvl, disp		; INDIRECT Load QUADWORD
+macro			ILQ?	lvl, disp		; Indirect Load Quadword 
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   if disp > -128 & disp < 127
@@ -246,7 +265,13 @@ macro			ILDQ?	lvl, disp		; INDIRECT Load QUADWORD
 end macro
 
 ;			-------------------
-macro			LEA?	lvl, disp		; Load address pour lvl et disp
+macro			LA?	lvl, disp		; Load Address 64 bits
+;			-------------------
+  LQ lvl, disp
+end macro
+
+;			-------------------
+macro			LVA?	lvl, disp		; Load Variable Address pour lvl et disp
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   ofs = -disp					; pile croissante vers adresses decroissantes
@@ -267,7 +292,7 @@ end macro
 ;				--------------------------------------------------------------------------------
 
 ;			-------------------
-macro			STB?	lvl, disp		; Store BYTE (paramètres ou variables locales)
+macro			SB?	lvl, disp		; Store BYTE 8 bits
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   ofs = -disp					; pile croissante vers adresses decroissantes
@@ -283,7 +308,7 @@ macro			STB?	lvl, disp		; Store BYTE (paramètres ou variables locales)
 end macro
 
 ;			-------------------
-macro			ISTB?	lvl, disp		; INDIRECT Store BYTE (paramètres ou variables locales)
+macro			ISB?	lvl, disp		; Indirect Store Byte
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   db 0x5B						; pop rbx
@@ -299,7 +324,7 @@ macro			ISTB?	lvl, disp		; INDIRECT Store BYTE (paramètres ou variables locales
 end macro
 
 ;			-------------------
-macro			STW?	lvl, disp		; Store WORD 16 bits (paramètres ou variables locales)
+macro			SW?	lvl, disp		; Store Word 16 bits
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   ofs = -disp					; pile croissante vers adresses decroissantes
@@ -315,7 +340,7 @@ macro			STW?	lvl, disp		; Store WORD 16 bits (paramètres ou variables locales)
 end macro
 
 ;			-------------------
-macro			ISTW?	lvl, disp		; INDIRECT Store WORD (paramètres ou variables locales)
+macro			ISW?	lvl, disp		; Indirect Store Word
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   db 0x5B						; pop rbx
@@ -331,7 +356,7 @@ macro			ISTW?	lvl, disp		; INDIRECT Store WORD (paramètres ou variables locales
 end macro
 
 ;			-------------------
-macro			STD?	lvl, disp		; Store DOUBLEWORD (paramètres ou variables locales)
+macro			SD?	lvl, disp		; Store Doubleword 32 bits
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   ofs = -disp					; pile croissante vers adresses decroissantes
@@ -347,7 +372,7 @@ macro			STD?	lvl, disp		; Store DOUBLEWORD (paramètres ou variables locales)
 end macro
 
 ;			-------------------
-macro			ISTD?	lvl, disp		; INDIRECT Store DOUBLEWORD (paramètres ou variables locales)
+macro			ISD?	lvl, disp		; Indirect Store Doubleword 
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   db 0x5B						; pop rbx
@@ -363,7 +388,7 @@ macro			ISTD?	lvl, disp		; INDIRECT Store DOUBLEWORD (paramètres ou variables l
 end macro
 
 ;			-------------------
-macro			STQ?	lvl, disp		; Store address QUADWORD (paramètres ou variables locales)
+macro			SQ?	lvl, disp		; Store Quadword 64 bits
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   ofs = -disp					; pile croissante vers adresses decroissantes
@@ -379,7 +404,7 @@ macro			STQ?	lvl, disp		; Store address QUADWORD (paramètres ou variables local
 end macro
 
 ;			-------------------
-macro			ISTQ?	lvl, disp		; INDIRECT Store QUADWORD (paramètres ou variables locales)
+macro			ISQ?	lvl, disp		; Indirect Store Quadword
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   db 0x5B						; pop rbx
@@ -392,6 +417,12 @@ macro			ISTQ?	lvl, disp		; INDIRECT Store QUADWORD (paramètres ou variables loc
   end if
   db 0x48, 0x89, 0x18				; mov qword ptr [rax], rbx
 
+end macro
+
+;			-------------------
+macro			SA?	lvl, disp		; Store Address 64 bits
+;			-------------------
+  SQ lvl, disp
 end macro
 
 ;				--------------------------------------------------------------------------------
@@ -467,6 +498,28 @@ macro			DIV?
 
 end macro
 
+;			---
+macro			CGT?
+;			--
+  db 0x5B						; pop rbx TOP
+  db 0x58						; pop rax NXT
+end macro
+
+;			---
+macro			CEQ?
+;			--
+end macro
+
+;			---
+macro			DEC?
+;			--
+end macro
+
+;			---
+macro			INC?
+;			--
+end macro
+
 ;				--------------------------------------------------------------------------------
 ;				OPERATIONS CONTROLE DE FLOT
 ;				--------------------------------------------------------------------------------
@@ -487,15 +540,16 @@ macro			BRA?	lbl
 end macro
 
 ;			-------------
-macro			BZ?	lbl
+macro			BT?	lbl
 ;			-------------
+  db 0x58						; pop rax
   db 0x09, 0xC0					; or eax, eax
   local disp
   if disp > -128 & disp < 127
-    db 0x74					; jz rel8
+    db 0x75					; jnz rel8
     db disp
   else
-    db 0x0F, 0x84					; jz rel32
+    db 0x0F, 0x85					; jnz rel32
     dd disp
   end if
   disp = lbl-$
@@ -518,9 +572,9 @@ end macro
 ;			--------------------
 macro			LINK?	lvl, alloc	; ALLOCATION POUR VARIABLES LOCALES SOUS FRAME PTR
 ;			--------------------
-  assert lvl>=1 & lvl<=7
+  assert lvl>=0 & lvl<=7
   db 0x41, 0x50+lvl					; push r(8+lvl)   store FP(lvl)
-  db 0x49, 0x89, 0xE0+lvl				; mov rbp, rsp   update FP
+  db 0x49, 0x89, 0xE0+lvl				; mov r(8+lvl), rsp   update FP
   assert alloc >= 0
   if alloc <> 0
     if alloc < 256
@@ -552,6 +606,83 @@ macro			RTD?	prm_size:0
   else
     db 0xC3
   end if
+
+end macro
+
+;			-------------
+macro			SUBP	sub_name_lbl	; Début de procédure
+;			-------------
+  namespace sub_name_lbl
+  BRA post
+
+end macro
+
+;			----
+macro			PRMS			; En tête de la définition des paramètres
+;			----
+  virtual at 16
+    PRMzone::
+  end virtual
+
+end macro
+
+;			---
+macro			PRM	name_adrofs	; Définition de paramètre
+;			---
+  virtual PRMzone
+    name_adrofs = $
+    dq ?
+  end virtual
+
+end macro
+
+;			-------
+macro			endPRMS			; Fin de la définition des paramètres
+;			-------
+  virtual PRMzone
+    prm_siz = $
+  end virtual
+
+end macro
+
+;			-------------
+macro			ELAB	lvl		; En tête de la partie élaboration de procédure
+;			-------------
+elab:
+  virtual at 0
+    VARzone::
+  end virtual
+	LINK lvl,	loc_siz
+
+end macro
+
+;			-----------------------
+macro			VAR	name_disp, sizChar	; Définition d'un lieu de variable
+;			-----------------------
+  virtual VARzone
+    align_#sizChar
+    name_disp = $
+    d#sizChar ?
+  end virtual
+
+end macro
+
+;			-------
+macro			endELAB			; Fin de la définition des variables
+;			-------
+;  virtual VARzone
+;    loc_siz = $
+;  end virtual
+end macro
+
+;			-------
+macro			endSUBP			; Fin de procédure
+;			-------
+post:
+  virtual VARzone
+    loc_siz = $
+  end virtual
+  end namespace
 
 end macro
 
@@ -595,11 +726,8 @@ Elf64_Phdr:
 
 
 virtual at 0
-  VAR::
-  VAR.DISP = $
+  VARzone::
+  VARzone.DISP = $
 end virtual
 
-postpone					; sera fait en toute toute fin car c'est le premier postpone
-  ASM_SIZE = $-0x400078
-end postpone
 
