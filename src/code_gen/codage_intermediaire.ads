@@ -13,11 +13,11 @@ is
 
   MAX_LABEL			: constant		:= 30_000;				--| NB MAX D'ETIQUETTES DE SAUT
   MAX_OFFSET			: constant		:= 10_000;				--|
-  MAX_LEVEL			: constant		:= 128;					--| NB MAX DE NIVEAUX D'IMBRICATION
+  MAX_LEVEL			: constant		:= 8;					--| NB MAX DE NIVEAUX D'IMBRICATION
    
   type LABEL_TYPE			is new NATURAL		range 0..MAX_LABEL;				--| TYPE ETIQUETTE
   subtype OFFSET_VAL		is INTEGER		range -MAX_OFFSET .. MAX_OFFSET;
-  type LEVEL_NUM			is new INTEGER		range -MAX_LEVEL .. MAX_LEVEL-1;
+  subtype LEVEL_NUM			is NATURAL		range 0 .. MAX_LEVEL-1;
 
   ADDR_SIZE			: constant		:= 8;					--| ADRESSES SUR 32 BITS
   BOOL_SIZE			: constant		:= 1;					--| BOOLEEN SUR 1 OCTET
@@ -61,6 +61,8 @@ is
   procedure LOAD_MEM		( DEFN :TREE );
   procedure STORE			( DEST_DEFN :TREE );
   function  TAB50							return STRING;
+
+  function  IMAGE			( I : NATURAL )			return STRING;
 
   OPERAND_OVERFLOW	 		: exception;
 

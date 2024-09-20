@@ -129,10 +129,17 @@ is
         if IS_EMPTY( PRM_S ) then goto UNARY; end if;
         POP( PRM_S, PRM );
         CODE_EXP( PRM );
-        if OP_STR = """+""" then  PUT_LINE( ASCII.HT & "ADD" ); end if;
-        if OP_STR = """-""" then  PUT_LINE( ASCII.HT & "SUB" ); end if;
-        if OP_STR = """*""" then  PUT_LINE( ASCII.HT & "MUL" ); end if;
-        if OP_STR = """/""" then  PUT_LINE( ASCII.HT & "DIV" ); end if;
+        if OP_STR = """+""" then  PUT_LINE( ASCII.HT & "ADD" );
+        elsif OP_STR = """-""" then  PUT_LINE( ASCII.HT & "SUB" );
+        elsif OP_STR = """*""" then  PUT_LINE( ASCII.HT & "MUL" );
+        elsif OP_STR = """/""" then  PUT_LINE( ASCII.HT & "DIV" );
+        elsif OP_STR = """=""" then  PUT_LINE( ASCII.HT & "CEQ" );
+        elsif OP_STR = """>""" then  PUT_LINE( ASCII.HT & "CGT" );
+        elsif OP_STR = """<""" then  PUT_LINE( ASCII.HT & "CLT" );
+        elsif OP_STR = """/=""" then  PUT_LINE( ASCII.HT & "CNE" );
+        elsif OP_STR = """>=""" then  PUT_LINE( ASCII.HT & "CGE" );
+        elsif OP_STR = """<=""" then  PUT_LINE( ASCII.HT & "CIE" );
+        end if;
         return;
 <<UNARY>>
         if OP_STR = """-""" then PUT_LINE( ASCII.HT & "NEG" ); end if;

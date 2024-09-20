@@ -157,9 +157,10 @@ separate ( CODE_GEN )
   is
     AFTER_IF_LBL	:constant STRING	:= NEW_LABEL;
   begin
-    CODE_TEST_CLAUSE_ELEM_S ( D ( AS_TEST_CLAUSE_ELEM_S, ADA_IF ), AFTER_IF_LBL );
-    PUT_LINE( AFTER_IF_LBL & ':' );
-
+    CODE_TEST_CLAUSE_ELEM_S( D( AS_TEST_CLAUSE_ELEM_S, ADA_IF ), AFTER_IF_LBL );
+    PUT( AFTER_IF_LBL & ':' );
+    if CODI.DEBUG then PUT( tab50 & "; post if" ); end if;
+    NEW_LINE;
   end	CODE_IF;
 
 
@@ -232,47 +233,46 @@ separate ( CODE_GEN )
         ITERATION_ID_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, ITERATION_ID ) );
         ITERATION_ID_TAG	: LABEL_TYPE	:= NEW_LABEL;
         ITERATION_ID_VARSTR	:constant STRING	:= ITERATION_ID_STR & LABEL_STR( ITERATION_ID_TAG ) & "_disp";
+        LVL		: LEVEL_NUM	renames CODI.CUR_LEVEL;
+        LVL_STR		:constant STRING	:= INTEGER'IMAGE( LVL );
       begin
-        DI( CD_LEVEL,  ITERATION_ID, INTEGER( CODI.CUR_LEVEL   ) );
+        DI( CD_LEVEL,  ITERATION_ID, LVL );
         DI( CD_OFFSET, ITERATION_ID, INTEGER( ITERATION_ID_TAG ) );
 
         PUT( "VAR" & tab & ITERATION_ID_VARSTR & ", " & TYPE_CHAR );
         if CODI.DEBUG then PUT( tab50 & "; compteur boucle " & LOOP_LBL_STR); end if;
         NEW_LINE;
-
         EXPRESSIONS.CODE_EXP( RANGE_LOW );
-
-        PUT_LINE( tab & "S" & TYPE_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, ITERATION_ID ) ) & ',' & tab & ITERATION_ID_VARSTR );
+        PUT_LINE( tab & "S" & TYPE_CHAR & ' ' & LVL_STR & ',' & tab & ITERATION_ID_VARSTR );
 
         PUT( "VAR" & tab & "LMT_" & ITERATION_ID_VARSTR & ", " & TYPE_CHAR );
         if CODI.DEBUG then PUT( tab50 & "; limite boucle " & LOOP_LBL_STR); end if;
         NEW_LINE;
         EXPRESSIONS.CODE_EXP( RANGE_HIGH );
-
-        PUT_LINE( tab & "S" & TYPE_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, ITERATION_ID ) ) & ',' & tab & "LMT_" & ITERATION_ID_VARSTR );
+        PUT_LINE( tab & "S" & TYPE_CHAR & ' ' & LVL_STR & ',' & tab & "LMT_" & ITERATION_ID_VARSTR );
 
 --			VERIFIER POUR NULL RANGE
 
-        PUT( tab & "L" & TYPE_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, ITERATION_ID ) ) & ',' & tab & ITERATION_ID_VARSTR );
+        PUT( tab & "L" & TYPE_CHAR & ' ' & LVL_STR & ',' & tab & ITERATION_ID_VARSTR );
         if CODI.DEBUG then
 	PUT( tab50 & "; test null range " & LOOP_LBL_STR );
         end if;
         NEW_LINE;
-        PUT_LINE( tab & "L" & TYPE_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, ITERATION_ID ) ) & ',' & tab & "LMT_" & ITERATION_ID_VARSTR );
+        PUT_LINE( tab & "L" & TYPE_CHAR & ' ' & LVL_STR & ',' & tab & "LMT_" & ITERATION_ID_VARSTR );
         PUT_LINE( tab & "CGT" );
         PUT_LINE( tab & "BT" & tab & AFTER_LOOP_LBL_STR );
 
 --			INVERSER CNT LMT POUR REVERSE
 
         if ITERATION.TY = DN_REVERSE then
-	PUT( tab & "L" & TYPE_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, ITERATION_ID ) ) & ',' & tab & ITERATION_ID_VARSTR );
+	PUT( tab & "L" & TYPE_CHAR & ' ' & LVL_STR & ',' & tab & ITERATION_ID_VARSTR );
 	if CODI.DEBUG then
 	  PUT( tab50 & "; inversion range " & LOOP_LBL_STR );
 	end if;
 	NEW_LINE;
-	PUT_LINE( tab & "L" & TYPE_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, ITERATION_ID ) ) & ',' & tab & "LMT_" & ITERATION_ID_VARSTR );
-	PUT_LINE( tab & "S" & TYPE_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, ITERATION_ID ) ) & ',' & tab & ITERATION_ID_VARSTR );
-	PUT_LINE( tab & "S" & TYPE_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, ITERATION_ID ) ) & ',' & tab & "LMT_" & ITERATION_ID_VARSTR );
+	PUT_LINE( tab & "L" & TYPE_CHAR & ' ' & LVL_STR & ',' & tab & "LMT_" & ITERATION_ID_VARSTR );
+	PUT_LINE( tab & "S" & TYPE_CHAR & ' ' & LVL_STR & ',' & tab & ITERATION_ID_VARSTR );
+	PUT_LINE( tab & "S" & TYPE_CHAR & ' ' & LVL_STR & ',' & tab & "LMT_" & ITERATION_ID_VARSTR );
         end if;
 
 --			DEBUT ET CORPS DE BOUCLE
@@ -286,18 +286,18 @@ separate ( CODE_GEN )
 
 --			TEST DE SORTIE
 
-        PUT( tab & "L" & TYPE_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, ITERATION_ID ) ) & ',' & tab & ITERATION_ID_VARSTR );
+        PUT( tab & "L" & TYPE_CHAR & ' ' & LVL_STR & ',' & tab & ITERATION_ID_VARSTR );
         if CODI.DEBUG then
 	PUT( tab50 & "; test de sortie " & LOOP_LBL_STR );
         end if;
         NEW_LINE;
-        PUT_LINE( tab & "L" & TYPE_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, ITERATION_ID ) ) & ',' & tab & "LMT_" & ITERATION_ID_VARSTR );
+        PUT_LINE( tab & "L" & TYPE_CHAR & ' ' & LVL_STR & ',' & tab & "LMT_" & ITERATION_ID_VARSTR );
         PUT_LINE( tab & "CEQ" );
         PUT_LINE( tab & "BT" & tab & AFTER_LOOP_LBL_STR );
 
 --			MISE A JOUR DU COMPTEUR
 
-        PUT( tab & "L" & TYPE_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, ITERATION_ID ) ) & ',' & tab & ITERATION_ID_VARSTR );
+        PUT( tab & "L" & TYPE_CHAR & ' ' & LVL_STR & ',' & tab & ITERATION_ID_VARSTR );
         if CODI.DEBUG then
 	PUT( tab50 & "; mise a jour compteur " & LOOP_LBL_STR );
         end if;
@@ -310,7 +310,7 @@ separate ( CODE_GEN )
 	PUT_LINE( tab & "DEC" );
 
         end if;
-        PUT_LINE( tab & "S" & TYPE_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, ITERATION_ID ) ) & ',' & tab & ITERATION_ID_VARSTR );
+        PUT_LINE( tab & "S" & TYPE_CHAR & ' ' & LVL_STR & ',' & tab & ITERATION_ID_VARSTR );
 
         PUT( tab & "BRA" & tab & LOOP_LBL_STR );
         if CODI.DEBUG then
@@ -318,7 +318,7 @@ separate ( CODE_GEN )
         end if;
         NEW_LINE;
 
-      end		FOR_OR_REVERSE_LOOP;
+      end			FOR_OR_REVERSE_LOOP;
 
     end if;
 
@@ -330,116 +330,6 @@ separate ( CODE_GEN )
 
   end	CODE_LOOP;
 	---------
-
---   procedure			CODE_FOR_REV		( FOR_REV :TREE )
---   is
---   begin
---     declare
---       OLD_LOOP_OP_INC_DEC   : LOOP_CODE      := CODI.LOOP_OP_INC_DEC;
---       OLD_LOOP_OP_GT_LT     : LOOP_CODE      := CODI.LOOP_OP_GT_LT;
---       COUNTER, TEMP         : INTEGER	:= 0;
--- --      OLD_OFFSET_ACT        : OFFSET_VAL  := CODI.OFFSET_ACT;
---       ITERATION_ID          : TREE         := D ( AS_SOURCE_NAME, FOR_REV );
---       ACT                   : CHARACTER    := CODI.CODE_DATA_TYPE_OF ( D ( SM_OBJ_TYPE, ITERATION_ID ) );
--- 
---       procedure LOAD_DSCRT_RANGE ( DSCRT_RANGE : TREE ) is
---       begin
---         null;
---       end;
--- 
---     begin
--- --      CODI.BEFORE_LOOP_LBL := NEW_LABEL;
--- --      CODI.AFTER_LOOP_LBL := NEW_LABEL;
--- 
---     if FOR_REV.TY = DN_FOR then
---       CODE_FOR ( FOR_REV );
--- 
---     elsif FOR_REV.TY = DN_REVERSE then
---       CODE_REVERSE ( FOR_REV );
--- 
---     end if;
--- 
---       case ACT is
---       when 'B' =>
--- null;--        ALIGN ( BOOL_AL );
--- --        COUNTER := -CODI.OFFSET_ACT;
--- --        ALTER_OFFSET ( BOOL_SIZE);
--- --        ALIGN ( BOOL_AL);
--- --        TEMP := -CODI.OFFSET_ACT;
--- --        ALTER_OFFSET ( BOOL_SIZE );
---       when 'C' =>
--- null;--        ALIGN ( CHAR_AL );
--- --        COUNTER := -CODI.OFFSET_ACT;
--- --        ALTER_OFFSET ( CHAR_SIZE );
--- --        ALIGN ( CHAR_AL);
--- --        TEMP := -CODI.OFFSET_ACT;
--- --        ALTER_OFFSET ( CHAR_SIZE );
---       when 'I' =>
--- null;--        ALIGN ( INTG_AL );
--- --        COUNTER := -CODI.OFFSET_ACT;
--- --        ALTER_OFFSET ( INTG_SIZE );
--- --        ALIGN ( INTG_AL );
--- --        TEMP := -CODI.OFFSET_ACT;
--- --        ALTER_OFFSET ( INTG_SIZE );
---       when others =>
---         PUT_LINE ( "!!! COMPILE_STM_LOOP_REVERSE TYPE ILLICITE " & ACT );
---         raise PROGRAM_ERROR;
---       end case;
---       DI ( CD_LEVEL, ITERATION_ID, INTEGER( CODI.CUR_LEVEL ) );
---       DI ( CD_OFFSET, ITERATION_ID, COUNTER );
---       LOAD_DSCRT_RANGE ( D ( AS_DISCRETE_RANGE, FOR_REV ) );
--- --      EMIT ( SLD, ACT, 0, TEMP );
--- 
--- --      WRITE_LABEL ( CODI.BEFORE_LOOP_LBL );
--- 
--- --      EMIT ( SLD, ACT, 0, COUNTER );
--- --      EMIT ( PLD, ACT, 0, COUNTER );
--- --      EMIT ( PLD, ACT, 0, TEMP );
--- --      EMIT ( CODI.LOOP_OP_GT_LT, ACT );
--- --      EMIT ( JMPT, CODI.AFTER_LOOP_LBL );
---       CODE_STM_S ( LOOP_STM_S );
--- --      EMIT ( PLD, ACT, 0, COUNTER );
--- --      EMIT ( CODI.LOOP_OP_INC_DEC, ACT, 1 );
--- --      EMIT ( JMP, CODI.BEFORE_LOOP_LBL );
--- --      WRITE_LABEL ( CODI.AFTER_LOOP_LBL );
--- --      CODI.OFFSET_ACT := OLD_OFFSET_ACT;
---       CODI.LOOP_OP_INC_DEC := OLD_LOOP_OP_INC_DEC;
---       CODI.LOOP_OP_GT_LT := OLD_LOOP_OP_GT_LT;
---     end;
---   end	CODE_FOR_REV;
--- 
--- 
--- 
---   procedure			CODE_FOR			( ADA_FOR :TREE )
---   is
---   begin
---     LOOP_OP_INC_DEC := INC;
---     LOOP_OP_GT_LT := GT;
---   end	CODE_FOR;
--- 
--- 
--- 
---   procedure			CODE_REVERSE		( ADA_REVERSE :TREE )
---   is
---   begin
---     LOOP_OP_INC_DEC := DEC;
---     LOOP_OP_GT_LT := LT;
---   end	CODE_REVERSE;
--- 
-
--- 				----------
---   procedure			CODE_WHILE		( ADA_WHILE :TREE )
---   is
---     BEFORE_LOOP_LBL	:constant STRING	:= NEW_LABEL;
---     AFTER_LOOP_LBL	:constant STRING	:= NEW_LABEL;
---   begin
---     PUT_LINE( BEFORE_LOOP_LBL );
---     EXPRESSIONS.CODE_EXP( D ( AS_EXP, ADA_WHILE ) );
---     PUT_LINE( tab & "BRZ" & tab & AFTER_LOOP_LBL );
---     CODE_STM_S( LOOP_STM_S );
---     PUT_LINE( tab & "BRA" & tab & BEFORE_LOOP_LBL );
---   end	CODE_WHILE;
--- 	----------
 
 
 				----------
@@ -551,10 +441,14 @@ null;
 
   procedure			CODE_CALL_STM		( CALL_STM :TREE )
   is
+    NAME_ID		: TREE	:= D( AS_NAME, CALL_STM );
   begin
+    while NAME_ID.TY = DN_SELECTED loop
+      NAME_ID := D( AS_DESIGNATOR, NAME_ID );
+    end loop;
 
     if CALL_STM.TY = DN_PROCEDURE_CALL then
-      CODE_PROCEDURE_CALL ( CALL_STM );
+        CODE_PROCEDURE_CALL ( CALL_STM, NAME_ID );
 
     elsif CALL_STM.TY = DN_ENTRY_CALL then
       CODE_ENTRY_CALL ( CALL_STM );
@@ -563,10 +457,9 @@ null;
   end	CODE_CALL_STM;
 
 				-------------------
-  procedure			CODE_PROCEDURE_CALL		( PROCEDURE_CALL :TREE )
+  procedure			CODE_PROCEDURE_CALL		( PROCEDURE_CALL :TREE; USED_NAME_ID : TREE )
   is
     NORM_ACT_PRM_S	: SEQ_TYPE	:= LIST( D( SM_NORMALIZED_PARAM_S, PROCEDURE_CALL ) );
-    USED_NAME_ID	: TREE		:= D( AS_NAME, PROCEDURE_CALL );
     SUB_NAME	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, USED_NAME_ID ) );
 
     PROC_ID	: TREE		:= D( SM_DEFN, USED_NAME_ID );
@@ -780,7 +673,7 @@ null;
   is
   begin
     declare
-      NAME	: TREE	:= D ( AS_NAME, ASSIGN );
+      NAME	: TREE	:= D( AS_NAME, ASSIGN );
 
 		--------
       procedure	STORE_VAL		( TYPE_SPEC :TREE )
@@ -789,17 +682,19 @@ null;
         case TYPE_SPEC.TY is
         when DN_ACCESS =>
 null;--          EMIT ( STO, A );
+
         when DN_ENUMERATION =>
           declare
-            TYPE_SOURCE_NAME : TREE            := D ( XD_SOURCE_NAME, TYPE_SPEC );
-            TYPE_SYMREP      : TREE            := D ( LX_SYMREP, TYPE_SOURCE_NAME );
-            NAME             : constant STRING := PRINT_NAME ( TYPE_SYMREP );
+            TYPE_SOURCE_NAME : TREE            := D( XD_SOURCE_NAME, TYPE_SPEC );
+            TYPE_SYMREP      : TREE            := D( LX_SYMREP, TYPE_SOURCE_NAME );
+            NAME             : constant STRING := PRINT_NAME( TYPE_SYMREP );
           begin
             if NAME = "BOOLEAN" then null;--EMIT ( STO, B );
             elsif NAME = "CHARACTER" then null;--EMIT ( STO, C );
             else null; --EMIT ( STO, I );
             end if;
           end;
+
         when DN_INTEGER =>
 null;--          EMIT ( STO, I );
         when DN_UNIVERSAL_INTEGER =>

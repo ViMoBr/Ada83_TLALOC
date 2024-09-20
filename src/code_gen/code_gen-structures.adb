@@ -139,6 +139,7 @@ null;
     DI( CD_LABEL, SOURCE_NAME, INTEGER( LBL ) );
 
     if ENCLOSING_BODY /= TREE_VOID then
+      NEW_LINE;
       PUT_LINE( "if defined " & SUB_NAME & '_' & LABEL_STR( LBL ) & '_' );
     end if;
 
@@ -180,22 +181,45 @@ null;
     PACK_NAME	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, PACK_ID ) );
     PACK_DEF	: TREE		:= D( SM_FIRST, PACK_ID );
   begin
-    if PACK_DEF.TY = DN_GENERIC_ID then return; end if;
+    if PACK_DEF.TY = DN_GENERIC_ID then
 
-    if CODI.DEBUG then PUT_LINE( tab50 & ";---------- PACKAGE" ); end if;
-    PUT_LINE( "namespace " & PACK_NAME );
-    PUT_LINE( "elab_spec:" );
+      PUT( "namespace " & PACK_NAME );
+      if CODI.DEBUG then PUT( tab50 & ";---------- GENERIC PACKAGE" ); end if;
+      NEW_LINE;
+      PUT( "elab_spec:" );
+      if CODI.DEBUG then PUT( tab50 & ";    SPEC ELAB" ); end if;
+      NEW_LINE;
 
-    DECLARATIONS.CODE_PACKAGE_SPEC( D( SM_SPEC, D( AS_SOURCE_NAME, PACKAGE_BODY ) ) );
+      DECLARATIONS.CODE_PACKAGE_SPEC( D( SM_SPEC, D( AS_SOURCE_NAME, PACKAGE_BODY ) ) );
+      ENCLOSING_BODY := PACKAGE_BODY;
+      CODE_BODY( D( AS_BODY, PACKAGE_BODY ) );
 
-    ENCLOSING_BODY := PACKAGE_BODY;
-    CODE_BODY( D( AS_BODY, PACKAGE_BODY ) );
+      PUT( "end namespace " );
+      if CODI.DEBUG then
+        PUT( tab50 & ";---------- end generic package BDY " & PACK_NAME );
+      end if;
+      NEW_LINE;
 
-    PUT( "end namespace " );
-    if CODI.DEBUG then
-      PUT( tab50 & ";---------- end package BDY " & PACK_NAME );
+    else
+      PUT( "namespace " & PACK_NAME );
+      if CODI.DEBUG then PUT( tab50 & ";---------- PACKAGE" ); end if;
+      NEW_LINE;
+
+      PUT( "elab_spec:" );
+      if CODI.DEBUG then PUT( tab50 & ";    SPEC ELAB" ); end if;
+      NEW_LINE;
+
+      DECLARATIONS.CODE_PACKAGE_SPEC( D( SM_SPEC, D( AS_SOURCE_NAME, PACKAGE_BODY ) ) );
+      ENCLOSING_BODY := PACKAGE_BODY;
+      CODE_BODY( D( AS_BODY, PACKAGE_BODY ) );
+
+      PUT( "end namespace " );
+      if CODI.DEBUG then
+        PUT( tab50 & ";---------- end package BDY " & PACK_NAME );
+      end if;
+      NEW_LINE;
+
     end if;
-    NEW_LINE;
 
   end	CODE_PACKAGE_BODY;
 	-----------------
@@ -225,8 +249,11 @@ null;
   begin
     DI( CD_LEVEL, BLOCK_BODY, INTEGER( CODI.CUR_LEVEL ) );
 
-    PUT( "ELAB" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );
-    if CODI.DEBUG then PUT( tab50 & ";    vars" ); end if;
+    if CODI.CUR_LEVEL /= 0 then
+      PUT( "ELAB" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );
+    end if;
+
+    if CODI.DEBUG then PUT( tab50 & ";    BODY ELAB" ); end if;
     NEW_LINE;
 
 --     if FUNCTION_RESULT /= TREE_VOID then
@@ -250,8 +277,7 @@ null;
 
     if ENCLOSING_BODY.TY = DN_SUBPROGRAM_BODY then
 
-      PUT( "endELAB" );
-      if CODI.DEBUG then PUT( tab50 & ";    end vars" ); end if;
+      if CODI.DEBUG then PUT( tab50 & ";    end elab" ); end if;
       NEW_LINE;
 
     end if;
@@ -259,8 +285,8 @@ null;
     PUT( "begin:" );
     if CODI.DEBUG then
       PUT( tab50 & ";---------- " );
-      if ENCLOSING_BODY.TY = DN_SUBPROGRAM_BODY then PUT( "BDY" );
-      elsif ENCLOSING_BODY.TY = DN_PACKAGE_BODY then PUT( "package BDY" );
+      if ENCLOSING_BODY.TY = DN_SUBPROGRAM_BODY then PUT( "BDY INSTRUCTIONS" );
+      elsif ENCLOSING_BODY.TY = DN_PACKAGE_BODY then PUT( "package BDY INSTRUCTIONS" );
       end if;
     end if;
     NEW_LINE;

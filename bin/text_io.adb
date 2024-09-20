@@ -469,7 +469,7 @@ is
   procedure		PUT		( ITEM :in STRING )
   is
   begin
-       ASM_OP_2'( OPCODE => ILDQ, LVL => 1, OFS => 16 );
+       ASM_OP_2'( OPCODE => LIQ, LVL => 1, OFS => 16 );
        ASM_OP_0'( OPCODE => PUT_STR );
 
   end	PUT;
@@ -506,7 +506,7 @@ is
   procedure		PUT_LINE		( ITEM :in STRING )
   is
   begin
-       ASM_OP_2'( OPCODE => ILQ, LVL => 1, OFS => 16 );
+       ASM_OP_2'( OPCODE => LIQ, LVL => 1, OFS => 16 );
        ASM_OP_0'( OPCODE => PUT_STR );
 
   end	PUT_LINE;
@@ -553,7 +553,37 @@ is
 					  BASE  :in NUMBER_BASE	:= DEFAULT_BASE
 					)
   is
-  begin null;
+    QUOTIENT, RESTE	: NUM;
+    STR		: STRING( 1 .. 68 );
+    INDEX		: POSITIVE		:= STR'LAST;
+    MIN_WIDTH	: POSITIVE;
+
+  begin
+null;
+--    if BASE /= 10 then STR( STR'LAST ) := '#'; INDEX := INDEX - 1; end if;
+
+--    loop
+--      RESTE := ITEM mod NUM( BASE );
+--      if RESTE < 10 then
+--        STR( INDEX ) := CHARACTER'VAL( CHARACTER'POS( '0' ) + RESTE );
+--      else 
+--        STR( INDEX ) := CHARACTER'VAL( CHARACTER'POS( 'A' ) + RESTE - 10 );
+--      end if;
+--      QUOTIENT := ITEM / NUM( BASE );
+--      exit when QUOTIENT = 0;
+--      INDEX := INDEX - 1;
+--    end loop;
+
+--    if BASE /= 10 then
+--      STR( INDEX ) := '#'; INDEX := INDEX - 1;
+--      STR( INDEX ) := CHARACTER'VAL( CHARACTER'POS( '0' ) + BASE mod 10 ); INDEX := INDEX - 1;
+--      if BASE >= 10 then STR( INDEX ) := '1'; INDEX := INDEX - 1; end if;
+--    end if;
+
+--    if ITEM < 0 then STR( INDEX ) := '-'; end if;
+--    MIN_WIDTH := STR'LAST - INDEX - 1;
+
+--    if WIDTH > MIN_WIDTH then null; end if;
 
   end	PUT;
 	----

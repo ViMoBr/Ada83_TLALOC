@@ -1,37 +1,21 @@
 SUBP TEST_1_L1				;---------- SUB
-ELAB 1					;    vars
-VAR J_disp, d				; variable entiere
-	LI	 15
-	Sd  1,	J_disp
-VAR K_disp, d				; variable entiere
-endELAB					;    end vars
-begin:					;---------- BDY
-VAR	IL3_disp, d				; compteur boucle LOOP__1
-	LI	 0
-	Sd  1,	IL3_disp
-VAR	LMT_IL3_disp, d				; limite boucle LOOP__1
-	Ld  1,	J_disp
-	Sd  1,	LMT_IL3_disp
-	Ld  1,	IL3_disp				; test null range LOOP__1
-	Ld  1,	LMT_IL3_disp
-	CGT
-	BT	L2
-	Ld  1,	IL3_disp				; inversion range LOOP__1
-	Ld  1,	LMT_IL3_disp
-	Sd  1,	IL3_disp
-	Sd  1,	LMT_IL3_disp
-LOOP__1:					; corps boucle LOOP__1
-	Ld  1,	IL3_disp
-	Sd  1,	K_disp
-	Ld  1,	IL3_disp				; test de sortie LOOP__1
-	Ld  1,	LMT_IL3_disp
-	CEQ
-	BT	L2
-	Ld  1,	IL3_disp				; mise a jour compteur LOOP__1
-	DEC
-	Sd  1,	IL3_disp
-	BRA	LOOP__1				; iteration suivante LOOP__1
-L2:					; post loop LOOP__1
+ELAB 1					;    BODY ELAB
+namespace STR
+	VAR SIZ_1, d
+	VAR FST_1, d
+	VAR LST_1, d
+	LI	1
+	Sd 1,	SIZ_1
+	LI	1
+	LI	 1
+	Sd 1,	FST_1
+	LI	 68
+	Sd 1,	LST_1
+	VAR STR_disp, q				; variable ptr str
+end namespace 
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	LI	 35
 	UNLINK 1
 	RTD
 excep:

@@ -1,16 +1,12 @@
 --with TEXT_IO;
---use  TEXT_IO;
 procedure TEST_1 is
 
-  J	: INTEGER		:= 15;
-  K	: INTEGER;
---  procedure INTERNE ( VAL :in INTEGER ) is begin null; end;
+  STR		: STRING( 1 .. 68 );
 
---  MSG	:constant STRING	:= "Bonjour";
+--  package INT_IO is new TEXT_IO.INTEGER_IO( INTEGER );
+
 begin
-  for I in reverse 0 .. J loop
-    K := I;
-  end loop;
+  STR( STR'LAST ) := '#';
+--  INT_IO.PUT( J, WIDTH => 10, BASE => 16 );
 
---  PUT_LINE( MSG );
 end;

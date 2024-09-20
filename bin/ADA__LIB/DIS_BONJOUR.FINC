@@ -1,0 +1,23 @@
+include 'TEXT_IO.FINC'
+SUBP DIS_BONJOUR_L1				;---------- SUB
+ELAB 1					;    BODY ELAB
+	VAR MSG_disp, q				; variable ptr str
+					; constante string
+  postpone
+    dd	1, 9
+    MSG_ptr = $
+    db	'Bonjour'
+  end postpone
+	LCA	MSG_ptr
+	Sa	 1,	MSG_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	LVA  1,	MSG_disp
+  postpone
+	PUT_LINE_L60_ = TEXT_IO.PUT_LINE_L60.elab
+  end postpone
+	CALL	PUT_LINE_L60_
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB DIS_BONJOUR

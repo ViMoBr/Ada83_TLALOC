@@ -13,6 +13,7 @@ is
   procedure		CODE_HEADER		( HEADER :TREE )
   is
   begin
+
     if HEADER.TY in CLASS_SUBP_ENTRY_HEADER
     then
 	CODE_PARAM_S( D( AS_PARAM_S, HEADER ) );
@@ -40,10 +41,6 @@ is
       if CODI.DEBUG then PUT( tab50 & ";    debut parametrage" ); end if;
       NEW_LINE;
 
---      PUT_LINE( "  virtual at" & INTEGER'IMAGE( 2 * CODI.ADDR_SIZE ) );
---      PUT_LINE( "    PRM::" );
---      PUT_LINE( "  end virtual" );
-
       while not IS_EMPTY( PARAM_SEQ ) loop
         POP( PARAM_SEQ, PARAM );
         CODE_PARAM( PARAM );
@@ -52,9 +49,6 @@ is
       PUT( "endPRMS" );
       if CODI.DEBUG then PUT( tab50 & ";    fin parametrage" ); end if;
       NEW_LINE;
---      PUT_LINE( "  virtual PRM" );
---      PUT_LINE( "    prm_siz = $" );
---      PUT_LINE( "  end virtual" );
 
     end;
   end;
@@ -73,7 +67,7 @@ is
 
         DI( CD_LEVEL, ID, INTEGER( CODI.CUR_LEVEL ) );
 
-        PUT( "PRM " & PRINT_NAME( D( LX_SYMREP, ID ) ) & "_adrofs" );
+        PUT( tab & "PRM " & PRINT_NAME( D( LX_SYMREP, ID ) ) & "_adrofs" );
         if PARAM.TY = DN_IN then
 	CODE_IN ( PARAM );
 
@@ -85,10 +79,6 @@ is
 
         end if;
         NEW_LINE;
---        PUT_LINE( "  virtual PRM" );
---        PUT_LINE( "    " & PRINT_NAME( D( LX_SYMREP, ID ) ) & "_adrofs = $" );
---        PUT_LINE( "    dq ?" );
---        PUT_LINE( "  end virtual" );
       end loop;
     end;
 
@@ -352,7 +342,7 @@ null;
         INIT_EXP	: TREE		:= D( SM_INIT_EXP, VC_NAME );
       begin
 
-        PUT( "VAR " & PRINT_NAME( D( LX_SYMREP, VC_NAME ) ) & "_disp, " & OPER_TYPE );
+        PUT( tab & "VAR " & PRINT_NAME( D( LX_SYMREP, VC_NAME ) ) & "_disp, " & OPER_TYPE );
         if CODI.DEBUG then PUT( tab50 & "; variable entiere" ); end if;
         NEW_LINE;
         DI( CD_LEVEL,     VC_NAME, INTEGER( CODI.CUR_LEVEL ) );
@@ -372,7 +362,7 @@ null;
         INIT_EXP	: TREE		:= D( SM_INIT_EXP, VC_NAME );
       begin
 
-        PUT( "VAR " & PRINT_NAME( D( LX_SYMREP, VC_NAME ) ) & "_disp, " & OPER_TYPE );
+        PUT( tab & "VAR " & PRINT_NAME( D( LX_SYMREP, VC_NAME ) ) & "_disp, " & OPER_TYPE );
         if CODI.DEBUG then PUT( tab50 & "; variable flottante" ); end if;
         NEW_LINE;
         DI( CD_LEVEL,     VC_NAME, INTEGER( CODI.CUR_LEVEL ) );
@@ -396,13 +386,9 @@ null;
 	INIT_EXP	: TREE		:= D( SM_INIT_EXP, VC_NAME );
         begin
 
-	PUT( "VAR " & PRINT_NAME( D( LX_SYMREP, VC_NAME ) ) & "_disp, b" );
+	PUT( tab & "VAR " & PRINT_NAME( D( LX_SYMREP, VC_NAME ) ) & "_disp, b" );
           if CODI.DEBUG then PUT( tab50 & "; variable bool char" ); end if;
 	NEW_LINE;
---	PUT_LINE( "  virtual VAR" );
---	PUT_LINE( "    " & PRINT_NAME( D( LX_SYMREP, VC_NAME ) ) & "_disp = $" );
---	PUT_LINE( "    db ?" );
---	PUT_LINE( "  end virtual" );
 
 	DI( CD_LEVEL,     VC_NAME, INTEGER( CODI.CUR_LEVEL ) );
 	DB( CD_COMPILED,  VC_NAME, TRUE );
@@ -458,21 +444,70 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 		-----------------
       procedure	COMPILE_ARRAY_VAR	( VC_NAME, TYPE_SPEC :TREE )
       is
-        VC_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, VC_NAME ) );
-      begin
-        declare
-          LVL	: LEVEL_NUM	renames CODI.CUR_LEVEL;
-        begin
+        VC_STR		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, VC_NAME ) );
+        DIM_NBR		: NATURAL		:= 1;
+        LVL		: LEVEL_NUM	renames CODI.CUR_LEVEL;
+        LVL_STR		:constant STRING	:= IMAGE( CODI.CUR_LEVEL );
 
-	PUT( "VAR " & VC_STR & "_disp, q" );
-	if CODI.DEBUG then PUT( tab50 & "; variable ptr str" ); end if;
-	NEW_LINE;
---	PUT_LINE( "  virtual VAR" );
---        PUT_LINE( "    align_q" );
---	PUT_LINE( "    " & VC_STR & "_disp = $" );
---	PUT_LINE( "    dq ?" );
---	PUT_LINE( "  end virtual" );
-          DI( CD_LEVEL, VC_NAME, INTEGER( LVL ) );
+		----------------------------
+        procedure	COMPILE_ARRAY_TYPE_DIMENSION	( IDX_TYPE_LIST :in out SEQ_TYPE )
+        is
+	IDX_TYPE		: TREE;
+	DIM_NBR_STR	:constant STRING	:= IMAGE( DIM_NBR );
+        begin
+	POP( IDX_TYPE_LIST, IDX_TYPE );
+	PUT_LINE( tab & "VAR " & "SIZ_" & DIM_NBR_STR & ", d" );
+	PUT_LINE( tab & "VAR " & "FST_" & DIM_NBR_STR & ", d" );
+	PUT_LINE( tab & "VAR " & "LST_" & DIM_NBR_STR & ", d" );
+
+	if IS_EMPTY( IDX_TYPE_LIST ) then
+	  declare
+	    TYPE_BASE		: TREE		:= D( SM_BASE_TYPE, TYPE_SPEC );
+	    TYPE_ELEMENT		: TREE		:= D( SM_COMP_TYPE, TYPE_BASE );
+	    ELEMENT_SIZ		: NATURAL		:= DI( CD_IMPL_SIZE, TYPE_ELEMENT ) / 8;
+	    ELEMENT_SIZ_STR		:constant STRING	:= IMAGE( ELEMENT_SIZ );
+	  begin
+	    PUT_LINE( tab & "LI" & tab & ELEMENT_SIZ_STR );
+	    PUT_LINE( tab & "Sd" & ' ' & LVL_STR & ',' & tab & "SIZ_" & DIM_NBR_STR );
+	    PUT_LINE( tab & "LI" & tab & ELEMENT_SIZ_STR );
+	  end;
+	  else
+	    DIM_NBR := DIM_NBR + 1;
+	    COMPILE_ARRAY_TYPE_DIMENSION( IDX_TYPE_LIST );
+	  end if;
+
+	  if IDX_TYPE.TY = DN_INTEGER then
+	    declare
+	      IDX_RANGE   : TREE	:= D( SM_RANGE, IDX_TYPE );
+	      RANGE_FIRST : TREE	:= D( AS_EXP1, IDX_RANGE );
+	      RANGE_LAST  : TREE	:= D( AS_EXP2, IDX_RANGE );
+	    begin
+	      EXPRESSIONS.CODE_EXP( RANGE_FIRST );
+	      PUT_LINE( tab & "Sd" & ' ' & LVL_STR & ',' & tab & "FST_" & DIM_NBR_STR );
+	      EXPRESSIONS.CODE_EXP( RANGE_LAST );
+	      PUT_LINE( tab & "Sd" & ' ' & LVL_STR & ',' & tab & "LST_" & DIM_NBR_STR );
+	    end;
+	  end if;
+
+	end	COMPILE_ARRAY_TYPE_DIMENSION;
+		----------------------------
+
+      begin
+
+        if TYPE_SPEC.TY = DN_CONSTRAINED_ARRAY then
+          PUT_LINE( "namespace " & VC_STR );
+	declare
+            IDX_TYPE_LIST	: SEQ_TYPE	:= LIST( D( SM_INDEX_SUBTYPE_S, TYPE_SPEC ) );
+	begin
+	  COMPILE_ARRAY_TYPE_DIMENSION( IDX_TYPE_LIST );
+	end;
+	PUT_LINE( "end namespace " );
+        end if;
+        PUT( tab & "VAR " & VC_STR & "_disp, q" );
+        if CODI.DEBUG then PUT( tab50 & "; variable ptr str" ); end if;
+        NEW_LINE;
+
+        DI( CD_LEVEL, VC_NAME, INTEGER( LVL ) );
 
 	declare
 	  INIT_EXP	: TREE	:= D( SM_INIT_EXP, VC_NAME );
@@ -512,7 +547,8 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 -- 	  PUT_LINE( "!!! COMPILE_ARRAY_VAR : TYPE_SPEC NON COMPILE" );
 -- 	  raise PROGRAM_ERROR;
 -- 	end if;
-        end;
+
+
       end	COMPILE_ARRAY_VAR;
 	-----------------
 
@@ -553,12 +589,13 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 
     begin
       case TYPE_SPEC.TY is
-      when DN_ENUMERATION	=> COMPILE_VC_NAME_ENUMERATION( VC_NAME, TYPE_SPEC );
-      when DN_INTEGER	=> COMPILE_VC_NAME_INTEGER(	    VC_NAME );
-      when DN_FLOAT		=> COMPILE_VC_NAME_FLOAT(	    VC_NAME );
-      when DN_ACCESS	=> COMPILE_ACCESS_VAR(	    VC_NAME, TYPE_SPEC );
-      when DN_RECORD	=> COMPILE_RECORD_VAR(	    VC_NAME, TYPE_SPEC );
-      when DN_ARRAY		=> COMPILE_ARRAY_VAR(	    VC_NAME, TYPE_SPEC );
+      when DN_ENUMERATION		=> COMPILE_VC_NAME_ENUMERATION( VC_NAME, TYPE_SPEC );
+      when DN_INTEGER		=> COMPILE_VC_NAME_INTEGER(	    VC_NAME );
+      when DN_FLOAT			=> COMPILE_VC_NAME_FLOAT(	    VC_NAME );
+      when DN_ACCESS		=> COMPILE_ACCESS_VAR(	    VC_NAME, TYPE_SPEC );
+      when DN_RECORD		=> COMPILE_RECORD_VAR(	    VC_NAME, TYPE_SPEC );
+      when DN_CONSTRAINED_ARRAY
+	| DN_ARRAY		=> COMPILE_ARRAY_VAR(	    VC_NAME, TYPE_SPEC );
       when others =>
         PUT_LINE( "ERREUR CODE_VC_NAME, TYPE_SPEC.TY = " & NODE_NAME'IMAGE( TYPE_SPEC.TY ) );
         raise PROGRAM_ERROR;
@@ -652,9 +689,14 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 
   --|-------------------------------------------------------------------------------------------
   procedure CODE_GENERIC_DECL ( GENERIC_DECL :TREE ) is
+
+    GENERIC_ID	: TREE	:= D( AS_SOURCE_NAME, GENERIC_DECL );
   begin
-    null;
+null;
+--put_line( "CODE_GENERIC_DECL " & PRINT_NAME( D( LX_SYMREP, GENERIC_ID ) ) );
+
   end;
+
   procedure CODE_NON_GENERIC_DECL	( NON_GENERIC_DECL :TREE );
 
   --|-------------------------------------------------------------------------------------------
@@ -669,11 +711,6 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 
     end if;
   end;
-
-
-
-
---  procedure CODE_SUBPROG_ENTRY_DECL	( SUBPROG_ENTRY_DECL :TREE );
 
 
   procedure		CODE_NON_GENERIC_DECL	( NON_GENERIC_DECL :TREE )
@@ -702,6 +739,7 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
         declare
 	LBL	: LABEL_TYPE	:= NEW_LABEL;
         begin
+
 	DI ( CD_LABEL, SOURCE_NAME, INTEGER( LBL ) );
 	DI ( CD_LEVEL, SOURCE_NAME, INTEGER( CODI.CUR_LEVEL ) );
 --           DB ( CD_COMPILED, SOURCE_NAME, TRUE );
@@ -713,7 +751,6 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 
 --		CODE_HEADER( D( AS_HEADER, SUBPROG_ENTRY_DECL ) );
 
---          DI( CD_PARAM_SIZE, SOURCE_NAME, OFFSET_ACT - FIRST_PARAM_OFFSET );
         end;
 --         if SOURCE_NAME.TY = DN_FUNCTION_ID or SOURCE_NAME.TY = DN_OPERATOR_ID then
 --           declare
@@ -736,20 +773,23 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
   procedure			CODE_PACKAGE_DECL		( PACKAGE_DECL :TREE )
   is
   begin
---    EMIT( PKG, S=> PRINT_NAME( D( LX_SYMREP, D( AS_SOURCE_NAME, PACKAGE_DECL ) ) ) );
+
+    if D( AS_UNIT_KIND, PACKAGE_DECL ).TY = DN_INSTANTIATION then
+      CODE_PACKAGE_SPEC( D( SM_SPEC, D( AS_SOURCE_NAME, PACKAGE_DECL ) ) );
+
+    else
+      CODE_HEADER( D( AS_HEADER, PACKAGE_DECL ) );
+
+    end if;
+
+    declare
+      EXC_LBL		:constant STRING	:= NEW_LABEL;
     begin
-
-	CODE_HEADER( D( AS_HEADER, PACKAGE_DECL ) );
-
-      declare
-        EXC_LBL		:constant STRING	:= NEW_LABEL;
-      begin
 --        EMIT( EXH, EXC_LBL, COMMENT=> "ETIQUETTE EXCEPTION HANDLE DU PACKAGE" );
 --        EMIT( RET, RELATIVE_RESULT_OFFSET );
 PUT_LINE( "; EXC_LBL" & tab & EXC_LBL );
       end;
 --      EMIT( EEX );
-    end;
 
   end	CODE_PACKAGE_DECL;
 	-----------------

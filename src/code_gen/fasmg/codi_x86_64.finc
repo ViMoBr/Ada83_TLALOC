@@ -133,7 +133,7 @@ end macro
 ;				--------------------------------------------------------------------------------
 
 ;			-------------------
-macro			LB?	lvl, disp		; Load Byte 8 bits
+macro			Lb?	lvl, disp		; Load Byte 8 bits
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
     ofs = -disp					; pile croissante vers adresses decroissantes
@@ -150,7 +150,7 @@ macro			LB?	lvl, disp		; Load Byte 8 bits
 end macro
 
 ;			-------------------
-macro			ILB?	lvl, disp		; Indirect Load Byte
+macro			LIb?	lvl, disp		; Load Indirect byte
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   if disp > -128 & disp < 127
@@ -166,7 +166,7 @@ macro			ILB?	lvl, disp		; Indirect Load Byte
 end macro
 
 ;			-------------------
-macro			LW?	lvl, disp		; Load Word 16 bits
+macro			Lw?	lvl, disp		; Load Word 16 bits
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
     ofs = -disp					; pile croissante vers adresses decroissantes
@@ -183,7 +183,7 @@ macro			LW?	lvl, disp		; Load Word 16 bits
 end macro
 
 ;			-------------------
-macro			ILW?	lvl, disp		; Indirect Load Word 
+macro			LIw?	lvl, disp		; Load Indirect word 
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   if disp > -128 & disp < 127
@@ -199,7 +199,7 @@ macro			ILW?	lvl, disp		; Indirect Load Word
 end macro
 
 ;			-------------------
-macro			LD?	lvl, disp		; Load Doubleword 32 bits
+macro			Ld?	lvl, disp		; Load doubleword 32 bits
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
     ofs = -disp					; pile croissante vers adresses decroissantes
@@ -216,7 +216,7 @@ macro			LD?	lvl, disp		; Load Doubleword 32 bits
 end macro
 
 ;			-------------------
-macro			ILD?	lvl, disp		; Indirect Load Doubleword
+macro			LId?	lvl, disp		; Load Indirect doubleword
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   if disp > -128 & disp < 127
@@ -232,7 +232,7 @@ macro			ILD?	lvl, disp		; Indirect Load Doubleword
 end macro
 
 ;			-------------------
-macro			LQ?	lvl, disp		; Load Quadword 64 bits
+macro			Lq?	lvl, disp		; Load quadword 64 bits
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   ofs = -disp					; pile croissante vers adresses decroissantes
@@ -249,7 +249,7 @@ macro			LQ?	lvl, disp		; Load Quadword 64 bits
 end macro
 
 ;			-------------------
-macro			ILQ?	lvl, disp		; Indirect Load Quadword 
+macro			LIq?	lvl, disp		; Load Indirect quadword 
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   if disp > -128 & disp < 127
@@ -265,13 +265,13 @@ macro			ILQ?	lvl, disp		; Indirect Load Quadword
 end macro
 
 ;			-------------------
-macro			LA?	lvl, disp		; Load Address 64 bits
+macro			La?	lvl, disp		; Load Address 64 bits
 ;			-------------------
-  LQ lvl, disp
+  Lq lvl, disp
 end macro
 
 ;			-------------------
-macro			LVA?	lvl, disp		; Load Variable Address pour lvl et disp
+macro			LVa?	lvl, disp		; Load Variable Address pour lvl et disp
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   ofs = -disp					; pile croissante vers adresses decroissantes
@@ -291,56 +291,72 @@ end macro
 ;				STORE (relatif pointeurs de frame du display R8..r15 suivant lvl)
 ;				--------------------------------------------------------------------------------
 
-;			-------------------
-macro			SB?	lvl, disp		; Store BYTE 8 bits
-;			-------------------
-  assert lvl >= 0 & lvl <= 7
-  ofs = -disp					; pile croissante vers adresses decroissantes
-  db 0x58						; pop rax
-  if ofs > -128 & ofs < 127
-    db 0x41, 0x88, 0x40+lvl				; mov byte ptr [r(8+lvl)+ofs8], AL
-    db ofs
-  else
-    db 0x41, 0x88, 0x80+lvl				; mov byte ptr [r(8+lvl)+ofs32], AL
-    dd ofs
+;			------------------------
+macro			Sb?	lvl:-1, disp:0	; Store byte 8 bits
+;			------------------------
+  if lvl = -1					; top stacked adress
+    db 0x58					; pop rax   adress for data
+    db 0x5B					; pop rbx   data
+    db 0x88, 0x18					; mov byte ptr [rax], BL   store
+  else						; regular framed byte
+    assert lvl >= 0 & lvl <= 7
+    ofs = -disp					; pile croissante vers adresses decroissantes
+    db 0x58					; pop rax   data
+    if ofs > -128 & ofs < 127
+      db 0x41, 0x88, 0x40+lvl				; mov byte ptr [r(8+lvl)+ofs8], AL   store
+      db ofs
+    else
+      db 0x41, 0x88, 0x80+lvl				; mov byte ptr [r(8+lvl)+ofs32], AL   store
+      dd ofs
+    end if
+  end if
+end macro
+
+;			------------------------
+macro			SIb?	lvl:-1, disp:0	; Store Indirect byte
+;			------------------------
+  if lvl = -1					; top stacked adress of adress
+    db 0x58					; pop rax   adress of adress for data
+    db 0x48, 0x8B, 0x00				; mov rax, qword ptr [rax]   fetch adress
+  else						; regular framed adress of byte
+    assert lvl >= 0 & lvl <= 7
+    if disp > -128 & disp < 127
+      db 0x49, 0x8B, 0x40+lvl				; mov rax, qword ptr [r(8+lvl)+ofs8]   fetch adress
+      db disp
+    else
+      db 0x49, 0x8B, 0x80+lvl				; mov rax, qword ptr [r(8=lvl)+ofs32]   fetch adress
+      dd disp
+    end if
+  end if
+  db 0x5B						; pop rbx   data
+  db 0x88, 0x18					; mov byte ptr [rax], BL   store
+
+end macro
+
+;			------------------------
+macro			Sw?	lvl:-1, disp:0	; Store word 16 bits
+;			------------------------
+  if lvl = -1					; top stacked adress
+    db 0x58					; pop rax   adress for data
+    db 0x5B					; pop rbx   data
+    db 0x66, 0x89, 0x18				; mov word ptr [rax], BX   store
+  else						; regular framed byte
+    assert lvl >= 0 & lvl <= 7
+    ofs = -disp					; pile croissante vers adresses decroissantes
+    db 0x58					; pop rax
+    if ofs > -128 & ofs < 127
+      db 0x66, 0x41, 0x89, 0x40+lvl			; mov word ptr [r(8+lvl)+ofs8], AX
+      db ofs
+    else
+      db 0x66, 0x41, 0x89, 0x80+lvl			; mov word ptr [r(8+lvl)+ofs32], AX
+      dd ofs
+    end if
   end if
 
 end macro
 
 ;			-------------------
-macro			ISB?	lvl, disp		; Indirect Store Byte
-;			-------------------
-  assert lvl >= 0 & lvl <= 7
-  db 0x5B						; pop rbx
-  if disp > -128 & disp < 127
-    db 0x49, 0x8B, 0x40+lvl				; mov rax, qword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
-    db disp
-  else
-    db 0x49, 0x8B, 0x80+lvl				; mov rax, qword ptr [r(8=lvl)+ofs32]
-    dd disp
-  end if
-  db 0x88, 0x18					; mov byte ptr [rax], BL
-
-end macro
-
-;			-------------------
-macro			SW?	lvl, disp		; Store Word 16 bits
-;			-------------------
-  assert lvl >= 0 & lvl <= 7
-  ofs = -disp					; pile croissante vers adresses decroissantes
-  db 0x58						; pop rax
-  if ofs > -128 & ofs < 127
-    db 0x66, 0x41, 0x89, 0x40+lvl			; mov word ptr [r(8+lvl)+ofs8], AX
-    db ofs
-  else
-    db 0x66, 0x41, 0x89, 0x80+lvl			; mov word ptr [r(8+lvl)+ofs32], AX
-    dd ofs
-  end if
-
-end macro
-
-;			-------------------
-macro			ISW?	lvl, disp		; Indirect Store Word
+macro			SIw?	lvl, disp		; Store Indirect word
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   db 0x5B						; pop rbx
@@ -355,24 +371,30 @@ macro			ISW?	lvl, disp		; Indirect Store Word
 
 end macro
 
-;			-------------------
-macro			SD?	lvl, disp		; Store Doubleword 32 bits
-;			-------------------
-  assert lvl >= 0 & lvl <= 7
-  ofs = -disp					; pile croissante vers adresses decroissantes
-  db 0x58						; pop rax
-  if ofs > -128 & ofs < 127
-    db 0x41, 0x89, 0x40+lvl				; mov dword ptr [r(8+lvl)+ofs8], EAX
-    db ofs
-  else
-    db 0x41, 0x89, 0x80+lvl				; mov dword ptr [r(8+lvl)+ofs32], EAX
-    dd ofs
+;			------------------------
+macro			Sd?	lvl:-1, disp:0	; Store doubleword 32 bits
+;			------------------------
+  if lvl = -1					; top stacked adress
+    db 0x58					; pop rax   adress for data
+    db 0x5B					; pop rbx   data
+    db 0x89, 0x18					; mov dword ptr [rax], EBX   store
+  else						; regular framed byte
+    assert lvl >= 0 & lvl <= 7
+    ofs = -disp					; pile croissante vers adresses decroissantes
+    db 0x58					; pop rax
+    if ofs > -128 & ofs < 127
+      db 0x41, 0x89, 0x40+lvl				; mov dword ptr [r(8+lvl)+ofs8], EAX
+      db ofs
+    else
+      db 0x41, 0x89, 0x80+lvl				; mov dword ptr [r(8+lvl)+ofs32], EAX
+      dd ofs
+    end if
   end if
 
 end macro
 
 ;			-------------------
-macro			ISD?	lvl, disp		; Indirect Store Doubleword 
+macro			SId?	lvl, disp		; Store Indirect doubleword 
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   db 0x5B						; pop rbx
@@ -388,7 +410,7 @@ macro			ISD?	lvl, disp		; Indirect Store Doubleword
 end macro
 
 ;			-------------------
-macro			SQ?	lvl, disp		; Store Quadword 64 bits
+macro			Sq?	lvl, disp		; Store Quadword 64 bits
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   ofs = -disp					; pile croissante vers adresses decroissantes
@@ -404,7 +426,7 @@ macro			SQ?	lvl, disp		; Store Quadword 64 bits
 end macro
 
 ;			-------------------
-macro			ISQ?	lvl, disp		; Indirect Store Quadword
+macro			SIq?	lvl, disp		; Store Indirect quadword
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   db 0x5B						; pop rbx
@@ -420,9 +442,9 @@ macro			ISQ?	lvl, disp		; Indirect Store Quadword
 end macro
 
 ;			-------------------
-macro			SA?	lvl, disp		; Store Address 64 bits
+macro			Sa?	lvl, disp		; Store Address 64 bits
 ;			-------------------
-  SQ lvl, disp
+  Sq lvl, disp
 end macro
 
 ;				--------------------------------------------------------------------------------
@@ -431,28 +453,28 @@ end macro
 ;			---
 macro			ET?
 ;			---
-  db 0x58, 0x21, 0x04, 0x24				; pop rax     and dword ptr [rsp], eax
+  db 0x58, 0x48, 0x21, 0x04, 0x24			; pop rax     and qword ptr [rsp], rax
 
 end macro
 
 ;			--
 macro			OU?
 ;			--
-  db 0x58, 0x09, 0x04, 0x24				; pop rax     or dword ptr [rsp], eax
+  db 0x58, 0x48, 0x09, 0x04, 0x24			; pop rax     or qword ptr [rsp], rax
 
 end macro
 
 ;			---
 macro			NON?
 ;			---
-  db 0xF7, 0x14, 0x24				; not dword ptr [rsp]
+  db 0x48, 0xF7, 0x14, 0x24				; not qword ptr [rsp]
 
 end macro
 
 ;			---
 macro			OUX?
 ;			---
-  db 0x58, 0x31, 0x04, 0x24				; pop rax     xor dword ptr [rsp], eax
+  db 0x58, 0x48, 0x31, 0x04, 0x24			; pop rax     xor qword ptr [rsp], rax
 
 end macro
 
@@ -463,19 +485,19 @@ end macro
 ;			---
 macro			NEG?
 ;			---
-  db 0xF7, 0x1C, 0x24				; neg dword ptr [rsp]
+  db 0x48, 0xF7, 0x1C, 0x24				; neg qword ptr [rsp]
 end macro
 
 ;			---
 macro			ADD?
 ;			---
-  db 0x58, 0x01, 0x04, 0x24				; pop rax     add dword ptr [rsp], eax
+  db 0x58, 0x48, 0x01, 0x04, 0x24			; pop rax     add qword ptr [rsp], rax
 end macro
 
 ;			---
 macro			SUB?
 ;			---
-  db 0x58, 0x29, 0x04, 0x24				; pop rax     sub dword ptr [rsp], eax
+  db 0x58, 0x48, 0x29, 0x04, 0x24			; pop rax     sub qword ptr [rsp], rax
 
 end macro
 
@@ -483,41 +505,62 @@ end macro
 macro			MUL?
 ;			---
   db 0x58						; pop rax
-  db 0xF7, 0x2C, 0x24				; imul dword ptr [rsp]
+  db 0x48, 0xF7, 0x2C, 0x24				; imul qword ptr [rsp]
   db 0x50						; push rax
 
 end macro
 
 ;			---
 macro			DIV?
-;			--
+;			---
   db 0x5B						; pop rbx
   db 0x58						; pop rax
+  db 0x48, 0x31, 0xD2				; xor rdx, rdx
   db 0x48, 0xF7, 0xFB				; idiv rbx
   db 0x50						; push rax
 
 end macro
 
 ;			---
+macro			REM?
+;			---
+  db 0x5B						; pop rbx
+  db 0x58						; pop rax
+  db 0x48, 0x31, 0xD2				; xor rdx, rdx
+  db 0x48, 0xF7, 0xFB				; idiv rbx
+  db 0x52						; push rdx
+
+end macro
+
+;			---
 macro			CGT?
-;			--
-  db 0x5B						; pop rbx TOP
-  db 0x58						; pop rax NXT
+;			---
+  db 0x5B						; pop rbx   (TOP)
+  db 0x48, 0x39, 0x1C, 0x24				; cmp [rsp], rbx   (NXT > TOP ?)
+  db 0x0F, 0x9F, 0x04, 0x24				; setg [rsp]
+
 end macro
 
 ;			---
 macro			CEQ?
-;			--
+;			---
+  db 0x5B						; pop rbx   (TOP)
+  db 0x48, 0x39, 0x1C, 0x24				; cmp [rsp], rbx   (NXT = TOP ?)
+  db 0x0F, 0x94, 0x04, 0x24				; sete [rsp]
+
 end macro
 
 ;			---
 macro			DEC?
-;			--
+; 			---
+  db 0x48, 0xFF, 0x0C, 0x24				; dec qword ptr [rsp]
+
 end macro
 
 ;			---
 macro			INC?
-;			--
+;			---
+  db 0x48, 0xFF, 0x04, 0x24				; inc qword ptr [rsp]
 end macro
 
 ;				--------------------------------------------------------------------------------
@@ -543,13 +586,30 @@ end macro
 macro			BT?	lbl
 ;			-------------
   db 0x58						; pop rax
-  db 0x09, 0xC0					; or eax, eax
+  db 0x08, 0xC0					; or AL, AL
   local disp
   if disp > -128 & disp < 127
     db 0x75					; jnz rel8
     db disp
   else
     db 0x0F, 0x85					; jnz rel32
+    dd disp
+  end if
+  disp = lbl-$
+
+end macro
+
+;			-------------
+macro			BF?	lbl
+;			-------------
+  db 0x58						; pop rax
+  db 0x08, 0xC0					; or AL, AL
+  local disp
+  if disp > -128 & disp < 127
+    db 0x74					; jz rel8
+    db disp
+  else
+    db 0x0F, 0x84					; jz rel32
     dd disp
   end if
   disp = lbl-$
@@ -649,7 +709,7 @@ end macro
 macro			ELAB	lvl		; En tête de la partie élaboration de procédure
 ;			-------------
 elab:
-  virtual at 0
+  virtual at 8
     VARzone::
   end virtual
 	LINK lvl,	loc_siz
@@ -665,14 +725,6 @@ macro			VAR	name_disp, sizChar	; Définition d'un lieu de variable
     d#sizChar ?
   end virtual
 
-end macro
-
-;			-------
-macro			endELAB			; Fin de la définition des variables
-;			-------
-;  virtual VARzone
-;    loc_siz = $
-;  end virtual
 end macro
 
 ;			-------
@@ -725,7 +777,7 @@ Elf64_Phdr:
 	p_align		dq 4096
 
 
-virtual at 0
+virtual at 8
   VARzone::
   VARzone.DISP = $
 end virtual

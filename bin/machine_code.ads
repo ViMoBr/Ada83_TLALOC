@@ -6,7 +6,7 @@ is
 
   type ASM_OPCODE		is (ET,	OU,	NON,	OUX,	SYSCALL,	PUT_STR,
 			    DB,	LI,	LCA,	LINK,	UNLINK,
-			    LB,	LW,	LD,	LQ,	ILB,	ILW,	ILD,	ILQ,
+			    LB,	LW,	LD,	LQ,	LIB,	LIW,	LID,	LIQ,
 			    SB,	SW,	SD,	SQ
 			   );
 

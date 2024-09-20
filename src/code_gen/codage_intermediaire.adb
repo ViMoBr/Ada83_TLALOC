@@ -283,6 +283,7 @@ is
   begin
     if DEFN.TY = DN_IN_ID or DEFN.TY = DN_IN_OUT_ID then
       PUT_LINE( tab & "IL" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_adrofs" );
+--      PUT_LINE( tab & "IL" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, D( SM_FIRST, DEFN ) ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_adrofs" );
     else
       PUT_LINE( tab & "L" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_disp" );
     end if;
@@ -315,6 +316,16 @@ is
       return ESPACEMENT;
     end;
   end	TAB50;
+	--=--
+
+				--=--
+  function			IMAGE		( I : NATURAL )	return STRING
+  is
+    STR	:constant STRING	:= NATURAL'IMAGE( I );
+  begin
+    return STR( STR'FIRST+1 .. STR'LAST );
+
+  end	IMAGE;
 	--=--
 
 

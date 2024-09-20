@@ -220,7 +220,7 @@ is
 
   private
 
-    procedure CODE_PROCEDURE_CALL	( PROCEDURE_CALL :TREE );
+    procedure CODE_PROCEDURE_CALL	( PROCEDURE_CALL :TREE; USED_NAME_ID : TREE );
     procedure CODE_STM_ELEM		( STM_ELEM :TREE );
     procedure CODE_STM_PRAGMA		( STM_PRAGMA :TREE );
     procedure CODE_LABELED		( LABELED :TREE );
@@ -1127,7 +1127,7 @@ null;--      GEN_PUSH_DATA ( A, 0, LEVEL_NUM(DI( CD_LEVEL, ADRESSE )), DI( CD_VA
   begin
 
     if TEST_CLAUSE.TY = DN_COND_CLAUSE then
-      CODE_COND_CLAUSE ( TEST_CLAUSE, LBL );
+      CODE_COND_CLAUSE( TEST_CLAUSE, LBL );
 
     elsif TEST_CLAUSE.TY = DN_SELECT_ALTERNATIVE then
       CODE_SELECT_ALTERNATIVE ( TEST_CLAUSE );
@@ -1143,10 +1143,10 @@ null;--      GEN_PUSH_DATA ( A, 0, LEVEL_NUM(DI( CD_LEVEL, ADRESSE )), DI( CD_VA
       EXP			: TREE		:= D( AS_EXP, COND_CLAUSE );
       NEXT_CLAUSE_LBL	:constant STRING	:= NEW_LABEL;
     begin
-      EXPRESSIONS.CODE_EXP ( EXP );
-      PUT_LINE( tab & "BRZ" & tab & NEXT_CLAUSE_LBL );
-      INSTRUCTIONS.CODE_STM_S ( D ( AS_STM_S, COND_CLAUSE ) );
-      PUT_LINE( tab & "BRZ" & tab & AFTER_IF_LBL );
+      EXPRESSIONS.CODE_EXP( EXP );
+      PUT_LINE( tab & "BF" & tab & NEXT_CLAUSE_LBL );
+      INSTRUCTIONS.CODE_STM_S( D( AS_STM_S, COND_CLAUSE ) );
+      PUT_LINE( tab & "BF" & tab & AFTER_IF_LBL );
       PUT_LINE( NEXT_CLAUSE_LBL & ':' );
     end;
   end;
@@ -1313,27 +1313,25 @@ null;--      GEN_PUSH_DATA ( A, 0, LEVEL_NUM(DI( CD_LEVEL, ADRESSE )), DI( CD_VA
   begin
 
     if TEST_CLAUSE_ELEM.TY in CLASS_TEST_CLAUSE then
-      CODE_TEST_CLAUSE ( TEST_CLAUSE_ELEM, LBL );
+      CODE_TEST_CLAUSE( TEST_CLAUSE_ELEM, LBL );
 
     elsif TEST_CLAUSE_ELEM.TY = DN_SELECT_ALT_PRAGMA then
-      CODE_SELECT_ALT_PRAGMA ( TEST_CLAUSE_ELEM );
+      CODE_SELECT_ALT_PRAGMA( TEST_CLAUSE_ELEM );
 
     end if;
   end;
 
 
 
-  procedure CODE_TEST_CLAUSE_ELEM_S ( TEST_CLAUSE_ELEM_S :TREE; LBL :STRING ) is
+  procedure CODE_TEST_CLAUSE_ELEM_S ( TEST_CLAUSE_ELEM_S :TREE; LBL :STRING )
+  is
+    TEST_CLAUSE_ELEM_SEQ	: SEQ_TYPE	:= LIST( TEST_CLAUSE_ELEM_S );
+    TEST_CLAUSE_ELEM	: TREE;
   begin
-    declare
-      TEST_CLAUSE_ELEM_SEQ : SEQ_TYPE := LIST ( TEST_CLAUSE_ELEM_S );
-      TEST_CLAUSE_ELEM : TREE;
-    begin
-      while not IS_EMPTY ( TEST_CLAUSE_ELEM_SEQ ) loop
-        POP( TEST_CLAUSE_ELEM_SEQ, TEST_CLAUSE_ELEM );
-        CODE_TEST_CLAUSE_ELEM ( TEST_CLAUSE_ELEM, LBL );
-      end loop;
-    end;
+    while not IS_EMPTY ( TEST_CLAUSE_ELEM_SEQ ) loop
+      POP( TEST_CLAUSE_ELEM_SEQ, TEST_CLAUSE_ELEM );
+      CODE_TEST_CLAUSE_ELEM( TEST_CLAUSE_ELEM, LBL );
+    end loop;
   end;
 
   --|-------------------------------------------------------------------------------------------
