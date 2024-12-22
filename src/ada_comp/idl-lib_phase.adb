@@ -49,7 +49,7 @@ begin
       SRC_NAME	: constant STRING	:= PRINT_NAME( D( XD_SOURCENAME, USER_ROOT ) );
     begin
 
-      if SRC_NAME = "_STANDRD.ADA" then goto FINISH; end if;
+      if SRC_NAME = "_standrd.ads" then goto FINISH; end if;
 
       READ_LIB_CTL_FILE;
 

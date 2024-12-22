@@ -74,8 +74,6 @@
 #--------------------------------------------------
 #	CODE_GEN
 #--------------------------------------------------
-./a83.sh ./ ../src/code_gen/emits.ads w
-./a83.sh ./ ../src/code_gen/emits.adb w
 ./a83.sh ./ ../src/code_gen/codage_intermediaire.ads w
 ./a83.sh ./ ../src/code_gen/codage_intermediaire.adb w
 ./a83.sh ./ ../src/code_gen/code_gen.ads w
