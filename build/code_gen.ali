@@ -47,6 +47,17 @@ D a-stuten.ads		20230508121439 33c54060 ada.strings.utf_encoding%s
 D a-tags.ads		20230508121439 9eaa38c6 ada.tags%s
 D a-textio.ads		20230508121439 deada98a ada.text_io%s
 D a-unccon.ads		20230508121439 0e9b276f ada.unchecked_conversion%s
+<<<<<<< HEAD
+D codage_intermediaire.ads  20241012140036 1391b2bf codage_intermediaire%s
+D code_gen.ads		20241012140036 9ce3fa93 code_gen%s
+D code_gen.adb		20241012140036 9f417112 code_gen%b
+D code_gen-declarations.adb  20241012140036 be09106c code_gen.declarations
+D code_gen-expressions.adb  20241012140036 7a9c4c75 code_gen.expressions
+D code_gen-instructions.adb  20241012140036 fe913244 code_gen.instructions
+D code_gen-structures.adb  20241012140036 93272f96 code_gen.structures
+D diana_node_attr_class_names.ads  20241012140034 6d94ff6d diana_node_attr_class_names%s
+D idl.ads		20241012140036 f6837729 idl%s
+=======
 D codage_intermediaire.ads  20240915181546 1391b2bf codage_intermediaire%s
 D code_gen.ads		20230823210317 9ce3fa93 code_gen%s
 D code_gen.adb		20240916081839 9f417112 code_gen%b
@@ -56,6 +67,7 @@ D code_gen-instructions.adb  20240920121455 fe913244 code_gen.instructions
 D code_gen-structures.adb  20240916161442 93272f96 code_gen.structures
 D diana_node_attr_class_names.ads  20240730152129 6d94ff6d diana_node_attr_class_names%s
 D idl.ads		20240827192311 f6837729 idl%s
+>>>>>>> 8af1955d8ea21ac6deea8acf5790533f69ab81d3
 D interfac.ads		20230508121439 edec285f interfaces%s
 D i-cstrea.ads		20230508121439 e53d8b8e interfaces.c_streams%s
 D system.ads		20230508121439 a2da961d system%s

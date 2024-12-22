@@ -1,0 +1,22 @@
+{
+  "name": "cla2",
+  "files": [
+    {
+     "directory": "./src",
+      "filters": [
+        "*.ads",
+        "*.adb"
+      ],
+      "recursive": 1
+    }
+  ],
+  "build": {
+    "directory": "build",
+    "targets": [
+      {
+        "name": "cla2",
+        "build_cmd": "./make_ada_comp.sh ."
+      }
+    ]
+  }
+}

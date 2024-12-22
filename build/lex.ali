@@ -33,8 +33,13 @@ D a-textio.ads		20230508121439 deada98a ada.text_io%s
 D a-unccon.ads		20230508121439 0e9b276f ada.unchecked_conversion%s
 D interfac.ads		20230508121439 edec285f interfaces%s
 D i-cstrea.ads		20230508121439 e53d8b8e interfaces.c_streams%s
+<<<<<<< HEAD
+D lex.ads		20241012140035 4a8a9889 lex%s
+D lex.adb		20241012140035 2b7ee073 lex%b
+=======
 D lex.ads		20240902142146 4a8a9889 lex%s
 D lex.adb		20240902142136 2b7ee073 lex%b
+>>>>>>> 8af1955d8ea21ac6deea8acf5790533f69ab81d3
 D system.ads		20230508121439 a2da961d system%s
 D s-crtl.ads		20230508121439 8a0692f8 system.crtl%s
 D s-exctab.ads		20230508121439 91bef6ef system.exception_table%s

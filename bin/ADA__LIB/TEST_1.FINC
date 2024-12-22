@@ -11,8 +11,13 @@ namespace STR
 	Sd 1,	FST_1
 	LI	 68
 	Sd 1,	LST_1
+<<<<<<< HEAD
+end namespace 
+	VAR STR_disp, q				; variable ptr str
+=======
 	VAR STR_disp, q				; variable ptr str
 end namespace 
+>>>>>>> 8af1955d8ea21ac6deea8acf5790533f69ab81d3
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	LI	 35

@@ -71,10 +71,17 @@ D a-tiinau.adb		20230508121439 199a0c7a ada.text_io.integer_aux%b
 D a-tiinio.ads		20230508121439 390edddb ada.text_io.integer_io%s
 D a-tiinio.adb		20230508121439 b79731f4 ada.text_io.integer_io%b
 D a-unccon.ads		20230508121439 0e9b276f ada.unchecked_conversion%s
+<<<<<<< HEAD
+D codage_intermediaire.ads  20241012140036 1391b2bf codage_intermediaire%s
+D codage_intermediaire.adb  20241012140036 054237ae codage_intermediaire%b
+D diana_node_attr_class_names.ads  20241012140034 6d94ff6d diana_node_attr_class_names%s
+D idl.ads		20241012140036 f6837729 idl%s
+=======
 D codage_intermediaire.ads  20240915181546 1391b2bf codage_intermediaire%s
 D codage_intermediaire.adb  20240916072631 054237ae codage_intermediaire%b
 D diana_node_attr_class_names.ads  20240730152129 6d94ff6d diana_node_attr_class_names%s
 D idl.ads		20240827192311 f6837729 idl%s
+>>>>>>> 8af1955d8ea21ac6deea8acf5790533f69ab81d3
 D interfac.ads		20230508121439 edec285f interfaces%s
 D i-cstrea.ads		20230508121439 e53d8b8e interfaces.c_streams%s
 D system.ads		20230508121439 a2da961d system%s

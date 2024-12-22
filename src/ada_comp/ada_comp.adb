@@ -123,7 +123,7 @@ DEBUT_NOM_TEXTE:
       IDL.LIB_PHASE;				if OPTION = 'L' or OPTION = 'l' then goto FIN; end if;
       IDL.SEM_PHASE;				if OPTION = 'M' or OPTION = 'm' then goto FIN; end if;
 
-      if OPTION = 'c' or OPTION = 'C' then
+      if OPTION = 'c' or OPTION = 'C' or OPTION = 'W' then
         CODE_GEN;
       end if;
 

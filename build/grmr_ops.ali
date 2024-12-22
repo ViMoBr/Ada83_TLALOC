@@ -15,8 +15,13 @@ Z system.secondary_stack%s  s-secsta.adb	s-secsta.ali
 
 U grmr_ops%s		grmr_ops.ads		b71cdc9b EE NE OO PK IU
 
+<<<<<<< HEAD
+D grmr_ops.ads		20241012140035 b71cdc9b grmr_ops%s
+D grmr_ops.adb		20241012140035 9aeac738 grmr_ops%b
+=======
 D grmr_ops.ads		20240902162658 b71cdc9b grmr_ops%s
 D grmr_ops.adb		20240902162648 9aeac738 grmr_ops%b
+>>>>>>> 8af1955d8ea21ac6deea8acf5790533f69ab81d3
 D system.ads		20230508121439 a2da961d system%s
 D s-parame.ads		20230508121439 d494a4a6 system.parameters%s
 D s-secsta.ads		20230508121439 62cd9202 system.secondary_stack%s
