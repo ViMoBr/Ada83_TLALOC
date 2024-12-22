@@ -1,0 +1,18 @@
+SUBP TEST_L1				;---------- SUB
+ELAB 1					;    BODY ELAB
+	VAR I_disp, d				; variable entiere
+	LI	 0
+	Sd  1,	I_disp
+	VAR J_disp, d				; variable entiere
+	LI	 1
+	Sd  1,	J_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	Ld  1,	J_disp
+	LI	 1
+	ADD
+	Sd  1,	I_disp
+	UNLINK 1
+	RTD
+excep:
+endSUBP					;---------- end SUB TEST

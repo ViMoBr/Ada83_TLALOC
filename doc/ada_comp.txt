@@ -13,11 +13,14 @@
 --	Le chemin relatif vers le fichier texte source a compiler est relatif au dossier projet.
 --	La lettre option indique l'etape a laquelle le compilateur s'arrete, ou une option d'impression de l'arbre DIANA :
 --
---		S	arret apres analyse syntaxique
---		L	arret apres la phase de lecture de librairie
---		M	arret apres analyse semantique
---		E	arret apres la phase de traitement d'erreur
---		W	arret apres la phase d'ecriture en librairie
+--		S ou s	arret apres analyse syntaxique
+--		L ou l	arret apres la phase de lecture de librairie
+--		M ou m	arret apres analyse semantique
+--		c ou C	génération du code (C entraîne une écriture en librairie)
+--		w ou W	arret apres la phase d'ecriture en librairie (celle ci détruit l'arbre dans $$$.tmp)
+--
+--	Les impressions doivent être faites avant destruction de l'arbre de $$$.tmp (pas de w W ou C avant la demande)
+--
 --		U	impression
 --		P	impression des noeuds syntaxiques seulement
 --		A	impression de tous les noeuds
@@ -36,5 +39,5 @@
 --		CODE_GEN
 --		IDL.PRETTY_DIANA
 --
---	VINCENT MORIN	21/6/2024		UNIVERSITE DE BRETAGNE OCCIDENTALE	(UBO)
+--	VINCENT MORIN	22/12/2024		UNIVERSITE DE BRETAGNE OCCIDENTALE	(UBO)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
