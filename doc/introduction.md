@@ -53,14 +53,25 @@ La phase _"par_phase"_ effectue l'analyse lexicale et syntaxique du texte source
 
 La structure logicielle de la phase est la suivante (dans le répertoire src/par_phase) :
 ```
-                  idl
-                  ^
-|---------------->| par_phase
-|                   ^
-|                   |<-- set_dflt
-|<-- lex
-|<-- grmr_ops
-|<-- grmr_tbl
+[ text_io ..........\
+[bdy                |
+                    |
+[ sequential_io ..\ |
+[bdy              | |
+                  | |
+                  | |    [ lex .......\
+                  | \..> [bdy         |
+                  |                   |
+                  |      [ grmr_ops ..|
+                  |      [bdy         |
+                  |                   |
+                  \....> [ grmr_tbl ..|
+                                      |    [ idl
+                                      |    | ( par_phase
+                                      |    [bdy
+                                      \..> | s( par_phase
+                                                | s( set_dflt
+
 
  fichiers :
    lex.ads       lex.adb
@@ -84,7 +95,7 @@ Le langage Ada 83 permet une compilation modulaire : un module peut utiliser des
 
 Avant de vérifier si la sémantique statique du fichier compilé est correcte, la phase _"lib_phase"_ lit les fichiers ".DCL" (ou ".BDY" ou ".SUB") et intègre les arbres DIANA de ces modules "withés". Il faut en effet disposer des définitions utilisées et de leurs caractéristiques sémantiques antérieurement obtenues pour vérifier la sémantique du module en cours de compilation.
 
-La phase est contenue dans un seul fichier dans le répertoire SRC/ada_comp :
+La phase est contenue dans un seul fichier dans le répertoire src/ada_comp :
 ```
  idl.lib_phase.adb
 ```
@@ -100,38 +111,40 @@ L'arbre contenu dans "$$$.TMP" est complété par les blocs relogés des unités
 La phase _"sem_phase"_ effectue la vérification sémantique statique du module compilé, c'est une phase très complexe répartie en 29 modules (répertoire SRC/sem_phase) et dont le point d'entrée est la procédure _"idl.sem_phase"_ contenue dans le fichier "idl-sem_phase.adb".
 la structure logicielle est une inclusion de sous-unités :
 ```
-         idl
-         ^
-         | sem_phase
-           ^
-           |<-- aggreso
-           |<-- att_walk
-           |<-- chk_stat
-           |<-- def_util
-           |<-- def_walk
-           |<-- derived
-           |<-- eval_num
-           |<-- expreso
-           |<-- exp_type
-           |<-- fix_pre
-           |<-- fix_with
-           |<-- gen_subs
-           |<-- hom_unit
-           |<-- instant
-           |<-- make_nod
-           |<-- newsnam
-           |<-- nod_walk
-           |<-- pra_walk
-           |<-- pre_fcns
-           |<-- red_subp
-           |<-- rep_clau
-           |<-- req_util
-           |<-- sem_glob
-           |<-- set_util
-           |<-- stm_walk
-           |<-- uarith
-           |<-- univ_ops
-           |<-- vis_util
+         [ idl
+         |
+         | ( sem_phase
+         [bdy
+         | s( sem_phase
+              |
+              | s[ aggreso
+              | s[ att_walk
+              | s[ chk_stat
+              | s[ def_util
+              | s[ def_walk
+              | s[ derived
+              | s[ eval_num
+              | s[ expreso
+              | s[ exp_type
+              | s( fix_pre
+              | s[ fix_with
+              | s[ gen_subs
+              | s[ hom_unit
+              | s[ instant
+              | s[ make_nod
+              | s[ newsnam
+              | s[ nod_walk
+              | s[ pra_walk
+              | s[ pre_fcns
+              | s[ red_subp
+              | s[ rep_clau
+              | s[ req_util
+              | s[ sem_glob
+              | s[ set_util
+              | s[ stm_walk
+              | s[ uarith
+              | s[ univ_ops
+              | s[ vis_util
            
    fichiers dans src/sem_phase :
      idl-sem_phase
@@ -161,7 +174,7 @@ La procédure ERR_PHASE sans paramètre est contenue dans le fichier idl-err_pha
 
 A partir de l'arbre DIANA vérifié tant syntaxiquement que sémantiquement, une forme de code machine intermédiaire indépendant du matériel cible est élaborée.
 Le premier compilateur ada 83 validé ciblait un interpréteur de machine à pile. Le seul source accessible en langage C est celui de Ada-Ed.
-Un projet ultérieur mené en Pologne (voir le dossier DOC/Thèses_Pologne) utilisait un code intermédiaire de machine à pile, mais avec l'intention de le traduire en assembleur machine 386 (thèse de A.Wierzinska). Le traducteur de DIANA en "A-Code", une extension du traditionnel P-Code de Pascal pour l'Ada, a été construit par M.Cierniak et peut servir d'exemple.
+Un projet ultérieur mené en Pologne (voir le dossier doc/Thèses_Pologne) utilisait un code intermédiaire de machine à pile, mais avec l'intention de le traduire en assembleur machine 386 (thèse de A.Wierzinska). Le traducteur de DIANA en "A-Code", une extension du traditionnel P-Code de Pascal pour l'Ada, a été construit par M.Cierniak et peut servir d'exemple.
 Cependant, les processeurs actuels (2024) sont des machines à registres et les optimiseurs de code les plus modernes, comme LLVM ou des substituts plus simples tel QUBE, travaillent sur une représentation en opérations à 3 adresses et une approche SSA (Single Static Assignment). la question se pose donc de savoir s'il n'est pas judicieux de viser un code intermédiaire de ce genre, plus facile à traduire en assembleur par exemple pour du RISC-V quia l'avantage d'être une spécification oderne et "propre" comparé à du processeur Amd/Intel x86 très alourdi par son histoire et les cojntraites de compatibilité.
 
 
