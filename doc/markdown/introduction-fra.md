@@ -109,7 +109,7 @@ Avant de vérifier si la sémantique statique du fichier compilé est correcte, 
 La phase est contenue dans un seul fichier dans le répertoire src/ada_comp :
 
 <pre>
- <a href="../../src/ada_comp/lib_phase.adb">idl-lib_phase.adb</a>
+ <a href="../../src/ada_comp/idl-lib_phase.adb">idl-lib_phase.adb</a>
 </pre>
 
 Cette unité procédure _"idl.par_phase"_ séparée du module "idl" est le point d'entrée de la phase. Elle est sans paramètre (mais incluse et séparée du module _"idl"_) :
@@ -123,7 +123,7 @@ L'arbre contenu dans "$$$.TMP" est complété par les blocs relogés des unités
 ### 1.3 PHASE D'ANALYSE SEMANTIQUE (_"SEM_PHASE"_) ###
 
 Cette phase effectue la vérification sémantique statique du module compilé, c'est une phase très complexe répartie en 29 modules (répertoire src/sem_phase) et dont le point d'entrée est la procédure _"idl.sem_phase"_ contenue dans le fichier <pre>
- <a href="../../src/sem_phase/sem_phase.adb">idl-sem_phase.adb</a>
+ <a href="../../src/sem_phase/idl-sem_phase.adb">idl-sem_phase.adb</a>
 </pre>
 
 La structure logicielle est une inclusion de sous-unités :
