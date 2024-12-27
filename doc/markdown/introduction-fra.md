@@ -139,33 +139,33 @@ La structure logicielle est une inclusion de sous-unités :
          | _( <a href="../../src/sem_phase/idl-sem_phase.adb">sem_phase</a>
               |
               | _[ <a href="../../src/sem_phase/idl-sem_phase-aggreso.adb">aggreso</a>
-              | _[ att_walk
-              | _[ chk_stat
-              | _[ def_util
-              | _[ def_walk
-              | _[ derived
-              | _[ eval_num
-              | _[ expreso
-              | _[ exp_type
-              | _( fix_pre
-              | _[ fix_with
-              | _[ gen_subs
-              | _[ hom_unit
-              | _[ instant
-              | _[ make_nod
-              | _[ newsnam
-              | _[ nod_walk
-              | _[ pra_walk
-              | _[ pre_fcns
-              | _[ red_subp
-              | _[ rep_clau
-              | _[ req_util
-              | _[ sem_glob
-              | _[ set_util
-              | _[ stm_walk
-              | _[ uarith
-              | _[ univ_ops
-              | _[ vis_util
+              | _[ <a href="../../src/sem_phase/idl-sem_phase-att_walk.adb">att_walk</a>
+              | _[ <a href="../../src/sem_phase/idl-sem_phase-chk_stat.adb">chk_stat</a>
+              | _[ <a href="../../src/sem_phase/idl-sem_phase-def_util.adb">def_util</a>
+              | _[ <a href="../../src/sem_phase/idl-sem_phase-def_walk.adb">def_walk</a>
+              | _[ <a href="../../src/sem_phase/idl-sem_phase-derived.adb">derived</a>
+              | _[ <a href="../../src/sem_phase/idl-sem_phase-eval_num.adb">eval_num</a>
+              | _[ <a href="../../src/sem_phase/idl-sem_phase-expreso.adb">expreso</a>
+              | _[ <a href="../../src/sem_phase/idl-sem_phase-exp_type.adb">exp_type</a>
+              | _( <a href="../../src/sem_phase/idl-sem_phase-fix_pre.adb">fix_pre</a>
+              | _[ <a href="../../src/sem_phase/idl-sem_phase-fix_with.adb">fix_with</a>
+              | _[ <a href="../../src/sem_phase/idl-sem_phase-gen_subs.adb">gen_subs</a>
+              | _[ <a href="../../src/sem_phase/idl-sem_phase-hom_unit.adb">hom_unit</a>
+              | _[ <a href="../../src/sem_phase/idl-sem_phase-instant.adb">instant</a>
+              | _[ <a href="../../src/sem_phase/idl-sem_phase-make_nod.adb">make_nod</a>
+              | _[ <a href="../../src/sem_phase/idl-sem_phase-newsnam.adb">newsnam</a>
+              | _[ <a href="../../src/sem_phase/idl-sem_phase-nod_walk.adb">nod_walk</a>
+              | _[ <a href="../../src/sem_phase/idl-sem_phase-pra_walk.adb">pra_walk</a>
+              | _[ <a href="../../src/sem_phase/idl-sem_phase-pre_fcns.adb">pre_fcns</a>
+              | _[ <a href="../../src/sem_phase/idl-sem_phase-red_subp.adb">red_subp</a>
+              | _[ <a href="../../src/sem_phase/idl-sem_phase-rep_clau.adb">rep_clau</a>
+              | _[ <a href="../../src/sem_phase/idl-sem_phase-req_util.adb">req_util</a>
+              | _[ <a href="../../src/sem_phase/idl-sem_phase-sem_glob.adb">sem_glob</a>
+              | _[ <a href="../../src/sem_phase/idl-sem_phase-set_util.adb">set_util</a>
+              | _[ <a href="../../src/sem_phase/idl-sem_phase-stm_walk.adb">stm_walk</a>
+              | _[ <a href="../../src/sem_phase/idl-sem_phase-uarith.adb">uarith</a>
+              | _[ <a href="../../src/sem_phase/idl-sem_phase-univ_ops.adb">univ_ops</a>
+              | _[ <a href="../../src/sem_phase/idl-sem_phase-vis_util.adb">vis_util</a>
 </pre>
 
 ---
@@ -194,26 +194,39 @@ La structure logicielle est une inclusion de sous-unités :
 ### 1.4 PHASE _"ERR_PHASE"_ ###
 
 Les erreurs trouvées dans les phases précédentes sont accumulées dans l'arbre DIANA et présentées dans la phase _"err_phase"_. s'il y a des erreurs, les phases suivantes ne sont pas exécutées.
-La procédure ERR_PHASE sans paramètre est contenue dans le fichier idl-err_phase.adb du répertoire src/ada_comp. Elle est séparée du module _"idl"_.
+La procédure ERR_PHASE sans paramètre est contenue dans le fichier idl-err_phase.adb du répertoire src/ada_comp.
 
+<pre>
+ <a href="../../src/ada_comp/idl-err_phase.adb">idl-err_phase.adb</a>
+</pre>
 
-### 1.5 PHASE _"MICODE_GEN"_ ###
+Elle est séparée du module _"idl"_.
+
+<br></br>
+
+### 1.5 PHASE GENERATION DE CODE INTERMEDIAIRE (_"MICODE_GEN"_) ###
 
 A partir de l'arbre DIANA vérifié tant syntaxiquement que sémantiquement, une forme de code machine intermédiaire indépendant du matériel cible est élaborée.
-Le premier compilateur ada 83 validé ciblait un interpréteur de machine à pile. Le seul source accessible en langage C est celui de Ada-Ed.
+Le premier compilateur Ada 83 validé ciblait un interpréteur de machine à pile. Le seul source accessible en langage C est celui de Ada-Ed.
 Un projet ultérieur mené en Pologne (voir le dossier doc/Thèses_Pologne) utilisait un code intermédiaire de machine à pile, mais avec l'intention de le traduire en assembleur machine 386 (thèse de A.Wierzinska). Le traducteur de DIANA en "A-Code", une extension du traditionnel P-Code de Pascal pour l'Ada, a été construit par M.Cierniak et peut servir d'exemple.
-Cependant, les processeurs actuels (2024) sont des machines à registres et les optimiseurs de code les plus modernes, comme LLVM ou des substituts plus simples tel QUBE, travaillent sur une représentation en opérations à 3 adresses et une approche SSA (Single Static Assignment). la question se pose donc de savoir s'il n'est pas judicieux de viser un code intermédiaire de ce genre, plus facile à traduire en assembleur par exemple pour du RISC-V quia l'avantage d'être une spécification oderne et "propre" comparé à du processeur Amd/Intel x86 très alourdi par son histoire et les cojntraites de compatibilité.
+Cependant, les processeurs actuels (2024) sont des machines à registres et les optimiseurs de code les plus modernes, comme LLVM ou des substituts plus simples tel QUBE, travaillent sur une représentation en opérations à 3 adresses et une approche SSA (Single Static Assignment). la question se pose donc de savoir s'il n'est pas judicieux de viser un code intermédiaire de ce genre, plus facile à traduire en assembleur par exemple pour du RISC-V qui a l'avantage d'être une spécification moderne et "propre" comparé à du processeur Amd/Intel x86 très alourdi par son histoire et les contraintes de compatibilité.
 
+<br></br>
 
-### 1.6 PHASE _"CODE_GEN"_ ###
+### 1.6 PHASE GENERATION DE CODE CIBLE (_"CODE_GEN"_) ###
 
 Le code intermédiaire est ensuite traduit en code machine cible porté dans des fichiers ELF qui ont l'avantage d'être on seulement directement exécutables, mais de posséder un mécanisme de liaison dynamique qui permet de se passer d'un relieur (linker) classique.
 
+<br></br>
 
-### 1.7 PHASE _"WRITE_LIB"_ ###
+### 1.7 PHASE ECRITURE DE MODULE LIBRAIRIE (_"WRITE_LIB"_) ###
 
 La dernière opération du compilateur consiste à fabriquer un bloc d'arbre DIANA qui peut être intégré à une autre compilation ultérieure qui utiliserait en clause "with" le module que l'on finit de compiler.
-Tout les blocs DIANA du module en cours de compilation ne sont pas à sauvegarder parce que certaines parties de l'arbre dans $$$.TMP proviennent de clauses "with" et donc de fichiers librairies déjà sauvegardés.
+Tous les blocs DIANA du module en cours de compilation ne sont pas à sauvegarder parce que certaines parties de l'arbre dans $$$.TMP proviennent de clauses "with" et donc de fichiers librairies déjà sauvegardés.
 Or la séquence des phases est telle que les blocs d'arbre DIANA à sauvegarder (provenant de l'analyse syntaxique puis de l'analyse sémantique) sont séparé par des blocs "withés à ne pas sauvegarder". Il faut donc reloger les noeuds à sauvegarder et les compacter en une seule plage de blocs dont ont fait le fichier .DCL, .BDY ou .SUB.
-Un algorithme de marquage à la relocation détruit l'ancien arbre (certains pointeurs étant volontairement dénaturés lors du marquage). ce n'est pas grave dans la mesure où il n'y a plus d'opération à faire après cette dernière phase, et que l'examen de l'abre DIANA, s'il faut le faire, peut se faire en stoppant avant la phase _"write_lib"_.
+Un algorithme de marquage à la relocation détruit l'ancien arbre (certains pointeurs étant volontairement dénaturés lors du marquage). Ce n'est pas grave dans la mesure où il n'y a plus d'opération à faire après cette dernière phase, et que l'examen de l'arbre DIANA, s'il faut le faire, peut se faire en stoppant avant la phase _"write_lib"_.
+Cette phase est effectuée par la procédure présente dans le fichier de src/ada_comp :
+<pre>
+ <a href="../../src/ada_comp/idl-write_lib.adb">idl-write_lib.adb</a>
+</pre>
 
