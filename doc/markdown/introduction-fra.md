@@ -47,40 +47,49 @@ Où l'on suppose être dans le répertoire "bin" contenant a83.sh et qui fait of
 
 Il y a 7 phases de compilation dont la description détaillée suit.
 
+<br></br>
 
-### 1.1 PHASE _"PAR_PHASE"_ ###
-La phase _"par_phase"_ effectue l'analyse lexicale et syntaxique du texte source soumis à compilation. Il s'agit d'un analyseur LALR(1) classique dont les tables sont fabriquées par un système spécifique présent dans un répertoire "src/lalr_tools".
+### 1.1 PHASE D'ANALYSE LEXICALE ET SYNTAXIQUE (_"PAR_PHASE"_) ###
+Cette phase effectue l'analyse lexicale et syntaxique du texte source soumis à compilation. Il s'agit d'un analyseur LALR(1) classique dont les tables sont fabriquées par un système spécifique présent dans un répertoire "src/lalr_tools".
 
-La structure logicielle de la phase est la suivante (dans le répertoire src/par_phase) :
+La structure logicielle de la phase est la suivante (dans le répertoire src/par_phase, le point d'entrée étant la procédure _"par_phase"_) :
+
+---
+
+<pre>
+ <h4 style="text-align:center;">PHASE "PAR_PHASE"</h4>
+
+     [ <a href="../../bin/text_io.ads">text_io</a> ..........\
+     [<a href="../../bin/text_io.adb">bdy</a>                |
+                         |
+     [ <a href="../../bin/sequential_io.ads">sequential_io</a> ..\ |
+     [bdy              | |
+                       | |
+                       | |    [ <a href="../../src/par_phase/lex.ads">lex</a> .......\
+                       | \..> [<a href="../../src/par_phase/lex.adb">bdy</a>         |
+                       |                   |
+                       |      [ <a href="../../src/par_phase/grmr_ops.ads">grmr_ops</a> ..|
+                       |      [<a href="../../src/par_phase/grmr_ops.adb">bdy</a>         |
+                       |                   |
+                       \....> [ <a href="../../src/par_phase/grmr_tbl.ads">grmr_tbl</a> ..|
+                                           |    [ <a href="../../src/ada_comp/idl.ads">idl</a>
+                                           |    | ( par_phase
+                                           |    [<a href="../../src/ada_comp/idl.adb">bdy</a>
+                                           \..> | _( <a href="../../src/par_phase/idl-par_phase.adb">par_phase</a>
+                                                     | _( <a href="../../src/par_phase/idl-par_phase-set_dflt.adb">set_dflt</a>
+</pre>
+
+---
+ Les fichiers concernés (accessibles par les liens au dessus) sont:
 ```
-[ text_io ..........\
-[bdy                |
-                    |
-[ sequential_io ..\ |
-[bdy              | |
-                  | |
-                  | |    [ lex .......\
-                  | \..> [bdy         |
-                  |                   |
-                  |      [ grmr_ops ..|
-                  |      [bdy         |
-                  |                   |
-                  \....> [ grmr_tbl ..|
-                                      |    [ idl
-                                      |    | ( par_phase
-                                      |    [bdy
-                                      \..> | s( par_phase
-                                                | s( set_dflt
-
-
- fichiers :
-   lex.ads       lex.adb
-   grmr_ops.ads  grmr_ops.adb
+   lex.ads           lex.adb
+   grmr_ops.ads      grmr_ops.adb
    grmr_tbl.ads
    idl-par_phase.adb
    idl-par_phase-set_dflt.adb
 
 ```
+---
 
 Le point d'entrée de la phase est la procédure _"idl.par_phase"_ qui est une sous unité séparée du module _"idl"_ dont on parlera plus loin. Sa déclaration a cette forme :
 ```
@@ -89,64 +98,79 @@ Le point d'entrée de la phase est la procédure _"idl.par_phase"_ qui est une s
 
 A l'issue de l'éxécution de _"par_phase"_ sur le fichier source, un arbre DIANA ne contenant que les informations de syntaxe est présent dans le fichier de travail "$$$.TMP". un appel de A83 avec une lettre option d'affichage de l'arbre de "$$$.TMP" permet de visualiser l'arbre obtenu.
 
-### 1.2 LIB_PHASE ###
+<br></br>
+
+### 1.2 PHASE LIBRAIRIE (_"LIB_PHASE"_) ###
 
 Le langage Ada 83 permet une compilation modulaire : un module peut utiliser des définitions et des services fournis et compilés précédemment par un autre module qui est mentionné dans une clause "with".
 
 Avant de vérifier si la sémantique statique du fichier compilé est correcte, la phase _"lib_phase"_ lit les fichiers ".DCL" (ou ".BDY" ou ".SUB") et intègre les arbres DIANA de ces modules "withés". Il faut en effet disposer des définitions utilisées et de leurs caractéristiques sémantiques antérieurement obtenues pour vérifier la sémantique du module en cours de compilation.
 
 La phase est contenue dans un seul fichier dans le répertoire src/ada_comp :
-```
- idl.lib_phase.adb
-```
+
+<pre>
+ <a href="../../src/ada_comp/lib_phase.adb">idl-lib_phase.adb</a>
+</pre>
+
 Cette unité procédure _"idl.par_phase"_ séparée du module "idl" est le point d'entrée de la phase. Elle est sans paramètre (mais incluse et séparée du module _"idl"_) :
 ```
     procedure LIB_PHASE;
 ```
 L'arbre contenu dans "$$$.TMP" est complété par les blocs relogés des unités "withées". La lettre d'arrêt après lib_phase est "L".
 
+<br></br>
 
-### 1.3 PHASE _"SEM_PHASE"_ ###
+### 1.3 PHASE D'ANALYSE SEMANTIQUE (_"SEM_PHASE"_) ###
 
-La phase _"sem_phase"_ effectue la vérification sémantique statique du module compilé, c'est une phase très complexe répartie en 29 modules (répertoire SRC/sem_phase) et dont le point d'entrée est la procédure _"idl.sem_phase"_ contenue dans le fichier "idl-sem_phase.adb".
-la structure logicielle est une inclusion de sous-unités :
-```
-         [ idl
+Cette phase effectue la vérification sémantique statique du module compilé, c'est une phase très complexe répartie en 29 modules (répertoire src/sem_phase) et dont le point d'entrée est la procédure _"idl.sem_phase"_ contenue dans le fichier <pre>
+ <a href="../../src/sem_phase/sem_phase.adb">idl-sem_phase.adb</a>
+</pre>
+
+La structure logicielle est une inclusion de sous-unités :
+
+---
+
+<pre>
+ <h4 style="text-align:center;">PHASE "SEM_PHASE"</h4>
+         [ <a href="../../src/ada_comp/idl.ads">idl</a>
          |
          | ( sem_phase
-         [bdy
-         | s( sem_phase
+         [<a href="../../src/ada_comp/idl.adb">bdy</a>
+         | _( <a href="../../src/sem_phase/idl-sem_phase.adb">sem_phase</a>
               |
-              | s[ aggreso
-              | s[ att_walk
-              | s[ chk_stat
-              | s[ def_util
-              | s[ def_walk
-              | s[ derived
-              | s[ eval_num
-              | s[ expreso
-              | s[ exp_type
-              | s( fix_pre
-              | s[ fix_with
-              | s[ gen_subs
-              | s[ hom_unit
-              | s[ instant
-              | s[ make_nod
-              | s[ newsnam
-              | s[ nod_walk
-              | s[ pra_walk
-              | s[ pre_fcns
-              | s[ red_subp
-              | s[ rep_clau
-              | s[ req_util
-              | s[ sem_glob
-              | s[ set_util
-              | s[ stm_walk
-              | s[ uarith
-              | s[ univ_ops
-              | s[ vis_util
-           
-   fichiers dans src/sem_phase :
+              | _[ <a href="../../src/sem_phase/idl-sem_phase-aggreso.adb">aggreso</a>
+              | _[ att_walk
+              | _[ chk_stat
+              | _[ def_util
+              | _[ def_walk
+              | _[ derived
+              | _[ eval_num
+              | _[ expreso
+              | _[ exp_type
+              | _( fix_pre
+              | _[ fix_with
+              | _[ gen_subs
+              | _[ hom_unit
+              | _[ instant
+              | _[ make_nod
+              | _[ newsnam
+              | _[ nod_walk
+              | _[ pra_walk
+              | _[ pre_fcns
+              | _[ red_subp
+              | _[ rep_clau
+              | _[ req_util
+              | _[ sem_glob
+              | _[ set_util
+              | _[ stm_walk
+              | _[ uarith
+              | _[ univ_ops
+              | _[ vis_util
+</pre>
+
+---
+   Les fichiers concernés sont dans src/sem_phase :
+```
      idl-sem_phase
      idl-sem_phase-aggreso.adb       idl-sem_phase-att_walk.adb
      idl-sem_phase-chk_stat.adb      idl-sem_phase-def_util.adb
@@ -163,6 +187,9 @@ la structure logicielle est une inclusion de sous-unités :
      idl-sem_phase-stm_walk.adb      idl-sem_phase-uarith.adb
      idl-sem_phase-univ_ops.adb      idl-sem_phase-vis_util.adb
 ```
+---
+
+<br></br>
 
 ### 1.4 PHASE _"ERR_PHASE"_ ###
 
