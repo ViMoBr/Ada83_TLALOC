@@ -1,11 +1,12 @@
+
 ```
-[ text_io ..........\
-[bdy                |
+{ text_io ..........\
+{bdy                |
                     |
-[ sequential_io ..\ |
-[bdy              | |
+{ sequential_io ..\ |
+{bdy              | |
                   | |
-                  | |    [ [lex](../../src/par_phase/lex.ads) .......\
+                  | |    { <pre><a href="../../src/par_phase/lex.ads">lex</a> </pre> .......\
                   | \..> [bdy         |
                   |                   |
                   |      [ grmr_ops ..|
@@ -25,4 +26,4 @@
    grmr_tbl.ads
    idl-par_phase.adb
    idl-par_phase-set_dflt.adb
-
+```
