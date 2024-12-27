@@ -1,4 +1,4 @@
-<h1 style="text-align:center;">INTRODUCTION</h1>
+ <h1 style="text-align:center;">INTRODUCTION</h1>
 
 Le compilateur A83 transforme un fichier texte écrit dans le langage Ada 83 en un fichier exécutable ELF à reliure dynamique.
 
