@@ -1,4 +1,4 @@
-## **INTRODUCTION** ##
+<h1 style="text-align:center;">INTRODUCTION</h1>
 
 Le compilateur A83 transforme un fichier texte écrit dans le langage Ada 83 en un fichier exécutable ELF à reliure dynamique.
 
@@ -6,7 +6,7 @@ Le travail de transformation opère en phases bien distinctes qui fabriquent une
 
 La structure DIANA est stockée par blocs dans un fichier de travail temporaire "$$$.TMP" qui est accessible à toutes les phases.
 
-Le code intermédiaire est conservé dans un fichier ".COD" au format texte qui peut être examiné.
+Le code intermédiaire est conservé dans un fichier ".FINC" au format texte qui peut être examiné.
 
 Le format ELF (Executable and Linkable Format) est utilisé pour la forme exécutable à liaison dynamique, pour chaque unité un fichier ".elf" est donc produit.
 
