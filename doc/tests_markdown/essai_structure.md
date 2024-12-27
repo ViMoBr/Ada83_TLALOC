@@ -1,13 +1,13 @@
-
-```
-{ text_io ..........\
-{bdy                |
+<pre>
+<code>
+[ text_io ..........\
+[bdy                |
                     |
-{ sequential_io ..\ |
-{bdy              | |
+[ sequential_io ..\ |
+[bdy              | |
                   | |
-                  | |    { <pre><a href="../../src/par_phase/lex.ads">lex</a> </pre> .......\
-                  | \..> [bdy         |
+                  | |    [ <a href="../../src/par_phase/lex.ads">lex</a> .......\
+                  | \..> [<a href="../../src/par_phase/lex.adb">bdy</a>         |
                   |                   |
                   |      [ grmr_ops ..|
                   |      [bdy         |
@@ -19,11 +19,5 @@
                                       \..> | s( par_phase
                                                 | s( set_dflt
 
-
- fichiers :
-   lex.ads       lex.adb
-   grmr_ops.ads  grmr_ops.adb
-   grmr_tbl.ads
-   idl-par_phase.adb
-   idl-par_phase-set_dflt.adb
-```
+</code>
+</pre>
