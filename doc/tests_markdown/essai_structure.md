@@ -6,7 +6,7 @@
 [ sequential_io ..\ |
 [bdy              | |
                   | |
-                  | |    [ <a href="../../src/par_phase/lex.ads">lex</a> .......\
+                  | |    [ </pre><a href="../../src/par_phase/lex.ads">lex</a><pre> .......\
                   | \..> [<a href="../../src/par_phase/lex.adb">bdy</a>         |
                   |                   |
                   |      [ grmr_ops ..|
