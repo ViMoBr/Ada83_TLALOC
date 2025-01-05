@@ -473,11 +473,28 @@ null;
       while not IS_EMPTY( NORM_ACT_PRM_S ) loop
         POP( NORM_ACT_PRM_S, ACT_PRM );
         INVERSE_RECURSE;
+
+        if ACT_PRM.TY = DN_SELECTED then ACT_PRM := D( AS_DESIGNATOR, ACT_PRM ); end if;
+
         if ACT_PRM.TY = DN_USED_OBJECT_ID then
 	declare
-	  DEFN	: TREE	:= D( SM_DEFN, ACT_PRM );
+	  DEFN		: TREE	:= D( SM_DEFN, ACT_PRM );
+	  EXP_TYPE	: TREE	:= D( SM_EXP_TYPE, ACT_PRM );
 	begin
-	  PUT_LINE( tab & "LA" & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_disp" );
+	  if DEFN.TY = DN_CONSTANT_ID then
+
+	    if EXP_TYPE.TY = DN_ENUMERATION then
+	      PUT_LINE( tab & "LI" & tab & INTEGER'IMAGE( DI( SM_VALUE, ACT_PRM ) ) );
+
+	    elsif EXP_TYPE.TY = DN_ARRAY then
+	      PUT_LINE( tab & "LA" & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_disp" );
+
+	    end if;
+
+	  else
+	    PUT_LINE( tab & "; A FAIRE NON CONSTANT" );
+
+	  end if;
 	end;
         else
 	EXPRESSIONS.CODE_EXP( ACT_PRM );

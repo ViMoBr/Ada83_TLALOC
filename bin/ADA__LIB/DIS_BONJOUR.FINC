@@ -4,9 +4,9 @@ ELAB 1					;    BODY ELAB
 	VAR MSG_disp, q				; variable ptr str
 					; constante string
   postpone
-    dd	1, 9
+    dd	1, 11
     MSG_ptr = $
-    db	'Bonjour'
+    db	'Bonjour !'
   end postpone
 	LCA	MSG_ptr
 	Sa	 1,	MSG_disp
@@ -14,9 +14,19 @@ ELAB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 	LA  1,	MSG_disp
   postpone
-	PUT_LINE_L60_ = TEXT_IO.PUT_LINE_L60.elab
+	PUT_L56_ = TEXT_IO.PUT_L56.elab
   end postpone
-	CALL	PUT_LINE_L60_
+	CALL	PUT_L56_
+	LI	 10
+  postpone
+	PUT_L52_ = TEXT_IO.PUT_L52.elab
+  end postpone
+	CALL	PUT_L52_
+	LI	 1
+  postpone
+	NEW_LINE_L26_ = TEXT_IO.NEW_LINE_L26.elab
+  end postpone
+	CALL	NEW_LINE_L26_
 	UNLINK 1
 	RTD
 excep:

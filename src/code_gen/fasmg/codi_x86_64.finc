@@ -24,7 +24,8 @@ end macro
 
 
 macro DROP
-  db 0x58						; pop rax
+;  db 0x58						; pop rax
+  db 0x48, 0x83, 0xC4, 0x08				; add rsp, 8
 end macro
 
 
@@ -68,18 +69,31 @@ end macro
 last_instr_was_POP = 0				; sert à faire du peep-hole sur POP - PUSH
 last_instr_was_PUSH = 0				; sert à faire du peep-hole sur PUSH - POP
 
+;			---------
+macro			PUT_CHAR?			; affiche un seul caractère sur stdout
+;			---------
+
+  db 0x48, 0x89, 0xE6				; mov rsi, rsp le caractère a été empilé
+  db 0x6A, 0x01					; push 1
+  db 0x58						; pop rax      (rax=1=sys_write )
+  db 0x48, 0x89, 0xC2				; mov rdx, rax (rdx=length=1)
+  db 0x48, 0x89, 0xC7				; mov rdi, rax (rdi=stdout=1)
+  db 0x0F, 0x05					; syscall
+  DROP						; caractère consommé
+end macro
+
 ;			--------
-macro			PUT_STR?			; affiche une chaine sur stdout
+macro			PUT_STR?			; affiche tout une chaine sur stdout
 ;			--------
   db 0x48, 0x89, 0xC6				; mov rsi, rax  (esi=T  adresse des caracteres a afficher)
   db 0x8B, 0x50, 0xFC				; mov EDX, dword ptr[rax-4]   EDX=last
   db 0xFF, 0xC2					; inc EDX
-  db 0x2B, 0x50, 0xF8				; sub EDX, dword ptr [rax-8]   EDX=length (=last - first)
-  db 0x6A, 0x01					; push 1 (sys_write rax=1)
-  db 0x58						; pop rax
-  db 0x48, 0x89,0xC7				; mov rdi,rax (stdout=1)
+  db 0x2B, 0x50, 0xF8				; sub EDX, dword ptr[rax-8]   EDX=length (=last - first)
+  db 0x6A, 0x01					; push 1
+  db 0x58						; pop rax     (rax=1=sys_write )
+  db 0x48, 0x89,0xC7				; mov rdi,rax (rdi=stdout=1)
   db 0x0F, 0x05					; syscall
-  DROP						; pop rax   T:=N
+  DROP						; adresse consommée
 end macro
 
 

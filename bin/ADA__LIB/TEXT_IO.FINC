@@ -369,6 +369,31 @@ endPRMS					;    fin parametrage
 ELAB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+VAR	NL62_disp, d				; compteur boucle LOOP__1
+	LI	 1
+	Sd  1,	NL62_disp
+VAR	LMT_NL62_disp, d			; limite boucle LOOP__1
+	LI	 1
+	Sd  1,	LMT_NL62_disp
+	Ld  1,	NL62_disp				; test null range LOOP__1
+	Ld  1,	LMT_NL62_disp
+	CGT
+	BT	L61
+LOOP__1:					; corps boucle LOOP__1
+	LI	 10
+  postpone
+	TEXT_IO.PUT_L52_ = TEXT_IO.PUT_L52.elab	; PREFIXER PAR "TEXT_IO."
+  end postpone
+	CALL	PUT_L52_
+	Ld  1,	NL62_disp				; test de sortie LOOP__1
+	Ld  1,	LMT_NL62_disp
+	CEQ
+	BT	L61
+	Ld  1,	NL62_disp				; mise a jour compteur LOOP__1
+	INC
+	Sd  1,	NL62_disp
+	BRA	LOOP__1				; iteration suivante LOOP__1
+L61:					; post loop LOOP__1
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -714,6 +739,8 @@ endPRMS					;    fin parametrage
 ELAB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	LB	1,	-16
+	PUT_CHAR
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -850,8 +877,8 @@ elab_spec:				;    SPEC ELAB
 	Sd  0,	DEFAULT_BASE_disp
 					;    BODY ELAB
 
-if defined GET_L61_
-SUBP GET_L61				;---------- SUB
+if defined GET_L63_
+SUBP GET_L63				;---------- SUB
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM ITEM_adrofs				; out
@@ -866,8 +893,8 @@ excep:
 endSUBP					;---------- end SUB GET
 end if
 
-if defined GET_L62_
-SUBP GET_L62				;---------- SUB
+if defined GET_L64_
+SUBP GET_L64				;---------- SUB
 PRMS					;    debut parametrage
 	PRM ITEM_adrofs				; out
 	PRM WIDTH_adrofs				; in
@@ -881,8 +908,8 @@ excep:
 endSUBP					;---------- end SUB GET
 end if
 
-if defined PUT_L63_
-SUBP PUT_L63				;---------- SUB
+if defined PUT_L65_
+SUBP PUT_L65				;---------- SUB
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM ITEM_adrofs				; in
@@ -898,8 +925,8 @@ excep:
 endSUBP					;---------- end SUB PUT
 end if
 
-if defined PUT_L64_
-SUBP PUT_L64				;---------- SUB
+if defined PUT_L66_
+SUBP PUT_L66				;---------- SUB
 PRMS					;    debut parametrage
 	PRM ITEM_adrofs				; in
 	PRM WIDTH_adrofs				; in
@@ -932,8 +959,8 @@ excep:
 endSUBP					;---------- end SUB PUT
 end if
 
-if defined GET_L65_
-SUBP GET_L65				;---------- SUB
+if defined GET_L67_
+SUBP GET_L67				;---------- SUB
 PRMS					;    debut parametrage
 	PRM FROM_adrofs				; in
 	PRM ITEM_adrofs				; out
@@ -948,8 +975,8 @@ excep:
 endSUBP					;---------- end SUB GET
 end if
 
-if defined PUT_L66_
-SUBP PUT_L66				;---------- SUB
+if defined PUT_L68_
+SUBP PUT_L68				;---------- SUB
 PRMS					;    debut parametrage
 	PRM TO_adrofs				; out
 	PRM ITEM_adrofs				; in
@@ -979,8 +1006,8 @@ elab_spec:				;    SPEC ELAB
 	Sd  0,	DEFAULT_EXP_disp
 					;    BODY ELAB
 
-if defined GET_L67_
-SUBP GET_L67				;---------- SUB
+if defined GET_L69_
+SUBP GET_L69				;---------- SUB
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM ITEM_adrofs				; out
@@ -995,8 +1022,8 @@ excep:
 endSUBP					;---------- end SUB GET
 end if
 
-if defined GET_L68_
-SUBP GET_L68				;---------- SUB
+if defined GET_L70_
+SUBP GET_L70				;---------- SUB
 PRMS					;    debut parametrage
 	PRM ITEM_adrofs				; out
 	PRM WIDTH_adrofs				; in
@@ -1010,8 +1037,8 @@ excep:
 endSUBP					;---------- end SUB GET
 end if
 
-if defined PUT_L69_
-SUBP PUT_L69				;---------- SUB
+if defined PUT_L71_
+SUBP PUT_L71				;---------- SUB
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM ITEM_adrofs				; in
@@ -1028,8 +1055,8 @@ excep:
 endSUBP					;---------- end SUB PUT
 end if
 
-if defined PUT_L70_
-SUBP PUT_L70				;---------- SUB
+if defined PUT_L72_
+SUBP PUT_L72				;---------- SUB
 PRMS					;    debut parametrage
 	PRM ITEM_adrofs				; in
 	PRM FORE_adrofs				; in
@@ -1045,8 +1072,8 @@ excep:
 endSUBP					;---------- end SUB PUT
 end if
 
-if defined GET_L71_
-SUBP GET_L71				;---------- SUB
+if defined GET_L73_
+SUBP GET_L73				;---------- SUB
 PRMS					;    debut parametrage
 	PRM FROM_adrofs				; in
 	PRM ITEM_adrofs				; out
@@ -1061,8 +1088,8 @@ excep:
 endSUBP					;---------- end SUB GET
 end if
 
-if defined PUT_L72_
-SUBP PUT_L72				;---------- SUB
+if defined PUT_L74_
+SUBP PUT_L74				;---------- SUB
 PRMS					;    debut parametrage
 	PRM TO_adrofs				; out
 	PRM ITEM_adrofs				; in
@@ -1090,8 +1117,8 @@ elab_spec:				;    SPEC ELAB
 	Sd  0,	DEFAULT_EXP_disp
 					;    BODY ELAB
 
-if defined GET_L73_
-SUBP GET_L73				;---------- SUB
+if defined GET_L75_
+SUBP GET_L75				;---------- SUB
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM ITEM_adrofs				; out
@@ -1106,8 +1133,8 @@ excep:
 endSUBP					;---------- end SUB GET
 end if
 
-if defined GET_L74_
-SUBP GET_L74				;---------- SUB
+if defined GET_L76_
+SUBP GET_L76				;---------- SUB
 PRMS					;    debut parametrage
 	PRM ITEM_adrofs				; out
 	PRM WIDTH_adrofs				; in
@@ -1121,8 +1148,8 @@ excep:
 endSUBP					;---------- end SUB GET
 end if
 
-if defined PUT_L75_
-SUBP PUT_L75				;---------- SUB
+if defined PUT_L77_
+SUBP PUT_L77				;---------- SUB
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM ITEM_adrofs				; in
@@ -1139,8 +1166,8 @@ excep:
 endSUBP					;---------- end SUB PUT
 end if
 
-if defined PUT_L76_
-SUBP PUT_L76				;---------- SUB
+if defined PUT_L78_
+SUBP PUT_L78				;---------- SUB
 PRMS					;    debut parametrage
 	PRM ITEM_adrofs				; in
 	PRM FORE_adrofs				; in
@@ -1156,8 +1183,8 @@ excep:
 endSUBP					;---------- end SUB PUT
 end if
 
-if defined GET_L77_
-SUBP GET_L77				;---------- SUB
+if defined GET_L79_
+SUBP GET_L79				;---------- SUB
 PRMS					;    debut parametrage
 	PRM FROM_adrofs				; in
 	PRM ITEM_adrofs				; out
@@ -1172,8 +1199,8 @@ excep:
 endSUBP					;---------- end SUB GET
 end if
 
-if defined PUT_L78_
-SUBP PUT_L78				;---------- SUB
+if defined PUT_L80_
+SUBP PUT_L80				;---------- SUB
 PRMS					;    debut parametrage
 	PRM TO_adrofs				; out
 	PRM ITEM_adrofs				; in
@@ -1200,8 +1227,8 @@ elab_spec:				;    SPEC ELAB
 	Sb  0,	DEFAULT_SETTING_disp
 					;    BODY ELAB
 
-if defined GET_L79_
-SUBP GET_L79				;---------- SUB
+if defined GET_L81_
+SUBP GET_L81				;---------- SUB
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM ITEM_adrofs				; out
@@ -1215,8 +1242,8 @@ excep:
 endSUBP					;---------- end SUB GET
 end if
 
-if defined GET_L80_
-SUBP GET_L80				;---------- SUB
+if defined GET_L82_
+SUBP GET_L82				;---------- SUB
 PRMS					;    debut parametrage
 	PRM ITEM_adrofs				; out
 endPRMS					;    fin parametrage
@@ -1229,8 +1256,8 @@ excep:
 endSUBP					;---------- end SUB GET
 end if
 
-if defined PUT_L81_
-SUBP PUT_L81				;---------- SUB
+if defined PUT_L83_
+SUBP PUT_L83				;---------- SUB
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM ITEM_adrofs				; in
@@ -1246,8 +1273,8 @@ excep:
 endSUBP					;---------- end SUB PUT
 end if
 
-if defined PUT_L82_
-SUBP PUT_L82				;---------- SUB
+if defined PUT_L84_
+SUBP PUT_L84				;---------- SUB
 PRMS					;    debut parametrage
 	PRM ITEM_adrofs				; in
 	PRM WIDTH_adrofs				; in
@@ -1262,8 +1289,8 @@ excep:
 endSUBP					;---------- end SUB PUT
 end if
 
-if defined GET_L83_
-SUBP GET_L83				;---------- SUB
+if defined GET_L85_
+SUBP GET_L85				;---------- SUB
 PRMS					;    debut parametrage
 	PRM FROM_adrofs				; in
 	PRM ITEM_adrofs				; out
@@ -1278,8 +1305,8 @@ excep:
 endSUBP					;---------- end SUB GET
 end if
 
-if defined PUT_L84_
-SUBP PUT_L84				;---------- SUB
+if defined PUT_L86_
+SUBP PUT_L86				;---------- SUB
 PRMS					;    debut parametrage
 	PRM TO_adrofs				; out
 	PRM ITEM_adrofs				; in

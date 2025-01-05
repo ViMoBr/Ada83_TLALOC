@@ -4,7 +4,7 @@
 
 is
 
-  type ASM_OPCODE		is (ET,	OU,	NON,	OUX,	SYSCALL,	PUT_STR,
+  type ASM_OPCODE		is (ET,	OU,	NON,	OUX,	SYSCALL,	PUT_CHAR,	PUT_STR,
 			    DB,	LI,	LIF,	LCA,	LINK,	UNLINK,
 			    LB,	LW,	LD,	LQ,	LA,
 			    LIB,	LIW,	LID,	LIQ,	LIA,	LVA,

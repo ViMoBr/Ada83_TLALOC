@@ -215,7 +215,7 @@ is
 
 			--------
   procedure		NEW_LINE		( FILE    :in FILE_TYPE;
-					  SPACING :in POSITIVE_COUNT := 1)
+					  SPACING :in POSITIVE_COUNT := 1 )
   is
   begin null;
 
@@ -223,16 +223,18 @@ is
 	--------
 
 			--------
-  procedure		NEW_LINE		( SPACING :in POSITIVE_COUNT := 1)
+  procedure		NEW_LINE		( SPACING :in POSITIVE_COUNT := 1 )
   is
   begin null;
-
+    for N in 1 .. 1 loop -- SPACING loop
+      PUT( ASCII.LF );
+    end loop;
   end	NEW_LINE;
 	--------
 
 			---------
   procedure		SKIP_LINE		( FILE    :in FILE_TYPE;
-					  SPACING :in POSITIVE_COUNT := 1)
+					  SPACING :in POSITIVE_COUNT := 1 )
   is
   begin null;
 
@@ -240,7 +242,7 @@ is
 	---------
 
 			---------
-  procedure		SKIP_LINE		( SPACING :in POSITIVE_COUNT := 1)
+  procedure		SKIP_LINE		( SPACING :in POSITIVE_COUNT := 1 )
   is
   begin null;
 
@@ -434,7 +436,9 @@ is
 
   procedure		PUT		( ITEM :in CHARACTER )
   is
-  begin null;
+  begin
+       ASM_OP_2'( OPCODE => LB, LVL => 1, OFS => -16 );
+       ASM_OP_0'( OPCODE => PUT_CHAR );
 
   end	PUT;
 	----
@@ -450,7 +454,7 @@ is
 	----
 
 
-  procedure		GET		( ITEM :out STRING)
+  procedure		GET		( ITEM :out STRING )
   is
   begin null;
 

@@ -520,8 +520,12 @@ if debug_lib then put_line( "make_file_sym avec pri=" & PRI
         if TW_UNIT = TREE_VOID then raise NAME_ERROR; end if;
 
         if DI( XD_TIMESTAMP, TW_UNIT ) >= UNIT_TIMESTAMP then
-          PUT_LINE( "ANOMALIE : " & PRINT_NAME( D( XD_LIB_NAME, TW_UNIT ) )
-		& " PAS ANTERIEURE A " & PRINT_NAME( FILESYM ) );
+          PUT_LINE( "ANOMALIE : "
+		& PRINT_NAME( D( XD_LIB_NAME, TW_UNIT ) )
+		& " (time stamp=" & INTEGER'IMAGE( DI( XD_TIMESTAMP, TW_UNIT ) ) & ')'
+		& " PAS ANTERIEURE A "
+		& PRINT_NAME( FILESYM )
+		& " (time stamp=" & INTEGER'IMAGE( UNIT_TIMESTAMP ) & ')' );
           raise NAME_ERROR;
         end if;
       end	LOAD_WITHED_UNIT;
