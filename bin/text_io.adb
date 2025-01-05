@@ -469,7 +469,7 @@ is
   procedure		PUT		( ITEM :in STRING )
   is
   begin
-       ASM_OP_2'( OPCODE => LIQ, LVL => 1, OFS => 16 );
+       ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -16 );
        ASM_OP_0'( OPCODE => PUT_STR );
 
   end	PUT;
@@ -506,7 +506,7 @@ is
   procedure		PUT_LINE		( ITEM :in STRING )
   is
   begin
-       ASM_OP_2'( OPCODE => LIQ, LVL => 1, OFS => 16 );
+       ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -16 );
        ASM_OP_0'( OPCODE => PUT_STR );
 
   end	PUT_LINE;

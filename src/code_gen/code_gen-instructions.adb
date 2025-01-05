@@ -477,7 +477,7 @@ null;
 	declare
 	  DEFN	: TREE	:= D( SM_DEFN, ACT_PRM );
 	begin
-	  PUT_LINE( tab & "LVA" & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_disp" );
+	  PUT_LINE( tab & "LA" & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_disp" );
 	end;
         else
 	EXPRESSIONS.CODE_EXP( ACT_PRM );
@@ -657,7 +657,20 @@ null;
 	end if;
 
 	if PRINT_NAME( D( LX_SYMREP, D( AS_EXP, CHOICE_EXP ) ) ) = "OFS" then
-	  PUT_LINE( tab & PRINT_NAME( D( LX_NUMREP, USED_OBJECT_ID ) ) );
+	  if USED_OBJECT_ID.TY = DN_NUMERIC_LITERAL then
+	    PUT_LINE( tab & PRINT_NAME( D( LX_NUMREP, USED_OBJECT_ID ) ) );
+	  elsif USED_OBJECT_ID.TY = DN_FUNCTION_CALL
+	    and PRINT_NAME( D( LX_SYMREP, D(AS_NAME, USED_OBJECT_ID ) ) ) = """-"""
+	  then
+	    declare
+	      NAMED_ASSOC_LIST	: SEQ_TYPE	:= LIST( D( AS_GENERAL_ASSOC_S, USED_OBJECT_ID ) );
+	      NAMED_ASSOC		: TREE;
+	FUNCTION_NAME_STRING	:constant STRING := PRINT_NAME( D( LX_SYMREP, D(AS_NAME, USED_OBJECT_ID ) ) );
+	    begin
+	      POP( NAMED_ASSOC_LIST, NAMED_ASSOC );
+	      PUT_LINE( tab & '-' & PRINT_NAME( D( LX_NUMREP, NAMED_ASSOC ) ) );
+	    end;
+	  end if;
 	end if;
         end if;
 

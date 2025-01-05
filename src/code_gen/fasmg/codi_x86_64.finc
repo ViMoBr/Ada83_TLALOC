@@ -68,13 +68,13 @@ end macro
 last_instr_was_POP = 0				; sert à faire du peep-hole sur POP - PUSH
 last_instr_was_PUSH = 0				; sert à faire du peep-hole sur PUSH - POP
 
-;			-------
+;			--------
 macro			PUT_STR?			; affiche une chaine sur stdout
-;			-------
+;			--------
   db 0x48, 0x89, 0xC6				; mov rsi, rax  (esi=T  adresse des caracteres a afficher)
   db 0x8B, 0x50, 0xFC				; mov EDX, dword ptr[rax-4]   EDX=last
   db 0xFF, 0xC2					; inc EDX
-  db 0x2B, 0x50, 0xF8				; sub EDX, dword ptr [rax-8]   EDX=length
+  db 0x2B, 0x50, 0xF8				; sub EDX, dword ptr [rax-8]   EDX=length (=last - first)
   db 0x6A, 0x01					; push 1 (sys_write rax=1)
   db 0x58						; pop rax
   db 0x48, 0x89,0xC7				; mov rdi,rax (stdout=1)
@@ -83,9 +83,9 @@ macro			PUT_STR?			; affiche une chaine sur stdout
 end macro
 
 
-;			-------
+;			--------
 macro			SYSEXIT?			; retour au systeme
-;			-------
+;			--------
   db 0x6A, 0x3C					; push x3C  (sys_exit rax=60)
   db 0x58						; pop rax
   db 0x31, 0xFF					; xor edi, edi (err_code=0)
@@ -121,10 +121,10 @@ macro			LIF?	val		; Load Immediate Float
 end macro
 
 ;			-------------
-macro			LCA?	ptr		; Load Constant Address
+macro			LCA?	ptr		; Load Constant Address (distinguer de LI - qui charge en 32 bits - car les adresses sont en 64 bits sur x64)
 ;			-------------
-  db 0x48, 0x8D, 0x04, 0x25				; lea rax, qword ptr [ptr]
-  dd ptr
+  db 0x48, 0xB8					; movabs rax, ptr
+  dq ptr
   db 0x50						; push rax
 end macro
 
@@ -136,7 +136,7 @@ end macro
 macro			Lb?	lvl, disp		; Load Byte 8 bits
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
-    ofs = -disp					; pile croissante vers adresses decroissantes
+    ofs = -disp					; pile croissante vers adresses decroissantes (on empile en descendant)
   push_T
   if ofs > -128 & ofs < 127
     db 0x49, 0x0F, 0xBE, 0x40+lvl			; movsx rax, byte ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
@@ -150,7 +150,7 @@ macro			Lb?	lvl, disp		; Load Byte 8 bits
 end macro
 
 ;			-------------------
-macro			LIb?	lvl, disp		; Load Indirect byte
+macro			LIb?	lvl, disp		; Load Indirect byte (la variable en frame est une adresse, adresse à laquelle on va chercher l'octet)
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   if disp > -128 & disp < 127
@@ -271,10 +271,16 @@ macro			La?	lvl, disp		; Load Address 64 bits
 end macro
 
 ;			-------------------
-macro			LVa?	lvl, disp		; Load Variable Address pour lvl et disp
+macro			LIa?	lvl, disp		; Load Address 64 bits Indirect
+;			-------------------
+  LIq lvl, disp
+end macro
+
+;			-------------------
+macro			LVa?	lvl, disp		; Load Variable Address pour lvl et disp (empile l'adresse de la variable au déplacement dsip du frame de lvl donné)
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
-  ofs = -disp					; pile croissante vers adresses decroissantes
+  ofs = -disp					; ATTENTION : pile croissante vers adresses decroissantes (donc offset mémoire opposé au déplacement à l'empilement)
   push_T
   if ofs > -128 & ofs < 127
     db 0x49, 0x8D, 0x40+lvl				; lea rax, [r(8+lvl)+ofs8]   T:=ofs(FP)
@@ -294,11 +300,11 @@ end macro
 ;			------------------------
 macro			Sb?	lvl:-1, disp:0	; Store byte 8 bits
 ;			------------------------
-  if lvl = -1					; top stacked adress
+  if lvl = -1					; octet rangé n'importe où ; top = adresse stockage
     db 0x58					; pop rax   adress for data
     db 0x5B					; pop rbx   data
     db 0x88, 0x18					; mov byte ptr [rax], BL   store
-  else						; regular framed byte
+  else						; octet rangé dans un frame
     assert lvl >= 0 & lvl <= 7
     ofs = -disp					; pile croissante vers adresses decroissantes
     db 0x58					; pop rax   data
@@ -445,6 +451,12 @@ end macro
 macro			Sa?	lvl, disp		; Store Address 64 bits
 ;			-------------------
   Sq lvl, disp
+end macro
+
+;			-------------------
+macro			SIa?	lvl, disp		; Store Address 64 bits Indirect
+;			-------------------
+  SIq lvl, disp
 end macro
 
 ;				--------------------------------------------------------------------------------
@@ -633,8 +645,8 @@ end macro
 macro			LINK?	lvl, alloc	; ALLOCATION POUR VARIABLES LOCALES SOUS FRAME PTR
 ;			--------------------
   assert lvl>=0 & lvl<=7
-  db 0x41, 0x50+lvl					; push r(8+lvl)   store FP(lvl)
-  db 0x49, 0x89, 0xE0+lvl				; mov r(8+lvl), rsp   update FP
+  db 0x41, 0x50+lvl					; push r(8+lvl)   store FP(lvl) le pointeur de pile reste a pointer sur l'empile
+  db 0x49, 0x89, 0xE0+lvl				; mov r(8+lvl), rsp   update FP le FP pointe sur l'adresse de sauvegarde du FP anterieur
   assert alloc >= 0
   if alloc <> 0
     if alloc < 256
@@ -672,22 +684,22 @@ end macro
 ;			-------------
 macro			SUBP	sub_name_lbl	; Début de procédure
 ;			-------------
-  namespace sub_name_lbl
-  BRA post
+  namespace sub_name_lbl				; definir son espace de noms
+  BRA post					; contournement de l'élaboration autour de la procedure
 
 end macro
 
 ;			----
 macro			PRMS			; En tête de la définition des paramètres
 ;			----
-  virtual at 16
-    PRMzone::
+  virtual at 16					; La pile croit vers les adresses basses, les parametres sont au dessus du FP dynamique et de l'adresse retour
+    PRMzone::					; donc 16 octets (adresses 64 bits) au dessus du FP
   end virtual
 
 end macro
 
 ;			---
-macro			PRM	name_adrofs	; Définition de paramètre
+macro			PRM	name_adrofs	; Définition d'un paramètre
 ;			---
   virtual PRMzone
     name_adrofs = $
@@ -700,7 +712,7 @@ end macro
 macro			endPRMS			; Fin de la définition des paramètres
 ;			-------
   virtual PRMzone
-    prm_siz = $
+    prm_siz = $					; Calcul de la taille du paramétrage
   end virtual
 
 end macro
@@ -709,16 +721,16 @@ end macro
 macro			ELAB	lvl		; En tête de la partie élaboration de procédure
 ;			-------------
 elab:
-  virtual at 8
+  virtual at 8					; Laisser un espace pour la première variable ( A VOIR ! DEVRAIT ETRE 0. POLITIQUE ALLOCATION AVEC macro VAR)
     VARzone::
   end virtual
 	LINK lvl,	loc_siz
 
 end macro
 
-;			-----------------------
+;			----------------------------
 macro			VAR	name_disp, sizChar	; Définition d'un lieu de variable
-;			-----------------------
+;			----------------------------
   virtual VARzone
     align_#sizChar
     name_disp = $
@@ -732,7 +744,7 @@ macro			endSUBP			; Fin de procédure
 ;			-------
 post:
   virtual VARzone
-    loc_siz = $
+    loc_siz = $					; Ce n'est que là que l'on calcule la taille des locales qui sera retropropagee au LINK du ELAB
   end virtual
   end namespace
 

@@ -12,7 +12,7 @@ ELAB 1					;    BODY ELAB
 	Sa	 1,	MSG_disp
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-	LVA  1,	MSG_disp
+	LA  1,	MSG_disp
   postpone
 	PUT_LINE_L60_ = TEXT_IO.PUT_LINE_L60.elab
   end postpone

@@ -772,7 +772,7 @@ endPRMS					;    fin parametrage
 ELAB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-	LIQ	1,	16
+	LA	1,	-16
 	PUT_STR
 	UNLINK 1
 	RTD	prm_siz
@@ -832,12 +832,9 @@ PRMS					;    debut parametrage
 	PRM ITEM_adrofs				; in
 endPRMS					;    fin parametrage
 ELAB 1					;    BODY ELAB
-namespace RET
-	VAR RET_disp, q				; variable ptr str
-end namespace 
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-	LIQ	1,	16
+	LA	1,	-16
 	PUT_STR
 	UNLINK 1
 	RTD	prm_siz
@@ -922,8 +919,8 @@ namespace STR
 	Sd 1,	FST_1
 	LI	 68
 	Sd 1,	LST_1
-	VAR STR_disp, q				; variable ptr str
 end namespace 
+	VAR STR_disp, q				; variable ptr str
 	VAR INDEX_disp, d				; variable entiere
 	Sd  1,	INDEX_disp
 	VAR MIN_WIDTH_disp, d			; variable entiere
