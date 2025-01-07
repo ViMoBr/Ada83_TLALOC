@@ -381,10 +381,7 @@ VAR	LMT_NL62_disp, d			; limite boucle LOOP__1
 	BT	L61
 LOOP__1:					; corps boucle LOOP__1
 	LI	 10
-  postpone
-	TEXT_IO.PUT_L52_ = TEXT_IO.PUT_L52.elab	; PREFIXER PAR "TEXT_IO."
-  end postpone
-	CALL	PUT_L52_
+	CALL	TEXT_IO. ,PUT_L52
 	Ld  1,	NL62_disp				; test de sortie LOOP__1
 	Ld  1,	LMT_NL62_disp
 	CEQ

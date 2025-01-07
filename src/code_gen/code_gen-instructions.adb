@@ -1,3 +1,9 @@
+-------------------------------------------------------------------------------------------------------------------------
+-- CC BY SA	ADA_COMP.ADB	VINCENT MORIN	21/6/2024		UNIVERSITE DE BRETAGNE OCCIDENTALE
+-------------------------------------------------------------------------------------------------------------------------
+--	1	2	3	4	5	6	7	8	9	0	1	2
+
+
 separate ( CODE_GEN )
 				------------
  	package body		INSTRUCTIONS
@@ -506,15 +512,12 @@ null;
   begin
     INVERSE_RECURSE;
 
-    PUT_LINE( "  postpone" );
     declare
-      REGION	: TREE	:= D( XD_REGION, PROC_ID );
-      RGN_NAME :constant STRING	:= PRINT_NAME( D( LX_SYMREP, REGION ) );
+      REGION	: TREE		:= D( XD_REGION, PROC_ID );
+      RGN_NAME	 :constant STRING	:= PRINT_NAME( D( LX_SYMREP, REGION ) );
     begin
-      PUT_LINE( tab & SUB_NAME & '_' & LABEL_STR( LBL ) & "_ = " & RGN_NAME & '.' & SUB_NAME & '_' & LABEL_STR( LBL ) & ".elab" );
+      PUT_LINE( tab & "CALL" & tab & RGN_NAME & ". ," & SUB_NAME & '_' & LABEL_STR( LBL ) );
     end;
-    PUT_LINE( "  end postpone" );
-    PUT_LINE( tab & "CALL" & tab & SUB_NAME & '_' & LABEL_STR( LBL ) & '_' );
 
   end	CODE_PROCEDURE_CALL;
 	-------------------

@@ -642,18 +642,21 @@ macro			BF?	lbl
 
 end macro
 
-
-
 ;			---------------
-macro			CALL?	entry
+macro			CALL?	prefix, subname
 ;			---------------
+  postpone
+    if ~definite subname#_
+	?subname#_ = ?prefix#subname#.elab		; le nom finissant en _ détermine l'assemblage de la routine
+    end if
+  end postpone
+
   local disp
   db 0xE8
   dd disp
-  disp = entry-$
+  disp = subname#_-$
 
 end macro
-
 
 ;			--------------------
 macro			LINK?	lvl, alloc	; ALLOCATION POUR VARIABLES LOCALES SOUS FRAME PTR
@@ -695,9 +698,9 @@ macro			RTD?	prm_size:0
 
 end macro
 
-;			-------------
+;			----------------------
 macro			SUBP	sub_name_lbl	; Début de procédure
-;			-------------
+;			----------------------
   namespace sub_name_lbl				; definir son espace de noms
   BRA post					; contournement de l'élaboration autour de la procedure
 
@@ -726,7 +729,7 @@ end macro
 macro			endPRMS			; Fin de la définition des paramètres
 ;			-------
   virtual PRMzone
-    prm_siz = $					; Calcul de la taille du paramétrage
+    prm_siz = $-16					; Calcul de la taille du paramétrage
   end virtual
 
 end macro
