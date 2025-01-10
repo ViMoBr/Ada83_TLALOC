@@ -7,6 +7,7 @@ use  CODAGE_INTERMEDIAIRE;
 					--------
 is
 
+  procedure DBGSTOP;
 
   package CODI	renames CODAGE_INTERMEDIAIRE;
 
@@ -173,16 +174,17 @@ is
 				------------
   is
 
+    procedure CODE_SUBPROG_ENTRY_DECL	( SUBPROG_ENTRY_DECL :TREE );
     procedure CODE_HEADER		( HEADER :TREE );
     procedure CODE_DECL_S		( DECL_S :TREE );
     procedure CODE_DECL		( DECL :TREE );
     procedure CODE_PACKAGE_DECL	( PACKAGE_DECL :TREE );
     procedure CODE_PACKAGE_SPEC	( PACKAGE_SPEC :TREE );
+    procedure CODE_GENERIC_DECL	( GENERIC_DECL :TREE );
 
 
   private
 
-    procedure CODE_SUBPROG_ENTRY_DECL	( SUBPROG_ENTRY_DECL :TREE );
     procedure CODE_SUBP_ENTRY_HEADER	( SUBP_ENTRY_HEADER :TREE );
     procedure CODE_PARAM_S		( PARAM_S :TREE );
     procedure CODE_PARAM		( PARAM :TREE );
@@ -1416,6 +1418,8 @@ PUT_LINE( "; EXL" & tab & LBL );
     null;
   end;
 
+
+  procedure DBGSTOP is begin null; end;
 
 
 begin

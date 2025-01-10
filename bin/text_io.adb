@@ -225,8 +225,8 @@ is
 			--------
   procedure		NEW_LINE		( SPACING :in POSITIVE_COUNT := 1 )
   is
-  begin null;
-    for N in 1 .. 1 loop -- SPACING loop
+  begin
+    for N in 1 .. SPACING loop
       PUT( ASCII.LF );
     end loop;
   end	NEW_LINE;

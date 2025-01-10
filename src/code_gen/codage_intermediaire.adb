@@ -10,7 +10,7 @@ is
 --  use OP_CODE_IO;
 --  use CODE_DATA_TYPE_IO;
  
-  INACTIVE :BOOLEAN renames TRUE;
+  INACTIVE : BOOLEAN renames TRUE;
 
   INT_LABEL	: LABEL_TYPE	:= 1;
   FS		: FILE_TYPE;
@@ -281,12 +281,23 @@ is
   is
     SIZ_CHAR	: CHARACTER	:= OPER_TYPE_FROM( DEFN );
   begin
-    if DEFN.TY = DN_IN_ID or DEFN.TY = DN_IN_OUT_ID then
-      PUT_LINE( tab & "IL" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_adrofs" );
---      PUT_LINE( tab & "IL" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, D( SM_FIRST, DEFN ) ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_adrofs" );
+
+    PUT( tab & "L" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) )
+			& ',' & tab );
+
+    if DEFN.TY in CLASS_PARAM_NAME then									-- in_id in_out_id out_id
+      PUT( '-' & PRINT_NAME( D( LX_SYMREP, DEFN ) ) );							-- ATTENTION signe offset de params opposé aux vars
+
+      if (DEFN.TY = DN_IN_ID) and (D( SM_OBJ_TYPE, DEFN ).TY in CLASS_SCALAR) then
+        PUT_LINE( "_ofs" );										-- offset de parametre scalaire
+      else
+        PUT_LINE( "_adrofs" );									-- offset de parametre adresse
+      end if;
+
     else
-      PUT_LINE( tab & "L" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_disp" );
+      PUT_LINE( PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_disp" );						-- deplacement de variable locale
     end if;
+
   end	LOAD_MEM;
 	--====--
 

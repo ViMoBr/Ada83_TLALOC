@@ -8,10 +8,51 @@ is
   package CODI	renames CODAGE_INTERMEDIAIRE;
 
 
+			--===================--
+  procedure		CODE_SUBPROG_ENTRY_DECL	( SUBPROG_ENTRY_DECL :TREE )
+			--===================--
 
-			-----------
-  procedure		CODE_HEADER		( HEADER :TREE )
   is
+    SOURCE_NAME	: TREE        := D( AS_SOURCE_NAME, SUBPROG_ENTRY_DECL );
+  begin
+    if not (SOURCE_NAME.TY in CLASS_SUBPROG_NAME) then
+      PUT_LINE( "ANOMALIE : CODE_GEN.DECLARATIONS.CODE_SUBPROG_ENTRY_DECL ; SOURCE_NAME.TY pas dans CLASS_SUBPROG_NAME" );
+      raise PROGRAM_ERROR;
+--    else
+--      if DB( CD_COMPILED, SOURCE_NAME ) then return; end if;
+    end if;
+
+    INC_LEVEL;
+    declare
+      HEADER	: TREE	        := D( AS_HEADER, SUBPROG_ENTRY_DECL );
+      LBL		: LABEL_TYPE	:= NEW_LABEL;
+    begin
+      DI( CD_LABEL, SOURCE_NAME, INTEGER( LBL ) );
+      DI( CD_LEVEL, SOURCE_NAME, INTEGER( CODI.CUR_LEVEL ) );
+      DB( CD_COMPILED, SOURCE_NAME, TRUE );
+				---------------------						-- HEADER de la specif (reference level pour le corps)
+      CODI.OUTPUT_CODE := FALSE;	CODE_HEADER( HEADER );	CODI.OUTPUT_CODE := TRUE;			-- ne pas coder les parametres (le body fera ca)
+				---------------------
+      if SOURCE_NAME.TY = DN_FUNCTION_ID or SOURCE_NAME.TY = DN_OPERATOR_ID then
+        declare
+          USED_OBJECT_ID	: TREE := D( AS_NAME, HEADER );
+          RESULT_TYPE_ID	: TREE := D( SM_DEFN, USED_OBJECT_ID );
+          RESULT_TYPE_SPEC	: TREE := D( SM_TYPE_SPEC, RESULT_TYPE_ID );
+        begin
+null;
+--          DI( CD_RESULT_SIZE, SOURCE_NAME, DI( CD_IMPL_SIZE, RESULT_TYPE_SPEC ) );
+        end;
+      end if;
+    end;
+    DEC_LEVEL;
+
+   end	CODE_SUBPROG_ENTRY_DECL;
+	--===================--
+
+
+			--=======--
+  procedure		CODE_HEADER		( HEADER :TREE )
+  is			--=======--
   begin
 
     if HEADER.TY in CLASS_SUBP_ENTRY_HEADER
@@ -26,9 +67,12 @@ is
     end if;
 
   end	CODE_HEADER;
-	-----------
+	--=======--
 
-  procedure CODE_PARAM_S ( PARAM_S :TREE ) is
+
+			------------
+  procedure		CODE_PARAM_S	( PARAM_S :TREE )
+  is
   begin
     declare
       PARAM_SEQ	: SEQ_TYPE	:= LIST( PARAM_S );
@@ -37,24 +81,31 @@ is
       CODI.NO_SUBP_PARAMS := IS_EMPTY( PARAM_SEQ );
       if CODI.NO_SUBP_PARAMS then return; end if;
 
-      PUT( "PRMS" );
-      if CODI.DEBUG then PUT( tab50 & ";    debut parametrage" ); end if;
-      NEW_LINE;
+      if CODI.OUTPUT_CODE then
+        PUT( "PRMS" );
+        if CODI.DEBUG then PUT( tab50 & ";    debut parametrage" ); end if;
+        NEW_LINE;
+      end if;
 
       while not IS_EMPTY( PARAM_SEQ ) loop
         POP( PARAM_SEQ, PARAM );
         CODE_PARAM( PARAM );
       end loop;
 
-      PUT( "endPRMS" );
-      if CODI.DEBUG then PUT( tab50 & ";    fin parametrage" ); end if;
-      NEW_LINE;
-
+      if CODI.OUTPUT_CODE then
+        PUT( "endPRMS" );
+        if CODI.DEBUG then PUT( tab50 & ";    fin parametrage" ); end if;
+        NEW_LINE;
+      end if;
     end;
-  end;
 
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_PARAM ( PARAM :TREE ) is
+  end	CODE_PARAM_S;
+	------------
+
+
+			----------
+  procedure		CODE_PARAM	( PARAM :TREE )
+  is
   begin
 
 
@@ -67,7 +118,14 @@ is
 
         DI( CD_LEVEL, ID, INTEGER( CODI.CUR_LEVEL ) );
 
-        PUT( tab & "PRM " & PRINT_NAME( D( LX_SYMREP, ID ) ) & "_adrofs" );
+        if CODI.OUTPUT_CODE then
+	if D( SM_OBJ_TYPE, ID ).TY in CLASS_SCALAR and PARAM.TY = DN_IN then
+	  PUT( tab & "PRM " & PRINT_NAME( D( LX_SYMREP, ID ) ) & "_ofs" );
+	else
+	  PUT( tab & "PRM " & PRINT_NAME( D( LX_SYMREP, ID ) ) & "_adrofs" );
+	end if;
+        end if;
+
         if PARAM.TY = DN_IN then
 	CODE_IN ( PARAM );
 
@@ -78,28 +136,36 @@ is
 	CODE_IN_OUT ( PARAM );
 
         end if;
-        NEW_LINE;
+        if CODI.OUTPUT_CODE then NEW_LINE; end if;
       end loop;
     end;
 
-  end;
+  end	CODE_PARAM;
+	----------
+
 
   --|-------------------------------------------------------------------------------------------
   procedure CODE_IN ( ADA_IN :TREE ) is
   begin
-    if CODI.DEBUG then PUT( tab50 & "; in" ); end if;
+    if CODI.OUTPUT_CODE then
+      if CODI.DEBUG then PUT( tab50 & "; in" ); end if;
+    end if;
   end;
 
   --|-------------------------------------------------------------------------------------------
   procedure CODE_IN_OUT ( ADA_IN_OUT :TREE ) is
   begin
-    if CODI.DEBUG then PUT( tab50 & "; in out" ); end if;
+    if CODI.OUTPUT_CODE then
+      if CODI.DEBUG then PUT( tab50 & "; in out" ); end if;
+    end if;
   end;
 
   --|-------------------------------------------------------------------------------------------
   procedure CODE_OUT ( ADA_OUT :TREE ) is
   begin
-    if CODI.DEBUG then PUT( tab50 & "; out" ); end if;
+    if CODI.OUTPUT_CODE then
+      if CODI.DEBUG then PUT( tab50 & "; out" ); end if;
+    end if;
   end;
 
 			----------------------
@@ -692,8 +758,8 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 
     GENERIC_ID	: TREE	:= D( AS_SOURCE_NAME, GENERIC_DECL );
   begin
-null;
---put_line( "CODE_GENERIC_DECL " & PRINT_NAME( D( LX_SYMREP, GENERIC_ID ) ) );
+    PUT_LINE( "; CODEGEN.DECLARATIONS.CODE_GENERIC_DECL : PAS ENCORE FAIT ! "
+	    & PRINT_NAME( D( LX_SYMREP, GENERIC_ID ) ) );
 
   end;
 
@@ -726,47 +792,6 @@ null;
     end if;
   end;
 
-			-----------------------
-  procedure		CODE_SUBPROG_ENTRY_DECL	( SUBPROG_ENTRY_DECL :TREE )
-  is
-  begin
-    declare
-      SOURCE_NAME    : TREE        := D ( AS_SOURCE_NAME, SUBPROG_ENTRY_DECL );
---       HEADER         : TREE        := D ( AS_HEADER, SUBPROG_ENTRY_DECL );
-    begin
-      INC_LEVEL;
-      if SOURCE_NAME.TY in CLASS_SUBPROG_NAME then
-        declare
-	LBL	: LABEL_TYPE	:= NEW_LABEL;
-        begin
-
-	DI ( CD_LABEL, SOURCE_NAME, INTEGER( LBL ) );
-	DI ( CD_LEVEL, SOURCE_NAME, INTEGER( CODI.CUR_LEVEL ) );
---           DB ( CD_COMPILED, SOURCE_NAME, TRUE );
---           if not CODI.GENERATE_CODE then
---             CODI.GENERATE_CODE := TRUE;
---PUT_LINE( "; RFL" & tab & LBL );
---            CODI.GENERATE_CODE := FALSE;
---          end if;
-
---		CODE_HEADER( D( AS_HEADER, SUBPROG_ENTRY_DECL ) );
-
-        end;
---         if SOURCE_NAME.TY = DN_FUNCTION_ID or SOURCE_NAME.TY = DN_OPERATOR_ID then
---           declare
---             USED_OBJECT_ID	: TREE := D( AS_NAME, HEADER );
---             RESULT_TYPE_ID	: TREE := D( SM_DEFN, USED_OBJECT_ID );
---             RESULT_TYPE_SPEC	: TREE := D( SM_TYPE_SPEC, RESULT_TYPE_ID );
---           begin
---             DI( CD_RESULT_SIZE, SOURCE_NAME, CODI.TYPE_SIZE( RESULT_TYPE_SPEC ) );
---           end;
---         end if;
-       end if;
-       DEC_LEVEL;
-     end;
- 
-   end	CODE_SUBPROG_ENTRY_DECL;
-	-----------------------
 
 
 				-----------------

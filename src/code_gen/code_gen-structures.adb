@@ -1,3 +1,9 @@
+-------------------------------------------------------------------------------------------------------------------------
+-- CC BY SA	CODE_GEN-SRUCTURES.ADB	VINCENT MORIN	9/1/2025	UNIVERSITE DE BRETAGNE OCCIDENTALE
+-------------------------------------------------------------------------------------------------------------------------
+--	1	2	3	4	5	6	7	8	9	0	1	2
+
+
 separate ( CODE_GEN )
 				----------
  	package body		STRUCTURES
@@ -24,10 +30,12 @@ is
       UNIT_ALL_DECL		: TREE	:= D( AS_ALL_DECL, COMPILATION_UNIT );
     begin
       case UNIT_ALL_DECL.TY is
-      when DN_SUBPROGRAM_BODY	=> CODE_SUBPROGRAM_BODY( UNIT_ALL_DECL );
-      when DN_PACKAGE_DECL	=> DECLARATIONS.CODE_PACKAGE_DECL( UNIT_ALL_DECL );
-      when DN_PACKAGE_BODY	=> CODE_PACKAGE_BODY( UNIT_ALL_DECL );
-      when others		=> raise PROGRAM_ERROR;
+      when DN_SUBPROG_ENTRY_DECL	=> DECLARATIONS.CODE_SUBPROG_ENTRY_DECL( UNIT_ALL_DECL );			-- les instanciations génériques sont comprises  (unit_kind instantiation)
+      when DN_PACKAGE_DECL		=> DECLARATIONS.CODE_PACKAGE_DECL( UNIT_ALL_DECL );			-- les instanciations génériques sont comprises  (unit_kind instantiation)
+      when DN_GENERIC_DECL		=> DECLARATIONS.CODE_GENERIC_DECL( UNIT_ALL_DECL );
+      when DN_SUBPROGRAM_BODY		=> CODE_SUBPROGRAM_BODY( UNIT_ALL_DECL );
+      when DN_PACKAGE_BODY		=> CODE_PACKAGE_BODY( UNIT_ALL_DECL );
+      when others			=> raise PROGRAM_ERROR;
       end case;
     end;
 
@@ -147,7 +155,8 @@ null;
     if CODI.DEBUG then PUT( tab50 & ";---------- SUB" ); end if;
     NEW_LINE;
 
-    DECLARATIONS.CODE_HEADER( D( AS_HEADER, SUBPROGRAM_BODY ) );
+--    DECLARATIONS.CODE_HEADER( D( AS_HEADER, SUBPROGRAM_BODY ) );
+    DECLARATIONS.CODE_HEADER( D( SM_SPEC, SOURCE_NAME ) );
 
     ENCLOSING_BODY := SUBPROGRAM_BODY;
 
@@ -243,7 +252,7 @@ null;
 	---------
 
 
-				---------------
+				--===========--
   procedure			CODE_BLOCK_BODY	( BLOCK_BODY :TREE )
   is
   begin
@@ -299,7 +308,7 @@ null;
     end if;
 
   end	CODE_BLOCK_BODY;
-	---------------
+	--===========--
 
 
 				-----------

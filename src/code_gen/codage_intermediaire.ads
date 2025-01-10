@@ -26,7 +26,9 @@ is
 
   type LOOP_CODE			is (								--| CODES OPERATION DU ACODE POLONAIS
  		DEC,   GT,    INC,   LT 		);
---   GENERATE_CODE			: BOOLEAN		:= TRUE;						--| COMMUTATEUR POUR LA GENERATION DU CODE
+
+  OUTPUT_CODE			: BOOLEAN			:= TRUE;					-- Dans le traitement de spécif on désactive le codage
+
   CUR_LEVEL			: LEVEL_NUM;							--| NIVEAU D'IMBRICATION COURANT
 -- --  SKIP_LBL, HANDLER_BEGIN_LBL		: LABEL_TYPE;
   NO_SUBP_PARAMS			: BOOLEAN;							--| UTILISES POUR LES EXCEPTIONS HANDLERS

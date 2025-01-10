@@ -18,9 +18,9 @@ macro show description, value
 end macro
 
 
-macro push_T
-  db 0x50						; push rax
-end macro
+;macro push_T
+;  db 0x50						; push rax
+;end macro
 
 
 macro DROP
@@ -73,7 +73,7 @@ last_instr_was_PUSH = 0				; sert à faire du peep-hole sur PUSH - POP
 macro			PUT_CHAR?			; affiche un seul caractère sur stdout
 ;			---------
 
-  db 0x48, 0x89, 0xE6				; mov rsi, rsp le caractère a été empilé
+  db 0x48, 0x89, 0xE6				; mov rsi, rsp adresse du caractère empilé
   db 0x6A, 0x01					; push 1
   db 0x58						; pop rax      (rax=1=sys_write )
   db 0x48, 0x89, 0xC2				; mov rdx, rax (rdx=length=1)
@@ -114,7 +114,6 @@ end macro
 ;			-------------
 macro			LI?	val		; Load Immediate
 ;			-------------
-  push_T
   if val > -128 & val < 127
     db 0x6A, val					; push byte val8
   else
@@ -150,8 +149,7 @@ end macro
 macro			Lb?	lvl, disp		; Load Byte 8 bits
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
-    ofs = -disp					; pile croissante vers adresses decroissantes (on empile en descendant)
-  push_T
+  ofs = -disp					; pile croissante vers adresses decroissantes (on empile en descendant)
   if ofs > -128 & ofs < 127
     db 0x49, 0x0F, 0xBE, 0x40+lvl			; movsx rax, byte ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
     db ofs
@@ -183,8 +181,7 @@ end macro
 macro			Lw?	lvl, disp		; Load Word 16 bits
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
-    ofs = -disp					; pile croissante vers adresses decroissantes
-  push_T
+  ofs = -disp					; pile croissante vers adresses decroissantes
   if ofs > -128 & ofs < 127
     db 0x49, 0x0F, 0xBF, 0x40+lvl			; movsx rax, word ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
     db ofs
@@ -216,8 +213,7 @@ end macro
 macro			Ld?	lvl, disp		; Load doubleword 32 bits
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
-    ofs = -disp					; pile croissante vers adresses decroissantes
-  push_T
+  ofs = -disp					; pile croissante vers adresses decroissantes
   if ofs > -128 & ofs < 127
     db 0x49, 0x63, 0x40+lvl				; movsx rax, dword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
     db ofs
@@ -250,7 +246,6 @@ macro			Lq?	lvl, disp		; Load quadword 64 bits
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   ofs = -disp					; pile croissante vers adresses decroissantes
-  push_T
   if ofs > -128 & ofs < 127
     db 0x49, 0x8B, 0x40+lvl				; mov rax, qword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
     db ofs
@@ -295,7 +290,6 @@ macro			LVa?	lvl, disp		; Load Variable Address pour lvl et disp (empile l'adres
 ;			-------------------
   assert lvl >= 0 & lvl <= 7
   ofs = -disp					; ATTENTION : pile croissante vers adresses decroissantes (donc offset mémoire opposé au déplacement à l'empilement)
-  push_T
   if ofs > -128 & ofs < 127
     db 0x49, 0x8D, 0x40+lvl				; lea rax, [r(8+lvl)+ofs8]   T:=ofs(FP)
     db ofs
