@@ -2,39 +2,56 @@ include 'TEXT_IO.FINC'
 SUBP DIS_BONJOUR_L1				;---------- SUB
 ELAB 1					;    BODY ELAB
 	VAR NOM_disp, q				; variable ptr str
-					; constante string
+					; constante string='Vincent'
   postpone
-    dd	1, 9
+    dd	1, 7
     NOM_ptr = $
     db	'Vincent'
   end postpone
 	LCA	NOM_ptr
 	Sa	 1,	NOM_disp
 	VAR MSG_disp, q				; variable ptr str
-					; constante string
+					; constante string='Merci !'
   postpone
-    dd	1, 9
+    dd	1, 7
     MSG_ptr = $
-    db	'Bonjour'
+    db	'Merci !'
   end postpone
 	LCA	MSG_ptr
 	Sa	 1,	MSG_disp
+	VAR C_disp, b				; variable bool char
+	LI	 89
+	Sb  1,	C_disp
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	LA  1,	NOM_disp
 	CALL	TEXT_IO. ,PUT_L56
-	LI	 33
-	CALL	TEXT_IO. ,PUT_L52
-	LI	 3
+					; constante string=' !'
+  postpone
+    dd	1, 2
+    STR_L1_ptr = $
+    db	' !'
+  end postpone
+	LCA	STR_L1_ptr
+	CALL	TEXT_IO. ,PUT_L56
+					; constante string=' Entrez un caractere : '
+  postpone
+    dd	1, 23
+    STR_L2_ptr = $
+    db	' Entrez un caractere : '
+  end postpone
+	LCA	STR_L2_ptr
+	CALL	TEXT_IO. ,PUT_L56
+	LVA  1,	C_disp
+	CALL	TEXT_IO. ,GET_L50
+	LI	 1
 	CALL	TEXT_IO. ,NEW_LINE_L26
 	LA  1,	MSG_disp
 	CALL	TEXT_IO. ,PUT_L56
-	LI	 1
+	LI	 3
 	CALL	TEXT_IO. ,NEW_LINE_L26
-	LA  1,	NOM_disp
-	CALL	TEXT_IO. ,PUT_L56
-	LI	 1
-	CALL	TEXT_IO. ,NEW_LINE_L26
+	Lb  1,	C_disp
+	CALL	TEXT_IO. ,PUT_L52
 	UNLINK 1
 	RTD
 excep:

@@ -69,7 +69,7 @@ is
     when DN_CONSTANT_ID | DN_VARIABLE_ID	=> CODE_VC_ID( DEFN );
     when DN_ITERATION_ID			=>
       declare
-        ITERATION_ID	: TREE	renames DEFN;
+        ITERATION_ID	: TREE		renames DEFN;
         ITERATION_ID_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, ITERATION_ID ) );
         ITERATION_ID_TAG	: LABEL_TYPE	:= LABEL_TYPE( DI( CD_OFFSET, ITERATION_ID ) );
         ITERATION_ID_VARSTR	:constant STRING	:= ITERATION_ID_STR & LABEL_STR( ITERATION_ID_TAG ) & "_disp";
@@ -502,7 +502,7 @@ null;--        declare
 
     elsif AGG_EXP.TY = DN_STRING_LITERAL
     then
-      CODE_STRING_LITERAL( AGG_EXP );
+      CODE_STRING_LITERAL( AGG_EXP, "A VOIR !" );
 
     end if;
   end	CODE_AGG_EXP;
@@ -519,10 +519,21 @@ null;--        declare
 
 
 				-------------------
-  procedure			CODE_STRING_LITERAL		( STRING_LITERAL :TREE )
+  procedure			CODE_STRING_LITERAL		( STRING_LITERAL :TREE; STR_NAME :STRING )
   is
   begin
-    null;
+	      declare
+	        CST_CHN	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, STRING_LITERAL ) );
+	        STR_CONST	:STRING	renames	CST_CHN( CST_CHN'FIRST+1 .. CST_CHN'LAST-1 );
+	      begin
+	        if CODI.DEBUG then PUT_LINE( tab50 & "; constante string='" & STR_CONST & "'" ); end if;
+	        PUT_LINE( "  postpone" );
+	        PUT_LINE( "    dd" & tab & "1," & NATURAL'IMAGE( STR_CONST'LENGTH ) );
+	        PUT_LINE( "    " & STR_NAME & "_ptr = $" );
+	        PUT_LINE( "    db" & tab & ''' & STR_CONST & ''' );
+	        PUT_LINE( "  end postpone" );
+	      end;
+
   end	CODE_STRING_LITERAL;
 	-------------------
 

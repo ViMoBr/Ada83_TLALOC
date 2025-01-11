@@ -580,16 +580,19 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 	begin
             if INIT_EXP /= TREE_VOID then
 	    if INIT_EXP.TY = DN_STRING_LITERAL then
-	      declare
-	        CST_CHN	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, INIT_EXP ) );
-	      begin
-	        if CODI.DEBUG then PUT_LINE( tab50 & "; constante string" ); end if;
-	        PUT_LINE( "  postpone" );
-	        PUT_LINE( "    dd" & tab & "1," & NATURAL'IMAGE( CST_CHN'LENGTH ) );
-	        PUT_LINE( "    " & VC_STR & "_ptr = $" );
-	        PUT_LINE( "    db" & tab & ''' & CST_CHN( CST_CHN'FIRST+1 .. CST_CHN'LAST-1 ) & ''' );
-	        PUT_LINE( "  end postpone" );
-	      end;
+
+	      EXPRESSIONS.CODE_STRING_LITERAL( INIT_EXP, VC_STR );
+
+--	      declare
+--	        CST_CHN	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, INIT_EXP ) );
+--	      begin
+--	        if CODI.DEBUG then PUT_LINE( tab50 & "; constante string" ); end if;
+--	        PUT_LINE( "  postpone" );
+--	        PUT_LINE( "    dd" & tab & "1," & NATURAL'IMAGE( CST_CHN'LENGTH ) );
+--	        PUT_LINE( "    " & VC_STR & "_ptr = $" );
+--	        PUT_LINE( "    db" & tab & ''' & CST_CHN( CST_CHN'FIRST+1 .. CST_CHN'LAST-1 ) & ''' );
+--	        PUT_LINE( "  end postpone" );
+--	      end;
 
 	      PUT_LINE( tab & "LCA" & tab & VC_STR & "_ptr" );						-- LOAD CONSTANT ADDRESS
 	      PUT_LINE( tab & "Sa" & tab & LEVEL_NUM'IMAGE( LVL ) & ',' & tab & VC_STR & "_disp" );

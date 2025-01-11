@@ -420,7 +420,9 @@ is
 
   procedure		GET		( ITEM :out CHARACTER )
   is
-  begin null;
+  begin
+    ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -16 );
+    ASM_OP_0'( OPCODE => GET_CHAR );
 
   end	GET;
 	----
@@ -437,8 +439,8 @@ is
   procedure		PUT		( ITEM :in CHARACTER )
   is
   begin
-       ASM_OP_2'( OPCODE => LB, LVL => 1, OFS => -16 );
-       ASM_OP_0'( OPCODE => PUT_CHAR );
+    ASM_OP_2'( OPCODE => LB, LVL => 1, OFS => -16 );
+    ASM_OP_0'( OPCODE => PUT_CHAR );
 
   end	PUT;
 	----

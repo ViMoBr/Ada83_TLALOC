@@ -2,14 +2,20 @@ with TEXT_IO;
 use  TEXT_IO;
 procedure DIS_BONJOUR is
   NOM	:constant STRING	:= "Vincent";
-  MSG	:constant STRING	:= "Bonjour";
+  MSG	:constant STRING	:= "Merci !";
+  C	: CHARACTER	:= 'Y';
 begin
   PUT( NOM );
-  PUT( '!' );
-  NEW_LINE( 3 );
+  PUT( " !" );
+  PUT( " Entrez un caractere : " );
+  GET( C );
+  NEW_LINE;
   PUT( MSG );
+
+  NEW_LINE( 3 );
+--  PUT( 'Z' );
+  PUT( C );
 --  PUT( NOM );
-  NEW_LINE;
-  PUT( NOM );
-  NEW_LINE;
+--  PUT( NOM );
+--  NEW_LINE;
 end;

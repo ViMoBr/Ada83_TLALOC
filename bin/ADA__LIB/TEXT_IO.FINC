@@ -711,6 +711,8 @@ endPRMS					;    fin parametrage
 ELAB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	LA	1,	-16
+	GET_CHAR
 	UNLINK 1
 	RTD	prm_siz
 excep:

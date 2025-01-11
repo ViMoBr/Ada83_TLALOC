@@ -96,6 +96,20 @@ macro			PUT_STR?			; affiche tout une chaine sur stdout
   DROP						; adresse consommée
 end macro
 
+;			---------
+macro			GET_CHAR?			; lit un seul caractère sur stdin
+;			---------
+
+  db 0x5E						; pop rsi	     (l'adresse destination a ete empilee)
+  db 0x6A, 0x00					; push 0
+  db 0x58						; pop rax      (rax=0=sys_read )
+  db 0x48, 0x89, 0xC7				; mov rdi, rax (rdi=stdout=0)
+  db 0x6A, 0x01					; push 1
+  db 0x5A						; pop rdx (rdx=length=1)
+  db 0x0F, 0x05					; syscall
+  DROP						; adresse consommée
+end macro
+
 
 ;			--------
 macro			SYSEXIT?			; retour au systeme

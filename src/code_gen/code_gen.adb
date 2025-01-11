@@ -129,6 +129,7 @@ is
 
     procedure CODE_EXP		( EXP		:TREE );
     procedure CODE_INDEXED		( INDEXED		:TREE );
+    procedure CODE_STRING_LITERAL	( STRING_LITERAL	:TREE; STR_NAME :STRING );
 
 
   private
@@ -152,7 +153,6 @@ is
     procedure CODE_EXP_VAL_EXP	( EXP_VAL_EXP	:TREE );
     procedure CODE_AGG_EXP		( AGG_EXP		:TREE );
     procedure CODE_NUMERIC_LITERAL	( NUMERIC_LITERAL	:TREE );
-    procedure CODE_STRING_LITERAL	( STRING_LITERAL	:TREE );
     procedure CODE_NULL_ACCESS	( NULL_ACCESS	:TREE );
     procedure CODE_QUAL_CONV		( QUAL_CONV	:TREE );
     procedure CODE_CONVERSION		( CONVERSION	:TREE );

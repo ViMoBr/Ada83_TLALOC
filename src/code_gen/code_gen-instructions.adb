@@ -471,13 +471,26 @@ null;
     PROC_ID	: TREE		:= D( SM_DEFN, USED_NAME_ID );
     LBL		: LABEL_TYPE	:= LABEL_TYPE( DI( CD_LABEL, PROC_ID ) );
 
+    SPEC_PRM_GRP_S	: SEQ_TYPE	:= LIST( D( AS_PARAM_S, D( SM_SPEC, PROC_ID) ) );
+    FRM_PRM_GRP	: TREE;
+    SPEC_PRM_ID_S	: SEQ_TYPE;
+
+
     procedure INVERSE_RECURSE
     is
       ACT_PRM	: TREE;
+      FRM_PRM_ID	: TREE;
     begin
 
       while not IS_EMPTY( NORM_ACT_PRM_S ) loop
+
+        if IS_EMPTY( SPEC_PRM_ID_S ) then
+	POP( SPEC_PRM_GRP_S, FRM_PRM_GRP );
+	SPEC_PRM_ID_S := LIST( D( AS_SOURCE_NAME_S, FRM_PRM_GRP ) );
+        end if;
+        POP( SPEC_PRM_ID_S, FRM_PRM_ID );
         POP( NORM_ACT_PRM_S, ACT_PRM );
+
         INVERSE_RECURSE;
 
         if ACT_PRM.TY = DN_SELECTED then ACT_PRM := D( AS_DESIGNATOR, ACT_PRM ); end if;
@@ -497,11 +510,30 @@ null;
 
 	    end if;
 
+
+	  elsif DEFN.TY = DN_VARIABLE_ID then
+
+	    if FRM_PRM_ID.TY = DN_IN_ID then
+	      LOAD_MEM( DEFN );
+	    else
+	      PUT_LINE( tab & "LVA" & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_disp" );
+	    end if;
+
+
 	  else
-	    PUT_LINE( tab & "; A FAIRE NON CONSTANT" );
+	    PUT_LINE( tab & "; DEFN.TY NON FAIT " & NODE_NAME'IMAGE( DEFN.TY ) );
 
 	  end if;
 	end;
+
+        elsif ACT_PRM.TY = DN_STRING_LITERAL then
+	declare
+	  NOM_ANONYME	:constant STRING	:= "STR_" & NEW_LABEL;
+	begin
+	  EXPRESSIONS.CODE_STRING_LITERAL( ACT_PRM, NOM_ANONYME );
+	  PUT_LINE( tab & "LCA" & tab & NOM_ANONYME & "_ptr" );						-- LOAD CONSTANT ADDRESS
+	end;
+
         else
 	EXPRESSIONS.CODE_EXP( ACT_PRM );
         end if;
@@ -510,7 +542,14 @@ null;
 
 
   begin
-    INVERSE_RECURSE;
+
+    if not IS_EMPTY( SPEC_PRM_GRP_S ) then
+      POP( SPEC_PRM_GRP_S, FRM_PRM_GRP );
+      SPEC_PRM_ID_S := LIST( D( AS_SOURCE_NAME_S, FRM_PRM_GRP ) );
+
+      INVERSE_RECURSE;
+
+    end if;
 
     declare
       REGION	: TREE		:= D( XD_REGION, PROC_ID );
