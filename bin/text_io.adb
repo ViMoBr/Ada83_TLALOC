@@ -4,6 +4,12 @@ use  MACHINE_CODE;
 	package body			TEXT_IO
 is					-------
 
+  STDOUT_MAX_PAGE_LEN	: COUNT	:= 0;
+  STDOUT_MAX_LINE_LEN	: COUNT	:= 0;
+  STDOUT_PAGE		: POSITIVE_COUNT	:= 1;
+  STDOUT_LINE		: POSITIVE_COUNT	:= 1;
+  STDOUT_COL		: POSITIVE_COUNT	:= 1;
+
            -- File Management
 
 			------
@@ -13,7 +19,6 @@ is					-------
 					  FORM :in STRING := ""
 					)
   is
-    I	: INTEGER	:= 0;
   begin null;
 
   end	CREATE;
@@ -25,7 +30,7 @@ is					-------
 					  NAME :in STRING;
 					  FORM :in STRING := ""
 					)
-is
+  is
   begin null;
 
   end	OPEN;
@@ -33,7 +38,7 @@ is
 
 			-----
   procedure		CLOSE		( FILE :in out FILE_TYPE )
-is
+  is
   begin null;
 
   end	CLOSE;
@@ -158,7 +163,8 @@ is
 			---------------
   procedure		SET_LINE_LENGTH	( TO   :in COUNT)
   is
-  begin null;
+  begin
+    STDOUT_MAX_LINE_LEN := TO;
 
   end	SET_LINE_LENGTH;
 	---------------
@@ -174,7 +180,8 @@ is
 			---------------
   procedure		SET_PAGE_LENGTH	( TO   :in COUNT)
   is
-  begin null;
+  begin
+    STDOUT_MAX_PAGE_LEN := TO;
 
   end	SET_PAGE_LENGTH;
 	---------------
@@ -226,9 +233,18 @@ is
   procedure		NEW_LINE		( SPACING :in POSITIVE_COUNT := 1 )
   is
   begin
+    PUT( ASCII.CR );								-- LRM 14.3.4(3) col := 1
+    STDOUT_COL := 1;
     for N in 1 .. SPACING loop
       PUT( ASCII.LF );
     end loop;
+    STDOUT_LINE := STDOUT_LINE + SPACING;
+    if STDOUT_LINE > STDOUT_MAX_PAGE_LEN then
+      PUT( ASCII.FF );
+      STDOUT_PAGE := STDOUT_PAGE + 1;
+      STDOUT_LINE := 1;
+    end if;
+
   end	NEW_LINE;
 	--------
 

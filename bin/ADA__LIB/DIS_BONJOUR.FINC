@@ -1,45 +1,48 @@
 include 'TEXT_IO.FINC'
-PRO	DIS_BONJOUR_L1				;---------- PRODIS_BONJOUR
+PRO	DIS_BONJOUR_L1				;---------- PRO DIS_BONJOUR
 ELB 1					;    BODY ELAB
-VAR NOM_disp, q				; variable ptr str
-STR NOM, 'Vincent'				; constante string='Vincent'
-	LCA	NOM_ptr
-	Sa	 1,	NOM_disp
-VAR MSG_disp, q				; variable ptr str
-STR MSG, 'Merci !'				; constante string='Merci !'
-	LCA	MSG_ptr
-	Sa	 1,	MSG_disp
-VAR C_disp, b				; variable bool char
-	LI	 89
-	Sb  1,	C_disp
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-	LA  1,	NOM_disp
+EXT_LOOP:
+GET_CHAR_LOOP:
+namespace	BLOC_CHAR
+ELB 2					;    BODY ELAB
+VAR C_disp, b				; variable bool char
+	LI	 78
+	Sb  2,	C_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+STR STR_L3, ' Entrez un caractere : '		; constante string=' Entrez un caractere : '
+	LCA	STR_L3_ptr
 	CALL	TEXT_IO. ,PUT_L56
-STR STR_L1, ' !'				; constante string=' !'
-	LCA	STR_L1_ptr
-	CALL	TEXT_IO. ,PUT_L56
-STR STR_L2, ' Entrez un caractere : '		; constante string=' Entrez un caractere : '
-	LCA	STR_L2_ptr
-	CALL	TEXT_IO. ,PUT_L56
-	LVA  1,	C_disp
+	LVA  2,	C_disp
 	CALL	TEXT_IO. ,GET_L50
-	LI	 13
+	Lb  2,	C_disp
+	LI	 113
+	CEQ
+	BF	L5
+	UNLINK	 2
+	BRA	L2
+L5:
+	Lb  2,	C_disp
+	LI	 120
+	CEQ
+	BF	L7
+	UNLINK	 2
+	BRA	L1
+L7:
+	Lb  2,	C_disp
 	CALL	TEXT_IO. ,PUT_L52
-	LI	 1
-	CALL	TEXT_IO. ,NEW_LINE_L26
-	LA  1,	MSG_disp
+end namespace
+	BRA	GET_CHAR_LOOP
+L2:					; post loop GET_CHAR_LOOP
+STR STR_L8, 'Demi sortie !'			; constante string='Demi sortie !'
+	LCA	STR_L8_ptr
 	CALL	TEXT_IO. ,PUT_L56
-	LI	 13
-	CALL	TEXT_IO. ,PUT_L52
-	LI	 2
-	CALL	TEXT_IO. ,NEW_LINE_L26
-	Lb  1,	C_disp
-	CALL	TEXT_IO. ,PUT_L52
-	LI	 13
-	CALL	TEXT_IO. ,PUT_L52
 	LI	 1
 	CALL	TEXT_IO. ,NEW_LINE_L26
+	BRA	EXT_LOOP
+L1:					; post loop EXT_LOOP
 	UNLINK 1
 	RTD
 excep:

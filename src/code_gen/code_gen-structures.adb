@@ -279,7 +279,7 @@ null;
     declare
       SAVE_ENCLOSING	: TREE	:= ENCLOSING_BODY;
     begin
-      CODE_ITEM_S ( D ( AS_ITEM_S, BLOCK_BODY ) );
+      CODE_ITEM_S( D( AS_ITEM_S, BLOCK_BODY ) );
       ENCLOSING_BODY := SAVE_ENCLOSING;
     end;
 
@@ -299,7 +299,7 @@ null;
     end if;
     NEW_LINE;
 
-    INSTRUCTIONS.CODE_STM_S( D ( AS_STM_S, BLOCK_BODY ) );
+    INSTRUCTIONS.CODE_STM_S( D( AS_STM_S, BLOCK_BODY ) );
 
     if not IS_EMPTY( LIST( D( AS_ALTERNATIVE_S, BLOCK_BODY ) ) )
     then

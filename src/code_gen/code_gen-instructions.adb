@@ -158,17 +158,66 @@ separate ( CODE_GEN )
   end	CODE_CLAUSES_STM;
 
 
-
+				-------
   procedure			CODE_IF			( ADA_IF :TREE )
   is
-    AFTER_IF_LBL	:constant STRING	:= NEW_LABEL;
+    POST_IF_LBL	:constant STRING	:= NEW_LABEL;
   begin
-    CODE_TEST_CLAUSE_ELEM_S( D( AS_TEST_CLAUSE_ELEM_S, ADA_IF ), AFTER_IF_LBL );
-    PUT( AFTER_IF_LBL & ':' );
+    if CODI.DEBUG then PUT( tab50 & "; debut if" ); end if;
+    NEW_LINE;
+    CODE_TEST_CLAUSE_ELEM_S( D( AS_TEST_CLAUSE_ELEM_S, ADA_IF ), POST_IF_LBL );
+    CODE_STM_S( D( AS_STM_S, ADA_IF ) );								-- partie else
+    PUT( POST_IF_LBL & ':' );
     if CODI.DEBUG then PUT( tab50 & "; post if" ); end if;
     NEW_LINE;
-  end	CODE_IF;
 
+  end	CODE_IF;
+	-------
+
+
+		-----------------------
+  procedure	CODE_TEST_CLAUSE_ELEM_S	( TEST_CLAUSE_ELEM_S :TREE; STM_END_LBL :STRING )
+  is
+    TEST_CLAUSE_ELEM_SEQ	: SEQ_TYPE	:= LIST( TEST_CLAUSE_ELEM_S );
+    TEST_CLAUSE_ELEM	: TREE;
+  begin
+    while not IS_EMPTY( TEST_CLAUSE_ELEM_SEQ ) loop
+      POP( TEST_CLAUSE_ELEM_SEQ, TEST_CLAUSE_ELEM );
+
+      if TEST_CLAUSE_ELEM.TY = DN_COND_CLAUSE then
+        CODE_COND_CLAUSE( TEST_CLAUSE_ELEM, STM_END_LBL );
+
+      elsif TEST_CLAUSE_ELEM.TY = DN_SELECT_ALTERNATIVE then
+        CODE_SELECT_ALTERNATIVE ( TEST_CLAUSE_ELEM );
+
+      elsif TEST_CLAUSE_ELEM.TY = DN_SELECT_ALT_PRAGMA then
+        CODE_SELECT_ALT_PRAGMA( TEST_CLAUSE_ELEM );
+
+      end if;
+
+    end loop;
+
+  end	CODE_TEST_CLAUSE_ELEM_S;
+	-----------------------
+
+
+		----------------
+  procedure	CODE_COND_CLAUSE		( COND_CLAUSE :TREE; STM_END_LBL :STRING )
+  is
+  begin
+    declare
+      EXP			: TREE		:= D( AS_EXP, COND_CLAUSE );
+      NEXT_CLAUSE_LBL	:constant STRING	:= NEW_LABEL;
+    begin
+      EXPRESSIONS.CODE_EXP( EXP );									-- Expression booleenne de decision
+      PUT_LINE( tab & "BF" & tab & NEXT_CLAUSE_LBL );
+      INSTRUCTIONS.CODE_STM_S( D( AS_STM_S, COND_CLAUSE ) );
+      PUT_LINE( tab & "BRA" & tab & STM_END_LBL );
+      PUT_LINE( NEXT_CLAUSE_LBL & ':' );
+    end;
+
+  end	CODE_COND_CLAUSE;
+	----------------
 
 
   procedure			CODE_SELECTIVE_WAIT		( SELECTIVE_WAIT :TREE )
@@ -444,7 +493,7 @@ null;
 	----------
 
 
-
+				-------------
   procedure			CODE_CALL_STM		( CALL_STM :TREE )
   is
     NAME_ID		: TREE	:= D( AS_NAME, CALL_STM );
@@ -460,7 +509,9 @@ null;
       CODE_ENTRY_CALL ( CALL_STM );
 
     end if;
+
   end	CODE_CALL_STM;
+	-------------
 
 				-------------------
   procedure			CODE_PROCEDURE_CALL		( PROCEDURE_CALL :TREE; USED_NAME_ID : TREE )
@@ -851,26 +902,24 @@ null;--          LOAD_ADR( TYPE_SPEC );
     begin
       if EXP = TREE_VOID then
         if EXITED_LOOP_LEVEL /= CODI.CUR_LEVEL then
-null;
---             EMIT ( LVB, LVB_LBL, COMMENT=> "NOMBRE DE NIVEAUX REMONTES" );
---             GEN_LBL_ASSIGNMENT ( LVB_LBL, INTEGER(CODI.CUR_LEVEL - LOOP_LEVEL) );
+	PUT_LINE( tab & "UNLINK" & tab & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL+1 - EXITED_LOOP_LEVEL ) );
         end if;
         PUT_LINE( tab & "BRA" & tab & LABEL_STR( AFTER_LOOP_LABEL ) );
+
       else
-        EXPRESSIONS.CODE_EXP ( EXP );
+        EXPRESSIONS.CODE_EXP( EXP );
         if EXITED_LOOP_LEVEL /= CODI.CUR_LEVEL then
           declare
             SKIP_LBL	:constant STRING	:= NEW_LABEL;
           begin
---            EMIT ( JMPF, SKIP_LBL, COMMENT=> "PAS D EXIT SI CONDITION FAUSSE" );
---            LVB_LBL := NEW_LABEL;
---            EMIT ( LVB, LVB_LBL, COMMENT=> "NOMBRE DE NIVEAUX REMONTES" );
---            GEN_LBL_ASSIGNMENT ( LVB_LBL, INTEGER(CODI.CUR_LEVEL - LOOP_LEVEL) );
- --           EMIT ( JMP, AFTER_LOOP_LABEL, COMMENT=> "SORTIE DE BOUCLE" );
+	  PUT_LINE( tab & "BF" & tab & SKIP_LBL );
+	  PUT_LINE( tab & "UNLINK" & tab & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL+1 - EXITED_LOOP_LEVEL ) );
+	  PUT_LINE( tab & "BRA" & tab & LABEL_STR( AFTER_LOOP_LABEL ) );
             PUT_LINE( SKIP_LBL & ':' );
           end;
         else
-null;--          EMIT ( JMPT, AFTER_LOOP_LABEL );
+	PUT_LINE( tab & "BT" & tab & LABEL_STR( AFTER_LOOP_LABEL ) );
+
         end if;
       end if;
     end;

@@ -1,3 +1,9 @@
+-------------------------------------------------------------------------------------------------------------------------
+-- CC BY SA	ADA_COMP.ADB	VINCENT MORIN	21/6/2024		UNIVERSITE DE BRETAGNE OCCIDENTALE
+-------------------------------------------------------------------------------------------------------------------------
+--	1	2	3	4	5	6	7	8	9	0	1	2
+
+
 with DIANA_NODE_ATTR_CLASS_NAMES, IDL, TEXT_IO;
 use  DIANA_NODE_ATTR_CLASS_NAMES, IDL, TEXT_IO;
 with CODAGE_INTERMEDIAIRE;
@@ -91,8 +97,6 @@ is
   procedure CODE_LABEL_ID ( LABEL_ID :TREE );
   procedure CODE_OBJECT ( OBJECT :TREE );
   procedure CODE_ADRESSE ( ADRESSE :TREE );
-  procedure CODE_TEST_CLAUSE ( TEST_CLAUSE :TREE; LBL :STRING );
-  procedure CODE_COND_CLAUSE ( COND_CLAUSE :TREE; AFTER_IF_LBL :STRING );
   procedure CODE_NON_TASK_NAME ( NON_TASK_NAME :TREE );
   procedure CODE_SUBPROG_PACK_NAME ( SUBPROG_PACK_NAME :TREE );
   procedure CODE_SUBPROG_NAME ( SUBPROG_NAME :TREE );
@@ -111,9 +115,7 @@ is
   procedure CODE_TASK_BODY_ID ( TASK_BODY_ID :TREE );
   procedure CODE_ENTRY_ID ( ENTRY_ID :TREE );
   procedure CODE_ENTRY_CALL ( ENTRY_CALL :TREE );
-  procedure CODE_TEST_CLAUSE_ELEM ( TEST_CLAUSE_ELEM :TREE; LBL :STRING );
-  procedure CODE_TEST_CLAUSE_ELEM_S ( TEST_CLAUSE_ELEM_S :TREE; LBL :STRING );
-  procedure CODE_SELECT_ALTERNATIVE ( SELECT_ALTERNATIVE :TREE );
+  procedure CODE_SELECT_ALTERNATIVE		( SELECT_ALTERNATIVE :TREE );
   procedure CODE_SELECT_ALT_PRAGMA ( SELECT_ALT_PRAGMA :TREE );
   procedure CODE_NAME_S ( NAME_S :TREE );
   procedure CODE_EXCEPTION_ID ( EXCEPTION_ID :TREE );
@@ -223,6 +225,8 @@ is
   private
 
     procedure CODE_PROCEDURE_CALL	( PROCEDURE_CALL :TREE; USED_NAME_ID : TREE );
+    procedure CODE_TEST_CLAUSE_ELEM_S	( TEST_CLAUSE_ELEM_S :TREE; STM_END_LBL :STRING );
+    procedure CODE_COND_CLAUSE	( COND_CLAUSE :TREE; STM_END_LBL :STRING );
     procedure CODE_STM_ELEM		( STM_ELEM :TREE );
     procedure CODE_STM_PRAGMA		( STM_PRAGMA :TREE );
     procedure CODE_LABELED		( LABELED :TREE );
@@ -1125,36 +1129,6 @@ null;--      GEN_PUSH_DATA ( A, 0, LEVEL_NUM(DI( CD_LEVEL, ADRESSE )), DI( CD_VA
 
 
 
-  procedure CODE_TEST_CLAUSE ( TEST_CLAUSE :TREE; LBL :STRING ) is
-  begin
-
-    if TEST_CLAUSE.TY = DN_COND_CLAUSE then
-      CODE_COND_CLAUSE( TEST_CLAUSE, LBL );
-
-    elsif TEST_CLAUSE.TY = DN_SELECT_ALTERNATIVE then
-      CODE_SELECT_ALTERNATIVE ( TEST_CLAUSE );
-
-    end if;
-  end;
-
-
-
-  procedure CODE_COND_CLAUSE ( COND_CLAUSE :TREE; AFTER_IF_LBL :STRING ) is
-  begin
-    declare
-      EXP			: TREE		:= D( AS_EXP, COND_CLAUSE );
-      NEXT_CLAUSE_LBL	:constant STRING	:= NEW_LABEL;
-    begin
-      EXPRESSIONS.CODE_EXP( EXP );
-      PUT_LINE( tab & "BF" & tab & NEXT_CLAUSE_LBL );
-      INSTRUCTIONS.CODE_STM_S( D( AS_STM_S, COND_CLAUSE ) );
-      PUT_LINE( tab & "BF" & tab & AFTER_IF_LBL );
-      PUT_LINE( NEXT_CLAUSE_LBL & ':' );
-    end;
-  end;
-
-
-
   procedure CODE_BLOCK_LOOP_ID ( BLOCK_LOOP_ID :TREE ) is
   begin
     null;
@@ -1311,30 +1285,6 @@ null;--      GEN_PUSH_DATA ( A, 0, LEVEL_NUM(DI( CD_LEVEL, ADRESSE )), DI( CD_VA
 
 
 
-  procedure CODE_TEST_CLAUSE_ELEM ( TEST_CLAUSE_ELEM :TREE; LBL :STRING ) is
-  begin
-
-    if TEST_CLAUSE_ELEM.TY in CLASS_TEST_CLAUSE then
-      CODE_TEST_CLAUSE( TEST_CLAUSE_ELEM, LBL );
-
-    elsif TEST_CLAUSE_ELEM.TY = DN_SELECT_ALT_PRAGMA then
-      CODE_SELECT_ALT_PRAGMA( TEST_CLAUSE_ELEM );
-
-    end if;
-  end;
-
-
-
-  procedure CODE_TEST_CLAUSE_ELEM_S ( TEST_CLAUSE_ELEM_S :TREE; LBL :STRING )
-  is
-    TEST_CLAUSE_ELEM_SEQ	: SEQ_TYPE	:= LIST( TEST_CLAUSE_ELEM_S );
-    TEST_CLAUSE_ELEM	: TREE;
-  begin
-    while not IS_EMPTY ( TEST_CLAUSE_ELEM_SEQ ) loop
-      POP( TEST_CLAUSE_ELEM_SEQ, TEST_CLAUSE_ELEM );
-      CODE_TEST_CLAUSE_ELEM( TEST_CLAUSE_ELEM, LBL );
-    end loop;
-  end;
 
   --|-------------------------------------------------------------------------------------------
   procedure CODE_SELECT_ALTERNATIVE ( SELECT_ALTERNATIVE :TREE ) is
