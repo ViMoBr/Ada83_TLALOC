@@ -521,18 +521,12 @@ null;--        declare
 				-------------------
   procedure			CODE_STRING_LITERAL		( STRING_LITERAL :TREE; STR_NAME :STRING )
   is
+    CST_CHN	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, STRING_LITERAL ) );
+    STR_CONST	:STRING		renames	CST_CHN( CST_CHN'FIRST+1 .. CST_CHN'LAST-1 );
   begin
-	      declare
-	        CST_CHN	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, STRING_LITERAL ) );
-	        STR_CONST	:STRING	renames	CST_CHN( CST_CHN'FIRST+1 .. CST_CHN'LAST-1 );
-	      begin
-	        if CODI.DEBUG then PUT_LINE( tab50 & "; constante string='" & STR_CONST & "'" ); end if;
-	        PUT_LINE( "  postpone" );
-	        PUT_LINE( "    dd" & tab & "1," & NATURAL'IMAGE( STR_CONST'LENGTH ) );
-	        PUT_LINE( "    " & STR_NAME & "_ptr = $" );
-	        PUT_LINE( "    db" & tab & ''' & STR_CONST & ''' );
-	        PUT_LINE( "  end postpone" );
-	      end;
+    PUT( "STR " & STR_NAME & ", '" & STR_CONST & ''' );
+    if CODI.DEBUG then PUT( tab50 & "; constante string='" & STR_CONST & "'" ); end if;
+    NEW_LINE;
 
   end	CODE_STRING_LITERAL;
 	-------------------

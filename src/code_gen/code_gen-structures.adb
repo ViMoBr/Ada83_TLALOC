@@ -151,11 +151,10 @@ null;
       PUT_LINE( "if defined " & SUB_NAME & '_' & LABEL_STR( LBL ) & '_' );
     end if;
 
-    PUT( "SUBP " & SUB_NAME & '_' & LABEL_STR( LBL ) );
-    if CODI.DEBUG then PUT( tab50 & ";---------- SUB" ); end if;
+    PUT( "PRO" & tab & SUB_NAME & '_' & LABEL_STR( LBL ) );
+    if CODI.DEBUG then PUT( tab50 & ";---------- PRO " & SUB_NAME ); end if;
     NEW_LINE;
 
---    DECLARATIONS.CODE_HEADER( D( AS_HEADER, SUBPROGRAM_BODY ) );
     DECLARATIONS.CODE_HEADER( D( SM_SPEC, SOURCE_NAME ) );
 
     ENCLOSING_BODY := SUBPROGRAM_BODY;
@@ -168,8 +167,8 @@ null;
     NEW_LINE;
     PUT_LINE( "excep:" );
 
-    PUT( "endSUBP" );
-    if CODI.DEBUG then PUT( tab50 & ";---------- end SUB " & SUB_NAME); end if;
+    PUT( "endPRO" );
+    if CODI.DEBUG then PUT( tab50 & ";---------- end PRO " & SUB_NAME); end if;
     NEW_LINE;
 
     DEC_LEVEL;
@@ -259,7 +258,7 @@ null;
     DI( CD_LEVEL, BLOCK_BODY, INTEGER( CODI.CUR_LEVEL ) );
 
     if CODI.CUR_LEVEL /= 0 then
-      PUT( "ELAB" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );
+      PUT( "ELB" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );
     end if;
 
     if CODI.DEBUG then PUT( tab50 & ";    BODY ELAB" ); end if;

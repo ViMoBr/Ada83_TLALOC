@@ -707,7 +707,7 @@ macro			RTD?	prm_size:0
 end macro
 
 ;			----------------------
-macro			SUBP	sub_name_lbl	; Début de procédure
+macro			PRO	sub_name_lbl	; Début de procédure
 ;			----------------------
   namespace sub_name_lbl				; definir son espace de noms
   BRA post					; contournement de l'élaboration autour de la procedure
@@ -743,13 +743,26 @@ macro			endPRMS			; Fin de la définition des paramètres
 end macro
 
 ;			-------------
-macro			ELAB	lvl		; En tête de la partie élaboration de procédure
+macro			ELB	lvl		; En tête de la partie élaboration de procédure
 ;			-------------
 elab:
   virtual at 8					; Laisser un espace pour la première variable ( A VOIR ! DEVRAIT ETRE 0. POLITIQUE ALLOCATION AVEC macro VAR)
     VARzone::
   end virtual
 	LINK lvl,	loc_siz
+
+end macro
+
+;			---------------------
+macro			STR	name, bytes		; Définition d'une constante chaine
+;			---------------------
+  postpone
+    local siz
+    dd	1, siz
+    name#_ptr = $
+    db	bytes
+    siz = $-name#_ptr
+  end postpone
 
 end macro
 
@@ -764,9 +777,9 @@ macro			VAR	name_disp, sizChar	; Définition d'un lieu de variable
 
 end macro
 
-;			-------
-macro			endSUBP			; Fin de procédure
-;			-------
+;			------
+macro			endPRO			; Fin de procédure
+;			------
 post:
   virtual VARzone
     loc_siz = $					; Ce n'est que là que l'on calcule la taille des locales qui sera retropropagee au LINK du ELAB

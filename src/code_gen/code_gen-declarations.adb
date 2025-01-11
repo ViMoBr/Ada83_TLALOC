@@ -408,7 +408,7 @@ null;
         INIT_EXP	: TREE		:= D( SM_INIT_EXP, VC_NAME );
       begin
 
-        PUT( tab & "VAR " & PRINT_NAME( D( LX_SYMREP, VC_NAME ) ) & "_disp, " & OPER_TYPE );
+        PUT( "VAR " & PRINT_NAME( D( LX_SYMREP, VC_NAME ) ) & "_disp, " & OPER_TYPE );
         if CODI.DEBUG then PUT( tab50 & "; variable entiere" ); end if;
         NEW_LINE;
         DI( CD_LEVEL,     VC_NAME, INTEGER( CODI.CUR_LEVEL ) );
@@ -428,7 +428,7 @@ null;
         INIT_EXP	: TREE		:= D( SM_INIT_EXP, VC_NAME );
       begin
 
-        PUT( tab & "VAR " & PRINT_NAME( D( LX_SYMREP, VC_NAME ) ) & "_disp, " & OPER_TYPE );
+        PUT( "VAR " & PRINT_NAME( D( LX_SYMREP, VC_NAME ) ) & "_disp, " & OPER_TYPE );
         if CODI.DEBUG then PUT( tab50 & "; variable flottante" ); end if;
         NEW_LINE;
         DI( CD_LEVEL,     VC_NAME, INTEGER( CODI.CUR_LEVEL ) );
@@ -452,7 +452,7 @@ null;
 	INIT_EXP	: TREE		:= D( SM_INIT_EXP, VC_NAME );
         begin
 
-	PUT( tab & "VAR " & PRINT_NAME( D( LX_SYMREP, VC_NAME ) ) & "_disp, b" );
+	PUT( "VAR " & PRINT_NAME( D( LX_SYMREP, VC_NAME ) ) & "_disp, b" );
           if CODI.DEBUG then PUT( tab50 & "; variable bool char" ); end if;
 	NEW_LINE;
 
@@ -522,9 +522,9 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 	DIM_NBR_STR	:constant STRING	:= IMAGE( DIM_NBR );
         begin
 	POP( IDX_TYPE_LIST, IDX_TYPE );
-	PUT_LINE( tab & "VAR " & "SIZ_" & DIM_NBR_STR & ", d" );
-	PUT_LINE( tab & "VAR " & "FST_" & DIM_NBR_STR & ", d" );
-	PUT_LINE( tab & "VAR " & "LST_" & DIM_NBR_STR & ", d" );
+	PUT_LINE( "VAR " & "SIZ_" & DIM_NBR_STR & ", d" );
+	PUT_LINE( "VAR " & "FST_" & DIM_NBR_STR & ", d" );
+	PUT_LINE( "VAR " & "LST_" & DIM_NBR_STR & ", d" );
 
 	if IS_EMPTY( IDX_TYPE_LIST ) then
 	  declare
@@ -569,7 +569,7 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 	end;
 	PUT_LINE( "end namespace " );
         end if;
-        PUT( tab & "VAR " & VC_STR & "_disp, q" );
+        PUT( "VAR " & VC_STR & "_disp, q" );
         if CODI.DEBUG then PUT( tab50 & "; variable ptr str" ); end if;
         NEW_LINE;
 
@@ -582,17 +582,6 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 	    if INIT_EXP.TY = DN_STRING_LITERAL then
 
 	      EXPRESSIONS.CODE_STRING_LITERAL( INIT_EXP, VC_STR );
-
---	      declare
---	        CST_CHN	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, INIT_EXP ) );
---	      begin
---	        if CODI.DEBUG then PUT_LINE( tab50 & "; constante string" ); end if;
---	        PUT_LINE( "  postpone" );
---	        PUT_LINE( "    dd" & tab & "1," & NATURAL'IMAGE( CST_CHN'LENGTH ) );
---	        PUT_LINE( "    " & VC_STR & "_ptr = $" );
---	        PUT_LINE( "    db" & tab & ''' & CST_CHN( CST_CHN'FIRST+1 .. CST_CHN'LAST-1 ) & ''' );
---	        PUT_LINE( "  end postpone" );
---	      end;
 
 	      PUT_LINE( tab & "LCA" & tab & VC_STR & "_ptr" );						-- LOAD CONSTANT ADDRESS
 	      PUT_LINE( tab & "Sa" & tab & LEVEL_NUM'IMAGE( LVL ) & ',' & tab & VC_STR & "_disp" );

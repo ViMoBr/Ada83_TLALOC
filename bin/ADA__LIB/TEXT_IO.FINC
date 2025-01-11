@@ -11,7 +11,7 @@ elab_spec:				;    SPEC ELAB
 	LI	 0
 	Sd  0,	COUNT_lower_disp
 	Sd  0,	COUNT_upper_disp
-	VAR UNBOUNDED_disp, d			; variable entiere
+VAR UNBOUNDED_disp, d			; variable entiere
 	LI	 0
 	Sd  0,	UNBOUNDED_disp
 ; CODEGEN.DECLARATIONS.CODE_GENERIC_DECL : PAS ENCORE FAIT ! INTEGER_IO
@@ -21,15 +21,15 @@ elab_spec:				;    SPEC ELAB
 					;    BODY ELAB
 
 if defined CREATE_L1_
-SUBP CREATE_L1				;---------- SUB
+PRO	CREATE_L1				;---------- PROCREATE
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in out
 	PRM MODE_ofs				; in
 	PRM NAME_adrofs				; in
 	PRM FORM_adrofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
-	VAR I_disp, d				; variable entiere
+ELB 1					;    BODY ELAB
+VAR I_disp, d				; variable entiere
 	LI	 0
 	Sd  1,	I_disp
 					;    end elab
@@ -37,340 +37,340 @@ begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB CREATE
+endPRO					;---------- end PRO CREATE
 end if
 
 if defined OPEN_L2_
-SUBP OPEN_L2				;---------- SUB
+PRO	OPEN_L2				;---------- PROOPEN
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in out
 	PRM MODE_ofs				; in
 	PRM NAME_adrofs				; in
 	PRM FORM_adrofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB OPEN
+endPRO					;---------- end PRO OPEN
 end if
 
 if defined CLOSE_L3_
-SUBP CLOSE_L3				;---------- SUB
+PRO	CLOSE_L3				;---------- PROCLOSE
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in out
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB CLOSE
+endPRO					;---------- end PRO CLOSE
 end if
 
 if defined DELETE_L4_
-SUBP DELETE_L4				;---------- SUB
+PRO	DELETE_L4				;---------- PRODELETE
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in out
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB DELETE
+endPRO					;---------- end PRO DELETE
 end if
 
 if defined RESET_L5_
-SUBP RESET_L5				;---------- SUB
+PRO	RESET_L5				;---------- PRORESET
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in out
 	PRM MODE_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB RESET
+endPRO					;---------- end PRO RESET
 end if
 
 if defined RESET_L6_
-SUBP RESET_L6				;---------- SUB
+PRO	RESET_L6				;---------- PRORESET
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in out
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB RESET
+endPRO					;---------- end PRO RESET
 end if
 
 if defined MODE_L7_
-SUBP MODE_L7				;---------- SUB
+PRO	MODE_L7				;---------- PROMODE
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB MODE
+endPRO					;---------- end PRO MODE
 end if
 
 if defined NAME_L8_
-SUBP NAME_L8				;---------- SUB
+PRO	NAME_L8				;---------- PRONAME
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB NAME
+endPRO					;---------- end PRO NAME
 end if
 
 if defined FORM_L9_
-SUBP FORM_L9				;---------- SUB
+PRO	FORM_L9				;---------- PROFORM
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB FORM
+endPRO					;---------- end PRO FORM
 end if
 
 if defined IS_OPEN_L10_
-SUBP IS_OPEN_L10				;---------- SUB
+PRO	IS_OPEN_L10				;---------- PROIS_OPEN
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB IS_OPEN
+endPRO					;---------- end PRO IS_OPEN
 end if
 
 if defined SET_INPUT_L11_
-SUBP SET_INPUT_L11				;---------- SUB
+PRO	SET_INPUT_L11				;---------- PROSET_INPUT
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB SET_INPUT
+endPRO					;---------- end PRO SET_INPUT
 end if
 
 if defined SET_OUTPUT_L12_
-SUBP SET_OUTPUT_L12				;---------- SUB
+PRO	SET_OUTPUT_L12				;---------- PROSET_OUTPUT
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB SET_OUTPUT
+endPRO					;---------- end PRO SET_OUTPUT
 end if
 
 if defined STANDARD_INPUT_L13_
-SUBP STANDARD_INPUT_L13			;---------- SUB
-ELAB 1					;    BODY ELAB
+PRO	STANDARD_INPUT_L13			;---------- PROSTANDARD_INPUT
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD
 excep:
-endSUBP					;---------- end SUB STANDARD_INPUT
+endPRO					;---------- end PRO STANDARD_INPUT
 end if
 
 if defined STANDARD_OUTPUT_L14_
-SUBP STANDARD_OUTPUT_L14			;---------- SUB
-ELAB 1					;    BODY ELAB
+PRO	STANDARD_OUTPUT_L14			;---------- PROSTANDARD_OUTPUT
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD
 excep:
-endSUBP					;---------- end SUB STANDARD_OUTPUT
+endPRO					;---------- end PRO STANDARD_OUTPUT
 end if
 
 if defined CURRENT_INPUT_L15_
-SUBP CURRENT_INPUT_L15			;---------- SUB
-ELAB 1					;    BODY ELAB
+PRO	CURRENT_INPUT_L15			;---------- PROCURRENT_INPUT
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD
 excep:
-endSUBP					;---------- end SUB CURRENT_INPUT
+endPRO					;---------- end PRO CURRENT_INPUT
 end if
 
 if defined CURRENT_OUTPUT_L16_
-SUBP CURRENT_OUTPUT_L16			;---------- SUB
-ELAB 1					;    BODY ELAB
+PRO	CURRENT_OUTPUT_L16			;---------- PROCURRENT_OUTPUT
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD
 excep:
-endSUBP					;---------- end SUB CURRENT_OUTPUT
+endPRO					;---------- end PRO CURRENT_OUTPUT
 end if
 
 if defined SET_LINE_LENGTH_L17_
-SUBP SET_LINE_LENGTH_L17			;---------- SUB
+PRO	SET_LINE_LENGTH_L17			;---------- PROSET_LINE_LENGTH
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM TO_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB SET_LINE_LENGTH
+endPRO					;---------- end PRO SET_LINE_LENGTH
 end if
 
 if defined SET_LINE_LENGTH_L18_
-SUBP SET_LINE_LENGTH_L18			;---------- SUB
+PRO	SET_LINE_LENGTH_L18			;---------- PROSET_LINE_LENGTH
 PRMS					;    debut parametrage
 	PRM TO_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB SET_LINE_LENGTH
+endPRO					;---------- end PRO SET_LINE_LENGTH
 end if
 
 if defined SET_PAGE_LENGTH_L19_
-SUBP SET_PAGE_LENGTH_L19			;---------- SUB
+PRO	SET_PAGE_LENGTH_L19			;---------- PROSET_PAGE_LENGTH
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM TO_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB SET_PAGE_LENGTH
+endPRO					;---------- end PRO SET_PAGE_LENGTH
 end if
 
 if defined SET_PAGE_LENGTH_L20_
-SUBP SET_PAGE_LENGTH_L20			;---------- SUB
+PRO	SET_PAGE_LENGTH_L20			;---------- PROSET_PAGE_LENGTH
 PRMS					;    debut parametrage
 	PRM TO_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB SET_PAGE_LENGTH
+endPRO					;---------- end PRO SET_PAGE_LENGTH
 end if
 
 if defined LINE_LENGTH_L21_
-SUBP LINE_LENGTH_L21			;---------- SUB
+PRO	LINE_LENGTH_L21				;---------- PROLINE_LENGTH
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB LINE_LENGTH
+endPRO					;---------- end PRO LINE_LENGTH
 end if
 
 if defined LINE_LENGTH_L22_
-SUBP LINE_LENGTH_L22			;---------- SUB
-ELAB 1					;    BODY ELAB
+PRO	LINE_LENGTH_L22				;---------- PROLINE_LENGTH
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD
 excep:
-endSUBP					;---------- end SUB LINE_LENGTH
+endPRO					;---------- end PRO LINE_LENGTH
 end if
 
 if defined PAGE_LENGTH_L23_
-SUBP PAGE_LENGTH_L23			;---------- SUB
+PRO	PAGE_LENGTH_L23				;---------- PROPAGE_LENGTH
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB PAGE_LENGTH
+endPRO					;---------- end PRO PAGE_LENGTH
 end if
 
 if defined PAGE_LENGTH_L24_
-SUBP PAGE_LENGTH_L24			;---------- SUB
-ELAB 1					;    BODY ELAB
+PRO	PAGE_LENGTH_L24				;---------- PROPAGE_LENGTH
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD
 excep:
-endSUBP					;---------- end SUB PAGE_LENGTH
+endPRO					;---------- end PRO PAGE_LENGTH
 end if
 
 if defined NEW_LINE_L25_
-SUBP NEW_LINE_L25				;---------- SUB
+PRO	NEW_LINE_L25				;---------- PRONEW_LINE
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM SPACING_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB NEW_LINE
+endPRO					;---------- end PRO NEW_LINE
 end if
 
 if defined NEW_LINE_L26_
-SUBP NEW_LINE_L26				;---------- SUB
+PRO	NEW_LINE_L26				;---------- PRONEW_LINE
 PRMS					;    debut parametrage
 	PRM SPACING_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 VAR	NL62_disp, d				; compteur boucle LOOP__1
@@ -398,317 +398,317 @@ L61:					; post loop LOOP__1
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB NEW_LINE
+endPRO					;---------- end PRO NEW_LINE
 end if
 
 if defined SKIP_LINE_L27_
-SUBP SKIP_LINE_L27				;---------- SUB
+PRO	SKIP_LINE_L27				;---------- PROSKIP_LINE
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM SPACING_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB SKIP_LINE
+endPRO					;---------- end PRO SKIP_LINE
 end if
 
 if defined SKIP_LINE_L28_
-SUBP SKIP_LINE_L28				;---------- SUB
+PRO	SKIP_LINE_L28				;---------- PROSKIP_LINE
 PRMS					;    debut parametrage
 	PRM SPACING_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB SKIP_LINE
+endPRO					;---------- end PRO SKIP_LINE
 end if
 
 if defined END_OF_LINE_L29_
-SUBP END_OF_LINE_L29			;---------- SUB
+PRO	END_OF_LINE_L29				;---------- PROEND_OF_LINE
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB END_OF_LINE
+endPRO					;---------- end PRO END_OF_LINE
 end if
 
 if defined END_OF_LINE_L30_
-SUBP END_OF_LINE_L30			;---------- SUB
-ELAB 1					;    BODY ELAB
+PRO	END_OF_LINE_L30				;---------- PROEND_OF_LINE
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD
 excep:
-endSUBP					;---------- end SUB END_OF_LINE
+endPRO					;---------- end PRO END_OF_LINE
 end if
 
 if defined NEW_PAGE_L31_
-SUBP NEW_PAGE_L31				;---------- SUB
+PRO	NEW_PAGE_L31				;---------- PRONEW_PAGE
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB NEW_PAGE
+endPRO					;---------- end PRO NEW_PAGE
 end if
 
 if defined NEW_PAGE_L32_
-SUBP NEW_PAGE_L32				;---------- SUB
-ELAB 1					;    BODY ELAB
+PRO	NEW_PAGE_L32				;---------- PRONEW_PAGE
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD
 excep:
-endSUBP					;---------- end SUB NEW_PAGE
+endPRO					;---------- end PRO NEW_PAGE
 end if
 
 if defined SKIP_PAGE_L33_
-SUBP SKIP_PAGE_L33				;---------- SUB
+PRO	SKIP_PAGE_L33				;---------- PROSKIP_PAGE
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB SKIP_PAGE
+endPRO					;---------- end PRO SKIP_PAGE
 end if
 
 if defined SKIP_PAGE_L34_
-SUBP SKIP_PAGE_L34				;---------- SUB
-ELAB 1					;    BODY ELAB
+PRO	SKIP_PAGE_L34				;---------- PROSKIP_PAGE
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD
 excep:
-endSUBP					;---------- end SUB SKIP_PAGE
+endPRO					;---------- end PRO SKIP_PAGE
 end if
 
 if defined END_OF_PAGE_L35_
-SUBP END_OF_PAGE_L35			;---------- SUB
+PRO	END_OF_PAGE_L35				;---------- PROEND_OF_PAGE
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB END_OF_PAGE
+endPRO					;---------- end PRO END_OF_PAGE
 end if
 
 if defined END_OF_PAGE_L36_
-SUBP END_OF_PAGE_L36			;---------- SUB
-ELAB 1					;    BODY ELAB
+PRO	END_OF_PAGE_L36				;---------- PROEND_OF_PAGE
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD
 excep:
-endSUBP					;---------- end SUB END_OF_PAGE
+endPRO					;---------- end PRO END_OF_PAGE
 end if
 
 if defined END_OF_FILE_L37_
-SUBP END_OF_FILE_L37			;---------- SUB
+PRO	END_OF_FILE_L37				;---------- PROEND_OF_FILE
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB END_OF_FILE
+endPRO					;---------- end PRO END_OF_FILE
 end if
 
 if defined END_OF_FILE_L38_
-SUBP END_OF_FILE_L38			;---------- SUB
-ELAB 1					;    BODY ELAB
+PRO	END_OF_FILE_L38				;---------- PROEND_OF_FILE
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD
 excep:
-endSUBP					;---------- end SUB END_OF_FILE
+endPRO					;---------- end PRO END_OF_FILE
 end if
 
 if defined SET_COL_L39_
-SUBP SET_COL_L39				;---------- SUB
+PRO	SET_COL_L39				;---------- PROSET_COL
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM TO_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB SET_COL
+endPRO					;---------- end PRO SET_COL
 end if
 
 if defined SET_COL_L40_
-SUBP SET_COL_L40				;---------- SUB
+PRO	SET_COL_L40				;---------- PROSET_COL
 PRMS					;    debut parametrage
 	PRM TO_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB SET_COL
+endPRO					;---------- end PRO SET_COL
 end if
 
 if defined SET_LINE_L41_
-SUBP SET_LINE_L41				;---------- SUB
+PRO	SET_LINE_L41				;---------- PROSET_LINE
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM TO_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB SET_LINE
+endPRO					;---------- end PRO SET_LINE
 end if
 
 if defined SET_LINE_L42_
-SUBP SET_LINE_L42				;---------- SUB
+PRO	SET_LINE_L42				;---------- PROSET_LINE
 PRMS					;    debut parametrage
 	PRM TO_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB SET_LINE
+endPRO					;---------- end PRO SET_LINE
 end if
 
 if defined COL_L43_
-SUBP COL_L43				;---------- SUB
+PRO	COL_L43				;---------- PROCOL
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB COL
+endPRO					;---------- end PRO COL
 end if
 
 if defined COL_L44_
-SUBP COL_L44				;---------- SUB
-ELAB 1					;    BODY ELAB
+PRO	COL_L44				;---------- PROCOL
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD
 excep:
-endSUBP					;---------- end SUB COL
+endPRO					;---------- end PRO COL
 end if
 
 if defined LINE_L45_
-SUBP LINE_L45				;---------- SUB
+PRO	LINE_L45				;---------- PROLINE
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB LINE
+endPRO					;---------- end PRO LINE
 end if
 
 if defined LINE_L46_
-SUBP LINE_L46				;---------- SUB
-ELAB 1					;    BODY ELAB
+PRO	LINE_L46				;---------- PROLINE
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD
 excep:
-endSUBP					;---------- end SUB LINE
+endPRO					;---------- end PRO LINE
 end if
 
 if defined PAGE_L47_
-SUBP PAGE_L47				;---------- SUB
+PRO	PAGE_L47				;---------- PROPAGE
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB PAGE
+endPRO					;---------- end PRO PAGE
 end if
 
 if defined PAGE_L48_
-SUBP PAGE_L48				;---------- SUB
-ELAB 1					;    BODY ELAB
+PRO	PAGE_L48				;---------- PROPAGE
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD
 excep:
-endSUBP					;---------- end SUB PAGE
+endPRO					;---------- end PRO PAGE
 end if
 
 if defined GET_L49_
-SUBP GET_L49				;---------- SUB
+PRO	GET_L49				;---------- PROGET
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM ITEM_adrofs				; out
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB GET
+endPRO					;---------- end PRO GET
 end if
 
 if defined GET_L50_
-SUBP GET_L50				;---------- SUB
+PRO	GET_L50				;---------- PROGET
 PRMS					;    debut parametrage
 	PRM ITEM_adrofs				; out
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	LA	1,	-16
@@ -716,30 +716,30 @@ begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB GET
+endPRO					;---------- end PRO GET
 end if
 
 if defined PUT_L51_
-SUBP PUT_L51				;---------- SUB
+PRO	PUT_L51				;---------- PROPUT
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM ITEM_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB PUT
+endPRO					;---------- end PRO PUT
 end if
 
 if defined PUT_L52_
-SUBP PUT_L52				;---------- SUB
+PRO	PUT_L52				;---------- PROPUT
 PRMS					;    debut parametrage
 	PRM ITEM_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	LB	1,	-16
@@ -747,59 +747,59 @@ begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB PUT
+endPRO					;---------- end PRO PUT
 end if
 
 if defined GET_L53_
-SUBP GET_L53				;---------- SUB
+PRO	GET_L53				;---------- PROGET
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM ITEM_adrofs				; out
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB GET
+endPRO					;---------- end PRO GET
 end if
 
 if defined GET_L54_
-SUBP GET_L54				;---------- SUB
+PRO	GET_L54				;---------- PROGET
 PRMS					;    debut parametrage
 	PRM ITEM_adrofs				; out
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB GET
+endPRO					;---------- end PRO GET
 end if
 
 if defined PUT_L55_
-SUBP PUT_L55				;---------- SUB
+PRO	PUT_L55				;---------- PROPUT
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM ITEM_adrofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB PUT
+endPRO					;---------- end PRO PUT
 end if
 
 if defined PUT_L56_
-SUBP PUT_L56				;---------- SUB
+PRO	PUT_L56				;---------- PROPUT
 PRMS					;    debut parametrage
 	PRM ITEM_adrofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	LA	1,	-16
@@ -807,61 +807,61 @@ begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB PUT
+endPRO					;---------- end PRO PUT
 end if
 
 if defined GET_LINE_L57_
-SUBP GET_LINE_L57				;---------- SUB
+PRO	GET_LINE_L57				;---------- PROGET_LINE
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM ITEM_adrofs				; out
 	PRM LAST_adrofs				; out
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB GET_LINE
+endPRO					;---------- end PRO GET_LINE
 end if
 
 if defined GET_LINE_L58_
-SUBP GET_LINE_L58				;---------- SUB
+PRO	GET_LINE_L58				;---------- PROGET_LINE
 PRMS					;    debut parametrage
 	PRM ITEM_adrofs				; out
 	PRM LAST_adrofs				; out
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB GET_LINE
+endPRO					;---------- end PRO GET_LINE
 end if
 
 if defined PUT_LINE_L59_
-SUBP PUT_LINE_L59				;---------- SUB
+PRO	PUT_LINE_L59				;---------- PROPUT_LINE
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM ITEM_adrofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB PUT_LINE
+endPRO					;---------- end PRO PUT_LINE
 end if
 
 if defined PUT_LINE_L60_
-SUBP PUT_LINE_L60				;---------- SUB
+PRO	PUT_LINE_L60				;---------- PROPUT_LINE
 PRMS					;    debut parametrage
 	PRM ITEM_adrofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	LA	1,	-16
@@ -869,79 +869,79 @@ begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB PUT_LINE
+endPRO					;---------- end PRO PUT_LINE
 end if
 namespace INTEGER_IO			;---------- GENERIC PACKAGE
 elab_spec:				;    SPEC ELAB
-	VAR DEFAULT_WIDTH_disp, d			; variable entiere
+VAR DEFAULT_WIDTH_disp, d			; variable entiere
 	Sd  0,	DEFAULT_WIDTH_disp
-	VAR DEFAULT_BASE_disp, d			; variable entiere
+VAR DEFAULT_BASE_disp, d			; variable entiere
 	LI	 10
 	Sd  0,	DEFAULT_BASE_disp
 					;    BODY ELAB
 
 if defined GET_L63_
-SUBP GET_L63				;---------- SUB
+PRO	GET_L63				;---------- PROGET
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM ITEM_adrofs				; out
 	PRM WIDTH_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB GET
+endPRO					;---------- end PRO GET
 end if
 
 if defined GET_L64_
-SUBP GET_L64				;---------- SUB
+PRO	GET_L64				;---------- PROGET
 PRMS					;    debut parametrage
 	PRM ITEM_adrofs				; out
 	PRM WIDTH_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB GET
+endPRO					;---------- end PRO GET
 end if
 
 if defined PUT_L65_
-SUBP PUT_L65				;---------- SUB
+PRO	PUT_L65				;---------- PROPUT
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM ITEM_ofs				; in
 	PRM WIDTH_ofs				; in
 	PRM BASE_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB PUT
+endPRO					;---------- end PRO PUT
 end if
 
 if defined PUT_L66_
-SUBP PUT_L66				;---------- SUB
+PRO	PUT_L66				;---------- PROPUT
 PRMS					;    debut parametrage
 	PRM ITEM_ofs				; in
 	PRM WIDTH_ofs				; in
 	PRM BASE_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
-	VAR QUOTIENT_disp, b			; variable entiere
-	VAR RESTE_disp, b				; variable entiere
+ELB 1					;    BODY ELAB
+VAR QUOTIENT_disp, b			; variable entiere
+VAR RESTE_disp, b				; variable entiere
 namespace STR
-	VAR SIZ_1, d
-	VAR FST_1, d
-	VAR LST_1, d
+VAR SIZ_1, d
+VAR FST_1, d
+VAR LST_1, d
 	LI	1
 	Sd 1,	SIZ_1
 	LI	1
@@ -950,98 +950,98 @@ namespace STR
 	LI	 68
 	Sd 1,	LST_1
 end namespace 
-	VAR STR_disp, q				; variable ptr str
-	VAR INDEX_disp, d				; variable entiere
+VAR STR_disp, q				; variable ptr str
+VAR INDEX_disp, d				; variable entiere
 	Sd  1,	INDEX_disp
-	VAR MIN_WIDTH_disp, d			; variable entiere
+VAR MIN_WIDTH_disp, d			; variable entiere
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB PUT
+endPRO					;---------- end PRO PUT
 end if
 
 if defined GET_L67_
-SUBP GET_L67				;---------- SUB
+PRO	GET_L67				;---------- PROGET
 PRMS					;    debut parametrage
 	PRM FROM_adrofs				; in
 	PRM ITEM_adrofs				; out
 	PRM LAST_adrofs				; out
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB GET
+endPRO					;---------- end PRO GET
 end if
 
 if defined PUT_L68_
-SUBP PUT_L68				;---------- SUB
+PRO	PUT_L68				;---------- PROPUT
 PRMS					;    debut parametrage
 	PRM TO_adrofs				; out
 	PRM ITEM_ofs				; in
 	PRM BASE_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB PUT
+endPRO					;---------- end PRO PUT
 end if
 begin:					;---------- package BDY INSTRUCTIONS
 end namespace 				;---------- end generic package BDY INTEGER_IO
 namespace FLOAT_IO				;---------- GENERIC PACKAGE
 elab_spec:				;    SPEC ELAB
-	VAR DEFAULT_FORE_disp, d			; variable entiere
+VAR DEFAULT_FORE_disp, d			; variable entiere
 	LI	 2
 	Sd  0,	DEFAULT_FORE_disp
-	VAR DEFAULT_AFT_disp, d			; variable entiere
+VAR DEFAULT_AFT_disp, d			; variable entiere
 	LI	 1
 	SUB
 	Sd  0,	DEFAULT_AFT_disp
-	VAR DEFAULT_EXP_disp, d			; variable entiere
+VAR DEFAULT_EXP_disp, d			; variable entiere
 	LI	 3
 	Sd  0,	DEFAULT_EXP_disp
 					;    BODY ELAB
 
 if defined GET_L69_
-SUBP GET_L69				;---------- SUB
+PRO	GET_L69				;---------- PROGET
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM ITEM_adrofs				; out
 	PRM WIDTH_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB GET
+endPRO					;---------- end PRO GET
 end if
 
 if defined GET_L70_
-SUBP GET_L70				;---------- SUB
+PRO	GET_L70				;---------- PROGET
 PRMS					;    debut parametrage
 	PRM ITEM_adrofs				; out
 	PRM WIDTH_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB GET
+endPRO					;---------- end PRO GET
 end if
 
 if defined PUT_L71_
-SUBP PUT_L71				;---------- SUB
+PRO	PUT_L71				;---------- PROPUT
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM ITEM_ofs				; in
@@ -1049,110 +1049,110 @@ PRMS					;    debut parametrage
 	PRM AFT_ofs				; in
 	PRM EXP_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB PUT
+endPRO					;---------- end PRO PUT
 end if
 
 if defined PUT_L72_
-SUBP PUT_L72				;---------- SUB
+PRO	PUT_L72				;---------- PROPUT
 PRMS					;    debut parametrage
 	PRM ITEM_ofs				; in
 	PRM FORE_ofs				; in
 	PRM AFT_ofs				; in
 	PRM EXP_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB PUT
+endPRO					;---------- end PRO PUT
 end if
 
 if defined GET_L73_
-SUBP GET_L73				;---------- SUB
+PRO	GET_L73				;---------- PROGET
 PRMS					;    debut parametrage
 	PRM FROM_adrofs				; in
 	PRM ITEM_adrofs				; out
 	PRM LAST_adrofs				; out
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB GET
+endPRO					;---------- end PRO GET
 end if
 
 if defined PUT_L74_
-SUBP PUT_L74				;---------- SUB
+PRO	PUT_L74				;---------- PROPUT
 PRMS					;    debut parametrage
 	PRM TO_adrofs				; out
 	PRM ITEM_ofs				; in
 	PRM AFT_ofs				; in
 	PRM EXP_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB PUT
+endPRO					;---------- end PRO PUT
 end if
 begin:					;---------- package BDY INSTRUCTIONS
 end namespace 				;---------- end generic package BDY FLOAT_IO
 namespace FIXED_IO				;---------- GENERIC PACKAGE
 elab_spec:				;    SPEC ELAB
-	VAR DEFAULT_FORE_disp, d			; variable entiere
+VAR DEFAULT_FORE_disp, d			; variable entiere
 	Sd  0,	DEFAULT_FORE_disp
-	VAR DEFAULT_AFT_disp, d			; variable entiere
+VAR DEFAULT_AFT_disp, d			; variable entiere
 	Sd  0,	DEFAULT_AFT_disp
-	VAR DEFAULT_EXP_disp, d			; variable entiere
+VAR DEFAULT_EXP_disp, d			; variable entiere
 	LI	 0
 	Sd  0,	DEFAULT_EXP_disp
 					;    BODY ELAB
 
 if defined GET_L75_
-SUBP GET_L75				;---------- SUB
+PRO	GET_L75				;---------- PROGET
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM ITEM_adrofs				; out
 	PRM WIDTH_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB GET
+endPRO					;---------- end PRO GET
 end if
 
 if defined GET_L76_
-SUBP GET_L76				;---------- SUB
+PRO	GET_L76				;---------- PROGET
 PRMS					;    debut parametrage
 	PRM ITEM_adrofs				; out
 	PRM WIDTH_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB GET
+endPRO					;---------- end PRO GET
 end if
 
 if defined PUT_L77_
-SUBP PUT_L77				;---------- SUB
+PRO	PUT_L77				;---------- PROPUT
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM ITEM_ofs				; in
@@ -1160,168 +1160,168 @@ PRMS					;    debut parametrage
 	PRM AFT_ofs				; in
 	PRM EXP_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB PUT
+endPRO					;---------- end PRO PUT
 end if
 
 if defined PUT_L78_
-SUBP PUT_L78				;---------- SUB
+PRO	PUT_L78				;---------- PROPUT
 PRMS					;    debut parametrage
 	PRM ITEM_ofs				; in
 	PRM FORE_ofs				; in
 	PRM AFT_ofs				; in
 	PRM EXP_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB PUT
+endPRO					;---------- end PRO PUT
 end if
 
 if defined GET_L79_
-SUBP GET_L79				;---------- SUB
+PRO	GET_L79				;---------- PROGET
 PRMS					;    debut parametrage
 	PRM FROM_adrofs				; in
 	PRM ITEM_adrofs				; out
 	PRM LAST_adrofs				; out
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB GET
+endPRO					;---------- end PRO GET
 end if
 
 if defined PUT_L80_
-SUBP PUT_L80				;---------- SUB
+PRO	PUT_L80				;---------- PROPUT
 PRMS					;    debut parametrage
 	PRM TO_adrofs				; out
 	PRM ITEM_ofs				; in
 	PRM AFT_ofs				; in
 	PRM EXP_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB PUT
+endPRO					;---------- end PRO PUT
 end if
 begin:					;---------- package BDY INSTRUCTIONS
 end namespace 				;---------- end generic package BDY FIXED_IO
 namespace ENUMERATION_IO			;---------- GENERIC PACKAGE
 elab_spec:				;    SPEC ELAB
-	VAR DEFAULT_WIDTH_disp, d			; variable entiere
+VAR DEFAULT_WIDTH_disp, d			; variable entiere
 	LI	 0
 	Sd  0,	DEFAULT_WIDTH_disp
-	VAR DEFAULT_SETTING_disp, b			; variable entiere
+VAR DEFAULT_SETTING_disp, b			; variable entiere
 	LI	 1
 	Sb  0,	DEFAULT_SETTING_disp
 					;    BODY ELAB
 
 if defined GET_L81_
-SUBP GET_L81				;---------- SUB
+PRO	GET_L81				;---------- PROGET
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM ITEM_adrofs				; out
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB GET
+endPRO					;---------- end PRO GET
 end if
 
 if defined GET_L82_
-SUBP GET_L82				;---------- SUB
+PRO	GET_L82				;---------- PROGET
 PRMS					;    debut parametrage
 	PRM ITEM_adrofs				; out
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB GET
+endPRO					;---------- end PRO GET
 end if
 
 if defined PUT_L83_
-SUBP PUT_L83				;---------- SUB
+PRO	PUT_L83				;---------- PROPUT
 PRMS					;    debut parametrage
 	PRM FILE_adrofs				; in
 	PRM ITEM_ofs				; in
 	PRM WIDTH_ofs				; in
 	PRM SET_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB PUT
+endPRO					;---------- end PRO PUT
 end if
 
 if defined PUT_L84_
-SUBP PUT_L84				;---------- SUB
+PRO	PUT_L84				;---------- PROPUT
 PRMS					;    debut parametrage
 	PRM ITEM_ofs				; in
 	PRM WIDTH_ofs				; in
 	PRM SET_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB PUT
+endPRO					;---------- end PRO PUT
 end if
 
 if defined GET_L85_
-SUBP GET_L85				;---------- SUB
+PRO	GET_L85				;---------- PROGET
 PRMS					;    debut parametrage
 	PRM FROM_adrofs				; in
 	PRM ITEM_adrofs				; out
 	PRM LAST_adrofs				; out
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB GET
+endPRO					;---------- end PRO GET
 end if
 
 if defined PUT_L86_
-SUBP PUT_L86				;---------- SUB
+PRO	PUT_L86				;---------- PROPUT
 PRMS					;    debut parametrage
 	PRM TO_adrofs				; out
 	PRM ITEM_ofs				; in
 	PRM SET_ofs				; in
 endPRMS					;    fin parametrage
-ELAB 1					;    BODY ELAB
+ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
 	RTD	prm_siz
 excep:
-endSUBP					;---------- end SUB PUT
+endPRO					;---------- end PRO PUT
 end if
 begin:					;---------- package BDY INSTRUCTIONS
 end namespace 				;---------- end generic package BDY ENUMERATION_IO

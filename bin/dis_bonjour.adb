@@ -9,13 +9,10 @@ begin
   PUT( " !" );
   PUT( " Entrez un caractere : " );
   GET( C );
-  NEW_LINE;
+  PUT( ASCII.CR ); NEW_LINE;
   PUT( MSG );
 
-  NEW_LINE( 3 );
---  PUT( 'Z' );
+  PUT( ASCII.CR ); NEW_LINE( 2 );
   PUT( C );
---  PUT( NOM );
---  PUT( NOM );
---  NEW_LINE;
+  PUT( ASCII.CR ); NEW_LINE;
 end;
