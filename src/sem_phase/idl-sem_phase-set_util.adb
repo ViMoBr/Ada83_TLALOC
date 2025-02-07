@@ -541,7 +541,7 @@ package body SET_UTIL is
     if EXP.TY = DN_SELECTED then
       return FETCH_DEFSET (D (AS_DESIGNATOR, EXP));
     else
-      return DEFSET_TYPE (CAST_SEQ_TYPE (D (SM_DEFN, EXP)));
+      return DEFSET_TYPE( CAST_SEQ_TYPE( D( SM_DEFN, EXP ) ) );
     end if;
   end FETCH_DEFSET;
 

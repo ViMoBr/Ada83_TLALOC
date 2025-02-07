@@ -1,196 +1,256 @@
+--	Vincent MORIN	Universite de Bretagne Occidentale	janvier 2025	Licence CC BY-SA 4.0
+--	1	2	3	4	5	6	7	8	9	10	11	12
+
 with LEX, GRMR_OPS, GRMR_TBL;
 use  LEX, GRMR_OPS, GRMR_TBL;
 separate( IDL )
 
 				---------
 		procedure		PAR_PHASE		( PATH_TEXTE, NOM_TEXTE, LIB_PATH :STRING )
-is				---------
+				---------
+is
 
-  USER_ROOT		: TREE;								--| POINTEUR VERS LA RACINE SECONDAIRE DE L ARBRE SYNTAXIQUE
-  IFILE			: FILE_TYPE;							--| FICHIER TEXTE SOURCE ADA
-  LINE_COUNT		: NATURAL		:= 0;							--| NOMBRE DE LIGNES
+  USER_ROOT		: TREE;									--| POINTEUR VERS LA RACINE SECONDAIRE DE L ARBRE SYNTAXIQUE
+  IFILE			: FILE_TYPE;								--| FICHIER TEXTE SOURCE ADA
+  LINE_COUNT		: NATURAL		:= 0;							--| NOMBRE DE LIGNES VUES
       
-  SOURCE_LIST		: SEQ_TYPE	:= (TREE_NIL, TREE_NIL);				--| TETE DE LA LISTE DES ENREGISTREMENTS LIGNES DE SOURCE
-  SOURCE_LINE		: TREE;								--| POINTEUR A LA LIGNE DE SOURCE COURANTE
-  SOURCEPOS		: TREE;								--| POINTEUR VERS UN NOEUD POSITION SOURCE
-  TOKENSYM		: LEX_TYPE;							-- BYTE WITH TER/NONTER REP
+  SOURCE_LIST		: SEQ_TYPE	:= (TREE_NIL, TREE_NIL);					--| TETE DE LA LISTE DES ENREGISTREMENTS LIGNES DE SOURCE
+  SOURCE_LINE		: TREE;									--| POINTEUR A LA LIGNE DE SOURCE COURANTE
+  SOURCEPOS		: TREE;									--| POINTEUR VERS UN NOEUD POSITION SOURCE
+  TOKENSYM		: LEX_TYPE;								--| BYTE WITH TER/NONTER REP
    
-  DEBUG_PARSE		: BOOLEAN		:= FALSE;						-- PRINT PARSE TREE WHILE PARSING
-  DEBUG_SEM		: BOOLEAN		:= FALSE;						-- PRINT SEMANTICS WHILE PARSING
-   
+  DEBUG_PARSE		: BOOLEAN		:= TRUE;							--| PRINT PARSE TREE WHILE PARSING
+  DEBUG_SEM		: BOOLEAN		:= TRUE;							--| PRINT SEMANTICS WHILE PARSING
+
+
 		--| PILE POUR ACTIONS SEMANTIQUES CONSTRUCTIVES DE L ANALYSE SYNTAXIQUE
 
-  type SEMSTAK_ELMT_KIND	is (NODE_ELMT, TOKEN_ELMT, LIST_ELMT);
-  SSITOP			: INTEGER;						--| INDICE HAUT DE PILE
-  type SEMSTAK_UNIT	(KIND: SEMSTAK_ELMT_KIND := NODE_ELMT)	is record
- 			  SPOS	: TREE;						--| POSITION SOURCE DE L ELEMENT
+
+  type SEMSTAK_ELMT_KIND	is ( NODE_ELMT, TOKEN_ELMT, LIST_ELMT );
+
+  type SEMSTAK_UNIT( KIND :SEMSTAK_ELMT_KIND := NODE_ELMT )
+			is record
+ 			  SPOS		: TREE;							--| POSITION SOURCE DE L ELEMENT
 			  case KIND is
-			  when NODE_ELMT | TOKEN_ELMT =>
- 			    ELMT	: TREE;						--| ELEMENT DE PILE
+			  when NODE_ELMT
+			     | TOKEN_ELMT =>
+			    ELMT		: TREE;							--| ELEMENT DE PILE
 			  when LIST_ELMT =>
-			    SEQ	: SEQ_TYPE;
+			    SEQ		: SEQ_TYPE;
 			  end case;
 			end record;
-  SEMSTAK		: array( 1 .. 100 ) of SEMSTAK_UNIT;					--| PILE SYNTAXIQUE
+
+  SEMSTAK			: array( 1 .. 100 ) of SEMSTAK_UNIT;						--| PILE SYNTAXIQUE
+  SSITOP			: INTEGER;								--| INDICE HAUT DE PILE
+
 
 		--| VARIABLES TEMPORAIRES DE TRAVAIL
-  AUXA		: SEMSTAK_UNIT;
-  TT		: SEMSTAK_UNIT;
-  NODE_CREATED	: BOOLEAN;							--| NOEUD CREE PAR REDUCTION
 
-  procedure SET_DFLT ( NODE :TREE ) is separate;						--| POUR INITIALISATIONS
-   
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE READ_PARSE_TABLES
-  --|-----------------------------------------------------------------------------------------------
-  procedure READ_PARSE_TABLES is
+  AUXA			: SEMSTAK_UNIT;
+  TT			: SEMSTAK_UNIT;
+  NODE_CREATED		: BOOLEAN;								--| NOEUD CREE PAR REDUCTION
+
+				--------
+  procedure			SET_DFLT		( NODE :TREE )	is separate;			--| POUR INITIALISATIONS
+				--------
+
+
+				-----------------
+  procedure			READ_PARSE_TABLES
+				-----------------
+  is
   begin
     declare
-      package GTIO renames GRMR_TBL.GRMR_TBL_IO;
-      BIN_FILE	: GTIO.FILE_TYPE;
+      package GTIO		renames GRMR_TBL.GRMR_TBL_IO;
+      BIN_FILE		: GTIO.FILE_TYPE;
       use GTIO;
     begin
       begin
-        OPEN ( BIN_FILE, IN_FILE, "parse.bin" );						--| OUVRIR LA FICHIER DE LA TABLE DE GRAMMAIRE
+        OPEN( BIN_FILE, IN_FILE, "parse.bin" );								--| OUVRIR LA FICHIER DE LA TABLE DE GRAMMAIRE
       exception
         when GTIO.NAME_ERROR =>	PUT_LINE( "parse.bin FILE MISSING" );
 				raise PROGRAM_ERROR;
       end;
-      READ ( BIN_FILE, GRMR_TBL.GRMR );							--| AMENER LA TABLE
-      CLOSE( BIN_FILE );								--| FERMER LE FICHIER TABLE
+      READ ( BIN_FILE, GRMR_TBL.GRMR );									--| AMENER LA TABLE
+      CLOSE( BIN_FILE );										--| FERMER LE FICHIER TABLE
     end;
-  end;
-  --|-----------------------------------------------------------------------------------------------
-  --|		PROCEDURE GET_TOKEN
-  --|-----------------------------------------------------------------------------------------------
-  procedure GET_TOKEN is								--| SEULE PROCEDURE APPELANT LEX_SCAN
 
-    --|-----------------------------------------------------------------------------------------------
-    --|		PROCEDURE GET_SOURCE_LINE
-    --|-----------------------------------------------------------------------------------------------
-    procedure GET_SOURCE_LINE is
+  end	READ_PARSE_TABLES;
+	-----------------
+
+
+				---------
+  procedure			GET_TOKEN								--| SEULE PROCEDURE APPELANT LEX_SCAN
+				---------
+  is
+				---------------
+    procedure			GET_SOURCE_LINE
+				---------------
+    is
     begin
-      LINE_COUNT := LINE_COUNT + 1;							--| ON VA PRENDRE UNE LIGNE DE PLUS
+      LINE_COUNT := LINE_COUNT + 1;									--| ON VA PRENDRE UNE LIGNE DE PLUS
       GET_LINE( IFILE, SLINE.BDY, SLINE.LEN );
       LAST := SLINE.LEN;
-      LEX.COL := 0;									--| POUR LE LEXEUR RETOUR COLONNE 0
-    end GET_SOURCE_LINE;
+      LEX.COL := 0;											--| POUR LE LEXEUR RETOUR COLONNE 0
+
+    end	GET_SOURCE_LINE;
+	---------------
 
   begin
-    if LTYPE /= LT_END_MARK then							--| ON EST PAS EN FIN DE TAMPON LIGNE
-      LEX_SCAN;									--| RETIRE UNE ULEX
+    if  LTYPE /= LT_END_MARK  then									--| ON EST PAS EN FIN DE TAMPON LIGNE
+      LEX_SCAN;											--| RETIRE UNE ULEX
     end if;
+					--------------------
+					CHERCHE_LIGNE_PLEINE:
+    while  LTYPE = LT_END_MARK  loop									--| TANT QU ON A UNE LIGNE VIDE
 
-CHERCHE_LIGNE_PLEINE:         
-    while LTYPE = LT_END_MARK loop							--| TANT QU ON A UNE LIGNE VIDE
-
-      if END_OF_FILE( IFILE ) then							--| SI ON EST EN FIN DE FICHIER SOURCE
-        SLINE.BDY( 1 .. 5 ) := "*END*";							--| METTRE *END* COMME CONTENU DE TAMPON
-        F_COL := 1;									--| AVEC DEBUT ET FIN DE COLONNE AD HOC
+      if  END_OF_FILE( IFILE )  then									--| SI ON EST EN FIN DE FICHIER SOURCE
+        SLINE.BDY( 1 .. 5 ) := "*END*";									--| METTRE *END* COMME CONTENU DE TAMPON
+        F_COL := 1;											--| AVEC DEBUT ET FIN DE COLONNE AD HOC
         E_COL := 5;
-        exit;									--| SORTIE DE LA BOUCLE
+        exit;											--| SORTIE DE LA BOUCLE
       end if;
 
       GET_SOURCE_LINE;
       
-      LEX_SCAN;									--| IDENTIFIER LE LEXEME OU UNE FIN DE LIGNE
+      LEX_SCAN;											--| IDENTIFIER LE LEXEME OU UNE FIN DE LIGNE
             
-      if LTYPE /= LT_END_MARK then
-        SOURCE_LINE := MAKE( DN_SOURCELINE );						--| FABRIQUER UN NOEUD LIGNE SOURCE
-        DI  ( XD_NUMBER, SOURCE_LINE, LINE_COUNT );					--| METTRE LE NUMERO DE LIGNE DANS L ATTRIBUT XD_NUMBER DE CE NOEUD
-        LIST( SOURCE_LINE, (TREE_NIL,TREE_NIL) );						--| POST FIXER LE NOEUD PAR UNE SEQUENCE VIDE
-        SOURCE_LIST := APPEND( SOURCE_LIST, SOURCE_LINE );					--| AJOUTER LE NOEUD LIGNE SOURCE A LA LISTE DES LIGNES SOURCES
+      if  LTYPE /= LT_END_MARK  then
+        SOURCE_LINE := MAKE( DN_SOURCELINE );								--| FABRIQUER UN NOEUD LIGNE SOURCE
+        DI  ( XD_NUMBER, SOURCE_LINE, LINE_COUNT );							--| METTRE LE NUMERO DE LIGNE DANS L ATTRIBUT XD_NUMBER DE CE NOEUD
+        LIST( SOURCE_LINE, (TREE_NIL,TREE_NIL) );								--| POST FIXER LE NOEUD PAR UNE SEQUENCE VIDE
+        SOURCE_LIST := APPEND( SOURCE_LIST, SOURCE_LINE );							--| AJOUTER LE NOEUD LIGNE SOURCE A LA LISTE DES LIGNES SOURCES
 
-        if LAST = MAX_STRING and then not END_OF_LINE( IFILE ) then				--| ON EST SORTI SUR BUTEE EN FIN DE TAMPON
+        if  LAST = MAX_STRING  and then  not END_OF_LINE( IFILE )  then					--| ON EST SORTI SUR BUTEE EN FIN DE TAMPON
           ERROR( MAKE_SOURCE_POSITION( SOURCE_LINE, SRCCOL_IDX( MAX_STRING ) ),
 		"LIGNE TROP LONGUE" );
         end if;
       end if;
 
-    end loop CHERCHE_LIGNE_PLEINE;
-      
-    if LTYPE /= LT_END_MARK then							--| ON EST SORTI AVEC UNE UNITE LEXICALE NON FIN
-      SOURCEPOS := MAKE_SOURCE_POSITION( SOURCE_LINE, SRCCOL_IDX( F_COL ) );			--| FABRIQUER UN NOEUD POSITION SOURCE EN COLONNE DEBUT ET AVEC REFERENCE AU NOEUD LIGNE SOURCE
+    end loop	CHERCHE_LIGNE_PLEINE;
+		--------------------
+
+    if  LTYPE /= LT_END_MARK  then									--| ON EST SORTI AVEC UNE UNITE LEXICALE NON FIN
+      SOURCEPOS := MAKE_SOURCE_POSITION( SOURCE_LINE, SRCCOL_IDX( F_COL ) );					--| FABRIQUER UN NOEUD POSITION SOURCE EN COLONNE DEBUT ET AVEC REFERENCE AU NOEUD LIGNE SOURCE
     end if;
-    TOKENSYM := LTYPE;								--| TYPE DU LEXEME
-  end GET_TOKEN;
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE MAKE_AUXA_NODE
-  procedure MAKE_AUXA_NODE ( ACTION :INTEGER ) is
+    TOKENSYM := LTYPE;										--| TYPE DU LEXEME
+
+  end	GET_TOKEN;
+	---------
+
+
+				--------------
+  procedure			MAKE_AUXA_NODE		( ACTION :INTEGER )
+				--------------
+  is
   begin
 
-    if DEBUG_SEM then
+    if  DEBUG_SEM  then
       PUT( ' ' & NODE_NAME'IMAGE( NODE_NAME'VAL( ACTION mod 1000 ) ) );
     end if;
 
-    AUXA:= (NODE_ELMT, SOURCEPOS, MAKE( NODE_NAME'VAL( ACTION mod 1000 ) ) );			--| FABRIQUER UN POINTEUR NOEUD TYPE CODE SOUS 1000
-    D( LX_SRCPOS, AUXA.ELMT, SOURCEPOS );						--| ET AUSSI DANS L ATTRIBUT LX_SRCPOS DU NOEUD FABRIQUE
-    SET_DFLT( AUXA.ELMT );								--| INITIALISER PAR DEFAUT
-  end;
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE TABLE_ERROR
-  procedure TABLE_ERROR ( MSG :STRING ) is
+    AUXA := ( NODE_ELMT, SOURCEPOS, MAKE( NODE_NAME'VAL( ACTION mod 1000 ) ) );					--| FABRIQUER UN POINTEUR NOEUD TYPE CODE SOUS 1000
+    D( LX_SRCPOS, AUXA.ELMT, SOURCEPOS );								--| ET AUSSI DANS L ATTRIBUT LX_SRCPOS DU NOEUD FABRIQUE
+    SET_DFLT( AUXA.ELMT );										--| INITIALISER PAR DEFAUT
+
+  end	MAKE_AUXA_NODE;
+	--------------
+
+
+				-----------
+  procedure			TABLE_ERROR		( MSG :STRING )
+				-----------
+  is
   begin
     NEW_LINE;
     PUT_LINE( SLINE.BDY( 1 .. SLINE.LEN ) );
     ERROR( SOURCEPOS, MSG );
     raise PROGRAM_ERROR;
-  end;
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE POP_ITEM
-  procedure POP_ITEM ( AA :out SEMSTAK_UNIT ) is						--| RETIRE UN ELEMENT DE PILE SS EN VERIFIANT L EPUISEMENT
+
+  end	TABLE_ERROR;
+	-----------
+
+
+				--------
+  procedure			POP_ITEM			( AA :out SEMSTAK_UNIT )			--| RETIRE UN ELEMENT DE PILE SS EN VERIFIANT L EPUISEMENT
+				--------
+  is
   begin
-    if SSITOP <= 0 then
+    if  SSITOP <= 0  then
       TABLE_ERROR("SEM STACK UNDERFLOW.");
     end if;
     AA := SEMSTAK( SSITOP );
     SSITOP := SSITOP - 1;
-  end;
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE POP_NODE
-  procedure POP_NODE ( AA :out SEMSTAK_UNIT ) is						--| RETIRE UN ELEMENT DE PILE EN VERIFIANT QUE C EST UN NOEUD
-    XX	: SEMSTAK_UNIT;
+
+  end	POP_ITEM;
+	--------
+
+
+				--------
+  procedure			POP_NODE			( AA :out SEMSTAK_UNIT )			--| RETIRE UN ELEMENT DE PILE EN VERIFIANT QUE C EST UN NOEUD
+				--------
+  is
+    XX		: SEMSTAK_UNIT;
   begin
     POP_ITEM( XX );
-    if XX.KIND /= NODE_ELMT then
+    if  XX.KIND /= NODE_ELMT  then
       TABLE_ERROR( "POP_NODE : NOEUD ATTENDU SUR SEMSTAK." );
     end if;
     AA := XX;
-  end;
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE POP_AUXA_SON_ARG_NODE
-  procedure POP_AUXA_SON_ARG_NODE ( SON :INTEGER ) is
-    NN: SEMSTAK_UNIT;
+
+  end	POP_NODE;
+	--------
+
+				---------------------
+  procedure			POP_AUXA_SON_ARG_NODE	( SON :INTEGER )
+				---------------------
+  is
+    NN		: SEMSTAK_UNIT;
   begin
     POP_NODE( NN );
-    DABS( LINE_IDX( SON ), AUXA.ELMT, NN.ELMT );						--| LES ATTRIBUTS as_ DOIVENT ETRE AVANT TOUT AUTRE TYPE D ATTRIBUT
+    DABS( LINE_IDX( SON ), AUXA.ELMT, NN.ELMT );								--| LES ATTRIBUTS as_ DOIVENT ETRE AVANT TOUT AUTRE TYPE D ATTRIBUT
 
-    if DEBUG_SEM then
-      NEW_LINE; PUT( "ARG " & INTEGER'IMAGE(SON+1) & " NN.ELMT = " ); PRINT_NODE( NN.ELMT );
+    if  DEBUG_SEM  then
+      NEW_LINE; PUT( "popped AUXA SON " & INTEGER'IMAGE(SON+1) & " = " ); PRINT_NODE( NN.ELMT );
     end if;
 
     AUXA.SPOS := NN.SPOS;
     D( LX_SRCPOS, AUXA.ELMT, NN.SPOS );
-  end;
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE SET_AUXA_SON1_NEW_NAME_SEQ
-  procedure SET_AUXA_SON1_NEW_NAME_SEQ is
-    ID_S	: TREE	:= MAKE( DN_SOURCE_NAME_S );
+
+  end	POP_AUXA_SON_ARG_NODE;
+	---------------------
+
+
+				--------------------------
+  procedure			SET_AUXA_SON1_NEW_NAME_SEQ
+				--------------------------
+  is
+    ID_S		: TREE	:= MAKE( DN_SOURCE_NAME_S );
   begin
     SET_DFLT( ID_S );
     LIST( ID_S, (TREE_NIL,TREE_NIL) );
     D( LX_SRCPOS, ID_S, TREE_VOID );
     DABS( 1, AUXA.ELMT, ID_S );
-  end;
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE SET_AUXA_SON1_VOID
-  procedure SET_AUXA_SON1_VOID is
+
+  end	SET_AUXA_SON1_NEW_NAME_SEQ;
+	--------------------------
+
+
+				------------------
+  procedure			SET_AUXA_SON1_VOID
+				------------------
+  is
   begin
     DABS( 1, AUXA.ELMT, TREE_VOID );
-  end;
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE POP_TOKEN
-  procedure POP_TOKEN ( AA :out SEMSTAK_UNIT ) is						--| DEPILE DE SS EN VERIFIANT QUE C'EST UN JETON
+
+  end	SET_AUXA_SON1_VOID;
+	------------------
+
+
+				---------
+  procedure			POP_TOKEN			( AA :out SEMSTAK_UNIT )			--| DEPILE DE SS EN VERIFIANT QUE C'EST UN JETON
+				---------
+  is
     XX	: SEMSTAK_UNIT;
   begin
     POP_ITEM( XX );
@@ -198,10 +258,15 @@ CHERCHE_LIGNE_PLEINE:
       TABLE_ERROR( "POP_TOKEN : JETON ATTENDU SUR SEMSTAK." );
     end if;
     AA := XX;
-  end;
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE POP_LIST
-  procedure POP_LIST ( AA :out SEMSTAK_UNIT ) is						--| DEPILE DE SS EN VERIFIANT QUE C EST UNE LISTE
+
+  end	POP_TOKEN;
+	---------
+
+
+				--------
+  procedure			POP_LIST			( AA :out SEMSTAK_UNIT )			--| DEPILE DE SS EN VERIFIANT QUE C EST UNE LISTE
+				--------
+  is
     XX	: SEMSTAK_UNIT;
   begin
     POP_ITEM( XX );
@@ -209,10 +274,15 @@ CHERCHE_LIGNE_PLEINE:
       TABLE_ERROR( "POP_LIST : LISTE ATTENDUE SUR SEMSTAK." );
     end if;
     AA := XX;
-  end;
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE MAKE_FCN_NODE
-  procedure MAKE_FCN_NODE ( ACTION :INTEGER; AP :in out INTEGER; SEQ :SEQ_TYPE ) is
+
+  end	POP_LIST;
+	--------
+
+
+				-------------
+  procedure			MAKE_FCN_NODE		( ACTION :INTEGER; AP :in out INTEGER; SEQ :SEQ_TYPE )
+				-------------
+  is
     USED_STRING	: TREE	:= MAKE( DN_USED_OP );
     PARAM_S	: TREE	:= MAKE( DN_GENERAL_ASSOC_S );
   begin
@@ -223,43 +293,55 @@ CHERCHE_LIGNE_PLEINE:
     D( LX_SRCPOS, USED_STRING, D( LX_SRCPOS, PARAM_S ) );
     AP := AP + 1;
     D( LX_SYMREP, USED_STRING,
-         (P, TY=> DN_SYMBOL_REP, PG=> PAGE_IDX( ACTION mod 1000 ), LN=> LINE_IDX( GRMR_TBL.GRMR.AC_TBL( AP ) ) )
+         ( P,	TY=> DN_SYMBOL_REP,
+		PG=> PAGE_IDX( ACTION mod 1000 ),
+		LN=> LINE_IDX( GRMR_TBL.GRMR.AC_TBL( AP ) )
+	)
      );
     MAKE_AUXA_NODE( NODE_NAME'POS( DN_FUNCTION_CALL ) );
-    SET_DFLT ( AUXA.ELMT );
+    SET_DFLT( AUXA.ELMT );
     D ( AS_NAME, AUXA.ELMT, USED_STRING );
     DB( LX_PREFIX, AUXA.ELMT, FALSE );
     D ( AS_GENERAL_ASSOC_S, AUXA.ELMT, PARAM_S );
-  end;
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE PUSH_AUXA_NODE
-  procedure PUSH_AUXA_NODE is								--| EMPILE AUXA SUR LA PILE SS
+
+  end	MAKE_FCN_NODE;
+	-------------
+
+
+				--------------
+  procedure			PUSH_AUXA_NODE								--| EMPILE AUXA SUR LA PILE SS
+				--------------
+  is
   begin
-    SSITOP := SSITOP + 1;
+    SSITOP	  := SSITOP + 1;
     SEMSTAK( SSITOP ) := AUXA;
-    NODE_CREATED := TRUE;
+    NODE_CREATED	  := TRUE;
 
     if DEBUG_SEM then
-      NEW_LINE; PUT( "AUXA = " & SEMSTAK_ELMT_KIND'IMAGE( AUXA.KIND ) & ' ' );
+      NEW_LINE; PUT( "pushed AUXA = " & SEMSTAK_ELMT_KIND'IMAGE( AUXA.KIND ) & ' ' );
       case AUXA.KIND is
       when NODE_ELMT | TOKEN_ELMT => PRINT_NODE( AUXA.ELMT );
       when LIST_ELMT => PRINT_NODE( AUXA.SEQ.FIRST );
       end case;
     end if;
-  end;
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE BUILD_TREE
-  procedure BUILD_TREE ( ACTION :INTEGER; AP: in out INTEGER ) is
-     -- DOES SEMANTIC ACTION AND INCREMENTS AP APPROPRIATELY
-    ACTION_OP	: GRMR_OP		:= GRMR_OP'VAL( ACTION / 1000 );			--| UNE DES 28 ACTIONS SEMANTIQUES (MISE AUX MILLIERS DE ACTION)
-    ID_NODE	: TREE;								-- XXX_ID CONSTRUCTED HERE
-    LEFT_NODE	: TREE;								-- TEMP. FOR LEFTMOST NODE ($DEF)
-    LEFT_KIND	: NODE_NAME;							-- TEMP FOR KIND OF ABOVE NODE
-    T_SEQ		: SEQ_TYPE;
+
+  end	PUSH_AUXA_NODE;
+	--------------
+
+
+				----------
+  procedure			BUILD_TREE	( ACTION :INTEGER; AP: in out INTEGER )
+				----------
+  is
+    ACTION_OP		: GRMR_OP		:= GRMR_OP'VAL( ACTION / 1000 );				--| UNE DES 28 ACTIONS SEMANTIQUES (MISE AUX MILLIERS DE ACTION)
+    ID_NODE		: TREE;									--| XXX_ID CONSTRUCTED HERE
+    LEFT_NODE		: TREE;									--| TEMP. FOR LEFTMOST NODE ($DEF)
+    LEFT_KIND		: NODE_NAME;								--| TEMP FOR KIND OF ABOVE NODE
+    T_SEQ			: SEQ_TYPE;
   begin
 
-    if DEBUG_SEM then
-      PUT( "--> " & GRMR_OP_IMAGE( ACTION_OP ) );
+    if  DEBUG_SEM  then
+      PUT( "action construction : " & GRMR_OP_IMAGE( ACTION_OP ) );
     end if;
 
     case ACTION_OP is
@@ -267,19 +349,19 @@ CHERCHE_LIGNE_PLEINE:
       raise PROGRAM_ERROR;
 
     when N_0 =>
-      MAKE_AUXA_NODE( ACTION ); PUSH_AUXA_NODE;						--| FABRIQUE UN NOEUD POINTE DANS AUXA ET EMPILE AUXA
+      MAKE_AUXA_NODE( ACTION ); PUSH_AUXA_NODE;								--| FABRIQUE UN NOEUD POINTE DANS AUXA ET EMPILE AUXA
                
     when N_DEF =>
       POP_NODE( AUXA );
       POP_ITEM( TT );
-      if ( TT.KIND = NODE_ELMT and then AUXA.ELMT.TY in CLASS_BLOCK_LOOP )
-         or else TT.KIND = TOKEN_ELMT then
-        null;
+      if  ( TT.KIND = NODE_ELMT  and then  AUXA.ELMT.TY in CLASS_BLOCK_LOOP )
+          or else  TT.KIND = TOKEN_ELMT
+      then null;
       else
         TABLE_ERROR( "TOKEN OR VOID EXPECTED ON STACK FOR $DEF" );
       end if;
            
-      if DEBUG_SEM then
+      if  DEBUG_SEM  then
         PUT( ' ' & NODE_NAME'IMAGE( NODE_NAME'VAL( ACTION mod 1000 ) ) );
       end if;
 
@@ -290,9 +372,9 @@ CHERCHE_LIGNE_PLEINE:
             
       LEFT_NODE := DABS( 1, AUXA.ELMT );
       LEFT_KIND := LEFT_NODE.TY;
-      if LEFT_KIND = DN_VOID then
+      if  LEFT_KIND = DN_VOID  then
         DABS( 1, AUXA.ELMT, ID_NODE );
-      elsif LEFT_KIND = DN_SOURCE_NAME_S then
+      elsif  LEFT_KIND = DN_SOURCE_NAME_S  then
         LIST( LEFT_NODE, INSERT( LIST( LEFT_NODE ), ID_NODE ) );
         D( LX_SRCPOS, LEFT_NODE, TT.SPOS );
       else
@@ -300,7 +382,7 @@ CHERCHE_LIGNE_PLEINE:
       end if;
       PUSH_AUXA_NODE;
                
-    when N_1 =>									--| FABRIQUE UN NOEUD DANS AUXA DEPILE SON FILS 1 EMPILE AUXA
+    when N_1 =>											--| FABRIQUE UN NOEUD DANS AUXA DEPILE SON FILS 1 EMPILE AUXA
       MAKE_AUXA_NODE( ACTION );
       POP_AUXA_SON_ARG_NODE( 1 );
       PUSH_AUXA_NODE;
@@ -342,7 +424,7 @@ CHERCHE_LIGNE_PLEINE:
         PUT( "TT = " ); PRINT_NODE( TT.SEQ.FIRST );
       end if;
 
-    when G_INFIX =>
+    when G_INFIX =>											--| POP DEUX ELEMENTS EN LISTE ARGS PUIS PUSH UN NOEUD FONCTION
       POP_NODE( TT );  T_SEQ := INSERT( (TREE_NIL,TREE_NIL) , TT.ELMT );
       POP_NODE( TT );  T_SEQ := INSERT( T_SEQ, TT.ELMT);
       MAKE_FCN_NODE( ACTION, AP, T_SEQ );
@@ -359,7 +441,7 @@ CHERCHE_LIGNE_PLEINE:
       D( LX_SRCPOS, AUXA.ELMT, TT.SPOS );
       PUSH_AUXA_NODE;
 
-    when G_LX_NUMREP =>
+    when G_LX_NUMREP =>										--| PLACE LE NUMREP TT DANS LA TETE DE PILE
       POP_NODE( AUXA );  POP_TOKEN( TT );
             
       if TT.ELMT.TY /= DN_TXTREP then
@@ -377,15 +459,15 @@ CHERCHE_LIGNE_PLEINE:
     when G_NOT_LX_DEFAULT =>
       POP_NODE( AUXA );  DB( LX_DEFAULT, AUXA.ELMT, FALSE );  PUSH_AUXA_NODE;
 
-    when G_NIL =>
+    when G_NIL =>											--| PUSH LISTE VIDE AUXA
       AUXA := (KIND=> LIST_ELMT, SPOS=> SOURCEPOS, SEQ=> (TREE_NIL,TREE_NIL) );  PUSH_AUXA_NODE;
 
-    when G_INSERT =>
+    when G_INSERT =>										--| INSERE AU DEBUT DANS LA LISTE EN TETE DE PILE LE NOEUD TT
       POP_LIST( AUXA );  POP_NODE( TT );
       AUXA.SEQ := INSERT( AUXA.SEQ, TT.ELMT );  AUXA.SPOS := TT.SPOS;
       PUSH_AUXA_NODE;
 
-    when G_APPEND =>
+    when G_APPEND =>										--| AJOUTE EN FIN LE NOEUD TT A UNE LISTE REMISE EN TETE DE PILE
       POP_NODE( TT );  POP_LIST( AUXA );
       AUXA.SEQ := APPEND( AUXA.SEQ, TT.ELMT );
       if AUXA.SPOS = TREE_VOID then
@@ -393,7 +475,7 @@ CHERCHE_LIGNE_PLEINE:
       end if;
       PUSH_AUXA_NODE;
 
-    when G_CAT =>									--| CONCATENER TT A AUXA
+    when G_CAT =>											--| CONCATENER DEUX LISTES TT A AUXA
       POP_LIST( TT );  POP_LIST( AUXA );
       if AUXA.SEQ.FIRST = TREE_NIL then
         AUXA := TT;
@@ -420,12 +502,24 @@ CHERCHE_LIGNE_PLEINE:
       AUXA := SEMSTAK( SSITOP );  SEMSTAK( SSITOP ) := SEMSTAK( SSITOP - 2 );  SEMSTAK( SSITOP - 2 ) := AUXA;
 
     when G_CHECK_NAME =>
+
+put_line( " check name " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP ).KIND ) );
+
       SSITOP := SSITOP - 1;
 
     when G_CHECK_SUBP_NAME =>
+
+put_line( " ssitop " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP ).KIND ) );
+PRINT_NODE( SEMSTAK( SSITOP ).ELMT );
+put_line( " ssitop-1 " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP-1 ).KIND ) );
+ PRINT_NODE( SEMSTAK( SSITOP-1 ).ELMT );
+
       SSITOP := SSITOP - 1;
 
     when G_CHECK_ACCEPT_NAME =>
+
+put_line( " check accept name " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP ).KIND ) );
+
       SSITOP := SSITOP - 1;
 
     end case;
@@ -433,11 +527,15 @@ CHERCHE_LIGNE_PLEINE:
     if DEBUG_SEM then NEW_LINE; end if;
 
     AP := AP + 1;
-  end BUILD_TREE;
-   
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE PARSE_COMPILATION
-  procedure PARSE_COMPILATION is
+
+  end	BUILD_TREE;
+	----------
+
+
+				-----------------
+  procedure			PARSE_COMPILATION
+				-----------------
+  is
     type STACK_TYPE	is record
 		  STATE	: POSITIVE;
 		  SRCPOS	: TREE;

@@ -437,6 +437,7 @@ if DEBUG then SNIFFER( AN, T ); end if;
          
     PUT_LINE( "!! IL N Y A PAS DE LISTE ASSOCIEE AU NOEUD " & NODE_REP( T ) );
     raise PROGRAM_ERROR;
+
   end	LIST;
 	----
 
@@ -445,7 +446,8 @@ if DEBUG then SNIFFER( AN, T ); end if;
   function		IS_EMPTY		( S :SEQ_TYPE )	return BOOLEAN
   is			--------
   begin
-    return S.FIRST = TREE_NIL;
+    return S.FIRST = TREE_NIL  or  S.FIRST = TREE_VOID  or  S.FIRST = TREE_VIRGIN;
+
   end	IS_EMPTY;
 	--------
 
@@ -456,6 +458,7 @@ if DEBUG then SNIFFER( AN, T ); end if;
   begin
     T := HEAD( S );
     S := TAIL( S );
+
   end	POP;
 	---
 
@@ -498,6 +501,7 @@ if DEBUG then SNIFFER( AN, T ); end if;
   is			----------
   begin
     return NODE_NAME'IMAGE( NN );
+
   end	NODE_IMAGE;
 	----------
 
@@ -507,6 +511,7 @@ if DEBUG then SNIFFER( AN, T ); end if;
   is		----------
   begin
     return ATTRIBUTE_NAME'IMAGE( AN );
+
   end	ATTR_IMAGE;
 	----------
   
@@ -533,6 +538,7 @@ if DEBUG then SNIFFER( AN, T ); end if;
 --    CLOSE( CTL );
 --    return LINE( 1..LEN );
     return LIB_PATH( 1 .. LIB_PATH_LENGTH );
+
   end	GET_LIB_PREFIX;
 	--------------
 

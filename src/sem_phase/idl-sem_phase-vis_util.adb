@@ -70,9 +70,9 @@ is					--------
     Put (NODE_REP (D (XD_SOURCE_NAME, DEF)));
     Put (" IN ");
     Put (NODE_REP (REGION));
-    Put (Integer'IMAGE (DI (XD_LEX_LEVEL, REGION)));
+    Put (INTEGER'IMAGE (DI (XD_LEX_LEVEL, REGION)));
     Put (" ");
-    Put_Line (Boolean'IMAGE (DB (XD_IS_USED, REGION)));
+    Put_Line (BOOLEAN'IMAGE (DB (XD_IS_USED, REGION)));
     if HEADER.TY in CLASS_SUBP_ENTRY_HEADER then
       Put (ASCII.HT & "(");
       INIT_PARAM_CURSOR (PARAM_CURSOR, LIST (D (AS_PARAM_S, HEADER)));
@@ -110,17 +110,21 @@ is					--------
     end case;
   end FIND_VISIBILITY;
 
-  procedure FIND_DIRECT_VISIBILITY (ID : TREE; DEFSET : out DEFSET_TYPE) is
+
+		----------------------
+  procedure	FIND_DIRECT_VISIBILITY	( ID :TREE; DEFSET :out DEFSET_TYPE )
+		----------------------
+  is
                 -- RETURNS SET OF DIRECTLY-VISIBLE DEF'S FOR USED_OBJECT_ID
 
-    NEST_UNIQUE, USED_UNIQUE : TREE     := TREE_VOID;
-    NEST_OVLOAD, USED_OVLOAD : SEQ_TYPE := (TREE_NIL, TREE_NIL);
-    NEST_UNIQUE_LEVEL        : Natural  := 0;
-    USED_IS_OK               : Boolean  := True;
+    NEST_UNIQUE, USED_UNIQUE	: TREE     := TREE_VOID;
+    NEST_OVLOAD, USED_OVLOAD	: SEQ_TYPE := (TREE_NIL, TREE_NIL);
+    NEST_UNIQUE_LEVEL	: Natural  := 0;
+    USED_IS_OK		: BOOLEAN  := True;
 
     DEFLIST    : SEQ_TYPE := LIST (D (LX_SYMREP, ID));
     DEF        : TREE;
-    LEVEL      : Integer;
+    LEVEL      : INTEGER;
     REGION_DEF : TREE;
 
     DEFLIST_1, DEFLIST_2 : SEQ_TYPE;
@@ -214,30 +218,43 @@ is					--------
     if NEST_UNIQUE /= TREE_VOID then
 
       declare
-        HEADER_KIND : NODE_NAME := D (XD_HEADER, NEST_UNIQUE).TY;
+        HEADER		: TREE		:= D( XD_HEADER, NEST_UNIQUE );
+        HEADER_KIND		: NODE_NAME;
       begin
 
+        begin
+	if  HEADER.PT = HI  then HEADER_KIND := HEADER.NOTY;
+	elsif  HEADER.PT /= S  then HEADER_KIND := HEADER.TY;
+	else raise PROGRAM_ERROR;
+	end if;
+        exception
+	when PROGRAM_ERROR =>
+	  PUT( "IDL-SEM_PHASE-VISUTIL-FIND_DIRECT_VISIBILITY : HEADER TYPE ERROR " );
+	  PUT( "(PT=>" & VPTR_TYPE'IMAGE( HEADER.PT ) & ")" );
+	  raise;
+        end;
                                 -- IF IT IS NOT YET FULLY DECLARED OR IN ERROR
         if HEADER_KIND in CLASS_BOOLEAN then
 
                                         -- EMPTY DEFSET IS TO BE RETURNED
                                         -- PUT OUT CORRECT ERROR OR WARNING MESSAGE
           if HEADER_KIND = DN_FALSE then
-            WARNING (D (LX_SRCPOS, ID), "PRIOR ERROR IN DECLARATION - " & PRINT_NAME (D (LX_SYMREP, ID)));
+            WARNING( D( LX_SRCPOS, ID ), "PRIOR ERROR IN DECLARATION - " & PRINT_NAME( D( LX_SYMREP, ID ) ) );
           else
-            ERROR (D (LX_SRCPOS, ID), "NAME NOT YET VISIBLE - " & PRINT_NAME (D (LX_SYMREP, ID)));
+            ERROR( D( LX_SRCPOS, ID ), "NAME NOT YET VISIBLE - " & PRINT_NAME( D( LX_SYMREP, ID ) ) );
           end if;
 
                                         -- ELSE -- SINCE IT IS FULLY DECLARED AND NOT IN ERROR
         else
 
                                         -- THIS IS THE CORRECT DEF
-          ADD_TO_DEFSET (NEW_DEFSET, NEST_UNIQUE);
+          ADD_TO_DEFSET( NEW_DEFSET, NEST_UNIQUE );
         end if;
 
                                 -- RETURN NEW DEFSET
         DEFSET := NEW_DEFSET;
         return;
+
       end;
     end if;
 
@@ -560,29 +577,32 @@ is					--------
                         -- CHECK FOR ERROR OR NOT-YET-VISIBLE DECLARATION
     else
       declare
-        TEMP_DEFSET    : DEFSET_TYPE := NEW_DEFSET;
-        TEMP_DEFINTERP : DEFINTERP_TYPE;
-        HEADER_KIND    : NODE_NAME;
+        TEMP_DEFSET		: DEFSET_TYPE	:= NEW_DEFSET;
+        TEMP_DEFINTERP	: DEFINTERP_TYPE;
       begin
 
-                                -- FOR EACH DEF
-        while not IS_EMPTY (TEMP_DEFSET) loop
-          POP (TEMP_DEFSET, TEMP_DEFINTERP);
+        while  not IS_EMPTY( TEMP_DEFSET )  loop
+          POP( TEMP_DEFSET, TEMP_DEFINTERP );
 
                                         -- IF IT IS NOT YET FULLY DECLARED OR IN ERROR
-          HEADER_KIND := D (XD_HEADER, GET_DEF (TEMP_DEFINTERP)).TY;
-          if HEADER_KIND in CLASS_BOOLEAN then
+	declare
+	  HEADER		: TREE		:= D( XD_HEADER, GET_DEF( TEMP_DEFINTERP ) );
+--	  HEADER_KIND	: NODE_NAME;
+	begin
+--	HEADER_KIND := D (XD_HEADER, GET_DEF (TEMP_DEFINTERP)).TY;
+	  if HEADER.PT = HI and then HEADER.NOTY in CLASS_BOOLEAN then
 
                                                 -- EMPTY DEFSET IS TO BE RETURNED
-            NEW_DEFSET := EMPTY_DEFSET;
+	    NEW_DEFSET := EMPTY_DEFSET;
 
                                                 -- PUT OUT CORRECT ERROR OR WARNING MESSAGE
-            if HEADER_KIND = DN_FALSE then
-              WARNING (D (LX_SRCPOS, DESIGNATOR), "PRIOR ERROR IN DECLARATION - " & PRINT_NAME (D (LX_SYMREP, DESIGNATOR)));
-            else
-              ERROR (D (LX_SRCPOS, DESIGNATOR), "NAME NOT YET VISIBLE - " & PRINT_NAME (D (LX_SYMREP, DESIGNATOR)));
-            end if;
-          end if;
+	    if HEADER.NOTY = DN_FALSE then
+	      WARNING( D( LX_SRCPOS, DESIGNATOR ), "PRIOR ERROR IN DECLARATION - " & PRINT_NAME( D( LX_SYMREP, DESIGNATOR ) ) );
+	    else
+	      ERROR( D( LX_SRCPOS, DESIGNATOR ), "NAME NOT YET VISIBLE - " & PRINT_NAME( D( LX_SYMREP, DESIGNATOR ) ) );
+	    end if;
+	  end if;
+	end;
         end loop;
       end;
     end if;
@@ -603,7 +623,7 @@ is					--------
     DEF         : TREE;
 
     ENCLOSING_DEF   : TREE    := TREE_VOID;
-    IS_MULTIPLE_DEF : Boolean := False;
+    IS_MULTIPLE_DEF : BOOLEAN := False;
   begin
                 -- FOR EACH DEF IN DEFSET
     while not IS_EMPTY (TEMP_DEFSET) loop
@@ -731,7 +751,7 @@ is					--------
 
         ----------------------------------------------------------------
 
-  function ALL_PARAMETERS_HAVE_DEFAULTS (HEADER : TREE) return Boolean is
+  function ALL_PARAMETERS_HAVE_DEFAULTS (HEADER : TREE) return BOOLEAN is
                 -- GIVEN A SUBPROGRAM OR ENTRY HEADER, TEST IF ALL DECLARED
                 -- PARAMETERS HAVE A DEFAULT VALUE (OR THERE ARE NO PARAMETERS)
 
@@ -758,16 +778,16 @@ is					--------
         ----------------------------------------------------------------
 
         --- $$$$ TEMPORARY $$$$$$$$$$$$$$
-  function IS_OVERLOADABLE_HEADER (HEADER : TREE) return Boolean is
+  function IS_OVERLOADABLE_HEADER (HEADER : TREE) return BOOLEAN is
   begin
-    if HEADER.TY = DN_FUNCTION_SPEC or HEADER.TY = DN_PROCEDURE_SPEC or HEADER.TY = DN_ENTRY then
-      return True;
-    else
-      return False;
-    end if;
-  end IS_OVERLOADABLE_HEADER;
+    return  (HEADER.PT = P  or  HEADER.PT = L)
+	  and then
+	  (HEADER.TY = DN_FUNCTION_SPEC or HEADER.TY = DN_PROCEDURE_SPEC or HEADER.TY = DN_ENTRY);
 
-        ----------------------------------------------------------------
+  end	IS_OVERLOADABLE_HEADER;
+	----------------------
+
+
 
   function CAST_TREE (ARG : SEQ_TYPE) return TREE is
   begin
@@ -776,7 +796,7 @@ is					--------
 
   function CAST_SEQ_TYPE (ARG : TREE) return SEQ_TYPE is
   begin
-    return SINGLETON (ARG);
+    return SINGLETON( ARG );
   end CAST_SEQ_TYPE;
 
 
@@ -851,14 +871,21 @@ is					--------
         while not IS_EMPTY (TEMP_DEFLIST) loop
           POP (TEMP_DEFLIST, TEMP_DEF);
           if NAME_DEF = D (XD_REGION_DEF, TEMP_DEF) then
-            if D (XD_HEADER, TEMP_DEF).TY in CLASS_BOOLEAN then
+
+	  declare
+	    HEADER	:TREE	:= D( XD_HEADER, TEMP_DEF );
+	  begin
+	    if  HEADER.PT = HI  and then  HEADER.NOTY in CLASS_BOOLEAN
+	    then
                                                         -- IN ERROR, RETURN THIS ONE AND QUIT LOOKING
-              NEW_DEFSET := EMPTY_DEFSET;
-              ADD_TO_DEFSET (NEW_DEFSET, TEMP_DEF);
-              DEFSET       := NEW_DEFSET;
-              NAME_TYPESET := EMPTY_TYPESET;
-              return;
-            end if;
+	      NEW_DEFSET := EMPTY_DEFSET;
+	      ADD_TO_DEFSET (NEW_DEFSET, TEMP_DEF);
+	      DEFSET       := NEW_DEFSET;
+	      NAME_TYPESET := EMPTY_TYPESET;
+	      return;
+	    end if;
+	  end;
+
             ADD_TO_TYPESET (NEW_TYPESET, NAME_TYPEINTERP);
             ADD_TO_DEFSET (NEW_DEFSET, TEMP_DEF, GET_EXTRAINFO (NAME_TYPEINTERP));
           end if;

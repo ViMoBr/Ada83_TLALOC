@@ -2370,11 +2370,15 @@ is					---------
             NAME_LIST	: SEQ_TYPE		:= LIST( D( AS_NAME_S, USE_PRAGMA ) );
 	  NAME		: TREE;
             NEW_NAME_LIST	: SEQ_TYPE		:= (TREE_NIL,TREE_NIL);
-	begin
+            NAME_DEFN	: TREE;
+ 	begin
             while not IS_EMPTY( NAME_LIST) loop
               POP( NAME_LIST, NAME );
+	    if  NAME.TY = DN_SELECTED
+	    then NAME_DEFN := D( AS_DESIGNATOR, NAME );
+	    else NAME_DEFN := D( SM_DEFN, NAME );
+	    end if;
 	    declare
-                NAME_DEFN	:constant TREE		:= D( SM_DEFN, NAME );
                 NAME_DEF	:constant TREE		:= DEF_UTIL.GET_DEF_FOR_ID( NAME_DEFN );
 	      NEW_NAME	: TREE;
 	    begin

@@ -1,4 +1,4 @@
-    SEPARATE ( IDL.SEM_PHASE )
+SEPARATE ( IDL.SEM_PHASE )
     --|----------------------------------------------------------------------------------------------
     --|	MAKE_NOD
     --|----------------------------------------------------------------------------------------------
@@ -7,7 +7,7 @@
        PACKAGE DA RENAMES DIANA_NODE_ATTR_CLASS_NAMES;
    
        FUNCTION MAKE_VARIABLE_ID
-                        ( LX_SRCPOS: TREE := TREE_VOID;
+	             ( LX_SRCPOS: TREE := TREE_VOID;
                         LX_SYMREP: TREE := TREE_VOID;
                         SM_OBJ_TYPE: TREE := TREE_VOID;
                         SM_INIT_EXP: TREE := TREE_VOID;

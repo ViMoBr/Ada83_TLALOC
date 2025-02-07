@@ -1,49 +1,7 @@
 include 'TEXT_IO.FINC'
 PRO	DIS_BONJOUR_L1				;---------- PRO DIS_BONJOUR
 ELB 1					;    BODY ELAB
+VAR IMI_disp, q				; variable ptr str
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-EXT_LOOP:
-GET_CHAR_LOOP:
-namespace	BLOC_CHAR
-ELB 2					;    BODY ELAB
-VAR C_disp, b				; variable bool char
-	LI	 78
-	Sb  2,	C_disp
-					;    end elab
-begin:					;---------- BDY INSTRUCTIONS
-STR STR_L3, ' Entrez un caractere : '		; constante string=' Entrez un caractere : '
-	LCA	STR_L3_ptr
-	CALL	TEXT_IO. ,PUT_L56
-	LVA  2,	C_disp
-	CALL	TEXT_IO. ,GET_L50
-	Lb  2,	C_disp
-	LI	 113
-	CEQ
-	BF	L5
-	UNLINK	 2
-	BRA	L2
-L5:
-	Lb  2,	C_disp
-	LI	 120
-	CEQ
-	BF	L7
-	UNLINK	 2
-	BRA	L1
-L7:
-	Lb  2,	C_disp
-	CALL	TEXT_IO. ,PUT_L52
-end namespace
-	BRA	GET_CHAR_LOOP
-L2:					; post loop GET_CHAR_LOOP
-STR STR_L8, 'Demi sortie !'			; constante string='Demi sortie !'
-	LCA	STR_L8_ptr
-	CALL	TEXT_IO. ,PUT_L56
-	LI	 1
-	CALL	TEXT_IO. ,NEW_LINE_L26
-	BRA	EXT_LOOP
-L1:					; post loop EXT_LOOP
-	UNLINK 1
-	RTD
-excep:
-endPRO					;---------- end PRO DIS_BONJOUR
+!! FUNCTION D : PAS D ATTRIBUT CD_IMPL_SIZE DANS [DN_ARRAY<59.0]>

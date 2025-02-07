@@ -288,22 +288,13 @@ package body EXPRESO is
           D (SM_EXP_TYPE, EXP, TYPE_SPEC);
         end;
 
-      when DN_NUMERIC_LITERAL =>
-        declare
-        begin
+      when DN_NUMERIC_LITERAL =>					-- VALUE ALREADY KNOWN
 
-                                        -- VALUE ALREADY KNOWN
-                                        -- STORE TYPE WHICH IS RESULT OF ANY IMPLICIT CONVERSION
-          D (SM_EXP_TYPE, EXP, TYPE_SPEC);
-        end;
+          D( SM_EXP_TYPE, EXP, TYPE_SPEC );				-- STORE TYPE WHICH IS RESULT OF ANY IMPLICIT CONVERSION
 
       when DN_NULL_ACCESS =>
-        declare
-        begin
 
-                                        -- STORE THE RESULT TYPE
-          D (SM_EXP_TYPE, EXP, TYPE_SPEC);
-        end;
+          D( SM_EXP_TYPE, EXP, TYPE_SPEC );				-- STORE THE RESULT TYPE
 
       when DN_RANGE_MEMBERSHIP =>
         declare

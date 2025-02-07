@@ -1,16 +1,21 @@
+--	Vincent MORIN	Universite de Bretagne Occidentale	janvier 2025	Licence CC BY-SA 4.0
+--	1	2	3	4	5	6	7	8	9	10	11	12
+
+
 with UNCHECKED_CONVERSION;
 separate( IDL )
---|-------------------------------------------------------------------------------------------------
---|		PRINT_NOD
---|-------------------------------------------------------------------------------------------------
-package body PRINT_NOD is
+
+					---------
+	package body			PRINT_NOD
+					---------
+is
    
-		--| POUR DETERMINER SI LA MACHINE EST LITTLE-ENDIAN OU BIG-ENDIAN
+												--| POUR DETERMINER SI LA MACHINE EST LITTLE-ENDIAN OU BIG-ENDIAN
 
   DUMMY2			: INTEGER;
   DUMMY			: array ( 1 .. 4 ) of CHARACTER
 			  := (CHARACTER'VAL( 1 ), ASCII.NUL, ASCII.NUL, ASCII.NUL);
-  for DUMMY use at DUMMY2'ADDRESS;
+				for DUMMY use at DUMMY2'ADDRESS;
   IS_LITTLE_ENDIAN		: constant BOOLEAN		:= (DUMMY2 = 1);
    
 --|-------------------------------------------------------------------------------------------------
@@ -23,22 +28,22 @@ begin
   return STR'LENGTH;
 end;
 --|-------------------------------------------------------------------------------------------------
---|		FUNCTION L_PINT							--| IMPRIME UN ENTIER 16 BITS
+--|		FUNCTION L_PINT									--| IMPRIME UN ENTIER 16 BITS
 --|
 function L_PINT ( I :INTEGER ) return NATURAL is
 begin
-  if I < 0 then									--| ENTIER NEGATIF
-    if I < -32767 then								--| PAS DE VALEUR POSITIVE CORRESPONDANTE
-      PUT ( "-32768" );								--| ECRIRE LA VALEUR NEGATIVE MINIMALE
-      return 6;									--| 6 CARACTERES DE LONG
-    else										--| CAS STANDARD DES NEGATIFS POUR LESQUELS UNE VALEUR POSITIVE CORRESPONDANTE EXISTE
-      PUT ( '-' );									--| METTRE LE SIGNE
-      return L_PINT ( -I ) + 1;							--| IMPRIMER LE POSITIF ET RETOURNER LA LONGUEUR (AVEC SIGNE -)
+  if I < 0 then											--| ENTIER NEGATIF
+    if I < -32767 then										--| PAS DE VALEUR POSITIVE CORRESPONDANTE
+      PUT ( "-32768" );										--| ECRIRE LA VALEUR NEGATIVE MINIMALE
+      return 6;											--| 6 CARACTERES DE LONG
+    else												--| CAS STANDARD DES NEGATIFS POUR LESQUELS UNE VALEUR POSITIVE CORRESPONDANTE EXISTE
+      PUT ( '-' );											--| METTRE LE SIGNE
+      return L_PINT ( -I ) + 1;									--| IMPRIMER LE POSITIF ET RETOURNER LA LONGUEUR (AVEC SIGNE -)
     end if;
-  elsif I > 9 then									--| POSITIF ET NOMBRE A PLUS D'1 CHIFFRE
-    return L_PINT ( I/10 ) + L_PINT ( I mod 10 );						--| IMPRIMER LE DIV SUIVI DU MOD EN RETOURNANT LEUR LONGUEUR TOTALE
-  else										--| POSITIF A 1 SEUL CHIFFRE
-    PUT ( CHARACTER'VAL ( CHARACTER'POS ( '0' ) + I ) );					--| IMPRIMER LE CHIFFRE
+  elsif I > 9 then											--| POSITIF ET NOMBRE A PLUS D'1 CHIFFRE
+    return L_PINT ( I/10 ) + L_PINT ( I mod 10 );								--| IMPRIMER LE DIV SUIVI DU MOD EN RETOURNANT LEUR LONGUEUR TOTALE
+  else												--| POSITIF A 1 SEUL CHIFFRE
+    PUT ( CHARACTER'VAL ( CHARACTER'POS ( '0' ) + I ) );							--| IMPRIMER LE CHIFFRE
     return 1;
   end if;
 end;
@@ -59,8 +64,8 @@ begin return L_PINT ( INTEGER( C ) ); end;
 --|-------------------------------------------------------------------------------------------------
 --|		FUNCTION PRINT_ABS_TREE
 --|
-function PRINT_ABS_TREE ( T :TREE ) return INTEGER is					--| IMPRESSION D'UN POINTEUR DENOTANT UNE ANOMALIE
-  SIZE		: INTEGER		:= 8;						--| LE "!?>" DE DEBUT PLUS LES DEUX . ET LE "<?!" DE FIN
+function PRINT_ABS_TREE ( T :TREE ) return INTEGER is							--| IMPRESSION D'UN POINTEUR DENOTANT UNE ANOMALIE
+  SIZE		: INTEGER		:= 8;								--| LE "!?>" DE DEBUT PLUS LES DEUX . ET LE "<?!" DE FIN
 begin
   PUT ( "!?>" );
   case T.PT is
@@ -96,23 +101,26 @@ begin
   DUMMY := L_PINT ( I );
 end;
    
---||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
---|		PROCEDURE PRINT_TREE
---|
-procedure PRINT_TREE ( T :TREE ) is
+
+				----------
+procedure				PRINT_TREE		( T :TREE )
+				----------
+is
   DUMMY		: INTEGER;
 begin
   DUMMY := L_PRINT_TREE( T );
-end;
---||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
---|		FUNCTION L_PRINT_TREE
---|
-function L_PRINT_TREE ( T :TREE ) return NATURAL is
 
-  --|-----------------------------------------------------------------------------------------------
-  --|		FUNCTION TRAITE_SOURCELINE
-  --|
-  function TRAITE_SOURCELINE return NATURAL is						--| CAS DU NOEUD S (SOURCE_LINE)
+end	PRINT_TREE;
+	----------
+
+
+				------------
+function				L_PRINT_TREE		( T :TREE ) return NATURAL
+				------------
+is
+
+			-----------------
+  function		TRAITE_SOURCELINE		return NATURAL is						--| CAS DU NOEUD S (SOURCE_LINE)
   begin
     if T.SPG > PAGE_MAN.HIGH_VPG then							--| LE CHAMP PG EST HORS DU FICHIER ARBRE (ANORMAL)
       return PRINT_ABS_TREE( T );							--| IMPRIMER COMME <?!
@@ -135,7 +143,9 @@ function L_PRINT_TREE ( T :TREE ) return NATURAL is
       PUT( ')' );
       return NB_CARS + 3;								--| LES NOMBRES PLUS (,)
     end;
-  end;
+  end	TRAITE_SOURCELINE;
+	-----------------
+
   --|-----------------------------------------------------------------------------------------------
   --|		FUNCTION TRAITE_NUM_VAL
   --|
@@ -188,13 +198,10 @@ function L_PRINT_TREE ( T :TREE ) return NATURAL is
   end;
        
 begin
-  case T.PT is
-
-  when S =>									--| POSITION SOURCE
-    return TRAITE_SOURCELINE;
-
-  when HI =>									--| TREE REPRESENTANT UN ENTIER 16 BITS STRICTEMENT NEGATIF OU UNE POSITION SOURCE
-    if T.NOTY = DN_NUM_VAL then							--| VALEUR ENTIERE COURTE
+  case  T.PT  is
+  when  S	 => return TRAITE_SOURCELINE;
+  when  HI =>									--| TREE REPRESENTANT UN ENTIER 16 BITS STRICTEMENT NEGATIF OU UNE POSITION SOURCE
+    if  T.NOTY = DN_NUM_VAL  then							--| VALEUR ENTIERE COURTE
       return TRAITE_NUM_VAL;
     else
       declare
@@ -205,10 +212,8 @@ begin
       end;
     end if;  
 
-  when P =>									--| 
-    if T.TY = DN_NUM_VAL then								--| VALEUR ENTIERE LONGUE
-      return TRAITE_NUM_VAL;
-    end if;  
+  when P =>									--| POINTEUR
+    if  T.TY = DN_NUM_VAL  then return TRAITE_NUM_VAL; end if;
       
     declare
       NB_CARS	: INTEGER;
@@ -226,13 +231,13 @@ begin
       NB_CARS := NB_CARS + L_PINT( T.LN ) + 5;						--| LIGNE DU POINTEUR ET AJOUTER LES TAILLES
       PUT( "]" );
                
-      if T.PG = 0 then								--| CAS INHABITUEL AU RELOC ?
+      if  T.PG = 0  then								--| CAS INHABITUEL AU RELOC ?
         return NB_CARS;								--| ARRETER ICI
       end if;
                
-      if T.TY = DN_TXTREP then							--| CAS PARTICULIER D'UN TXTREP
+      if  T.TY = DN_TXTREP  then							--| CAS PARTICULIER D'UN TXTREP
         PUT( ' ' );
-        if T.PG > PAGE_MAN.HIGH_VPG then						--| HORS BORNES (!)
+        if  T.PG > PAGE_MAN.HIGH_VPG  then						--| HORS BORNES (!)
           PUT ( "!?TXT?!" );
           NB_CARS := NB_CARS + 7;							--| TAILLE NOM PLUS UN' ' ET SIX $
           return NB_CARS;
@@ -248,14 +253,16 @@ begin
       return NB_CARS;
     end;
 
-  when L => null;
+  when  L  => null;
   end case;
   return 0;
-end L_PRINT_TREE;
---||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
---|		PROCEDURE PRINT_NODE
---|
-procedure PRINT_NODE ( T :TREE; INDENT :NATURAL := 0 ) is
+
+end	L_PRINT_TREE;
+	------------
+
+				----------
+procedure				PRINT_NODE		( T :TREE; INDENT :NATURAL := 0 )
+is				----------
        
   --|-----------------------------------------------------------------------------------------------
   --|		 PROCEDURE PRINT_SUB

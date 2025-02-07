@@ -1,209 +1,73 @@
 TREE_ROOT=
 [DN_ROOT,P1,L0]
-  XD_HIGH_PAGE: +188
+  XD_HIGH_PAGE: +5
   XD_USER_ROOT: [DN_USER_ROOT,P1,L12]
   XD_SOURCE_LIST:
    < [DN_SOURCELINE,P1,L19],
-     [DN_SOURCELINE,P1,L31],
-     [DN_SOURCELINE,P1,L43],
-     [DN_SOURCELINE,P1,L87],
-     [DN_SOURCELINE,P1,L119],
-     [DN_SOURCELINE,P5,L36],
-     [DN_SOURCELINE,P5,L85],
-     [DN_SOURCELINE,P5,L110],
-     [DN_SOURCELINE,P6,L18],
-     [DN_SOURCELINE,P6,L38],
-     [DN_SOURCELINE,P6,L86],
-     [DN_SOURCELINE,P6,L106],
-     [DN_SOURCELINE,P7,L3],
-     [DN_SOURCELINE,P7,L26],
-     [DN_SOURCELINE,P7,L40] >
+     [DN_SOURCELINE,P1,L47],
+     [DN_SOURCELINE,P1,L75],
+     [DN_SOURCELINE,P1,L84],
+     [DN_SOURCELINE,P1,L90],
+     [DN_SOURCELINE,P1,L99],
+     [DN_SOURCELINE,P1,L105],
+     [DN_SOURCELINE,P5,L3],
+     [DN_SOURCELINE,P5,L24],
+     [DN_SOURCELINE,P5,L46],
+     [DN_SOURCELINE,P5,L52] >
   XD_ERR_COUNT: +0
   SPARE_1: [DN_VIRGIN,P0,L0]
 
 USER_ROOT=
 [DN_USER_ROOT,P1,L12]
-  XD_SOURCENAME: [DN_TXTREP,P4,L49] dis_bonjour.adb
+  XD_SOURCENAME: [DN_TXTREP,P4,L49] bug_2.adb
   XD_GRAMMAR: [DN_VIRGIN,P0,L0]
   XD_STATELIST: [DN_VIRGIN,P0,L0]
-  XD_STRUCTURE: [DN_COMPILATION,P7,L85]
+  XD_STRUCTURE: [DN_COMPILATION,P5,L95]
   XD_TIMESTAMP: [DN_VIRGIN,P0,L0]
   SPARE_3: [DN_VIRGIN,P0,L0]
 
-[DN_COMPILATION,P7,L85] SLOC(1,1)
-AS_COMPLTN_UNIT_S: [DN_COMPLTN_UNIT_S,P7,L82] SLOC(27,4)
-  AS_LIST: { [DN_COMPILATION_UNIT,P7,L72] SLOC(1,1)
-    AS_CONTEXT_ELEM_S: [DN_CONTEXT_ELEM_S,P1,L62] SLOC(1,1)
-      AS_LIST: { [DN_WITH,P1,L58] SLOC(1,1)
-      | AS_NAME_S: [DN_NAME_S,P1,L28] SLOC(1,6)
-      |   AS_LIST: { [DN_USED_NAME_ID,P184,L65] SLOC(1,6)
-      |     LX_SYMREP: [DN_SYMBOL_REP,P3,L57] TEXT_IO
-      |     SM_DEFN: [DN_PACKAGE_ID,P74,L47] }
-      | AS_USE_PRAGMA_S: [DN_USE_PRAGMA_S,P1,L55] SLOC(2,1)
-      |   AS_LIST: { [DN_USE,P1,L52] SLOC(2,1)
-      |     AS_NAME_S: [DN_NAME_S,P1,L49] SLOC(3,1)
-      |       AS_LIST: { [DN_USED_NAME_ID,P184,L69] SLOC(2,6)
-      |       | LX_SYMREP: [DN_SYMBOL_REP,P3,L57] TEXT_IO
-      |       | SM_DEFN: [DN_PACKAGE_ID,P74,L47] } } }
-    AS_ALL_DECL: [DN_SUBPROGRAM_BODY,P7,L64] SLOC(3,1)
-      AS_SOURCE_NAME: [DN_PROCEDURE_ID,P1,L65] SLOC(3,11) [DN_DEF,P184,L73] [DN_VOID,P0,L0]
-      | LX_SYMREP: [DN_SYMBOL_REP,P3,L60] DIS_BONJOUR
-      | SM_FIRST: [DN_PROCEDURE_ID,P72,L26]
-      | SM_SPEC: [DN_PROCEDURE_SPEC,P72,L46]
-      | SM_IS_INLINE: HI noty=DN_FALSE abss= 0 nsiz= 0
-      | XD_REGION: [DN_PACKAGE_ID,P10,L54]
-      AS_BODY: [DN_BLOCK_BODY,P7,L56] SLOC(3,23)
-      | AS_ITEM_S: [DN_ITEM_S,P5,L107] SLOC(4,3)
-      |   AS_LIST:
-      |   { [DN_CONSTANT_DECL,P1,L111] SLOC(4,3)
-      |       AS_SOURCE_NAME_S: [DN_SOURCE_NAME_S,P1,L116] SLOC(4,3)
-      |       | AS_LIST: { [DN_CONSTANT_ID,P5,L0] SLOC(4,3) [DN_DEF,P184,L83] [DN_DEF,P168,L96]
-      |       |   LX_SYMREP: [DN_SYMBOL_REP,P3,L63] NOM
-      |       |   SM_OBJ_TYPE: [DN_ARRAY,P60,L0]
-      |       |   SM_INIT_EXP: [DN_STRING_LITERAL,P1,L106]
-      |       |   SM_RENAMES_OBJ: HI noty=DN_FALSE abss= 0 nsiz= 0
-      |       |   SM_FIRST: [DN_CONSTANT_ID,P5,L0]
-      |       |   XD_REGION: [DN_PROCEDURE_ID,P72,L26] }
-      |       AS_EXP: [DN_STRING_LITERAL,P1,L106] SLOC(4,27)
-      |       | LX_SYMREP: [DN_SYMBOL_REP,P3,L69] "Vincent"
-      |       AS_TYPE_DEF: [DN_SUBTYPE_INDICATION,P1,L102] SLOC(4,17)^DN_VOID
-      |       | AS_NAME: [DN_USED_NAME_ID,P184,L90] SLOC(4,17)
-      |       |   LX_SYMREP: [DN_SYMBOL_REP,P3,L66] STRING
-      |       |   SM_DEFN: [DN_TYPE_ID,P59,L115]
-      |     [DN_CONSTANT_DECL,P5,L28] SLOC(5,3)
-      |       AS_SOURCE_NAME_S: [DN_SOURCE_NAME_S,P5,L33] SLOC(5,3)
-      |       | AS_LIST: { [DN_CONSTANT_ID,P5,L42] SLOC(5,3) [DN_DEF,P184,L94] [DN_DEF,P168,L96]
-      |       |   LX_SYMREP: [DN_SYMBOL_REP,P3,L72] MSG
-      |       |   SM_OBJ_TYPE: [DN_ARRAY,P60,L0]
-      |       |   SM_INIT_EXP: [DN_STRING_LITERAL,P5,L23]
-      |       |   SM_RENAMES_OBJ: HI noty=DN_FALSE abss= 0 nsiz= 0
-      |       |   SM_FIRST: [DN_CONSTANT_ID,P5,L42]
-      |       |   XD_REGION: [DN_PROCEDURE_ID,P72,L26] }
-      |       AS_EXP: [DN_STRING_LITERAL,P5,L23] SLOC(5,27)
-      |       | LX_SYMREP: [DN_SYMBOL_REP,P3,L75] "Merci !"
-      |       AS_TYPE_DEF: [DN_SUBTYPE_INDICATION,P5,L19] SLOC(5,17)^DN_VOID
-      |       | AS_NAME: [DN_USED_NAME_ID,P184,L101] SLOC(5,17)
-      |       |   LX_SYMREP: [DN_SYMBOL_REP,P3,L66] STRING
-      |       |   SM_DEFN: [DN_TYPE_ID,P59,L115]
-      |     [DN_VARIABLE_DECL,P5,L77] SLOC(6,3)
-      |       AS_SOURCE_NAME_S: [DN_SOURCE_NAME_S,P5,L82] SLOC(6,3)
-      |       | AS_LIST: { [DN_VARIABLE_ID,P5,L91] SLOC(6,3) [DN_DEF,P184,L105] [DN_DEF,P168,L96]
-      |       |   LX_SYMREP: [DN_SYMBOL_REP,P3,L78] C
-      |       |   SM_OBJ_TYPE: [DN_ENUMERATION,P18,L79]
-      |       |   SM_INIT_EXP: [DN_USED_CHAR,P5,L71]
-      |       |   SM_RENAMES_OBJ: HI noty=DN_FALSE abss= 0 nsiz= 0
-      |       |   SM_IS_SHARED: HI noty=DN_FALSE abss= 0 nsiz= 0
-      |       |   XD_REGION: [DN_PROCEDURE_ID,P72,L26] }
-      |       AS_EXP: [DN_USED_CHAR,P5,L71] SLOC(6,20)
-      |       | LX_SYMREP: [DN_SYMBOL_REP,P3,L84] 'Y'
-      |       | SM_DEFN: [DN_CHARACTER_ID,P28,L0]
-      |       | SM_EXP_TYPE: [DN_ENUMERATION,P18,L79]
-      |       | SM_VALUE: HI noty=DN_NUM_VAL abss= 89 nsiz= 0
-      |       AS_TYPE_DEF: [DN_SUBTYPE_INDICATION,P5,L64] SLOC(6,7)^DN_VOID
-      |       | AS_NAME: [DN_USED_NAME_ID,P184,L112] SLOC(6,7)
-      |       |   LX_SYMREP: [DN_SYMBOL_REP,P3,L81] CHARACTER
-      |       |   SM_DEFN: [DN_TYPE_ID,P18,L66] }
-      | AS_STM_S: [DN_STM_S,P7,L50] SLOC(13,3)
-      |   AS_LIST: { [DN_IF,P7,L46] SLOC(13,3)
-      |     AS_TEST_CLAUSE_ELEM_S: [DN_TEST_CLAUSE_ELEM_S,P7,L0] SLOC(13,3)
-      |       AS_LIST:
-      |       { [DN_COND_CLAUSE,P6,L52] SLOC(13,3)
-      |       |   AS_EXP: [DN_FUNCTION_CALL,P6,L10] SLOC(13,6)
-      |       |     AS_NAME: [DN_USED_OP,P6,L3] SLOC(13,6)
-      |       |       LX_SYMREP: [DN_SYMBOL_REP,P3,L9] "="
-      |       |       SM_DEFN: [DN_BLTN_OPERATOR_ID,P70,L6]
-      |       |     AS_GENERAL_ASSOC_S: [DN_GENERAL_ASSOC_S,P6,L7] SLOC(13,6)
-      |       |       AS_LIST:
-      |       |       { [DN_USED_OBJECT_ID,P5,L116] SLOC(13,6)
-      |       |       |   LX_SYMREP: [DN_SYMBOL_REP,P3,L78] C
-      |       |       |   SM_DEFN: [DN_VARIABLE_ID,P5,L91]
-      |       |       |   SM_EXP_TYPE: [DN_ENUMERATION,P18,L79]
-      |       |       | [DN_USED_CHAR,P5,L122] SLOC(13,10)
-      |       |       |   LX_SYMREP: [DN_SYMBOL_REP,P3,L84] 'Y'
-      |       |       |   SM_DEFN: [DN_CHARACTER_ID,P28,L0]
-      |       |       |   SM_EXP_TYPE: [DN_ENUMERATION,P18,L79]
-      |       |       |   SM_VALUE: HI noty=DN_NUM_VAL abss= 89 nsiz= 0 }
-      |       |     LX_PREFIX: HI noty=DN_FALSE abss= 0 nsiz= 0
-      |       |     SM_EXP_TYPE: [DN_ENUMERATION,P10,L100]
-      |       |     SM_NORMALIZED_PARAM_S: [DN_EXP_S,P187,L75] SLOC([DN_VOID,P0,L0])
-      |       |       AS_LIST:
-      |       |       { [DN_USED_OBJECT_ID,P5,L116] SLOC(13,6)
-      |       |       | [DN_USED_CHAR,P5,L122] SLOC(13,10) }
-      |       |   AS_STM_S: [DN_STM_S,P6,L49] SLOC(14,5)
-      |       |     AS_LIST: { [DN_PROCEDURE_CALL,P6,L44] SLOC(14,5)
-      |       |       AS_NAME: [DN_USED_NAME_ID,P187,L96] SLOC(14,5)
-      |       |       | LX_SYMREP: [DN_SYMBOL_REP,P3,L87] PUT
-      |       |       | SM_DEFN: [DN_PROCEDURE_ID,P107,L21]
-      |       |       AS_GENERAL_ASSOC_S: [DN_GENERAL_ASSOC_S,P6,L35] SLOC(14,8)
-      |       |       | AS_LIST: { [DN_STRING_LITERAL,P6,L30] SLOC(14,10)
-      |       |       |   LX_SYMREP: [DN_SYMBOL_REP,P3,L90] "OK" }
-      |       |       SM_NORMALIZED_PARAM_S: [DN_EXP_S,P187,L100] SLOC([DN_VOID,P0,L0])
-      |       |       | AS_LIST: { 
-      |       |       | [DN_STRING_LITERAL,P6,L30] } }
-      |       | [DN_COND_CLAUSE,P6,L120] SLOC(15,3)
-      |       |   AS_EXP: [DN_FUNCTION_CALL,P6,L78] SLOC(15,9)
-      |       |     AS_NAME: [DN_USED_OP,P6,L71] SLOC(15,9)
-      |       |       LX_SYMREP: [DN_SYMBOL_REP,P3,L9] "="
-      |       |       SM_DEFN: [DN_BLTN_OPERATOR_ID,P70,L6]
-      |       |     AS_GENERAL_ASSOC_S: [DN_GENERAL_ASSOC_S,P6,L75] SLOC(15,9)
-      |       |       AS_LIST:
-      |       |       { [DN_USED_OBJECT_ID,P6,L56] SLOC(15,9)
-      |       |       |   LX_SYMREP: [DN_SYMBOL_REP,P3,L78] C
-      |       |       |   SM_DEFN: [DN_VARIABLE_ID,P5,L91]
-      |       |       |   SM_EXP_TYPE: [DN_ENUMERATION,P18,L79]
-      |       |       | [DN_USED_CHAR,P6,L62] SLOC(15,13)
-      |       |       |   LX_SYMREP: [DN_SYMBOL_REP,P3,L93] 'N'
-      |       |       |   SM_DEFN: [DN_CHARACTER_ID,P26,L111]
-      |       |       |   SM_EXP_TYPE: [DN_ENUMERATION,P18,L79]
-      |       |       |   SM_VALUE: HI noty=DN_NUM_VAL abss= 78 nsiz= 0 }
-      |       |     LX_PREFIX: HI noty=DN_FALSE abss= 0 nsiz= 0
-      |       |     SM_EXP_TYPE: [DN_ENUMERATION,P10,L100]
-      |       |     SM_NORMALIZED_PARAM_S: [DN_EXP_S,P188,L63] SLOC([DN_VOID,P0,L0])
-      |       |       AS_LIST:
-      |       |       { [DN_USED_OBJECT_ID,P6,L56] SLOC(15,9)
-      |       |       | [DN_USED_CHAR,P6,L62] SLOC(15,13) }
-      |       |   AS_STM_S: [DN_STM_S,P6,L117] SLOC(16,5)
-      |       |     AS_LIST: { [DN_PROCEDURE_CALL,P6,L112] SLOC(16,5)
-      |       |       AS_NAME: [DN_USED_NAME_ID,P188,L84] SLOC(16,5)
-      |       |       | LX_SYMREP: [DN_SYMBOL_REP,P3,L87] PUT
-      |       |       | SM_DEFN: [DN_PROCEDURE_ID,P107,L21]
-      |       |       AS_GENERAL_ASSOC_S: [DN_GENERAL_ASSOC_S,P6,L103] SLOC(16,8)
-      |       |       | AS_LIST: { [DN_STRING_LITERAL,P6,L98] SLOC(16,10)
-      |       |       |   LX_SYMREP: [DN_SYMBOL_REP,P3,L96] "NOK" }
-      |       |       SM_NORMALIZED_PARAM_S: [DN_EXP_S,P188,L88] SLOC([DN_VOID,P0,L0])
-      |       |       | AS_LIST: { 
-      |       |       | [DN_STRING_LITERAL,P6,L98] } } }
-      |     AS_STM_S: [DN_STM_S,P7,L37] SLOC(18,5)
-      |       AS_LIST: { [DN_PROCEDURE_CALL,P7,L32] SLOC(18,5)
-      |       | AS_NAME: [DN_USED_NAME_ID,P188,L109] SLOC(18,5)
-      |       |   LX_SYMREP: [DN_SYMBOL_REP,P3,L87] PUT
-      |       |   SM_DEFN: [DN_PROCEDURE_ID,P107,L21]
-      |       | AS_GENERAL_ASSOC_S: [DN_GENERAL_ASSOC_S,P7,L23] SLOC(18,8)
-      |       |   AS_LIST: { [DN_STRING_LITERAL,P7,L18] SLOC(18,10)
-      |       |     LX_SYMREP: [DN_SYMBOL_REP,P3,L99] "??" }
-      |       | SM_NORMALIZED_PARAM_S: [DN_EXP_S,P188,L113] SLOC([DN_VOID,P0,L0])
-      |       |   AS_LIST: { 
-      |       |   [DN_STRING_LITERAL,P7,L18] } } }
-      | AS_ALTERNATIVE_S: [DN_ALTERNATIVE_S,P7,L53] SLOC(27,1)
-      |   AS_LIST: {  }
-      AS_HEADER: [DN_PROCEDURE_SPEC,P1,L84] SLOC(3,23)
-      | AS_PARAM_S: [DN_PARAM_S,P1,L81] SLOC(3,23)
-      |   AS_LIST: {  }
-    AS_PRAGMA_S: [DN_PRAGMA_S,P7,L69] SLOC(27,4)
+[DN_COMPILATION,P5,L95] SLOC(1,1)
+AS_COMPLTN_UNIT_S: [DN_COMPLTN_UNIT_S,P5,L92] SLOC(15,14)
+  AS_LIST: { [DN_COMPILATION_UNIT,P5,L82] SLOC(1,1)
+    AS_CONTEXT_ELEM_S: [DN_CONTEXT_ELEM_S,P1,L22] SLOC(1,1)
       AS_LIST: {  }
-    XD_TIMESTAMP: HI noty=DN_NUM_VAL abss= 555 nsiz= 0
-    XD_WITH_LIST:
-    { [DN_TRANS_WITH,P71,L0]
-      | TW_FILENAME: [DN_TXTREP,P9,L10] _STANDRD.DCL
-      | TW_COMP_UNIT: [DN_COMPILATION_UNIT,P10,L0]
-      [DN_TRANS_WITH,P73,L3]
-      | TW_FILENAME: [DN_TXTREP,P9,L20] DIS_BONJOUR.DCL
-      | TW_COMP_UNIT: [DN_COMPILATION_UNIT,P72,L0]
-      [DN_TRANS_WITH,P146,L15]
-      | TW_FILENAME: [DN_TXTREP,P9,L35] IO_EXCEPTIONS.DCL
-      | TW_COMP_UNIT: [DN_COMPILATION_UNIT,P144,L0]
-      [DN_TRANS_WITH,P146,L21]
-      | TW_FILENAME: [DN_TXTREP,P9,L41] TEXT_IO.DCL
-      | TW_COMP_UNIT: [DN_COMPILATION_UNIT,P74,L0] }
-    XD_PARENT: [DN_COMPILATION_UNIT,P72,L0]
-    XD_LIB_NAME: [DN_SYMBOL_REP,P8,L0] DIS_BONJOUR.BDY }
+    AS_ALL_DECL: [DN_SUBPROGRAM_BODY,P5,L74] SLOC(1,1)
+      AS_SOURCE_NAME: [DN_PROCEDURE_ID,P1,L25] SLOC(1,11)
+      | LX_SYMREP: [DN_SYMBOL_REP,P3,L57] BUG_2
+      | SM_FIRST: [DN_PROCEDURE_ID,P1,L25]
+      | SM_IS_INLINE: HI noty=DN_FALSE abss= 0 nsiz= 0
+      AS_BODY: [DN_BLOCK_BODY,P5,L66] SLOC(1,17)
+      | AS_ITEM_S: [DN_ITEM_S,P5,L43] SLOC(3,3)
+      |   AS_LIST: { [DN_SUBPROGRAM_BODY,P5,L38] SLOC(3,3)
+      |     AS_SOURCE_NAME: [DN_PROCEDURE_ID,P1,L53] SLOC(3,13)
+      |       LX_SYMREP: [DN_SYMBOL_REP,P3,L60] DEDANS
+      |       SM_FIRST: [DN_PROCEDURE_ID,P1,L53]
+      |       SM_IS_INLINE: HI noty=DN_FALSE abss= 0 nsiz= 0
+      |     AS_BODY: [DN_BLOCK_BODY,P5,L30] SLOC(3,21)
+      |       AS_ITEM_S: [DN_ITEM_S,P1,L81] SLOC(4,3)
+      |       | AS_LIST: {  }
+      |       AS_STM_S: [DN_STM_S,P5,L18] SLOC(6,1)
+      |       | AS_LIST: { [DN_BLOCK,P5,L9] SLOC(6,1)
+      |       |   AS_SOURCE_NAME: [DN_BLOCK_LOOP_ID,P5,L13] SLOC(6,1)
+      |       |     LX_SYMREP: [DN_SYMBOL_REP,P3,L63] BLOC_A
+      |       |   AS_BLOCK_BODY: [DN_BLOCK_BODY,P1,L119] SLOC(7,5)
+      |       |     AS_ITEM_S: [DN_ITEM_S,P1,L96] SLOC(6,7)
+      |       |       AS_LIST: {  }
+      |       |     AS_STM_S: [DN_STM_S,P1,L113] SLOC(8,7)
+      |       |       AS_LIST: { [DN_NULL_STM,P1,L111] SLOC(8,7) }
+      |       |     AS_ALTERNATIVE_S: [DN_ALTERNATIVE_S,P1,L116] SLOC(9,5)
+      |       |       AS_LIST: {  } }
+      |       AS_ALTERNATIVE_S: [DN_ALTERNATIVE_S,P5,L21] SLOC(11,3)
+      |       | AS_LIST: {  }
+      |     AS_HEADER: [DN_PROCEDURE_SPEC,P1,L72] SLOC(3,21)
+      |       AS_PARAM_S: [DN_PARAM_S,P1,L69] SLOC(3,21)
+      |       | AS_LIST: {  } }
+      | AS_STM_S: [DN_STM_S,P5,L60] SLOC(14,3)
+      |   AS_LIST: { [DN_NULL_STM,P5,L58] SLOC(14,3) }
+      | AS_ALTERNATIVE_S: [DN_ALTERNATIVE_S,P5,L63] SLOC(15,1)
+      |   AS_LIST: {  }
+      AS_HEADER: [DN_PROCEDURE_SPEC,P1,L44] SLOC(1,17)
+      | AS_PARAM_S: [DN_PARAM_S,P1,L41] SLOC(1,17)
+      |   AS_LIST: {  }
+    AS_PRAGMA_S: [DN_PRAGMA_S,P5,L79] SLOC(15,14)
+      AS_LIST: {  } }

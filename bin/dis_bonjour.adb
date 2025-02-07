@@ -1,31 +1,34 @@
 with TEXT_IO;
 use  TEXT_IO;
 procedure DIS_BONJOUR is
+  IMI	: STRING	:= INTEGER'IMAGE( -15 );
+
 --  NOM	:constant STRING	:= "Vincent";
 --  MSG	:constant STRING	:= "Merci !";
 --  C	: CHARACTER	:= 'N';
 begin
+  PUT( IMI );
 --  PUT( NOM );
 --  PUT( " !" );
 
-	EXT_LOOP:
-loop
-		GET_CHAR_LOOP:
-  loop
-BLOC_CHAR:
-    declare
-      C	: CHARACTER	:= 'N';
-    begin
-      PUT( " Entrez un caractere : " );
-      GET( C );
-      exit when C = 'q';
-      exit EXT_LOOP when C = 'x';
-      PUT( C );
-    end BLOC_CHAR;
-  end loop GET_CHAR_LOOP;
-  PUT( "Demi sortie !" );
-  NEW_LINE;
-end loop EXT_LOOP;
+--	EXT_LOOP:
+--loop
+--		GET_CHAR_LOOP:
+--  loop
+--BLOC_CHAR:
+--    declare
+--      C	: CHARACTER	:= 'N';
+--    begin
+--      PUT( " Entrez un caractere : " );
+--      GET( C );
+--      exit when C = 'q';
+--      exit EXT_LOOP when C = 'x';
+--      PUT( C );
+--    end BLOC_CHAR;
+--  end loop GET_CHAR_LOOP;
+--  PUT( "Demi sortie !" );
+--  NEW_LINE;
+--end loop EXT_LOOP;
 
 --  NEW_LINE;
 
