@@ -50,6 +50,7 @@ is
   TT			: SEMSTAK_UNIT;
   NODE_CREATED		: BOOLEAN;								--| NOEUD CREE PAR REDUCTION
 
+
 				--------
   procedure			SET_DFLT		( NODE :TREE )	is separate;			--| POUR INITIALISATIONS
 				--------
@@ -317,7 +318,7 @@ is
     SEMSTAK( SSITOP ) := AUXA;
     NODE_CREATED	  := TRUE;
 
-    if DEBUG_SEM then
+    if  DEBUG_SEM  then
       NEW_LINE; PUT( "pushed AUXA = " & SEMSTAK_ELMT_KIND'IMAGE( AUXA.KIND ) & ' ' );
       case AUXA.KIND is
       when NODE_ELMT | TOKEN_ELMT => PRINT_NODE( AUXA.ELMT );
@@ -502,18 +503,40 @@ is
       AUXA := SEMSTAK( SSITOP );  SEMSTAK( SSITOP ) := SEMSTAK( SSITOP - 2 );  SEMSTAK( SSITOP - 2 ) := AUXA;
 
     when G_CHECK_NAME =>
+      if  DEBUG_SEM  then
+        PUT_LINE( " ssitop " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP ).KIND ) );
+        PRINT_NODE( SEMSTAK( SSITOP ).ELMT );
+        PUT_LINE( " ssitop-1 " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP-1 ).KIND ) );
+        PRINT_NODE( SEMSTAK( SSITOP-1 ).ELMT );
+        PUT_LINE( " ssitop-2 " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP-2 ).KIND ) );
+        PRINT_NODE( SEMSTAK( SSITOP-2 ).ELMT );
+--        PUT_LINE( " ssitop-3 " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP-3 ).KIND ) );
+--        PRINT_NODE( SEMSTAK( SSITOP-3 ).ELMT );
+--        PUT_LINE( " ssitop-4 " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP-4 ).KIND ) );
+--        PRINT_NODE( SEMSTAK( SSITOP-4 ).ELMT );
+--        PUT_LINE( " ssitop-5 " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP-5 ).KIND ) );
+--        PRINT_NODE( SEMSTAK( SSITOP-5 ).ELMT );
+      end if;
 
-put_line( " check name " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP ).KIND ) );
-
+      declare
+        FIRST_STR	:constant STRING	:= PRINT_NAME( SEMSTAK( SSITOP-2 ).ELMT );
+        SECND_STR	:constant STRING	:= PRINT_NAME( AUXA.ELMT );
+      begin
+        if  SECND_STR /= FIRST_STR  then
+	ERROR( AUXA.SPOS, "identifier " & FIRST_STR & " expected" );
+        end if;
+      end;
       SSITOP := SSITOP - 1;
 
     when G_CHECK_SUBP_NAME =>
-
-put_line( " ssitop " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP ).KIND ) );
-PRINT_NODE( SEMSTAK( SSITOP ).ELMT );
-put_line( " ssitop-1 " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP-1 ).KIND ) );
- PRINT_NODE( SEMSTAK( SSITOP-1 ).ELMT );
-
+      declare
+        FIRST_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, SEMSTAK( SSITOP-5 ).ELMT ) );
+        SECND_STR	:constant STRING	:= PRINT_NAME( AUXA.ELMT );
+      begin
+        if  SECND_STR /= FIRST_STR  then
+	ERROR( AUXA.SPOS, "identifier " & FIRST_STR & " expected" );
+        end if;
+      end;
       SSITOP := SSITOP - 1;
 
     when G_CHECK_ACCEPT_NAME =>
@@ -536,23 +559,26 @@ put_line( " check accept name " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP ).KIN
   procedure			PARSE_COMPILATION
 				-----------------
   is
-    type STACK_TYPE	is record
-		  STATE	: POSITIVE;
-		  SRCPOS	: TREE;
-		end record;
-    STACK_MAX	: constant		:= 125;
-    STACK		: array( 1 .. STACK_MAX ) of STACK_TYPE;
-    SP		: INTEGER range 1 .. STACK_MAX:= 1;					--| POINTEUR DE PILE SYNTAXIQUE
-    STATE		: POSITIVE		:= 1;					--| ETAT D ANALYSEUR INITIALISE A 1
-    AP		: INTEGER;
-    ACTION	: INTEGER;
-    ASYM		: AC_BYTE;
-    NBR_OF_SYLS	: NATURAL;							-- NUMBER OF SYLLABLES TO BE POPPED
-    ZERO_BYTE	: constant AC_BYTE		:= 0;
+    type STACK_TYPE		is record
+			  STATE	: POSITIVE;
+			  SRCPOS	: TREE;
+			end record;
 
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE DEBUG_PRINT
-  procedure DEBUG_PRINT ( TXT : STRING ) is
+    STACK_MAX		:constant			:= 125;
+    STACK			: array( 1 .. STACK_MAX ) of STACK_TYPE;
+    SP			: INTEGER range 1 .. STACK_MAX	:= 1;					--| POINTEUR DE PILE SYNTAXIQUE
+    STATE			: POSITIVE			:= 1;					--| ETAT D ANALYSEUR INITIALISE A 1
+    AP			: INTEGER;
+    ACTION		: INTEGER;
+    ASYM			: AC_BYTE;
+    NBR_OF_SYLS		: NATURAL;							-- NUMBER OF SYLLABLES TO BE POPPED
+    ZERO_BYTE		:constant AC_BYTE			:= 0;
+
+
+				-----------
+  procedure			DEBUG_PRINT		( TXT : STRING )
+				-----------
+  is
   begin
     for I in 2 .. SP loop
       PUT("  ");
@@ -563,24 +589,29 @@ put_line( " check accept name " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP ).KIN
     else
       PUT_LINE( TXT );
     end if;
-  end DEBUG_PRINT;
-  --|-----------------------------------------------------------------------------------------------
-  --|	PROCEDURE DEBUG_PRINT
-  procedure DEBUG_PRINT ( V : TREE ) is
+
+  end	DEBUG_PRINT;
+	-----------
+
+
+				-----------
+  procedure			DEBUG_PRINT		( V : TREE )
+				-----------
+  is
   begin
     DEBUG_PRINT( PRINT_NAME( V ) );
   end DEBUG_PRINT;
       
   begin
-    LTYPE     := LT_END_MARK;								--| INITIALISER A LIGNE VIDE
-    SOURCEPOS := TREE_VOID;								--| INITIALISER LA POSITION SOURCE A VIDE
-    GET_TOKEN;									--| ALLER CHERCHER UN LEXEME
+    LTYPE     := LT_END_MARK;										--| INITIALISER A LIGNE VIDE
+    SOURCEPOS := TREE_VOID;										--| INITIALISER LA POSITION SOURCE A VIDE
+    GET_TOKEN;											--| ALLER CHERCHER UN LEXEME
       
     STACK( 1 ).STATE  := 1;
     STACK( 1 ).SRCPOS := SOURCEPOS;
     STACK( 2 ).SRCPOS := SOURCEPOS;
       
-    SSITOP := 0;									-- START WITH EMPTY SEMANTIC STACK
+    SSITOP := 0;											-- START WITH EMPTY SEMANTIC STACK
 
     loop
       AP := GRMR_TBL.GRMR.ST_TBL( STATE );
@@ -597,7 +628,7 @@ put_line( " check accept name " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP ).KIN
         ACTION := INTEGER( GRMR_TBL.GRMR.AC_TBL( AP ) );
       end if;
 
-      if ACTION > 0 then								-- CAN'T BE SEMANTICS SINCE DIDN'T INDIRECT
+      if ACTION > 0 then										-- CAN'T BE SEMANTICS SINCE DIDN'T INDIRECT
 
         if DEBUG_PARSE then
  	if LTYPE in LT_WITH_SEMANTICS or else LTYPE = LT_ERROR then
@@ -607,7 +638,7 @@ put_line( " check accept name " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP ).KIN
 	end if;
         end if;
             
-            -- ADD TO SEMANTIC STACK IF THIS TOKEN HAS SEMANTICS
+					-- ADD TO SEMANTIC STACK IF THIS TOKEN HAS SEMANTICS
         if LTYPE in LT_WITH_SEMANTICS then
           if LTYPE = LT_NUMERIC_LIT then
             AUXA := ( TOKEN_ELMT, SOURCEPOS, STORE_TEXT( TOKEN_STRING ) );
@@ -617,7 +648,7 @@ put_line( " check accept name " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP ).KIN
           PUSH_AUXA_NODE;
         end if;
            
-        if LTYPE = LT_END_MARK then							--| ARRIVE EN FIN DE COMPILATION
+        if LTYPE = LT_END_MARK then									--| ARRIVE EN FIN DE COMPILATION
           if SP /= 2 then
             PUT_LINE( "FIN COMPILE MAIS SP = " & INTEGER'IMAGE( SP ) );
           end if;
@@ -627,7 +658,7 @@ put_line( " check accept name " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP ).KIN
             AUXA := SEMSTAK( 1 );
             if AUXA.KIND /= NODE_ELMT then
               PUT_LINE( "FIN COMPILE MAIS SEMSTAK(1) PAS UN NOEUD." );
-            else									--| SAUVER L'ARBRE SYNTAXIQUE DANS LE XD_STRUCTURE DU USER_ROOT
+            else											--| SAUVER L'ARBRE SYNTAXIQUE DANS LE XD_STRUCTURE DU USER_ROOT
               D( XD_STRUCTURE, USER_ROOT, AUXA.ELMT );
               if DEBUG_PARSE then PRINT_NODE( D( XD_STRUCTURE, USER_ROOT ) ); end if;
             end if;
@@ -642,13 +673,13 @@ put_line( " check accept name " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP ).KIN
         STACK( SP+1 ).SRCPOS := SOURCEPOS;
         GET_TOKEN;
                
-      elsif ACTION = 0 then								--| ERREUR DE SYNTAXE
-        PUT_LINE( SLINE.BDY( 1 .. SLINE.LEN ) );						--| AFFICHER LA LIGNE CONCERNEE
-        ERROR( SOURCEPOS, "ERREUR DE SYNTAXE - " & SLINE.BDY( F_COL..E_COL ) );			--| INSERE UN NOEUD ERREUR ET AFFICHE UN MESSAGE
+      elsif ACTION = 0 then										--| ERREUR DE SYNTAXE
+        PUT_LINE( SLINE.BDY( 1 .. SLINE.LEN ) );								--| AFFICHER LA LIGNE CONCERNEE
+        ERROR( SOURCEPOS, "ERREUR DE SYNTAXE - " & SLINE.BDY( F_COL..E_COL ) );					--| INSERE UN NOEUD ERREUR ET AFFICHE UN MESSAGE
         exit;
 
       else
-       -- SEMANTIC AND REDUCE ACTIONS
+					-- SEMANTIC AND REDUCE ACTIONS
         NODE_CREATED := FALSE;
         loop
 
@@ -657,7 +688,7 @@ put_line( " check accept name " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP ).KIN
             loop
               ACTION := INTEGER( GRMR_TBL.GRMR.AC_TBL( AP ) );
               exit when ACTION <= 0;
-              BUILD_TREE( ACTION, AP );							--| CONSTRUCTION DE L ARBRE INCREMENTE AP EN INTERNE
+              BUILD_TREE( ACTION, AP );									--| CONSTRUCTION DE L ARBRE INCREMENTE AP EN INTERNE
             end loop;
           end if;
 
@@ -695,32 +726,38 @@ put_line( " check accept name " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP ).KIN
             exit;
 
           else
-            PUT_LINE ( "!! PARSE_TABLE_ERROR" );
+            PUT_LINE( "!! PARSE_TABLE_ERROR" );
             raise PROGRAM_ERROR;
           end if;
 
         end loop;
       end if;
     end loop;
-  end PARSE_COMPILATION;
-   
+
+  end	PARSE_COMPILATION;
+	-----------------
+
 begin
-  READ_PARSE_TABLES;								--| TABLES DE LA GRAMMAIRE LUES DANS PARSE.BIN
-  OPEN( IFILE, IN_FILE, PATH_TEXTE & NOM_TEXTE );						--| OUVRIR LE FICHIER SOURCE A COMPILER
+  READ_PARSE_TABLES;										--| TABLES DE LA GRAMMAIRE LUES DANS PARSE.BIN
+  OPEN( IFILE, IN_FILE, PATH_TEXTE & NOM_TEXTE );								--| OUVRIR LE FICHIER SOURCE A COMPILER
   PUT( "ada83 compiling " & PATH_TEXTE & NOM_TEXTE );
-  CREATE_IDL_TREE_FILE( IDL.LIB_PATH( 1..LIB_PATH_LENGTH ) & "$$$.TMP" );			--| CREER LE FICHIER D'ARBRE (AVEC SON NOEUD RACINE DE TYPE DN_ROOT)
-  USER_ROOT := MAKE( DN_USER_ROOT );							--| CREER UN NOEUD RACINE SECONDAIRE DU TYPE DN_USER_ROOT
-  D( XD_USER_ROOT, TREE_ROOT, USER_ROOT );						--| NOEUD USER_ROOT DANS LE CHAMP XD_USER_ROOT DU NOEUD TREE_ROOT
-  D( XD_SOURCENAME, USER_ROOT, STORE_TEXT( NOM_TEXTE ) );					--| NOM DU SOURCE DANS LE CHAMP XD_XOURCENAME DU NOEUD USER_ROOT
+  CREATE_IDL_TREE_FILE( IDL.LIB_PATH( 1..LIB_PATH_LENGTH ) & "$$$.TMP" );					--| CREER LE FICHIER D'ARBRE (AVEC SON NOEUD RACINE DE TYPE DN_ROOT)
+  USER_ROOT := MAKE( DN_USER_ROOT );									--| CREER UN NOEUD RACINE SECONDAIRE DU TYPE DN_USER_ROOT
+  D( XD_USER_ROOT,  TREE_ROOT, USER_ROOT );								--| NOEUD USER_ROOT DANS LE CHAMP XD_USER_ROOT DU NOEUD TREE_ROOT
+  D( XD_SOURCENAME, USER_ROOT, STORE_TEXT( NOM_TEXTE ) );							--| NOM DU SOURCE DANS LE CHAMP XD_XOURCENAME DU NOEUD USER_ROOT
       
-  PARSE_COMPILATION;								--| EFFECTUER LA PHASE D'ANALYSE SYNTAXIQUE DU SOURCE
+  PARSE_COMPILATION;										--| EFFECTUER LA PHASE D'ANALYSE SYNTAXIQUE DU SOURCE
       
-  D( XD_SOURCE_LIST, TREE_ROOT, SOURCE_LIST.FIRST );					--| STOCKE LA LISTE SOURCE_LIST DANS L'ATTRIBUT XD_SOURCE_LIST
+  D( XD_SOURCE_LIST, TREE_ROOT, SOURCE_LIST.FIRST );							--| STOCKE LA LISTE SOURCE_LIST DANS L'ATTRIBUT XD_SOURCE_LIST
   CLOSE( IFILE );
-  CLOSE_PAGE_MANAGER;								--| FERMER LE FICHIER ARBRE
+  CLOSE_PAGE_MANAGER;										--| FERMER LE FICHIER ARBRE
+
 exception
   when NAME_ERROR =>
     PUT_LINE( "FILE NOT FOUND : " & PATH_TEXTE & NOM_TEXTE );
     raise;
---|-------------------------------------------------------------------------------------------------
-end PAR_PHASE;
+
+end	PAR_PHASE;
+	---------
+
+--	1	2	3	4	5	6	7	8	9	10	11	12

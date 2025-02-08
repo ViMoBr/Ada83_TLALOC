@@ -403,6 +403,7 @@ end;
 
 				----------
   procedure			EMIT_ERROR		( SP_ARG :TREE; MSG :STRING )
+				----------
   is
     SP			: TREE		:= SP_ARG;
     SRC_LIN		: TREE;
@@ -423,11 +424,12 @@ end;
 	----------
 
 
-				--===--
-  procedure			 ERROR			( T :TREE; MSG :STRING )
+				-----
+  procedure			ERROR			( T :TREE; MSG :STRING )
+				-----
   is
   begin
-    if PRAGMA_CONTEXT /= TREE_VOID then
+    if  PRAGMA_CONTEXT /= TREE_VOID  then
       DABS( 3, PRAGMA_CONTEXT, TREE_VOID );
 --      D( SM_DEFN, PRAGMA_CONTEXT, TREE_VOID );
       WARNING( T, MSG );
@@ -442,8 +444,8 @@ end;
       end;
     end if;
 
-  end	 ERROR;
-	--===--
+  end	ERROR;
+	-----
 
 
 

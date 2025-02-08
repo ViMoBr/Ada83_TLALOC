@@ -4,12 +4,14 @@ procedure BUG_2 is
   begin
 
 BLOC_A:
+    declare
+      i :integer := 0;
     begin
-      null;
-    end PAS_BLOC_A;
+      i:= 1;
+    end;
 
-  end PAS_DEDANS;
+  end DEDANS;
 
 begin
   null;
-end PAS_BUG_2;	-- ca passe !
+end BUG_2;	-- ca passe !
