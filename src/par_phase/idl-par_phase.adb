@@ -19,8 +19,8 @@ is
   SOURCEPOS		: TREE;									--| POINTEUR VERS UN NOEUD POSITION SOURCE
   TOKENSYM		: LEX_TYPE;								--| BYTE WITH TER/NONTER REP
    
-  DEBUG_PARSE		: BOOLEAN		:= TRUE;							--| PRINT PARSE TREE WHILE PARSING
-  DEBUG_SEM		: BOOLEAN		:= TRUE;							--| PRINT SEMANTICS WHILE PARSING
+  DEBUG_PARSE		: BOOLEAN		:= FALSE;							--| PRINT PARSE TREE WHILE PARSING
+  DEBUG_SEM		: BOOLEAN		:= FALSE;							--| PRINT SEMANTICS WHILE PARSING
 
 
 		--| PILE POUR ACTIONS SEMANTIQUES CONSTRUCTIVES DE L ANALYSE SYNTAXIQUE
@@ -255,7 +255,7 @@ is
     XX	: SEMSTAK_UNIT;
   begin
     POP_ITEM( XX );
-    if XX.KIND /= TOKEN_ELMT then
+    if  XX.KIND /= TOKEN_ELMT  then
       TABLE_ERROR( "POP_TOKEN : JETON ATTENDU SUR SEMSTAK." );
     end if;
     AA := XX;
@@ -271,7 +271,7 @@ is
     XX	: SEMSTAK_UNIT;
   begin
     POP_ITEM( XX );
-    if XX.KIND = NODE_ELMT or else XX.KIND = TOKEN_ELMT then
+    if  XX.KIND = NODE_ELMT  or else  XX.KIND = TOKEN_ELMT  then
       TABLE_ERROR( "POP_LIST : LISTE ATTENDUE SUR SEMSTAK." );
     end if;
     AA := XX;
@@ -421,7 +421,7 @@ is
     when N_L =>
       POP_LIST( TT );  MAKE_AUXA_NODE( ACTION );  LIST( AUXA.ELMT, TT.SEQ );  PUSH_AUXA_NODE;
 
-      if DEBUG_SEM then
+      if  DEBUG_SEM  then
         PUT( "TT = " ); PRINT_NODE( TT.SEQ.FIRST );
       end if;
 
@@ -445,7 +445,7 @@ is
     when G_LX_NUMREP =>										--| PLACE LE NUMREP TT DANS LA TETE DE PILE
       POP_NODE( AUXA );  POP_TOKEN( TT );
             
-      if TT.ELMT.TY /= DN_TXTREP then
+      if  TT.ELMT.TY /= DN_TXTREP  then
         TABLE_ERROR( "TXTREP EXPECTED FOR LX_NUMREP." );
       end if;
             
@@ -471,16 +471,16 @@ is
     when G_APPEND =>										--| AJOUTE EN FIN LE NOEUD TT A UNE LISTE REMISE EN TETE DE PILE
       POP_NODE( TT );  POP_LIST( AUXA );
       AUXA.SEQ := APPEND( AUXA.SEQ, TT.ELMT );
-      if AUXA.SPOS = TREE_VOID then
+      if  AUXA.SPOS = TREE_VOID  then
         AUXA.SPOS := TT.SPOS;
       end if;
       PUSH_AUXA_NODE;
 
     when G_CAT =>											--| CONCATENER DEUX LISTES TT A AUXA
       POP_LIST( TT );  POP_LIST( AUXA );
-      if AUXA.SEQ.FIRST = TREE_NIL then
+      if  AUXA.SEQ.FIRST = TREE_NIL  then
         AUXA := TT;
-      elsif TT.SEQ.FIRST = TREE_NIL then
+      elsif  TT.SEQ.FIRST = TREE_NIL  then
         null;
       else
         AUXA.SEQ := APPEND( AUXA.SEQ, TT.SEQ.FIRST );
@@ -564,14 +564,14 @@ put_line( " check accept name " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP ).KIN
 			  SRCPOS	: TREE;
 			end record;
 
-    STACK_MAX		:constant			:= 125;
+    STACK_MAX		:constant				:= 125;
     STACK			: array( 1 .. STACK_MAX ) of STACK_TYPE;
     SP			: INTEGER range 1 .. STACK_MAX	:= 1;					--| POINTEUR DE PILE SYNTAXIQUE
     STATE			: POSITIVE			:= 1;					--| ETAT D ANALYSEUR INITIALISE A 1
     AP			: INTEGER;
     ACTION		: INTEGER;
     ASYM			: AC_BYTE;
-    NBR_OF_SYLS		: NATURAL;							-- NUMBER OF SYLLABLES TO BE POPPED
+    NBR_OF_SYLS		: NATURAL;								--| NUMBER OF SYLLABLES TO BE POPPED
     ZERO_BYTE		:constant AC_BYTE			:= 0;
 
 
@@ -580,11 +580,11 @@ put_line( " check accept name " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP ).KIN
 				-----------
   is
   begin
-    for I in 2 .. SP loop
+    for  I in 2 .. SP  loop
       PUT("  ");
     end loop;
     PUT( 's' & POSITIVE'IMAGE( STATE ) & '~' );
-    if 2 * SP + TXT'LENGTH > 77 then
+    if  2 * SP + TXT'LENGTH > 77  then
       PUT_LINE( TXT( TXT'FIRST .. 77 - 2 * SP ) );
     else
       PUT_LINE( TXT );
@@ -616,22 +616,22 @@ put_line( " check accept name " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP ).KIN
     loop
       AP := GRMR_TBL.GRMR.ST_TBL( STATE );
 
-      if AP <= 0 then
+      if  AP <= 0  then
         ACTION := AP;
       else
        -- POINTS TO SHIFT STUFF
         loop
           ASYM := GRMR_TBL.GRMR.AC_SYM( AP );
-          exit when ASYM = ZERO_BYTE or else ASYM = LEX_TYPE'POS( TOKENSYM );
+          exit when  ASYM = ZERO_BYTE  or else  ASYM = LEX_TYPE'POS( TOKENSYM );
           AP := AP + 1;
         end loop;
         ACTION := INTEGER( GRMR_TBL.GRMR.AC_TBL( AP ) );
       end if;
 
-      if ACTION > 0 then										-- CAN'T BE SEMANTICS SINCE DIDN'T INDIRECT
+      if  ACTION > 0  then										-- CAN'T BE SEMANTICS SINCE DIDN'T INDIRECT
 
-        if DEBUG_PARSE then
- 	if LTYPE in LT_WITH_SEMANTICS or else LTYPE = LT_ERROR then
+        if  DEBUG_PARSE  then
+ 	if  LTYPE in LT_WITH_SEMANTICS  or else  LTYPE = LT_ERROR  then
 	  DEBUG_PRINT( LEX_IMAGE( LTYPE ) & "\" & TOKEN_STRING);
 	else
 	  DEBUG_PRINT( TOKEN_STRING );
@@ -639,8 +639,8 @@ put_line( " check accept name " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP ).KIN
         end if;
             
 					-- ADD TO SEMANTIC STACK IF THIS TOKEN HAS SEMANTICS
-        if LTYPE in LT_WITH_SEMANTICS then
-          if LTYPE = LT_NUMERIC_LIT then
+        if  LTYPE in LT_WITH_SEMANTICS  then
+          if  LTYPE = LT_NUMERIC_LIT  then
             AUXA := ( TOKEN_ELMT, SOURCEPOS, STORE_TEXT( TOKEN_STRING ) );
           else
             AUXA := ( TOKEN_ELMT, SOURCEPOS, STORE_SYM( TOKEN_STRING ) );
@@ -648,19 +648,19 @@ put_line( " check accept name " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP ).KIN
           PUSH_AUXA_NODE;
         end if;
            
-        if LTYPE = LT_END_MARK then									--| ARRIVE EN FIN DE COMPILATION
-          if SP /= 2 then
+        if  LTYPE = LT_END_MARK  then									--| ARRIVE EN FIN DE COMPILATION
+          if  SP /= 2  then
             PUT_LINE( "FIN COMPILE MAIS SP = " & INTEGER'IMAGE( SP ) );
           end if;
-          if SSITOP /= 1 then
+          if  SSITOP /= 1  then
             PUT( "FIN COMPILE MAIS SSITOP = " & INTEGER'IMAGE( SSITOP ) );
           else
             AUXA := SEMSTAK( 1 );
-            if AUXA.KIND /= NODE_ELMT then
+            if  AUXA.KIND /= NODE_ELMT  then
               PUT_LINE( "FIN COMPILE MAIS SEMSTAK(1) PAS UN NOEUD." );
             else											--| SAUVER L'ARBRE SYNTAXIQUE DANS LE XD_STRUCTURE DU USER_ROOT
               D( XD_STRUCTURE, USER_ROOT, AUXA.ELMT );
-              if DEBUG_PARSE then PRINT_NODE( D( XD_STRUCTURE, USER_ROOT ) ); end if;
+              if  DEBUG_PARSE  then PRINT_NODE( D( XD_STRUCTURE, USER_ROOT ) ); end if;
             end if;
           end if;
           exit;
@@ -673,8 +673,7 @@ put_line( " check accept name " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP ).KIN
         STACK( SP+1 ).SRCPOS := SOURCEPOS;
         GET_TOKEN;
                
-      elsif ACTION = 0 then										--| ERREUR DE SYNTAXE
-        PUT_LINE( SLINE.BDY( 1 .. SLINE.LEN ) );								--| AFFICHER LA LIGNE CONCERNEE
+      elsif  ACTION = 0  then										--| ERREUR DE SYNTAXE
         ERROR( SOURCEPOS, "ERREUR DE SYNTAXE - " & SLINE.BDY( F_COL..E_COL ) );					--| INSERE UN NOEUD ERREUR ET AFFICHE UN MESSAGE
         exit;
 
@@ -683,16 +682,16 @@ put_line( " check accept name " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP ).KIN
         NODE_CREATED := FALSE;
         loop
 
-          if ACTION > -10000 then  -- TRANSFER TO SEMANTIC ACTION TABLE
+          if  ACTION > -10000  then  -- TRANSFER TO SEMANTIC ACTION TABLE
             AP := - ACTION; -- TRANSFER IN TABLE
             loop
               ACTION := INTEGER( GRMR_TBL.GRMR.AC_TBL( AP ) );
-              exit when ACTION <= 0;
+              exit when  ACTION <= 0;
               BUILD_TREE( ACTION, AP );									--| CONSTRUCTION DE L ARBRE INCREMENTE AP EN INTERNE
             end loop;
           end if;
 
-          if ACTION > -30000 and ACTION <= -10000 then
+          if  ACTION > -30000 and ACTION <= -10000  then
                  -- REDUCE
             ACTION      :=  - ACTION - 10000;
             NBR_OF_SYLS := ACTION/1000;
@@ -700,8 +699,9 @@ put_line( " check accept name " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP ).KIN
             SP := SP - NBR_OF_SYLS; -- POP THE STACK
             STATE := STACK( SP ).STATE;
             SEMSTAK( SSITOP ).SPOS := STACK( SP+1 ).SRCPOS;
-            if NODE_CREATED and then SEMSTAK( SSITOP ).KIND = NODE_ELMT
-               and then SEMSTAK( SSITOP ).ELMT /= TREE_VOID then
+            if  NODE_CREATED  and then  SEMSTAK( SSITOP ).KIND = NODE_ELMT
+                and then  SEMSTAK( SSITOP ).ELMT /= TREE_VOID
+	  then
               D( LX_SRCPOS, SEMSTAK( SSITOP ).ELMT, SEMSTAK( SSITOP ).SPOS);
             end if;
                   -- FIND GOTO FOR NONTERMINAL IN THIS STATE
@@ -709,16 +709,16 @@ put_line( " check accept name " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP ).KIN
             loop
               AP := AP - 1;
               ASYM := GRMR_TBL.GRMR.AC_SYM( AP );
-              if ASYM = ZERO_BYTE then
+              if  ASYM = ZERO_BYTE  then
                 PUT_LINE ( "!! ****** NONTER GOTO NOT FOUND." );
                 raise PROGRAM_ERROR;
               end if;
-              exit when INTEGER( ASYM ) = ACTION;
+              exit when  INTEGER( ASYM ) = ACTION;
             end loop;
             STATE := INTEGER( GRMR_TBL.GRMR.AC_TBL( AP ) );
             SP := SP + 1;
             STACK( SP ).STATE := STATE;
-            if NBR_OF_SYLS = 0 then
+            if  NBR_OF_SYLS = 0  then
                     -- NULLABLE REDUCTION; SRCPOS NOT ALREADY THERE
               STACK( SP ).SRCPOS := SOURCEPOS;
             end if;
