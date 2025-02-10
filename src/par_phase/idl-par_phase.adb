@@ -342,7 +342,7 @@ is
   begin
 
     if  DEBUG_SEM  then
-      PUT( "action construction : " & GRMR_OP_IMAGE( ACTION_OP ) );
+      PUT_LINE( "action construction : " & GRMR_OP_IMAGE( ACTION_OP ) );
     end if;
 
     case ACTION_OP is
@@ -502,40 +502,80 @@ is
     when G_EXCH_2 =>
       AUXA := SEMSTAK( SSITOP );  SEMSTAK( SSITOP ) := SEMSTAK( SSITOP - 2 );  SEMSTAK( SSITOP - 2 ) := AUXA;
 
-    when G_CHECK_NAME =>
+    when G_CHECK_NAME =>										-- VERIFIER L IDENTITE DU NOM DE FIN DE BLOC AVEC CELUI DU BLOC
+
       if  DEBUG_SEM  then
-        PUT_LINE( " ssitop " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP ).KIND ) );
-        PRINT_NODE( SEMSTAK( SSITOP ).ELMT );
-        PUT_LINE( " ssitop-1 " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP-1 ).KIND ) );
-        PRINT_NODE( SEMSTAK( SSITOP-1 ).ELMT );
-        PUT_LINE( " ssitop-2 " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP-2 ).KIND ) );
-        PRINT_NODE( SEMSTAK( SSITOP-2 ).ELMT );
---        PUT_LINE( " ssitop-3 " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP-3 ).KIND ) );
---        PRINT_NODE( SEMSTAK( SSITOP-3 ).ELMT );
---        PUT_LINE( " ssitop-4 " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP-4 ).KIND ) );
---        PRINT_NODE( SEMSTAK( SSITOP-4 ).ELMT );
---        PUT_LINE( " ssitop-5 " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP-5 ).KIND ) );
---        PRINT_NODE( SEMSTAK( SSITOP-5 ).ELMT );
+        for  I in 0 .. 6  loop
+	exit when  SSITOP-I < 1;
+	declare
+	  SEK	: SEMSTAK_ELMT_KIND	:= SEMSTAK( SSITOP-I ).KIND;
+	begin
+	  PUT_LINE( " ssitop -" & INTEGER'IMAGE( I ) & ' ' & SEMSTAK_ELMT_KIND'IMAGE( SEK ) );
+	  if  SEK /= LIST_ELMT  then PRINT_NODE( SEMSTAK( SSITOP-I ).ELMT ); end if;
+	end;
+        end loop;
+      end if;
+
+      if  SEMSTAK( SSITOP-2).KIND = NODE_ELMT  then
+        declare
+	SYM_REP_ORIGINE	: TREE		:= SEMSTAK( SSITOP-2 ).ELMT;
+        begin
+	declare
+	  CHECK_ELMT_TY	: NODE_NAME	:= SEMSTAK( SSITOP-2 ).ELMT.TY;
+	begin
+	if  CHECK_ELMT_TY = DN_PACKAGE_ID  or  CHECK_ELMT_TY = DN_GENERIC_ID  then				--| FIN DE PACK OU DE GENERIQUE
+	  SYM_REP_ORIGINE := D( LX_SYMREP, SEMSTAK( SSITOP-2 ).ELMT );
+	elsif  CHECK_ELMT_TY = DN_VOID  or  CHECK_ELMT_TY = DN_WHILE
+	       or  CHECK_ELMT_TY = DN_FOR  or CHECK_ELMT_TY = DN_REVERSE  then				--| FIN DE BLOC OU DE BOUCLE WHILE OU FOR/REVERSE
+	  SYM_REP_ORIGINE := SEMSTAK( SSITOP-3 ).ELMT;
+	end if;
+          end;
+
+          declare
+	  FIRST_STR	:constant STRING	:= PRINT_NAME( SYM_REP_ORIGINE );
+	  SECND_STR	:constant STRING	:= PRINT_NAME( AUXA.ELMT );
+          begin
+	  if  SECND_STR /= FIRST_STR  then
+	    ERROR( AUXA.SPOS, "identifier " & FIRST_STR & " expected" );
+	  end if;
+          end;
+        end;
+      end if;
+
+      SSITOP := SSITOP - 1;
+
+
+    when G_CHECK_SUBP_NAME =>										--| VERIFIER L IDENTITE DU NOM DE FIN DE PROC OU PACK AVEC SON CORRESPONDANT
+
+      if  DEBUG_SEM  then
+        for  I in 0 .. 6  loop
+	exit when  SSITOP-I < 1;
+	declare
+	  SEK	: SEMSTAK_ELMT_KIND	:= SEMSTAK( SSITOP-I ).KIND;
+	begin
+	  PUT_LINE( " ssitop -" & INTEGER'IMAGE( I ) & ' ' & SEMSTAK_ELMT_KIND'IMAGE( SEK ) );
+	  if  SEK /= LIST_ELMT  then PRINT_NODE( SEMSTAK( SSITOP-I ).ELMT ); end if;
+	end;
+        end loop;
       end if;
 
       declare
-        FIRST_STR	:constant STRING	:= PRINT_NAME( SEMSTAK( SSITOP-2 ).ELMT );
-        SECND_STR	:constant STRING	:= PRINT_NAME( AUXA.ELMT );
+        INDICE_VERIF	: INTEGER	:= 5;
       begin
-        if  SECND_STR /= FIRST_STR  then
-	ERROR( AUXA.SPOS, "identifier " & FIRST_STR & " expected" );
+        if  SEMSTAK( SSITOP-2).KIND = NODE_ELMT  and then  SEMSTAK( SSITOP-2 ).ELMT.TY = DN_PACKAGE_ID  then
+	INDICE_VERIF := 2;
+        elsif  SEMSTAK( SSITOP-4).KIND = NODE_ELMT  and then  SEMSTAK( SSITOP-4 ).ELMT.TY = DN_PACKAGE_ID  then
+	INDICE_VERIF := 4;
         end if;
-      end;
-      SSITOP := SSITOP - 1;
 
-    when G_CHECK_SUBP_NAME =>
-      declare
-        FIRST_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, SEMSTAK( SSITOP-5 ).ELMT ) );
-        SECND_STR	:constant STRING	:= PRINT_NAME( AUXA.ELMT );
-      begin
-        if  SECND_STR /= FIRST_STR  then
-	ERROR( AUXA.SPOS, "identifier " & FIRST_STR & " expected" );
-        end if;
+        declare
+	FIRST_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, SEMSTAK( SSITOP-INDICE_VERIF ).ELMT ) );
+	SECND_STR	:constant STRING	:= PRINT_NAME( AUXA.ELMT );
+        begin
+	if  SECND_STR /= FIRST_STR  then
+	  ERROR( AUXA.SPOS, "identifier " & FIRST_STR & " expected" );
+	end if;
+        end;
       end;
       SSITOP := SSITOP - 1;
 

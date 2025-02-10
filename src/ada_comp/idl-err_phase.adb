@@ -55,12 +55,16 @@ begin
             SLINE		: STRING( 1 ..256 );							--| LA LIGNE COURANTE
             LAST		: NATURAL;								--| LONGUEUR DE LIGNE COURANTE
           begin
-            GET_LINE ( IFILE, SLINE, LAST );
+            GET_LINE( IFILE, SLINE, LAST );
+	  for  I in SLINE'FIRST .. LAST  loop
+	    if SLINE( I ) = ASCII.HT  then SLINE( I ) := ' '; end if;					--| DETABULER POUR AFFICHAGE ERREUR
+	  end loop;
+
             if  FULL_LIST  or else  (not IS_EMPTY( ERRORLIST) and then LINE_COUNT = SOURCENBR)  then
               PUT ( LINE_COUNT, 1 );
               PUT ( ":  " );
 	    NB_PREFIX_CHARS := NATURAL( TEXT_IO.COL ) -1;
-              PUT_LINE ( SLINE( 1 .. LAST ) );
+              PUT_LINE( SLINE( 1 .. LAST ) );
             end if;
           end;
         end if;

@@ -629,7 +629,7 @@ null;
   is
   begin null;
 
-  end	GET;
+  end	PUT;
 	----
 
   end	INTEGER_IO;

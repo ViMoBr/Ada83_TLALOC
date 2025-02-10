@@ -2316,17 +2316,19 @@ is					---------
 
 
 				------------------------
-	procedure			COMPILE_COMPILATION_UNIT	( COMPILATION_UNIT :TREE;
+  procedure			COMPILE_COMPILATION_UNIT	( COMPILATION_UNIT :TREE;
 							  H	         :H_TYPE )
+				------------------------
   is
+
     CONTEXT_ELEM_S		: constant TREE	:= D( AS_CONTEXT_ELEM_S, COMPILATION_UNIT );
-    ALL_DECL		: constant TREE	:= D( AS_ALL_DECL, COMPILATION_UNIT );
-    PRAGMA_S		: constant TREE	:= D( AS_PRAGMA_S, COMPILATION_UNIT );
+    ALL_DECL		: constant TREE	:= D( AS_ALL_DECL,       COMPILATION_UNIT );
+    PRAGMA_S		: constant TREE	:= D( AS_PRAGMA_S,       COMPILATION_UNIT );
     WITH_LIST		: constant SEQ_TYPE	:= LIST( COMPILATION_UNIT );
 
 
 			-------------------
-	procedure		PROCESS_WITH_NAME_S		( NAME_S :TREE )
+    procedure		PROCESS_WITH_NAME_S		( NAME_S :TREE )
     is
       NAME_LIST		: SEQ_TYPE	:= LIST( NAME_S );
       NAME		: TREE;
@@ -2352,8 +2354,9 @@ is					---------
 	-------------------
 
 
-			------------------------
-	procedure		PROCESS_WITH_USE_PRAGMA_S	( USE_PRAGMA_S :TREE )
+			-------------------------
+    procedure		PROCESS_WITH_USE_PRAGMA_S	( USE_PRAGMA_S :TREE )
+			-------------------------
     is
       USE_PRAGMA_LIST	: SEQ_TYPE	:= LIST( USE_PRAGMA_S );
       USE_PRAGMA		: TREE;
@@ -2400,8 +2403,8 @@ is					---------
 
 
 			-----------------------
-	procedure		PROCESS_CONTEXT_CLAUSES		( COMPILATION_UNIT :TREE )
-
+    procedure		PROCESS_CONTEXT_CLAUSES		( COMPILATION_UNIT :TREE )
+			-----------------------
     is
       CONTEXT_ELEM_S	: constant TREE	:= D( AS_CONTEXT_ELEM_S, COMPILATION_UNIT );
       CONTEXT_ELEM_LIST	: SEQ_TYPE	:= LIST( CONTEXT_ELEM_S );
@@ -2409,12 +2412,16 @@ is					---------
       TRANS_WITH_LIST	: SEQ_TYPE	:= LIST( COMPILATION_UNIT );
       TRANS_WITH		: TREE;
 
-		------------------------
-      procedure	PROCESS_ANCESTOR_CONTEXT	( ANCESTOR_UNIT, COMPILATION_UNIT :TREE ) is
+			------------------------
+      procedure		PROCESS_ANCESTOR_CONTEXT	( ANCESTOR_UNIT, COMPILATION_UNIT :TREE )
+			------------------------
+      is
 
 
-		-----------
-        function	IS_ANCESTOR ( ANC_ALL_DECL, COMP_ALL_DECL :TREE ) return BOOLEAN is
+			-----------
+        function		IS_ANCESTOR	 ( ANC_ALL_DECL, COMP_ALL_DECL :TREE ) return BOOLEAN
+			-----------
+        is
         begin
           if COMP_ALL_DECL.TY in CLASS_SUBUNIT_BODY then
             return (    ANC_ALL_DECL.TY in CLASS_UNIT_DECL
@@ -2441,8 +2448,10 @@ is					---------
         end	IS_ANCESTOR;
 		-----------
 
-		-----------------
-        procedure	REPROCESS_CONTEXT ( CONTEXT_ELEM_S :TREE ) is
+			-----------------
+        procedure		REPROCESS_CONTEXT		 ( CONTEXT_ELEM_S :TREE )
+			-----------------
+        is
               -- GIVEN CONTEXT_ELEM_S FOR AN ANCESTOR UNIT,
                 -- ... REPROCESS WITH'S AND USE'S IN FOR USE IN CURRENT UNIT
           CONTEXT_ELEM_LIST	: SEQ_TYPE	:= LIST( CONTEXT_ELEM_S );
@@ -2477,6 +2486,7 @@ is					---------
               end loop;
             end if;
           end loop;
+
         end	REPROCESS_CONTEXT;
 		-----------------
             
@@ -2484,15 +2494,16 @@ is					---------
         if IS_ANCESTOR( D( AS_ALL_DECL, ANCESTOR_UNIT ), D( AS_ALL_DECL, COMPILATION_UNIT ) ) then
           REPROCESS_CONTEXT( D( AS_CONTEXT_ELEM_S, ANCESTOR_UNIT ) );
         end if;
+
       end	PROCESS_ANCESTOR_CONTEXT;
 	------------------------
 
     begin
-                -- FOR EACH CONTEXT_ELEM
-      while not IS_EMPTY( CONTEXT_ELEM_LIST ) loop
+
+      while  not IS_EMPTY( CONTEXT_ELEM_LIST )  loop
         POP( CONTEXT_ELEM_LIST, CONTEXT_ELEM );
             
-        if CONTEXT_ELEM.TY = DN_WITH then
+        if  CONTEXT_ELEM.TY = DN_WITH  then
 
           PROCESS_WITH_NAME_S( D( AS_NAME_S, CONTEXT_ELEM ) );
           PROCESS_WITH_USE_PRAGMA_S( D( AS_USE_PRAGMA_S, CONTEXT_ELEM ) );
@@ -2503,7 +2514,7 @@ is					---------
         end if;
       end loop;
          
-      while not IS_EMPTY( TRANS_WITH_LIST ) loop
+      while  not IS_EMPTY( TRANS_WITH_LIST )  loop
         POP( TRANS_WITH_LIST, TRANS_WITH);
         PROCESS_ANCESTOR_CONTEXT( D( TW_COMP_UNIT, TRANS_WITH ), COMPILATION_UNIT );
       end loop;
@@ -2512,8 +2523,9 @@ is					---------
 	-----------------------
 
 
-		---------------------
-    procedure	ENTER_ANCESTOR_REGION		( NAME :TREE; H :in out H_TYPE )
+			---------------------
+    procedure		ENTER_ANCESTOR_REGION		( NAME :TREE; H :in out H_TYPE )
+			---------------------
     is
       S			: NOD_WALK.S_TYPE;
       DESIGNATOR		: TREE;
@@ -2572,47 +2584,48 @@ is					---------
 
       
   begin
-    if ALL_DECL.TY = DN_VOID then
+    if  ALL_DECL.TY = DN_VOID  then
       ERROR( D( LX_SRCPOS, COMPILATION_UNIT ), "$$$ EMPTY UNIT NOT IMPLEMENTED YET" );
       return;
     end if;
-      
+
     USED_PACKAGE_LIST := (TREE_NIL, TREE_NIL);
     FIX_WITH.FIX_WITH_CLAUSES( COMPILATION_UNIT );
     INITIALIZE_PREDEFINED_TYPES;
-      
+
     PROCESS_CONTEXT_CLAUSES( COMPILATION_UNIT );
-      
+
     declare
-      H	: H_TYPE	:= INITIAL_H;
+      H		: H_TYPE		:= INITIAL_H;
     begin
       H.REGION_DEF := PREDEFINED_STANDARD_DEF;
       H.LEX_LEVEL  := 2;
       H.IS_IN_SPEC := TRUE;
       H.IS_IN_BODY := FALSE;
 
-      if ALL_DECL.TY = DN_SUBUNIT then
+      if  ALL_DECL.TY = DN_SUBUNIT  then
         ENTER_ANCESTOR_REGION( D( AS_NAME, ALL_DECL ), H );
         WALK_ITEM( D( AS_SUBUNIT_BODY, ALL_DECL ), H );
       else
         WALK_ITEM( ALL_DECL, H);
       end if;
-         
+
       NOD_WALK.WALK_ITEM_S( PRAGMA_S, H );
-       
-      while not IS_EMPTY( USED_PACKAGE_LIST ) loop
+
+      while  not IS_EMPTY( USED_PACKAGE_LIST )  loop
         DB( XD_IS_USED, HEAD( USED_PACKAGE_LIST ), FALSE );
         USED_PACKAGE_LIST := TAIL( USED_PACKAGE_LIST );
       end loop;
     end;
-      
+
   end	COMPILE_COMPILATION_UNIT;
 	------------------------
 
 
-		------------------
-  procedure	CANCEL_TRANS_WITHS		( COMPILATION_UNIT :TREE )
 
+			------------------
+  procedure		CANCEL_TRANS_WITHS		( COMPILATION_UNIT :TREE )
+			------------------
   is
     use DEF_UTIL;
     TRANS_WITH_LIST		: SEQ_TYPE 	:= LIST( COMPILATION_UNIT );
@@ -2646,20 +2659,19 @@ is					---------
 			-------
 
 
-
 begin
   OPEN_IDL_TREE_FILE( IDL.LIB_PATH( 1..LIB_PATH_LENGTH ) & "$$$.TMP" );
       
-  if DI( XD_ERR_COUNT, TREE_ROOT ) = 0 then
+  if  DI( XD_ERR_COUNT, TREE_ROOT ) = 0  then
     declare
       USER_ROOT		: TREE		:= D( XD_USER_ROOT, TREE_ROOT );
       COMPILATION		: TREE		:= D( XD_STRUCTURE, USER_ROOT );
       COMPLTN_UNIT_LIST	: SEQ_TYPE	:= LIST( D( AS_COMPLTN_UNIT_S, COMPILATION ) );
       COMPILATION_UNIT	: TREE;
-      SRC_NAME		: constant STRING	:= PRINT_NAME( D( XD_SOURCENAME, USER_ROOT ) );
+      SRC_NAME		:constant STRING	:= PRINT_NAME( D( XD_SOURCENAME, USER_ROOT ) );
     begin
         
-      if SRC_NAME = "_standrd.ads" then
+      if  SRC_NAME = "_standrd.ads"  then
 
         FIX_PRE;
                
@@ -2667,12 +2679,12 @@ begin
         SEM_GLOB.INITIALIZE_GLOBAL_DATA;
         INITIALIZE_PRAGMA_ATTRIBUTE_DEFS;
             
-        while not IS_EMPTY( COMPLTN_UNIT_LIST ) loop
+        while  not IS_EMPTY( COMPLTN_UNIT_LIST )  loop
           POP( COMPLTN_UNIT_LIST, COMPILATION_UNIT );
 
           COMPILE_COMPILATION_UNIT( COMPILATION_UNIT, INITIAL_H );
 
-          if not IS_EMPTY( COMPLTN_UNIT_LIST ) then
+          if  not IS_EMPTY( COMPLTN_UNIT_LIST )  then
             CANCEL_TRANS_WITHS( COMPILATION_UNIT );
           end if;
         end loop;
@@ -2683,4 +2695,4 @@ begin
   CLOSE_PAGE_MANAGER;
 
 end	SEM_PHASE;
-	--=====--
+	---------
