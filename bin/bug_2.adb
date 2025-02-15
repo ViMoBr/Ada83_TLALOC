@@ -1,5 +1,15 @@
 procedure BUG_2 is
 
+  task TRUC is
+    entry TOUCHE;
+  end TRUC;
+
+  task body TRUC is
+  begin
+    accept TOUCHE do
+      null;
+    end TOUCHE;
+  end TRUC;
 
 --generic
 --  type U is range <>;
@@ -9,9 +19,9 @@ procedure BUG_2 is
 
 --package body TESTEUR is
 
-  procedure DEDANS  is
-    J : INTEGER := 0;
-  begin
+--  procedure DEDANS  is
+--    J : INTEGER := 0;
+--  begin
 
 --BOUCLE_WHILE:
 --  while J < 6 loop
@@ -23,10 +33,10 @@ procedure BUG_2 is
 --    J := J + 1;
 --  end loop BOUCLE;
 
-BOUCLE_FOR:
-  for N in 0 .. 10 loop
-    J := J + 1;
-  end loop BOUCLE_FOR;
+--BOUCLE_FOR:
+--  for N in 0 .. 10 loop
+--    J := J + 1;
+--  end loop BOUCLE_FOR;
 
 --BLOC_A:
 --    declare
@@ -35,7 +45,7 @@ BOUCLE_FOR:
 --      i:= 1;
 --    end  BLOC_A;
 
-  end DEDANS;
+--  end DEDANS;
 
 --end TESTEUR;
 

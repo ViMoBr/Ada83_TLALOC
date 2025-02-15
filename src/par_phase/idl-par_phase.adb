@@ -1,6 +1,7 @@
 --	Vincent MORIN	Universite de Bretagne Occidentale	janvier 2025	Licence CC BY-SA 4.0
 --	1	2	3	4	5	6	7	8	9	10	11	12
 
+
 with LEX, GRMR_OPS, GRMR_TBL;
 use  LEX, GRMR_OPS, GRMR_TBL;
 separate( IDL )
@@ -330,6 +331,27 @@ is
 	--------------
 
 
+				---------------
+procedure				DISPLAY_SEMSTAK
+				---------------
+is
+begin
+--      if  DEBUG_SEM  then
+        for  I in 0 .. 6  loop
+	exit when  SSITOP-I < 1;
+	declare
+	  SEK	: SEMSTAK_ELMT_KIND	:= SEMSTAK( SSITOP-I ).KIND;
+	begin
+	  PUT_LINE( " ssitop -" & INTEGER'IMAGE( I ) & ' ' & SEMSTAK_ELMT_KIND'IMAGE( SEK ) );
+	  if  SEK /= LIST_ELMT  then PRINT_NODE( SEMSTAK( SSITOP-I ).ELMT ); end if;
+	end;
+        end loop;
+--      end if;
+
+ end	DISPLAY_SEMSTAK;
+	---------------
+
+
 				----------
   procedure			BUILD_TREE	( ACTION :INTEGER; AP: in out INTEGER )
 				----------
@@ -339,6 +361,22 @@ is
     LEFT_NODE		: TREE;									--| TEMP. FOR LEFTMOST NODE ($DEF)
     LEFT_KIND		: NODE_NAME;								--| TEMP FOR KIND OF ABOVE NODE
     T_SEQ			: SEQ_TYPE;
+
+			--------------------
+    procedure		CHECK_NAME_COHERENCE		( SYM_REP_ORIGINE :TREE )
+			--------------------
+    is
+      FIRST_STR	:constant STRING	:= PRINT_NAME( SYM_REP_ORIGINE );
+      SECND_STR	:constant STRING	:= PRINT_NAME( AUXA.ELMT );
+    begin
+      if  SECND_STR /= FIRST_STR  then
+        ERROR( AUXA.SPOS, "identifier " & FIRST_STR & " expected" );
+      end if;
+
+    end	CHECK_NAME_COHERENCE;
+	--------------------
+
+
   begin
 
     if  DEBUG_SEM  then
@@ -502,28 +540,21 @@ is
     when G_EXCH_2 =>
       AUXA := SEMSTAK( SSITOP );  SEMSTAK( SSITOP ) := SEMSTAK( SSITOP - 2 );  SEMSTAK( SSITOP - 2 ) := AUXA;
 
+
     when G_CHECK_NAME =>										-- VERIFIER L IDENTITE DU NOM DE FIN DE BLOC AVEC CELUI DU BLOC
 
-      if  DEBUG_SEM  then
-        for  I in 0 .. 6  loop
-	exit when  SSITOP-I < 1;
-	declare
-	  SEK	: SEMSTAK_ELMT_KIND	:= SEMSTAK( SSITOP-I ).KIND;
-	begin
-	  PUT_LINE( " ssitop -" & INTEGER'IMAGE( I ) & ' ' & SEMSTAK_ELMT_KIND'IMAGE( SEK ) );
-	  if  SEK /= LIST_ELMT  then PRINT_NODE( SEMSTAK( SSITOP-I ).ELMT ); end if;
-	end;
-        end loop;
-      end if;
+      if  DEBUG_SEM  then  DISPLAY_SEMSTAK;  end if;
 
-      if  SEMSTAK( SSITOP-2).KIND = NODE_ELMT  then
+--      if  SEMSTAK( SSITOP-2).KIND = NODE_ELMT  then
         declare
 	SYM_REP_ORIGINE	: TREE		:= SEMSTAK( SSITOP-2 ).ELMT;
         begin
 	declare
 	  CHECK_ELMT_TY	: NODE_NAME	:= SEMSTAK( SSITOP-2 ).ELMT.TY;
 	begin
-	if  CHECK_ELMT_TY = DN_PACKAGE_ID  or  CHECK_ELMT_TY = DN_GENERIC_ID  then				--| FIN DE PACK OU DE GENERIQUE
+	if  CHECK_ELMT_TY = DN_PACKAGE_ID  or  CHECK_ELMT_TY = DN_GENERIC_ID					--| FIN DE PACK OU DE GENERIQUE
+	    or CHECK_ELMT_TY = DN_VARIABLE_ID								--| OU SPEC TASK
+	then
 	  SYM_REP_ORIGINE := D( LX_SYMREP, SEMSTAK( SSITOP-2 ).ELMT );
 	elsif  CHECK_ELMT_TY = DN_VOID  or  CHECK_ELMT_TY = DN_WHILE
 	       or  CHECK_ELMT_TY = DN_FOR  or CHECK_ELMT_TY = DN_REVERSE  then				--| FIN DE BLOC OU DE BOUCLE WHILE OU FOR/REVERSE
@@ -531,58 +562,37 @@ is
 	end if;
           end;
 
-          declare
-	  FIRST_STR	:constant STRING	:= PRINT_NAME( SYM_REP_ORIGINE );
-	  SECND_STR	:constant STRING	:= PRINT_NAME( AUXA.ELMT );
-          begin
-	  if  SECND_STR /= FIRST_STR  then
-	    ERROR( AUXA.SPOS, "identifier " & FIRST_STR & " expected" );
-	  end if;
-          end;
+	CHECK_NAME_COHERENCE( SYM_REP_ORIGINE );
         end;
-      end if;
+--      end if;
 
       SSITOP := SSITOP - 1;
 
 
     when G_CHECK_SUBP_NAME =>										--| VERIFIER L IDENTITE DU NOM DE FIN DE PROC OU PACK AVEC SON CORRESPONDANT
 
-      if  DEBUG_SEM  then
-        for  I in 0 .. 6  loop
-	exit when  SSITOP-I < 1;
-	declare
-	  SEK	: SEMSTAK_ELMT_KIND	:= SEMSTAK( SSITOP-I ).KIND;
-	begin
-	  PUT_LINE( " ssitop -" & INTEGER'IMAGE( I ) & ' ' & SEMSTAK_ELMT_KIND'IMAGE( SEK ) );
-	  if  SEK /= LIST_ELMT  then PRINT_NODE( SEMSTAK( SSITOP-I ).ELMT ); end if;
-	end;
-        end loop;
-      end if;
+      if  DEBUG_SEM  then  DISPLAY_SEMSTAK;  end if;
 
       declare
         INDICE_VERIF	: INTEGER	:= 5;
       begin
         if  SEMSTAK( SSITOP-2).KIND = NODE_ELMT  and then  SEMSTAK( SSITOP-2 ).ELMT.TY = DN_PACKAGE_ID  then
 	INDICE_VERIF := 2;
-        elsif  SEMSTAK( SSITOP-4).KIND = NODE_ELMT  and then  SEMSTAK( SSITOP-4 ).ELMT.TY = DN_PACKAGE_ID  then
+        elsif  SEMSTAK( SSITOP-4).KIND = NODE_ELMT
+	and then  ( SEMSTAK( SSITOP-4 ).ELMT.TY = DN_PACKAGE_ID  or  SEMSTAK( SSITOP-4 ).ELMT.TY = DN_TASK_BODY_ID )
+        then
 	INDICE_VERIF := 4;
         end if;
 
-        declare
-	FIRST_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, SEMSTAK( SSITOP-INDICE_VERIF ).ELMT ) );
-	SECND_STR	:constant STRING	:= PRINT_NAME( AUXA.ELMT );
-        begin
-	if  SECND_STR /= FIRST_STR  then
-	  ERROR( AUXA.SPOS, "identifier " & FIRST_STR & " expected" );
-	end if;
-        end;
+        CHECK_NAME_COHERENCE( D( LX_SYMREP, SEMSTAK( SSITOP-INDICE_VERIF ).ELMT ) );
+
       end;
       SSITOP := SSITOP - 1;
 
     when G_CHECK_ACCEPT_NAME =>
 
-put_line( " check accept name " & SEMSTAK_ELMT_KIND'IMAGE( SEMSTAK( SSITOP ).KIND ) );
-
+      if  DEBUG_SEM  then  DISPLAY_SEMSTAK;  end if;
+      CHECK_NAME_COHERENCE( D( LX_SYMREP, SEMSTAK( SSITOP-3 ).ELMT ) );
       SSITOP := SSITOP - 1;
 
     end case;
