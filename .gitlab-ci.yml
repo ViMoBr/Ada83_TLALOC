@@ -1,8 +1,8 @@
 pages:
   stage: deploy
   script:
-    - mkdir public
-    - cp -r * public/  # Copie tous les fichiers dans le dossier public
+    - mkdir ./public
+#    - cp -r * ./public/  # Copie tous les fichiers dans le dossier public
   artifacts:
     paths:
       - public
