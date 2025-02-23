@@ -1,10 +1,10 @@
 pages:
   stage: deploy
   script:
-    - mkdir public/
+    - mkdir public
 #    - cp -r * ./public/  # Copie tous les fichiers dans le dossier public
   artifacts:
     paths:
-      - public/
+      - public
   only:
     - main  # Déploie uniquement depuis la branche principale
