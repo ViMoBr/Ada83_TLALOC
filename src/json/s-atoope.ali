@@ -1,0 +1,19 @@
+V "GNAT Lib v13"
+A -gnatg
+A -gnat83
+A -g
+P ZX
+
+RN
+
+U system.atomic_operations%s  s-atoope.ads	850ed59d NE OL PU PK
+W system%s		system.ads		system.ali
+
+D system.ads		20240521074738 426dafb8 system%s
+D s-atoope.ads		20240521074738 c7637a25 system.atomic_operations%s
+G a e
+X 1 system.ads
+37K9*System 153e11 2|36r9 39r5
+X 2 s-atoope.ads
+36K16*Atomic_Operations 1|37k9 2|39l12 39e29
+

@@ -1,0 +1,89 @@
+V "GNAT Lib v13"
+M P W=b
+A -g
+A -gnat83
+P SS ZX
+
+RN
+RV NO_EXCEPTION_HANDLERS
+RV NO_EXCEPTIONS
+RV NO_IO
+RV NO_SECONDARY_STACK
+RV NO_STANDARD_STORAGE_POOLS
+RV NO_DEFAULT_INITIALIZATION
+RV NO_DYNAMIC_SIZED_OBJECTS
+
+U test_json%b		test_json.adb		e1c2f536 NE OO SU IU
+Z ada.strings.text_buffers%s  a-sttebu.adb	a-sttebu.ali
+W json%s		json.adb		json.ali
+Z system.concat_2%s	s-conca2.adb		s-conca2.ali
+Z system.secondary_stack%s  s-secsta.adb	s-secsta.ali
+W text_io%s		text_io.ads		text_io.ali
+
+D ada.ads		20240521074738 76789da1 ada%s
+D a-except.ads		20240521074738 2a7d8d70 ada.exceptions%s
+D a-ioexce.ads		20240521074738 40018c65 ada.io_exceptions%s
+D a-stream.ads		20240521074738 119b8fb3 ada.streams%s
+D a-string.ads		20240521074738 90ac6797 ada.strings%s
+D a-sttebu.ads		20240521074738 f1ad67a2 ada.strings.text_buffers%s
+D a-stuten.ads		20240521074738 c6ced0ae ada.strings.utf_encoding%s
+D a-tags.ads		20240521074738 9eaa38c6 ada.tags%s
+D a-textio.ads		20240521074738 5c2c6153 ada.text_io%s
+D a-unccon.ads		20240521074738 0e9b276f ada.unchecked_conversion%s
+D interfac.ads		20240521074738 15f799c2 interfaces%s
+D i-cstrea.ads		20240521074738 e53d8b8e interfaces.c_streams%s
+D json.ads		20250301091858 2bca26ae json%s
+D system.ads		20240521074738 426dafb8 system%s
+D s-conca2.ads		20240521074738 b5fb73f7 system.concat_2%s
+D s-crtl.ads		20240521074738 8a0692f8 system.crtl%s
+D s-exctab.ads		20240521074738 91bef6ef system.exception_table%s
+D s-ficobl.ads		20240521074738 dc5161d4 system.file_control_block%s
+D s-parame.ads		20240904144414 1f39ba92 system.parameters%s
+D s-putima.ads		20240521074738 17291fe4 system.put_images%s
+D s-secsta.ads		20240521074738 578279f5 system.secondary_stack%s
+D s-soflin.ads		20240521074738 df77073e system.soft_links%s
+D s-stache.ads		20240521074738 0b81c1fe system.stack_checking%s
+D s-stalib.ads		20240521074738 1c9580f6 system.standard_library%s
+D s-stoele.ads		20240521074738 ab5468e4 system.storage_elements%s
+D s-stoele.adb		20240521074738 8f5a9db6 system.storage_elements%b
+D s-traent.ads		20240521074738 c81cbf8c system.traceback_entries%s
+D s-unstyp.ads		20240521074738 fa2a7f59 system.unsigned_types%s
+D s-wchcon.ads		20240521074738 d9032363 system.wch_con%s
+D test_json.adb		20250301074314 ebba1b00 test_json%b
+D text_io.ads		20240521074738 21b2c898 text_io%s
+G a e
+G c Z b b [test_json standard 9 41 none]
+G r c none [test_json standard 9 41 none] [get json 40 13 none]
+G r c none [test_json standard 9 41 none] [put json 41 13 none]
+G r c none [test_json standard 9 41 none] [string_of json 42 13 none]
+G r c none [test_json standard 9 41 none] [item_of json 43 13 none]
+X 9 a-textio.ads
+66P9*File_Type 30|33r43
+68n23*In_File{68E9} 30|37r18
+68n32*Out_File{68E9} 30|41r21
+98U14*Create 30|41s5
+114U14*Open 30|37s5
+130U14*Close 30|39s5 43s5
+519U14*Put 30|20s5 44s5 50s5
+537U14*Get_Line 30|21s5
+566U14*Put_Line 30|53s3 58s10
+X 13 json.ads
+8K49*JSON 112e13 30|6w15 7r15 32r27 38r5 42r5
+12P8*ITEM 30|32r32 48r19
+40U13*GET 30|38s10
+41U13*PUT 30|42s10
+42V13*STRING_OF{string} 30|44s10 50s10
+43V13*ITEM_OF{12P8} 30|48s27
+X 30 test_json.adb
+9U41*TEST_JSON 9b41 60l9 60t18
+13V17 GET_FILE_NAME{string} 13b17 24l9 24t22 31s60
+16a5 BUFFER{string} 21m15 22r13
+17i5 LENGTH{natural} 21m23 22r26
+31a5 JSON_FILE_NAME{string} 37r27 41r31
+32p5 THE_ITEM{13|12P8} 38m22 38r22 42r23 44r21
+33p5 INPUT{9|66P9} 37m11 37r11 38r15 39m12 39r12
+33p12 OUTPUT{9|66P9} 41m13 41r13 42m15 42r15 43m12 43r12
+48p5 THE_ITEM{13|12P8} 50r21
+X 31 text_io.ads
+24K9*Text_IO=24:29 30|6w6 7r6 33r35
+
