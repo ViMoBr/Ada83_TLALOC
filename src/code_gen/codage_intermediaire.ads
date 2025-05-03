@@ -1,3 +1,8 @@
+-------------------------------------------------------------------------------------------------------------------------
+-- CC BY SA	CODAGE_INTERMEDIAIRE.ADS	VINCENT MORIN	21/6/2024	UNIVERSITE DE BRETAGNE OCCIDENTALE
+-------------------------------------------------------------------------------------------------------------------------
+--	1	2	3	4	5	6	7	8	9	0	1	2
+
 with TEXT_IO, IDL;
 use  TEXT_IO, IDL;
 
@@ -7,37 +12,41 @@ use  TEXT_IO, IDL;
 
 is
 
-  DEBUG			: BOOLEAN	:= TRUE;
+  DEBUG				: BOOLEAN	:= TRUE;
 
-  tab			: CHARACTER	renames ASCII.HT;
+  tab				: CHARACTER	renames ASCII.HT;
 
-  MAX_LABEL			: constant		:= 30_000;				--| NB MAX D'ETIQUETTES DE SAUT
-  MAX_OFFSET			: constant		:= 10_000;				--|
-  MAX_LEVEL			: constant		:= 8;					--| NB MAX DE NIVEAUX D'IMBRICATION
-   
-  type LABEL_TYPE			is new NATURAL		range 0..MAX_LABEL;				--| TYPE ETIQUETTE
+  MAX_INSTR			: constant		:= 10_000;				--| NB MAX D'INSTRUCTIONS
+  MAX_LABEL			: constant		:= 10_000;				--| NB MAX D'ETIQUETTES DE SAUT
+  MAX_UNIT			: constant		:= 2**11-1;				--| NB MAX D'UNITES PROGRAMME
+  MAX_LEVEL			: constant		:= 2**5-1;				--| NB MAX DE NIVEAUX D'IMBRICATION
+  MAX_OFFSET			: constant		:= 2**15-1;				--| 32K
+
+  type LABEL_TYPE			is new NATURAL		range 0 .. MAX_LABEL;			--| TYPE ETIQUETTE
+  subtype UNIT_NUM			is INTEGER		range 0 .. MAX_UNIT;
+  subtype LEVEL_NUM			is NATURAL		range 0 .. MAX_LEVEL;
   subtype OFFSET_VAL		is INTEGER		range -MAX_OFFSET .. MAX_OFFSET;
-  subtype LEVEL_NUM			is NATURAL		range 0 .. MAX_LEVEL-1;
 
-  ADDR_SIZE			: constant		:= 8;					--| ADRESSES SUR 32 BITS
+  ADDR_SIZE			: constant		:= 8;					--| ADRESSES SUR 64 BITS
   BOOL_SIZE			: constant		:= 1;					--| BOOLEEN SUR 1 OCTET
   CHAR_SIZE			: constant		:= 1;					--| CARACTERE SUR 8 BITS
   INTG_SIZE			: constant		:= 4;					--| ENTIER SUR 32 BITS
 
-  type LOOP_CODE			is (								--| CODES OPERATION DU ACODE POLONAIS
+  type LOOP_CODE			is (
  		DEC,   GT,    INC,   LT 		);
 
   OUTPUT_CODE			: BOOLEAN			:= TRUE;					-- Dans le traitement de spécif on désactive le codage
 
   CUR_LEVEL			: LEVEL_NUM;							--| NIVEAU D'IMBRICATION COURANT
--- --  SKIP_LBL, HANDLER_BEGIN_LBL		: LABEL_TYPE;
+  CUR_OFFSET			: OFFSET_VAL		:= 0;
+--  SKIP_LBL, HANDLER_BEGIN_LBL	: LABEL_TYPE;
   NO_SUBP_PARAMS			: BOOLEAN;							--| UTILISES POUR LES EXCEPTIONS HANDLERS
   ENCLOSING_BODY			: TREE;
-  CHOICE_OTHERS_FLAG		: BOOLEAN	:= FALSE;
--- --  AFTER_IF_LBL			: LABEL_TYPE;
+  CHOICE_OTHERS_FLAG		: BOOLEAN			:= FALSE;
+-- AFTER_IF_LBL			: LABEL_TYPE;
 --    
--- --  BEFORE_LOOP_LBL			: LABEL_TYPE;
--- --  AFTER_LOOP_LBL			: LABEL_TYPE;
+-- BEFORE_LOOP_LBL			: LABEL_TYPE;
+-- AFTER_LOOP_LBL			: LABEL_TYPE;
   LOOP_STM_S			: TREE;
   LOOP_OP_INC_DEC			: LOOP_CODE;							--| POUR LE TRAITEMENT DES BOUCLES FOR REVERSE
   LOOP_OP_GT_LT			: LOOP_CODE;							--| DE MEME

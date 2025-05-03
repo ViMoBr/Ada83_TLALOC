@@ -399,7 +399,8 @@ separate ( CODE_GEN )
     STRUCTURES.CODE_BLOCK_BODY( D( AS_BLOCK_BODY, BLOCK ) );
     DEC_LEVEL;
 --    PUT_LINE( AFTER_BLOCK_LBL & ':' );
-    PUT_LINE( "end namespace" );
+--    PUT_LINE( "end namespace" );
+    PUT_LINE( "endPRO" );										-- POUR CALCUL DU LOC_SIZ AVANT FERMETURE DU NAMESPACE
 
   end	CODE_BLOCK;
 

@@ -1,10 +1,10 @@
  <h1 style="text-align:center;">INTRODUCTION</h1>
 
-Le compilateur A83 transforme un fichier texte écrit dans le langage Ada 83 en un fichier exécutable ELF à reliure dynamique.
+Le compilateur A83 transforme un fichier texte écrit dans le langage Ada 83 en un fichier assembleur .FINC pour FASMG (flat assembler). Le passage par FASMG produit un fichier exécutable ELF.
 
 Le travail de transformation opère en phases bien distinctes qui fabriquent une structure de donnée intermédiaire DIANA (Descriptive Intermediate Attributed Notation for Ada) à partir de laquelle on dérive une structure de données de code intermédiaire optimisable indépendant du matériel MICODE (Machine Independent CODE) et enfin le code exécutable et liable en ELF.
 
-La structure DIANA est stockée par blocs dans un fichier de travail temporaire "$$$.TMP" qui est accessible à toutes les phases.
+La structure DIANA est stockée par blocs dans un fichier de travail temporaire "$$$.TMP" qui est accessible à toutes les phases, mais est détruit à la fin de l'ultime phase WRITE_LIB.
 
 Le code intermédiaire est conservé dans un fichier ".FINC" au format texte qui peut être examiné.
 
@@ -15,17 +15,17 @@ Enfin un fichier ".DCL" (ou ".BDY" ou ".SUB" pour un corps ou une sous-unité Ad
                |------------|
                |    A83     |
 module.adb --> |------------|
-               | par_phase  |
-               | lib_phase  |
-$$$.TMP <----> | sem_phase  |
-               | err_phase  |
-               | micode_gen | --> module.COD                  (code intermédiaire)
-               | code_gen   | --> module.elf                  (exécutable)
-               | write_lib  | --> module.DCL / .BDY / .SUB    (unité librairie, DIANA withable)
+               | PAR_PHASE  |
+               | LIB_PHASE  |
+$$$.TMP <----> | SEM_PHASE  |
+               | ERR_PHASE  |
+               | CODE_GEN   | --> module.FINC                 (code intermédiaire à passer par l'assembleur FASMG avec un fichier lanceur module.fas)
+               | WRITE_LIB  | --> module.DCL / .BDY / .SUB    (unité librairie, DIANA withable)
                |------------|
 ```
 Lors d'un appel au compilateur, on doit fournir 3 paramètres :
-* un chemin d'accès à un répertoire "projet" qui contient le répertoire librairie ADA__LIB où seront stockés les ".dcl", ".sub" et ".cod". Cet accès est soit relatif à l'emplacement de l'exécutable ada_comp appelé par a83.sh, soit absolu.
+* un chemin d'accès à un répertoire "projet" qui contient le répertoire librairie ADA__LIB où seront stockés les ".DCL", ".BDY", ".SUB" et ".FINC".
+Cet accès est soit relatif à l'emplacement de l'exécutable ada_comp appelé par a83.sh, soit absolu.
 
 * un accès au texte source à compiler (accès relatif au répertoire projet)
 
@@ -38,10 +38,24 @@ Il existe donc un fichier script a83.sh prenant 3 paramètres qui sont relayés 
 ```
 L'appel au compilateur (exécutable "ada_comp") se fait alors par quelque chose comme :
 ```
- ./a83.sh  ./  ./idl_tools/diana_node_attr_class_names.ads  w
+ ./a83.sh  ./  ./MON_PROGRAMME.adb  W
 ```
-Où l'on suppose être dans le répertoire "bin" contenant a83.sh et qui fait office de répertoire projet de test, contenant donc un répertoire "ADA__LIB". De sorte que le chemin projet est "./", l'accès relatif au source est ici "./idl_tools/diana_node_attr_class_names.ads" et la lettre d'arrêt est "w" (arrêt après la phase "write_lib").
+Où l'on suppose être dans le répertoire "bin" contenant a83.sh et qui fait office de répertoire projet de test, contenant donc un répertoire "ADA__LIB". De sorte que le chemin projet est "./", l'accès relatif au source est ici "./MON_PROGRAMME.adb" et la lettre d'arrêt est "W" (arrêt après la phase "write_lib" en effectuant la phase de génération de code).
 
+La lettre option d'arrêt peut être :
+- S/s on s'arrête après la phase syntaxique (par_phase) ce qui permet de contrôler la structure DIANA incomplète après cette phase
+- L/l on s'arrête après la phase librairie (lib_phase) le fichier temporaire DIANA est complété par les imports dûs aux "with"
+- M/m on s'arrête après la phase sémantique (sem_phase) la structure DIANA a été augmentée de noeuds sémantiques
+- C le code est généré mais la librairie n'est pas écrite (permet de tester la génération de code sans toucher à la librairie)
+- w la librairie est écrite mais la génération de code est contournée (permet de stocker le résultat de compilation sémantique sans être confronté à un bug de codage lors du développement de la partie code_gen).
+- W la librairie est écrite et la génération de code est faite.
+
+Une lettre option U P ou A effectue une impression de la structure DIANA présente dans le fichier de travail $$$.TMP (présent dans le dossier librairie ADA__LIB du projet).
+Le fichier $$$.TMP est cependant inaccessible après une option w ou W qui détruit ce fichier (il est modifié ét devient inutilisable à la fin de cette ultime opération), mais tout arrêt avant le WRITE_LIB laisse le $$$.TMP accessible.
+L'impression de $$$.TMP post sem_phase est cruciale pour le développement du code_gen.
+
+NOTE IMPORTANTE : Comme il est possible de s'arrêter en cours de processus de compilation, on peut mettre en librairie des fichiers DIANA qui ne contiennent pas certaines informations de codage et provoquent des erreurs s'ils sont utilisés lors d'une opération de codage.
+Pour éviter ce genre d'erreur artificielle, il faut assurer que tout fichier utilisé dans une opération de codage a lui aussi été passé par la phase de codage. Cela se réduit normalement à utiliser l'option W. Mais dans la phase de développement du générateur de code, il est utile de pouvoir s'arrêter où l'on veut (à ses risques et périls, normalement à ce stade on devrait savoir ce qu'on fait ! ).
 
 ## 1. LES PHASES DE COMPILATION ##
 

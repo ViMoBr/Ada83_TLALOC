@@ -124,14 +124,16 @@ DEBUT_NOM_TEXTE:
       IDL.LIB_PHASE;				if OPTION = 'L' or OPTION = 'l' then goto FIN; end if;
       IDL.SEM_PHASE;				if OPTION = 'M' or OPTION = 'm' then goto FIN; end if;
 
-      if OPTION = 'c' or OPTION = 'C' or OPTION = 'W' then
+--      if OPTION = 'c' or OPTION = 'C' or OPTION = 'W' then
+      if OPTION = 'C' or OPTION = 'W' then
         CODE_GEN;
       end if;
 
 <<FIN>>
       IDL.ERR_PHASE( CHEMIN_TEXTE & NOM_TEXTE );
 
-      if OPTION = 'W' or OPTION = 'w' or OPTION = 'C' then IDL.WRITE_LIB; end if;
+--      if OPTION = 'W' or OPTION = 'w' or OPTION = 'C' then IDL.WRITE_LIB; end if;
+      if  OPTION = 'W' or OPTION = 'w'  then IDL.WRITE_LIB; end if;
 
       END_TIME := CLOCK;
       PUT_LINE( " ..... Ok" & INTEGER'IMAGE( INTEGER( 1000 * (END_TIME - START_TIME) ) ) & " msec" );
