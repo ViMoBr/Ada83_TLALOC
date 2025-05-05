@@ -1,0 +1,30 @@
+with TEXT_IO;
+use TEXT_IO;
+				-----------
+procedure				HANOI_TOWER
+is				-----------
+
+  NUMBER_OF_DISKS		: NATURAL;
+  package NATURAL_IO	is new INTEGER_IO( NATURAL );
+
+			----
+  procedure		MOVE		( DISQUES_RESTANTS				:NATURAL;
+					  TIGE_ORIGINE, TIGE_DESTINATION, TIGE_TRANSIT	:CHARACTER )
+  is			----
+  begin
+    if  DISQUES_RESTANTS = 1  then
+      PUT_LINE( "MOVE PLATE FROM " & TIGE_ORIGINE & " TO " & TIGE_DESTINATION );
+    else
+      MOVE( DISQUES_RESTANTS-1,	TIGE_ORIGINE,  TIGE_TRANSIT,      TIGE_DESTINATION );
+      MOVE( 1,			TIGE_ORIGINE,  TIGE_DESTINATION,  TIGE_TRANSIT );
+      MOVE( DISQUES_RESTANTS-1,	TIGE_TRANSIT,  TIGE_DESTINATION,  TIGE_ORIGINE );
+    end if;
+end;
+
+begin
+  PUT( "ENTER NUMBER OF DISKS : " );
+  NATURAL_IO.GET( NUMBER_OF_DISKS );
+  MOVE( NUMBER_OF_DISKS, 'A', 'B', 'C' );
+
+end	HANOI_TOWER;
+	-----------

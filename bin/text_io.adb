@@ -437,7 +437,7 @@ is					-------
   procedure		GET		( ITEM :out CHARACTER )
   is
   begin
-    ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -16 );
+    ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -8 );
     ASM_OP_0'( OPCODE => GET_CHAR );
 
   end	GET;
@@ -455,7 +455,7 @@ is					-------
   procedure		PUT		( ITEM :in CHARACTER )
   is
   begin
-    ASM_OP_2'( OPCODE => LB, LVL => 1, OFS => -16 );
+    ASM_OP_2'( OPCODE => LB, LVL => 1, OFS => -8 );
     ASM_OP_0'( OPCODE => PUT_CHAR );
 
   end	PUT;
@@ -491,8 +491,8 @@ is					-------
   procedure		PUT		( ITEM :in STRING )
   is
   begin
-       ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -16 );
-       ASM_OP_0'( OPCODE => PUT_STR );
+    ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -8 );
+    ASM_OP_0'( OPCODE => PUT_STR );
 
   end	PUT;
 	----
@@ -511,7 +511,10 @@ is					-------
 			--------
   procedure		GET_LINE		( ITEM :out STRING;   LAST :out NATURAL )
   is
-  begin null;
+  begin
+    ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -8 );
+    ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -16 );
+    ASM_OP_0'( OPCODE => GET_STR );
 
   end	GET_LINE;
 	--------
@@ -528,7 +531,7 @@ is					-------
   procedure		PUT_LINE		( ITEM :in STRING )
   is
   begin
-       ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -16 );
+       ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -8 );
        ASM_OP_0'( OPCODE => PUT_STR );
 
   end	PUT_LINE;

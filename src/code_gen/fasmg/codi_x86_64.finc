@@ -2,8 +2,15 @@
 ;				MACROS FASMG POUR CODI x86 64
 ;				-----------------------------
 
-	; sur processeur x86 64 les push et pop se font en 64 bits (qword)
-	; mais on a choisi de faire les opérations en 32 bits pour rester comme sur une architecture 32 bits
+	; sur processeur x86 64 les mouvements de pile se font en 64 bits (qword)
+	; mais on a choisi de faire les opérations arithmétiques en 32 bits pour rester comme sur une architecture 32 bits
+
+	; QUANQ A LA PILE : ON A DECIDE DE LA FAIRE CROITRE VERS LES ADRESSES HAUTES CAR LE SENS HABITUEL DESCENDANT EST INGERABLE POUR CERTAINES VARIABLES LOCALES STRUCTUREES
+	; Donc pas possible d'utiliser les push et pop du processeur, on utilise le RBP comme pointeur de pile avec des LEA pour le mettre à jour en essayant de recouvrir les opérations
+	; d'accès mémoire et de mise à jour du pointeur de pile RBP.
+	; Le ESP reste tout en bas de pile pour gérer une micro-pile descendante des adresses de CALL/RET uniquement.
+	; Attention : le EBP pointe sur la derniere valeur empilee comme qword
+
 
 postpone					; sera fait en toute toute fin car c'est le premier postpone
   ASM_SIZE = $-0x400078
@@ -18,20 +25,39 @@ macro show description, value
 end macro
 
 
-;macro push_T
-;  db 0x50						; push rax
-;end macro
+macro PUSH_RAX
+  db 0x48, 0x89, 0x45, 0x08				; mov QWORD PTR [rbp+8], rax		(ecrire RAX a l'emplacement libre en haut de pile, au dessus du rbp)
+  db 0x48, 0x8D, 0x6D, 0x08				; lea rbp, [rbp+0x8]		(puis MONTER le rbp sur la valeur ecrite car pile croissante vers adresses hautes)
+end macro
 
+macro PUSH_RDX
+  db 0x48, 0x89, 0x55, 0x08				; mov QWORD PTR [rbp+8], rdx		(ecrire RDX a l'emplacement libre en haut de pile, au dessus du rbp)
+  db 0x48, 0x8D, 0x6D, 0x08				; lea rbp, [rbp+0x8]		(puis MONTER le rbp sur la valeur ecrite car pile croissante vers adresses hautes)
+end macro
+
+macro POP_RAX
+  db 0x48, 0x8B, 0x45, 0x00				; mov rax, QWORD PTR [rbp]		(lire dans RAX la valeur top sur le rbp)
+  db 0x48, 0x8D, 0x6D, 0xF8				; lea rbp, [rbp-0x8]		(puis DESCENDRE le rbp car pile croissante vers adresses hautes)
+end macro
+
+macro POP_RBX
+  db 0x48, 0x8B, 0x5D, 0x00				; mov rbx, QWORD PTR [rbp]		(lire dans RBX la valeur top sur le rbp)
+  db 0x48, 0x8D, 0x6D, 0xF8				; lea rbp, [rbp-0x8]		(puis DESCENDRE le rbp car pile croissante vers adresses hautes)
+end macro
+
+macro POP_RSI
+  db 0x48, 0x8B, 0x75, 0x00				; mov rsi, QWORD PTR [rbp]		(lire dans RSI la valeur top sur le rbp)
+  db 0x48, 0x8D, 0x6D, 0xF8				; lea rbp, [rbp-0x8]		(puis DESCENDRE le rbp car pile croissante vers adresses hautes)
+end macro
 
 macro DROP
-;  db 0x58						; pop rax
-  db 0x48, 0x83, 0xC4, 0x08				; add rsp, 8
+  db 0x48, 0x8D, 0x6D, 0xF8				; lea rbp, [rbp-0x8]		(DESCENDRE le rbp car pile croissante vers adresses hautes)
 end macro
 
 
-macro pop_N
-  db 0x5B						; pop rbx
-end macro
+;macro pop_N
+;  db 0x5B						; pop rbx
+;end macro
 
 
 macro align_b
@@ -73,11 +99,11 @@ last_instr_was_PUSH = 0				; sert à faire du peep-hole sur PUSH - POP
 macro			PUT_CHAR?			; affiche un seul caractère sur stdout
 ;			---------
 
-  db 0x48, 0x89, 0xE6				; mov rsi, rsp adresse du caractère empilé
+  db 0x48, 0x89, 0xEE				; mov rsi, rbp	(ADRESSE du caractère empilé sur la pile)
   db 0x6A, 0x01					; push 1
-  db 0x58						; pop rax      (rax=1=sys_write )
-  db 0x48, 0x89, 0xC2				; mov rdx, rax (rdx=length=1)
-  db 0x48, 0x89, 0xC7				; mov rdi, rax (rdi=stdout=1)
+  db 0x58						; pop rax		(rax=1=sys_write )
+  db 0x48, 0x89, 0xC2				; mov rdx, rax	(rdx=length=1)
+  db 0x48, 0x89, 0xC7				; mov rdi, rax	(rdi=stdout=1)
   db 0x0F, 0x05					; syscall
   DROP						; caractère consommé
 end macro
@@ -85,29 +111,85 @@ end macro
 ;			--------
 macro			PUT_STR?			; affiche tout une chaine sur stdout
 ;			--------
-  db 0x48, 0x89, 0xC6				; mov rsi, rax  (esi=T  adresse des caracteres a afficher)
-  db 0x8B, 0x50, 0xFC				; mov EDX, dword ptr[rax-4]   EDX=last
-  db 0xFF, 0xC2					; inc EDX
-  db 0x2B, 0x50, 0xF8				; sub EDX, dword ptr[rax-8]   EDX=length (=last - first)
+  POP_RSI						;			(adresse empilee des caracteres a afficher)
+  db 0x8B, 0x56, 0xFC				; mov edx, dword ptr[rsi-4]	(edx=last)
+  db 0xFF, 0xC2					; inc edx			(last+1)
+  db 0x2B, 0x56, 0xF8				; sub edx, dword ptr[rsi-8]   edx=length (=last+1 - first)
   db 0x6A, 0x01					; push 1
-  db 0x58						; pop rax     (rax=1=sys_write )
-  db 0x48, 0x89,0xC7				; mov rdi,rax (rdi=stdout=1)
+  db 0x58						; pop rax			(rax=1=sys_write )
+  db 0x48, 0x89, 0xC7				; mov rdi,rax		(rdi=stdout=1)
   db 0x0F, 0x05					; syscall
-  DROP						; adresse consommée
 end macro
 
-;			---------
-macro			GET_CHAR?			; lit un seul caractère sur stdin
-;			---------
 
-  db 0x5E						; pop rsi	     (l'adresse destination a ete empilee)
+; - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;	Pour le GET de caractère on veut obtenir chaque caractère tapé immédiatement, il faut modifier le comportement du terminal
+;struc termios{
+;        .c_iflag	rd 1				; 0 input mode flags
+;        .c_oflag	rd 1				; 4 output mode flags
+;        .c_cflag	rd 1				; 8 control mode flags
+;        .c_lflag	rd 1				; 12 local mode flags
+;        .c_line	rb 1				; line discipline
+;        .c_cc	rb 32				; control characters
+;        .c_ispeed	rd 1				; input speed
+;        .c_ospeed	rd 1				; output speed
+;}
+;			---------
+macro			GET_CHAR?			; lit un seul caractère sur stdin en mode non canonique
+;			---------
+			; réserver le termios sur la micro-pile du rsp
+  db 0x48, 0x83, 0xEC, 0x40				; sub rsp, 64 (espace large pour le termios)
+			; amener le termios
+  db 0x6A, 0x10					; push 16
+  db 0x58						; pop rax		(rax=16=sys_ioctl)
+  db 0x48, 0x31, 0xFF				; xor rdi, rdi	(rdi=stdout=0)
+  db 0x48, 0xC7, 0xC6, 0x01, 0x54, 0x00, 0x00		; mov rsi, 0x5401	(TCGETS)
+  db 0x48, 0x89, 0xE2				; mov rdx, rsp	(adresse du termios temporaire)
+  db 0x0F, 0x05					; syscall		(copier le termios)
+			; modifier le termios
+  db 0x83, 0x64, 0x24, 0x0C, 0xF5			; and dword ptr [rsp+12], 0xFFFFFFF5	(ICANON bit 1 de c_lflag mis à 0 et bit 3 ECHO à 0)
+			; renvoyer le termios modifié
+  db 0x6A, 0x10					; push 16
+  db 0x58						; pop rax		(rax=16=sys_ioctl)
+  db 0x48, 0x31, 0xFF				; xor rdi, rdi	(rdi=stdout=0)
+  db 0x48, 0xC7, 0xC6, 0x02, 0x54, 0x00, 0x00		; mov rsi, 0x5402	(TCSETS)
+  db 0x48, 0x89, 0xE2				; mov rdx, rsp	(adresse du termios temporaire)
+  db 0x0F, 0x05					; syscall		(envoyer le termios modifié)
+			; lire le caractère en mode non canonique
+  POP_RSI						;		(l'adresse destination a ete empilee sur la pile croissante)
   db 0x6A, 0x00					; push 0
-  db 0x58						; pop rax      (rax=0=sys_read )
-  db 0x48, 0x89, 0xC7				; mov rdi, rax (rdi=stdout=0)
+  db 0x58						; pop rax		(rax=0=sys_read)
+  db 0x48, 0x89, 0xC7				; mov rdi, rax	(rdi=stdout=0)
   db 0x6A, 0x01					; push 1
-  db 0x5A						; pop rdx (rdx=length=1)
+  db 0x5A						; pop rdx		(rdx=length=1 caractere)
   db 0x0F, 0x05					; syscall
-  DROP						; adresse consommée
+
+  db 0x83, 0x4C, 0x24, 0x0C, 0x0A			; or dword ptr [rsp+12], 0xA	(ICANON bit 1 de c_lflag remis à 1 et ECHO bit 3)
+			; renvoyer le termios modifié
+  db 0x6A, 0x10					; push 16
+  db 0x58						; pop rax		(rax=16=sys_ioctl)
+  db 0x48, 0x31, 0xFF				; xor rdi, rdi	(rdi=stdout=0)
+  db 0x48, 0xC7, 0xC6, 0x02, 0x54, 0x00, 0x00		; mov rsi, 0x5402	(TCSETS)
+  db 0x48, 0x89, 0xE2				; mov rdx, rsp	(adresse du termios temporaire)
+  db 0x0F, 0x05					; syscall		(envoyer le termios modifié)
+			; remettre le pointeur de micro-pile à sa place initiale
+  db 0x48, 0x83, 0xC4, 0x40				; add rsp, 64
+end macro
+
+
+;			--------
+macro			GET_STR?			; lit une ligne sur stdin
+;			--------
+  POP_RSI						;			(adresse de la string destination empilee sur la pile croissante)
+  db 0x8B, 0x56, 0xFC				; mov edx, dword ptr[rsi-4]	(edx=last)
+  db 0xFF, 0xC2					; inc edx			(last+1)
+  db 0x2B, 0x56, 0xF8				; sub edx, dword ptr[rsi-8]   (edx=max length =last+1 - first)
+  db 0x6A, 0x01					; push 0
+  db 0x58						; pop rax			(rax=0=sys_read )
+  db 0x48, 0x89, 0xC7				; mov rdi,rax		(rdi=stdin=0)
+  db 0x0F, 0x05					; syscall
+  POP_RSI						;			(sur la pile croissante, adresse de la longueur effectivement lue qui peut être inférieure a la longueur de string)
+  db 0x89, 0x06					; mov dword ptr[rsi], eax	(reporter la longueur effectivement lue)
 end macro
 
 
@@ -118,7 +200,6 @@ macro			SYSEXIT?			; retour au systeme
   db 0x58						; pop rax
   db 0x31, 0xFF					; xor edi, edi (err_code=0)
   db 0x0F, 0x05					; syscall
-
 end macro
 
 ;				--------------------------------------------------------------------------------
@@ -128,21 +209,18 @@ end macro
 ;			-------------
 macro			LI?	val		; Load Immediate
 ;			-------------
-  if val > -128 & val < 127
-    db 0x6A, val					; push byte val8
-  else
-    db 0x68					; push double val32
-    dd val
-  end if
+  db 0x48, 0xC7, 0xC0				; mov rax, val
+  dd val
+  PUSH_RAX
 end macro
 
 ;			-------------
 macro			LIF?	val		; Load Immediate Float
 ;			-------------
   if val = 1.0
-    db 0xD9, 0xE8					; fld1
+    db 0xD9, 0xE8					; fld1	(push sur la pile de FPU
   else
-    db 0x68					; push double val32
+    db 0x68					; push double val32		A VOIR PAS CLAIR
     dd val
   end if
 end macro
@@ -152,139 +230,145 @@ macro			LCA?	ptr		; Load Constant Address (distinguer de LI - qui charge en 32 b
 ;			-------------
   db 0x48, 0xB8					; movabs rax, ptr
   dq ptr
-  db 0x50						; push rax
+  PUSH_RAX
 end macro
+
+
+;			-----------------------
+macro			FP_IN_RAX		lvl
+;			-----------------------
+  assert lvl >= 0 & lvl <= 31
+  if lvl <= 15
+    db 0x49, 0x8B, 0x47, 8*lvl			; mov rax, [r15 + 8*lvl]	(aller chercher le frame pointer du lvl dans le display pointé par r15)
+  else
+    db 0x49, 0x8B, 0x87				; mov rax, [r15 + 8*lvl]	(aller chercher le frame pointer du lvl dans le display pointé par r15)
+    dd 8*lvl
+  end if
+end macro
+
+;			-----------------------
+macro			FP_IN_RBP		lvl
+;			-----------------------
+  assert lvl >= 0 & lvl <= 31
+  if lvl <= 15
+    db 0x49, 0x8B, 0x6F, 8*lvl			; mov rbp, [r15 + 8*lvl]	(aller chercher le frame pointer du lvl dans le display pointé par r15)
+  else
+    db 0x49, 0x8B, 0xAF				; mov rbp, [r15 + 8*lvl]	(aller chercher le frame pointer du lvl dans le display pointé par r15)
+    dd 8*lvl
+  end if
+end macro
+
 
 ;				--------------------------------------------------------------------------------
 ;				LOAD (relatif pointeurs de frame du display R8..r15 suivant lvl)
 ;				--------------------------------------------------------------------------------
 
+
 ;			-------------------
 macro			Lb?	lvl, disp		; Load Byte 8 bits
 ;			-------------------
-  assert lvl >= 0 & lvl <= 7
-  ofs = -disp					; pile croissante vers adresses decroissantes (on empile en descendant)
-  if ofs > -128 & ofs < 127
-    db 0x49, 0x0F, 0xBE, 0x40+lvl			; movsx rax, byte ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
-    db ofs
+  FP_IN_RAX	lvl
+  if disp > -128 & disp < 127
+    db 0x48, 0x0F, 0xBE, 0x40				; movsx rax, byte ptr [rax + ofs8]
+    db disp
   else
-    db 0x49, 0x0F, 0xBE, 0x80+lvl			; movsx rax, byte ptr [r(8+lvl)+ofs32]
-    dd ofs
+    db 0x48, 0x0F, 0xBE, 0x80				; movsx rax, byte ptr [rax + ofs32]
+    dd disp
   end if
-  db 0x50						; push rax
-
+  PUSH_RAX
 end macro
+
+
+;			------------------------
+macro			PTR_IN_RAX	disp
+;			------------------------
+  if disp > -128 & disp < 127
+    db 0x48, 0x8B, 0x40				; mov rax, qword ptr [rax + ofs8]
+    db disp
+  else
+    db 0x48, 0x8B, 0x80				; mov rax, qword ptr [rax + ofs32]
+    dd disp
+  end if
+end macro
+
 
 ;			-------------------
 macro			LIb?	lvl, disp		; Load Indirect byte (la variable en frame est une adresse, adresse à laquelle on va chercher l'octet)
 ;			-------------------
-  assert lvl >= 0 & lvl <= 7
-  if disp > -128 & disp < 127
-    db 0x49, 0x8B, 0x40+lvl				; mov rax, qword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
-    db disp
-  else
-    db 0x49, 0x8B, 0x80+lvl				; mov rax, qword ptr [r(8=lvl)+ofs32]
-    dd disp
-  end if
+  FP_IN_RAX	lvl
+  PTR_IN_RAX	disp
   db 0x48, 0x0F, 0xBE, 0x00				; movsx rax, byte ptr [rax]
-  db 0x50						; push rax
-
+  PUSH_RAX
 end macro
+
 
 ;			-------------------
 macro			Lw?	lvl, disp		; Load Word 16 bits
 ;			-------------------
-  assert lvl >= 0 & lvl <= 7
-  ofs = -disp					; pile croissante vers adresses decroissantes
-  if ofs > -128 & ofs < 127
-    db 0x49, 0x0F, 0xBF, 0x40+lvl			; movsx rax, word ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
-    db ofs
+  FP_IN_RAX	lvl
+  if disp > -128 & disp < 127
+    db 0x48, 0x0F, 0xBF, 0x40				; movsx rax, word ptr [rax + ofs8]
+    db disp
   else
-    db 0x49, 0x0F, 0xBF, 0x80+lvl			; movsx rax, word ptr [r(8+lvl)+ofs32]
-    dd ofs
+    db 0x48, 0x0F, 0xBF, 0x80				; movsx rax, word ptr [rax + ofs32]
+    dd disp
   end if
-  db 0x50						; push rax
-
+  PUSH_RAX
 end macro
 
 ;			-------------------
 macro			LIw?	lvl, disp		; Load Indirect word 
 ;			-------------------
-  assert lvl >= 0 & lvl <= 7
-  if disp > -128 & disp < 127
-    db 0x49, 0x8B, 0x40+lvl				; mov rax, qword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
-    db disp
-  else
-    db 0x49, 0x8B, 0x80+lvl				; mov rax, qword ptr [r(8=lvl)+ofs32]
-    dd disp
-  end if
+  FP_IN_RAX	lvl
+  PTR_IN_RAX	disp
   db 0x48, 0x0F, 0xBF, 0x00				; movsx rax, word ptr [rax]
-  db 0x50						; push rax
-
+  PUSH_RAX
 end macro
 
 ;			-------------------
 macro			Ld?	lvl, disp		; Load doubleword 32 bits
 ;			-------------------
-  assert lvl >= 0 & lvl <= 7
-  ofs = -disp					; pile croissante vers adresses decroissantes
-  if ofs > -128 & ofs < 127
-    db 0x49, 0x63, 0x40+lvl				; movsx rax, dword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
-    db ofs
+  FP_IN_RAX	lvl
+  if disp > -128 & disp < 127
+    db0x48, 0x63, 0x40				; movsx rax, dword ptr [rax + ofs8]   T:=ofs(FP)
+    db disp
   else
-    db 0x49, 0x63, 0x80+lvl				; movsx rax, dword ptr [r(8+lvl)+ofs32]
-    dd ofs
+    db 0x48, 0x63, 0x80				; movsx rax, dword ptr [rax + ofs32]
+    dd disp
   end if
-  db 0x50						; push rax
-
+  PUSH_RAX
 end macro
 
 ;			-------------------
 macro			LId?	lvl, disp		; Load Indirect doubleword
 ;			-------------------
-  assert lvl >= 0 & lvl <= 7
-  if disp > -128 & disp < 127
-    db 0x49, 0x8B, 0x40+lvl				; mov rax, qword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
-    db disp
-  else
-    db 0x49, 0x8B, 0x80+lvl				; mov rax, qword ptr [r(8=lvl)+ofs32]
-    dd disp
-  end if
+  FP_IN_RAX	lvl
+  PTR_IN_RAX	disp
   db 0x48, 0x63, 0x00				; movsx rax, dword ptr [rax]
-  db 0x50						; push rax
-
+  PUSH_RAX
 end macro
 
 ;			-------------------
 macro			Lq?	lvl, disp		; Load quadword 64 bits
 ;			-------------------
-  assert lvl >= 0 & lvl <= 7
-  ofs = -disp					; pile croissante vers adresses decroissantes
-  if ofs > -128 & ofs < 127
-    db 0x49, 0x8B, 0x40+lvl				; mov rax, qword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
-    db ofs
+  FP_IN_RAX	lvl
+  if disp > -128 & disp < 127
+    db 0x48, 0x8B, 0x40				; mov rax, qword ptr [rax + ofs8]
+    db disp
   else
-    db 0x49, 0x8B, 0x80+lvl				; mov rax, qword ptr [r(8=lvl)+ofs32]
-    dd ofs
+    db 0x48, 0x8B, 0x80				; mov rax, qword ptr [rax + ofs32]
+    dd disp
   end if
-  db 0x50						; push rax
-
+  PUSH_RAX
 end macro
 
 ;			-------------------
 macro			LIq?	lvl, disp		; Load Indirect quadword 
 ;			-------------------
-  assert lvl >= 0 & lvl <= 7
-  if disp > -128 & disp < 127
-    db 0x49, 0x8B, 0x40+lvl				; mov rax, qword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
-    db disp
-  else
-    db 0x49, 0x8B, 0x80+lvl				; mov rax, qword ptr [r(8=lvl)+ofs32]
-    dd disp
-  end if
+  FP_IN_RAX	lvl
+  PTR_IN_RAX	disp
   db 0x48, 0x8B, 0x00				; mov rax, qword ptr [rax]
-  db 0x50						; push rax
-
+  PUSH_RAX
 end macro
 
 ;			-------------------
@@ -300,19 +384,17 @@ macro			LIa?	lvl, disp		; Load Address 64 bits Indirect
 end macro
 
 ;			-------------------
-macro			LVa?	lvl, disp		; Load Variable Address pour lvl et disp (empile l'adresse de la variable au déplacement dsip du frame de lvl donné)
+macro			LVa?	lvl, disp		; Load Variable Address pour lvl et disp (empile l'adresse de la variable au déplacement disp du frame de lvl donné)
 ;			-------------------
-  assert lvl >= 0 & lvl <= 7
-  ofs = -disp					; ATTENTION : pile croissante vers adresses decroissantes (donc offset mémoire opposé au déplacement à l'empilement)
-  if ofs > -128 & ofs < 127
-    db 0x49, 0x8D, 0x40+lvl				; lea rax, [r(8+lvl)+ofs8]   T:=ofs(FP)
-    db ofs
+  FP_IN_RAX	lvl
+  if disp > -128 & disp < 127
+    db 0x48, 0x8D, 0x40				; lea rax, [rax + ofs8]
+    db disp
   else
-    db 0x49, 0x8D, 0x80+lvl				; lea rax, qword ptr [r(8=lvl)+ofs32]
-    dd ofs
+    db 0x48, 0x8D, 0x80				; lea rax, qword ptr [rax + ofs32]
+    dd disp
   end if
-  db 0x50						; push rax
-
+  PUSH_RAX
 end macro
 
 ;				--------------------------------------------------------------------------------
@@ -323,19 +405,18 @@ end macro
 macro			Sb?	lvl:-1, disp:0	; Store byte 8 bits
 ;			------------------------
   if lvl = -1					; octet rangé n'importe où ; top = adresse stockage
-    db 0x58					; pop rax   adress for data
-    db 0x5B					; pop rbx   data
-    db 0x88, 0x18					; mov byte ptr [rax], BL   store
+    POP_RAX					; (adress for data)
+    POP_RBX					; (data)
+    db 0x88, 0x18					; mov byte ptr [rax], BL   (store)
   else						; octet rangé dans un frame
-    assert lvl >= 0 & lvl <= 7
-    ofs = -disp					; pile croissante vers adresses decroissantes
-    db 0x58					; pop rax   data
-    if ofs > -128 & ofs < 127
-      db 0x41, 0x88, 0x40+lvl				; mov byte ptr [r(8+lvl)+ofs8], AL   store
-      db ofs
+    FP_IN_RAX	lvl
+    POP_RBX
+    if disp > -128 & disp < 127
+      db 0x88, 0x58					; mov byte ptr [rax + ofs8], BL   store
+      db disp
     else
-      db 0x41, 0x88, 0x80+lvl				; mov byte ptr [r(8+lvl)+ofs32], AL   store
-      dd ofs
+      db 0x88, 0x98					; mov byte ptr [rax + ofs32], BL   (store)
+      dd disp
     end if
   end if
 end macro
@@ -344,20 +425,14 @@ end macro
 macro			SIb?	lvl:-1, disp:0	; Store Indirect byte
 ;			------------------------
   if lvl = -1					; top stacked adress of adress
-    db 0x58					; pop rax   adress of adress for data
+    POP_RAX					; pop rax   adress of adress for data
     db 0x48, 0x8B, 0x00				; mov rax, qword ptr [rax]   fetch adress
   else						; regular framed adress of byte
-    assert lvl >= 0 & lvl <= 7
-    if disp > -128 & disp < 127
-      db 0x49, 0x8B, 0x40+lvl				; mov rax, qword ptr [r(8+lvl)+ofs8]   fetch adress
-      db disp
-    else
-      db 0x49, 0x8B, 0x80+lvl				; mov rax, qword ptr [r(8=lvl)+ofs32]   fetch adress
-      dd disp
-    end if
+    FP_IN_RAX	lvl
+    PTR_IN_RAX	disp
   end if
-  db 0x5B						; pop rbx   data
-  db 0x88, 0x18					; mov byte ptr [rax], BL   store
+  POP_RBX						; (data)
+  db 0x88, 0x18					; mov byte ptr [rax], BL   (store)
 
 end macro
 
@@ -365,108 +440,102 @@ end macro
 macro			Sw?	lvl:-1, disp:0	; Store word 16 bits
 ;			------------------------
   if lvl = -1					; top stacked adress
-    db 0x58					; pop rax   adress for data
-    db 0x5B					; pop rbx   data
-    db 0x66, 0x89, 0x18				; mov word ptr [rax], BX   store
+    POP_RAX					; (adress for data)
+    POP_RBX					; (data)
+    db 0x66, 0x89, 0x18				; mov word ptr [rax], BX   (store)
   else						; regular framed byte
-    assert lvl >= 0 & lvl <= 7
-    ofs = -disp					; pile croissante vers adresses decroissantes
-    db 0x58					; pop rax
+    FP_IN_RAX	lvl
+    POP_RBX
     if ofs > -128 & ofs < 127
-      db 0x66, 0x41, 0x89, 0x40+lvl			; mov word ptr [r(8+lvl)+ofs8], AX
+      db 0x66, 0x89, 0x58				; mov word ptr [rax + ofs8], BX
       db ofs
     else
-      db 0x66, 0x41, 0x89, 0x80+lvl			; mov word ptr [r(8+lvl)+ofs32], AX
+      db 0x66, 0x89, 0x98				; mov word ptr [rax + ofs32], BX
       dd ofs
     end if
   end if
-
 end macro
 
-;			-------------------
-macro			SIw?	lvl, disp		; Store Indirect word
-;			-------------------
-  assert lvl >= 0 & lvl <= 7
-  db 0x5B						; pop rbx
-  if disp > -128 & disp < 127
-    db 0x49, 0x8B, 0x40+lvl				; mov rax, qword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
-    db disp
-  else
-    db 0x49, 0x8B, 0x80+lvl				; mov rax, qword ptr [r(8=lvl)+ofs32]
-    dd disp
+;			------------------------
+macro			SIw?	lvl:-1, disp:0	; Store Indirect word
+;			------------------------
+  if lvl = -1					; top stacked adress of adress
+    POP_RAX					; pop rax   adress of adress for data
+    db 0x48, 0x8B, 0x00				; mov rax, qword ptr [rax]   fetch adress
+  else						; regular framed adress of byte
+    FP_IN_RAX	lvl
+    PTR_IN_RAX	disp
   end if
+  POP_RBX
   db 0x66, 0x89, 0x18				; mov word ptr [rax], BX
-
 end macro
 
 ;			------------------------
 macro			Sd?	lvl:-1, disp:0	; Store doubleword 32 bits
 ;			------------------------
   if lvl = -1					; top stacked adress
-    db 0x58					; pop rax   adress for data
-    db 0x5B					; pop rbx   data
-    db 0x89, 0x18					; mov dword ptr [rax], EBX   store
+    POP_RAX					; (adress for data)
+    POP_RBX					; (data)
+    db 0x89, 0x18					; mov dword ptr [rax], EBX   (store)
   else						; regular framed byte
-    assert lvl >= 0 & lvl <= 7
-    ofs = -disp					; pile croissante vers adresses decroissantes
-    db 0x58					; pop rax
-    if ofs > -128 & ofs < 127
-      db 0x41, 0x89, 0x40+lvl				; mov dword ptr [r(8+lvl)+ofs8], EAX
-      db ofs
+    FP_IN_RAX	lvl
+    POP_RBX
+    if disp > -128 & disp < 127
+      db 0x89, 0x58					; mov dword ptr [rax + ofs8], EBX
+      db disp
     else
-      db 0x41, 0x89, 0x80+lvl				; mov dword ptr [r(8+lvl)+ofs32], EAX
-      dd ofs
+      db 0x89, 0x98					; mov dword ptr [rax + ofs32], EBX
+      dd disp
     end if
   end if
-
 end macro
 
-;			-------------------
-macro			SId?	lvl, disp		; Store Indirect doubleword 
-;			-------------------
-  assert lvl >= 0 & lvl <= 7
-  db 0x5B						; pop rbx
-  if disp > -128 & disp < 127
-    db 0x49, 0x8B, 0x40+lvl				; mov rax, qword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
-    db disp
-  else
-    db 0x49, 0x8B, 0x80+lvl				; mov rax, qword ptr [r(8=lvl)+ofs32]
-    dd disp
+;			------------------------
+macro			SId?	lvl:-1, disp:0	; Store Indirect doubleword
+;			------------------------
+  if lvl = -1					; top stacked adress of adress
+    POP_RAX					; pop rax   adress of adress for data
+    db 0x48, 0x8B, 0x00				; mov rax, qword ptr [rax]   fetch adress
+  else						; regular framed adress of byte
+    FP_IN_RAX	lvl
+    PTR_IN_RAX	disp
   end if
+  POP_RBX
   db 0x89, 0x18					; mov dword ptr [rax], EBX
-
 end macro
 
-;			-------------------
-macro			Sq?	lvl, disp		; Store Quadword 64 bits
-;			-------------------
-  assert lvl >= 0 & lvl <= 7
-  ofs = -disp					; pile croissante vers adresses decroissantes
-  db 0x58						; pop rax
-  if ofs > -128 & ofs < 127
-    db 0x49, 0x89, 0x40+lvl				; mov qword ptr [rbp+ofs8], rax
-    db ofs
-  else
-    db 0x49, 0x89, 0x80+lvl				; mov qword ptr [rbp+ofs32], rax
-    dd ofs
+;			------------------------
+macro			Sq?	lvl:-1, disp:0	; Store Quadword 64 bits
+;			------------------------
+  if lvl = -1					; top stacked adress
+    POP_RAX					; (adress for data)
+    POP_RBX					; (data)
+    db 0x48, 0x89, 0x18				; mov qword ptr [rax], RBX   (store)
+  else						; regular framed byte
+    FP_IN_RAX	lvl
+    POP_RBX
+    if disp > -128 & disp < 127
+      db 0x48, 0x89, 0x58				; mov qword ptr [rax + ofs8], rbx
+      db disp
+    else
+      db 0x48, 0x89, 0x98				; mov qword ptr [rax + ofs32], rbx
+      dd disp
+    end if
   end if
-
 end macro
 
-;			-------------------
-macro			SIq?	lvl, disp		; Store Indirect quadword
-;			-------------------
-  assert lvl >= 0 & lvl <= 7
-  db 0x5B						; pop rbx
-  if disp > -128 & disp < 127
-    db 0x49, 0x8B, 0x40+lvl				; mov rax, qword ptr [r(8+lvl)+ofs8]   T:=ofs(FP)
-    db disp
-  else
-    db 0x49, 0x8B, 0x80+lvl				; mov rax, qword ptr [r(8=lvl)+ofs32]
-    dd disp
+;			------------------------
+macro			SIq?	lvl:-1, disp:0	; Store Indirect quadword
+;			------------------------
+  if lvl = -1					; top stacked adress of adress
+    POP_RAX					; (adress of adress for data)
+    db 0x48, 0x8B, 0x00				; mov rax, qword ptr [rax]   fetch adress
+  else						; regular framed adress of byte
+    FP_IN_RAX	lvl
+    PTR_IN_RAX	disp
   end if
+  POP_RBX
   db 0x48, 0x89, 0x18				; mov qword ptr [rax], rbx
-
 end macro
 
 ;			-------------------
@@ -487,29 +556,28 @@ end macro
 ;			---
 macro			ET?
 ;			---
-  db 0x58, 0x48, 0x21, 0x04, 0x24			; pop rax     and qword ptr [rsp], rax
-
+  POP_RAX
+  db 0x48, 0x21, 0x45, 0x00				; and qword ptr [rbp], rax
 end macro
 
 ;			--
 macro			OU?
 ;			--
-  db 0x58, 0x48, 0x09, 0x04, 0x24			; pop rax     or qword ptr [rsp], rax
-
+  POP_RAX
+  db 0x48, 0x09, 0x45, 0x00				; or qword ptr [rbp], rax
 end macro
 
 ;			---
 macro			NON?
 ;			---
-  db 0x48, 0xF7, 0x14, 0x24				; not qword ptr [rsp]
-
+  db 0x48, 0xF7, 0x55, 0x00				; not qword ptr [rbp]
 end macro
 
 ;			---
 macro			OUX?
 ;			---
-  db 0x58, 0x48, 0x31, 0x04, 0x24			; pop rax     xor qword ptr [rsp], rax
-
+  POP_RAX
+  db 0x48, 0x31, 0x45, 0x00				; xor qword ptr [rbp], rax
 end macro
 
 ;				--------------------------------------------------------------------------------
@@ -519,82 +587,79 @@ end macro
 ;			---
 macro			NEG?
 ;			---
-  db 0x48, 0xF7, 0x1C, 0x24				; neg qword ptr [rsp]
+  db 0x48, 0xF7, 0x5D, 0x00				; neg qword ptr [rbp]
 end macro
 
 ;			---
 macro			ADD?
 ;			---
-  db 0x58, 0x48, 0x01, 0x04, 0x24			; pop rax     add qword ptr [rsp], rax
+  POP_RAX
+  db 0x48, 0x01, 0x45, 0x00				; add qword ptr [rbp], rax
 end macro
 
 ;			---
 macro			SUB?
 ;			---
-  db 0x58, 0x48, 0x29, 0x04, 0x24			; pop rax     sub qword ptr [rsp], rax
+  POP_RAX
+  db 0x48, 0x29, 0x45, 0x00				; sub qword ptr [rbp], rax
 
 end macro
 
 ;			---
 macro			MUL?
 ;			---
-  db 0x58						; pop rax
-  db 0x48, 0xF7, 0x2C, 0x24				; imul qword ptr [rsp]
-  db 0x50						; push rax
-
+  POP_RAX
+  db 0x48, 0xF7, 0x6D, 0x00				; imul qword ptr [rbp]
+  DROP
+  PUSH_RAX
 end macro
 
 ;			---
 macro			DIV?
 ;			---
-  db 0x5B						; pop rbx
-  db 0x58						; pop rax
+  POP_RBX
+  POP_RAX
   db 0x48, 0x31, 0xD2				; xor rdx, rdx
   db 0x48, 0xF7, 0xFB				; idiv rbx
-  db 0x50						; push rax
-
+  PUSH_RAX
 end macro
 
 ;			---
 macro			REM?
 ;			---
-  db 0x5B						; pop rbx
-  db 0x58						; pop rax
+  POP_RBX
+  POP_RAX
   db 0x48, 0x31, 0xD2				; xor rdx, rdx
   db 0x48, 0xF7, 0xFB				; idiv rbx
-  db 0x52						; push rdx
-
+  PUSH_RDX
 end macro
 
 ;			---
 macro			CGT?
 ;			---
-  db 0x5B						; pop rbx   (TOP)
-  db 0x48, 0x39, 0x1C, 0x24				; cmp [rsp], rbx   (NXT > TOP ?)
-  db 0x0F, 0x9F, 0x04, 0x24				; setg [rsp]
-
+  POP_RBX
+  db 0x48, 0x39, 0x5D, 0x00				; cmp [rbp], rbx   (NXT > TOP ?)
+  db 0x0F, 0x9F, 0x45, 0x00				; setg [rbp]
 end macro
 
 ;			---
 macro			CEQ?
 ;			---
-  db 0x5B						; pop rbx   (TOP)
-  db 0x48, 0x39, 0x1C, 0x24				; cmp [rsp], rbx   (NXT = TOP ?)
-  db 0x0F, 0x94, 0x04, 0x24				; sete [rsp]
-
+  POP_RBX
+  db 0x48, 0x39, 0x5D, 0x00				; cmp [rbp], rbx   (NXT > TOP ?)
+  db 0x0F, 0x94, 0x45, 0x00				; sete [rbp]
 end macro
 
 ;			---
 macro			DEC?
 ; 			---
-  db 0x48, 0xFF, 0x0C, 0x24				; dec qword ptr [rsp]
-
+  db 0x48, 0xFF, 0x4D, 0x00				; dec qword ptr [rbp]
 end macro
 
 ;			---
 macro			INC?
 ;			---
-  db 0x48, 0xFF, 0x04, 0x24				; inc qword ptr [rsp]
+  db 0x48, 0xFF, 0x45, 0x00				; inc qword ptr [rbp]
 end macro
 
 ;				--------------------------------------------------------------------------------
@@ -613,13 +678,12 @@ macro			BRA?	lbl
     dd disp
   end if
   disp = lbl-$
-
 end macro
 
 ;			-------------
 macro			BT?	lbl
 ;			-------------
-  db 0x58						; pop rax
+  POP_RAX
   db 0x08, 0xC0					; or AL, AL
   local disp
   if disp > -128 & disp < 127
@@ -630,13 +694,12 @@ macro			BT?	lbl
     dd disp
   end if
   disp = lbl-$
-
 end macro
 
 ;			-------------
 macro			BF?	lbl
 ;			-------------
-  db 0x58						; pop rax
+  POP_RAX
   db 0x08, 0xC0					; or AL, AL
   local disp
   if disp > -128 & disp < 127
@@ -650,9 +713,9 @@ macro			BF?	lbl
 
 end macro
 
-;			---------------
+;			-------------------------
 macro			CALL?	prefix, subname
-;			---------------
+;			-------------------------
   postpone
     if ~definite subname#_
 	?subname#_ = ?prefix#subname#.elab		; le nom finissant en _ détermine l'assemblage de la routine
@@ -660,50 +723,68 @@ macro			CALL?	prefix, subname
   end postpone
 
   local disp
-  db 0xE8
+  db 0xE8						; CALL empile sur la micro-pile des adresses de retour (qui croit vers le bas)
   dd disp
   disp = subname#_-$
-
 end macro
 
 ;			--------------------
-macro			LINK?	lvl, alloc	; ALLOCATION POUR VARIABLES LOCALES SOUS FRAME PTR
+macro			LINK?	lvl, alloc	; ALLOCATION POUR VARIABLES LOCALES APRES FRAME PTR
 ;			--------------------
-  assert lvl>=0 & lvl<=7
-  db 0x41, 0x50+lvl					; push r(8+lvl)   store FP(lvl) le pointeur de pile reste a pointer sur l'empile
-  db 0x49, 0x89, 0xE0+lvl				; mov r(8+lvl), rsp   update FP le FP pointe sur l'adresse de sauvegarde du FP anterieur
+  FP_IN_RAX	lvl				; store FP(lvl) le pointeur de pile RBP reste a pointer sur l'empile
+  PUSH_RAX
+  if lvl <= 15					; 16 premiers niveaux, petit offset dans le display
+    db 0x49, 0x89, 0x6F, 8*lvl			; mov qword ptr [r15 + 8*lvl], rbp   update FP le FP pointe sur l'adresse de sauvegarde du FP anterieur
+  else
+    db 0x49, 0x89, 0x6F
+    dd 8*lvl					; mov qword ptr [r15 + 8*lvl], rbp   update FP le FP pointe sur l'adresse de sauvegarde du FP anterieur
+  end if
+
   assert alloc >= 0
   if alloc <> 0
-    if alloc < 256
-      db 0x48, 0x83, 0xEC, alloc			; sub rsp, alloc
+    if alloc < 128
+      db 0x48, 0x8D, 0x6D, alloc			; lea rbp, [rbp + alloc8]
     else
-      db 0x48, 0x81, 0xEC
+      db 0x48, 0x8D, 0xAD				; lea rbp, [rbp + alloc32]
       dd alloc
     end if
   end if
-
 end macro
 
+
+;			-----------------------
+macro			RAX_IN_FP		lvl
+;			-----------------------
+  assert lvl >= 0 & lvl <= 31
+  if lvl <= 15
+    db 0x49, 0x89, 0x47, 8*lvl			; mov [r15 + 8*lvl], rax	(aller chercher le frame pointer du lvl dans le display pointé par r15)
+  else
+    db 0x49, 0x89, 0x87				; mov [r15 + 8*lvl], rax	(aller chercher le frame pointer du lvl dans le display pointé par r15)
+    dd 8*lvl
+  end if
+end macro
 
 ;			-------------
 macro			UNLINK?	lvl		; DISPOSE VARS LOCALES ET RESTORE FRAME PTR
 ;			-------------
-  db 0x4C, 0x89, 0xC4+8*lvl				; mov rsp, r(8+lvl)   throw locals
-  db 0x41, 0x58+lvl					; pop r(8+lvl)  restore stored FP
-
+  FP_IN_RBP	lvl				; (throw locals)
+  POP_RAX
+  RAX_IN_FP	lvl				; (restore stored FP)
 end macro
 
 ;			--------------------
 macro			RTD?	prm_size:0
 ;			--------------------
-  if prm_size <> 0
-    assert prm_size > 0 & prm_size < 32768
-    db 0xC2
-    dw prm_size
-  else
-    db 0xC3
+  assert prm_size >= 0				; la taille de désallocation est donnee positive
+  if prm_size <> 0					; s'il y a une desallocation
+    if prm_size < 128				; de petite taille
+      db 0x48, 0x8D, 0x6D, -prm_size			; lea rbp, [rbp - alloc8]
+    else						; de grande taille
+      db 0x48, 0x8D, 0xAD				; lea rbp, [rbp - alloc32]
+      dd -prm_size
+    end if
   end if
-
+  db 0xC3						; simple return avec l'adresse sur la micro-pile geree par rsp
 end macro
 
 ;			----------------------
@@ -717,8 +798,8 @@ end macro
 ;			----
 macro			PRMS			; En tête de la définition des paramètres
 ;			----
-  virtual at 16					; La pile croit vers les adresses basses, les parametres sont au dessus du FP dynamique et de l'adresse retour
-    PRMzone::					; donc 16 octets (adresses 64 bits) au dessus du FP
+  virtual at 8					; La pile de travail croit vers les adresses hautes, les parametres sont au dessus du FP dynamique
+    PRMzone::					; donc 8 octets (adresses 64 bits) au dessus du FP
   end virtual
 
 end macro
@@ -737,7 +818,7 @@ end macro
 macro			endPRMS			; Fin de la définition des paramètres
 ;			-------
   virtual PRMzone
-    prm_siz = $-16					; Calcul de la taille du paramétrage
+    prm_siz = $-8					; Calcul de la taille du paramétrage
   end virtual
 
 end macro
@@ -746,7 +827,7 @@ end macro
 macro			ELB	lvl		; En tête de la partie élaboration de procédure
 ;			-------------
 elab:
-  virtual at 8					; Laisser un espace pour la première variable ( A VOIR ! DEVRAIT ETRE 0. POLITIQUE ALLOCATION AVEC macro VAR)
+  virtual at 8					; Commence 8 octets apres le FP dynamique
     VARzone::
   end virtual
 	LINK lvl,	loc_siz
@@ -754,7 +835,7 @@ elab:
 end macro
 
 ;			---------------------
-macro			STR	name, bytes		; Définition d'une constante chaine
+macro			STR	name, bytes	; Définition d'une constante chaine
 ;			---------------------
   postpone
     local siz
@@ -832,4 +913,10 @@ virtual at 8
   VARzone.DISP = $
 end virtual
 
+;		METTRE EN PLACE LA PILE CROISSANTE ET LE DISPLAY
 
+  db 0x48, 0x31, 0xC0				; pour point d'arret debogage
+  db 0x48, 0x8D, 0xA4, 0x24, 0x00, 0x00, 0xF0, 0xFF	; lea rsp, [rsp - 1024*1024]		(caler rsp a 1 Mo sous le depart)
+  db 0x49, 0x89, 0xE7				; mov r15, rsp			(debut du display de 32 frame pointers)
+  db 0x48, 0x8D, 0xAC, 0x24, 0x00, 0x01, 0x00, 0x00	; lea rbp, [rsp + 8*32]		(bas de pile croissante au dessus du display)
+  db 0x49, 0x89, 0x2F				; mov [r15], rbp			(frame pointer level 0)

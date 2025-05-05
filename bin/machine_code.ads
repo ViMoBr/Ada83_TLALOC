@@ -4,7 +4,7 @@
 
 is
 
-  type ASM_OPCODE		is (ET,	OU,	NON,	OUX,	SYSCALL,	PUT_CHAR,	PUT_STR,	GET_CHAR,
+  type ASM_OPCODE		is (ET,	OU,	NON,	OUX,	SYSCALL,	PUT_CHAR,	PUT_STR,	GET_CHAR,	GET_STR,
 			    DB,	LI,	LIF,	LCA,	LINK,	UNLINK,
 			    LB,	LW,	LD,	LQ,	LA,
 			    LIB,	LIW,	LID,	LIQ,	LIA,	LVA,
@@ -12,7 +12,7 @@ is
 			    SIB,	SIW,	SID,	SIQ,	SIA
 			   );
 
-  subtype ASM_OPCODE_0	is ASM_OPCODE range ET .. GET_CHAR;
+  subtype ASM_OPCODE_0	is ASM_OPCODE range ET .. GET_STR;
   subtype ASM_OPCODE_1	is ASM_OPCODE range DB .. UNLINK;
   subtype ASM_OPCODE_2	is ASM_OPCODE range LB .. SIA;
 

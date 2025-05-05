@@ -751,7 +751,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-	LA	1,	-16
+	LA	1,	-8
 	GET_CHAR
 	UNLINK 1
 	RTD	prm_siz
@@ -782,7 +782,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-	LB	1,	-16
+	LB	1,	-8
 	PUT_CHAR
 	UNLINK 1
 	RTD	prm_siz
@@ -842,7 +842,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-	LA	1,	-16
+	LA	1,	-8
 	PUT_STR
 	UNLINK 1
 	RTD	prm_siz
@@ -875,6 +875,9 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	LA	1,	-8
+	LA	1,	-16
+	GET_STR
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -904,7 +907,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-	LA	1,	-16
+	LA	1,	-8
 	PUT_STR
 	UNLINK 1
 	RTD	prm_siz
