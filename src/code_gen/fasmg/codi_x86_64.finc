@@ -64,11 +64,6 @@ macro DROP
 end macro
 
 
-;macro pop_N
-;  db 0x5B						; pop rbx
-;end macro
-
-
 macro align_b
 end macro
 
@@ -277,7 +272,7 @@ end macro
 macro			Lb?	lvl, disp		; Load Byte 8 bits
 ;			-------------------
   FP_IN_RAX	lvl
-  if disp > -128 & disp < 127
+  if disp >= -128 & disp < 128
     db 0x48, 0x0F, 0xBE, 0x40				; movsx rax, byte ptr [rax + ofs8]
     db disp
   else
@@ -291,7 +286,7 @@ end macro
 ;			------------------------
 macro			PTR_IN_RAX	disp
 ;			------------------------
-  if disp > -128 & disp < 127
+  if disp >= -128 & disp < 128
     db 0x48, 0x8B, 0x40				; mov rax, qword ptr [rax + ofs8]
     db disp
   else
@@ -315,7 +310,7 @@ end macro
 macro			Lw?	lvl, disp		; Load Word 16 bits
 ;			-------------------
   FP_IN_RAX	lvl
-  if disp > -128 & disp < 127
+  if disp >= -128 & disp < 128
     db 0x48, 0x0F, 0xBF, 0x40				; movsx rax, word ptr [rax + ofs8]
     db disp
   else
@@ -338,7 +333,7 @@ end macro
 macro			Ld?	lvl, disp		; Load doubleword 32 bits
 ;			-------------------
   FP_IN_RAX	lvl
-  if disp > -128 & disp < 127
+  if disp >= -128 & disp < 128
     db 0x48, 0x63, 0x40				; movsx rax, dword ptr [rax + ofs8]   T:=ofs(FP)
     db disp
   else
@@ -361,7 +356,7 @@ end macro
 macro			Lq?	lvl, disp		; Load quadword 64 bits
 ;			-------------------
   FP_IN_RAX	lvl
-  if disp > -128 & disp < 127
+  if disp >= -128 & disp < 128
     db 0x48, 0x8B, 0x40				; mov rax, qword ptr [rax + ofs8]
     db disp
   else
@@ -396,7 +391,7 @@ end macro
 macro			LVa?	lvl, disp		; Load Variable Address pour lvl et disp (empile l'adresse de la variable au déplacement disp du frame de lvl donné)
 ;			-------------------
   FP_IN_RAX	lvl
-  if disp > -128 & disp < 127
+  if disp >= -128 & disp < 128
     db 0x48, 0x8D, 0x40				; lea rax, [rax + ofs8]
     db disp
   else
@@ -420,7 +415,7 @@ macro			Sb?	lvl:-1, disp:0	; Store byte 8 bits
   else						; octet rangé dans un frame
     FP_IN_RAX	lvl
     POP_RBX
-    if disp > -128 & disp < 127
+    if disp >= -128 & disp < 128
       db 0x88, 0x58					; mov byte ptr [rax + ofs8], BL   store
       db disp
     else
@@ -455,7 +450,7 @@ macro			Sw?	lvl:-1, disp:0	; Store word 16 bits
   else						; regular framed byte
     FP_IN_RAX	lvl
     POP_RBX
-    if ofs > -128 & ofs < 127
+    if ofs >= -128 & ofs < 128
       db 0x66, 0x89, 0x58				; mov word ptr [rax + ofs8], BX
       db ofs
     else
@@ -489,7 +484,7 @@ macro			Sd?	lvl:-1, disp:0	; Store doubleword 32 bits
   else						; regular framed byte
     FP_IN_RAX	lvl
     POP_RBX
-    if disp > -128 & disp < 127
+    if disp >= -128 & disp < 128
       db 0x89, 0x58					; mov dword ptr [rax + ofs8], EBX
       db disp
     else
@@ -523,7 +518,7 @@ macro			Sq?	lvl:-1, disp:0	; Store Quadword 64 bits
   else						; regular framed byte
     FP_IN_RAX	lvl
     POP_RBX
-    if disp > -128 & disp < 127
+    if disp >= -128 & disp < 128
       db 0x48, 0x89, 0x58				; mov qword ptr [rax + ofs8], rbx
       db disp
     else
@@ -752,11 +747,11 @@ macro			LINK?	lvl, alloc	; ALLOCATION POUR VARIABLES LOCALES APRES FRAME PTR
 			; Faire l'allocation sur la pile de travail standard
   assert alloc >= 0
   if alloc <> 0
-    if alloc < 128
-      db 0x48, 0x8D, 0x6D, alloc			; lea rbp, [rbp + alloc8]
+    if 8*((alloc+7)/8) < 128
+      db 0x48, 0x8D, 0x6D, 8*((alloc+7)/8)		; lea rbp, [rbp + alloc8]
     else
       db 0x48, 0x8D, 0xAD				; lea rbp, [rbp + alloc32]
-      dd alloc
+      dd 8*((alloc+7)/8)
     end if
   end if
 			; Gerer la co-pile au cas où on en aurait besoin
@@ -955,8 +950,8 @@ end virtual
 
 ;		METTRE EN PLACE LA CO-PILE
 
-  db 0x4C, 0x8D, 0x34, 0x25				; lea r14, [0x00400078+ASM_SIZE]	(bas de la co-pile, ou pile-tas au dessus du code et des constantes)
-  dd 0x00400078+ASM_SIZE
+  db 0x4C, 0x8D, 0x34, 0x25				; lea r14, [0x00400078 + 8*((ASM_SIZE+7)/8)]	(bas de la co-pile, ou pile-tas au dessus du code et des constantes)
+  dd 0x00400078 + 8*((ASM_SIZE+7)/8)
   db 0x4D, 0x89, 0x36				; mov [r14], r14			(empiler le premier "frame" de co-pile)
   db 0x4D, 0x89, 0xF5				; mov r13, r14			(R13 est le "frame pointer" de co-pile)
   db 0x4D, 0x8D, 0x76, 0x08				; lea r14, [r14 + 8]		(monter le haut de co-pile sur le premier lieu libre)

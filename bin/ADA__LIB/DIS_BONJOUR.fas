@@ -1,6 +1,11 @@
 include '../../src/code_gen/fasmg/codi_x86_64.finc'
 
-	LINK	0, 0
+	LINK	0, loc_siz
+
 include 'DIS_BONJOUR.FINC'
 	CALL	, DIS_BONJOUR_L1
 	SYSEXIT
+
+  virtual VARzone
+    loc_siz = $						; Ce n'est que là que l'on calcule la taille des globales qui sera retropropagee au LINK 0
+  end virtual

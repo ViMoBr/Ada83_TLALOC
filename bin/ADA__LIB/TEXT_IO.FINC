@@ -989,13 +989,20 @@ VAR FST_1, d
 VAR LST_1, d
 	LI	1
 	Sd 1,	SIZ_1
-	LI	1
 	LI	 1
 	Sd 1,	FST_1
 	LI	 68
 	Sd 1,	LST_1
+	Ld 1,	LST_1
+	INC
+	Ld 1,	FST_1
+	SUB
+	Ld 1,	SIZ_1
+	MUL
 end namespace 
-VAR STR_disp, q				; variable ptr str
+	CO_VAR					; allocation sur la co-pile
+VAR STR_disp, q				; variable tableau
+	Sa 1,	STR_disp
 VAR INDEX_disp, d				; variable entiere
 	Sd  1,	INDEX_disp
 VAR MIN_WIDTH_disp, d			; variable entiere

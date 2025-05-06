@@ -10,7 +10,7 @@ STR STR_L2, ' Bonjour '			; constante string=' Bonjour '
 	LI	 2
 	CALL	TEXT_IO. ,NEW_LINE_L26
 LIRE_UN:
-STR STR_L4, ' Entrez un caractere : '		; constante string=' Entrez un caractere : '
+STR STR_L4, ' Entrez un caractere ! '		; constante string=' Entrez un caractere ! '
 	LCA	STR_L4_ptr
 	CALL	TEXT_IO. ,PUT_L56
 	LVA  1,	C_disp
