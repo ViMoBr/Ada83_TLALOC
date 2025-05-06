@@ -10,7 +10,16 @@
 	; d'accès mémoire et de mise à jour du pointeur de pile RBP.
 	; Le ESP reste tout en bas de pile pour gérer une micro-pile descendante des adresses de CALL/RET uniquement.
 	; Attention : le EBP pointe sur la derniere valeur empilee comme qword
+	; AUTRE PROBLEME DE PILE : Les variables dont on connaît la taille à la compilation s'accomodent bien à la pile usuelle, les offsets sont déterminé à la compilation
+	; MAIS, si l'on a comme en Ada des variables (tableau par exemple) dont la taille n'est connue qu'à l'exécution (indices eux-mêmes variables)
+	; on ne peut pas mettre ces variables sur la pile normale. Mettre ces varaibles dans le tas n'est pas très satisfaisant car la gestion de la désallocation va poser problème.
+	; On invente donc la Co-Pile qui est une suite de blocs alloués dynamiquement pour un niveau d'exécution et qui est désallouée à la manière de la pile usuelle.
+	; De la sorte, il n'y a pas de mélange avec les allocations de taille statique.
+	; r14 est le pointeur de sommet de Co-Pile (l'analogue de RBP pour la pile standard, ou de RSP pour la micro-pile des retours/bricolages locaux en assembleur.
 
+	; R15 pointeur de base display des frame pointers
+	; R14 pointeur de haut de co-pile (lieu d'allocation)
+	; R13 pointeur de debut de chaine de frame de co-pile (pour désallocation)
 
 postpone					; sera fait en toute toute fin car c'est le premier postpone
   ASM_SIZE = $-0x400078
@@ -330,7 +339,7 @@ macro			Ld?	lvl, disp		; Load doubleword 32 bits
 ;			-------------------
   FP_IN_RAX	lvl
   if disp > -128 & disp < 127
-    db0x48, 0x63, 0x40				; movsx rax, dword ptr [rax + ofs8]   T:=ofs(FP)
+    db 0x48, 0x63, 0x40				; movsx rax, dword ptr [rax + ofs8]   T:=ofs(FP)
     db disp
   else
     db 0x48, 0x63, 0x80				; movsx rax, dword ptr [rax + ofs32]
@@ -635,11 +644,12 @@ macro			REM?
 end macro
 
 ;			---
-macro			CGT?
+macro			CGT?			; A > B A empile puis B
 ;			---
-  POP_RBX
-  db 0x48, 0x39, 0x5D, 0x00				; cmp [rbp], rbx   (NXT > TOP ?)
+  POP_RBX						; depiler le B dans RBX
+  db 0x48, 0x39, 0x5D, 0x00				; cmp [rbp], rbx   (comparer avec A, calcule B-A)
   db 0x0F, 0x9F, 0x45, 0x00				; setg [rbp]
+;  db 0x0F, 0x9E, 0x45, 0x00				; setle [rbp]	(less or equal car A et B inverses dans la comparaison)
 end macro
 
 ;			---
@@ -739,7 +749,7 @@ macro			LINK?	lvl, alloc	; ALLOCATION POUR VARIABLES LOCALES APRES FRAME PTR
     db 0x49, 0x89, 0x6F
     dd 8*lvl					; mov qword ptr [r15 + 8*lvl], rbp   update FP le FP pointe sur l'adresse de sauvegarde du FP anterieur
   end if
-
+			; Faire l'allocation sur la pile de travail standard
   assert alloc >= 0
   if alloc <> 0
     if alloc < 128
@@ -749,6 +759,11 @@ macro			LINK?	lvl, alloc	; ALLOCATION POUR VARIABLES LOCALES APRES FRAME PTR
       dd alloc
     end if
   end if
+			; Gerer la co-pile au cas où on en aurait besoin
+
+  db 0x4D, 0x89, 0x2E				; mov [r14], r13		empiler le frame pointer de co-pile sur celle-ci
+  db 0x4D, 0x89, 0xF5				; mov r13, r14		(mettre a jour le frame pointer de co-pile)
+  db 0x4D, 0x8D, 0x76, 0x08				; lea r14, [r14 + 8]	(monter le haut de co-pile sur le premier lieu libre)
 end macro
 
 
@@ -770,6 +785,11 @@ macro			UNLINK?	lvl		; DISPOSE VARS LOCALES ET RESTORE FRAME PTR
   FP_IN_RBP	lvl				; (throw locals)
   POP_RAX
   RAX_IN_FP	lvl				; (restore stored FP)
+
+			; Gerer la co-pile pour liberer les allocations de taille dynamique eventuelles
+
+  db 0x4D, 0x8B, 0x6D, 0x00				; mov r13, [r13]
+
 end macro
 
 ;			--------------------
@@ -847,23 +867,35 @@ macro			STR	name, bytes	; Définition d'une constante chaine
 
 end macro
 
-;			----------------------------
-macro			VAR	name_disp, sizChar	; Définition d'un lieu de variable
-;			----------------------------
+;			-----------------------------------
+macro			VAR	name_disp, sizChar, siz:1	; Définition d'un lieu de variable
+;			-----------------------------------
   virtual VARzone
-    align_#sizChar
-    name_disp = $
-    d#sizChar ?
+    align_#sizChar						; aligner en fonction de l'unite de reservation
+    name_disp = $						; lieu offset de la variable
+    r#sizChar siz						; reservation
   end virtual
 
 end macro
 
+
 ;			------
-macro			endPRO			; Fin de procédure
+macro			CO_VAR				; Allocation d'un bloc sur la co-pile taille en octets sur la pile standard, laisse l'adresse de début de bloc sur la pile
+;			------
+  POP_RAX							; la taille d'allocation a ete empilee, la mettre dans rax
+  db 0x4C, 0x89, 0x75, 0x08					; mov QWORD PTR [rbp+8], r14		(empiler le haut de co-pile R14 sur la pile standard)
+  db 0x48, 0x8D, 0x6D, 0x08					; lea rbp, [rbp+0x8]		(puis MONTER le rbp sur la valeur ecrite car pile croissante vers adresses hautes)
+  db 0x48, 0x83, 0xC0, 0x07					; add rax, 7
+  db 0x48, 0xC1, 0xF8, 0x03					; sar rax, 3			(diviser par 8, rax est positif normalement)
+  db 0x4D, 0x8D, 0x34, 0xC6					; lea r14, [r14 + 8*rax]		(mettre le sommet de co-pile aligne sur qword)
+end macro
+
+;			------
+macro			endPRO				; Fin de procédure
 ;			------
 post:
   virtual VARzone
-    loc_siz = $					; Ce n'est que là que l'on calcule la taille des locales qui sera retropropagee au LINK du ELAB
+    loc_siz = $						; Ce n'est que là que l'on calcule la taille des locales qui sera retropropagee au LINK du ELAB
   end virtual
   end namespace
 
@@ -903,8 +935,8 @@ Elf64_Phdr:
 	p_offset		dq 0x78
 	p_vaddr		dq 0x00400078
 	p_paddr		dq 0
-	p_filesz		dq ASM_SIZE
-	p_memsz		dq 1024*1024
+	p_filesz		dq ASM_SIZE		; juste le nécessaire code/constantes dans le fichier
+	p_memsz		dq ASM_SIZE + 1024*1024	; 1Mo au dessus du code et des constantes (pour la co-pile)
 	p_align		dq 4096
 
 
@@ -920,3 +952,11 @@ end virtual
   db 0x49, 0x89, 0xE7				; mov r15, rsp			(debut du display de 32 frame pointers)
   db 0x48, 0x8D, 0xAC, 0x24, 0x00, 0x01, 0x00, 0x00	; lea rbp, [rsp + 8*32]		(bas de pile croissante au dessus du display)
   db 0x49, 0x89, 0x2F				; mov [r15], rbp			(frame pointer level 0)
+
+;		METTRE EN PLACE LA CO-PILE
+
+  db 0x4C, 0x8D, 0x34, 0x25				; lea r14, [0x00400078+ASM_SIZE]	(bas de la co-pile, ou pile-tas au dessus du code et des constantes)
+  dd 0x00400078+ASM_SIZE
+  db 0x4D, 0x89, 0x36				; mov [r14], r14			(empiler le premier "frame" de co-pile)
+  db 0x4D, 0x89, 0xF5				; mov r13, r14			(R13 est le "frame pointer" de co-pile)
+  db 0x4D, 0x8D, 0x76, 0x08				; lea r14, [r14 + 8]		(monter le haut de co-pile sur le premier lieu libre)

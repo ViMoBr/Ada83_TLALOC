@@ -20,10 +20,10 @@ VAR UNBOUNDED_disp, d			; variable entiere
 ; CODEGEN.DECLARATIONS.CODE_GENERIC_DECL : PAS ENCORE FAIT ! ENUMERATION_IO
 					;    BODY ELAB
 VAR STDOUT_MAX_PAGE_LEN_disp, d		; variable entiere
-	LI	 0
+	LI	 72
 	Sd  0,	STDOUT_MAX_PAGE_LEN_disp
 VAR STDOUT_MAX_LINE_LEN_disp, d		; variable entiere
-	LI	 0
+	LI	 256
 	Sd  0,	STDOUT_MAX_LINE_LEN_disp
 VAR STDOUT_PAGE_disp, d			; variable entiere
 	LI	 1
@@ -907,8 +907,10 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-	LA	1,	-8
-	PUT_STR
+	; DEFN.TY NON FAIT DN_IN_ID
+	CALL	TEXT_IO. ,PUT_L56
+	LI	 1
+	CALL	TEXT_IO. ,NEW_LINE_L26
 	UNLINK 1
 	RTD	prm_siz
 excep:

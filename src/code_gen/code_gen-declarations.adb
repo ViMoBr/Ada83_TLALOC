@@ -1,3 +1,9 @@
+-------------------------------------------------------------------------------------------------------------------------
+-- CC BY SA	CODE_GEN.DECLARATIONS.ADB	VINCENT MORIN	6/5/2025	UNIVERSITE DE BRETAGNE OCCIDENTALE
+-------------------------------------------------------------------------------------------------------------------------
+--	1	2	3	4	5	6	7	8	9	0	1	2
+
+
 separate ( CODE_GEN )
 				------------
  	package body		DECLARATIONS
@@ -392,18 +398,17 @@ null;
 
 
 
-
-
 				------------
   procedure			CODE_VC_NAME		( VC_NAME :TREE )
-  is
+  is				------------
   begin
     declare
       TYPE_SPEC	: TREE	:= D( SM_OBJ_TYPE, VC_NAME );
 
+
 		-----------------------
       procedure	COMPILE_VC_NAME_INTEGER	( VC_NAME :TREE )
-      is
+      is		-----------------------
         OPER_TYPE	: CHARACTER	:= OPER_TYPE_FROM( VC_NAME );
         INIT_EXP	: TREE		:= D( SM_INIT_EXP, VC_NAME );
       begin
@@ -421,9 +426,10 @@ null;
       end	COMPILE_VC_NAME_INTEGER;
 	-----------------------
 
-		-----------------------
+
+		---------------------
       procedure	COMPILE_VC_NAME_FLOAT	( VC_NAME :TREE )
-      is
+      is		---------------------
         OPER_TYPE	: CHARACTER	:= OPER_TYPE_FROM( VC_NAME );
         INIT_EXP	: TREE		:= D( SM_INIT_EXP, VC_NAME );
       begin
@@ -439,15 +445,18 @@ null;
         end if;
 
       end	COMPILE_VC_NAME_FLOAT;
-	-----------------------
+	---------------------
+
 
 		---------------------------
       procedure	COMPILE_VC_NAME_ENUMERATION	( VC_NAME, TYPE_SPEC :TREE )
-      is
+      is		---------------------------
+
         NAME	:constant STRING	:= PRINT_NAME( CODI.TYPE_SYMREP );
 
 		-------------------------
-        procedure	COMPILE_VC_NAME_BOOL_CHAR	( VC_NAME :TREE ) is
+        procedure	COMPILE_VC_NAME_BOOL_CHAR	( VC_NAME :TREE )
+        is	-------------------------
           OPER_TYPE	: CHARACTER	:= OPER_TYPE_FROM( VC_NAME );
 	INIT_EXP	: TREE		:= D( SM_INIT_EXP, VC_NAME );
         begin
@@ -480,9 +489,10 @@ null;
       end	COMPILE_VC_NAME_ENUMERATION;
 	---------------------------
 
+
 		------------------
       procedure	COMPILE_ACCESS_VAR	( VAR_ID, TYPE_SPEC :TREE )
-      is
+      is		------------------
       begin
         declare
 	LVL	: LEVEL_NUM	renames CODI.CUR_LEVEL;
@@ -509,15 +519,16 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 
 		-----------------
       procedure	COMPILE_ARRAY_VAR	( VC_NAME, TYPE_SPEC :TREE )
-      is
+      is		-----------------
         VC_STR		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, VC_NAME ) );
         DIM_NBR		: NATURAL		:= 1;
         LVL		: LEVEL_NUM	renames CODI.CUR_LEVEL;
         LVL_STR		:constant STRING	:= IMAGE( CODI.CUR_LEVEL );
+        TOTAL_ELEMENTS	: NATURAL;
 
 		----------------------------
         procedure	COMPILE_ARRAY_TYPE_DIMENSION	( IDX_TYPE_LIST :in out SEQ_TYPE )
-        is
+        is	----------------------------
 	IDX_TYPE		: TREE;
 	DIM_NBR_STR	:constant STRING	:= IMAGE( DIM_NBR );
         begin
@@ -526,36 +537,46 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 	PUT_LINE( "VAR " & "FST_" & DIM_NBR_STR & ", d" );
 	PUT_LINE( "VAR " & "LST_" & DIM_NBR_STR & ", d" );
 
-	if IS_EMPTY( IDX_TYPE_LIST ) then
+	if  IS_EMPTY( IDX_TYPE_LIST )  then
 	  declare
 	    TYPE_BASE		: TREE		:= D( SM_BASE_TYPE, TYPE_SPEC );
 	    TYPE_ELEMENT		: TREE		:= D( SM_COMP_TYPE, TYPE_BASE );
-	    ELEMENT_SIZ		: NATURAL		:= DI( CD_IMPL_SIZE, TYPE_ELEMENT ) / 8;
+	    ELEMENT_SIZ		: NATURAL		:= DI( CD_IMPL_SIZE, TYPE_ELEMENT ) / 8;	-- TAILLE EN OCTETS
 	    ELEMENT_SIZ_STR		:constant STRING	:= IMAGE( ELEMENT_SIZ );
 	  begin
-	    PUT_LINE( tab & "LI" & tab & ELEMENT_SIZ_STR );
+	    PUT_LINE( tab & "LI" & tab & ELEMENT_SIZ_STR );					-- TAILLE D'UN ELEMENT DU TABLEAU
 	    PUT_LINE( tab & "Sd" & ' ' & LVL_STR & ',' & tab & "SIZ_" & DIM_NBR_STR );
-	    PUT_LINE( tab & "LI" & tab & ELEMENT_SIZ_STR );
 	  end;
-	  else
-	    DIM_NBR := DIM_NBR + 1;
-	    COMPILE_ARRAY_TYPE_DIMENSION( IDX_TYPE_LIST );
-	  end if;
+	else
+	  DIM_NBR := DIM_NBR + 1;
+	  COMPILE_ARRAY_TYPE_DIMENSION( IDX_TYPE_LIST );
 
-	  if IDX_TYPE.TY = DN_INTEGER then
-	    declare
+	  PUT_LINE( tab & "Sd" & ' ' & LVL_STR & ',' & tab & "SIZ_" & DIM_NBR_STR );			-- METTRE LA TAILLE TRANCHE A CELLE LAISSEE PAR LE CALCUL SUR LA DIM PRECEDENTE
+	end if;
+
+	if  IDX_TYPE.TY = DN_INTEGER  then
+	  declare
 	      IDX_RANGE   : TREE	:= D( SM_RANGE, IDX_TYPE );
 	      RANGE_FIRST : TREE	:= D( AS_EXP1, IDX_RANGE );
 	      RANGE_LAST  : TREE	:= D( AS_EXP2, IDX_RANGE );
-	    begin
+	  begin
 	      EXPRESSIONS.CODE_EXP( RANGE_FIRST );
 	      PUT_LINE( tab & "Sd" & ' ' & LVL_STR & ',' & tab & "FST_" & DIM_NBR_STR );
 	      EXPRESSIONS.CODE_EXP( RANGE_LAST );
 	      PUT_LINE( tab & "Sd" & ' ' & LVL_STR & ',' & tab & "LST_" & DIM_NBR_STR );
-	    end;
-	  end if;
 
-	end	COMPILE_ARRAY_TYPE_DIMENSION;
+			-- CALCULER LA TAILLE DE LA TRANCHE COMPTE TENU DE LA TAILLE D'ELEMENT DE DIMENSION SUIVANTE
+
+	      PUT_LINE( tab & "Ld" & ' ' & LVL_STR & ',' & tab & "LST_" & DIM_NBR_STR );
+	      PUT_LINE( tab & "INC" );
+	      PUT_LINE( tab & "Ld" & ' ' & LVL_STR & ',' & tab & "FST_" & DIM_NBR_STR );
+	      PUT_LINE( tab & "SUB" );
+	      PUT_LINE( tab & "Ld" & ' ' & LVL_STR & ',' & tab & "SIZ_" & DIM_NBR_STR );
+	      PUT_LINE( tab & "MUL" );
+	  end;
+	end if;
+
+        end	COMPILE_ARRAY_TYPE_DIMENSION;
 		----------------------------
 
       begin
@@ -569,9 +590,15 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 	end;
 	PUT_LINE( "end namespace " );
         end if;
-        PUT( "VAR " & VC_STR & "_disp, q" );
-        if CODI.DEBUG then PUT( tab50 & "; variable ptr str" ); end if;
+
+        PUT( tab & "CO_VAR"  );
+        if CODI.DEBUG then PUT( tab50 & "; allocation sur la co-pile" ); end if;
         NEW_LINE;
+
+        PUT( "VAR " & VC_STR & "_disp, q" );
+        if CODI.DEBUG then PUT( tab50 & "; variable tableau" ); end if;
+        NEW_LINE;
+        PUT_LINE( tab & "Sa" & ' ' & LVL_STR & ',' & tab & VC_STR & "_disp" );
 
         DI( CD_LEVEL, VC_NAME, INTEGER( LVL ) );
 
@@ -815,3 +842,6 @@ PUT_LINE( "; EXC_LBL" & tab & EXC_LBL );
 	------------
 end	DECLARATIONS;
 	------------
+
+-------------------------------------------------------------------------------------------------------------------------
+--	1	2	3	4	5	6	7	8	9	0	1	2

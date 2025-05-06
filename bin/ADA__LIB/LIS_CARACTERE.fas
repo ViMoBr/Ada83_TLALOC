@@ -1,0 +1,6 @@
+include '../../src/code_gen/fasmg/codi_x86_64.finc'
+
+	LINK	0, 0
+include 'LIS_CARACTERE.FINC'
+	CALL	, LIS_CARACTERE_L1
+	SYSEXIT

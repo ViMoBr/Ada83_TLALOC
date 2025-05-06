@@ -4,8 +4,8 @@ use  MACHINE_CODE;
 	package body			TEXT_IO
 is					-------
 
-  STDOUT_MAX_PAGE_LEN	: COUNT	:= 0;
-  STDOUT_MAX_LINE_LEN	: COUNT	:= 0;
+  STDOUT_MAX_PAGE_LEN	: COUNT	:= 72;
+  STDOUT_MAX_LINE_LEN	: COUNT	:= 256;
   STDOUT_PAGE		: POSITIVE_COUNT	:= 1;
   STDOUT_LINE		: POSITIVE_COUNT	:= 1;
   STDOUT_COL		: POSITIVE_COUNT	:= 1;
@@ -233,8 +233,8 @@ is					-------
   procedure		NEW_LINE		( SPACING :in POSITIVE_COUNT := 1 )
   is
   begin
-    PUT( ASCII.CR );								-- LRM 14.3.4(3) col := 1
-    STDOUT_COL := 1;
+    PUT( ASCII.CR );
+    STDOUT_COL := 1;								-- LRM 14.3.4(3) col := 1
     for N in 1 .. SPACING loop
       PUT( ASCII.LF );
     end loop;
@@ -531,8 +531,8 @@ is					-------
   procedure		PUT_LINE		( ITEM :in STRING )
   is
   begin
-       ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -8 );
-       ASM_OP_0'( OPCODE => PUT_STR );
+    PUT( ITEM );
+    NEW_LINE;
 
   end	PUT_LINE;
 	--------
