@@ -875,8 +875,8 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-	LA	1,	-8
 	LA	1,	-16
+	LA	1,	-8
 	GET_STR
 	UNLINK 1
 	RTD	prm_siz
@@ -907,7 +907,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-	; DEFN.TY NON FAIT DN_IN_ID
+	La  1,	-ITEM_adrofs
 	CALL	TEXT_IO. ,PUT_L56
 	LI	 1
 	CALL	TEXT_IO. ,NEW_LINE_L26
@@ -984,11 +984,11 @@ ELB 1					;    BODY ELAB
 VAR QUOTIENT_disp, b			; variable entiere
 VAR RESTE_disp, b				; variable entiere
 namespace STR
-VAR SIZ_1, d
+VAR SIZ_1, q
 VAR FST_1, d
 VAR LST_1, d
 	LI	1
-	Sd 1,	SIZ_1
+	Sq 1,	SIZ_1
 	LI	 1
 	Sd 1,	FST_1
 	LI	 68

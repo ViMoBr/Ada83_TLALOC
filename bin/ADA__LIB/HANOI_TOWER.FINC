@@ -7,10 +7,10 @@ VAR DEFAULT_WIDTH_disp, d			; variable entiere
 VAR DEFAULT_BASE_disp, d			; variable entiere
 	LI	 10
 	Sd  1,	DEFAULT_BASE_disp
-; EXC_LBL	L8
+; EXC_LBL	L7
 
-if defined MOVE_L9_
-PRO	MOVE_L9				;---------- PRO MOVE
+if defined MOVE_L8_
+PRO	MOVE_L8				;---------- PRO MOVE
 PRMS					;    debut parametrage
 	PRM DISQUES_RESTANTS_ofs			; in
 	PRM TIGE_ORIGINE_ofs			; in
@@ -24,32 +24,32 @@ begin:					;---------- BDY INSTRUCTIONS
 	Ld  2,	-DISQUES_RESTANTS_ofs
 	LI	 1
 	CEQ
-	BF	L11
+	BF	L10
 	Lb  2,	-TIGE_ORIGINE_ofs
 	Lb  2,	-TIGE_DESTINATION_ofs
 	CALL	TEXT_IO. ,PUT_LINE_L60
-	BRA	L10
-L11:
+	BRA	L9
+L10:
 	; DEFN.TY NON FAIT DN_IN_ID
 	; DEFN.TY NON FAIT DN_IN_ID
 	; DEFN.TY NON FAIT DN_IN_ID
 	Ld  2,	-DISQUES_RESTANTS_ofs
 	LI	 1
 	SUB
-	CALL	HANOI_TOWER. ,MOVE_L9
+	CALL	HANOI_TOWER. ,MOVE_L8
 	; DEFN.TY NON FAIT DN_IN_ID
 	; DEFN.TY NON FAIT DN_IN_ID
 	; DEFN.TY NON FAIT DN_IN_ID
 	LI	 1
-	CALL	HANOI_TOWER. ,MOVE_L9
+	CALL	HANOI_TOWER. ,MOVE_L8
 	; DEFN.TY NON FAIT DN_IN_ID
 	; DEFN.TY NON FAIT DN_IN_ID
 	; DEFN.TY NON FAIT DN_IN_ID
 	Ld  2,	-DISQUES_RESTANTS_ofs
 	LI	 1
 	SUB
-	CALL	HANOI_TOWER. ,MOVE_L9
-L10:					; post if
+	CALL	HANOI_TOWER. ,MOVE_L8
+L9:					; post if
 	UNLINK 2
 	RTD	prm_siz
 excep:
@@ -57,17 +57,17 @@ endPRO					;---------- end PRO MOVE
 end if
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-STR STR_L12, 'ENTER NUMBER OF DISKS : '		; constante string='ENTER NUMBER OF DISKS : '
-	LCA	STR_L12_ptr
+STR STR_L11, 'ENTER NUMBER OF DISKS : '		; constante string='ENTER NUMBER OF DISKS : '
+	LCA	STR_L11_ptr
 	CALL	TEXT_IO. ,PUT_L56
 	LI	 0
 	LVA  1,	NUMBER_OF_DISKS_disp
-	CALL	NATURAL_IO. ,GET_L3
+	CALL	NATURAL_IO. ,GET_L2
 	LI	 67
 	LI	 66
 	LI	 65
 	Ld  1,	NUMBER_OF_DISKS_disp
-	CALL	HANOI_TOWER. ,MOVE_L9
+	CALL	HANOI_TOWER. ,MOVE_L8
 	UNLINK 1
 	RTD	prm_siz
 excep:

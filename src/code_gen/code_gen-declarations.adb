@@ -533,7 +533,7 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 	DIM_NBR_STR	:constant STRING	:= IMAGE( DIM_NBR );
         begin
 	POP( IDX_TYPE_LIST, IDX_TYPE );
-	PUT_LINE( "VAR " & "SIZ_" & DIM_NBR_STR & ", d" );
+	PUT_LINE( "VAR " & "SIZ_" & DIM_NBR_STR & ", q" );					-- quadword pour aligner le descripteur sur machine 64 bits
 	PUT_LINE( "VAR " & "FST_" & DIM_NBR_STR & ", d" );
 	PUT_LINE( "VAR " & "LST_" & DIM_NBR_STR & ", d" );
 
@@ -545,7 +545,7 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 	    ELEMENT_SIZ_STR		:constant STRING	:= IMAGE( ELEMENT_SIZ );
 	  begin
 	    PUT_LINE( tab & "LI" & tab & ELEMENT_SIZ_STR );					-- TAILLE D'UN ELEMENT DU TABLEAU
-	    PUT_LINE( tab & "Sd" & ' ' & LVL_STR & ',' & tab & "SIZ_" & DIM_NBR_STR );
+	    PUT_LINE( tab & "Sq" & ' ' & LVL_STR & ',' & tab & "SIZ_" & DIM_NBR_STR );			-- en quadword sur machine 64 bits
 	  end;
 	else
 	  DIM_NBR := DIM_NBR + 1;
@@ -620,19 +620,6 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 
 	DI( CD_LEVEL,	VC_NAME, INTEGER( LVL ) );
 	DB( CD_COMPILED,	VC_NAME, TRUE );
---	DESCR_PTR := CODI.OFFSET_ACT;
--- 	if DB( CD_COMPILED, TYPE_SPEC ) then
--- 	  OPER := LOAD_ADR( TYPE_SPEC );
--- 	  EMIT( DPL, A, "DUPLICATE " & PRINT_NAME ( D (LX_SYMREP, VC_NAME ) ) & " ARRAY DESCRIPTOR TYPE_SPEC" );
--- 	  STORE( VC_NAME, ADR_TYP, OPER );
--- 	  EMIT( IND, I, 0, "CHARGE INDEXE TAILLE TABLEAU DE DESCRIPTEUR" );
--- 	  EMIT( ALO, INTEGER( 1 ), COMMENT=> "ALLOC TABLEAU" );
--- 	  STORE( VC_NAME, ADR_TYP, OPER );
--- 	else
--- 	  PUT_LINE( "!!! COMPILE_ARRAY_VAR : TYPE_SPEC NON COMPILE" );
--- 	  raise PROGRAM_ERROR;
--- 	end if;
-
 
       end	COMPILE_ARRAY_VAR;
 	-----------------
@@ -818,7 +805,8 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
   is
   begin
 
-    if D( AS_UNIT_KIND, PACKAGE_DECL ).TY = DN_INSTANTIATION then
+    if  D( AS_UNIT_KIND, PACKAGE_DECL ).TY = DN_INSTANTIATION
+    then
       CODE_PACKAGE_SPEC( D( SM_SPEC, D( AS_SOURCE_NAME, PACKAGE_DECL ) ) );
 
     else
@@ -829,11 +817,8 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
     declare
       EXC_LBL		:constant STRING	:= NEW_LABEL;
     begin
---        EMIT( EXH, EXC_LBL, COMMENT=> "ETIQUETTE EXCEPTION HANDLE DU PACKAGE" );
---        EMIT( RET, RELATIVE_RESULT_OFFSET );
-PUT_LINE( "; EXC_LBL" & tab & EXC_LBL );
-      end;
---      EMIT( EEX );
+      PUT_LINE( "; EXC_LBL" & tab & EXC_LBL );
+    end;
 
   end	CODE_PACKAGE_DECL;
 	-----------------

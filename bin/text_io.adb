@@ -512,8 +512,8 @@ is					-------
   procedure		GET_LINE		( ITEM :out STRING;   LAST :out NATURAL )
   is
   begin
-    ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -8 );
-    ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -16 );
+    ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -16 );		-- adresse de la chaine ITEM
+    ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -8 );		-- adresse de LAST
     ASM_OP_0'( OPCODE => GET_STR );
 
   end	GET_LINE;

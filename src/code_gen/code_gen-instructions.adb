@@ -547,23 +547,23 @@ null;
 
         if ACT_PRM.TY = DN_SELECTED then ACT_PRM := D( AS_DESIGNATOR, ACT_PRM ); end if;
 
-        if ACT_PRM.TY = DN_USED_OBJECT_ID then
+        if  ACT_PRM.TY = DN_USED_OBJECT_ID  then
 	declare
 	  DEFN		: TREE	:= D( SM_DEFN, ACT_PRM );
 	  EXP_TYPE	: TREE	:= D( SM_EXP_TYPE, ACT_PRM );
 	begin
-	  if DEFN.TY = DN_CONSTANT_ID then
+	  if  DEFN.TY = DN_CONSTANT_ID  then
 
 	    if EXP_TYPE.TY = DN_ENUMERATION then
 	      PUT_LINE( tab & "LI" & tab & INTEGER'IMAGE( DI( SM_VALUE, ACT_PRM ) ) );
 
 	    elsif EXP_TYPE.TY = DN_ARRAY then
-	      PUT_LINE( tab & "LA" & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_disp" );
+	      PUT_LINE( tab & "LVA" & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_disp" );
 
 	    end if;
 
 
-	  elsif DEFN.TY = DN_VARIABLE_ID then
+	  elsif  DEFN.TY = DN_VARIABLE_ID  then
 
 	    if FRM_PRM_ID.TY = DN_IN_ID then
 	      LOAD_MEM( DEFN );
@@ -571,6 +571,8 @@ null;
 	      PUT_LINE( tab & "LVA" & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_disp" );
 	    end if;
 
+	  elsif  DEFN.TY = DN_IN_ID  then		-- Appel avec un parametre entrant de la procedure englobante
+	      LOAD_MEM( DEFN );
 
 	  else
 	    PUT_LINE( tab & "; DEFN.TY NON FAIT " & NODE_NAME'IMAGE( DEFN.TY ) );

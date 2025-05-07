@@ -115,13 +115,14 @@ end macro
 ;			--------
 macro			PUT_STR?			; affiche tout une chaine sur stdout
 ;			--------
-  POP_RSI						;			(adresse empilee des caracteres a afficher)
+  POP_RSI						;			(l'adresse du champ PTR_TO_CHARS du descripteur a ete empilee)
   db 0x8B, 0x56, 0xFC				; mov edx, dword ptr[rsi-4]	(edx=last)
   db 0xFF, 0xC2					; inc edx			(last+1)
   db 0x2B, 0x56, 0xF8				; sub edx, dword ptr[rsi-8]   edx=length (=last+1 - first)
   db 0x6A, 0x01					; push 1
   db 0x58						; pop rax			(rax=1=sys_write )
   db 0x48, 0x89, 0xC7				; mov rdi,rax		(rdi=stdout=1)
+  db 0x48, 0x8B, 0x36				; mov rsi, [rsi]		(rsi est maintenant l'adresse des caracteres)
   db 0x0F, 0x05					; syscall
 end macro
 
@@ -184,16 +185,17 @@ end macro
 ;			--------
 macro			GET_STR?			; lit une ligne sur stdin
 ;			--------
-  POP_RSI						;			(adresse de la string destination empilee sur la pile croissante)
-  db 0x8B, 0x56, 0xFC				; mov edx, dword ptr[rsi-4]	(edx=last)
+  POP_RSI						;			(adresse du champ PTR_TO_CHARS de la string destination empilee sur la pile croissante)
+  db 0x8B, 0x56, 0xFC				; mov edx, dword ptr[rsi-4]	(edx=last de ITEM)
   db 0xFF, 0xC2					; inc edx			(last+1)
   db 0x2B, 0x56, 0xF8				; sub edx, dword ptr[rsi-8]   (edx=max length =last+1 - first)
-  db 0x6A, 0x01					; push 0
+  db 0x6A, 0x00					; push 0
   db 0x58						; pop rax			(rax=0=sys_read )
   db 0x48, 0x89, 0xC7				; mov rdi,rax		(rdi=stdin=0)
+  db 0x48, 0x8B, 0x36				; mov rsi, [rsi]		(rsi est maintenant l'adresse des caracteres)
   db 0x0F, 0x05					; syscall
   POP_RSI						;			(sur la pile croissante, adresse de la longueur effectivement lue qui peut être inférieure a la longueur de string)
-  db 0x89, 0x06					; mov dword ptr[rsi], eax	(reporter la longueur effectivement lue)
+  db 0x89, 0x06					; mov dword ptr[rsi], eax	(reporter la longueur effectivement lue retournee par syscall dans eax)
 end macro
 
 
@@ -850,14 +852,22 @@ elab:
 end macro
 
 ;			---------------------
-macro			STR	name, bytes	; Définition d'une constante chaine
+macro			STR	name, bytes	; Définition d'une constante chaine au format d'un tableau de caracteres (pour traitement homogene des chaines)
 ;			---------------------
+;	Une chaine Ada est un tableau d'octets caracteres, c'est à dire un descripteur [ 0 dword fill | CAR_SIZE dword | FIRST dword | LAST dword | PTR_TO CHARS qword ]
+; et des caracteres qui pointes par PTR_TO_CHARS peuvent etre detaches du descripteur. Ici, cas de constante, les caracteres sont juste apres leur propre adresse.
+;
   postpone
-    local siz
-    dd	1, siz
-    name#_ptr = $
+    local str_byte_size
+    local debut_cars
+    align_q					; aligner le descripteur sur un quadword
+    dq	1					; char size=1 (quadword pour aligner le PTR_TO_CHARS)
+    dd	1, str_byte_size				; FIRST=1, LAST=str_byte_size
+    name#_ptr = $					; adresse de la constante, en fait adresse de l'adresse des caractères
+    dq	debut_cars				; PTR_TO_CHARS adresse des caracteres (juste apres dans le cas present)
+    debut_cars = $					; pour une constante les caracateres suivent (pour une chaine variable ce n'est pas le cas, les octets sont dans la co-pile)
     db	bytes
-    siz = $-name#_ptr
+    str_byte_size = $ - debut_cars			; Calculer la longueur effective pour mettre dans LAST
   end postpone
 
 end macro

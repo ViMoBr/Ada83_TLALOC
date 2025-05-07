@@ -1,3 +1,9 @@
+-------------------------------------------------------------------------------------------------------------------------
+-- CC BY SA	CODAGE_INTERMEDIAIRE.ADB	VINCENT MORIN	6/5/2025	UNIVERSITE DE BRETAGNE OCCIDENTALE
+-------------------------------------------------------------------------------------------------------------------------
+--	1	2	3	4	5	6	7	8	9	0	1	2
+
+
 with DIANA_NODE_ATTR_CLASS_NAMES;
 use  DIANA_NODE_ATTR_CLASS_NAMES;
 
@@ -279,23 +285,40 @@ is
 				--====--
   procedure			LOAD_MEM			( DEFN :TREE )
   is
-    SIZ_CHAR	: CHARACTER	:= OPER_TYPE_FROM( DEFN );
   begin
 
-    PUT( tab & "L" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) )
-			& ',' & tab );
+    if  DEFN.TY in CLASS_PARAM_NAME  then									-- in_id in_out_id out_id
+      if  (DEFN.TY = DN_IN_ID) and (D( SM_OBJ_TYPE, DEFN ).TY in CLASS_SCALAR)  then
 
-    if DEFN.TY in CLASS_PARAM_NAME then									-- in_id in_out_id out_id
-      PUT( '-' & PRINT_NAME( D( LX_SYMREP, DEFN ) ) );							-- ATTENTION signe offset de params opposé aux vars
+        declare
+	SIZ_CHAR	: CHARACTER	:= OPER_TYPE_FROM( DEFN );
+        begin
+	PUT( tab & "L" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab );
+	PUT( '-' & PRINT_NAME( D( LX_SYMREP, DEFN ) ) );							-- ATTENTION signe offset de params opposé aux vars
+	PUT_LINE( "_ofs" );										-- offset de parametre scalaire
+        end;
 
-      if (DEFN.TY = DN_IN_ID) and (D( SM_OBJ_TYPE, DEFN ).TY in CLASS_SCALAR) then
-        PUT_LINE( "_ofs" );										-- offset de parametre scalaire
-      else
+      else											-- pas scalaire ou out in/out
+        PUT( tab & "La " & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab );
+        PUT( '-' & PRINT_NAME( D( LX_SYMREP, DEFN ) ) );							-- ATTENTION signe offset de params opposé aux vars
         PUT_LINE( "_adrofs" );									-- offset de parametre adresse
       end if;
 
     else
-      PUT_LINE( PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_disp" );						-- deplacement de variable locale
+      if  D( SM_OBJ_TYPE, DEFN ).TY in CLASS_SCALAR  then
+        declare
+	SIZ_CHAR	: CHARACTER	:= OPER_TYPE_FROM( DEFN );
+        begin
+	PUT( tab & "L" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab );
+	PUT_LINE( PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_disp" );						-- deplacement de variable locale
+        end;
+
+     else												-- variable pas scalaire
+        PUT( tab & "LVA " & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab );
+        PUT_LINE( PRINT_NAME( D( LX_SYMREP, DEFN ) )  & "_disp" );
+
+     end if;
+
     end if;
 
   end	LOAD_MEM;
@@ -342,3 +365,6 @@ is
 
 end	CODAGE_INTERMEDIAIRE;
 	--------------------
+
+-------------------------------------------------------------------------------------------------------------------------
+--	1	2	3	4	5	6	7	8	9	0	1	2

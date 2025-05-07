@@ -1,11 +1,12 @@
+include 'TEXT_IO.FINC'
 PRO	STRING_TEST_L1				;---------- PRO STRING_TEST
 ELB 1					;    BODY ELAB
 namespace S
-VAR SIZ_1, d
+VAR SIZ_1, q
 VAR FST_1, d
 VAR LST_1, d
 	LI	1
-	Sd 1,	SIZ_1
+	Sq 1,	SIZ_1
 	LI	 1
 	Sd 1,	FST_1
 	LI	 256
@@ -20,46 +21,20 @@ end namespace
 	CO_VAR					; allocation sur la co-pile
 VAR S_disp, q				; variable tableau
 	Sa 1,	S_disp
-namespace M
-VAR SIZ_1, d
-VAR FST_1, d
-VAR LST_1, d
-VAR SIZ_2, d
-VAR FST_2, d
-VAR LST_2, d
-	LI	4
-	Sd 1,	SIZ_2
-	LI	 1
-	Sd 1,	FST_2
-	LI	 32
-	Sd 1,	LST_2
-	Ld 1,	LST_2
-	INC
-	Ld 1,	FST_2
-	SUB
-	Ld 1,	SIZ_2
-	MUL
-	Sd 1,	SIZ_1
-	LI	 1
-	Sd 1,	FST_1
-	LI	 16
-	Sd 1,	LST_1
-	Ld 1,	LST_1
-	INC
-	Ld 1,	FST_1
-	SUB
-	Ld 1,	SIZ_1
-	MUL
-end namespace 
-	CO_VAR					; allocation sur la co-pile
-VAR M_disp, q				; variable tableau
-	Sa 1,	M_disp
+VAR L_disp, d				; variable entiere
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-	LI	 1
-	LI	 65
-	LI	 1
-	LI	 0
+STR STR_L1, 'Entrez une chaine svp : '		; constante string='Entrez une chaine svp : '
+	LCA	STR_L1_ptr
+	CALL	TEXT_IO. ,PUT_LINE_L60
+	LVA  1,	L_disp
+	LVA  1,	S_disp
+	CALL	TEXT_IO. ,GET_LINE_L58
+	LVA  1,	S_disp
+	CALL	TEXT_IO. ,PUT_L56
+STR STR_L2, 'Merci'				; constante string='Merci'
+	LCA	STR_L2_ptr
+	CALL	TEXT_IO. ,PUT_LINE_L60
 	UNLINK 1
 	RTD
 excep:

@@ -1,0 +1,3 @@
+			-----------
+procedure			STRING_TEST;
+			-----------
