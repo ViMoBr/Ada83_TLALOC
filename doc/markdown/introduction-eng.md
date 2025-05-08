@@ -38,7 +38,7 @@ There is therefore a script file **a83.sh** taking 3 parameters which are relaye
 ```
 The call to the compiler (executable **ada_comp** in bin directory) is then done by something like:
 ```
- ./a83.sh  ./  ./MY_PROG.adb  W
+ ./a83.sh  ./  ./my_prog.adb  W
 ```
 Where we assume to be in the **bin** directory containing **a83.sh** and which acts as a test project directory, thus containing an **ADA__LIB** directory. So that the project path is **./**, the relative access to the source is here **./my_prog.adb** and the stop letter is "W" (stop after the **WRITE_LIB** phase performing also the macro_code generation phase).
 
