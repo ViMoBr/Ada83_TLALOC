@@ -1,16 +1,16 @@
  <h1 style="text-align:center;">INTRODUCTION</h1>
 
-Le compilateur A83 transforme un fichier texte écrit dans le langage Ada 83 en un fichier assembleur .FINC pour FASMG (flat assembler). Le passage par FASMG produit un fichier exécutable ELF.
+Le compilateur **A83** transforme un fichier texte écrit dans le langage **Ada 83** en un fichier de macro-assemblage **.FINC** pour **FASMG** (flat assembler). Le passage par **FASMG** produit un fichier exécutable ELF.
 
-Le travail de transformation opère en phases bien distinctes qui fabriquent une structure de donnée intermédiaire DIANA (Descriptive Intermediate Attributed Notation for Ada) à partir de laquelle on dérive une structure de données de code intermédiaire optimisable indépendant du matériel MICODE (Machine Independent CODE) et enfin le code exécutable et liable en ELF.
+Le travail de transformation opère en phases bien distinctes qui fabriquent une structure de donnée intermédiaire **DIANA** (Descriptive Intermediate Attributed Notation for Ada, pour les détails, voir les spécifications dans le dossier **doc** : [DIANA-RM](../DIANA-Ref-Manual-1986-rev4.pdf) ) à partir de laquelle on dérive le texte de macro-assemblage et enfin le code exécutable **ELF**.
 
-La structure DIANA est stockée par blocs dans un fichier de travail temporaire "$$$.TMP" qui est accessible à toutes les phases, mais est détruit à la fin de l'ultime phase WRITE_LIB.
+La structure **DIANA** est stockée par blocs dans un fichier de travail temporaire **$$$.TMP** qui est accessible à toutes les phases ans le répertoire **ADA__LIB**, mais est détruit à la fin de l'ultime phase **WRITE_LIB** (cette dernière phase rend le fichier temporaire inutilisable, il est donc détruit).
 
-Le code intermédiaire est conservé dans un fichier ".FINC" au format texte qui peut être examiné.
+Le code de macro-assemblage est conservé au format texte dans un fichier **.FINC** du répertoire **ADA__LIB**  et peut être examiné.
 
-Le format ELF (Executable and Linkable Format) est utilisé pour la forme exécutable à liaison dynamique, pour chaque unité un fichier ".elf" est donc produit.
+Le format **ELF** (Executable and Linkable Format) est utilisé pour la forme exécutable.
 
-Enfin un fichier ".DCL" (ou ".BDY" ou ".SUB" pour un corps ou une sous-unité Ada) contient une description DIANA qui est "withable" dans la phase "lib_phase" de sorte qu'un module puisse en utiliser d'autres en les mentionnant dans une clause "with". Ces fichiers sont stockés dans un répertoire librairie.
+La phase **WRITE_LIB** produit un fichier **.DCL** (ou **.BDY** ou **.SUB** pour un corps ou une sous-unité Ada) qui contient une description **DIANA** qui est "withable" dans la phase **LIB_PHASE** de sorte qu'un module puisse en utiliser d'autres en les mentionnant dans une clause "with". Ces fichiers sont stockés dans le répertoire librairie **ADA__LIB** .
 ```
                |------------|
                |    A83     |
@@ -19,20 +19,20 @@ module.adb --> |------------|
                | LIB_PHASE  |
 $$$.TMP <----> | SEM_PHASE  |
                | ERR_PHASE  |
-               | CODE_GEN   | --> module.FINC                 (code intermédiaire à passer par l'assembleur FASMG avec un fichier lanceur module.fas)
-               | WRITE_LIB  | --> module.DCL / .BDY / .SUB    (unité librairie, DIANA withable)
+               | CODE_GEN   | --> MODULE.FINC                 (code intermédiaire à passer par l'assembleur FASMG avec un fichier lanceur module.fas)
+               | WRITE_LIB  | --> MODULE.DCL / .BDY / .SUB    (unité librairie, DIANA withable)
                |------------|
 ```
 Lors d'un appel au compilateur, on doit fournir 3 paramètres :
-* un chemin d'accès à un répertoire "projet" qui contient le répertoire librairie ADA__LIB où seront stockés les ".DCL", ".BDY", ".SUB" et ".FINC".
-Cet accès est soit relatif à l'emplacement de l'exécutable ada_comp appelé par a83.sh, soit absolu.
+* un chemin d'accès à un répertoire "projet" qui contient le répertoire librairie **ADA__LIB** où seront stockés les **.DCL**, **.BDY**, **.SUB** et **.FINC**.
+Cet accès est soit relatif à l'emplacement de l'exécutable **ada_comp** appelé par **a83.sh**, soit absolu.
 
-* un accès au texte source à compiler (accès relatif au répertoire projet)
+* un accès au texte source à compiler (accès absolu ou relatif au répertoire de **ada_comp**)
 
-* une lettre indiquant la phase après laquelle on s'arrête. On peut en effet vouloir de faire qu'une analyse syntaxique, vérification rapide d'erreurs de frappe par exemple, ou bien s'arrêter après l'analyse sémantique afin d'examiner la structure DIANA.
+* une lettre indiquant la phase après laquelle on s'arrête. On peut en effet vouloir de faire qu'une analyse syntaxique, vérification rapide d'erreurs de frappe par exemple, ou bien s'arrêter après l'analyse sémantique afin d'examiner la structure **DIANA** dans le fichier **$$$.TMP**.
 
 Comme il n'y a pas de passage de paramètre à un programme Ada 83, il faut fournir la chaîne de paramétrage via le shell et le standard input.
-Il existe donc un fichier script a83.sh prenant 3 paramètres qui sont relayés par une commande :
+Il existe donc un fichier script **a83.sh** prenant 3 paramètres qui sont relayés par une commande :
 ```
  ./ada_comp <<< "$1 $2 $3"
 ```
