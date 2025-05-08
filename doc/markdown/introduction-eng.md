@@ -53,7 +53,7 @@ The stop option letter can be:
 A letter option U (ugly), P (pretty) or A (all) performs a print of the **DIANA** structure present in the working file the
  **$$$.TMP** (present in the library folder **ADA__LIB** of the project).
 The file **"$$$.TMP"** is however inaccessible after an option **w** or **W** which destroys this file (it is modified and becomes unusable at the end of this ultimate operation), but any stop before the **WRITE_LIB** phase leaves the **$$$.TMP** accessible.
-The print of **$$$.TMP** post **SEM_PHASE** is crucial for the development of c**CODE_GEN**.
+The print of **$$$.TMP** post **SEM_PHASE** is crucial for the development of **CODE_GEN**.
 
 IMPORTANT NOTE: As it is possible to stop during the compilation process, **DIANA** files that do not contain certain coding information can be put in the library and cause errors if they are used during a coding operation.
 To avoid this kind of artificial error, it must be ensured that any file used in a coding operation has also been passed through the coding phase. This normally reduces to using the **W** option. But in the development phase of the code generator, it is useful to be able to stop where you want (at your own risk, normally at this stage you should know what you are doing!).
@@ -67,7 +67,7 @@ There are 7 compilation phases whose detailed description follows.
 ### 1.1 LEXICAL AND SYNTAX ANALYSIS PHASE (_"PAR_PHASE"_) ###
 This phase performs the lexical and syntax analysis of the source text submitted for compilation. It is a classic LALR(1) analyzer whose tables are manufactured by a specific system present in a "src/lalr_tools" directory.
 
-The software structure of the phase is as follows (in the src/par_phase directory, the entry point being the _"par_phase"_ procedure):
+The software structure of the phase is as follows (in the src/par_phase directory, the entry point being the _"PAR_PHASE"_ procedure):
 
 ---
 
@@ -106,12 +106,12 @@ The software structure of the phase is as follows (in the src/par_phase director
 ```
 ---
 
-The entry point of the phase is the _"idl.par_phase"_ procedure which is a separate sub-unit of the _"idl"_ module which we will talk about later. Its declaration has this form:
+The entry point of the phase is the _**IDL.PAR_PHASE**_ procedure is a separate sub-unit of the _**IDL**_ module which we will talk about later. Its declaration has this form:
 ```
     procedure PAR_PHASE ( PATH_TEXTE, NOM_TEXTE, LIB_PATH :STRING );
 ```
 
-At the end of the execution of _"par_phase"_ on the source file, a DIANA tree containing only the syntax information is present in the working file "$$$.TMP". a call of A83 with a letter option of display of the tree of "$$$.TMP" allows to visualize the obtained tree.
+At the end of the execution of _**PAR_PHASE**_ on the source file, a DIANA tree containing only the syntax information is present in the working file **$$$.TMP**. a call of A83 with a letter option of display of the tree of **$$$.TMP** allows to visualize the obtained tree.
 
 <br></br>
 
@@ -119,7 +119,7 @@ At the end of the execution of _"par_phase"_ on the source file, a DIANA tree co
 
 The Ada 83 language allows modular compilation: a module can use definitions and services provided and previously compiled by another module which is mentioned in a "with" clause.
 
-Before verifying that the static semantics of the compiled file is correct, the _"lib_phase"_ phase reads the ".DCL" (or ".BDY" or ".SUB") files and integrates the DIANA trees of these "withed" modules. It is indeed necessary to have the definitions used and their semantic characteristics previously obtained to verify the semantics of the module being compiled.
+Before verifying that the static semantics of the compiled file is correct, the **LIB_PHASE** phase reads the **.DCL** (or **.BDY** or **.SUB**) files and integrates the **DIANA** trees of these "withed" modules. It is indeed necessary to have the definitions used and their semantic characteristics previously obtained to verify the semantics of the module being compiled.
 
 The phase is contained in a single file in the src/ada_comp directory:
 
@@ -127,17 +127,17 @@ The phase is contained in a single file in the src/ada_comp directory:
  <a href="../../src/ada_comp/idl-lib_phase.adb">idl-lib_phase.adb</a>
 </pre>
 
-This procedure unit _"idl.par_phase"_ separated from the "idl" module is the entry point of the phase. It is without parameter (but included and separated from the module _"idl"_):
+This procedure unit **IDL.LIB_PHASE**  separated from the **LIB** module is the entry point of the phase. It is without parameter (but included and separated from the module **IDL**):
 ```
     procedure LIB_PHASE;
 ```
-The tree contained in "$$$.TMP" is completed by the relocated blocks of the "withed" units. The stop letter after lib_phase is "L".
+The tree contained in **$$$.TMP** is completed by the relocated blocks of the "withed" units. The stop letter after **LIB_PHASE** is **L**.
 
 <br></br>
 
 ### 1.3 SEMANTIC ANALYSIS PHASE (_"SEM_PHASE"_) ###
 
-This phase performs the static semantic verification of the compiled module, it is a very complex phase divided into 29 modules (src/sem_phase directory) and whose entry point is the _"idl.sem_phase"_ procedure contained in the file <pre>
+This phase performs the static semantic verification of the compiled module, it is a very complex phase divided into 29 modules (src/sem_phase directory) and whose entry point is the **IDL.SEM_PHASE** procedure contained in the file <pre>
  <a href="../../src/sem_phase/idl-sem_phase.adb">idl-sem_phase.adb</a>
 </pre>
 
@@ -208,38 +208,40 @@ The software structure is an inclusion of sub-units:
 
 ### 1.4 PHASE _"ERR_PHASE"_ ###
 
-The errors found in the previous phases are accumulated in the DIANA tree and presented in the _"err_phase"_. if there are errors, the following phases are not executed.
-The ERR_PHASE procedure without parameter is contained in the idl-err_phase.adb file of the src/ada_comp directory.
+The errors found in the previous phases are accumulated in the **DIANA** tree and presented in the **ERR_PHASE**. If there are errors, the following phases are not executed.
+The **ERR_PHASE** procedure without parameter is contained in the idl-err_phase.adb file of the src/ada_comp directory.
 
 <pre>
  <a href="../../src/ada_comp/idl-err_phase.adb">idl-err_phase.adb</a>
 </pre>
 
-It is separated from the _"idl"_ module.
+It is separated from the **IDL** module.
 
 <br></br>
 
-### 1.5 INTERMEDIATE CODE GENERATION PHASE (_"MICODE_GEN"_) ###
+### 1.5 MACRO ASSEMBLY CODE GENERATION PHASE (CODE_GEN) ###
 
-From the DIANA tree verified both syntactically and semantically, a form of intermediate machine code independent of the target hardware is elaborated.
+From the **DIANA** tree verified both syntactically and semantically, a form of intermediate machine code independent of the target hardware is elaborated.
 The first validated Ada 83 compiler targeted a stack machine interpreter. The only source accessible in C language is that of Ada-Ed.
-A later project conducted in Poland (see the doc/Thèses_Pologne folder) used an intermediate stack machine code, but with the intention of translating it into 386 machine assembler (A.Wierzinska's thesis). The translator from DIANA to "A-Code", an extension of the traditional P-Code of Pascal for Ada, was built by M.Cierniak and can serve as an example.
+A later project conducted in Poland (see the doc/Thèses_Pologne folder) used an intermediate stack machine code, but with the intention of translating it into 386 machine assembler (A.Wierzinska's thesis). The translator from **DIANA** to "A-Code", an extension of the traditional P-Code of Pascal for Ada, was built by M.Cierniak and can serve as an example.
 However, current processors (2024) are register machines and the most modern code optimizers, such as LLVM or simpler substitutes such as QUBE, work on a representation in 3-address operations and an SSA (Single Static Assignment) approach. the question therefore arises as to whether it is not judicious to aim for an intermediate code of this kind, easier to translate into assembler for example for RISC-V which has the advantage of being a modern and "clean" specification compared to Amd/Intel x86 processor very burdened by its history and the constraints of compatibility.
 
+The choice made for now is a median path where a stack machine macro-code is written by the **CODE_GEN** phase for assembly with **FASMG**. The stack machine has no optimized code, but the direct native code produced give some decent level of performance.
+
 <br></br>
 
-### 1.6 TARGET CODE GENERATION PHASE (_"CODE_GEN"_) ###
+### 1.6 FINAL TARGET CODE GENERATION PHASE ###
 
-The intermediate code is then translated into target machine code carried in ELF files which have the advantage of being not only directly executable, but of possessing a dynamic linking mechanism which makes it possible to do without a classic linker.
+The macro-code is then translated into target machine code carried in ELF files by direct assembly with the **FASMG** assembly engine. A single chunk binary executable is directly produced without linking step.
 
 <br></br>
 
 ### 1.7 LIBRARY MODULE WRITING PHASE (_"WRITE_LIB"_) ###
 
-The last operation of the compiler consists in manufacturing a block of DIANA tree which can be integrated into another later compilation which would use in clause "with" the module that one finishes compiling.
-Not all DIANA blocks of the module being compiled are to be saved because certain parts of the tree in $$$.TMP come from "with" clauses and therefore from library files already saved.
-However, the sequence of phases is such that the DIANA tree blocks to be saved (coming from the syntax analysis then from the semantic analysis) are separated by "withed blocks not to be saved". It is therefore necessary to relocate the nodes to be saved and compact them into a single range of blocks from which the .DCL, .BDY or .SUB file is made.
-A marking algorithm for relocation destroys the old tree (some pointers being deliberately denatured during marking). This is not serious insofar as there is no more operation to be done after this last phase, and that the examination of the DIANA tree, if it must be done, can be done by stopping before the _"write_lib"_ phase.
+The last operation of the compiler consists in manufacturing a block of **DIANA** tree which can be integrated into another later compilation which would use in clause "with" the module that one finishes compiling.
+Not all **DIANA** blocks of the module being compiled are to be saved because certain parts of the tree in **$$$.TMP** come from "with" clauses and therefore from library files already saved.
+However, the sequence of phases is such that the **DIANA** tree blocks to be saved (coming from the syntax analysis then from the semantic analysis) are separated by "withed blocks not to be saved". It is therefore necessary to relocate the nodes to be saved and compact them into a single range of blocks from which the **.DCL**, **.BDY** or **.SUB** file is made.
+A marking algorithm for relocation destroys the old tree (some pointers being deliberately denatured during marking). This is not serious insofar as there is no more operation to be done after this last phase, and that the examination of the **DIANA** tree, if it must be done, can be done by stopping before the **WRITE_LIB** phase.
 This phase is performed by the procedure present in the file of src/ada_comp:
 <pre>
  <a href="../../src/ada_comp/idl-write_lib.adb">idl-write_lib.adb</a>

@@ -47,5 +47,5 @@ Hope it works on your computer...
 If it does and/or if you  are curious :
 
 
-#[GO AHEAD](./doc/markdown/go_ahead-eng.md) #
+#----- [GO AHEAD](./doc/markdown/go_ahead-eng.md) -----#
 
