@@ -1,8 +1,9 @@
 include 'TEXT_IO.FINC'
 PRO	STRING_TEST_L1				;---------- PRO STRING_TEST
 ELB 1					;    BODY ELAB
+VAR S_disp, q				; variable tableau
 namespace S
-VAR SIZ_1, q
+VAR SIZ_1, d
 VAR FST_1, d
 VAR LST_1, d
 	LI	1
@@ -19,9 +20,42 @@ VAR LST_1, d
 	MUL
 end namespace 
 	CO_VAR					; allocation sur la co-pile
-VAR S_disp, q				; variable tableau
 	Sa 1,	S_disp
 VAR L_disp, d				; variable entiere
+VAR M_disp, q				; variable tableau
+namespace M
+VAR SIZ_1, d
+VAR FST_1, d
+VAR LST_1, d
+VAR SIZ_2, d
+VAR FST_2, d
+VAR LST_2, d
+	LI	4
+	Sq 1,	SIZ_2
+	LI	 1
+	Sd 1,	FST_2
+	LI	 18
+	Sd 1,	LST_2
+	Ld 1,	LST_2
+	INC
+	Ld 1,	FST_2
+	SUB
+	Ld 1,	SIZ_2
+	MUL
+	Sd 1,	SIZ_1
+	LI	 1
+	Sd 1,	FST_1
+	LI	 15
+	Sd 1,	LST_1
+	Ld 1,	LST_1
+	INC
+	Ld 1,	FST_1
+	SUB
+	Ld 1,	SIZ_1
+	MUL
+end namespace 
+	CO_VAR					; allocation sur la co-pile
+	Sa 1,	M_disp
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 STR STR_L1, 'Entrez une chaine svp : '		; constante string='Entrez une chaine svp : '

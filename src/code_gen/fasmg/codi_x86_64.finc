@@ -116,9 +116,9 @@ end macro
 macro			PUT_STR?			; affiche tout une chaine sur stdout
 ;			--------
   POP_RSI						;			(l'adresse du champ PTR_TO_CHARS du descripteur a ete empilee)
-  db 0x8B, 0x56, 0xFC				; mov edx, dword ptr[rsi-4]	(edx=last)
+  db 0x8B, 0x56, 0x10				; mov edx, dword ptr[rsi+16]	(edx=last)
   db 0xFF, 0xC2					; inc edx			(last+1)
-  db 0x2B, 0x56, 0xF8				; sub edx, dword ptr[rsi-8]   edx=length (=last+1 - first)
+  db 0x2B, 0x56, 0x0C				; sub edx, dword ptr[rsi+12]   edx=length (=last+1 - first)
   db 0x6A, 0x01					; push 1
   db 0x58						; pop rax			(rax=1=sys_write )
   db 0x48, 0x89, 0xC7				; mov rdi,rax		(rdi=stdout=1)
@@ -186,9 +186,9 @@ end macro
 macro			GET_STR?			; lit une ligne sur stdin
 ;			--------
   POP_RSI						;			(adresse du champ PTR_TO_CHARS de la string destination empilee sur la pile croissante)
-  db 0x8B, 0x56, 0xFC				; mov edx, dword ptr[rsi-4]	(edx=last de ITEM)
+  db 0x8B, 0x56, 0x10				; mov edx, dword ptr[rsi+16]	(edx=last de ITEM)
   db 0xFF, 0xC2					; inc edx			(last+1)
-  db 0x2B, 0x56, 0xF8				; sub edx, dword ptr[rsi-8]   (edx=max length =last+1 - first)
+  db 0x2B, 0x56, 0x0C				; sub edx, dword ptr[rsi+12]   (edx=max length =last+1 - first)
   db 0x6A, 0x00					; push 0
   db 0x58						; pop rax			(rax=0=sys_read )
   db 0x48, 0x89, 0xC7				; mov rdi,rax		(rdi=stdin=0)
@@ -861,10 +861,10 @@ macro			STR	name, bytes	; Définition d'une constante chaine au format d'un tabl
     local str_byte_size
     local debut_cars
     align_q					; aligner le descripteur sur un quadword
-    dq	1					; char size=1 (quadword pour aligner le PTR_TO_CHARS)
-    dd	1, str_byte_size				; FIRST=1, LAST=str_byte_size
-    name#_ptr = $					; adresse de la constante, en fait adresse de l'adresse des caractères
+
+    name#_ptr = $					; adresse de la constante STRING, en fait adresse de l'adresse des caractères
     dq	debut_cars				; PTR_TO_CHARS adresse des caracteres (juste apres dans le cas present)
+    dd	1, 1, str_byte_size				; FIRST=1, LAST=str_byte_size
     debut_cars = $					; pour une constante les caracateres suivent (pour une chaine variable ce n'est pas le cas, les octets sont dans la co-pile)
     db	bytes
     str_byte_size = $ - debut_cars			; Calculer la longueur effective pour mettre dans LAST

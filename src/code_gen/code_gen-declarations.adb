@@ -533,7 +533,7 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 	DIM_NBR_STR	:constant STRING	:= IMAGE( DIM_NBR );
         begin
 	POP( IDX_TYPE_LIST, IDX_TYPE );
-	PUT_LINE( "VAR " & "SIZ_" & DIM_NBR_STR & ", q" );					-- quadword pour aligner le descripteur sur machine 64 bits
+	PUT_LINE( "VAR " & "SIZ_" & DIM_NBR_STR & ", d" );
 	PUT_LINE( "VAR " & "FST_" & DIM_NBR_STR & ", d" );
 	PUT_LINE( "VAR " & "LST_" & DIM_NBR_STR & ", d" );
 
@@ -582,8 +582,12 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
       begin
 
         if TYPE_SPEC.TY = DN_CONSTRAINED_ARRAY then
+	PUT( "VAR " & VC_STR & "_disp, q" );
+	if CODI.DEBUG then PUT( tab50 & "; variable tableau" ); end if;
+	NEW_LINE;
           PUT_LINE( "namespace " & VC_STR );
-	declare
+
+ 	declare
             IDX_TYPE_LIST	: SEQ_TYPE	:= LIST( D( SM_INDEX_SUBTYPE_S, TYPE_SPEC ) );
 	begin
 	  COMPILE_ARRAY_TYPE_DIMENSION( IDX_TYPE_LIST );
@@ -595,9 +599,9 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
         if CODI.DEBUG then PUT( tab50 & "; allocation sur la co-pile" ); end if;
         NEW_LINE;
 
-        PUT( "VAR " & VC_STR & "_disp, q" );
-        if CODI.DEBUG then PUT( tab50 & "; variable tableau" ); end if;
-        NEW_LINE;
+--        PUT( "VAR " & VC_STR & "_disp, q" );
+--        if CODI.DEBUG then PUT( tab50 & "; variable tableau" ); end if;
+--        NEW_LINE;
         PUT_LINE( tab & "Sa" & ' ' & LVL_STR & ',' & tab & VC_STR & "_disp" );
 
         DI( CD_LEVEL, VC_NAME, INTEGER( LVL ) );

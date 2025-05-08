@@ -984,7 +984,8 @@ ELB 1					;    BODY ELAB
 VAR QUOTIENT_disp, b			; variable entiere
 VAR RESTE_disp, b				; variable entiere
 namespace STR
-VAR SIZ_1, q
+VAR STR_disp, q				; variable tableau
+VAR SIZ_1, d
 VAR FST_1, d
 VAR LST_1, d
 	LI	1
@@ -1001,7 +1002,6 @@ VAR LST_1, d
 	MUL
 end namespace 
 	CO_VAR					; allocation sur la co-pile
-VAR STR_disp, q				; variable tableau
 	Sa 1,	STR_disp
 VAR INDEX_disp, d				; variable entiere
 	Sd  1,	INDEX_disp
