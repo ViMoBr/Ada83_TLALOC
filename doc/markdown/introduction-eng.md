@@ -248,6 +248,6 @@ This phase is performed by the procedure present in the file of src/ada_comp:
 </pre>
 
 
-##READY FOR THE DEEP DIVE ?
+## READY FOR THE DEEP DIVE ?
 
 [GO ON TO DIANA GRAPHS !](./tlaloc-diana-idl.md) 
