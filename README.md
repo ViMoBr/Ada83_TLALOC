@@ -6,7 +6,7 @@ THIS IS BEING DEVELOPPED ON LINUX UBUNTU 24.04 WITH GNAT 13.3.0 AND FASM (versio
 
 IF YOU ARE INTERESTED FIRST CLONE THE PROJECT TO HAVE A LOOK AT THIS THING
 
-# GO #
+# GO
 
 To start quickly, first work in your cloned **bin** directory 
 <pre> cd ./bin </pre>
@@ -47,5 +47,5 @@ Hope it works on your computer...
 If it does and/or if you  are curious :
 
 
-#----- [GO AHEAD](./doc/markdown/go_ahead-eng.md) -----#
+#[GO AHEAD](./doc/markdown/go_ahead-eng.md)
 
