@@ -1,8 +1,8 @@
-#TLALOC Ada 83 compiler documentation#
+#TLALOC Ada 83 compiler documentation
 
 The compiler is organised around a graph like data structure which conforms to **DIANA** (Descriptive Intermediate Attributed Notation for Ada) specification. This graph structure is built with constraints expressed in **IDL**.
 
-###What are DIANA and the IDL ?###
+##What are DIANA and the IDL ?
 
 The structural rules which must be obeyed by the data structure are expressed by an Interface Description Language or **IDL**. The **IDL** file which expresses DIANA structural rules is **diana.idl** in the directory **./idl** of the repository. This directory contains two other idl files which are used in building some compiler elements (the LALR parser and some TBL attributes files).
 

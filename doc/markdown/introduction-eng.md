@@ -58,13 +58,13 @@ The print of **$$$.TMP** post **SEM_PHASE** is crucial for the development of **
 IMPORTANT NOTE: As it is possible to stop during the compilation process, **DIANA** files that do not contain certain coding information can be put in the library and cause errors if they are used during a coding operation.
 To avoid this kind of artificial error, it must be ensured that any file used in a coding operation has also been passed through the coding phase. This normally reduces to using the **W** option. But in the development phase of the code generator, it is useful to be able to stop where you want (at your own risk, normally at this stage you should know what you are doing!).
 
-## 1. COMPILATION PHASES ##
+## 1. COMPILATION PHASES
 
 There are 7 compilation phases whose detailed description follows.
 
 <br></br>
 
-### 1.1 LEXICAL AND SYNTAX ANALYSIS PHASE (_"PAR_PHASE"_) ###
+### 1.1 LEXICAL AND SYNTAX ANALYSIS PHASE (_"PAR_PHASE"_)
 This phase performs the lexical and syntax analysis of the source text submitted for compilation. It is a classic LALR(1) analyzer whose tables are manufactured by a specific system present in a "src/lalr_tools" directory.
 
 The software structure of the phase is as follows (in the src/par_phase directory, the entry point being the _"PAR_PHASE"_ procedure):
@@ -248,6 +248,6 @@ This phase is performed by the procedure present in the file of src/ada_comp:
 </pre>
 
 
-###READY FOR THE DEEP DIVE ?###
+##READY FOR THE DEEP DIVE ?
 
 [GO ON TO DIANA GRAPHS !](./tlaloc-diana-idl.md) 
