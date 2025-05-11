@@ -7,7 +7,11 @@ is			-----------
   L	: NATURAL;
   type MAT is array( 1 ..15, 1 .. 18 ) of NATURAL;
   M	: MAT;
+  package NAT_IO is new INTEGER_IO( NATURAL );
 begin
+
+  NAT_IO.GET( L );
+
   PUT_LINE( "Entrez une chaine svp : " );
   GET_LINE( S, L );
   PUT( S );

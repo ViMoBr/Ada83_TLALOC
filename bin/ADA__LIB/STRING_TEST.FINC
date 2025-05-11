@@ -56,20 +56,29 @@ VAR LST_2, d
 end namespace 
 	CO_VAR					; allocation sur la co-pile
 	Sa 1,	M_disp
+VAR DEFAULT_WIDTH_disp, d			; variable entiere
+	Sd  1,	DEFAULT_WIDTH_disp
+VAR DEFAULT_BASE_disp, d			; variable entiere
+	LI	 10
+	Sd  1,	DEFAULT_BASE_disp
+; EXC_LBL	L7
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-STR STR_L1, 'Entrez une chaine svp : '		; constante string='Entrez une chaine svp : '
-	LCA	STR_L1_ptr
+	LI	 0
+	LVA  1,	L_disp
+	CALL	NAT_IO. ,GET_L2
+STR STR_L8, 'Entrez une chaine svp : '		; constante string='Entrez une chaine svp : '
+	LCA	STR_L8_ptr
 	CALL	TEXT_IO. ,PUT_LINE_L60
 	LVA  1,	L_disp
 	LVA  1,	S_disp
 	CALL	TEXT_IO. ,GET_LINE_L58
 	LVA  1,	S_disp
 	CALL	TEXT_IO. ,PUT_L56
-STR STR_L2, 'Merci'				; constante string='Merci'
-	LCA	STR_L2_ptr
+STR STR_L9, 'Merci'				; constante string='Merci'
+	LCA	STR_L9_ptr
 	CALL	TEXT_IO. ,PUT_LINE_L60
 	UNLINK 1
-	RTD
+	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO STRING_TEST

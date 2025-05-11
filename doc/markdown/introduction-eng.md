@@ -247,3 +247,7 @@ This phase is performed by the procedure present in the file of src/ada_comp:
  <a href="../../src/ada_comp/idl-write_lib.adb">idl-write_lib.adb</a>
 </pre>
 
+
+###READY FOR THE DEEP DIVE ?###
+
+[GO ON TO DIANA GRAPHS !](./tlaloc-diana-idl.md) 
