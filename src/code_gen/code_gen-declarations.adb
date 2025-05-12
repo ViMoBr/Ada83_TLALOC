@@ -409,7 +409,7 @@ null;
 		-----------------------
       procedure	COMPILE_VC_NAME_INTEGER	( VC_NAME :TREE )
       is		-----------------------
-        OPER_TYPE	: CHARACTER	:= OPER_TYPE_FROM( VC_NAME );
+        OPER_TYPE	: CHARACTER	:= OPER_SIZ_CHAR( D( SM_OBJ_TYPE, VC_NAME ) );
         INIT_EXP	: TREE		:= D( SM_INIT_EXP, VC_NAME );
       begin
 
@@ -430,7 +430,7 @@ null;
 		---------------------
       procedure	COMPILE_VC_NAME_FLOAT	( VC_NAME :TREE )
       is		---------------------
-        OPER_TYPE	: CHARACTER	:= OPER_TYPE_FROM( VC_NAME );
+        OPER_TYPE	: CHARACTER	:= OPER_SIZ_CHAR( D( SM_OBJ_TYPE, VC_NAME ) );
         INIT_EXP	: TREE		:= D( SM_INIT_EXP, VC_NAME );
       begin
 
@@ -457,7 +457,7 @@ null;
 		-------------------------
         procedure	COMPILE_VC_NAME_BOOL_CHAR	( VC_NAME :TREE )
         is	-------------------------
-          OPER_TYPE	: CHARACTER	:= OPER_TYPE_FROM( VC_NAME );
+          OPER_TYPE	: CHARACTER	:= OPER_SIZ_CHAR( D( SM_OBJ_TYPE, VC_NAME ) );
 	INIT_EXP	: TREE		:= D( SM_INIT_EXP, VC_NAME );
         begin
 

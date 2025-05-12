@@ -251,20 +251,21 @@ is
   end	LOAD_TYPE_SIZE;
 	--==========--
 
-			--------------
-  function		OPER_TYPE_FROM	( DEFN :TREE ) return CHARACTER
-  is
-    SIZ		: NATURAL		:= DI( CD_IMPL_SIZE, D( SM_OBJ_TYPE, DEFN ) );
+			-------------
+  function		OPER_SIZ_CHAR	( DEFN :TREE ) return CHARACTER
+  is			-------------
+
+    SIZ		: NATURAL		:= DI( CD_IMPL_SIZE, DEFN );
   begin
    if SIZ <= 8	then return 'b';
     elsif SIZ <= 16	then return 'w';
     elsif SIZ <= 32	then return 'd';
     elsif SIZ <= 64	then return 'q';
-    else raise OPERAND_OVERFLOW;
+    else return 'v';
     end if;
 
-  end	OPER_TYPE_FROM;
-	--------------
+  end	OPER_SIZ_CHAR;
+	-------------
 
 			-------------
   function		EXP_TYPE_CHAR	( EXP :TREE ) return CHARACTER
@@ -275,7 +276,7 @@ is
     elsif SIZ <= 16	then return 'w';
     elsif SIZ <= 32	then return 'd';
     elsif SIZ <= 64	then return 'q';
-    else raise OPERAND_OVERFLOW;
+    else return 'v';
     end if;
 
   end	EXP_TYPE_CHAR;
@@ -291,7 +292,7 @@ is
       if  (DEFN.TY = DN_IN_ID) and (D( SM_OBJ_TYPE, DEFN ).TY in CLASS_SCALAR)  then
 
         declare
-	SIZ_CHAR	: CHARACTER	:= OPER_TYPE_FROM( DEFN );
+	SIZ_CHAR	: CHARACTER	:= OPER_SIZ_CHAR( D( SM_OBJ_TYPE, DEFN ) );
         begin
 	PUT( tab & "L" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab );
 	PUT( '-' & PRINT_NAME( D( LX_SYMREP, DEFN ) ) );							-- ATTENTION signe offset de params opposé aux vars
@@ -307,7 +308,7 @@ is
     else
       if  D( SM_OBJ_TYPE, DEFN ).TY in CLASS_SCALAR  then
         declare
-	SIZ_CHAR	: CHARACTER	:= OPER_TYPE_FROM( DEFN );
+	SIZ_CHAR	: CHARACTER	:= OPER_SIZ_CHAR( D( SM_OBJ_TYPE, DEFN ) );
         begin
 	PUT( tab & "L" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab );
 	PUT_LINE( PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_disp" );						-- deplacement de variable locale
@@ -328,7 +329,7 @@ is
 				--=--
   procedure			STORE			( DEST_DEFN	:TREE )
   is
-    SIZ_CHAR	: CHARACTER	:= OPER_TYPE_FROM( DEST_DEFN );
+    SIZ_CHAR	: CHARACTER	:= OPER_SIZ_CHAR( D( SM_OBJ_TYPE, DEST_DEFN ) );
   begin
     if DEST_DEFN.TY = DN_OUT_ID or DEST_DEFN.TY = DN_IN_OUT_ID then
       PUT_LINE( tab & "IS" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEST_DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEST_DEFN ) ) & "_adrofs" );

@@ -21,7 +21,7 @@ is
 
     elsif EXP.TY = DN_PARENTHESIZED	then CODE_EXP( D( AS_EXP, EXP ) );
 
-    elsif EXP.TY = DN_INDEXED		then CODE_INDEXED ( EXP );
+    elsif EXP.TY = DN_INDEXED		then CODE_NAME_EXP ( EXP );
 
     elsif EXP.TY = DN_FUNCTION_CALL	then CODE_FUNCTION_CALL( EXP );
 
@@ -73,7 +73,7 @@ is
         ITERATION_ID_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, ITERATION_ID ) );
         ITERATION_ID_TAG	: LABEL_TYPE	:= LABEL_TYPE( DI( CD_OFFSET, ITERATION_ID ) );
         ITERATION_ID_VARSTR	:constant STRING	:= ITERATION_ID_STR & LABEL_STR( ITERATION_ID_TAG ) & "_disp";
-        TYPE_CHAR		: CHARACTER	:= OPER_TYPE_FROM( ITERATION_ID );
+        TYPE_CHAR		: CHARACTER	:= OPER_SIZ_CHAR( D( SM_OBJ_TYPE, ITERATION_ID ) );
       begin
         PUT_LINE( tab & "L" & TYPE_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, ITERATION_ID ) ) & ',' & tab & ITERATION_ID_VARSTR );
       end;
@@ -155,40 +155,43 @@ is
 				------------
   procedure			CODE_INDEXED	( INDEXED :TREE )
   is
+    NAME		: TREE		:= D( AS_NAME, INDEXED );
+    ARRAY_NAME	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, NAME) );
+    ARRAY_LVL	: INTEGER		:= DI( CD_LEVEL, D( SM_DEFN, NAME ) );
+    INDEX_NUM	: INTEGER		:= 1;
   begin
     declare
 
-      procedure INDEX ( EXP_SEQ :SEQ_TYPE ) is
-        EXP_S	: SEQ_TYPE	:= EXP_SEQ;
-        EXP	: TREE;
+      procedure INDEX ( EXP :TREE ) is
+        CHN		:constant STRING	:= tab & "Ld" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & ARRAY_NAME & '.';
+        INDEX_NUM_IMG	:constant STRING	:= IMAGE( INDEX_NUM );
       begin
-        POP( EXP_S, EXP );
         CODE_EXP( EXP );
-        if IS_EMPTY( EXP_S ) then
-null;--	EMIT ( AR2,		COMMENT => "ADRESSE POUR LE DERNIER INDICE (RAPIDE)" );
-        else
-null;--	EMIT ( AR1,		COMMENT => "ADRESSE POUR INDICE INTERMEDIAIRE" );
---	EMIT ( DEC, A, 3*INTG_SIZE,	COMMENT => "PTR DESCRIPTEUR AU TRIPLET INDICE SUIVANT" );
---	INDEX( EXP_S );
---	EMIT ( ADD, I,		COMMENT => "AJOUTER LE DECALAGE A L ADRESSE DES INDICES PRECEDENTS" );
-        end if;
+        PUT( CHN & "FST_" & INDEX_NUM_IMG );
+        if CODI.DEBUG then PUT( tab50 & "; (index - FST_" & INDEX_NUM_IMG & ") * SIZ_" & INDEX_NUM_IMG ); end if;
+        NEW_LINE;
+        PUT_LINE( tab & "SUB" );
+        PUT_LINE( CHN & "SIZ_" & INDEX_NUM_IMG );
+        PUT_LINE( tab & "MUL" );
+        PUT( tab & "ADD" );
+        if CODI.DEBUG then PUT( tab50 & "; add offset" ); end if;
+        NEW_LINE;
       end INDEX;
 
     begin
-      CODE_OBJECT( D ( AS_NAME, INDEXED ) );
---      EMIT( DPL, A,		  COMMENT => "DUP ADRESSE OBJET" );
---      EMIT( IND, A, 0,	  COMMENT => "CHARGE INDEXE D ADRESSE TABLEAU" );
---      EMIT( SWP, A,		  COMMENT => "ADRESSE OBJET AU TOP" );
---      EMIT( IND, A, -ADDR_SIZE, COMMENT => "CHARGE INDEXE ADRESSE DU DESCRIPTEUR TABLEAU" );
---      EMIT( DEC, A, INTG_SIZE,  COMMENT => "ADRESSE DESCRIPTEUR - TAILLE ENTIER" );
+      CODE_OBJECT( NAME );										-- ADRESSE DE BASE
+
       declare
         EXP_SEQ	: SEQ_TYPE	:= LIST( D( AS_EXP_S, INDEXED ) );
+        EXP	: TREE;
       begin
-        if not IS_EMPTY( EXP_SEQ ) then
-	INDEX( EXP_SEQ );
-        end if;
+        while not IS_EMPTY( EXP_SEQ ) loop
+	POP( EXP_SEQ, EXP );
+	INDEX( EXP );
+	INDEX_NUM := INDEX_NUM + 1;
+        end loop;
       end;
---      EMIT( IXA, INTEGER( 1 ) );
+
     end;
   end	CODE_INDEXED;
 	------------
@@ -298,7 +301,19 @@ null;--        declare
   begin
 
     if NAME_EXP.TY = DN_INDEXED then
-      CODE_INDEXED ( NAME_EXP );
+
+      CODE_INDEXED ( NAME_EXP );									-- LAISSE UNE ADRESSE
+
+      declare
+        NAME		: TREE		:= D( AS_NAME, NAME_EXP );
+        ARRAY_BASE_TYPE	: TREE		:= D( SM_BASE_TYPE, D( SM_EXP_TYPE, NAME) );
+        ARRAY_COMP_TYPE	: TREE		:= D( SM_COMP_TYPE, ARRAY_BASE_TYPE );
+        COMP_SIZE		: CHARACTER	:= OPER_SIZ_CHAR( ARRAY_COMP_TYPE );
+      begin
+        PUT( tab & 'L' & COMP_SIZE );
+        if CODI.DEBUG then PUT( tab50 & "; charge depuis adresse empilee " ); end if;
+        NEW_LINE;
+      end;
 
     elsif NAME_EXP.TY = DN_FUNCTION_CALL
     then CODE_FUNCTION_CALL( NAME_EXP );

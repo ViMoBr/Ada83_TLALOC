@@ -284,7 +284,7 @@ separate ( CODE_GEN )
         ITERATION_RANGE	: TREE		:= D( AS_DISCRETE_RANGE, ITERATION );
         RANGE_LOW		: TREE		:= D( AS_EXP1, ITERATION_RANGE );
         RANGE_HIGH		: TREE		:= D( AS_EXP2, ITERATION_RANGE );
-        TYPE_CHAR		: CHARACTER	:= OPER_TYPE_FROM( ITERATION_ID );
+        TYPE_CHAR		: CHARACTER	:= OPER_SIZ_CHAR( D( SM_OBJ_TYPE, ITERATION_ID ) );
         ITERATION_ID_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, ITERATION_ID ) );
         ITERATION_ID_TAG	: LABEL_TYPE	:= NEW_LABEL;
         ITERATION_ID_VARSTR	:constant STRING	:= ITERATION_ID_STR & LABEL_STR( ITERATION_ID_TAG ) & "_disp";
@@ -799,7 +799,7 @@ null;
   is
   begin
     declare
-      NAME	: TREE	:= D( AS_NAME, ASSIGN );
+      NAME	: TREE	:= D( AS_NAME, ASSIGN );							-- DESTINATION
 
 		--------
       procedure	STORE_VAL		( TYPE_SPEC :TREE )
@@ -836,30 +836,30 @@ null;--          LOAD_ADR( TYPE_SPEC );
 
     begin
 
-      if NAME.TY = DN_ALL then
+      if NAME.TY = DN_ALL then									-- AFFECTATION A UN ELEMENT POINTE
 --        CODE_ADRESSE( D( AS_NAME,     NAME ) );
-        EXPRESSIONS.CODE_EXP( D( AS_EXP,      ASSIGN ) );
---CODI.ARG1_OP( RESULT, TRSF, OPER );
-        STORE_VAL   ( D( SM_EXP_TYPE, NAME ) );
+        EXPRESSIONS.CODE_EXP( D( AS_EXP, ASSIGN ) );							-- EXPRESSION A AFFECTER
+        STORE_VAL( D( SM_EXP_TYPE, NAME ) );
 
-      elsif NAME.TY = DN_INDEXED then
-        EXPRESSIONS.CODE_INDEXED( NAME );
-        EXPRESSIONS.CODE_EXP    ( D( AS_EXP, ASSIGN ) );
+      elsif NAME.TY = DN_INDEXED then									-- AFFECTATION A UN ELEMENT DE TABLEAU
+        EXPRESSIONS.CODE_INDEXED( NAME );								-- CALCULER L ADRESSE DESTINATION
+        EXPRESSIONS.CODE_EXP( D( AS_EXP, ASSIGN ) );							-- EVALUER L EXPRESSION A AFFECTER
+
         STORE_VAL( D( SM_EXP_TYPE, NAME ) );
 
 
-      elsif NAME.TY = DN_USED_OBJECT_ID then
+      elsif  NAME.TY = DN_USED_OBJECT_ID  then								-- AFFECTATION A UN OBJET
 
         declare
 	NAMEXP	: TREE		:= D( SM_EXP_TYPE, NAME );
 	DEFN	: TREE		:= D( SM_DEFN, NAME );
         begin
 
-          if NAMEXP.TY = DN_ACCESS then
+          if  NAMEXP.TY = DN_ACCESS  then								-- OBJET ASSIGNE DE TYPE ACCES
 	  EXPRESSIONS.CODE_EXP( D( AS_EXP, ASSIGN ) );
 	  CODI.STORE( DEFN );
 
-	elsif NAMEXP.TY = DN_ARRAY then
+	elsif  NAMEXP.TY = DN_ARRAY  then								-- OBJET ASSIGNE TABLEAU
 	  CODE_OBJECT( DEFN );
 	  declare
 	    EXP	: TREE	:= D( AS_EXP, ASSIGN );
@@ -867,20 +867,16 @@ null;--          LOAD_ADR( TYPE_SPEC );
 	    if EXP.TY = DN_USED_OBJECT_ID then
 	      CODE_OBJECT( D( SM_DEFN, EXP ) );
 	      CODE_OBJECT( EXP );
---	      EMIT( LDC, I, NUMBER_OF_DIMENSIONS ( NAMEXP ), COMMENT=>"NB DIM" );
---	      EMIT( CYA );
 	    else
 	      EXPRESSIONS.CODE_EXP( D( AS_EXP, ASSIGN ) );
---	      EMIT( LDC, I, NUMBER_OF_DIMENSIONS ( NAMEXP ), COMMENT=>"NB DIM" );
---	      EMIT( PUA );
               end if;
             end;
 
-	elsif NAMEXP.TY = DN_ENUMERATION then
-	  EXPRESSIONS.CODE_EXP ( D ( AS_EXP, ASSIGN ) );
+	elsif  NAMEXP.TY = DN_ENUMERATION  then								-- OBJET ASSIGNE ENUMERATION (DONT BOOLEAN, CHARACTER)
+	  EXPRESSIONS.CODE_EXP( D( AS_EXP, ASSIGN ) );
 	  STORE( DEFN );
 
-	elsif NAMEXP.TY = DN_INTEGER then
+	elsif  NAMEXP.TY = DN_INTEGER  then								-- OBJET ASSIGNE ENTIER
 	  EXPRESSIONS.CODE_EXP( D( AS_EXP, ASSIGN ) );
             CODI.STORE( DEFN );
           end if;

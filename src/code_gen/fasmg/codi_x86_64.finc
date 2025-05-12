@@ -270,18 +270,23 @@ end macro
 ;				--------------------------------------------------------------------------------
 
 
-;			-------------------
-macro			Lb?	lvl, disp		; Load Byte 8 bits
-;			-------------------
-  FP_IN_RAX	lvl
-  if disp >= -128 & disp < 128
-    db 0x48, 0x0F, 0xBE, 0x40				; movsx rax, byte ptr [rax + ofs8]
-    db disp
+;			------------------------
+macro			Lb?	lvl:-1, disp:0	; Load Byte 8 bits
+;			------------------------
+  if lvl = -1					; octet rangé n'importe où ; top = adresse stockage
+    POP_RAX					; (adress for data)
+    db 0x48, 0x0F, 0xBE, 0x00				; movsx rax, byte ptr [rax]
   else
-    db 0x48, 0x0F, 0xBE, 0x80				; movsx rax, byte ptr [rax + ofs32]
-    dd disp
+    FP_IN_RAX	lvl
+    if disp >= -128 & disp < 128
+      db 0x48, 0x0F, 0xBE, 0x40			; movsx rax, byte ptr [rax + ofs8]
+      db disp
+    else
+      db 0x48, 0x0F, 0xBE, 0x80			; movsx rax, byte ptr [rax + ofs32]
+      dd disp
+    end if
+    PUSH_RAX
   end if
-  PUSH_RAX
 end macro
 
 
@@ -298,9 +303,9 @@ macro			PTR_IN_RAX	disp
 end macro
 
 
-;			-------------------
-macro			LIb?	lvl, disp		; Load Indirect byte (la variable en frame est une adresse, adresse à laquelle on va chercher l'octet)
-;			-------------------
+;			------------------------
+macro			LIb?	lvl:-1, disp:0	; Load Indirect byte (la variable en frame est une adresse, adresse à laquelle on va chercher l'octet)
+;			------------------------
   FP_IN_RAX	lvl
   PTR_IN_RAX	disp
   db 0x48, 0x0F, 0xBE, 0x00				; movsx rax, byte ptr [rax]

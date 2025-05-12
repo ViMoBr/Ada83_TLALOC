@@ -24,14 +24,14 @@ The structural rules which must be obeyed by the data structure are expressed by
 		    TY		: NODE_NAME;			--| NODE KIND
 		    PG		: PAGE_IDX;			--| VIRTUAL PAGE REFERENCE
 		    LN		: LINE_IDX;			--| OFFSET IN VIRTUAL PAGE
-		  when S =>								--| SOURCE_LINE POINTER
+		  when S =>					--| SOURCE_LINE POINTER
 		    COL		: SRCCOL_IDX;			--| COLUMN IN SOURCE TEXT
 		    SPG		: PAGE_IDX;			--| VRTUAL PAGE REFERENCE
 		    SLN		: LINE_IDX;			--| OFFSET IN VIRTUAL PAGE
-		  when HI =>						--| NODE HEADER OR  SHORT INTEGER CODE (ABS VAL AND 
+		  when HI =>					--| NODE HEADER OR  SHORT INTEGER CODE (ABS VAL AND 
 		    NOTY		: NODE_NAME;			--| NODE KIND
 		    ABSS		: POSITIVE_SHORT;			--| ABS VALUE OF SHORT INTEGER
-		    NSIZ		: ATTR_NBR;				--| ATTRIBUTES NUMBER OR TWO'S COMPLEMENT INDICATOR0+ 1- FOR ABSS
+		    NSIZ		: ATTR_NBR;			--| ATTRIBUTES NUMBER OR TWO'S COMPLEMENT INDICATOR0+ 1- FOR ABSS
 		  end case;
 		end record;
 

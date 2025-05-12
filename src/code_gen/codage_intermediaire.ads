@@ -59,7 +59,7 @@ is
   procedure CLOSE_OUTPUT_FILE;
 
 
-  function  OPER_TYPE_FROM		( DEFN :TREE )			return CHARACTER;
+  function  OPER_SIZ_CHAR		( DEFN :TREE )			return CHARACTER;
   function  EXP_TYPE_CHAR		( EXP :TREE )			return CHARACTER;
    
   function  NEW_LABEL						return LABEL_TYPE;
