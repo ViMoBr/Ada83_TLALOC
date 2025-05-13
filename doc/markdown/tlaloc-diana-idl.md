@@ -13,9 +13,11 @@ The structural rules which must be obeyed by the data structure are expressed by
  
  the file **./bin/idl_tools/diana_node_attr_class_names.ads**  is automatically produced from the descriptive **IDL** file by the **idl_tools** program in **./bin/idl_tools** (source text in **./src/idl_tools**). The tool also produces the **diana.tbl** file, a text file which indicates which attributes has a given node kind. The **diana.tbl** is in fact translated by the compiler in a **diana.bin **binary version which must be with the compiler executable.
  
- The **IDL** file **diana.idl** has // prefixed lines which define the node kind classes composition and attributes. An heritage rule transfers class attributes to sub-classes and to terminal nodes. This compact expression is very difficult to visualize so that **idl_tools** also produces helping files **diana_CLASS_.txt**, **diana_NODES_.txt** and **diana_NODES.txt** which lists classes hierarchy and nodes' complete attribute heritage. Those files are helpful to see what attributes are available for a node kind when using access functions to the **DIANA** graph. They have LibreOffice .odt associated files **DIANA_CLASS_.odt** and **DIANA_NODES.odt** in the **./doc** directory. 
+ The **IDL** file **diana.idl** has // prefixed lines which define the node kind classes composition and attributes. An heritage rule transfers class attributes to sub-classes and to terminal nodes. This compact expression is very difficult to visualize so that **idl_tools** also produces helping files **diana_CLASS_.txt**, **diana_NODES_.txt** and **diana_NODES.txt** which lists classes hierarchy and nodes' complete attribute heritage. Those files are helpful to see what attributes are available for a node kind when using access functions to the **DIANA** graph. They have LibreOffice .odt associated files **DIANA_CLASS_.odt** and **DIANA_NODES.odt** in the **./doc** directory.  A pdf clikable version **DIANA_NODES.pdf** allows browsing the **DIANA** definitions of nodes with their attributes.
  
- The **Ada 83** package file **idl.ads** is the interface to the **DIANA** graph and contains the fundamental **TREE** type with which all the **DIANA** structure is built :
+#[ idl.ads](../../src/ada_comp/idl.ads) 
+ 
+ The **Ada 83** package file **[idl.ads](../../src/ada_comp/idl.ads) ** is the interface to the **DIANA** graph and contains the fundamental **TREE** type with which all the **DIANA** structure is built :
  
  <pre>
    type TREE (PT : VPTR_TYPE := P)	is record				--| TREE KIND IS NODE POINTER BY DEFAULT
