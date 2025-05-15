@@ -579,11 +579,11 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
         end	COMPILE_ARRAY_TYPE_DIMENSION;
 		----------------------------
 
-      begin
-
-        if TYPE_SPEC.TY = DN_CONSTRAINED_ARRAY then
-	PUT( "VAR " & VC_STR & "_disp, q" );
-	if CODI.DEBUG then PUT( tab50 & "; variable tableau" ); end if;
+        		-------------------
+        procedure	DESCRIPTOR_ON_STACK
+        is	-------------------
+        begin
+ 	if CODI.DEBUG then PUT( tab50 & "; variable tableau contraint" ); end if;
 	NEW_LINE;
           PUT_LINE( "namespace " & VC_STR );
 
@@ -593,32 +593,49 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 	  COMPILE_ARRAY_TYPE_DIMENSION( IDX_TYPE_LIST );
 	end;
 	PUT_LINE( "end namespace " );
-        end if;
 
-        PUT( tab & "CO_VAR"  );
-        if CODI.DEBUG then PUT( tab50 & "; allocation sur la co-pile" ); end if;
+	PUT( tab & "CO_VAR"  );
+	if CODI.DEBUG then PUT( tab50 & "; allocation sur la co-pile" ); end if;
+	NEW_LINE;
+
+       end	DESCRIPTOR_ON_STACK;
+        		-------------------
+
+      begin
+        PUT( "VAR " & VC_STR & "_disp, q" );
+        if CODI.DEBUG then PUT( tab50 & "; pointeur au tableau" ); end if;
         NEW_LINE;
-
---        PUT( "VAR " & VC_STR & "_disp, q" );
---        if CODI.DEBUG then PUT( tab50 & "; variable tableau" ); end if;
---        NEW_LINE;
-        PUT_LINE( tab & "Sa" & ' ' & LVL_STR & ',' & tab & VC_STR & "_disp" );
-
         DI( CD_LEVEL, VC_NAME, INTEGER( LVL ) );
 
 	declare
 	  INIT_EXP	: TREE	:= D( SM_INIT_EXP, VC_NAME );
 	begin
-            if INIT_EXP /= TREE_VOID then
-	    if INIT_EXP.TY = DN_STRING_LITERAL then
-
+            if INIT_EXP /= TREE_VOID then								-- INITIALISATION
+	    if INIT_EXP.TY = DN_STRING_LITERAL								-- vraie constante chaine
+	    then
 	      EXPRESSIONS.CODE_STRING_LITERAL( INIT_EXP, VC_STR );
-
 	      PUT_LINE( tab & "LCA" & tab & VC_STR & "_ptr" );						-- LOAD CONSTANT ADDRESS
-	      PUT_LINE( tab & "Sa" & tab & LEVEL_NUM'IMAGE( LVL ) & ',' & tab & VC_STR & "_disp" );
+
+	    else
+	      if  TYPE_SPEC.TY = DN_CONSTRAINED_ARRAY
+	      then
+	        DESCRIPTOR_ON_STACK;
+
+	      elsif  TYPE_SPEC.TY = DN_ARRAY  then							-- TABLEAU NON CONTRAINT
+	        null;
+	      end if;
 
 	    end if;
+
+	  else											-- PAS D INITIALISATION
+--	    EXPRESSIONS.CODE_EXP( INIT_EXP );
+	      if  TYPE_SPEC.TY = DN_CONSTRAINED_ARRAY
+	      then
+	        DESCRIPTOR_ON_STACK;
+	      end if;
 	  end if;
+
+	  PUT_LINE( tab & "Sa" & tab & LVL_STR & ',' & tab & VC_STR & "_disp" );
 
 	end;
 

@@ -1,7 +1,13 @@
+include 'TEXT_IO.FINC'
 PRO	ARRAY_TEST_L1				;---------- PRO ARRAY_TEST
 ELB 1					;    BODY ELAB
-VAR S_disp, q				; variable tableau
-namespace S
+VAR S_disp, q				; pointeur au tableau
+STR S, 'Camille'				; constante string='Camille'
+	LCA	S_ptr
+	Sa	1,	S_disp
+VAR S2_disp, q				; pointeur au tableau
+					; variable tableau contraint
+namespace S2
 VAR SIZ_1, d
 VAR FST_1, d
 VAR LST_1, d
@@ -19,19 +25,41 @@ VAR LST_1, d
 	MUL
 end namespace 
 	CO_VAR					; allocation sur la co-pile
-	Sa 1,	S_disp
+	Sa	1,	S2_disp
 VAR C_disp, b				; variable bool char
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-	La  1,	S_disp
+	LIa  1,	S_disp
 	LI	 2
-	Ld 1,	S.FST_1				; (index - FST_1) * SIZ_1
+	LId 1,	S_disp, 12				; (index - FST_1) * SIZ_1
 	SUB
-	Ld 1,	S.SIZ_1
+	LId 1,	S_disp, 8
 	MUL
 	ADD					; add offset
 	Lb					; charge depuis adresse empilee 
 	Sb  1,	C_disp
+	Lb  1,	C_disp
+	CALL	TEXT_IO. ,PUT_L52
+	La  1,	S2_disp
+	LI	 3
+	LId 1,	S2_disp, 12				; (index - FST_1) * SIZ_1
+	SUB
+	LId 1,	S2_disp, 8
+	MUL
+	ADD					; add offset
+	Lb  1,	C_disp
+	Sb
+	La  1,	S2_disp
+	LI	 3
+	LId 1,	S2_disp, 12				; (index - FST_1) * SIZ_1
+	SUB
+	LId 1,	S2_disp, 8
+	MUL
+	ADD					; add offset
+	Lb					; charge depuis adresse empilee 
+	Sb  1,	C_disp
+	Lb  1,	C_disp
+	CALL	TEXT_IO. ,PUT_L52
 	UNLINK 1
 	RTD
 excep:

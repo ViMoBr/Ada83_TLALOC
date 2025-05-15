@@ -1085,23 +1085,24 @@ null;--	EMIT( JMPT, LABEL_TYPE( DI( CD_LABEL, CHOICE_S ) ), COMMENT=> "TRAITE EX
 
   procedure CODE_OBJECT ( OBJECT :TREE ) is
   begin
-      case OBJECT.TY is
-       when DN_VARIABLE_ID =>
+    case OBJECT.TY is
+    when DN_VARIABLE_ID =>
  	PUT_LINE( tab & "La " & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, OBJECT ) ) & "_disp" );
 
-       when DN_IN_ID =>
+    when DN_IN_ID =>
 	PUT_LINE( tab & "LVA " & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, OBJECT ) ) );
 
-       when DN_IN_OUT_ID | DN_OUT_ID =>
+    when DN_IN_OUT_ID | DN_OUT_ID =>
 	PUT_LINE( tab & "LVA " & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, OBJECT ) ) );
 
-       when DN_INDEXED =>
+    when DN_INDEXED =>
          EXPRESSIONS.CODE_INDEXED( OBJECT );
 
-
-
-       when DN_USED_OBJECT_ID =>
+    when DN_USED_OBJECT_ID =>
          CODE_OBJECT( D( SM_DEFN, OBJECT ) );
+
+    when DN_CONSTANT_ID =>
+        PUT_LINE( tab & "LIa " & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, OBJECT ) ) & "_disp" );				-- LOAD CONSTANT ADDRESS
 
        when others =>
          PUT_LINE( "!!! LOAD_OBJECT_ADDRESS : OBJECT.TY ILLICITE " & NODE_NAME'IMAGE ( OBJECT.TY ) );

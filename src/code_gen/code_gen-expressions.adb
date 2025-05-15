@@ -163,15 +163,15 @@ is
     declare
 
       procedure INDEX ( EXP :TREE ) is
-        CHN		:constant STRING	:= tab & "Ld" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & ARRAY_NAME & '.';
+        CHN		:constant STRING	:= tab & "LId" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & ARRAY_NAME & "_disp";
         INDEX_NUM_IMG	:constant STRING	:= IMAGE( INDEX_NUM );
       begin
         CODE_EXP( EXP );
-        PUT( CHN & "FST_" & INDEX_NUM_IMG );
+        PUT( CHN & ',' & INTEGER'IMAGE( 8 + 12 * (INDEX_NUM-1) + 4 ) );
         if CODI.DEBUG then PUT( tab50 & "; (index - FST_" & INDEX_NUM_IMG & ") * SIZ_" & INDEX_NUM_IMG ); end if;
         NEW_LINE;
         PUT_LINE( tab & "SUB" );
-        PUT_LINE( CHN & "SIZ_" & INDEX_NUM_IMG );
+        PUT_LINE( CHN & ',' & INTEGER'IMAGE( 8 + 12 * (INDEX_NUM-1) ) );
         PUT_LINE( tab & "MUL" );
         PUT( tab & "ADD" );
         if CODI.DEBUG then PUT( tab50 & "; add offset" ); end if;

@@ -801,7 +801,7 @@ null;
     declare
       NAME	: TREE	:= D( AS_NAME, ASSIGN );							-- DESTINATION
 
-		--------
+		---------
       procedure	STORE_VAL		( TYPE_SPEC :TREE )
       is
       begin
@@ -816,7 +816,8 @@ null;--          EMIT ( STO, A );
             NAME             : constant STRING := PRINT_NAME( TYPE_SYMREP );
           begin
             if NAME = "BOOLEAN" then null;--EMIT ( STO, B );
-            elsif NAME = "CHARACTER" then null;--EMIT ( STO, C );
+	  elsif NAME = "CHARACTER" then
+	    PUT_LINE( tab & "Sb" );
             else null; --EMIT ( STO, I );
             end if;
           end;
