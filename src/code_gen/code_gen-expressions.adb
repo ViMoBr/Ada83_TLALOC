@@ -29,6 +29,8 @@ is
 
     elsif EXP.TY = DN_USED_CHAR	then CODE_USED_CHAR( EXP );
 
+    elsif EXP.TY in CLASS_NAME_EXP	then CODE_NAME_EXP( EXP );
+
 -- elsif EXP.TY in CLASS_EXP_EXP
 --     then
 --       return CODE_EXP_EXP( EXP );
@@ -179,7 +181,7 @@ is
       end INDEX;
 
     begin
-      CODE_OBJECT( NAME );										-- ADRESSE DE BASE
+      PUT_LINE(  tab & "LIa" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & ARRAY_NAME & "_disp" );			-- EMPILE L ADRESSE DE BASE DU CONTENU DE TABLEAU
 
       declare
         EXP_SEQ	: SEQ_TYPE	:= LIST( D( AS_EXP_S, INDEXED ) );
@@ -302,7 +304,7 @@ null;--        declare
 
     if NAME_EXP.TY = DN_INDEXED then
 
-      CODE_INDEXED ( NAME_EXP );									-- LAISSE UNE ADRESSE
+      CODE_INDEXED( NAME_EXP );									-- LAISSE UNE ADRESSE
 
       declare
         NAME		: TREE		:= D( AS_NAME, NAME_EXP );
@@ -319,14 +321,44 @@ null;--        declare
     then CODE_FUNCTION_CALL( NAME_EXP );
 
     elsif NAME_EXP.TY = DN_SLICE
-    then CODE_SLICE ( NAME_EXP );
+    then CODE_SLICE( NAME_EXP );
 
     elsif NAME_EXP.TY = DN_ALL
-    then CODE_ALL ( NAME_EXP );
+    then CODE_ALL( NAME_EXP );
+
+    elsif NAME_EXP.TY = DN_ATTRIBUTE
+    then CODE_ATTRIBUTE( NAME_EXP );
 
     end if;
   end	CODE_NAME_EXP;
 	-------------
+
+
+
+				--------------
+  procedure			CODE_ATTRIBUTE		( ATTRIBUTE :TREE )
+  is				--------------
+    QUALIF_NAME		: TREE		:= D( AS_NAME, ATTRIBUTE );
+    CHN_QUALIF		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, QUALIF_NAME ) );
+    CHN_ATTR		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, D( AS_USED_NAME_ID, ATTRIBUTE ) ) );
+  begin
+    if CHN_ATTR = "FIRST" or CHN_ATTR = "LAST" then
+      declare
+        ARRAY_LVL		: INTEGER		:= DI( CD_LEVEL, D( SM_DEFN, QUALIF_NAME ) );
+        DIM_EXP		: TREE		:= D( AS_EXP, ATTRIBUTE );
+        NUM_DIM		: INTEGER		:= 1;
+        ATTR_VAL_OFS	: INTEGER		:= 4;							-- POUR FIRST
+      begin
+        if DIM_EXP /= TREE_VOID then
+          NUM_DIM := DI( SM_VALUE, DIM_EXP );
+        end if;
+        if  CHN_ATTR = "LAST"  then ATTR_VAL_OFS := 8; end if;
+        PUT_LINE( tab & "LId" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & CHN_QUALIF & "_disp" & ','
+	        & INTEGER'IMAGE( 8 + 12*(NUM_DIM-1) + ATTR_VAL_OFS ) );
+      end;
+    end if;
+  end	CODE_ATTRIBUTE;
+	--------------
 
 
 

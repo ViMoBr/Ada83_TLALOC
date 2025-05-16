@@ -545,7 +545,7 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 	    ELEMENT_SIZ_STR		:constant STRING	:= IMAGE( ELEMENT_SIZ );
 	  begin
 	    PUT_LINE( tab & "LI" & tab & ELEMENT_SIZ_STR );					-- TAILLE D'UN ELEMENT DU TABLEAU
-	    PUT_LINE( tab & "Sq" & ' ' & LVL_STR & ',' & tab & "SIZ_" & DIM_NBR_STR );			-- en quadword sur machine 64 bits
+	    PUT_LINE( tab & "Sd" & ' ' & LVL_STR & ',' & tab & "SIZ_" & DIM_NBR_STR );			-- DWORD SIZ_
 	  end;
 	else
 	  DIM_NBR := DIM_NBR + 1;
@@ -586,6 +586,7 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
  	if CODI.DEBUG then PUT( tab50 & "; variable tableau contraint" ); end if;
 	NEW_LINE;
           PUT_LINE( "namespace " & VC_STR );
+	PUT_LINE( "VAR PTR, q" );
 
  	declare
             IDX_TYPE_LIST	: SEQ_TYPE	:= LIST( D( SM_INDEX_SUBTYPE_S, TYPE_SPEC ) );
@@ -597,6 +598,8 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 	PUT( tab & "CO_VAR"  );
 	if CODI.DEBUG then PUT( tab50 & "; allocation sur la co-pile" ); end if;
 	NEW_LINE;
+	PUT_LINE( tab & "Sa" & tab & LVL_STR & ',' & tab & VC_STR & ".PTR" );
+	PUT_LINE( tab & "LVA" & tab & LVL_STR & ',' & tab & VC_STR & ".PTR" );
 
        end	DESCRIPTOR_ON_STACK;
         		-------------------

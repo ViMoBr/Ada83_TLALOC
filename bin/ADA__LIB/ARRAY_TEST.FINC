@@ -5,32 +5,11 @@ VAR S_disp, q				; pointeur au tableau
 STR S, 'Camille'				; constante string='Camille'
 	LCA	S_ptr
 	Sa	1,	S_disp
-VAR S2_disp, q				; pointeur au tableau
-					; variable tableau contraint
-namespace S2
-VAR SIZ_1, d
-VAR FST_1, d
-VAR LST_1, d
-	LI	1
-	Sq 1,	SIZ_1
-	LI	 1
-	Sd 1,	FST_1
-	LI	 256
-	Sd 1,	LST_1
-	Ld 1,	LST_1
-	INC
-	Ld 1,	FST_1
-	SUB
-	Ld 1,	SIZ_1
-	MUL
-end namespace 
-	CO_VAR					; allocation sur la co-pile
-	Sa	1,	S2_disp
 VAR C_disp, b				; variable bool char
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-	LIa  1,	S_disp
-	LI	 2
+	LIa 1,	S_disp
+	LId 1,	S_disp, 12
 	LId 1,	S_disp, 12				; (index - FST_1) * SIZ_1
 	SUB
 	LId 1,	S_disp, 8
@@ -40,20 +19,11 @@ begin:					;---------- BDY INSTRUCTIONS
 	Sb  1,	C_disp
 	Lb  1,	C_disp
 	CALL	TEXT_IO. ,PUT_L52
-	La  1,	S2_disp
-	LI	 3
-	LId 1,	S2_disp, 12				; (index - FST_1) * SIZ_1
+	LIa 1,	S_disp
+	LId 1,	S_disp, 16
+	LId 1,	S_disp, 12				; (index - FST_1) * SIZ_1
 	SUB
-	LId 1,	S2_disp, 8
-	MUL
-	ADD					; add offset
-	Lb  1,	C_disp
-	Sb
-	La  1,	S2_disp
-	LI	 3
-	LId 1,	S2_disp, 12				; (index - FST_1) * SIZ_1
-	SUB
-	LId 1,	S2_disp, 8
+	LId 1,	S_disp, 8
 	MUL
 	ADD					; add offset
 	Lb					; charge depuis adresse empilee 

@@ -144,6 +144,7 @@ is
     procedure CODE_USED_OP		( USED_OP		:TREE );
     procedure CODE_USED_NAME_ID	( USED_NAME_ID	:TREE );
     procedure CODE_USED_OBJECT_ID	( USED_OBJECT_ID	:TREE );
+    procedure CODE_ATTRIBUTE		( ATTRIBUTE	:TREE );
     procedure CODE_SLICE		( SLICE		:TREE );
     procedure CODE_ALL		( ADA_ALL		:TREE );
     procedure CODE_AGGREGATE		( AGGREGATE	:TREE );
@@ -1087,27 +1088,28 @@ null;--	EMIT( JMPT, LABEL_TYPE( DI( CD_LABEL, CHOICE_S ) ), COMMENT=> "TRAITE EX
   begin
     case OBJECT.TY is
     when DN_VARIABLE_ID =>
- 	PUT_LINE( tab & "La " & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, OBJECT ) ) & "_disp" );
+      PUT_LINE( tab & "La " & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, OBJECT ) ) & "_disp" );
 
     when DN_IN_ID =>
-	PUT_LINE( tab & "LVA " & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, OBJECT ) ) );
+      PUT_LINE( tab & "LVA " & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, OBJECT ) ) );
 
     when DN_IN_OUT_ID | DN_OUT_ID =>
-	PUT_LINE( tab & "LVA " & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, OBJECT ) ) );
+      PUT_LINE( tab & "LVA " & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, OBJECT ) ) );
 
     when DN_INDEXED =>
-         EXPRESSIONS.CODE_INDEXED( OBJECT );
+      EXPRESSIONS.CODE_INDEXED( OBJECT );
 
     when DN_USED_OBJECT_ID =>
-         CODE_OBJECT( D( SM_DEFN, OBJECT ) );
+      CODE_OBJECT( D( SM_DEFN, OBJECT ) );
 
     when DN_CONSTANT_ID =>
-        PUT_LINE( tab & "LIa " & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, OBJECT ) ) & "_disp" );				-- LOAD CONSTANT ADDRESS
+      PUT_LINE( tab & "LIa " & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) & ','
+	      & tab & PRINT_NAME( D( LX_SYMREP, OBJECT ) ) & "_disp" );					-- LOAD CONSTANT ADDRESS
 
-       when others =>
-         PUT_LINE( "!!! LOAD_OBJECT_ADDRESS : OBJECT.TY ILLICITE " & NODE_NAME'IMAGE ( OBJECT.TY ) );
-         raise PROGRAM_ERROR;
-      end case;
+    when others =>
+      PUT_LINE( "!!! LOAD_OBJECT_ADDRESS : OBJECT.TY ILLICITE " & NODE_NAME'IMAGE ( OBJECT.TY ) );
+      raise PROGRAM_ERROR;
+    end case;
   end;
 
 
