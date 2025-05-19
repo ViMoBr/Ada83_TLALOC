@@ -133,6 +133,7 @@ null;
     SUB_NAME		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, SOURCE_NAME ) );
     DECL_ID		: TREE		:= D( SM_FIRST, SOURCE_NAME );
     SAVE_ENCLOSING		: TREE		:= ENCLOSING_BODY;
+    SAVE_NO_SUB_PARAM	: BOOLEAN		:= CODI.NO_SUBP_PARAMS;
   begin
 
     INC_LEVEL;
@@ -162,8 +163,10 @@ null;
     CODE_BODY( D( AS_BODY, SUBPROGRAM_BODY ) );
 
     PUT_LINE( tab & "UNLINK" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );
+
     PUT( tab & "RTD" );
     if CODI.NO_SUBP_PARAMS = FALSE then PUT( tab & "prm_siz" ); end if;
+    CODI.NO_SUBP_PARAMS := SAVE_NO_SUB_PARAM;
     NEW_LINE;
     PUT_LINE( "excep:" );
 

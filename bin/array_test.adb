@@ -7,12 +7,9 @@ is			----------
 --  S2	: STRING( 1 .. 256 );
   C	: CHARACTER;
 begin
-  C := S( S'FIRST(1) );
-  PUT( C );
-  C := S( S'LAST );
-  PUT( C );
---  S2( 3 ) := C;
---  C := S2( 3 );
---  PUT( C );
+  for I in S'FIRST .. S'LAST loop
+    C := S( I );
+    PUT( C ); PUT( '_' );
+  end loop;
 end	ARRAY_TEST;
 	----------

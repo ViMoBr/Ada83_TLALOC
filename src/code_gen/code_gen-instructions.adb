@@ -606,10 +606,29 @@ null;
     end if;
 
     declare
-      REGION	: TREE		:= D( XD_REGION, PROC_ID );
-      RGN_NAME	 :constant STRING	:= PRINT_NAME( D( LX_SYMREP, REGION ) );
+
+      procedure	REGIONS_PATH	( ID : TREE )
+      is
+        REGION	: TREE		:= D( XD_REGION, ID );
+        RGN_NAME	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, REGION ) );
+      begin
+        if  RGN_NAME = "STANDARD"  then
+	PUT( tab & "CALL" & tab  );
+        else
+	REGIONS_PATH( REGION );
+	PUT( RGN_NAME );
+	if  REGION.TY = DN_PROCEDURE_ID  then
+	  PUT( '_' & LABEL_STR( LABEL_TYPE( DI( CD_LABEL, REGION ) ) ) );
+	end if;
+	PUT( '.' );
+        end if;
+
+      end	REGIONS_PATH;
+
     begin
-      PUT_LINE( tab & "CALL" & tab & RGN_NAME & ". ," & SUB_NAME & '_' & LABEL_STR( LBL ) );
+      REGIONS_PATH( PROC_ID );
+      PUT_LINE( " ," & SUB_NAME & '_' & LABEL_STR( LBL ) );
+--      PUT_LINE( tab & "CALL" & tab & RGN_NAME & ". ," & SUB_NAME & '_' & LABEL_STR( LBL ) );
     end;
 
   end	CODE_PROCEDURE_CALL;

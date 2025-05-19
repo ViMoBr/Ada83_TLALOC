@@ -1,74 +1,100 @@
 include 'TEXT_IO.FINC'
 PRO	STRING_TEST_L1				;---------- PRO STRING_TEST
 ELB 1					;    BODY ELAB
-VAR S_disp, q				; variable tableau
-namespace S
-VAR SIZ_1, d
-VAR FST_1, d
-VAR LST_1, d
-	LI	1
-	Sq 1,	SIZ_1
-	LI	 1
-	Sd 1,	FST_1
-	LI	 256
-	Sd 1,	LST_1
-	Ld 1,	LST_1
-	INC
-	Ld 1,	FST_1
-	SUB
-	Ld 1,	SIZ_1
-	MUL
-end namespace 
-	CO_VAR					; allocation sur la co-pile
-	Sa 1,	S_disp
 VAR L_disp, d				; variable entiere
-VAR M_disp, q				; variable tableau
-namespace M
-VAR SIZ_1, d
-VAR FST_1, d
-VAR LST_1, d
-VAR SIZ_2, d
-VAR FST_2, d
-VAR LST_2, d
-	LI	4
-	Sq 1,	SIZ_2
-	LI	 1
-	Sd 1,	FST_2
-	LI	 18
-	Sd 1,	LST_2
-	Ld 1,	LST_2
-	INC
-	Ld 1,	FST_2
-	SUB
-	Ld 1,	SIZ_2
-	MUL
-	Sd 1,	SIZ_1
-	LI	 1
-	Sd 1,	FST_1
-	LI	 15
-	Sd 1,	LST_1
-	Ld 1,	LST_1
-	INC
-	Ld 1,	FST_1
-	SUB
-	Ld 1,	SIZ_1
-	MUL
-end namespace 
-	CO_VAR					; allocation sur la co-pile
-	Sa 1,	M_disp
+namespace NAT_IO				;---------- GENERIC PACKAGE INSTANTIATION
+ELB 2
+elab_spec:				;    SPEC ELAB
+VAR DEFAULT_WIDTH_disp, d			; variable entiere
+	Sd  2,	DEFAULT_WIDTH_disp
+VAR DEFAULT_BASE_disp, d			; variable entiere
+	LI	 10
+	Sd  2,	DEFAULT_BASE_disp
+if defined GET_L1_
+PRO	GET_L1				;---------- PRO GET
+PRMS					;    debut parametrage
+	PRM FILE_adrofs				; in
+	PRM ITEM_adrofs				; out
+	PRM WIDTH_ofs				; in
+endPRMS					;    fin parametrage
+ELB 3
+begin:
+	UNLINK 3
+	RTD	prm_siz
+endPRO					;---------- end PRO GET
+end if
+if defined GET_L2_
+PRO	GET_L2				;---------- PRO GET
+PRMS					;    debut parametrage
+	PRM ITEM_adrofs				; out
+	PRM WIDTH_ofs				; in
+endPRMS					;    fin parametrage
+ELB 3
+begin:
+	UNLINK 3
+	RTD	prm_siz
+endPRO					;---------- end PRO GET
+end if
+if defined PUT_L3_
+PRO	PUT_L3				;---------- PRO PUT
+PRMS					;    debut parametrage
+	PRM FILE_adrofs				; in
+	PRM ITEM_ofs				; in
+	PRM WIDTH_ofs				; in
+	PRM BASE_ofs				; in
+endPRMS					;    fin parametrage
+ELB 3
+begin:
+	UNLINK 3
+	RTD	prm_siz
+endPRO					;---------- end PRO PUT
+end if
+if defined PUT_L4_
+PRO	PUT_L4				;---------- PRO PUT
+PRMS					;    debut parametrage
+	PRM ITEM_ofs				; in
+	PRM WIDTH_ofs				; in
+	PRM BASE_ofs				; in
+endPRMS					;    fin parametrage
+ELB 3
+begin:
+	UNLINK 3
+	RTD	prm_siz
+endPRO					;---------- end PRO PUT
+end if
+if defined GET_L5_
+PRO	GET_L5				;---------- PRO GET
+PRMS					;    debut parametrage
+	PRM FROM_adrofs				; in
+	PRM ITEM_adrofs				; out
+	PRM LAST_adrofs				; out
+endPRMS					;    fin parametrage
+ELB 3
+begin:
+	UNLINK 3
+	RTD	prm_siz
+endPRO					;---------- end PRO GET
+end if
+if defined PUT_L6_
+PRO	PUT_L6				;---------- PRO PUT
+PRMS					;    debut parametrage
+	PRM TO_adrofs				; out
+	PRM ITEM_ofs				; in
+	PRM BASE_ofs				; in
+endPRMS					;    fin parametrage
+ELB 3
+begin:
+	UNLINK 3
+	RTD	prm_siz
+endPRO					;---------- end PRO PUT
+end if
+end namespace 				;---------- end generic package instantiation NAT_IO
+; EXC_LBL	L7
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-STR STR_L1, 'Entrez une chaine svp : '		; constante string='Entrez une chaine svp : '
-	LCA	STR_L1_ptr
-	CALL	TEXT_IO. ,PUT_LINE_L60
+	LI	 0
 	LVA  1,	L_disp
-	LVA  1,	S_disp
-	CALL	TEXT_IO. ,GET_LINE_L58
-	LVA  1,	S_disp
-	CALL	TEXT_IO. ,PUT_L56
-STR STR_L2, 'Merci'				; constante string='Merci'
-	LCA	STR_L2_ptr
-	CALL	TEXT_IO. ,PUT_LINE_L60
+	CALL	STRING_TEST_L1.NAT_IO. ,GET_L2
 	UNLINK 1
 	RTD
 excep:

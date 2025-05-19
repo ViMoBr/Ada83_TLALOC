@@ -36,11 +36,12 @@ is
  		DEC,   GT,    INC,   LT 		);
 
   OUTPUT_CODE			: BOOLEAN			:= TRUE;					-- Dans le traitement de spécif on désactive le codage
+  IN_GENERIC_DECL			: BOOLEAN			:= FALSE;					-- Traitement special pour les spec d instantiation
 
   CUR_LEVEL			: LEVEL_NUM;							--| NIVEAU D'IMBRICATION COURANT
   CUR_OFFSET			: OFFSET_VAL		:= 0;
 --  SKIP_LBL, HANDLER_BEGIN_LBL	: LABEL_TYPE;
-  NO_SUBP_PARAMS			: BOOLEAN;							--| UTILISES POUR LES EXCEPTIONS HANDLERS
+  NO_SUBP_PARAMS			: BOOLEAN			:= TRUE;					--| pour prms et prm_siz
   ENCLOSING_BODY			: TREE;
   CHOICE_OTHERS_FLAG		: BOOLEAN			:= FALSE;
 -- AFTER_IF_LBL			: LABEL_TYPE;

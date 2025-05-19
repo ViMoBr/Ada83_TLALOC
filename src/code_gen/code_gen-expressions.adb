@@ -339,23 +339,27 @@ null;--        declare
   procedure			CODE_ATTRIBUTE		( ATTRIBUTE :TREE )
   is				--------------
     QUALIF_NAME		: TREE		:= D( AS_NAME, ATTRIBUTE );
+--    QUALIF_NAME_TYPE	: TREE		:= D( SM_EXP_TYPE, QUALIF_NAME );
+    DEFN			: TREE		:= D( SM_DEFN, QUALIF_NAME );
     CHN_QUALIF		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, QUALIF_NAME ) );
     CHN_ATTR		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, D( AS_USED_NAME_ID, ATTRIBUTE ) ) );
   begin
     if CHN_ATTR = "FIRST" or CHN_ATTR = "LAST" then
-      declare
-        ARRAY_LVL		: INTEGER		:= DI( CD_LEVEL, D( SM_DEFN, QUALIF_NAME ) );
-        DIM_EXP		: TREE		:= D( AS_EXP, ATTRIBUTE );
-        NUM_DIM		: INTEGER		:= 1;
-        ATTR_VAL_OFS	: INTEGER		:= 4;							-- POUR FIRST
-      begin
-        if DIM_EXP /= TREE_VOID then
-          NUM_DIM := DI( SM_VALUE, DIM_EXP );
-        end if;
-        if  CHN_ATTR = "LAST"  then ATTR_VAL_OFS := 8; end if;
-        PUT_LINE( tab & "LId" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & CHN_QUALIF & "_disp" & ','
+      if  DEFN.TY /= DN_TYPE_ID  then
+        declare
+	ARRAY_LVL		: INTEGER		:= DI( CD_LEVEL, DEFN );
+	DIM_EXP		: TREE		:= D( AS_EXP, ATTRIBUTE );
+	NUM_DIM		: INTEGER		:= 1;
+	ATTR_VAL_OFS	: INTEGER		:= 4;							-- POUR FIRST
+        begin
+	if DIM_EXP /= TREE_VOID then
+	  NUM_DIM := DI( SM_VALUE, DIM_EXP );
+	end if;
+	if  CHN_ATTR = "LAST"  then ATTR_VAL_OFS := 8; end if;
+	  PUT_LINE( tab & "LId" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & CHN_QUALIF & "_disp" & ','
 	        & INTEGER'IMAGE( 8 + 12*(NUM_DIM-1) + ATTR_VAL_OFS ) );
-      end;
+        end;
+      end if;
     end if;
   end	CODE_ATTRIBUTE;
 	--------------

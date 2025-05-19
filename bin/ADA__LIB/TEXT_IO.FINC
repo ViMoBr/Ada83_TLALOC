@@ -917,12 +917,14 @@ excep:
 endPRO					;---------- end PRO PUT_LINE
 end if
 namespace INTEGER_IO			;---------- GENERIC PACKAGE
+PRMS					;    debut parametrage
+	PRM STATIC_LVL_adrofs		; in
+	PRM NUM_lower_adrofs		; in
+	PRM NUM_upper_ofs			; in
+endPRMS					;    fin parametrage
 elab_spec:				;    SPEC ELAB
 VAR DEFAULT_WIDTH_disp, d			; variable entiere
-	Sd  0,	DEFAULT_WIDTH_disp
 VAR DEFAULT_BASE_disp, d			; variable entiere
-	LI	 10
-	Sd  0,	DEFAULT_BASE_disp
 					;    BODY ELAB
 
 if defined GET_L65_
@@ -983,13 +985,15 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 VAR QUOTIENT_disp, b			; variable entiere
 VAR RESTE_disp, b				; variable entiere
+VAR STR_disp, q				; pointeur au tableau
+					; variable tableau contraint
 namespace STR
-VAR STR_disp, q				; variable tableau
+VAR PTR, q
 VAR SIZ_1, d
 VAR FST_1, d
 VAR LST_1, d
 	LI	1
-	Sq 1,	SIZ_1
+	Sd 1,	SIZ_1
 	LI	 1
 	Sd 1,	FST_1
 	LI	 68
@@ -1002,8 +1006,11 @@ VAR LST_1, d
 	MUL
 end namespace 
 	CO_VAR					; allocation sur la co-pile
-	Sa 1,	STR_disp
+	Sa	1,	STR.PTR
+	LVA	1,	STR.PTR
+	Sa	1,	STR_disp
 VAR INDEX_disp, d				; variable entiere
+	LId 1,	STR_disp, 16
 	Sd  1,	INDEX_disp
 VAR MIN_WIDTH_disp, d			; variable entiere
 					;    end elab

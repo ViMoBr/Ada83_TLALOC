@@ -37,7 +37,36 @@ is
       DI( CD_LEVEL, SOURCE_NAME, INTEGER( CODI.CUR_LEVEL ) );
       DB( CD_COMPILED, SOURCE_NAME, TRUE );
 				---------------------						-- HEADER de la specif (reference level pour le corps)
-      CODI.OUTPUT_CODE := FALSE;	CODE_HEADER( HEADER );	CODI.OUTPUT_CODE := TRUE;			-- ne pas coder les parametres (le body fera ca)
+      if  not IN_GENERIC_DECL then CODI.OUTPUT_CODE := FALSE; end if;						-- ne pas coder les parametres (le body fera ca)
+
+      if  IN_GENERIC_DECL  then
+        declare
+	SOURCE_NAME	: TREE		:= D( AS_SOURCE_NAME, SUBPROG_ENTRY_DECL );
+	SUB_NAME		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, SOURCE_NAME ) );
+        begin
+	PUT_LINE( "if defined " & SUB_NAME & '_' & LABEL_STR( LBL ) & '_' );
+	PUT( "PRO" & tab & SUB_NAME & '_' & LABEL_STR( LBL ) );
+	if CODI.DEBUG then PUT( tab50 & ";---------- PRO " & SUB_NAME ); end if;
+	NEW_LINE;
+	CODE_HEADER( HEADER );
+
+PUT_LINE( "ELB" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );
+PUT_LINE( "begin:" );
+PUT_LINE( tab & "UNLINK" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );
+PUT_LINE( tab & "RTD" & tab & "prm_siz" );
+
+	PUT( "endPRO" );
+	if CODI.DEBUG then PUT( tab50 & ";---------- end PRO " & SUB_NAME); end if;
+	NEW_LINE;
+	PUT_LINE( "end if" );
+        end;
+
+      else
+        CODI.OUTPUT_CODE := FALSE;						-- ne pas coder les parametres (le body fera ca)
+        CODE_HEADER( HEADER );
+        CODI.OUTPUT_CODE := TRUE;
+      end if;
+
 				---------------------
       if SOURCE_NAME.TY = DN_FUNCTION_ID or SOURCE_NAME.TY = DN_OPERATOR_ID then
         declare
@@ -827,11 +856,36 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 				-----------------
   procedure			CODE_PACKAGE_DECL		( PACKAGE_DECL :TREE )
   is
+    SAVE_NO_SUB_PARAM	: BOOLEAN		:= CODI.NO_SUBP_PARAMS;
   begin
 
     if  D( AS_UNIT_KIND, PACKAGE_DECL ).TY = DN_INSTANTIATION
     then
-      CODE_PACKAGE_SPEC( D( SM_SPEC, D( AS_SOURCE_NAME, PACKAGE_DECL ) ) );
+      CODI.IN_GENERIC_DECL := TRUE;
+      declare
+        PACK_ID	: TREE		:= D( AS_SOURCE_NAME, PACKAGE_DECL );
+        PACK_NAME	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, PACK_ID ) );
+      begin
+        PUT( "namespace " & PACK_NAME );
+        if CODI.DEBUG then PUT( tab50 & ";---------- GENERIC PACKAGE INSTANTIATION" ); end if;
+        NEW_LINE;
+        INC_LEVEL;
+        PUT_LINE( "ELB" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );
+
+        PUT( "elab_spec:" );
+        if CODI.DEBUG then PUT( tab50 & ";    SPEC ELAB" ); end if;
+        NEW_LINE;
+
+        CODE_PACKAGE_SPEC( D( SM_SPEC, D( AS_SOURCE_NAME, PACKAGE_DECL ) ) );
+
+        PUT( "end namespace " );
+        if CODI.DEBUG then
+          PUT( tab50 & ";---------- end generic package instantiation " & PACK_NAME );
+        end if;
+        DEC_LEVEL;
+        NEW_LINE;
+      end;
+      CODI.IN_GENERIC_DECL := FALSE;
 
     else
       CODE_HEADER( D( AS_HEADER, PACKAGE_DECL ) );
@@ -843,6 +897,8 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
     begin
       PUT_LINE( "; EXC_LBL" & tab & EXC_LBL );
     end;
+
+    CODI.NO_SUBP_PARAMS := SAVE_NO_SUB_PARAM;
 
   end	CODE_PACKAGE_DECL;
 	-----------------
