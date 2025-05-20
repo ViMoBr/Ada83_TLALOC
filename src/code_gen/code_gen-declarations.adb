@@ -157,7 +157,7 @@ null;
 	if D( SM_OBJ_TYPE, ID ).TY in CLASS_SCALAR and PARAM.TY = DN_IN then
 	  PUT( tab & "PRM " & PRINT_NAME( D( LX_SYMREP, ID ) ) & "_ofs" );
 	else
-	  PUT( tab & "PRM " & PRINT_NAME( D( LX_SYMREP, ID ) ) & "_adrofs" );
+	  PUT( tab & "PRM " & PRINT_NAME( D( LX_SYMREP, ID ) ) & "_prmofs" );
 	end if;
         end if;
 
@@ -447,9 +447,11 @@ null;
         NEW_LINE;
         DI( CD_LEVEL,     VC_NAME, INTEGER( CODI.CUR_LEVEL ) );
 
-        if INIT_EXP /= TREE_VOID then
-	EXPRESSIONS.CODE_EXP( INIT_EXP );
-	CODI.STORE( VC_NAME );
+        if  not IN_GENERIC_BODY  then
+	if INIT_EXP /= TREE_VOID then
+	  EXPRESSIONS.CODE_EXP( INIT_EXP );
+	  CODI.STORE( VC_NAME );
+	end if;
         end if;
 
       end	COMPILE_VC_NAME_INTEGER;

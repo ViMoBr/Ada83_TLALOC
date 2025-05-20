@@ -193,23 +193,30 @@ null;
     PACK_DEF	: TREE		:= D( SM_FIRST, PACK_ID );
   begin
     if PACK_DEF.TY = DN_GENERIC_ID then
-
+      IN_GENERIC_BODY := TRUE;
       PUT( "namespace " & PACK_NAME );
       if CODI.DEBUG then PUT( tab50 & ";---------- GENERIC PACKAGE" ); end if;
       NEW_LINE;
-      PUT( "elab_spec:" );
-      if CODI.DEBUG then PUT( tab50 & ";    SPEC ELAB" ); end if;
-      NEW_LINE;
 
-      DECLARATIONS.CODE_PACKAGE_SPEC( D( SM_SPEC, D( AS_SOURCE_NAME, PACKAGE_BODY ) ) );
+      PUT_LINE( "PRMS" );
+      PUT_LINE( tab & "PRM STATIC_BASE_LVL_prmofs" );
+      PUT_LINE( "endPRMS" );
+
+
+ --     PUT( "elab_spec:" );
+ --     if CODI.DEBUG then PUT( tab50 & ";    SPEC ELAB" ); end if;
+ --     NEW_LINE;
+
+      DECLARATIONS.CODE_PACKAGE_SPEC( D( SM_SPEC, D( AS_SOURCE_NAME, PACKAGE_BODY ) ) );				-- POUR LES EMPLACEMENTS DES VARS DE SPEC DE GENERIQUE
       ENCLOSING_BODY := PACKAGE_BODY;
-      CODE_BODY( D( AS_BODY, PACKAGE_BODY ) );
+      CODE_BODY( D( AS_BODY, PACKAGE_BODY ) );								-- POUR LES VARS ET LES SUBS DU CORPS DE GENERIQUE
 
       PUT( "end namespace " );
       if CODI.DEBUG then
         PUT( tab50 & ";---------- end generic package BDY " & PACK_NAME );
       end if;
       NEW_LINE;
+      IN_GENERIC_BODY := FALSE;
 
     else
       PUT( "namespace " & PACK_NAME );

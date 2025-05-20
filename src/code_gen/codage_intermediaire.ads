@@ -37,6 +37,7 @@ is
 
   OUTPUT_CODE			: BOOLEAN			:= TRUE;					-- Dans le traitement de spécif on désactive le codage
   IN_GENERIC_DECL			: BOOLEAN			:= FALSE;					-- Traitement special pour les spec d instantiation
+  IN_GENERIC_BODY			: BOOLEAN			:= FALSE;					-- Traitement special pour les corps de generique
 
   CUR_LEVEL			: LEVEL_NUM;							--| NIVEAU D'IMBRICATION COURANT
   CUR_OFFSET			: OFFSET_VAL		:= 0;

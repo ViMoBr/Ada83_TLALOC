@@ -302,7 +302,7 @@ is
       else											-- pas scalaire ou out in/out
         PUT( tab & "La " & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab );
         PUT( '-' & PRINT_NAME( D( LX_SYMREP, DEFN ) ) );							-- ATTENTION signe offset de params opposé aux vars
-        PUT_LINE( "_adrofs" );									-- offset de parametre adresse
+        PUT_LINE( "_prmofs" );									-- offset de parametre adresse
       end if;
 
     else
@@ -332,7 +332,7 @@ is
     SIZ_CHAR	: CHARACTER	:= OPER_SIZ_CHAR( D( SM_OBJ_TYPE, DEST_DEFN ) );
   begin
     if DEST_DEFN.TY = DN_OUT_ID or DEST_DEFN.TY = DN_IN_OUT_ID then
-      PUT_LINE( tab & "IS" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEST_DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEST_DEFN ) ) & "_adrofs" );
+      PUT_LINE( tab & "IS" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEST_DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEST_DEFN ) ) & "_prmofs" );
     else
       PUT_LINE( tab & "S" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEST_DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEST_DEFN ) ) & "_disp" );
     end if;

@@ -1,19 +1,21 @@
-include 'TEXT_IO.FINC'
+include 'TEXT_IO_GFP.FINC'
 PRO	STRING_TEST_L1				;---------- PRO STRING_TEST
 ELB 1					;    BODY ELAB
 VAR L_disp, d				; variable entiere
 
 
 namespace NAT_IO				;---------- GENERIC PACKAGE INSTANTIATION
-; ELB 2
 elab_spec:				;    SPEC ELAB
-
-VAR GFP_disp, q			; variable entiere
-VAR DEFAULT_WIDTH_disp, d			; variable entiere
+					; variables de paramétrage instance
+VAR NUM_upper_prmofs, q			; prm instance (-16)
+VAR NUM_lower_prmofs, q			; prm instance (-8)
+VAR GFP_disp, q			; trou du Generic Frame Pointer
+VAR DEFAULT_WIDTH_disp, d			; variable locale instance entiere (+8)
 	Sd  2,	DEFAULT_WIDTH_disp
-VAR DEFAULT_BASE_disp, d			; variable entiere
+VAR DEFAULT_BASE_disp, d			; variable locale instance entiere (+112)
 	LI	 10
 	Sd  2,	DEFAULT_BASE_disp
+					; LANCEURS DE MODELES
 if defined GET_L1_
 PRO	GET_L1				;---------- PRO GET
 PRMS					;    debut parametrage
@@ -21,14 +23,14 @@ PRMS					;    debut parametrage
 	PRM ITEM_prmofs				; out
 	PRM WIDTH_ofs				; in
 endPRMS					;    fin parametrage
-ELB 3
+ELB 2
 begin:
 	La	-FILE_prmofs
 	La	-ITEM_prmofs
-	Ld	-FILE_prmofs
-	LVA	GFP_disp			; GENERIC FRAME POINTER
+	Ld	-WIDTH_ofs
+	LVA	GFP_disp			; GENERIC FRAME POINTER AJOUTE
 	CALL TEXT_IO.INTEGER_IO. ,GET_L65
-	UNLINK 3
+	UNLINK 2
 	RTD	prm_siz
 endPRO					;---------- end PRO GET
 end if
@@ -38,9 +40,9 @@ PRMS					;    debut parametrage
 	PRM ITEM_prmofs				; out
 	PRM WIDTH_ofs				; in
 endPRMS					;    fin parametrage
-ELB 3
+ELB 2
 begin:
-	UNLINK 3
+	UNLINK 2
 	RTD	prm_siz
 endPRO					;---------- end PRO GET
 end if
@@ -52,9 +54,9 @@ PRMS					;    debut parametrage
 	PRM WIDTH_ofs				; in
 	PRM BASE_ofs				; in
 endPRMS					;    fin parametrage
-ELB 3
+ELB 2
 begin:
-	UNLINK 3
+	UNLINK 2
 	RTD	prm_siz
 endPRO					;---------- end PRO PUT
 end if
@@ -65,9 +67,9 @@ PRMS					;    debut parametrage
 	PRM WIDTH_ofs				; in
 	PRM BASE_ofs				; in
 endPRMS					;    fin parametrage
-ELB 3
+ELB 2
 begin:
-	UNLINK 3
+	UNLINK 2
 	RTD	prm_siz
 endPRO					;---------- end PRO PUT
 end if
@@ -78,9 +80,9 @@ PRMS					;    debut parametrage
 	PRM ITEM_prmofs				; out
 	PRM LAST_prmofs				; out
 endPRMS					;    fin parametrage
-ELB 3
+ELB 2
 begin:
-	UNLINK 3
+	UNLINK 2
 	RTD	prm_siz
 endPRO					;---------- end PRO GET
 end if
@@ -91,9 +93,9 @@ PRMS					;    debut parametrage
 	PRM ITEM_ofs				; in
 	PRM BASE_ofs				; in
 endPRMS					;    fin parametrage
-ELB 3
+ELB 2
 begin:
-	UNLINK 3
+	UNLINK 2
 	RTD	prm_siz
 endPRO					;---------- end PRO PUT
 end if
