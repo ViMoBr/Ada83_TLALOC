@@ -11,10 +11,11 @@ VAR NUM_upper_prmofs, q			; prm instance (-16)
 VAR NUM_lower_prmofs, q			; prm instance (-8)
 VAR GFP_disp, q			; trou du Generic Frame Pointer
 VAR DEFAULT_WIDTH_disp, d			; variable locale instance entiere (+8)
-	Sd  2,	DEFAULT_WIDTH_disp
-VAR DEFAULT_BASE_disp, d			; variable locale instance entiere (+112)
+; calculer def_wid avec num_upper / lower
+	Sd  1,	DEFAULT_WIDTH_disp
+VAR DEFAULT_BASE_disp, d			; variable locale instance entiere (+12)
 	LI	 10
-	Sd  2,	DEFAULT_BASE_disp
+	Sd  1,	DEFAULT_BASE_disp
 					; LANCEURS DE MODELES
 if defined GET_L1_
 PRO	GET_L1				;---------- PRO GET
@@ -25,10 +26,10 @@ PRMS					;    debut parametrage
 endPRMS					;    fin parametrage
 ELB 2
 begin:
-	La	-FILE_prmofs
-	La	-ITEM_prmofs
-	Ld	-WIDTH_ofs
-	LVA	GFP_disp			; GENERIC FRAME POINTER AJOUTE
+	LVA  1,	GFP_disp			; GENERIC FRAME POINTER AJOUTE
+	Ld  2,	-WIDTH_ofs
+	La  2,	-ITEM_prmofs
+	La  2,	-FILE_prmofs
 	CALL TEXT_IO.INTEGER_IO. ,GET_L65
 	UNLINK 2
 	RTD	prm_siz
