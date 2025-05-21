@@ -793,11 +793,11 @@ macro			PRMS					; En tête de la définition des paramètres
 
 end macro
 
-;			---------------------
-macro			PRM	name_prmofs			; Définition d'un paramètre
-;			---------------------
+;			------------------
+macro			PRM	name_ofs				; Définition d'un paramètre
+;			------------------
   virtual PRMzone
-    name_prmofs = $
+    name_ofs = $
     dq ?
   end virtual
 

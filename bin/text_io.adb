@@ -556,8 +556,11 @@ is					-------
 			---
     procedure		GET		( ITEM  :out NUM; WIDTH : in FIELD := 0)
   is
-  begin null;
-
+    CHN	: STRING( 1 .. 40 );
+    LEN	: NATURAL	:= 40;
+  begin
+    GET_LINE( CHN, LEN );
+    PUT( CHN );
   end	GET;
 	----
 

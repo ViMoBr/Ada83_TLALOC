@@ -7121,7 +7121,7 @@ _0021_0000
       |   AS_LIST: {  }
     AS_PRAGMA_S: [DN_PRAGMA_S,P6,L0] SLOC(20,16)
       AS_LIST: {  }
-    XD_TIMESTAMP: HI noty=DN_NUM_VAL abss= 569 nsiz= 0
+    XD_TIMESTAMP: HI noty=DN_NUM_VAL abss= 615 nsiz= 0
     XD_WITH_LIST:
     { [DN_TRANS_WITH,P70,L0]
       | TW_FILENAME: [DN_TXTREP,P8,L10] _STANDRD.DCL

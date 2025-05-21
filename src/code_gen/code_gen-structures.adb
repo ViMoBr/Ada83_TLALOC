@@ -199,7 +199,28 @@ null;
       NEW_LINE;
 
       PUT_LINE( "PRMS" );
-      PUT_LINE( tab & "PRM STATIC_BASE_LVL_prmofs" );
+
+      declare
+        GPRM_SEQ	: SEQ_TYPE	:= LIST( D( SM_GENERIC_PARAM_S, PACK_DEF ) );
+        GPRM	: TREE;
+      begin
+        while not IS_EMPTY( GPRM_SEQ ) loop
+	POP( GPRM_SEQ, GPRM );
+	if  GPRM.TY = DN_TYPE_DECL  then
+	  declare
+	    GTYPE_ID	: TREE		:= D( AS_SOURCE_NAME, GPRM );
+	    GPRM_NAME	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, GTYPE_ID ) );
+	    GTYPE_DEF	: TREE		:= D( AS_TYPE_DEF, GPRM );
+	  begin
+	    if  GTYPE_DEF.TY = DN_FORMAL_INTEGER_DEF  then
+	      PUT_LINE( tab & "PRM " & GPRM_NAME & "_first_ofs" );
+	      PUT_LINE( tab & "PRM " & GPRM_NAME & "_last_ofs" );
+	    end if;
+	  end;
+	end if;
+        end loop;
+      end;
+
       PUT_LINE( "endPRMS" );
 
 
@@ -207,7 +228,7 @@ null;
  --     if CODI.DEBUG then PUT( tab50 & ";    SPEC ELAB" ); end if;
  --     NEW_LINE;
 
-      DECLARATIONS.CODE_PACKAGE_SPEC( D( SM_SPEC, D( AS_SOURCE_NAME, PACKAGE_BODY ) ) );				-- POUR LES EMPLACEMENTS DES VARS DE SPEC DE GENERIQUE
+      DECLARATIONS.CODE_PACKAGE_SPEC( D( SM_SPEC, PACK_ID ) );						-- POUR LES EMPLACEMENTS DES VARS DE SPEC DE GENERIQUE
       ENCLOSING_BODY := PACKAGE_BODY;
       CODE_BODY( D( AS_BODY, PACKAGE_BODY ) );								-- POUR LES VARS ET LES SUBS DU CORPS DE GENERIQUE
 
@@ -227,7 +248,7 @@ null;
       if CODI.DEBUG then PUT( tab50 & ";    SPEC ELAB" ); end if;
       NEW_LINE;
 
-      DECLARATIONS.CODE_PACKAGE_SPEC( D( SM_SPEC, D( AS_SOURCE_NAME, PACKAGE_BODY ) ) );
+      DECLARATIONS.CODE_PACKAGE_SPEC( D( SM_SPEC, PACK_ID ) );
       ENCLOSING_BODY := PACKAGE_BODY;
       CODE_BODY( D( AS_BODY, PACKAGE_BODY ) );
 

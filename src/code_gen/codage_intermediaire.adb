@@ -302,7 +302,7 @@ is
       else											-- pas scalaire ou out in/out
         PUT( tab & "La " & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab );
         PUT( '-' & PRINT_NAME( D( LX_SYMREP, DEFN ) ) );							-- ATTENTION signe offset de params opposé aux vars
-        PUT_LINE( "_prmofs" );									-- offset de parametre adresse
+        PUT_LINE( "_ofs" );										-- offset de parametre adresse
       end if;
 
     else
@@ -332,7 +332,7 @@ is
     SIZ_CHAR	: CHARACTER	:= OPER_SIZ_CHAR( D( SM_OBJ_TYPE, DEST_DEFN ) );
   begin
     if DEST_DEFN.TY = DN_OUT_ID or DEST_DEFN.TY = DN_IN_OUT_ID then
-      PUT_LINE( tab & "IS" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEST_DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEST_DEFN ) ) & "_prmofs" );
+      PUT_LINE( tab & "IS" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEST_DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEST_DEFN ) ) & "_ofs" );
     else
       PUT_LINE( tab & "S" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEST_DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEST_DEFN ) ) & "_disp" );
     end if;
@@ -362,6 +362,25 @@ is
 
   end	IMAGE;
 	--=--
+
+
+        procedure	REGIONS_PATH	( ID : TREE )
+      is
+        REGION	: TREE		:= D( XD_REGION, ID );
+        RGN_NAME	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, REGION ) );
+      begin
+        if  RGN_NAME = "STANDARD"  then
+	PUT( tab & "CALL" & tab  );
+        else
+	REGIONS_PATH( REGION );
+	PUT( RGN_NAME );
+	if  REGION.TY = DN_PROCEDURE_ID  then
+	  PUT( '_' & LABEL_STR( LABEL_TYPE( DI( CD_LABEL, REGION ) ) ) );
+	end if;
+	PUT( '.' );
+        end if;
+
+      end	REGIONS_PATH;
 
 
 end	CODAGE_INTERMEDIAIRE;

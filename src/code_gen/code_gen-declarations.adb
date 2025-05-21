@@ -36,10 +36,10 @@ is
       DI( CD_LABEL, SOURCE_NAME, INTEGER( LBL ) );
       DI( CD_LEVEL, SOURCE_NAME, INTEGER( CODI.CUR_LEVEL ) );
       DB( CD_COMPILED, SOURCE_NAME, TRUE );
-				---------------------						-- HEADER de la specif (reference level pour le corps)
-      if  not IN_GENERIC_DECL then CODI.OUTPUT_CODE := FALSE; end if;						-- ne pas coder les parametres (le body fera ca)
 
-      if  IN_GENERIC_DECL  then
+      if  not IN_GENERIC_INSTANTIATION then CODI.OUTPUT_CODE := FALSE; end if;					-- ne pas coder les parametres (le body fera ca)
+
+      if  IN_GENERIC_INSTANTIATION  then
         declare
 	SOURCE_NAME	: TREE		:= D( AS_SOURCE_NAME, SUBPROG_ENTRY_DECL );
 	SUB_NAME		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, SOURCE_NAME ) );
@@ -50,10 +50,48 @@ is
 	NEW_LINE;
 	CODE_HEADER( HEADER );
 
-PUT_LINE( "ELB" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );
-PUT_LINE( "begin:" );
-PUT_LINE( tab & "UNLINK" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );
-PUT_LINE( tab & "RTD" & tab & "prm_siz" );
+	PUT_LINE( "ELB" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );
+	PUT_LINE( "begin:" );
+
+	PUT_LINE( tab & "LVA" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & ',' & tab & "GFP_disp" );
+
+	declare
+	  PRM_SECTIONS_S	: SEQ_TYPE	:= LIST( D( AS_PARAM_S, D( SM_SPEC, SOURCE_NAME ) ) );
+
+	  procedure INVERSE_RECURSE_PRM_SECTIONS ( REMAIN_SECTIONS :in out SEQ_TYPE )
+	  is
+	    PRM_SECTION		: TREE;
+	  begin
+	    if  IS_EMPTY( REMAIN_SECTIONS )  then return; end if;
+	    POP( REMAIN_SECTIONS, PRM_SECTION );
+	    INVERSE_RECURSE_PRM_SECTIONS( REMAIN_SECTIONS );
+
+	    declare
+	      NAME_S		: SEQ_TYPE	:= LIST( D( AS_SOURCE_NAME_S, PRM_SECTION ) );
+
+	      procedure INVERSE_RECURSE_NAMES ( NAMES :in out SEQ_TYPE )
+	      is
+	        NAME	: TREE;
+	      begin
+	        if  IS_EMPTY( NAMES )  then return; end if;
+	        POP( NAMES, NAME );
+	        INVERSE_RECURSE_NAMES( NAMES );
+	        PUT_LINE( tab & "Lq" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, NAME ) ) & "_ofs" );
+	      end	INVERSE_RECURSE_NAMES;
+
+	    begin
+	      INVERSE_RECURSE_NAMES( NAME_S );
+	    end;
+	  end	INVERSE_RECURSE_PRM_SECTIONS;
+
+	begin
+	  INVERSE_RECURSE_PRM_SECTIONS( PRM_SECTIONS_S );
+	end;
+
+	REGIONS_PATH( D( SM_DEFN, CODI.INSTANTIATION_MODEL_NAME ) );
+	PUT_LINE( PRINT_NAME( D( LX_SYMREP, CODI.INSTANTIATION_MODEL_NAME ) ) & ". ," & "GET_L66" & tab & "; PROC_GENERIQUE_ORIGINE");
+	PUT_LINE( tab & "UNLINK" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );
+	PUT_LINE( tab & "RTD" & tab & "prm_siz" );
 
 	PUT( "endPRO" );
 	if CODI.DEBUG then PUT( tab50 & ";---------- end PRO " & SUB_NAME); end if;
@@ -128,6 +166,9 @@ null;
       end loop;
 
       if CODI.OUTPUT_CODE then
+        if  CODI.IN_GENERIC_BODY  then
+	PUT_LINE( tab & "PRM GFP_ofs" );
+        end if;
         PUT( "endPRMS" );
         if CODI.DEBUG then PUT( tab50 & ";    fin parametrage" ); end if;
         NEW_LINE;
@@ -157,7 +198,7 @@ null;
 	if D( SM_OBJ_TYPE, ID ).TY in CLASS_SCALAR and PARAM.TY = DN_IN then
 	  PUT( tab & "PRM " & PRINT_NAME( D( LX_SYMREP, ID ) ) & "_ofs" );
 	else
-	  PUT( tab & "PRM " & PRINT_NAME( D( LX_SYMREP, ID ) ) & "_prmofs" );
+	  PUT( tab & "PRM " & PRINT_NAME( D( LX_SYMREP, ID ) ) & "_ofs" );
 	end if;
         end if;
 
@@ -859,11 +900,13 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
   procedure			CODE_PACKAGE_DECL		( PACKAGE_DECL :TREE )
   is
     SAVE_NO_SUB_PARAM	: BOOLEAN		:= CODI.NO_SUBP_PARAMS;
+    UNIT_KIND		: TREE		:= D( AS_UNIT_KIND, PACKAGE_DECL );
   begin
 
-    if  D( AS_UNIT_KIND, PACKAGE_DECL ).TY = DN_INSTANTIATION
+    if  UNIT_KIND.TY = DN_INSTANTIATION
     then
-      CODI.IN_GENERIC_DECL := TRUE;
+      CODI.IN_GENERIC_INSTANTIATION := TRUE;
+      CODI.INSTANTIATION_MODEL_NAME := D( AS_NAME, UNIT_KIND );
       declare
         PACK_ID	: TREE		:= D( AS_SOURCE_NAME, PACKAGE_DECL );
         PACK_NAME	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, PACK_ID ) );
@@ -871,23 +914,46 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
         PUT( "namespace " & PACK_NAME );
         if CODI.DEBUG then PUT( tab50 & ";---------- GENERIC PACKAGE INSTANTIATION" ); end if;
         NEW_LINE;
-        INC_LEVEL;
-        PUT_LINE( "ELB" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );
 
         PUT( "elab_spec:" );
         if CODI.DEBUG then PUT( tab50 & ";    SPEC ELAB" ); end if;
         NEW_LINE;
 
+        declare
+	GNAME_SEQ	: SEQ_TYPE	:= LIST( D( AS_GENERAL_ASSOC_S, UNIT_KIND ) );
+	GNAME	: TREE;
+        begin
+	while not IS_EMPTY( GNAME_SEQ ) loop
+	  POP( GNAME_SEQ, GNAME );
+	  declare
+	    DEFN	: TREE	:= D( SM_DEFN, GNAME );
+	  begin
+	    if  DEFN.TY = DN_SUBTYPE_ID  then
+	      if  D( SM_TYPE_SPEC, DEFN ).TY = DN_INTEGER  then
+	        PUT_LINE( "VAR " & PRINT_NAME( D( LX_SYMREP, GNAME ) ) & "_last_ofs, q" );
+	        PUT_LINE( "LI " & PRINT_NAME( D( LX_NUMREP, D( AS_EXP2, D( SM_RANGE, D( SM_TYPE_SPEC, DEFN ) ) ) ) ) );
+	        PUT_LINE( "Sd" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & "," & tab & PRINT_NAME( D( LX_SYMREP, GNAME ) ) & "_last_ofs" );
+
+	        PUT_LINE( "VAR " & PRINT_NAME( D( LX_SYMREP, GNAME ) ) & "_first_ofs, q" );
+	        PUT_LINE( "LI " & PRINT_NAME( D( LX_NUMREP, D( AS_EXP1, D( SM_RANGE, D( SM_TYPE_SPEC, DEFN ) ) ) ) ) );
+	        PUT_LINE( "Sd" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & "," & tab & PRINT_NAME( D( LX_SYMREP, GNAME ) ) & "_first_ofs" );
+	      end if;
+	    end if;
+	  end;
+	end loop;
+        end;
+
+        PUT_LINE(  "VAR GFP_disp, q" );
         CODE_PACKAGE_SPEC( D( SM_SPEC, D( AS_SOURCE_NAME, PACKAGE_DECL ) ) );
 
         PUT( "end namespace " );
         if CODI.DEBUG then
           PUT( tab50 & ";---------- end generic package instantiation " & PACK_NAME );
         end if;
-        DEC_LEVEL;
+
         NEW_LINE;
       end;
-      CODI.IN_GENERIC_DECL := FALSE;
+      CODI.IN_GENERIC_INSTANTIATION := FALSE;
 
     else
       CODE_HEADER( D( AS_HEADER, PACKAGE_DECL ) );

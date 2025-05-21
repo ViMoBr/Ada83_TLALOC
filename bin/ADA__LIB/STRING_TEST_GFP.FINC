@@ -7,8 +7,12 @@ VAR L_disp, d				; variable entiere
 namespace NAT_IO				;---------- GENERIC PACKAGE INSTANTIATION
 elab_spec:				;    SPEC ELAB
 					; variables de paramétrage instance
-VAR NUM_upper_prmofs, q			; prm instance (-16)
-VAR NUM_lower_prmofs, q			; prm instance (-8)
+VAR NATURAL_upper_prmofs, q			; prm instance (-16)
+	LI	4000000000
+	Sd  1,	NATURAL_upper_prmofs
+VAR NATURAL_lower_prmofs, q			; prm instance (-8)
+	LI	0
+	Sd  1,	NATURAL_lower_prmofs
 VAR GFP_disp, q			; trou du Generic Frame Pointer
 VAR DEFAULT_WIDTH_disp, d			; variable locale instance entiere (+8)
 ; calculer def_wid avec num_upper / lower

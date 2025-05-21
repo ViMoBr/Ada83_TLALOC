@@ -36,7 +36,8 @@ is
  		DEC,   GT,    INC,   LT 		);
 
   OUTPUT_CODE			: BOOLEAN			:= TRUE;					-- Dans le traitement de spécif on désactive le codage
-  IN_GENERIC_DECL			: BOOLEAN			:= FALSE;					-- Traitement special pour les spec d instantiation
+  IN_GENERIC_INSTANTIATION		: BOOLEAN			:= FALSE;					-- Traitement special pour les spec d instantiation
+  INSTANTIATION_MODEL_NAME		: TREE;
   IN_GENERIC_BODY			: BOOLEAN			:= FALSE;					-- Traitement special pour les corps de generique
 
   CUR_LEVEL			: LEVEL_NUM;							--| NIVEAU D'IMBRICATION COURANT
@@ -76,6 +77,8 @@ is
   function  TAB50							return STRING;
 
   function  IMAGE			( I : NATURAL )			return STRING;
+
+  procedure REGIONS_PATH		( ID : TREE );
 
   OPERAND_OVERFLOW	 		: exception;
 
