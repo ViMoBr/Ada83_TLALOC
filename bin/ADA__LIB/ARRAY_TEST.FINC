@@ -8,19 +8,19 @@ STR S, 'Camille'				; constante string='Camille'
 VAR C_disp, b				; variable bool char
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-VAR	IL3_disp, d				; compteur boucle LOOP__1
+VAR	IL2_disp, d				; compteur boucle LOOP__1
 	LId 1,	S_disp, 12
-	Sd  1,	IL3_disp
-VAR	LMT_IL3_disp, d				; limite boucle LOOP__1
+	Sd  1,	IL2_disp
+VAR	LMT_IL2_disp, d				; limite boucle LOOP__1
 	LId 1,	S_disp, 16
-	Sd  1,	LMT_IL3_disp
-	Ld  1,	IL3_disp				; test null range LOOP__1
-	Ld  1,	LMT_IL3_disp
+	Sd  1,	LMT_IL2_disp
+	Ld  1,	IL2_disp				; test null range LOOP__1
+	Ld  1,	LMT_IL2_disp
 	CGT
-	BT	L2
+	BT	L1
 LOOP__1:					; corps boucle LOOP__1
 	LIa 1,	S_disp
-	Ld  1,	IL3_disp
+	Ld  1,	IL2_disp
 	LId 1,	S_disp, 12				; (index - FST_1) * SIZ_1
 	SUB
 	LId 1,	S_disp, 8
@@ -32,15 +32,15 @@ LOOP__1:					; corps boucle LOOP__1
 	CALL	TEXT_IO. ,PUT_L52
 	LI	 95
 	CALL	TEXT_IO. ,PUT_L52
-	Ld  1,	IL3_disp				; test de sortie LOOP__1
-	Ld  1,	LMT_IL3_disp
+	Ld  1,	IL2_disp				; test de sortie LOOP__1
+	Ld  1,	LMT_IL2_disp
 	CEQ
-	BT	L2
-	Ld  1,	IL3_disp				; mise a jour compteur LOOP__1
+	BT	L1
+	Ld  1,	IL2_disp				; mise a jour compteur LOOP__1
 	INC
-	Sd  1,	IL3_disp
+	Sd  1,	IL2_disp
 	BRA	LOOP__1				; iteration suivante LOOP__1
-L2:					; post loop LOOP__1
+L1:					; post loop LOOP__1
 	UNLINK 1
 	RTD
 excep:

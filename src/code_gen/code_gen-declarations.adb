@@ -892,9 +892,6 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
     DECL_S	: SEQ_TYPE	:= LIST( D( AS_DECL_S1, D( AS_HEADER, GENERIC_DECL ) ) );
     DECL		: TREE;
   begin
-    PUT_LINE( "; CODEGEN.DECLARATIONS.CODE_GENERIC_DECL : EN COURS ! "
-	    & PRINT_NAME( D( LX_SYMREP, GENERIC_ID ) ) );
-
     while  not IS_EMPTY( DECL_S )  loop
       POP( DECL_S, DECL );
       if  DECL.TY = DN_SUBPROG_ENTRY_DECL and then IN_SPEC_UNIT  then

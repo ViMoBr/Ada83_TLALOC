@@ -136,34 +136,32 @@ is
 
   private
 
-    procedure CODE_EXP_EXP		( EXP_EXP		:TREE );
-    procedure CODE_VC_ID		( CONSTANT_ID	:TREE );
-    procedure CODE_NAME_EXP		( NAME_EXP	:TREE );
-    procedure CODE_FUNCTION_CALL	( FUNCTION_CALL	:TREE );
-    procedure CODE_USED_NAME		( USED_NAME	:TREE );
+    procedure CODE_NAME		( NAME : TREE );
+    procedure CODE_EXP_EXP		( EXP_EXP :TREE );
     procedure CODE_USED_OP		( USED_OP		:TREE );
     procedure CODE_USED_NAME_ID	( USED_NAME_ID	:TREE );
+    procedure CODE_USED_CHAR		( USED_CHAR :TREE );
     procedure CODE_USED_OBJECT_ID	( USED_OBJECT_ID	:TREE );
-    procedure CODE_ATTRIBUTE		( ATTRIBUTE	:TREE );
-    procedure CODE_SLICE		( SLICE		:TREE );
     procedure CODE_ALL		( ADA_ALL		:TREE );
-    procedure CODE_AGGREGATE		( AGGREGATE	:TREE );
-    procedure CODE_SHORT_CIRCUIT	( SHORT_CIRCUIT	:TREE );
-    procedure CODE_MEMBERSHIP		( MEMBERSHIP	:TREE );
-    procedure CODE_RANGE_MEMBERSHIP	( RANGE_MEMBERSHIP	:TREE );
-    procedure CODE_TYPE_MEMBERSHIP	( TYPE_MEMBERSHIP	:TREE );
-    procedure CODE_EXP_VAL		( EXP_VAL		:TREE );
-    procedure CODE_EXP_VAL_EXP	( EXP_VAL_EXP	:TREE );
-    procedure CODE_AGG_EXP		( AGG_EXP		:TREE );
-    procedure CODE_NUMERIC_LITERAL	( NUMERIC_LITERAL	:TREE );
-    procedure CODE_NULL_ACCESS	( NULL_ACCESS	:TREE );
-    procedure CODE_QUAL_CONV		( QUAL_CONV	:TREE );
-    procedure CODE_CONVERSION		( CONVERSION	:TREE );
-    procedure CODE_QUALIFIED		( QUALIFIED	:TREE );
+
+    procedure CODE_SLICE		( SLICE		:TREE );
+    procedure CODE_SELECTED		( SELECTED	:TREE );
+    procedure CODE_ATTRIBUTE		( ATTRIBUTE	:TREE );
+    procedure CODE_FUNCTION_CALL	( FUNCTION_CALL	:TREE );
     procedure CODE_QUALIFIED_ALLOCATOR	( QUALIFIED_ALLOCATOR:TREE );
     procedure CODE_SUBTYPE_ALLOCATOR	( SUBTYPE_ALLOCATOR :TREE );
+    procedure CODE_AGGREGATE		( AGGREGATE	:TREE );
 
-    procedure CODE_USED_CHAR		( USED_CHAR :TREE );
+    procedure CODE_NUMERIC_LITERAL	( NUMERIC_LITERAL	:TREE );
+    procedure CODE_NULL_ACCESS	( NULL_ACCESS	:TREE );
+    procedure CODE_SHORT_CIRCUIT	( SHORT_CIRCUIT	:TREE );
+    procedure CODE_PARENTHESIZED	( PARENTHESIZED :TREE );
+    procedure CODE_CONVERSION		( CONVERSION	:TREE );
+    procedure CODE_QUALIFIED		( QUALIFIED	:TREE );
+    procedure CODE_RANGE_MEMBERSHIP	( RANGE_MEMBERSHIP	:TREE );
+    procedure CODE_TYPE_MEMBERSHIP	( TYPE_MEMBERSHIP	:TREE );
+
+    procedure CODE_VC_ID		( CONSTANT_ID	:TREE );
 
 	-----------
   end	EXPRESSIONS;

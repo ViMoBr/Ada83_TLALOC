@@ -1,0 +1,10 @@
+include 'TEXT_IO.FINC'
+PRO	CARPOS_TEST_L1				;---------- PRO CARPOS_TEST
+ELB 1					;    BODY ELAB
+VAR C_disp, b				; variable bool char
+	LI	 48
+	Sb  1,	C_disp
+VAR P_disp, d				; variable entiere
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+!! FUNCTION D : PAS D ATTRIBUT SM_DEFN DANS [DN_ATTRIBUTE<5.89]>

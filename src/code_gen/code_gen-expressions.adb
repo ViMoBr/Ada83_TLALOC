@@ -1,223 +1,244 @@
 separate ( CODE_GEN )
 				-----------
  	package body		EXPRESSIONS
-				-----------ldlw
+				-----------
 is
 
 
   package CODI	renames CODAGE_INTERMEDIAIRE;
 
-
-				--====--
+  				--====--
   procedure			CODE_EXP			( EXP :TREE )
   is
   begin
+    if EXP.TY in CLASS_NAME  then
+      CODE_NAME( EXP );
 
---put_line( "EXP.TY " & NODE_NAME'IMAGE( EXP.TY ) );
-
-    if EXP.TY = DN_NUMERIC_LITERAL	then CODE_NUMERIC_LITERAL( EXP );
-
-    elsif EXP.TY = DN_USED_OBJECT_ID	then CODE_USED_OBJECT_ID( EXP );
-
-    elsif EXP.TY = DN_PARENTHESIZED	then CODE_EXP( D( AS_EXP, EXP ) );
-
-    elsif EXP.TY = DN_INDEXED		then CODE_NAME_EXP ( EXP );
-
-    elsif EXP.TY = DN_FUNCTION_CALL	then CODE_FUNCTION_CALL( EXP );
-
-    elsif EXP.TY = DN_USED_OP		then CODE_USED_OP( EXP );
-
-    elsif EXP.TY = DN_USED_CHAR	then CODE_USED_CHAR( EXP );
-
-    elsif EXP.TY in CLASS_NAME_EXP	then CODE_NAME_EXP( EXP );
-
--- elsif EXP.TY in CLASS_EXP_EXP
---     then
---       return CODE_EXP_EXP( EXP );
+    elsif  EXP.TY in CLASS_EXP_EXP  then
+      CODE_EXP_EXP( EXP );
 
     end if;
-
   end	CODE_EXP;
 	--====--
 
 
-				--------------------
-  procedure			CODE_NUMERIC_LITERAL	( NUMERIC_LITERAL :TREE )
-  is
-    VAL	: TREE	:= D( SM_VALUE, NUMERIC_LITERAL );
-  begin
-    if VAL.PT = HI and then VAl.NOTY = DN_NUM_VAL
-    then
-      PUT_LINE( tab & "LI" & tab & INTEGER'IMAGE( DI( SM_VALUE, NUMERIC_LITERAL ) ) );
+				---------
+  procedure			CODE_NAME			( NAME : TREE )
+  is				---------
 
-    elsif VAL.TY = DN_REAL_VAL
-    then
-      PUT_LINE( tab & "LIF" & tab & PRINT_NAME( D( LX_NUMREP, NUMERIC_LITERAL ) ) );
-
---      PUT_LINE( ';' & tab & "CODE_GEN-EXPRESSIONS.CODE_NUMERIC_LITERAL : DN_REAL_VAL (TODO)" );
-
-    end if;
-
-  end	CODE_NUMERIC_LITERAL;
-	--------------------
-
-
-				-------------------
-  procedure			CODE_USED_OBJECT_ID		( USED_OBJECT_ID :TREE )
-  is
-    DEFN		: TREE		:= D( SM_DEFN, USED_OBJECT_ID ) ;
-  begin
-    case DEFN.TY is
-    when DN_CONSTANT_ID | DN_VARIABLE_ID	=> CODE_VC_ID( DEFN );
-    when DN_ITERATION_ID			=>
-      declare
-        ITERATION_ID	: TREE		renames DEFN;
-        ITERATION_ID_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, ITERATION_ID ) );
-        ITERATION_ID_TAG	: LABEL_TYPE	:= LABEL_TYPE( DI( CD_OFFSET, ITERATION_ID ) );
-        ITERATION_ID_VARSTR	:constant STRING	:= ITERATION_ID_STR & LABEL_STR( ITERATION_ID_TAG ) & "_disp";
-        TYPE_CHAR		: CHARACTER	:= OPER_SIZ_CHAR( D( SM_OBJ_TYPE, ITERATION_ID ) );
+  			---------------
+    procedure		CODE_DESIGNATOR		( DESIGNATOR : TREE )
+    is
+    		--------------
+      procedure	CODE_USED_NAME		( USED_NAME :TREE )
+      is
       begin
-        PUT_LINE( tab & "L" & TYPE_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, ITERATION_ID ) ) & ',' & tab & ITERATION_ID_VARSTR );
-      end;
 
-    when DN_ENUMERATION_ID | DN_CHARACTER_ID	=> PUT_LINE( ASCII.HT & "LI" & ASCII.HT & INTEGER'IMAGE( DI( SM_REP, DEFN ) ) );
-    when DN_IN_ID | DN_IN_OUT_ID		=> LOAD_MEM( DEFN );
---    when DN_OUT_ID				=> CODE_PRM_ID( DEFN );
-    when others => raise PROGRAM_ERROR;
-    end case;
- 
-  end	CODE_USED_OBJECT_ID;
-	-------------------
+        if USED_NAME.TY = DN_USED_OP  then
+	CODE_USED_OP( USED_NAME );
 
+        elsif USED_NAME.TY = DN_USED_NAME_ID  then
+	CODE_USED_NAME_ID( USED_NAME );
 
-				----------
-  procedure			CODE_VC_ID		( CONSTANT_ID :TREE )
-  is
-    CST_TYPE	: TREE	:= D( SM_OBJ_TYPE, CONSTANT_ID );
-  begin
-
-    case CST_TYPE.TY is
-    when DN_ARRAY => null;
-    when DN_INTEGER | DN_ACCESS | DN_ENUMERATION | DN_FLOAT
-    =>
-      LOAD_MEM( CONSTANT_ID );
-    when others
-    =>
-      PUT_LINE( ';' & tab & "CODE_VC_ID ERROR " & NODE_NAME'IMAGE( CST_TYPE.TY ) );
-      raise PROGRAM_ERROR;
-    end case;
-
-  end	CODE_VC_ID;
-	----------
-
-
-				------------------
-  procedure			CODE_FUNCTION_CALL		( FUNCTION_CALL :TREE )
-  is
-    NAME		: TREE		:= D( AS_NAME,		FUNCTION_CALL );
-    PARAMS	: TREE		:= D( SM_NORMALIZED_PARAM_S,	FUNCTION_CALL );
-    DEFN		: TREE		:= D( SM_DEFN,		NAME );
-
-  begin
-
-    if DEFN.TY = DN_BLTN_OPERATOR_ID then
-      declare
-        OP_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, DEFN ) );
-        PRM_S	: SEQ_TYPE	:= LIST( PARAMS );
-        PRM	: TREE;
-      begin
-        POP( PRM_S, PRM );
-        CODE_EXP( PRM );
-        if IS_EMPTY( PRM_S ) then goto UNARY; end if;
-        POP( PRM_S, PRM );
-        CODE_EXP( PRM );
-        if OP_STR = """+""" then  PUT_LINE( ASCII.HT & "ADD" );
-        elsif OP_STR = """-""" then  PUT_LINE( ASCII.HT & "SUB" );
-        elsif OP_STR = """*""" then  PUT_LINE( ASCII.HT & "MUL" );
-        elsif OP_STR = """/""" then  PUT_LINE( ASCII.HT & "DIV" );
-        elsif OP_STR = """=""" then  PUT_LINE( ASCII.HT & "CEQ" );
-        elsif OP_STR = """>""" then  PUT_LINE( ASCII.HT & "CGT" );
-        elsif OP_STR = """<""" then  PUT_LINE( ASCII.HT & "CLT" );
-        elsif OP_STR = """/=""" then  PUT_LINE( ASCII.HT & "CNE" );
-        elsif OP_STR = """>=""" then  PUT_LINE( ASCII.HT & "CGE" );
-        elsif OP_STR = """<=""" then  PUT_LINE( ASCII.HT & "CIE" );
         end if;
-        return;
-<<UNARY>>
-        if OP_STR = """-""" then PUT_LINE( ASCII.HT & "NEG" ); end if;
-      end;
+      end	CODE_USED_NAME;
+	--------------
 
-    end if;
-
-  end	CODE_FUNCTION_CALL;
-	------------------
-
-
-
-				------------
-  procedure			CODE_INDEXED	( INDEXED :TREE )
-  is
-    NAME		: TREE		:= D( AS_NAME, INDEXED );
-    ARRAY_NAME	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, NAME) );
-    ARRAY_LVL	: INTEGER		:= DI( CD_LEVEL, D( SM_DEFN, NAME ) );
-    INDEX_NUM	: INTEGER		:= 1;
-  begin
-    declare
-
-      procedure INDEX ( EXP :TREE ) is
-        CHN		:constant STRING	:= tab & "LId" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & ARRAY_NAME & "_disp";
-        INDEX_NUM_IMG	:constant STRING	:= IMAGE( INDEX_NUM );
+        		----------------
+      procedure	CODE_USED_OBJECT		( USED_OBJECT :TREE )
+      is
       begin
-        CODE_EXP( EXP );
-        PUT( CHN & ',' & INTEGER'IMAGE( 8 + 12 * (INDEX_NUM-1) + 4 ) );
-        if CODI.DEBUG then PUT( tab50 & "; (index - FST_" & INDEX_NUM_IMG & ") * SIZ_" & INDEX_NUM_IMG ); end if;
-        NEW_LINE;
-        PUT_LINE( tab & "SUB" );
-        PUT_LINE( CHN & ',' & INTEGER'IMAGE( 8 + 12 * (INDEX_NUM-1) ) );
-        PUT_LINE( tab & "MUL" );
-        PUT( tab & "ADD" );
-        if CODI.DEBUG then PUT( tab50 & "; add offset" ); end if;
-        NEW_LINE;
-      end INDEX;
+
+        if USED_OBJECT.TY = DN_USED_CHAR  then
+	CODE_USED_CHAR( USED_OBJECT );
+
+        elsif USED_OBJECT.TY = DN_USED_OBJECT_ID  then
+	CODE_USED_OBJECT_ID( USED_OBJECT );
+
+        end if;
+      end	CODE_USED_OBJECT;
+	----------------
 
     begin
-      PUT_LINE(  tab & "LIa" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & ARRAY_NAME & "_disp" );			-- EMPILE L ADRESSE DE BASE DU CONTENU DE TABLEAU
+      if  DESIGNATOR.TY in CLASS_USED_NAME  then
+        CODE_USED_NAME(  NAME );
 
-      declare
-        EXP_SEQ	: SEQ_TYPE	:= LIST( D( AS_EXP_S, INDEXED ) );
-        EXP	: TREE;
+      elsif  DESIGNATOR.TY in CLASS_USED_OBJECT  then
+        CODE_USED_OBJECT( NAME );
+
+      end if;
+    end	CODE_DESIGNATOR;
+  	---------------
+
+  			-------------
+    procedure		CODE_NAME_EXP		( NAME_EXP :TREE )
+    is
+
+		-------------
+      procedure	CODE_NAME_VAL		( NAME_VAL : TREE )
+      is
       begin
-        while not IS_EMPTY( EXP_SEQ ) loop
-	POP( EXP_SEQ, EXP );
-	INDEX( EXP );
-	INDEX_NUM := INDEX_NUM + 1;
-        end loop;
-      end;
+        if  NAME_VAL.TY = DN_SELECTED  then
+	CODE_SELECTED( NAME_VAL );
 
-    end;
-  end	CODE_INDEXED;
-	------------
+        elsif  NAME_VAL.TY = DN_ATTRIBUTE  then
+	CODE_ATTRIBUTE( NAME_VAL );
+
+        elsif  NAME_VAL.TY = DN_FUNCTION_CALL  then
+	CODE_FUNCTION_CALL( NAME_VAL );
+
+        end if;
+      end	CODE_NAME_VAL;
+	-------------
 
 
-				--------------
-  procedure			CODE_USED_NAME		( USED_NAME :TREE )
-  is
+    begin
+      if  NAME_EXP.TY in CLASS_NAME_VAL  then
+        CODE_NAME_VAL(  NAME_EXP );
+
+      elsif NAME_EXP.TY = DN_ALL  then
+        CODE_ALL( NAME_EXP );
+
+      elsif  NAME_EXP.TY = DN_INDEXED  then
+        CODE_INDEXED( NAME_EXP );									-- LAISSE UNE ADRESSE
+        declare
+	NAME		: TREE		:= D( AS_NAME, NAME_EXP );
+	ARRAY_BASE_TYPE	: TREE		:= D( SM_BASE_TYPE, D( SM_EXP_TYPE, NAME) );
+	ARRAY_COMP_TYPE	: TREE		:= D( SM_COMP_TYPE, ARRAY_BASE_TYPE );
+	COMP_SIZE		: CHARACTER	:= OPER_SIZ_CHAR( ARRAY_COMP_TYPE );
+        begin
+	PUT( tab & 'L' & COMP_SIZE );
+	if CODI.DEBUG then PUT( tab50 & "; charge depuis adresse empilee " ); end if;
+	NEW_LINE;
+        end;
+
+      elsif  NAME_EXP.TY = DN_SLICE  then
+        CODE_SLICE( NAME_EXP );
+
+      end if;
+    end	CODE_NAME_EXP;
+	-------------
+
   begin
+    if  NAME.TY in CLASS_DESIGNATOR  then
+      CODE_DESIGNATOR(  NAME );
 
-    if USED_NAME.TY = DN_USED_OP
-    then CODE_USED_OP ( USED_NAME );
-
-    elsif USED_NAME.TY = DN_USED_NAME_ID
-    then CODE_USED_NAME_ID ( USED_NAME );
+    elsif  NAME.TY in CLASS_NAME_EXP  then
+      CODE_NAME_EXP( NAME );
 
     end if;
-  end	CODE_USED_NAME;
-	--------------
+  end	CODE_NAME;
+	---------
+
+
+  				------------
+  procedure			CODE_EXP_EXP		( EXP_EXP :TREE )
+  is				------------
+
+    			------------
+    procedure		CODE_EXP_VAL		( EXP_VAL :TREE )
+    is
+		----------------
+      procedure	CODE_EXP_VAL_EXP		( EXP_VAL_EXP :TREE )
+      is
+ 	        --------------
+        procedure CODE_QUAL_CONV	( QUAL_CONV :TREE )
+        is
+        begin
+
+	if  QUAL_CONV.TY = DN_CONVERSION  then
+	  CODE_CONVERSION( QUAL_CONV );
+
+	elsif  QUAL_CONV.TY = DN_QUALIFIED  then
+	  CODE_QUALIFIED( QUAL_CONV );
+
+	end if;
+        end	CODE_QUAL_CONV;
+		--------------
+
+        	        ---------------
+        procedure CODE_MEMBERSHIP	( MEMBERSHIP :TREE )
+        is
+        begin
+
+	if  MEMBERSHIP.TY = DN_RANGE_MEMBERSHIP  then
+	  CODE_RANGE_MEMBERSHIP( MEMBERSHIP );
+
+	elsif  MEMBERSHIP.TY = DN_TYPE_MEMBERSHIP  then
+	  CODE_TYPE_MEMBERSHIP( MEMBERSHIP );
+
+	end if;
+        end	CODE_MEMBERSHIP;
+		---------------
+
+      begin
+        if EXP_VAL_EXP.TY in CLASS_QUAL_CONV then
+	CODE_QUAL_CONV( EXP_VAL_EXP );
+
+        elsif EXP_VAL_EXP.TY in CLASS_MEMBERSHIP then
+	CODE_MEMBERSHIP( EXP_VAL_EXP );
+
+        elsif EXP_VAL_EXP.TY = DN_PARENTHESIZED then
+	CODE_PARENTHESIZED( EXP_VAL_EXP );
+
+        end if;
+
+      end	CODE_EXP_VAL_EXP;
+      ----------------
+
+    begin
+      if  EXP_VAL.TY in CLASS_EXP_VAL_EXP  then
+        CODE_EXP_VAL_EXP( EXP_VAL );
+
+      elsif  EXP_VAL.TY = DN_NUMERIC_LITERAL then
+        CODE_NUMERIC_LITERAL( EXP_VAL );
+
+      elsif EXP_VAL.TY = DN_NULL_ACCESS  then
+        CODE_NULL_ACCESS( EXP_VAL );
+
+      elsif  EXP_VAL.TY = DN_SHORT_CIRCUIT  then
+        CODE_SHORT_CIRCUIT( EXP_VAL );
+
+      end if;
+    end	CODE_EXP_VAL;
+	------------
+
+			------------
+    procedure		CODE_AGG_EXP		( AGG_EXP :TREE )
+    is
+    begin
+      if AGG_EXP.TY = DN_AGGREGATE  then
+        CODE_AGGREGATE( AGG_EXP );
+
+      elsif AGG_EXP.TY = DN_STRING_LITERAL  then
+        CODE_STRING_LITERAL( AGG_EXP, "A VOIR !" );
+
+      end if;
+    end	CODE_AGG_EXP;
+	------------
+
+  begin
+    if EXP_EXP.TY in CLASS_EXP_VAL  then
+      CODE_EXP_VAL ( EXP_EXP );
+
+    elsif EXP_EXP.TY in CLASS_AGG_EXP  then
+      CODE_AGG_EXP( EXP_EXP );
+
+    elsif EXP_EXP.TY = DN_QUALIFIED_ALLOCATOR  then
+      CODE_QUALIFIED_ALLOCATOR( EXP_EXP );
+
+    elsif EXP_EXP.TY = DN_SUBTYPE_ALLOCATOR  then
+      CODE_SUBTYPE_ALLOCATOR( EXP_EXP );
+
+    end if;
+
+  end	CODE_EXP_EXP;
+	------------
 
 
 				------------
   procedure			CODE_USED_OP		( USED_OP :TREE )
-  is
+  is				------------
     DEFN		: TREE		:= D( SM_DEFN, USED_OP ) ;
     SYM		: TREE		:= D( LX_SYMREP, DEFN );
   begin
@@ -226,20 +247,9 @@ is
 	------------
 
 
-
-				--------------
-  procedure			CODE_USED_CHAR		( USED_CHAR :TREE )
-  is
-  begin
-    PUT_LINE( tab & "LI" & tab & INTEGER'IMAGE( DI( SM_VALUE, USED_CHAR ) ) );
-  end	CODE_USED_CHAR;
-	--------------
-
-
-
 				-----------------
   procedure			CODE_USED_NAME_ID		( USED_NAME_ID :TREE )
-  is
+  is				-----------------
   begin
     declare
       DEFN	: TREE	:= D( SM_DEFN,   USED_NAME_ID );
@@ -296,43 +306,113 @@ null;--        declare
 	-----------------
 
 
-
-				-------------
-  procedure			CODE_NAME_EXP		( NAME_EXP :TREE )
-  is
+  				--------------
+  procedure			CODE_USED_CHAR		( USED_CHAR :TREE )
+  is				--------------
   begin
+    PUT_LINE( tab & "LI" & tab & INTEGER'IMAGE( DI( SM_VALUE, USED_CHAR ) ) );
+  end	CODE_USED_CHAR;
+	--------------
 
-    if NAME_EXP.TY = DN_INDEXED then
 
-      CODE_INDEXED( NAME_EXP );									-- LAISSE UNE ADRESSE
-
+				-------------------
+  procedure			CODE_USED_OBJECT_ID		( USED_OBJECT_ID :TREE )
+  is				-------------------
+    DEFN		: TREE		:= D( SM_DEFN, USED_OBJECT_ID ) ;
+  begin
+    case DEFN.TY is
+    when DN_CONSTANT_ID | DN_VARIABLE_ID	=> CODE_VC_ID( DEFN );
+    when DN_ITERATION_ID			=>
       declare
-        NAME		: TREE		:= D( AS_NAME, NAME_EXP );
-        ARRAY_BASE_TYPE	: TREE		:= D( SM_BASE_TYPE, D( SM_EXP_TYPE, NAME) );
-        ARRAY_COMP_TYPE	: TREE		:= D( SM_COMP_TYPE, ARRAY_BASE_TYPE );
-        COMP_SIZE		: CHARACTER	:= OPER_SIZ_CHAR( ARRAY_COMP_TYPE );
+        ITERATION_ID	: TREE		renames DEFN;
+        ITERATION_ID_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, ITERATION_ID ) );
+        ITERATION_ID_TAG	: LABEL_TYPE	:= LABEL_TYPE( DI( CD_OFFSET, ITERATION_ID ) );
+        ITERATION_ID_VARSTR	:constant STRING	:= ITERATION_ID_STR & LABEL_STR( ITERATION_ID_TAG ) & "_disp";
+        TYPE_CHAR		: CHARACTER	:= OPER_SIZ_CHAR( D( SM_OBJ_TYPE, ITERATION_ID ) );
       begin
-        PUT( tab & 'L' & COMP_SIZE );
-        if CODI.DEBUG then PUT( tab50 & "; charge depuis adresse empilee " ); end if;
-        NEW_LINE;
+        PUT_LINE( tab & "L" & TYPE_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, ITERATION_ID ) ) & ',' & tab & ITERATION_ID_VARSTR );
       end;
 
-    elsif NAME_EXP.TY = DN_FUNCTION_CALL
-    then CODE_FUNCTION_CALL( NAME_EXP );
+    when DN_ENUMERATION_ID | DN_CHARACTER_ID	=> PUT_LINE( ASCII.HT & "LI" & ASCII.HT & INTEGER'IMAGE( DI( SM_REP, DEFN ) ) );
+    when DN_IN_ID | DN_IN_OUT_ID		=> LOAD_MEM( DEFN );
+--    when DN_OUT_ID				=> CODE_PRM_ID( DEFN );
+    when others => raise PROGRAM_ERROR;
+    end case;
 
-    elsif NAME_EXP.TY = DN_SLICE
-    then CODE_SLICE( NAME_EXP );
+  end	CODE_USED_OBJECT_ID;
+	-------------------
 
-    elsif NAME_EXP.TY = DN_ALL
-    then CODE_ALL( NAME_EXP );
 
-    elsif NAME_EXP.TY = DN_ATTRIBUTE
-    then CODE_ATTRIBUTE( NAME_EXP );
+  				--------
+  procedure			CODE_ALL			( ADA_ALL :TREE )
+  is				--------
+  begin
+    null;
+  end	CODE_ALL;
+	--------
 
-    end if;
-  end	CODE_NAME_EXP;
+
+				------------
+  procedure			CODE_INDEXED	( INDEXED :TREE )
+  is				------------
+    NAME		: TREE		:= D( AS_NAME, INDEXED );
+    ARRAY_NAME	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, NAME) );
+    ARRAY_LVL	: INTEGER		:= DI( CD_LEVEL, D( SM_DEFN, NAME ) );
+    INDEX_NUM	: INTEGER		:= 1;
+  begin
+    declare
+
+      procedure INDEX ( EXP :TREE ) is
+        CHN		:constant STRING	:= tab & "LId" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & ARRAY_NAME & "_disp";
+        INDEX_NUM_IMG	:constant STRING	:= IMAGE( INDEX_NUM );
+      begin
+        CODE_EXP( EXP );
+        PUT( CHN & ',' & INTEGER'IMAGE( 8 + 12 * (INDEX_NUM-1) + 4 ) );
+        if CODI.DEBUG then PUT( tab50 & "; (index - FST_" & INDEX_NUM_IMG & ") * SIZ_" & INDEX_NUM_IMG ); end if;
+        NEW_LINE;
+        PUT_LINE( tab & "SUB" );
+        PUT_LINE( CHN & ',' & INTEGER'IMAGE( 8 + 12 * (INDEX_NUM-1) ) );
+        PUT_LINE( tab & "MUL" );
+        PUT( tab & "ADD" );
+        if CODI.DEBUG then PUT( tab50 & "; add offset" ); end if;
+        NEW_LINE;
+      end INDEX;
+
+    begin
+      PUT_LINE(  tab & "LIa" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & ARRAY_NAME & "_disp" );			-- EMPILE L ADRESSE DE BASE DU CONTENU DE TABLEAU
+
+      declare
+        EXP_SEQ	: SEQ_TYPE	:= LIST( D( AS_EXP_S, INDEXED ) );
+        EXP	: TREE;
+      begin
+        while not IS_EMPTY( EXP_SEQ ) loop
+	POP( EXP_SEQ, EXP );
+	INDEX( EXP );
+	INDEX_NUM := INDEX_NUM + 1;
+        end loop;
+      end;
+
+    end;
+  end	CODE_INDEXED;
+	------------
+
+
+				----------
+  procedure			CODE_SLICE		( SLICE :TREE )
+  is				----------
+  begin
+    null;
+  end	CODE_SLICE;
+	----------
+
+
+				-------------
+  procedure			CODE_SELECTED		( SELECTED :TREE )
+  is				-------------
+  begin
+    null;
+  end	CODE_SELECTED;
 	-------------
-
 
 
 				--------------
@@ -365,204 +445,79 @@ null;--        declare
 	--------------
 
 
-
-
-
-				----------
-  procedure			CODE_SLICE		( SLICE :TREE )
-  is
-  begin
-    null;
-  end	CODE_SLICE;
-	----------
-
-
-				--------
-  procedure			CODE_ALL			( ADA_ALL :TREE )
-  is
-  begin
-    null;
-  end	CODE_ALL;
-	--------
-
-
-				------------
-  procedure			CODE_EXP_EXP		( EXP_EXP :TREE )
-  is
-  begin
-
-    if EXP_EXP.TY in CLASS_EXP_VAL
-    then CODE_EXP_VAL ( EXP_EXP );
-
-    elsif EXP_EXP.TY in CLASS_AGG_EXP
-    then CODE_AGG_EXP ( EXP_EXP );
-
-    elsif EXP_EXP.TY = DN_QUALIFIED_ALLOCATOR
-    then CODE_QUALIFIED_ALLOCATOR ( EXP_EXP );
-
-    elsif EXP_EXP.TY = DN_SUBTYPE_ALLOCATOR
-    then CODE_SUBTYPE_ALLOCATOR ( EXP_EXP );
-
-    end if;
-
-  end	CODE_EXP_EXP;
-	------------
-
-
-				------------
-  procedure			CODE_EXP_VAL		( EXP_VAL :TREE )
-  is
-  begin
-
-    if EXP_VAL.TY in CLASS_EXP_VAL_EXP
-    then CODE_EXP_VAL_EXP( EXP_VAL );
-
---    elsif EXP_VAL.TY = DN_NUMERIC_LITERAL then
---      return CODE_NUMERIC_LITERAL( EXP_VAL );
-
-    elsif EXP_VAL.TY = DN_NULL_ACCESS
-    then CODE_NULL_ACCESS( EXP_VAL );
-
-    elsif EXP_VAL.TY = DN_SHORT_CIRCUIT
-    then CODE_SHORT_CIRCUIT( EXP_VAL );
-
-    end if;
-  end	CODE_EXP_VAL;
-	------------
-
-				----------------
-  procedure			CODE_EXP_VAL_EXP		( EXP_VAL_EXP :TREE )
-  is
-  begin
-
-    if EXP_VAL_EXP.TY in CLASS_QUAL_CONV then
-      CODE_QUAL_CONV( EXP_VAL_EXP );
-
-    elsif EXP_VAL_EXP.TY in CLASS_MEMBERSHIP then
-      CODE_MEMBERSHIP( EXP_VAL_EXP );
-
---    elsif EXP_VAL_EXP.TY = DN_PARENTHESIZED then
---      return CODE_PARENTHESIZED( EXP_VAL_EXP );
-
-    end if;
-
-  end	CODE_EXP_VAL_EXP;
-	----------------
-
-
-				---------------
-  procedure			CODE_MEMBERSHIP		( MEMBERSHIP :TREE )
-  is
-  begin
-
-    if MEMBERSHIP.TY = DN_RANGE_MEMBERSHIP
-    then
-      CODE_RANGE_MEMBERSHIP( MEMBERSHIP );
-
-    elsif MEMBERSHIP.TY = DN_TYPE_MEMBERSHIP
-    then
-      CODE_TYPE_MEMBERSHIP( MEMBERSHIP );
-
-    end if;
-  end	CODE_MEMBERSHIP;
-	---------------
-
-
-
-				---------------------
-  procedure			CODE_RANGE_MEMBERSHIP	( RANGE_MEMBERSHIP :TREE )
-  is
-  begin
-    null;
-  end	CODE_RANGE_MEMBERSHIP;
-	---------------------
-
-
-				--------------------
-  procedure			CODE_TYPE_MEMBERSHIP	( TYPE_MEMBERSHIP :TREE )
-  is
-  begin
-    null;
-  end	CODE_TYPE_MEMBERSHIP;
-	--------------------
-
-
-
-
-
-				----------------
-  procedure			CODE_NULL_ACCESS		( NULL_ACCESS :TREE )
-  is
-  begin
-    null;
-  end	CODE_NULL_ACCESS;
-	----------------
-
-
 				------------------
-  procedure			CODE_SHORT_CIRCUIT		( SHORT_CIRCUIT :TREE )
-  is
+  procedure			CODE_FUNCTION_CALL		( FUNCTION_CALL :TREE )
+  is				------------------
+    NAME		: TREE		:= D( AS_NAME,		FUNCTION_CALL );
+    PARAMS	: TREE		:= D( SM_NORMALIZED_PARAM_S,	FUNCTION_CALL );
+
+    		------------------------
+    procedure	CODE_DN_BLTN_OPERATOR_ID
+    is
+      DEFN		: TREE		:= D( SM_DEFN,		NAME );
+    begin
+    if DEFN.TY = DN_BLTN_OPERATOR_ID then
+      declare
+        OP_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, DEFN ) );
+        PRM_S	: SEQ_TYPE	:= LIST( PARAMS );
+        PRM	: TREE;
+      begin
+        POP( PRM_S, PRM );
+        CODE_EXP( PRM );
+        if IS_EMPTY( PRM_S ) then goto UNARY; end if;
+        POP( PRM_S, PRM );
+        CODE_EXP( PRM );
+        if OP_STR = """+""" then  PUT_LINE( ASCII.HT & "ADD" );
+        elsif OP_STR = """-""" then  PUT_LINE( ASCII.HT & "SUB" );
+        elsif OP_STR = """*""" then  PUT_LINE( ASCII.HT & "MUL" );
+        elsif OP_STR = """/""" then  PUT_LINE( ASCII.HT & "DIV" );
+        elsif OP_STR = """=""" then  PUT_LINE( ASCII.HT & "CEQ" );
+        elsif OP_STR = """>""" then  PUT_LINE( ASCII.HT & "CGT" );
+        elsif OP_STR = """<""" then  PUT_LINE( ASCII.HT & "CLT" );
+        elsif OP_STR = """/=""" then  PUT_LINE( ASCII.HT & "CNE" );
+        elsif OP_STR = """>=""" then  PUT_LINE( ASCII.HT & "CGE" );
+        elsif OP_STR = """<=""" then  PUT_LINE( ASCII.HT & "CIE" );
+        end if;
+        return;
+<<UNARY>>
+        if OP_STR = """-""" then PUT_LINE( ASCII.HT & "NEG" ); end if;
+      end;
+
+    end if;
+    end	CODE_DN_BLTN_OPERATOR_ID;
+    	------------------------
+
   begin
-    null;
-  end	CODE_SHORT_CIRCUIT;
+ --   if  NAME.TY = DN_ATTRIBUTE  then
+ --     CODE_ATTRIBUTE;
+ --   else
+      CODE_DN_BLTN_OPERATOR_ID;
+--    end if;
+  end	CODE_FUNCTION_CALL;
 	------------------
 
 
-				--------------
-  procedure			CODE_QUAL_CONV		( QUAL_CONV :TREE )
-  is
-  begin
-
-    if QUAL_CONV.TY = DN_CONVERSION then
-      CODE_CONVERSION ( QUAL_CONV );
-
-    elsif QUAL_CONV.TY = DN_QUALIFIED then
-      CODE_QUALIFIED ( QUAL_CONV );
-
-    end if;
-  end	CODE_QUAL_CONV;
-	--------------
-
-
-				---------------
-  procedure			CODE_CONVERSION		( CONVERSION :TREE )
-  is
+  				------------------------
+  procedure			CODE_QUALIFIED_ALLOCATOR	( QUALIFIED_ALLOCATOR :TREE )
+  is				------------------------
   begin
     null;
-  end	CODE_CONVERSION;
-	---------------
+  end	CODE_QUALIFIED_ALLOCATOR;
+	------------------------
 
 
-				--------------
-  procedure			CODE_QUALIFIED		( QUALIFIED :TREE )
-  is
+				----------------------
+  procedure			CODE_SUBTYPE_ALLOCATOR	( SUBTYPE_ALLOCATOR :TREE )
+  is				----------------------
   begin
     null;
-  end	CODE_QUALIFIED;
-	--------------
+  end	CODE_SUBTYPE_ALLOCATOR;
+	----------------------
 
 
-				------------
-  procedure			CODE_AGG_EXP		( AGG_EXP :TREE )
-  is
-  begin
-
-    if AGG_EXP.TY = DN_AGGREGATE
-    then
-      CODE_AGGREGATE( AGG_EXP );
-
-    elsif AGG_EXP.TY = DN_STRING_LITERAL
-    then
-      CODE_STRING_LITERAL( AGG_EXP, "A VOIR !" );
-
-    end if;
-  end	CODE_AGG_EXP;
-	------------
-
-
-				--------------
+  				--------------
   procedure			CODE_AGGREGATE		( AGGREGATE :TREE )
-  is
+  is				--------------
   begin
     null;
   end	CODE_AGGREGATE;
@@ -571,7 +526,7 @@ null;--        declare
 
 				-------------------
   procedure			CODE_STRING_LITERAL		( STRING_LITERAL :TREE; STR_NAME :STRING )
-  is
+  is				-------------------
     CST_CHN	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, STRING_LITERAL ) );
     STR_CONST	:STRING		renames	CST_CHN( CST_CHN'FIRST+1 .. CST_CHN'LAST-1 );
   begin
@@ -583,22 +538,109 @@ null;--        declare
 	-------------------
 
 
-				------------------------
-  procedure			CODE_QUALIFIED_ALLOCATOR	( QUALIFIED_ALLOCATOR :TREE )
-  is
+  				--------------------
+  procedure			CODE_NUMERIC_LITERAL	( NUMERIC_LITERAL :TREE )
+  is				--------------------
+    VAL	: TREE	:= D( SM_VALUE, NUMERIC_LITERAL );
   begin
-    null;
-  end	CODE_QUALIFIED_ALLOCATOR;
-	------------------------
+    if VAL.PT = HI and then VAl.NOTY = DN_NUM_VAL
+    then
+      PUT_LINE( tab & "LI" & tab & INTEGER'IMAGE( DI( SM_VALUE, NUMERIC_LITERAL ) ) );
+
+    elsif VAL.TY = DN_REAL_VAL
+    then
+      PUT_LINE( tab & "LIF" & tab & PRINT_NAME( D( LX_NUMREP, NUMERIC_LITERAL ) ) );
+
+--      PUT_LINE( ';' & tab & "CODE_GEN-EXPRESSIONS.CODE_NUMERIC_LITERAL : DN_REAL_VAL (TODO)" );
+
+    end if;
+
+  end	CODE_NUMERIC_LITERAL;
+	--------------------
 
 
-				----------------------
-  procedure			CODE_SUBTYPE_ALLOCATOR	( SUBTYPE_ALLOCATOR :TREE )
-  is
+  				----------------
+  procedure			CODE_NULL_ACCESS		( NULL_ACCESS :TREE )
+  is				----------------
   begin
     null;
-  end	CODE_SUBTYPE_ALLOCATOR;
-	----------------------
+  end	CODE_NULL_ACCESS;
+	----------------
+
+
+				------------------
+  procedure			CODE_SHORT_CIRCUIT		( SHORT_CIRCUIT :TREE )
+  is				------------------
+  begin
+    null;
+  end	CODE_SHORT_CIRCUIT;
+	------------------
+
+
+  				------------------
+  procedure			CODE_PARENTHESIZED	( PARENTHESIZED :TREE )
+  is				------------------
+  begin
+    CODE_EXP( D( AS_EXP, PARENTHESIZED ) );
+  end	CODE_PARENTHESIZED;
+    	------------------
+
+
+  				---------------
+  procedure			CODE_CONVERSION		( CONVERSION :TREE )
+  is				---------------
+  begin
+    null;
+  end	CODE_CONVERSION;
+	---------------
+
+
+				--------------
+  procedure			CODE_QUALIFIED		( QUALIFIED :TREE )
+  is				--------------
+  begin
+    null;
+  end	CODE_QUALIFIED;
+	--------------
+
+
+  				---------------------
+  procedure			CODE_RANGE_MEMBERSHIP	( RANGE_MEMBERSHIP :TREE )
+  is				---------------------
+  begin
+    null;
+  end	CODE_RANGE_MEMBERSHIP;
+	---------------------
+
+
+				--------------------
+  procedure			CODE_TYPE_MEMBERSHIP	( TYPE_MEMBERSHIP :TREE )
+  is				--------------------
+  begin
+    null;
+  end	CODE_TYPE_MEMBERSHIP;
+	--------------------
+
+
+				----------
+  procedure			CODE_VC_ID		( CONSTANT_ID :TREE )
+  is
+    CST_TYPE	: TREE	:= D( SM_OBJ_TYPE, CONSTANT_ID );
+  begin
+
+    case CST_TYPE.TY is
+    when DN_ARRAY => null;
+    when DN_INTEGER | DN_ACCESS | DN_ENUMERATION | DN_FLOAT
+    =>
+      LOAD_MEM( CONSTANT_ID );
+    when others
+    =>
+      PUT_LINE( ';' & tab & "CODE_VC_ID ERROR " & NODE_NAME'IMAGE( CST_TYPE.TY ) );
+      raise PROGRAM_ERROR;
+    end case;
+
+  end	CODE_VC_ID;
+	----------
 
 
 	-----------
