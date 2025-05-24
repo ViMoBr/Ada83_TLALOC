@@ -100,6 +100,7 @@ is				---
   procedure POP		( S :in out SEQ_TYPE; T :out TREE );				--| EXTRAIT UN ELEMENT DE LISTE ET REPOINTE S SUR LE RESTE
    
   function  PRINT_NAME	( T :TREE )				return STRING;	--| TXTREP OR SYMBOL_REP
+  function  PRINT_NUM	( T :TREE )				return STRING;	--| DN_NUM_VAL
   function  NODE_IMAGE	( NN :NODE_NAME )				return STRING;	--| CHAINE REPRESENTANT UN NOEUD
   function  ATTR_IMAGE	( AN :ATTRIBUTE_NAME )			return STRING;	--| CHAIUNE REPRESENTANT UN NOM D'ATTRIBUT
 

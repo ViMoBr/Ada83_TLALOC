@@ -1,10 +1,44 @@
 include 'TEXT_IO.FINC'
 PRO	CARPOS_TEST_L1				;---------- PRO CARPOS_TEST
 ELB 1					;    BODY ELAB
+VAR S_disp, q				; pointeur au tableau
+					; variable tableau contraint
+namespace S
+VAR PTR, q
+VAR SIZ_1, d
+VAR FST_1, d
+VAR LST_1, d
+	LI	1
+	Sd 1,	SIZ_1
+	LI	 1
+	Sd 1,	FST_1
+	LI	 16
+	Sd 1,	LST_1
+	Ld 1,	LST_1
+	INC
+	Ld 1,	FST_1
+	SUB
+	Ld 1,	SIZ_1
+	MUL
+end namespace 
+	CO_VAR					; allocation sur la co-pile
+	Sa	1,	S.PTR
+	LVA	1,	S.PTR
+	Sa	1,	S_disp
+VAR I_disp, d				; variable entiere
+	LId 1,	S_disp, 16
+	Sd  1,	I_disp
+VAR F_disp, d				; variable entiere
+	LI 2147483647
+	Sd  1,	F_disp
 VAR C_disp, b				; variable bool char
 	LI	 48
 	Sb  1,	C_disp
 VAR P_disp, d				; variable entiere
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-!! FUNCTION D : PAS D ATTRIBUT SM_DEFN DANS [DN_ATTRIBUTE<5.89]>
+	Sd  1,	P_disp
+	UNLINK 1
+	RTD
+excep:
+endPRO					;---------- end PRO CARPOS_TEST

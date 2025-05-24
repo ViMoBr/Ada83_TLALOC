@@ -471,11 +471,8 @@ if DEBUG then SNIFFER( AN, T ); end if;
     if TR.TY = DN_SYMBOL_REP then							--| POUR UN SYMBOL_REP
       TR := DABS( 1, TR );								--| PRENDRE LE TXTREP CORRRESPONDANT
     end if;
-         
-    if TR.TY /= DN_TXTREP then							--| SI CE N'EST PAS UN TXTREP
-      return "PAS UN TXTREP PAS DE CHAINE ???";						--| CHAINE PAS DE NOM
-    end if;
-         
+
+   if TR.TY = DN_TXTREP then							--| SI CE N'EST PAS UN TXTREP
     declare
       TXT_HDR		: TREE		:= DABS( 0, TR );				--| PRENDRE L'ENTETE DU BLOC DE CHAINE
       use SYSTEM;
@@ -491,9 +488,69 @@ if DEBUG then SNIFFER( AN, T ); end if;
       THE_CHN := TO_CHN( SUITE_TREES( PAG( CUR_RP ).DATA.all( START..START-1+NB_TREES ) ) );
       return THE_CHN( 2..1+NATURAL( CHARACTER'POS( THE_CHN( 1 ) ) ) );
     end;
-         
+    end if;
+
+    return "PAS UN TXTREP/NUM_VAL PAS DE CHAINE ???";							--| CHAINE PAS DE NOM
+
   end	PRINT_NAME;
 	----------
+
+			---------
+  function		PRINT_NUM		( T :TREE ) return STRING					--| POUR DN_NUMVAL
+  is			---------
+  begin
+    if T.TY /= DN_NUM_VAL then									--| SI CE N'EST PAS UN NUMVAL
+      return "PAS UN DN_NUM_VAL PAS DE CHAINE ???";							--| CHAINE PAS DE NOM
+    end if;
+
+    if T.PT = HI then										--| VALEUR COURTE 16 BITS
+      if T.NSIZ = 1 then										--| VALEUR NEGATIVE
+        return POSITIVE_SHORT'IMAGE( -T.ABSS - 1 );
+      else											--| VALEUR POSITIVE
+        return POSITIVE_SHORT'IMAGE( T.ABSS + 1 );
+      end if;
+
+    elsif T.PT = P then
+      declare											--| UN VRAI DN_NUM_VAL
+        ENTETE		: TREE		:= DABS( 0, T );						--| ENTETE CONTENANT LE NOMBRE DE DIGITS
+        type DOUBLET	is array( 1..2 ) of SHORT;
+        function TO_DOUBLET	is new UNCHECKED_CONVERSION( TREE, DOUBLET );
+        ID		: ATTR_NBR 	:= 1;
+		----------------
+        function	RECURSE_DOUBLETS		return STRING
+        is
+	DD	: DOUBLET		:= TO_DOUBLET( DABS( ID, T ) );
+	DD2	: SHORT		:= DD(2) mod 10_000;
+	DD1	: SHORT		:= DD(1) mod 10_000;
+	STR2	:constant STRING	:= SHORT'IMAGE( DD2 );
+	STR1	:constant STRING	:= SHORT'IMAGE( DD1 );
+        begin
+	if  ID = ENTETE.NSIZ  then
+	  if DD2 = 0  then
+	    return STR1( 2 .. STR1'LAST );
+	  else
+	    return STR2( 2 .. STR2'LAST ) & STR1( 2 .. STR1'LAST );
+	  end if;
+	else
+	  ID := ID + 1;
+	  return RECURSE_DOUBLETS & STR2( 2 .. STR2'LAST ) & STR1( 2 .. STR1'LAST );
+	end if;
+        end	RECURSE_DOUBLETS;
+		----------------
+
+      begin
+        if ENTETE.ABSS = 1 then									--| ABSS 1 POUR NB NEGATIF
+	return '-' & RECURSE_DOUBLETS; 								--| CHIFFRE NEGATIF
+        else
+	return RECURSE_DOUBLETS;
+        end if;
+      end;
+    end if;
+
+    return "PRINT_NUM T.PT INCORRECT ???";
+
+  end	PRINT_NUM;
+	---------
 
 
 			----------

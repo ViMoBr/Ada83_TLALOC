@@ -418,29 +418,120 @@ null;--        declare
 				--------------
   procedure			CODE_ATTRIBUTE		( ATTRIBUTE :TREE )
   is				--------------
-    QUALIF_NAME		: TREE		:= D( AS_NAME, ATTRIBUTE );
---    QUALIF_NAME_TYPE	: TREE		:= D( SM_EXP_TYPE, QUALIF_NAME );
-    DEFN			: TREE		:= D( SM_DEFN, QUALIF_NAME );
-    CHN_QUALIF		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, QUALIF_NAME ) );
-    CHN_ATTR		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, D( AS_USED_NAME_ID, ATTRIBUTE ) ) );
-  begin
-    if CHN_ATTR = "FIRST" or CHN_ATTR = "LAST" then
-      if  DEFN.TY /= DN_TYPE_ID  then
-        declare
-	ARRAY_LVL		: INTEGER		:= DI( CD_LEVEL, DEFN );
-	DIM_EXP		: TREE		:= D( AS_EXP, ATTRIBUTE );
-	NUM_DIM		: INTEGER		:= 1;
-	ATTR_VAL_OFS	: INTEGER		:= 4;							-- POUR FIRST
-        begin
-	if DIM_EXP /= TREE_VOID then
-	  NUM_DIM := DI( SM_VALUE, DIM_EXP );
-	end if;
-	if  CHN_ATTR = "LAST"  then ATTR_VAL_OFS := 8; end if;
-	  PUT_LINE( tab & "LId" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & CHN_QUALIF & "_disp" & ','
-	        & INTEGER'IMAGE( 8 + 12*(NUM_DIM-1) + ATTR_VAL_OFS ) );
+    PREFIX_NAME		: TREE		:= D( AS_NAME, ATTRIBUTE );
+--    PREFIX_TYPE		: TREE		:= D( SM_DEFN, PREFIX_NAME );
+    CHN_PREFIX		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, PREFIX_NAME ) );
+    CHN_ATTR_NAME		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, D( AS_USED_NAME_ID, ATTRIBUTE ) ) );
+    subtype CHN_STD		is STRING( 1 .. CHN_ATTR_NAME'LENGTH );
+    CHN_ATTR		: CHN_STD		:= CHN_ATTR_NAME;						-- NORMALISER EN STRING A FIRST=1
+
+    procedure	CODE_FIRST_LAST	( IS_LAST :BOOLEAN )
+    is
+      PREFIX_DEFN		: TREE		:= D( SM_DEFN, PREFIX_NAME );
+    begin
+      if  PREFIX_NAME.TY = DN_USED_OBJECT_ID  then							-- UNE VARIABLE TABLEAU
+        if  D( SM_EXP_TYPE, PREFIX_NAME ).TY = DN_CONSTRAINED_ARRAY  then
+	declare
+	  ARRAY_LVL	: INTEGER		:= DI( CD_LEVEL, PREFIX_DEFN );
+	  DIM_EXP		: TREE		:= D( AS_EXP, ATTRIBUTE );
+	  NUM_DIM		: INTEGER		:= 1;
+	  ATTR_VAL_OFS	: INTEGER		:= 4;							-- POUR ARRAY'FIRST
+	begin
+	  if DIM_EXP /= TREE_VOID then
+	    NUM_DIM := DI( SM_VALUE, DIM_EXP );
+	  end if;
+	  if  IS_LAST  then ATTR_VAL_OFS := 8;								-- POUR ARRAY'LAST
+            end if;
+	  PUT_LINE( tab & "LId" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & CHN_PREFIX & "_disp" & ','
+		    & INTEGER'IMAGE( 8 + 12*(NUM_DIM-1) + ATTR_VAL_OFS ) );
+	end;
+        end if;
+
+      elsif  PREFIX_NAME.TY = DN_USED_NAME_ID  then			-- UN NOM DE TYPE
+        if  PREFIX_DEFN.TY = DN_TYPE_ID  then
+	declare
+	  TYPE_RANGE	: TREE	:= D( SM_RANGE, D( SM_TYPE_SPEC, PREFIX_DEFN ) );
+	begin
+	  PUT( tab & "LI " );
+	  if  IS_LAST  then
+	    PUT_LINE( PRINT_NUM( D( SM_VALUE, D( AS_EXP2, TYPE_RANGE ) ) ) );
+	  else
+	    PUT_LINE( PRINT_NUM( D( SM_VALUE, D( AS_EXP1, TYPE_RANGE ) ) ) );
+	  end if;
         end;
       end if;
-    end if;
+
+      end if;
+
+    end	CODE_FIRST_LAST;
+
+  begin
+    case  CHN_ATTR( 1 )  is
+    when  'A' =>
+      if  CHN_ATTR( 2 ) = 'D'  then null;			-- ADDRESS
+      else null;						-- AFT
+      end if;
+    when  'B' => null;					-- BASE
+    when  'C' =>
+      if  CHN_ATTR( 2 ) = 'A'  then null;			-- CALLABLE
+      elsif  CHN_ATTR( 2 .. 3 ) = "ON"  then null;		-- CONSTRAINED
+      elsif  CHN_ATTR( 2 .. 3 ) = "OU"  then null;		-- COUNT
+      end if;
+    when  'D' =>
+      if  CHN_ATTR( 2 ) = 'E'  then null;			-- DELTA
+      else null;						-- DIGITS
+      end if;
+    when  'E' =>
+      if  CHN_ATTR( 2 ) = 'M'  then null;			-- EMAX
+      else null;						-- EPSILON
+      end if;
+    when  'F' =>
+      if  CHN_ATTR( 2 ) = 'I'  then				-- FIRST
+        CODE_FIRST_LAST( IS_LAST => FALSE );
+      else null;						-- FORE
+      end if;
+    when  'I' => null;					-- IMAGE
+    when  'L' =>
+      if  CHN_ATTR( 2 .. 3 ) = "AR"  then null;			-- LARGE
+      elsif  CHN_ATTR( 2 .. 3 ) = "AS"  then
+        if  CHN_ATTR'LENGTH = 4  then				-- LAST
+	CODE_FIRST_LAST( IS_LAST => TRUE );
+        else null;						-- LAST_BIT
+        end if;
+      elsif  CHN_ATTR( 2 .. 3 ) = "EN"  then null;		-- LENGTH
+      end if;
+    when  'M' =>
+      if  CHN_ATTR( 3 ) = 'N'  then null;			-- MANTISSA
+      elsif  CHN_ATTR( 11 ) = 'A'  then	 null;			-- MACHINE_EMAX
+      elsif  CHN_ATTR( 11 ) = 'I'  then	 null;			-- MACHINE_EMIN
+      elsif  CHN_ATTR( 9 ) = 'M'   then	 null;			-- MACHINE_MANTISSA
+      elsif  CHN_ATTR( 9 ) = 'O'   then	 null;			-- MACHINE_OVERFLOW
+      elsif  CHN_ATTR( 10 ) = 'A'  then	 null;			-- MACHINE_RADIX
+      elsif  CHN_ATTR( 10 ) = 'O'  then	 null;			-- MACHINE_ROUNDS
+      end if;
+    when  'P' =>
+      if  CHN_ATTR'LENGTH = 8  then null;			-- POSITION
+      elsif  CHN_ATTR( 2 ) = 'O'  then	 null;			-- POS
+      elsif  CHN_ATTR( 2 ) = 'R'  then	 null;			-- PRED
+      end if;
+    when  'R' => null;					-- RANGE
+    when  'S' =>
+      if  CHN_ATTR( 2 ) = 'I'  then null;			-- SIZE
+      elsif  CHN_ATTR( 2 ) = 'M'  then	 null;			-- SMALL
+      elsif  CHN_ATTR( 2 ) = 'T'  then	 null;			-- STORAGE
+      elsif  CHN_ATTR( 2 ) = 'U'  then	 null;			-- SUCC
+      elsif  CHN_ATTR( 6 ) = 'E'  then	 null;			-- SAFE_EMAX
+      elsif  CHN_ATTR( 6 ) = 'L'  then	 null;			-- SAFE_LARGE
+      elsif  CHN_ATTR( 6 ) = 'S'  then	 null;			-- SAFE_SMALL
+      end if;
+    when  'T' =>	null;					-- TERMINATED
+    when  'V' =>
+      if  CHN_ATTR'LENGTH = 5  then null;			-- VALUE
+      else  null;						-- VAL
+      end if;
+    when  'W' => null;					-- WIDTH
+    when others => null;
+    end case;
   end	CODE_ATTRIBUTE;
 	--------------
 
@@ -488,11 +579,11 @@ null;--        declare
     	------------------------
 
   begin
- --   if  NAME.TY = DN_ATTRIBUTE  then
- --     CODE_ATTRIBUTE;
- --   else
+    if  NAME.TY = DN_ATTRIBUTE  then
+      CODE_ATTRIBUTE( NAME );
+    else
       CODE_DN_BLTN_OPERATOR_ID;
---    end if;
+    end if;
   end	CODE_FUNCTION_CALL;
 	------------------
 
