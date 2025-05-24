@@ -10,6 +10,7 @@ is			-----------
   package NAT_IO is new INTEGER_IO( NATURAL );
 begin
 
+  PUT_LINE( "Entrez un nombre entier : " );
   NAT_IO.GET( L );
 
 --  PUT_LINE( "Entrez une chaine svp : " );

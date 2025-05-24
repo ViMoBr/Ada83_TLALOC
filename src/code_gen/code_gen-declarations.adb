@@ -24,8 +24,14 @@ is
     if not (SOURCE_NAME.TY in CLASS_SUBPROG_NAME) then
       PUT_LINE( "ANOMALIE : CODE_GEN.DECLARATIONS.CODE_SUBPROG_ENTRY_DECL ; SOURCE_NAME.TY pas dans CLASS_SUBPROG_NAME" );
       raise PROGRAM_ERROR;
---    else
---      if DB( CD_COMPILED, SOURCE_NAME ) then return; end if;
+    else
+      if  CODI.IN_SPEC_UNIT
+      then DB( CD_COMPILED, SOURCE_NAME, TRUE );
+      else
+        if  not IN_GENERIC_INSTANTIATION  and then  DB( CD_COMPILED, SOURCE_NAME )  then
+          return;
+        end if;
+      end if;
     end if;
 
     INC_LEVEL;
@@ -33,7 +39,12 @@ is
       HEADER	: TREE	        := D( AS_HEADER, SUBPROG_ENTRY_DECL );
       LBL		: LABEL_TYPE	:= NEW_LABEL;
     begin
-      DI( CD_LABEL, SOURCE_NAME, INTEGER( LBL ) );
+
+      if  CODI.IN_SPEC_UNIT or else not DB( CD_COMPILED, SOURCE_NAME )
+      then  DI( CD_LABEL, SOURCE_NAME, INTEGER( LBL ) );
+      end if;
+ --     if  not DB( CD_COMPILED, SOURCE_NAME )  then DI( CD_LABEL, SOURCE_NAME, INTEGER( LBL ) ); end if;
+
       DI( CD_LEVEL, SOURCE_NAME, INTEGER( CODI.CUR_LEVEL ) );
       DB( CD_COMPILED, SOURCE_NAME, TRUE );
 
@@ -43,6 +54,7 @@ is
         declare
 	SOURCE_NAME	: TREE		:= D( AS_SOURCE_NAME, SUBPROG_ENTRY_DECL );
 	SUB_NAME		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, SOURCE_NAME ) );
+	LBL		: LABEL_TYPE	:= LABEL_TYPE( DI( CD_LABEL, SOURCE_NAME ) );
         begin
 	PUT_LINE( "if defined " & SUB_NAME & '_' & LABEL_STR( LBL ) & '_' );
 	PUT( "PRO" & tab & SUB_NAME & '_' & LABEL_STR( LBL ) );
@@ -89,7 +101,25 @@ is
 	end;
 
 	REGIONS_PATH( D( SM_DEFN, CODI.INSTANTIATION_MODEL_NAME ) );
-	PUT_LINE( PRINT_NAME( D( LX_SYMREP, CODI.INSTANTIATION_MODEL_NAME ) ) & ". ," & "GET_L66" & tab & "; PROC_GENERIQUE_ORIGINE");
+
+	PUT( PRINT_NAME( D( LX_SYMREP, CODI.INSTANTIATION_MODEL_NAME ) ) & ". ," );
+	declare
+	  MODEL_DECL	: TREE;
+	begin
+	  while  not( IS_EMPTY( CODI.GENERIC_MODEL_DECL_SEQ ) )  loop
+	    POP( CODI.GENERIC_MODEL_DECL_SEQ, MODEL_DECL );
+	    if  MODEL_DECL.TY = DN_SUBPROG_ENTRY_DECL  then
+	      declare
+	        NAME	: TREE	:= D( AS_SOURCE_NAME, MODEL_DECL );
+	        LBL	: INTEGER	:= DI( CD_LABEL, NAME );
+	      begin
+	        PUT_LINE( PRINT_NAME( D( LX_SYMREP, NAME ) ) & "_L" & IMAGE( LBL ) );
+	        exit;
+	      end;
+	    end if;
+	  end loop;
+ 	end;
+
 	PUT_LINE( tab & "UNLINK" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );
 	PUT_LINE( tab & "RTD" & tab & "prm_siz" );
 
@@ -858,11 +888,26 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
   --|-------------------------------------------------------------------------------------------
   procedure CODE_GENERIC_DECL ( GENERIC_DECL :TREE ) is
 
-    GENERIC_ID	: TREE	:= D( AS_SOURCE_NAME, GENERIC_DECL );
+    GENERIC_ID	: TREE		:= D( AS_SOURCE_NAME, GENERIC_DECL );
+    DECL_S	: SEQ_TYPE	:= LIST( D( AS_DECL_S1, D( AS_HEADER, GENERIC_DECL ) ) );
+    DECL		: TREE;
   begin
-    PUT_LINE( "; CODEGEN.DECLARATIONS.CODE_GENERIC_DECL : PAS ENCORE FAIT ! "
+    PUT_LINE( "; CODEGEN.DECLARATIONS.CODE_GENERIC_DECL : EN COURS ! "
 	    & PRINT_NAME( D( LX_SYMREP, GENERIC_ID ) ) );
 
+    while  not IS_EMPTY( DECL_S )  loop
+      POP( DECL_S, DECL );
+      if  DECL.TY = DN_SUBPROG_ENTRY_DECL and then IN_SPEC_UNIT  then
+        declare
+	LBL	: LABEL_TYPE	:= NEW_LABEL;
+	NAME	: TREE		:= D( AS_SOURCE_NAME, DECL );
+        begin
+	DI( CD_LABEL, NAME, INTEGER( LBL ) );
+	DI( CD_LEVEL, NAME, INTEGER( CODI.CUR_LEVEL ) + 1 );
+	DB( CD_COMPILED, D( AS_SOURCE_NAME, DECL ), TRUE );
+        end;
+      end if;
+    end loop;
   end;
 
   procedure CODE_NON_GENERIC_DECL	( NON_GENERIC_DECL :TREE );
@@ -900,6 +945,7 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
   procedure			CODE_PACKAGE_DECL		( PACKAGE_DECL :TREE )
   is
     SAVE_NO_SUB_PARAM	: BOOLEAN		:= CODI.NO_SUBP_PARAMS;
+    SAVE_MODEL_SEQ		: SEQ_TYPE	:= CODI.GENERIC_MODEL_DECL_SEQ;
     UNIT_KIND		: TREE		:= D( AS_UNIT_KIND, PACKAGE_DECL );
   begin
 
@@ -907,6 +953,7 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
     then
       CODI.IN_GENERIC_INSTANTIATION := TRUE;
       CODI.INSTANTIATION_MODEL_NAME := D( AS_NAME, UNIT_KIND );
+      CODI.GENERIC_MODEL_DECL_SEQ := LIST( D( AS_DECL_S1, D( SM_SPEC, D( SM_DEFN, CODI.INSTANTIATION_MODEL_NAME ) ) ) );
       declare
         PACK_ID	: TREE		:= D( AS_SOURCE_NAME, PACKAGE_DECL );
         PACK_NAME	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, PACK_ID ) );
@@ -953,6 +1000,7 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 
         NEW_LINE;
       end;
+      CODI.GENERIC_MODEL_DECL_SEQ := SAVE_MODEL_SEQ;
       CODI.IN_GENERIC_INSTANTIATION := FALSE;
 
     else

@@ -314,8 +314,8 @@ is
 	PUT_LINE( PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_disp" );						-- deplacement de variable locale
         end;
 
-     else												-- variable pas scalaire
-        PUT( tab & "LVA " & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab );
+     else												-- variable non scalaire
+        PUT( tab & "La " & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab );
         PUT_LINE( PRINT_NAME( D( LX_SYMREP, DEFN ) )  & "_disp" );
 
      end if;

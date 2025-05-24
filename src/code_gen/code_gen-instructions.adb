@@ -527,9 +527,9 @@ null;
     FRM_PRM_GRP	: TREE;
     SPEC_PRM_ID_S	: SEQ_TYPE;
 
-
-    procedure INVERSE_RECURSE
-    is
+		---------------
+    procedure	INVERSE_RECURSE
+    is		---------------
       ACT_PRM	: TREE;
       FRM_PRM_ID	: TREE;
     begin
@@ -568,7 +568,11 @@ null;
 	    if FRM_PRM_ID.TY = DN_IN_ID then
 	      LOAD_MEM( DEFN );
 	    else
-	      PUT_LINE( tab & "LVA" & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_disp" );
+	      if  D( SM_OBJ_TYPE, DEFN ).TY in CLASS_SCALAR  then
+	        PUT_LINE( tab & "LVA" & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_disp" );
+	      else
+	        PUT_LINE( tab & "La" & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_disp" );
+	      end if;
 	    end if;
 
 	  elsif  DEFN.TY = DN_IN_ID  then		-- Appel avec un parametre entrant de la procedure englobante

@@ -558,8 +558,13 @@ is					-------
   is
     CHN	: STRING( 1 .. 40 );
     LEN	: NATURAL	:= 40;
+    VAL	: INTEGER	:= 0;
   begin
     GET_LINE( CHN, LEN );
+    for  I in 1 .. LEN  loop
+      VAL := 10 * VAL; -- + CHARACTER'POS( CHN( I ) ) - CHARACTER'POS( '0' );
+    end loop;
+
     PUT( CHN );
   end	GET;
 	----

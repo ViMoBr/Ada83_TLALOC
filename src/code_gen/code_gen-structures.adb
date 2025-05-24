@@ -30,11 +30,23 @@ is
       UNIT_ALL_DECL		: TREE	:= D( AS_ALL_DECL, COMPILATION_UNIT );
     begin
       case UNIT_ALL_DECL.TY is
-      when DN_SUBPROG_ENTRY_DECL	=> DECLARATIONS.CODE_SUBPROG_ENTRY_DECL( UNIT_ALL_DECL );			-- les instanciations génériques sont comprises  (unit_kind instantiation)
-      when DN_PACKAGE_DECL		=> DECLARATIONS.CODE_PACKAGE_DECL( UNIT_ALL_DECL );			-- les instanciations génériques sont comprises  (unit_kind instantiation)
-      when DN_GENERIC_DECL		=> DECLARATIONS.CODE_GENERIC_DECL( UNIT_ALL_DECL );
-      when DN_SUBPROGRAM_BODY		=> CODE_SUBPROGRAM_BODY( UNIT_ALL_DECL );
-      when DN_PACKAGE_BODY		=> CODE_PACKAGE_BODY( UNIT_ALL_DECL );
+      when DN_SUBPROG_ENTRY_DECL	=>
+	CODI.IN_SPEC_UNIT := TRUE;
+	DECLARATIONS.CODE_SUBPROG_ENTRY_DECL( UNIT_ALL_DECL );			-- les instanciations génériques sont comprises  (unit_kind instantiation)
+
+      when DN_PACKAGE_DECL		=>
+	CODI.IN_SPEC_UNIT := TRUE;
+	DECLARATIONS.CODE_PACKAGE_DECL( UNIT_ALL_DECL );			-- les instanciations génériques sont comprises  (unit_kind instantiation)
+
+      when DN_GENERIC_DECL		=>
+	DECLARATIONS.CODE_GENERIC_DECL( UNIT_ALL_DECL );
+
+      when DN_SUBPROGRAM_BODY		=>
+	CODE_SUBPROGRAM_BODY( UNIT_ALL_DECL );
+
+      when DN_PACKAGE_BODY		=>
+	CODI.IN_SPEC_UNIT := FALSE;
+	CODE_PACKAGE_BODY( UNIT_ALL_DECL );
       when others			=> raise PROGRAM_ERROR;
       end case;
     end;
@@ -128,7 +140,7 @@ null;
 				--------------------
   procedure			CODE_SUBPROGRAM_BODY	( SUBPROGRAM_BODY :TREE )
   is
-    LBL	: LABEL_TYPE;
+    LBL			: LABEL_TYPE;
     SOURCE_NAME		: TREE		:= D( AS_SOURCE_NAME, SUBPROGRAM_BODY );
     SUB_NAME		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, SOURCE_NAME ) );
     DECL_ID		: TREE		:= D( SM_FIRST, SOURCE_NAME );
@@ -138,14 +150,17 @@ null;
 
     INC_LEVEL;
 
-    if DECL_ID = SOURCE_NAME then
+    if DECL_ID = SOURCE_NAME then									-- PREMIERE DEFINITION PAS DE SPEC DEJA ETIQUETEE
       LBL := NEW_LABEL;
       DI( CD_LEVEL, SOURCE_NAME, INTEGER( CODI.CUR_LEVEL ) );
+      DI( CD_LABEL, SOURCE_NAME, INTEGER( LBL ) );
+
     else
       LBL := LABEL_TYPE( DI( CD_LABEL, DECL_ID ) );
       DI( CD_LEVEL, SOURCE_NAME, DI( CD_LEVEL, DECL_ID ) );
-    end if;
-    DI( CD_LABEL, SOURCE_NAME, INTEGER( LBL ) );
+      DI( CD_LABEL, SOURCE_NAME, INTEGER( LBL ) );
+
+   end if;
 
     if ENCLOSING_BODY /= TREE_VOID then
       NEW_LINE;
