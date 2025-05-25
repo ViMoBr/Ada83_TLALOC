@@ -10,6 +10,7 @@ elab_spec:				;    SPEC ELAB
   end virtual
 	LI	 0
 	Sd  0,	COUNT_lower_disp
+	LI 2147483647
 	Sd  0,	COUNT_upper_disp
 VAR UNBOUNDED_disp, d			; variable entiere
 	LI	 0
@@ -386,7 +387,7 @@ ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	LI	 13
-	CALL	TEXT_IO. ,PUT_L52
+	CALL	STANDARD.TEXT_IO. ,PUT_L52
 	LI	 1
 	Sd  0,	STDOUT_COL_disp
 VAR	NL2_disp, d				; compteur boucle LOOP__1
@@ -401,7 +402,7 @@ VAR	LMT_NL2_disp, d				; limite boucle LOOP__1
 	BT	L1
 LOOP__1:					; corps boucle LOOP__1
 	LI	 10
-	CALL	TEXT_IO. ,PUT_L52
+	CALL	STANDARD.TEXT_IO. ,PUT_L52
 	Ld  1,	NL2_disp				; test de sortie LOOP__1
 	Ld  1,	LMT_NL2_disp
 	CEQ
@@ -421,7 +422,7 @@ L1:					; post loop LOOP__1
 	CGT
 	BF	L4
 	LI	 12
-	CALL	TEXT_IO. ,PUT_L52
+	CALL	STANDARD.TEXT_IO. ,PUT_L52
 	Ld  0,	STDOUT_PAGE_disp
 	LI	 1
 	ADD
@@ -904,9 +905,9 @@ ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	La  1,	-ITEM_ofs
-	CALL	TEXT_IO. ,PUT_L56
+	CALL	STANDARD.TEXT_IO. ,PUT_L56
 	LI	 1
-	CALL	TEXT_IO. ,NEW_LINE_L26
+	CALL	STANDARD.TEXT_IO. ,NEW_LINE_L26
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -976,7 +977,7 @@ VAR VAL_disp, d				; variable entiere
 begin:					;---------- BDY INSTRUCTIONS
 	LVA  1,	LEN_disp
 	La  1,	CHN_disp
-	CALL	TEXT_IO. ,GET_LINE_L58
+	CALL	STANDARD.TEXT_IO. ,GET_LINE_L58
 VAR	IL6_disp, d				; compteur boucle LOOP__2
 	LI	 1
 	Sd  1,	IL6_disp
@@ -991,6 +992,17 @@ LOOP__2:					; corps boucle LOOP__2
 	LI	 10
 	Ld  1,	VAL_disp
 	MUL
+	LIa 1,	CHN_disp
+	Ld  1,	IL6_disp
+	LId 1,	CHN_disp, 12			; (index - FST_1) * SIZ_1
+	SUB
+	LId 1,	CHN_disp, 8
+	MUL
+	ADD					; add offset
+	Lb					; charge depuis adresse empilee 
+	ADD
+	LI	 48
+	SUB
 	Sd  1,	VAL_disp
 	Ld  1,	IL6_disp				; test de sortie LOOP__2
 	Ld  1,	LMT_IL6_disp
@@ -1002,7 +1014,7 @@ LOOP__2:					; corps boucle LOOP__2
 	BRA	LOOP__2				; iteration suivante LOOP__2
 L5:					; post loop LOOP__2
 	La  1,	CHN_disp
-	CALL	TEXT_IO. ,PUT_L56
+	CALL	STANDARD.TEXT_IO. ,PUT_L56
 	UNLINK 1
 	RTD	prm_siz
 excep:

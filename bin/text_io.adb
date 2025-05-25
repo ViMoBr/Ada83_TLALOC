@@ -562,13 +562,14 @@ is					-------
   begin
     GET_LINE( CHN, LEN );
     for  I in 1 .. LEN  loop
-      VAL := 10 * VAL; -- + CHARACTER'POS( CHN( I ) ) - CHARACTER'POS( '0' );
+      VAL := 10 * VAL + CHARACTER'POS( CHN( I ) ) - CHARACTER'POS( '0' );
     end loop;
 
     PUT( CHN );
   end	GET;
 	----
 
+			---
     procedure		PUT		( FILE  :in FILE_TYPE;
 					  ITEM  :in NUM;
 					  WIDTH :in FIELD		:= DEFAULT_WIDTH;

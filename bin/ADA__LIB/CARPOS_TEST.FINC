@@ -37,6 +37,7 @@ VAR C_disp, b				; variable bool char
 VAR P_disp, d				; variable entiere
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	Lb  1,	C_disp
 	Sd  1,	P_disp
 	UNLINK 1
 	RTD

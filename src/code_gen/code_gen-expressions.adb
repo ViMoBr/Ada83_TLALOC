@@ -419,12 +419,12 @@ null;--        declare
   procedure			CODE_ATTRIBUTE		( ATTRIBUTE :TREE )
   is				--------------
     PREFIX_NAME		: TREE		:= D( AS_NAME, ATTRIBUTE );
---    PREFIX_TYPE		: TREE		:= D( SM_DEFN, PREFIX_NAME );
     CHN_PREFIX		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, PREFIX_NAME ) );
     CHN_ATTR_NAME		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, D( AS_USED_NAME_ID, ATTRIBUTE ) ) );
     subtype CHN_STD		is STRING( 1 .. CHN_ATTR_NAME'LENGTH );
     CHN_ATTR		: CHN_STD		:= CHN_ATTR_NAME;						-- NORMALISER EN STRING A FIRST=1
 
+    		---------------
     procedure	CODE_FIRST_LAST	( IS_LAST :BOOLEAN )
     is
       PREFIX_DEFN		: TREE		:= D( SM_DEFN, PREFIX_NAME );
@@ -464,6 +464,15 @@ null;--        declare
       end if;
 
     end	CODE_FIRST_LAST;
+	---------------
+
+    		--------
+    procedure	CODE_POS
+    is
+      PREFIX_DEFN		: TREE		:= D( SM_DEFN, PREFIX_NAME );
+    begin
+      null;
+    end	CODE_POS;
 
   begin
     case  CHN_ATTR( 1 )  is
@@ -580,6 +589,13 @@ null;--        declare
 
   begin
     if  NAME.TY = DN_ATTRIBUTE  then
+      declare
+        PRM_S	: SEQ_TYPE	:= LIST( PARAMS );
+        PRM	: TREE;
+      begin
+        POP( PRM_S, PRM );
+        CODE_EXP( PRM );
+      end;
       CODE_ATTRIBUTE( NAME );
     else
       CODE_DN_BLTN_OPERATOR_ID;

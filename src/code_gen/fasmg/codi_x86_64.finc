@@ -698,15 +698,15 @@ end macro
 macro			CALL?	prefix, subname
 ;			-------------------------
   postpone
-    if ~definite subname#_
-      ?subname#_ = ?prefix#subname#.elab				; le nom finissant en _ détermine l'assemblage de la routine
+    if ~definite prefix#subname#_
+      prefix#subname#_ = prefix#subname#.elab				; le nom finissant en _ détermine l'assemblage de la routine
     end if
   end postpone
 
   local ofs
   db 0xE8								; CALL empile sur la micro-pile des adresses de retour (qui croit vers le bas)
   dd ofs
-  ofs = subname#_-$
+  ofs = prefix#subname#_ - $
 end macro
 
 
@@ -780,6 +780,7 @@ end macro
 ;			----------------------
 macro			PRO	sub_name_lbl			; Début de procédure
 ;			----------------------
+;sub_name_lbl:
   namespace sub_name_lbl						; definir son espace de noms
   BRA post							; contournement de l'élaboration autour de la procedure
 end macro
@@ -875,7 +876,6 @@ post:
     loc_siz = $							; Ce n'est que là que l'on calcule la taille des locales qui sera retropropagee au LINK du ELAB
   end virtual
   end namespace
-
 end macro
 
 ;				---------------------------------------------

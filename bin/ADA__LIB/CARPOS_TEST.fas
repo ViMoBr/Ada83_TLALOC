@@ -1,14 +1,11 @@
 include '../../src/code_gen/fasmg/codi_x86_64.finc'
-STANDARD = 'STANDARD'
-namespace STANDARD
-loc_siz = 0
+
 	LINK	0, loc_siz
 
-include 'STRING_TEST.FINC'
-	CALL	 STANDARD., STRING_TEST_L1
+include 'CARPOS_TEST.FINC'
+	CALL	, CARPOS_TEST_L1
 	SYSEXIT
 
   virtual VARzone
     loc_siz = $
   end virtual
-end namespace
