@@ -13,7 +13,12 @@ is				-----------
   is			----
   begin
     if  DISQUES_RESTANTS = 1  then
-      PUT_LINE( "MOVE PLATE FROM " ); -- & TIGE_ORIGINE & " TO " & TIGE_DESTINATION );
+--      PUT_LINE( "MOVE PLATE FROM " ); -- & TIGE_ORIGINE & " TO " & TIGE_DESTINATION );
+      PUT( "MOVE PLATE FROM " );
+      PUT( TIGE_ORIGINE );
+      PUT( " TO " );
+      PUT( TIGE_DESTINATION );
+      NEW_LINE;
     else
       MOVE( DISQUES_RESTANTS-1,	TIGE_ORIGINE,  TIGE_TRANSIT,      TIGE_DESTINATION );
       MOVE( 1,			TIGE_ORIGINE,  TIGE_DESTINATION,  TIGE_TRANSIT );
