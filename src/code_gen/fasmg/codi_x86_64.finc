@@ -195,6 +195,7 @@ macro			GET_STR?			; lit une ligne sur stdin
   db 0x48, 0x8B, 0x36				; mov rsi, [rsi]		(rsi est maintenant l'adresse des caracteres)
   db 0x0F, 0x05					; syscall
   POP_RSI						;			(sur la pile croissante, adresse de la longueur effectivement lue qui peut être inférieure a la longueur de string)
+  db 0xFF, 0xC8					; retirer le caractere de fin
   db 0x89, 0x06					; mov dword ptr[rsi], eax	(reporter la longueur effectivement lue retournee par syscall dans eax)
 end macro
 
@@ -244,7 +245,9 @@ end macro
 macro			FP_IN_RAX		lvl
 ;			-----------------------
   assert lvl >= 0 & lvl <= 31
-  if lvl <= 15
+  if lvl = 0
+    db 0x49, 0x8B, 0x07						; mov rax, [r15]		(aller chercher le frame pointer du lvl dans le display pointé par r15)
+  else if lvl <= 15
     db 0x49, 0x8B, 0x47, 8*lvl					; mov rax, [r15 + 8*lvl]	(aller chercher le frame pointer du lvl dans le display pointé par r15)
   else
     db 0x49, 0x8B, 0x87						; mov rax, [r15 + 8*lvl]	(aller chercher le frame pointer du lvl dans le display pointé par r15)
@@ -256,7 +259,9 @@ end macro
 macro			FP_IN_RBP		lvl
 ;			-----------------------
   assert lvl >= 0 & lvl <= 31
-  if lvl <= 15
+  if lvl = 0
+    db 0x49, 0x8B, 0x2F						; mov rbp, [r15]	(aller chercher le frame pointer du lvl dans le display pointé par r15)
+  else if lvl <= 15
     db 0x49, 0x8B, 0x6F, 8*lvl					; mov rbp, [r15 + 8*lvl]	(aller chercher le frame pointer du lvl dans le display pointé par r15)
   else
     db 0x49, 0x8B, 0xAF						; mov rbp, [r15 + 8*lvl]	(aller chercher le frame pointer du lvl dans le display pointé par r15)
@@ -715,7 +720,9 @@ macro			LINK?	lvl, alloc			; ALLOCATION POUR VARIABLES LOCALES APRES FRAME PTR
 ;			--------------------
   FP_IN_RAX	lvl						; store FP(lvl) le pointeur de pile RBP reste a pointer sur l'empile
   PUSH_RAX
-  if lvl <= 15							; 16 premiers niveaux, petit offset dans le display
+  if lvl = 0
+    db 0x49, 0x89, 0x2F						; mov qword ptr [r15], rbp	niveau 0, petit offset dans le display
+  else if lvl <= 15							; 15 niveaux suivants, petit offset dans le display
     db 0x49, 0x89, 0x6F, 8*lvl					; mov qword ptr [r15 + 8*lvl], rbp   update FP le FP pointe sur l'adresse de sauvegarde du FP anterieur
   else
     db 0x49, 0x89, 0x6F
@@ -742,7 +749,9 @@ end macro
 macro			RAX_IN_FP		lvl
 ;			-----------------------
   assert lvl >= 0 & lvl <= 31
-  if lvl <= 15
+  if lvl = 0
+    db 0x49, 0x89, 0x07						; mov [r15], rax
+  else if lvl <= 15
     db 0x49, 0x89, 0x47, 8*lvl					; mov [r15 + 8*lvl], rax	(aller chercher le frame pointer du lvl dans le display pointé par r15)
   else
     db 0x49, 0x89, 0x87						; mov [r15 + 8*lvl], rax	(aller chercher le frame pointer du lvl dans le display pointé par r15)
@@ -916,11 +925,6 @@ Elf64_Phdr:
 	p_memsz		dq ASM_SIZE + 1024*1024			; 1Mo au dessus du code et des constantes (pour la co-pile)
 	p_align		dq 4096
 
-
-virtual at 8
-  VARzone::
-  VARzone.DISP = $
-end virtual
 
 ;		METTRE EN PLACE LA PILE CROISSANTE ET LE DISPLAY
 

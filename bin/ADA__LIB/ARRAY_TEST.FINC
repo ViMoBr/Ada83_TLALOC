@@ -29,9 +29,9 @@ LOOP__1:					; corps boucle LOOP__1
 	Lb					; charge depuis adresse empilee 
 	Sb  1,	C_disp
 	Lb  1,	C_disp
-	CALL	TEXT_IO. ,PUT_L52
+	CALL	STANDARD.TEXT_IO. ,PUT_L52
 	LI	 95
-	CALL	TEXT_IO. ,PUT_L52
+	CALL	STANDARD.TEXT_IO. ,PUT_L52
 	Ld  1,	IL2_disp				; test de sortie LOOP__1
 	Ld  1,	LMT_IL2_disp
 	CEQ

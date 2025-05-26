@@ -6,7 +6,8 @@ is			-------------
   C	: CHARACTER;
 begin
   PUT( " Bonjour " );
-  NEW_LINE(2);
+--  NEW_LINE(2);
+  NEW_LINE;
 LIRE_UN:
   loop
     PUT( " Entrez un caractere ! " );

@@ -554,17 +554,17 @@ is					-------
 	----
 
 			---
-    procedure		GET		( ITEM  :out NUM; WIDTH : in FIELD := 0)
+  procedure		GET		( ITEM  :out NUM; WIDTH : in FIELD := 0)
   is
     CHN	: STRING( 1 .. 40 );
     LEN	: NATURAL	:= 40;
-    VAL	: INTEGER	:= 0;
+    VAL	: NUM	:= 0;
   begin
     GET_LINE( CHN, LEN );
     for  I in 1 .. LEN  loop
       VAL := 10 * VAL + CHARACTER'POS( CHN( I ) ) - CHARACTER'POS( '0' );
     end loop;
-
+    ITEM := VAL;
     PUT( CHN );
   end	GET;
 	----

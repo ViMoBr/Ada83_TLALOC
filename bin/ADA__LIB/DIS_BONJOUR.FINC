@@ -5,7 +5,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 STR STR_L1, ' Bonjour '			; constante string=' Bonjour '
 	LCA	STR_L1_ptr
-	CALL	TEXT_IO. ,PUT_L56
+	CALL	STANDARD.TEXT_IO. ,PUT_L56
 	UNLINK 1
 	RTD
 excep:

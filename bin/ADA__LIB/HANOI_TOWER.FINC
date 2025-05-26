@@ -2,11 +2,129 @@ include 'TEXT_IO.FINC'
 PRO	HANOI_TOWER_L1				;---------- PRO HANOI_TOWER
 ELB 1					;    BODY ELAB
 VAR NUMBER_OF_DISKS_disp, d			; variable entiere
+namespace NATURAL_IO			;---------- GENERIC PACKAGE INSTANTIATION
+elab_spec:				;    SPEC ELAB
+VAR NATURAL_last_ofs, q
+LI 2147483647
+Sd 1,	NATURAL_last_ofs
+VAR NATURAL_first_ofs, q
+LI 0
+Sd 1,	NATURAL_first_ofs
+VAR GFP_disp, q
 VAR DEFAULT_WIDTH_disp, d			; variable entiere
 	Sd  1,	DEFAULT_WIDTH_disp
 VAR DEFAULT_BASE_disp, d			; variable entiere
 	LI	 10
 	Sd  1,	DEFAULT_BASE_disp
+if defined GET_L61_
+PRO	GET_L61				;---------- PRO GET
+PRMS					;    debut parametrage
+	PRM FILE_ofs				; in
+	PRM ITEM_ofs				; out
+	PRM WIDTH_ofs				; in
+endPRMS					;    fin parametrage
+ELB 2
+begin:
+	LVA 2,	GFP_disp
+	Lq 2,	-WIDTH_ofs
+	Lq 2,	-ITEM_ofs
+	Lq 2,	-FILE_ofs
+	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L61
+	UNLINK 2
+	RTD	prm_siz
+endPRO					;---------- end PRO GET
+end if
+if defined GET_L62_
+PRO	GET_L62				;---------- PRO GET
+PRMS					;    debut parametrage
+	PRM ITEM_ofs				; out
+	PRM WIDTH_ofs				; in
+endPRMS					;    fin parametrage
+ELB 2
+begin:
+	LVA 2,	GFP_disp
+	Lq 2,	-WIDTH_ofs
+	Lq 2,	-ITEM_ofs
+	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L62
+	UNLINK 2
+	RTD	prm_siz
+endPRO					;---------- end PRO GET
+end if
+if defined PUT_L63_
+PRO	PUT_L63				;---------- PRO PUT
+PRMS					;    debut parametrage
+	PRM FILE_ofs				; in
+	PRM ITEM_ofs				; in
+	PRM WIDTH_ofs				; in
+	PRM BASE_ofs				; in
+endPRMS					;    fin parametrage
+ELB 2
+begin:
+	LVA 2,	GFP_disp
+	Lq 2,	-BASE_ofs
+	Lq 2,	-WIDTH_ofs
+	Lq 2,	-ITEM_ofs
+	Lq 2,	-FILE_ofs
+	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L63
+	UNLINK 2
+	RTD	prm_siz
+endPRO					;---------- end PRO PUT
+end if
+if defined PUT_L64_
+PRO	PUT_L64				;---------- PRO PUT
+PRMS					;    debut parametrage
+	PRM ITEM_ofs				; in
+	PRM WIDTH_ofs				; in
+	PRM BASE_ofs				; in
+endPRMS					;    fin parametrage
+ELB 2
+begin:
+	LVA 2,	GFP_disp
+	Lq 2,	-BASE_ofs
+	Lq 2,	-WIDTH_ofs
+	Lq 2,	-ITEM_ofs
+	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L64
+	UNLINK 2
+	RTD	prm_siz
+endPRO					;---------- end PRO PUT
+end if
+if defined GET_L65_
+PRO	GET_L65				;---------- PRO GET
+PRMS					;    debut parametrage
+	PRM FROM_ofs				; in
+	PRM ITEM_ofs				; out
+	PRM LAST_ofs				; out
+endPRMS					;    fin parametrage
+ELB 2
+begin:
+	LVA 2,	GFP_disp
+	Lq 2,	-LAST_ofs
+	Lq 2,	-ITEM_ofs
+	Lq 2,	-FROM_ofs
+	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L65
+	UNLINK 2
+	RTD	prm_siz
+endPRO					;---------- end PRO GET
+end if
+if defined PUT_L66_
+PRO	PUT_L66				;---------- PRO PUT
+PRMS					;    debut parametrage
+	PRM TO_ofs				; out
+	PRM ITEM_ofs				; in
+	PRM BASE_ofs				; in
+endPRMS					;    fin parametrage
+ELB 2
+begin:
+	LVA 2,	GFP_disp
+	Lq 2,	-BASE_ofs
+	Lq 2,	-ITEM_ofs
+	Lq 2,	-TO_ofs
+	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L66
+	UNLINK 2
+	RTD	prm_siz
+endPRO					;---------- end PRO PUT
+end if
+end namespace 				;---------- end generic package instantiation NATURAL_IO
 ; EXC_LBL	L7
 
 if defined MOVE_L8_
@@ -25,30 +143,30 @@ begin:					;---------- BDY INSTRUCTIONS
 	LI	 1
 	CEQ
 	BF	L10
-	Lb  2,	-TIGE_ORIGINE_ofs
-	Lb  2,	-TIGE_DESTINATION_ofs
-	CALL	TEXT_IO. ,PUT_LINE_L60
+STR STR_L11, 'MOVE PLATE FROM '		; constante string='MOVE PLATE FROM '
+	LCA	STR_L11_ptr
+	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
 	BRA	L9
 L10:
-	; DEFN.TY NON FAIT DN_IN_ID
-	; DEFN.TY NON FAIT DN_IN_ID
-	; DEFN.TY NON FAIT DN_IN_ID
+	Lb  2,	-TIGE_DESTINATION_ofs
+	Lb  2,	-TIGE_TRANSIT_ofs
+	Lb  2,	-TIGE_ORIGINE_ofs
 	Ld  2,	-DISQUES_RESTANTS_ofs
 	LI	 1
 	SUB
-	CALL	HANOI_TOWER. ,MOVE_L8
-	; DEFN.TY NON FAIT DN_IN_ID
-	; DEFN.TY NON FAIT DN_IN_ID
-	; DEFN.TY NON FAIT DN_IN_ID
+	CALL	STANDARD.HANOI_TOWER_L1. ,MOVE_L8
+	Lb  2,	-TIGE_TRANSIT_ofs
+	Lb  2,	-TIGE_DESTINATION_ofs
+	Lb  2,	-TIGE_ORIGINE_ofs
 	LI	 1
-	CALL	HANOI_TOWER. ,MOVE_L8
-	; DEFN.TY NON FAIT DN_IN_ID
-	; DEFN.TY NON FAIT DN_IN_ID
-	; DEFN.TY NON FAIT DN_IN_ID
+	CALL	STANDARD.HANOI_TOWER_L1. ,MOVE_L8
+	Lb  2,	-TIGE_ORIGINE_ofs
+	Lb  2,	-TIGE_DESTINATION_ofs
+	Lb  2,	-TIGE_TRANSIT_ofs
 	Ld  2,	-DISQUES_RESTANTS_ofs
 	LI	 1
 	SUB
-	CALL	HANOI_TOWER. ,MOVE_L8
+	CALL	STANDARD.HANOI_TOWER_L1. ,MOVE_L8
 L9:					; post if
 	UNLINK 2
 	RTD	prm_siz
@@ -57,18 +175,18 @@ endPRO					;---------- end PRO MOVE
 end if
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-STR STR_L11, 'ENTER NUMBER OF DISKS : '		; constante string='ENTER NUMBER OF DISKS : '
-	LCA	STR_L11_ptr
-	CALL	TEXT_IO. ,PUT_L56
+STR STR_L12, 'ENTER NUMBER OF DISKS : '		; constante string='ENTER NUMBER OF DISKS : '
+	LCA	STR_L12_ptr
+	CALL	STANDARD.TEXT_IO. ,PUT_L56
 	LI	 0
 	LVA  1,	NUMBER_OF_DISKS_disp
-	CALL	NATURAL_IO. ,GET_L2
+	CALL	STANDARD.HANOI_TOWER_L1.NATURAL_IO. ,GET_L62
 	LI	 67
 	LI	 66
 	LI	 65
 	Ld  1,	NUMBER_OF_DISKS_disp
-	CALL	HANOI_TOWER. ,MOVE_L8
+	CALL	STANDARD.HANOI_TOWER_L1. ,MOVE_L8
 	UNLINK 1
-	RTD	prm_siz
+	RTD
 excep:
 endPRO					;---------- end PRO HANOI_TOWER

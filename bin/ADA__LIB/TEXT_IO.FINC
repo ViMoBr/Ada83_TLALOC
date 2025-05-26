@@ -919,7 +919,10 @@ PRMS
 	PRM NUM_last_ofs
 endPRMS
 VAR DEFAULT_WIDTH_disp, d			; variable entiere
+	Sd  0,	DEFAULT_WIDTH_disp
 VAR DEFAULT_BASE_disp, d			; variable entiere
+	LI	 10
+	Sd  0,	DEFAULT_BASE_disp
 					;    BODY ELAB
 
 if defined GET_L61_
@@ -972,7 +975,11 @@ end namespace
 	LVA	1,	CHN.PTR
 	Sa	1,	CHN_disp
 VAR LEN_disp, d				; variable entiere
+	LI	 40
+	Sd  1,	LEN_disp
 VAR VAL_disp, d				; variable entiere
+	LI	 0
+	Sd  1,	VAL_disp
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	LVA  1,	LEN_disp
@@ -1013,6 +1020,8 @@ LOOP__2:					; corps boucle LOOP__2
 	Sd  1,	IL6_disp
 	BRA	LOOP__2				; iteration suivante LOOP__2
 L5:					; post loop LOOP__2
+	Ld  1,	VAL_disp
+	SId  1,	-ITEM_ofs
 	La  1,	CHN_disp
 	CALL	STANDARD.TEXT_IO. ,PUT_L56
 	UNLINK 1
@@ -1048,8 +1057,8 @@ PRMS					;    debut parametrage
 	PRM GFP_ofs
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
-VAR QUOTIENT_disp, b			; variable entiere
-VAR RESTE_disp, b				; variable entiere
+VAR QUOTIENT_disp, d			; variable entiere
+VAR RESTE_disp, d				; variable entiere
 VAR STR_disp, q				; pointeur au tableau
 					; variable tableau contraint
 namespace STR
@@ -1075,6 +1084,8 @@ end namespace
 	LVA	1,	STR.PTR
 	Sa	1,	STR_disp
 VAR INDEX_disp, d				; variable entiere
+	LId 1,	STR_disp, 16
+	Sd  1,	INDEX_disp
 VAR MIN_WIDTH_disp, d			; variable entiere
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
@@ -1123,8 +1134,15 @@ namespace FLOAT_IO				;---------- GENERIC PACKAGE
 PRMS
 endPRMS
 VAR DEFAULT_FORE_disp, d			; variable entiere
+	LI	 2
+	Sd  0,	DEFAULT_FORE_disp
 VAR DEFAULT_AFT_disp, d			; variable entiere
+	LI	 1
+	SUB
+	Sd  0,	DEFAULT_AFT_disp
 VAR DEFAULT_EXP_disp, d			; variable entiere
+	LI	 3
+	Sd  0,	DEFAULT_EXP_disp
 					;    BODY ELAB
 
 if defined GET_L67_
@@ -1237,8 +1255,12 @@ namespace FIXED_IO				;---------- GENERIC PACKAGE
 PRMS
 endPRMS
 VAR DEFAULT_FORE_disp, d			; variable entiere
+	Sd  0,	DEFAULT_FORE_disp
 VAR DEFAULT_AFT_disp, d			; variable entiere
+	Sd  0,	DEFAULT_AFT_disp
 VAR DEFAULT_EXP_disp, d			; variable entiere
+	LI	 0
+	Sd  0,	DEFAULT_EXP_disp
 					;    BODY ELAB
 
 if defined GET_L73_
@@ -1351,7 +1373,11 @@ namespace ENUMERATION_IO			;---------- GENERIC PACKAGE
 PRMS
 endPRMS
 VAR DEFAULT_WIDTH_disp, d			; variable entiere
+	LI	 0
+	Sd  0,	DEFAULT_WIDTH_disp
 VAR DEFAULT_SETTING_disp, b			; variable entiere
+	LI	 1
+	Sb  0,	DEFAULT_SETTING_disp
 					;    BODY ELAB
 
 if defined GET_L79_

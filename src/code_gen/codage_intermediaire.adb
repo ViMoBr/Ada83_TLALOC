@@ -332,7 +332,7 @@ is
     SIZ_CHAR	: CHARACTER	:= OPER_SIZ_CHAR( D( SM_OBJ_TYPE, DEST_DEFN ) );
   begin
     if DEST_DEFN.TY = DN_OUT_ID or DEST_DEFN.TY = DN_IN_OUT_ID then
-      PUT_LINE( tab & "IS" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEST_DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEST_DEFN ) ) & "_ofs" );
+      PUT_LINE( tab & "SI" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEST_DEFN ) ) & ',' & tab & '-' & PRINT_NAME( D( LX_SYMREP, DEST_DEFN ) ) & "_ofs" );
     else
       PUT_LINE( tab & "S" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEST_DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEST_DEFN ) ) & "_disp" );
     end if;

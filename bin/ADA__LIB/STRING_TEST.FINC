@@ -26,9 +26,9 @@ endPRMS					;    fin parametrage
 ELB 2
 begin:
 	LVA 2,	GFP_disp
-	Lq 2,	WIDTH_ofs
-	Lq 2,	ITEM_ofs
-	Lq 2,	FILE_ofs
+	Lq 2,	-WIDTH_ofs
+	Lq 2,	-ITEM_ofs
+	Lq 2,	-FILE_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L61
 	UNLINK 2
 	RTD	prm_siz
@@ -43,8 +43,8 @@ endPRMS					;    fin parametrage
 ELB 2
 begin:
 	LVA 2,	GFP_disp
-	Lq 2,	WIDTH_ofs
-	Lq 2,	ITEM_ofs
+	Lq 2,	-WIDTH_ofs
+	Lq 2,	-ITEM_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L62
 	UNLINK 2
 	RTD	prm_siz
@@ -61,10 +61,10 @@ endPRMS					;    fin parametrage
 ELB 2
 begin:
 	LVA 2,	GFP_disp
-	Lq 2,	BASE_ofs
-	Lq 2,	WIDTH_ofs
-	Lq 2,	ITEM_ofs
-	Lq 2,	FILE_ofs
+	Lq 2,	-BASE_ofs
+	Lq 2,	-WIDTH_ofs
+	Lq 2,	-ITEM_ofs
+	Lq 2,	-FILE_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L63
 	UNLINK 2
 	RTD	prm_siz
@@ -80,9 +80,9 @@ endPRMS					;    fin parametrage
 ELB 2
 begin:
 	LVA 2,	GFP_disp
-	Lq 2,	BASE_ofs
-	Lq 2,	WIDTH_ofs
-	Lq 2,	ITEM_ofs
+	Lq 2,	-BASE_ofs
+	Lq 2,	-WIDTH_ofs
+	Lq 2,	-ITEM_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L64
 	UNLINK 2
 	RTD	prm_siz
@@ -98,9 +98,9 @@ endPRMS					;    fin parametrage
 ELB 2
 begin:
 	LVA 2,	GFP_disp
-	Lq 2,	LAST_ofs
-	Lq 2,	ITEM_ofs
-	Lq 2,	FROM_ofs
+	Lq 2,	-LAST_ofs
+	Lq 2,	-ITEM_ofs
+	Lq 2,	-FROM_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L65
 	UNLINK 2
 	RTD	prm_siz
@@ -116,9 +116,9 @@ endPRMS					;    fin parametrage
 ELB 2
 begin:
 	LVA 2,	GFP_disp
-	Lq 2,	BASE_ofs
-	Lq 2,	ITEM_ofs
-	Lq 2,	TO_ofs
+	Lq 2,	-BASE_ofs
+	Lq 2,	-ITEM_ofs
+	Lq 2,	-TO_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L66
 	UNLINK 2
 	RTD	prm_siz

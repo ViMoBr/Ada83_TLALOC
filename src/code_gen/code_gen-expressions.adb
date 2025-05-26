@@ -430,7 +430,9 @@ null;--        declare
       PREFIX_DEFN		: TREE		:= D( SM_DEFN, PREFIX_NAME );
     begin
       if  PREFIX_NAME.TY = DN_USED_OBJECT_ID  then							-- UNE VARIABLE TABLEAU
-        if  D( SM_EXP_TYPE, PREFIX_NAME ).TY = DN_CONSTRAINED_ARRAY  then
+        if  ( D( SM_EXP_TYPE, PREFIX_NAME ).TY = DN_CONSTRAINED_ARRAY )
+         or ( D( SM_EXP_TYPE, PREFIX_NAME ).TY = DN_ARRAY  and  D( SM_DEFN, PREFIX_NAME ).TY = DN_CONSTANT_ID )
+        then
 	declare
 	  ARRAY_LVL	: INTEGER		:= DI( CD_LEVEL, PREFIX_DEFN );
 	  DIM_EXP		: TREE		:= D( AS_EXP, ATTRIBUTE );

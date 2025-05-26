@@ -6,22 +6,22 @@ VAR C_disp, b				; variable bool char
 begin:					;---------- BDY INSTRUCTIONS
 STR STR_L1, ' Bonjour '			; constante string=' Bonjour '
 	LCA	STR_L1_ptr
-	CALL	TEXT_IO. ,PUT_L56
-	LI	 2
-	CALL	TEXT_IO. ,NEW_LINE_L26
+	CALL	STANDARD.TEXT_IO. ,PUT_L56
+	LI	 1
+	CALL	STANDARD.TEXT_IO. ,NEW_LINE_L26
 LIRE_UN:
 STR STR_L3, ' Entrez un caractere ! '		; constante string=' Entrez un caractere ! '
 	LCA	STR_L3_ptr
-	CALL	TEXT_IO. ,PUT_L56
+	CALL	STANDARD.TEXT_IO. ,PUT_L56
 	LVA  1,	C_disp
-	CALL	TEXT_IO. ,GET_L50
+	CALL	STANDARD.TEXT_IO. ,GET_L50
 STR STR_L4, ' Vous avez tape : '		; constante string=' Vous avez tape : '
 	LCA	STR_L4_ptr
-	CALL	TEXT_IO. ,PUT_L56
+	CALL	STANDARD.TEXT_IO. ,PUT_L56
 	Lb  1,	C_disp
-	CALL	TEXT_IO. ,PUT_L52
+	CALL	STANDARD.TEXT_IO. ,PUT_L52
 	LI	 1
-	CALL	TEXT_IO. ,NEW_LINE_L26
+	CALL	STANDARD.TEXT_IO. ,NEW_LINE_L26
 	Lb  1,	C_disp
 	LI	 113
 	CEQ

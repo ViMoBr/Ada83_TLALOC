@@ -88,7 +88,7 @@ is
 	        if  IS_EMPTY( NAMES )  then return; end if;
 	        POP( NAMES, NAME );
 	        INVERSE_RECURSE_NAMES( NAMES );
-	        PUT_LINE( tab & "Lq" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, NAME ) ) & "_ofs" );
+	        PUT_LINE( tab & "Lq" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & ',' & tab & '-' & PRINT_NAME( D( LX_SYMREP, NAME ) ) & "_ofs" );
 	      end	INVERSE_RECURSE_NAMES;
 
 	    begin
@@ -518,12 +518,12 @@ null;
         NEW_LINE;
         DI( CD_LEVEL,     VC_NAME, INTEGER( CODI.CUR_LEVEL ) );
 
-        if  not IN_GENERIC_BODY  then
+--        if  not IN_GENERIC_BODY  then
 	if INIT_EXP /= TREE_VOID then
 	  EXPRESSIONS.CODE_EXP( INIT_EXP );
 	  CODI.STORE( VC_NAME );
 	end if;
-        end if;
+--        end if;
 
       end	COMPILE_VC_NAME_INTEGER;
 	-----------------------
@@ -889,9 +889,21 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
   procedure CODE_GENERIC_DECL ( GENERIC_DECL :TREE ) is
 
     GENERIC_ID	: TREE		:= D( AS_SOURCE_NAME, GENERIC_DECL );
+    G_PARAMS	: SEQ_TYPE	:= LIST( D( SM_GENERIC_PARAM_S, GENERIC_ID ) );
+    G_PARAM	: TREE;
     DECL_S	: SEQ_TYPE	:= LIST( D( AS_DECL_S1, D( AS_HEADER, GENERIC_DECL ) ) );
     DECL		: TREE;
   begin
+
+    while  not IS_EMPTY( G_PARAMS )  loop
+      POP( G_PARAMS, G_PARAM );
+      if  G_PARAM.TY = DN_TYPE_DECL  then
+        if  D( AS_TYPE_DEF, G_PARAM ).TY = DN_FORMAL_INTEGER_DEF  then
+	DI( CD_IMPL_SIZE, D( SM_TYPE_SPEC, D( AS_SOURCE_NAME, G_PARAM ) ), INTG_SIZE * 8 );
+        end if;
+      end if;
+    end loop;
+
     while  not IS_EMPTY( DECL_S )  loop
       POP( DECL_S, DECL );
       if  DECL.TY = DN_SUBPROG_ENTRY_DECL and then IN_SPEC_UNIT  then

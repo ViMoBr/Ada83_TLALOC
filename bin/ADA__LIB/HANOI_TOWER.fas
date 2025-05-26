@@ -1,11 +1,18 @@
 include '../../src/code_gen/fasmg/codi_x86_64.finc'
+STANDARD = 'STANDARD'
+namespace STANDARD
+  virtual at 8
+    VARzone::
+    VARzone.DISP = $
+  end virtual
 
 	LINK	0, loc_siz
 
 include 'HANOI_TOWER.FINC'
-	CALL	, HANOI_TOWER_L1
+	CALL	STANDARD., HANOI_TOWER_L1
 	SYSEXIT
 
   virtual VARzone
     loc_siz = $
   end virtual
+end namespace
