@@ -250,4 +250,4 @@ This phase is performed by the procedure present in the file of src/ada_comp:
 
 ## READY FOR THE DEEP DIVE ?
 
-[GO ON TO DIANA GRAPHS !](./tlaloc-diana-idl.md) 
+[GO ON TO DIANA GRAPHS !](https://framagit.org/VMo/ada-83-compiler-tools/-/wikis/What-are-DIANA-and-the-IDL-%3F) 
