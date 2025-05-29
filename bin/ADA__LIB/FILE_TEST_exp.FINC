@@ -1,0 +1,23 @@
+include 'TEXT_IO.FINC'
+PRO	FILE_TEST_L1				;---------- PRO FILE_TEST
+ELB 1					;    BODY ELAB
+
+FILE_TYPE STANDARD.TEXT_IO.FILE_TYPE
+VAR F_disp, FILE_TYPE.size
+
+VAR NOM_disp, q				; pointeur au tableau
+STR NOM, './essai.txt'			; constante string='./essai.txt'
+	LCA	NOM_ptr
+	Sa	1,	NOM_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+STR STR_L1, ''				; constante string=''
+	LCA	STR_L1_ptr
+	LVA  1,	NOM_disp
+	; DEFN.TY NON FAIT DN_ENUMERATION_ID
+	La  1,	F_disp
+	CALL	STANDARD.TEXT_IO. ,CREATE_L1
+	UNLINK 1
+	RTD
+excep:
+endPRO					;---------- end PRO FILE_TEST

@@ -10,7 +10,8 @@ is					-------
   STDOUT_LINE		: POSITIVE_COUNT	:= 1;
   STDOUT_COL		: POSITIVE_COUNT	:= 1;
 
-           -- File Management
+
+           --   F I L E   M A N A G E M E N T
 
 			------
   procedure		CREATE		( FILE :in out FILE_TYPE;
@@ -19,8 +20,15 @@ is					-------
 					  FORM :in STRING := ""
 					)
   is
-  begin null;
+    function	SYSTEM_CALL	( NAME :in STRING )	return INTEGER
+    is
+    begin
+      ASM_OP_2'( OPCODE => LA, LVL => 2, OFS => -8 );
+      ASM_OP_0'( OPCODE => FILE_CREATE );
+    end	SYSTEM_CALL;
 
+  begin
+    FILE.ID := SYSTEM_CALL( NAME );
   end	CREATE;
 	------
 
@@ -234,7 +242,7 @@ is					-------
   is
   begin
     PUT( ASCII.CR );
-    STDOUT_COL := 1;								-- LRM 14.3.4(3) col := 1
+    STDOUT_COL := 1;										-- LRM 14.3.4(3) col := 1
     for N in 1 .. SPACING loop
       PUT( ASCII.LF );
     end loop;
@@ -252,7 +260,8 @@ is					-------
   procedure		SKIP_LINE		( FILE    :in FILE_TYPE;
 					  SPACING :in POSITIVE_COUNT := 1 )
   is
-  begin null;
+  begin
+    null;
 
   end	SKIP_LINE;
 	---------
@@ -260,7 +269,8 @@ is					-------
 			---------
   procedure		SKIP_LINE		( SPACING :in POSITIVE_COUNT := 1 )
   is
-  begin null;
+  begin
+    STDOUT_LINE := STDOUT_LINE + SPACING;
 
   end	SKIP_LINE;
 	---------
@@ -512,8 +522,8 @@ is					-------
   procedure		GET_LINE		( ITEM :out STRING;   LAST :out NATURAL )
   is
   begin
-    ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -16 );		-- adresse de la chaine ITEM
-    ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -8 );		-- adresse de LAST
+    ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -16 );		-- adresse de LAST
+    ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -8 );		-- adresse du descripteur de la chaine ITEM
     ASM_OP_0'( OPCODE => GET_STR );
 
   end	GET_LINE;

@@ -551,6 +551,7 @@ null;
 	declare
 	  DEFN		: TREE	:= D( SM_DEFN, ACT_PRM );
 	  EXP_TYPE	: TREE	:= D( SM_EXP_TYPE, ACT_PRM );
+	  DEFN_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, DEFN ) );
 	begin
 	  if  DEFN.TY = DN_CONSTANT_ID  then
 
@@ -558,25 +559,27 @@ null;
 	      PUT_LINE( tab & "LI" & tab & INTEGER'IMAGE( DI( SM_VALUE, ACT_PRM ) ) );
 
 	    elsif EXP_TYPE.TY = DN_ARRAY then
-	      PUT_LINE( tab & "LVA" & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_disp" );
+	      PUT_LINE( tab & "La" & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & DEFN_STR & "_disp" );
 
 	    end if;
 
 
 	  elsif  DEFN.TY = DN_VARIABLE_ID  then
-
 	    if FRM_PRM_ID.TY = DN_IN_ID then
 	      LOAD_MEM( DEFN );
 	    else
 	      if  D( SM_OBJ_TYPE, DEFN ).TY in CLASS_SCALAR  then
-	        PUT_LINE( tab & "LVA" & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_disp" );
+	        PUT_LINE( tab & "LVA" & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & DEFN_STR & "_disp" );
 	      else
-	        PUT_LINE( tab & "La" & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_disp" );
+	        PUT_LINE( tab & "La" & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & DEFN_STR & "_disp" );
 	      end if;
 	    end if;
 
-	  elsif  DEFN.TY = DN_IN_ID  then		-- Appel avec un parametre entrant de la procedure englobante
+	  elsif  DEFN.TY = DN_IN_ID  then								-- Appel avec un parametre entrant de la procedure englobante
 	      LOAD_MEM( DEFN );
+
+	  elsif  DEFN.TY = DN_ENUMERATION_ID  then							-- Appel avec un énuméré
+	    PUT_LINE( tab & "LI" & ' ' & INTEGER'IMAGE( DI( SM_POS, DEFN ) ) );
 
 	  else
 	    PUT_LINE( tab & "; DEFN.TY NON FAIT " & NODE_NAME'IMAGE( DEFN.TY ) );
@@ -609,6 +612,7 @@ null;
 
     end if;
 
+    PUT( tab & "CALL" & tab );
     CODI.REGIONS_PATH( PROC_ID );
     PUT_LINE( " ," & SUB_NAME & '_' & LABEL_STR( LBL ) );
 

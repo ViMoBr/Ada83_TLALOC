@@ -8,7 +8,7 @@ use  TEXT_IO, CALENDAR;
 with IDL, CODE_GEN;
 
 					--====--
-	procedure				ADA_COMP
+		procedure			ADA_COMP
 
 
 is
@@ -30,25 +30,28 @@ begin
     CHN_START		: NATURAL	:= CMD_FROM_STDIN'FIRST;
     POST_CHN		: NATURAL	:= 0;
   begin
-
+				----------------------
 				ISOLE_PROJECT_DIR_PATH:
-
     begin
 FIND_START_1:
       loop
-        exit when CMD_FROM_STDIN( CHN_START ) /= ' '; CHN_START := CHN_START + 1;
-      end loop FIND_START_1;
+        exit when  CMD_FROM_STDIN( CHN_START ) /= ' ';
+        CHN_START := CHN_START + 1;
+      end loop  FIND_START_1;
       POST_CHN := CHN_START + 1;
 FIND_POST_END_1:
       loop
-        exit when CMD_FROM_STDIN( POST_CHN ) = ' ';  POST_CHN := POST_CHN + 1;
-      end loop FIND_POST_END_1;
+        exit when  CMD_FROM_STDIN( POST_CHN ) = ' ';
+        POST_CHN := POST_CHN + 1;
+      end loop  FIND_POST_END_1;
 
       IDL.PROJECT_PATH_LENGTH	:= POST_CHN - CHN_START;
-      IDL.PROJECT_PATH( 1..IDL.PROJECT_PATH_LENGTH )
+      IDL.PROJECT_PATH( 1 .. IDL.PROJECT_PATH_LENGTH )
 			:= CMD_FROM_STDIN( CHN_START .. POST_CHN-1 );
 
-    end ISOLE_PROJECT_DIR_PATH;
+    end	ISOLE_PROJECT_DIR_PATH;
+	----------------------
+
 
     IDL.LIB_PATH_LENGTH	:= IDL.PROJECT_PATH_LENGTH + IDL.DEFAULT_LIB_PATH'LENGTH;
     IDL.LIB_PATH( 1..IDL.LIB_PATH_LENGTH )
@@ -56,49 +59,57 @@ FIND_POST_END_1:
 			   & IDL.DEFAULT_LIB_PATH;
 
 
+				--------------------------
 				ISOLE_RELATIVE_SOURCE_PATH:
-
     begin
       CHN_START := POST_CHN;
 FIND_START_2:
-      loop exit when CMD_FROM_STDIN( CHN_START ) /= ' '; CHN_START := CHN_START + 1;
-      end loop FIND_START_2;
+      loop
+        exit when  CMD_FROM_STDIN( CHN_START ) /= ' ';
+        CHN_START := CHN_START + 1;
+      end loop  FIND_START_2;
       POST_CHN := CHN_START + 1;
 FIND_POST_END_2:
       loop
-        exit when CMD_FROM_STDIN( POST_CHN ) = ' ';
+        exit when  CMD_FROM_STDIN( POST_CHN ) = ' ';
         POST_CHN := POST_CHN + 1;
-        if POST_CHN > CMD_FROM_STDIN'LAST then
+        if  POST_CHN > CMD_FROM_STDIN'LAST  then
 	NO_OPTION_GIVEN := TRUE;
         end if;
-      end loop FIND_POST_END_2;
+      end loop  FIND_POST_END_2;
 
       ACCES_TEXTE_LENGTH	:= (POST_CHN - CHN_START);
       ACCES_TEXTE( 1..ACCES_TEXTE_LENGTH ) := CMD_FROM_STDIN( CHN_START .. POST_CHN-1 );
 
-    end ISOLE_RELATIVE_SOURCE_PATH;
+    end	ISOLE_RELATIVE_SOURCE_PATH;
+	--------------------------
 
-    if NO_OPTION_GIVEN
-    then OPTION := 'S';
+    if  NO_OPTION_GIVEN
+    then  OPTION := 'S';
     else
-				ISOLE_OPTION:									--| ISOLER DANS OPTION LE CARACTERE OPTION D'ARRET
+				------------
+				ISOLE_OPTION:							--| ISOLER DANS OPTION LE CARACTERE OPTION D'ARRET
       begin
         CHN_START := POST_CHN;
 FIND_START_3:
-        loop exit when CMD_FROM_STDIN( CHN_START ) /= ' '; CHN_START := CHN_START + 1; end loop FIND_START_3;
+        loop
+	exit when  CMD_FROM_STDIN( CHN_START ) /= ' ';
+	CHN_START := CHN_START + 1;
+        end loop  FIND_START_3;
         OPTION := CMD_FROM_STDIN( CHN_START );
 
-      end ISOLE_OPTION;
+      end	ISOLE_OPTION;
+	------------
     end if;
   end;
 
-  if OPTION = 'U' or OPTION = 'P' or OPTION = 'A' then
+  if  OPTION = 'U'  or  OPTION = 'P'  or  OPTION = 'A'  then
     IDL.PRETTY_DIANA( OPTION );
     return;
   end if;
 
   START_TIME := CLOCK;
-
+				-----------------------
 				SEPARE_PATH_NOM_EXECUTE:
 
   declare
@@ -106,10 +117,10 @@ FIND_START_3:
   begin
 
 DEBUT_NOM_TEXTE:
-    while ACCES_TEXTE( POSITION_SEPARATEUR ) /= '/' loop
+    while  ACCES_TEXTE( POSITION_SEPARATEUR ) /= '/'  loop
       POSITION_SEPARATEUR := POSITION_SEPARATEUR - 1;
-      exit when POSITION_SEPARATEUR = 0;
-    end loop DEBUT_NOM_TEXTE;
+      exit when  POSITION_SEPARATEUR = 0;
+    end loop  DEBUT_NOM_TEXTE;
 
 
     declare
@@ -117,21 +128,19 @@ DEBUT_NOM_TEXTE:
 				      & ACCES_TEXTE( 1 .. POSITION_SEPARATEUR );
       NOM_TEXTE	:constant STRING	:= ACCES_TEXTE( POSITION_SEPARATEUR+1 .. ACCES_TEXTE_LENGTH );
     begin
-      IDL.PAR_PHASE (	CHEMIN_TEXTE,
-			NOM_TEXTE,
-			IDL.LIB_PATH );
-						if OPTION = 'S' or OPTION = 's' then goto FIN; end if;
-      IDL.LIB_PHASE;				if OPTION = 'L' or OPTION = 'l' then goto FIN; end if;
-      IDL.SEM_PHASE;				if OPTION = 'M' or OPTION = 'm' then goto FIN; end if;
+      IDL.PAR_PHASE( CHEMIN_TEXTE, NOM_TEXTE, IDL.LIB_PATH );
+				if  OPTION = 'S'  or  OPTION = 's'  then goto FIN; end if;
+      IDL.LIB_PHASE;		if  OPTION = 'L'  or  OPTION = 'l'  then goto FIN; end if;
+      IDL.SEM_PHASE;		if  OPTION = 'M'  or  OPTION = 'm'  then goto FIN; end if;
 
-      if OPTION = 'C' or OPTION = 'W' then
+      if  OPTION = 'C'  or  OPTION = 'W'  then
         CODE_GEN;
       end if;
 
 <<FIN>>
       IDL.ERR_PHASE( CHEMIN_TEXTE & NOM_TEXTE );
 
-      if  OPTION = 'W' or OPTION = 'w'  then IDL.WRITE_LIB; end if;
+      if  OPTION = 'W' or OPTION = 'w'  then  IDL.WRITE_LIB;  end if;
 
       END_TIME := CLOCK;
       PUT_LINE( " ..... Ok" & INTEGER'IMAGE( INTEGER( 1000 * (END_TIME - START_TIME) ) ) & " msec" );
@@ -140,7 +149,8 @@ DEBUT_NOM_TEXTE:
       when NAME_ERROR => null;
     end;
 
-  end SEPARE_PATH_NOM_EXECUTE;
+  end	SEPARE_PATH_NOM_EXECUTE;
+	-----------------------
 
 end	ADA_COMP;
 	--====--

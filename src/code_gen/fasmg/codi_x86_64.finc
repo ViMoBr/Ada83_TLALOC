@@ -59,6 +59,11 @@ macro POP_RSI
   db 0x48, 0x8D, 0x6D, 0xF8				; lea rbp, [rbp-0x8]		(puis DESCENDRE le rbp car pile croissante vers adresses hautes)
 end macro
 
+macro POP_RDI
+  db 0x48, 0x8B, 0x7D, 0x00				; mov rdi, QWORD PTR [rbp]		(lire dans RDI la valeur top sur le rbp)
+  db 0x48, 0x8D, 0x6D, 0xF8				; lea rbp, [rbp-0x8]		(puis DESCENDRE le rbp car pile croissante vers adresses hautes)
+end macro
+
 macro DROP
   db 0x48, 0x8D, 0x6D, 0xF8				; lea rbp, [rbp-0x8]		(DESCENDRE le rbp car pile croissante vers adresses hautes)
 end macro
@@ -195,8 +200,75 @@ macro			GET_STR?			; lit une ligne sur stdin
   db 0x48, 0x8B, 0x36				; mov rsi, [rsi]		(rsi est maintenant l'adresse des caracteres)
   db 0x0F, 0x05					; syscall
   POP_RSI						;			(sur la pile croissante, adresse de la longueur effectivement lue qui peut être inférieure a la longueur de string)
-  db 0xFF, 0xC8					; retirer le caractere de fin
+  db 0xFF, 0xC8					; dec eax			(diminuer la longueur rendue = retirer le caractere de fin)
   db 0x89, 0x06					; mov dword ptr[rsi], eax	(reporter la longueur effectivement lue retournee par syscall dans eax)
+end macro
+
+;			----------------------
+macro			COPY_STRING_APPEND_NUL	; donné le descripteur pointé par RSI, copie la chaine sur la pile montante et ajoute un NUL de fin
+;			----------------------
+
+  db 0x8B, 0x4E, 0x10				; mov ecx, dword ptr[rsi+16]	(ecx=last de ITEM)
+  db 0xFF, 0xC1					; inc ecx			(last+1)
+  db 0x2B, 0x4E, 0x0C				; sub ecx, dword ptr[rsi+12]  (ecx= nombre de caracteres =last+1 - first)
+  db 0x48, 0x8B, 0x36				; mov rsi, qword ptr[rsi]	(rsi= adresse des caracteres)
+  db 0x48, 0x8D, 0x7D, 0x08				; lea rdi, [rbp+0x8]	(on va empiler la chaine sur la pile)
+  db 0xFC						; cld			(direction flag montant)
+; transfer:
+  db 0xAC						; lods al, BYTE PTR ds:[rsi]
+  db 0xAA						; stos BYTE PTR es:[rdi], al
+  db 0xE2, 0xFC					; loop transfer		(transfere ecx octets
+  db 0x6A, 0x00					; push 0
+  db 0x58						; pop rax
+  db 0x88, 0x07					; mov BYTE PTR[rdi], al	(caractere NUL de fin chaine C)
+  db 0x48, 0x8D, 0x7D, 0x08				; lea rdi, [rbp+0x8]	(remettre RDI sur le debut de chaine)
+end macro
+
+
+;			-----------
+macro			FILE_CREATE?		; creation d'un fichier	rax=2 rdi=ptr_name rsi=flags(O_CREAT) rdx=mode(S_IRWXU)
+;			-----------
+  POP_RSI						; adresse du descripteur de chaine Ada
+  COPY_STRING_APPEND_NUL				; faire une copie sur pile avec NUL en fin pointée par RDI
+  db 0x6A, 0x02					; push 2
+  db 0x58						; pop rax			(rax=2=sys_open )
+  db 0x68, 0x00, 0x01, 0x00, 0x00			; push 0x100
+  db 0x5E						; pop rsi			(rsi=0x100=O_CREAT)
+  db 0x68, 0x00, 0x07, 0x00, 0x00			; push 0x700
+  db 0x5A						; pop rdx			(rdx=0x700=S_IRWXU)
+  db 0x0F, 0x05					; syscall
+  PUSH_RAX					; ID de fichier rendu
+end macro
+
+
+;			----------
+macro			FILE_OPEN?		; ouverture d'un fichier
+;			----------
+  POP_RDI						; adresse de la chaine nom de fichier (avec NUL de fin, chaine C)
+  db 0x6A, 0x02					; push 2
+  db 0x58						; pop rax			(rax=2=sys_open )
+  db 0x6A, 0x02					; push 2
+  db 0x5E						; pop rsi			(rsi=2=flags=RDWR)
+  db 0x48, 0x31, 0xD2				; xor rdx,rdx		(mode= 0 sans importance)
+  db 0x0F, 0x05					; syscall
+end macro
+
+
+;			----------
+macro			FILE_CLOSE?		; fermeture d'un fichier
+;			----------
+  POP_RDI						; ID fichier empile
+  db 0x6A, 0x03					; push 3
+  db 0x58						; pop rax			(rax=3=sys_close )
+end macro
+
+
+;			-----------
+macro			FILE_DELETE?		; destruction d'un fichier
+;			-----------
+  POP_RDI						; empilee : adresse du nom de fichier termine NUL chaine C
+  db 0x6A, 0x57					; push 87
+  db 0x58						; pop rax			(rax=87=sys_unlink )
 end macro
 
 
@@ -854,13 +926,28 @@ macro			STR	name, bytes			; Définition d'une constante chaine au format d'un ta
 
 end macro
 
+
+;			-----------------------------------
+macro			FIELD	name_disp, sizChar, siz:1		; Définition d'un champ de struc
+;			-----------------------------------
+    align_#sizChar							; aligner en fonction de l'unite de reservation
+    .name_disp = $							; lieu offset du champ (descendant du label . )
+    r#sizChar siz							; reservation
+end macro
+
+
 ;			-----------------------------------
 macro			VAR	name_disp, sizChar, siz:1		; Définition d'un lieu de variable
 ;			-----------------------------------
   virtual VARzone
-    align_#sizChar							; aligner en fonction de l'unite de reservation
-    name_disp = $							; lieu offset de la variable
-    r#sizChar siz							; reservation
+    if `sizChar = 'b'  |  `sizChar = 'd'  |  `sizChar = 'q'
+      align_#sizChar						; aligner en fonction de l'unite de reservation
+      name_disp = $							; lieu offset de la variable
+      r#sizChar siz							; reservation
+    else
+      name_disp = $
+      rb sizChar
+    end if
   end virtual
 
 end macro

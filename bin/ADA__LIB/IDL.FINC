@@ -1,0 +1,129 @@
+include 'DIANA_NODE_ATTR_CLASS_NAMES.FINC'
+VAR PROJECT_PATH_disp, q			; pointeur au tableau
+					; variable tableau contraint
+namespace PROJECT_PATH
+VAR PTR, q
+VAR SIZ_1, d
+VAR FST_1, d
+VAR LST_1, d
+	LI	1
+	Sd 0,	SIZ_1
+	LI	 1
+	Sd 0,	FST_1
+	LI	 256
+	Sd 0,	LST_1
+	Ld 0,	LST_1
+	INC
+	Ld 0,	FST_1
+	SUB
+	Ld 0,	SIZ_1
+	MUL
+end namespace 
+	CO_VAR					; allocation sur la co-pile
+	Sa	0,	PROJECT_PATH.PTR
+	LVA	0,	PROJECT_PATH.PTR
+	Sa	0,	PROJECT_PATH_disp
+VAR PROJECT_PATH_LENGTH_disp, d		; variable entiere
+	LI	 0
+	Sd  0,	PROJECT_PATH_LENGTH_disp
+VAR LIB_PATH_disp, q			; pointeur au tableau
+					; variable tableau contraint
+namespace LIB_PATH
+VAR PTR, q
+VAR SIZ_1, d
+VAR FST_1, d
+VAR LST_1, d
+	LI	1
+	Sd 0,	SIZ_1
+	LI	 1
+	Sd 0,	FST_1
+	LI	 256
+	Sd 0,	LST_1
+	Ld 0,	LST_1
+	INC
+	Ld 0,	FST_1
+	SUB
+	Ld 0,	SIZ_1
+	MUL
+end namespace 
+	CO_VAR					; allocation sur la co-pile
+	Sa	0,	LIB_PATH.PTR
+	LVA	0,	LIB_PATH.PTR
+	Sa	0,	LIB_PATH_disp
+VAR LIB_PATH_LENGTH_disp, d			; variable entiere
+	LI	 0
+	Sd  0,	LIB_PATH_LENGTH_disp
+VAR DEFAULT_LIB_PATH_disp, q			; pointeur au tableau
+STR DEFAULT_LIB_PATH, './ADA__LIB/'		; constante string='./ADA__LIB/'
+	LCA	DEFAULT_LIB_PATH_ptr
+	Sa	0,	DEFAULT_LIB_PATH_disp
+  virtual VARzone
+    align_d
+    SHORT_lower_disp = $
+    dd ?
+    SHORT_upper_disp = $
+    dd ?
+  end virtual
+	NEG
+	Sd  0,	SHORT_lower_disp
+	LI	 32767
+	Sd  0,	SHORT_upper_disp
+  virtual VARzone
+    align_d
+    POSITIVE_SHORT_lower_disp = $
+    dd ?
+    POSITIVE_SHORT_upper_disp = $
+    dd ?
+  end virtual
+	LI	 0
+	Sd  0,	POSITIVE_SHORT_lower_disp
+	LI	 32767
+	Sd  0,	POSITIVE_SHORT_upper_disp
+  virtual VARzone
+    align_d
+    PAGE_IDX_lower_disp = $
+    dd ?
+    PAGE_IDX_upper_disp = $
+    dd ?
+  end virtual
+	LI	 0
+	Sd  0,	PAGE_IDX_lower_disp
+	LI	 32767
+	Sd  0,	PAGE_IDX_upper_disp
+  virtual VARzone
+    align_d
+    LINE_IDX_lower_disp = $
+    dd ?
+    LINE_IDX_upper_disp = $
+    dd ?
+  end virtual
+	LI	 0
+	Sd  0,	LINE_IDX_lower_disp
+	LI	 127
+	Sd  0,	LINE_IDX_upper_disp
+  virtual VARzone
+    align_d
+    LINE_NBR_lower_disp = $
+    dd ?
+    LINE_NBR_upper_disp = $
+    dd ?
+  end virtual
+	LI	 0
+	Sd  0,	LINE_NBR_lower_disp
+	LI	 128
+	Sd  0,	LINE_NBR_upper_disp
+  virtual VARzone
+    align_d
+    SRCCOL_IDX_lower_disp = $
+    dd ?
+    SRCCOL_IDX_upper_disp = $
+    dd ?
+  end virtual
+	LI	 0
+	Sd  0,	SRCCOL_IDX_lower_disp
+	LI	 255
+	Sd  0,	SRCCOL_IDX_upper_disp
+					; variable record
+  virtual VARzone
+    TREE_NIL_disp = $
+!! FUNCTION D : PAS D ATTRIBUT CD_IMPL_SIZE DANS [DN_RECORD<247.106]>

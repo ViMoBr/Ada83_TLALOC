@@ -288,7 +288,7 @@ is
   is
   begin
 
-    if  DEFN.TY in CLASS_PARAM_NAME  then									-- in_id in_out_id out_id
+    if  DEFN.TY in CLASS_PARAM_NAME  then								-- in_id in_out_id out_id
       if  (DEFN.TY = DN_IN_ID) and (D( SM_OBJ_TYPE, DEFN ).TY in CLASS_SCALAR)  then
 
         declare
@@ -370,7 +370,7 @@ is
     RGN_NAME	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, REGION ) );
   begin
     if  RGN_NAME = "STANDARD"  then
-      PUT( tab & "CALL" & tab & "STANDARD." );
+      PUT( "STANDARD." );
     else
       REGIONS_PATH( REGION );
       PUT( RGN_NAME );

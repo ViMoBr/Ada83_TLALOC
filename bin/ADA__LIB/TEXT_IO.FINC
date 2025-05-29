@@ -15,6 +15,19 @@ elab_spec:				;    SPEC ELAB
 VAR UNBOUNDED_disp, d			; variable entiere
 	LI	 0
 	Sd  0,	UNBOUNDED_disp
+struc FILE_TYPE				; type record
+ label .
+ virtual at 0
+  FIELD ID, d	; TAILLE A VOIR
+  FIELD MODE, d	; TAILLE A VOIR
+  FIELD PAGE_LENGTH, d	; TAILLE A VOIR
+  FIELD LINE_LENGTH, d	; TAILLE A VOIR
+  FIELD PAGE, d	; TAILLE A VOIR
+  FIELD LINE, d	; TAILLE A VOIR
+  FIELD COL, d	; TAILLE A VOIR
+  .size = $
+ end virtual
+end struc
 					;    BODY ELAB
 VAR STDOUT_MAX_PAGE_LEN_disp, d		; variable entiere
 	LI	 72
@@ -41,6 +54,22 @@ PRMS					;    debut parametrage
 	PRM FORM_ofs				; in
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
+
+if defined SYSTEM_CALL_L1_
+PRO	SYSTEM_CALL_L1				;---------- PRO SYSTEM_CALL
+PRMS					;    debut parametrage
+	PRM NAME_ofs				; in
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	LA	2,	-8
+	FILE_CREATE
+	UNLINK 2
+	RTD	prm_siz
+excep:
+endPRO					;---------- end PRO SYSTEM_CALL
+end if
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
@@ -390,28 +419,28 @@ begin:					;---------- BDY INSTRUCTIONS
 	CALL	STANDARD.TEXT_IO. ,PUT_L52
 	LI	 1
 	Sd  0,	STDOUT_COL_disp
-VAR	NL2_disp, d				; compteur boucle LOOP__1
+VAR	NL3_disp, d				; compteur boucle LOOP__1
 	LI	 1
-	Sd  1,	NL2_disp
-VAR	LMT_NL2_disp, d				; limite boucle LOOP__1
+	Sd  1,	NL3_disp
+VAR	LMT_NL3_disp, d				; limite boucle LOOP__1
 	Ld  1,	-SPACING_ofs
-	Sd  1,	LMT_NL2_disp
-	Ld  1,	NL2_disp				; test null range LOOP__1
-	Ld  1,	LMT_NL2_disp
+	Sd  1,	LMT_NL3_disp
+	Ld  1,	NL3_disp				; test null range LOOP__1
+	Ld  1,	LMT_NL3_disp
 	CGT
-	BT	L1
+	BT	L2
 LOOP__1:					; corps boucle LOOP__1
 	LI	 10
 	CALL	STANDARD.TEXT_IO. ,PUT_L52
-	Ld  1,	NL2_disp				; test de sortie LOOP__1
-	Ld  1,	LMT_NL2_disp
+	Ld  1,	NL3_disp				; test de sortie LOOP__1
+	Ld  1,	LMT_NL3_disp
 	CEQ
-	BT	L1
-	Ld  1,	NL2_disp				; mise a jour compteur LOOP__1
+	BT	L2
+	Ld  1,	NL3_disp				; mise a jour compteur LOOP__1
 	INC
-	Sd  1,	NL2_disp
+	Sd  1,	NL3_disp
 	BRA	LOOP__1				; iteration suivante LOOP__1
-L1:					; post loop LOOP__1
+L2:					; post loop LOOP__1
 	Ld  0,	STDOUT_LINE_disp
 	Ld  1,	-SPACING_ofs
 	ADD
@@ -420,7 +449,7 @@ L1:					; post loop LOOP__1
 	Ld  0,	STDOUT_LINE_disp
 	Ld  0,	STDOUT_MAX_PAGE_LEN_disp
 	CGT
-	BF	L4
+	BF	L5
 	LI	 12
 	CALL	STANDARD.TEXT_IO. ,PUT_L52
 	Ld  0,	STDOUT_PAGE_disp
@@ -429,9 +458,9 @@ L1:					; post loop LOOP__1
 	Sd  0,	STDOUT_PAGE_disp
 	LI	 1
 	Sd  0,	STDOUT_LINE_disp
-	BRA	L3
-L4:
-L3:					; post if
+	BRA	L4
+L5:
+L4:					; post if
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -461,6 +490,10 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	Ld  0,	STDOUT_LINE_disp
+	Ld  1,	-SPACING_ofs
+	ADD
+	Sd  0,	STDOUT_LINE_disp
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -950,7 +983,7 @@ PRMS					;    debut parametrage
 	PRM GFP_ofs
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
-VAR CHN_disp, q				; pointeur au tableau
+VAR CHN_disp, q				; variable array : pointeur au tableau
 					; variable tableau contraint
 namespace CHN
 VAR PTR, q
@@ -973,7 +1006,7 @@ end namespace
 	CO_VAR					; allocation sur la co-pile
 	Sa	1,	CHN.PTR
 	LVA	1,	CHN.PTR
-	Sa	1,	CHN_disp
+	Sa	1,	CHN_disp				; array fin
 VAR LEN_disp, d				; variable entiere
 	LI	 40
 	Sd  1,	LEN_disp
@@ -985,22 +1018,22 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA  1,	LEN_disp
 	La  1,	CHN_disp
 	CALL	STANDARD.TEXT_IO. ,GET_LINE_L58
-VAR	IL6_disp, d				; compteur boucle LOOP__2
+VAR	IL7_disp, d				; compteur boucle LOOP__2
 	LI	 1
-	Sd  1,	IL6_disp
-VAR	LMT_IL6_disp, d				; limite boucle LOOP__2
+	Sd  1,	IL7_disp
+VAR	LMT_IL7_disp, d				; limite boucle LOOP__2
 	Ld  1,	LEN_disp
-	Sd  1,	LMT_IL6_disp
-	Ld  1,	IL6_disp				; test null range LOOP__2
-	Ld  1,	LMT_IL6_disp
+	Sd  1,	LMT_IL7_disp
+	Ld  1,	IL7_disp				; test null range LOOP__2
+	Ld  1,	LMT_IL7_disp
 	CGT
-	BT	L5
+	BT	L6
 LOOP__2:					; corps boucle LOOP__2
 	LI	 10
 	Ld  1,	VAL_disp
 	MUL
 	LIa 1,	CHN_disp
-	Ld  1,	IL6_disp
+	Ld  1,	IL7_disp
 	LId 1,	CHN_disp, 12			; (index - FST_1) * SIZ_1
 	SUB
 	LId 1,	CHN_disp, 8
@@ -1011,15 +1044,15 @@ LOOP__2:					; corps boucle LOOP__2
 	LI	 48
 	SUB
 	Sd  1,	VAL_disp
-	Ld  1,	IL6_disp				; test de sortie LOOP__2
-	Ld  1,	LMT_IL6_disp
+	Ld  1,	IL7_disp				; test de sortie LOOP__2
+	Ld  1,	LMT_IL7_disp
 	CEQ
-	BT	L5
-	Ld  1,	IL6_disp				; mise a jour compteur LOOP__2
+	BT	L6
+	Ld  1,	IL7_disp				; mise a jour compteur LOOP__2
 	INC
-	Sd  1,	IL6_disp
+	Sd  1,	IL7_disp
 	BRA	LOOP__2				; iteration suivante LOOP__2
-L5:					; post loop LOOP__2
+L6:					; post loop LOOP__2
 	Ld  1,	VAL_disp
 	SId  1,	-ITEM_ofs
 	La  1,	CHN_disp
@@ -1059,7 +1092,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 VAR QUOTIENT_disp, d			; variable entiere
 VAR RESTE_disp, d				; variable entiere
-VAR STR_disp, q				; pointeur au tableau
+VAR STR_disp, q				; variable array : pointeur au tableau
 					; variable tableau contraint
 namespace STR
 VAR PTR, q
@@ -1082,7 +1115,7 @@ end namespace
 	CO_VAR					; allocation sur la co-pile
 	Sa	1,	STR.PTR
 	LVA	1,	STR.PTR
-	Sa	1,	STR_disp
+	Sa	1,	STR_disp				; array fin
 VAR INDEX_disp, d				; variable entiere
 	LId 1,	STR_disp, 16
 	Sd  1,	INDEX_disp

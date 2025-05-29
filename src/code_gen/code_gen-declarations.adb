@@ -100,6 +100,7 @@ is
 	  INVERSE_RECURSE_PRM_SECTIONS( PRM_SECTIONS_S );
 	end;
 
+	PUT( tab & "CALL" & tab );
 	REGIONS_PATH( D( SM_DEFN, CODI.INSTANTIATION_MODEL_NAME ) );
 
 	PUT( PRINT_NAME( D( LX_SYMREP, CODI.INSTANTIATION_MODEL_NAME ) ) & ". ," );
@@ -296,6 +297,7 @@ null;
   begin
 
       CODE_DECL_S( D( AS_DECL_S1, PACKAGE_SPEC ) );
+      CODE_DECL_S( D( AS_DECL_S2, PACKAGE_SPEC ) );
 
   end	CODE_PACKAGE_SPEC;
 	-----------------
@@ -432,6 +434,11 @@ null;
       TYPE_DEF	: TREE		:= D( AS_TYPE_DEF, OBJECT_DECL );
       TYPE_NAME	: TREE		:= D( AS_NAME, TYPE_DEF );
     begin
+
+      if  TYPE_NAME.TY = DN_SELECTED  then
+        TYPE_NAME := D( AS_DESIGNATOR, TYPE_NAME );
+      end if;
+
       CODI.TYPE_SYMREP := D( LX_SYMREP, TYPE_NAME );
       while not IS_EMPTY( SRC_NAME_SEQ ) loop
         POP( SRC_NAME_SEQ, SRC_NAME );
@@ -708,7 +715,7 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 
       begin
         PUT( "VAR " & VC_STR & "_disp, q" );
-        if CODI.DEBUG then PUT( tab50 & "; pointeur au tableau" ); end if;
+        if CODI.DEBUG then PUT( tab50 & "; variable array : pointeur au tableau" ); end if;
         NEW_LINE;
         DI( CD_LEVEL, VC_NAME, INTEGER( LVL ) );
 
@@ -740,7 +747,9 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 	      end if;
 	  end if;
 
-	  PUT_LINE( tab & "Sa" & tab & LVL_STR & ',' & tab & VC_STR & "_disp" );
+	  PUT( tab & "Sa" & tab & LVL_STR & ',' & tab & VC_STR & "_disp" );
+	  if CODI.DEBUG then PUT( tab50 & "; array fin" ); end if;
+	  NEW_LINE;
 
 	end;
 
@@ -757,14 +766,27 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
         INIT_EXP	: TREE	:= D( SM_INIT_EXP, VC_NAME );
       begin
         declare
-	LVL	: LEVEL_NUM	renames CODI.CUR_LEVEL;
+          VC_STR		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, VC_NAME ) );
+	LVL		: LEVEL_NUM	renames CODI.CUR_LEVEL;
+	TYPE_NAME		: TREE		:= D( XD_SOURCE_NAME, TYPE_SPEC );
+	TYPE_NAME_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, TYPE_NAME ) );
         begin
-          if CODI.DEBUG then PUT_LINE( tab50 & "; variable record" ); end if;
 
-	PUT_LINE( "  virtual VARzone" );
-	PUT_LINE( "    " & PRINT_NAME( D( LX_SYMREP, VC_NAME ) ) & "_disp = $" );
-	PUT_LINE( "    db ? " & INTEGER'IMAGE( DI( CD_IMPL_SIZE, TYPE_SPEC ) ) & "dup" );
-	PUT_LINE( "  end virtual" );
+	PUT( "VAR " & VC_STR & "_disp, q" );								-- Ptr to rec
+	if CODI.DEBUG then PUT( tab50 & "; variable record : pointeur au record" ); end if;
+	NEW_LINE;
+	PUT( TYPE_NAME_STR & tab );									-- Define rec type name and offsets
+	REGIONS_PATH( TYPE_NAME );									-- With struc model
+	PUT_LINE( TYPE_NAME_STR );
+	PUT_LINE( "VAR " & VC_STR & "_rec, " & TYPE_NAME_STR & ".size" );					-- Record space allocation on stack
+	declare
+	  LVL_STR		:constant STRING	:= IMAGE( CODI.CUR_LEVEL );
+	begin
+	  PUT_LINE( tab & "LVA" & tab & LVL_STR & ',' & tab & VC_STR & "_rec" );
+	  PUT( tab & "Sa"  & tab & LVL_STR & ',' & tab & VC_STR & "_disp" );					-- Stocker l'adresse du rec dans le ptr
+	  if CODI.DEBUG then PUT( tab50 & "; record fin" ); end if;
+	  NEW_LINE;
+	end;
 
 	DI( CD_LEVEL,     VC_NAME, INTEGER( LVL ) );
           DB( CD_COMPILED,  VC_NAME, TRUE );
@@ -786,6 +808,11 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 
 
     begin
+
+      if  TYPE_SPEC.TY = DN_L_PRIVATE  then
+	TYPE_SPEC := D( SM_TYPE_SPEC, TYPE_SPEC );
+      end if;
+
       case TYPE_SPEC.TY is
       when DN_ENUMERATION		=> COMPILE_VC_NAME_ENUMERATION( VC_NAME, TYPE_SPEC );
       when DN_INTEGER		=> COMPILE_VC_NAME_INTEGER(	    VC_NAME );
@@ -793,7 +820,7 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
       when DN_ACCESS		=> COMPILE_ACCESS_VAR(	    VC_NAME, TYPE_SPEC );
       when DN_RECORD		=> COMPILE_RECORD_VAR(	    VC_NAME, TYPE_SPEC );
       when DN_CONSTRAINED_ARRAY
-	| DN_ARRAY		=> COMPILE_ARRAY_VAR(	    VC_NAME, TYPE_SPEC );
+        | DN_ARRAY		=> COMPILE_ARRAY_VAR(	    VC_NAME, TYPE_SPEC );
       when others =>
         PUT_LINE( "ERREUR CODE_VC_NAME, TYPE_SPEC.TY = " & NODE_NAME'IMAGE( TYPE_SPEC.TY ) );
         raise PROGRAM_ERROR;

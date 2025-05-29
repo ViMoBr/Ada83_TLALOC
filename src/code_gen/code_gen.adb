@@ -74,7 +74,7 @@ is
   procedure CODE_FORMAL_DSCRT_DEF ( FORMAL_DSCRT_DEF :TREE );
   procedure CODE_PRIVATE_DEF ( PRIVATE_DEF :TREE );
   procedure CODE_L_PRIVATE_DEF ( L_PRIVATE_DEF :TREE );
-  procedure CODE_RECORD_DEF ( RECORD_DEF :TREE );
+  procedure CODE_RECORD_DEF ( RECORD_DEF, TYPE_DECL :TREE );
   procedure CODE_CONSTRAINED_DEF ( CONSTRAINED_DEF, TYPE_DECL :TREE );
   procedure CODE_SUBTYPE_INDICATION ( SUBTYPE_INDICATION :TREE );
   procedure CODE_INTEGER_DEF ( INTEGER_DEF, TYPE_DECL :TREE );
@@ -717,7 +717,7 @@ null;--	EMIT( JMPT, LABEL_TYPE( DI( CD_LABEL, CHOICE_S ) ), COMMENT=> "TRAITE EX
       CODE_ENUMERATION_DEF ( TYPE_DEF );
 
     elsif TYPE_DEF.TY = DN_RECORD_DEF then
-      CODE_RECORD_DEF ( TYPE_DEF );
+      CODE_RECORD_DEF ( TYPE_DEF, TYPE_DECL );
 
     elsif TYPE_DEF.TY = DN_FORMAL_DSCRT_DEF then
       CODE_FORMAL_DSCRT_DEF ( TYPE_DEF );
@@ -834,11 +834,40 @@ null;--	EMIT( JMPT, LABEL_TYPE( DI( CD_LABEL, CHOICE_S ) ), COMMENT=> "TRAITE EX
     null;
   end;
 
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_RECORD_DEF ( RECORD_DEF :TREE ) is
+  			---------------
+  procedure		CODE_RECORD_DEF		( RECORD_DEF, TYPE_DECL :TREE )
+  is			---------------
   begin
-    null;
-  end;
+    PUT( "struc " & PRINT_NAME( D( LX_SYMREP, D( AS_SOURCE_NAME, TYPE_DECL ) ) ) );
+    if  CODI.DEBUG  then PUT( tab50 & "; type record" ); end if;
+    NEW_LINE;
+    PUT_LINE( " label ." );
+    PUT_LINE( " virtual at 0" );
+
+    declare
+      V_DECL_S	: SEQ_TYPE	:= LIST( D( AS_DECL_S, D( AS_COMP_LIST, RECORD_DEF ) ) );
+      V_DECL		: TREE;
+    begin
+      while  not IS_EMPTY( V_DECL_S )  loop
+        POP( V_DECL_S, V_DECL );
+        declare
+	COMP_ID_S	: SEQ_TYPE	:= LIST( D( AS_SOURCE_NAME_S, V_DECL ) );
+	COMP_ID	: TREE;
+        begin
+	while  not IS_EMPTY( COMP_ID_S )  loop
+	  POP( COMP_ID_S, COMP_ID );
+	  PUT_LINE( "  FIELD " & PRINT_NAME( D( LX_SYMREP, COMP_ID ) )  & ", d" & tab &"; TAILLE A VOIR" );
+	end loop;
+        end;
+      end loop;
+    end;
+
+    PUT_LINE( "  .size = $" );
+    PUT_LINE( " end virtual" );
+    PUT_LINE( "end struc" );
+
+  end	CODE_RECORD_DEF;
+  	---------------
 
   --|-------------------------------------------------------------------------------------------
   procedure CODE_CONSTRAINED_DEF ( CONSTRAINED_DEF, TYPE_DECL :TREE ) is

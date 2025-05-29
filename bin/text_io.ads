@@ -303,7 +303,13 @@ is					-------
 private
 
   type FILE_TYPE		is record
-			  FILE_REF	: INTEGER;
+			  ID		: INTEGER;
+			  MODE		: FILE_MODE;
+			  PAGE_LENGTH,
+			  LINE_LENGTH,
+			  PAGE,
+			  LINE,
+			  COL		: POSITIVE_COUNT;
 			end record;
 
 	-------
