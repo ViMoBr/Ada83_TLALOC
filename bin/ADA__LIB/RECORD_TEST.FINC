@@ -1,0 +1,66 @@
+PRO	RECORD_TEST_L1				;---------- PRO RECORD_TEST
+ELB 1					;    BODY ELAB
+  virtual VARzone
+    align_d
+    BYTE_lower_disp = $
+    dd ?
+    BYTE_upper_disp = $
+    dd ?
+  end virtual
+	LI	 128
+	NEG
+	Sd  1,	BYTE_lower_disp
+	LI	 127
+	Sd  1,	BYTE_upper_disp
+
+  virtual VARzone
+    align_d
+    SHORT_lower_disp = $
+    dd ?
+    SHORT_upper_disp = $
+    dd ?
+  end virtual
+	NEG
+	Sd  1,	SHORT_lower_disp
+	LI	 32767
+	Sd  1,	SHORT_upper_disp
+
+struc REC_1_model				; type record
+ label .
+ virtual at 0
+  FIELD I1, w
+  FIELD I2, w
+  .size = $
+ end virtual
+end struc
+REC_1	REC_1_model
+
+struc ENREGISTREMENT_model			; type record
+ label .
+ virtual at 0
+  FIELD DISCR, d
+  FIELD SH, w
+  .R1	REC_1_model
+  rb REC_1.size
+  FIELD INT, d
+  FIELD B, w
+  .size = $
+ end virtual
+end struc
+ENREGISTREMENT	ENREGISTREMENT_model
+
+; EXC_LBL	L2
+VAR ENREG_disp, q				; variable record : pointeur au record
+	LI	282624
+	Sa	1,	ENREG_disp
+
+VAR KI_disp, w				; variable entiere
+
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	LIw 1,	ENREG_disp, ENREGISTREMENT.R1 + REC_1.I1
+	Sw  1,	KI_disp
+	UNLINK 1
+	RTD
+excep:
+endPRO					;---------- end PRO RECORD_TEST

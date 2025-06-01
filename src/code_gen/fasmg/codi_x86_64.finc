@@ -940,7 +940,7 @@ end macro
 macro			VAR	name_disp, sizChar, siz:1		; Définition d'un lieu de variable
 ;			-----------------------------------
   virtual VARzone
-    if `sizChar = 'b'  |  `sizChar = 'd'  |  `sizChar = 'q'
+    if `sizChar = 'b'  |  `sizChar = 'w'  |  `sizChar = 'd'  |  `sizChar = 'q'
       align_#sizChar						; aligner en fonction de l'unite de reservation
       name_disp = $							; lieu offset de la variable
       r#sizChar siz							; reservation

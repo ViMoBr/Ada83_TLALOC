@@ -409,8 +409,42 @@ null;--        declare
 				-------------
   procedure			CODE_SELECTED		( SELECTED :TREE )
   is				-------------
+    EXP_TYPE	: TREE	:= D( SM_EXP_TYPE, SELECTED );
+    DEFN		: TREE	:= D( SM_DEFN, D( AS_DESIGNATOR, SELECTED ) );
+    VAR_ID	: TREE;
+		----------------
+    function	RECURSE_SELECTED	( SELECTED :TREE )	return STRING
+    is
+      NAME		: TREE		:= D( AS_NAME, SELECTED );
+      DESIGNATOR		: TREE		:= D( AS_DESIGNATOR, SELECTED );
+      DESIGNATOR_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, DESIGNATOR ) );
+      DESIGNATOR_DEFN	: TREE		:= D( SM_DEFN, DESIGNATOR );
+      PARENT_TYPE		: TREE		:= D( XD_REGION, DESIGNATOR_DEFN );
+      PARENT_TYPE_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, PARENT_TYPE ) );
+    begin
+      if  NAME.TY = DN_SELECTED  then
+        return RECURSE_SELECTED( NAME ) & " + " & PARENT_TYPE_STR & '.' & DESIGNATOR_STR;
+      else
+        VAR_ID := D( SM_DEFN, NAME );
+        return PARENT_TYPE_STR & '.' & DESIGNATOR_STR;
+      end if;
+    end	RECURSE_SELECTED;
+    	----------------
+
   begin
-    null;
+    if  EXP_TYPE.TY = DN_INTEGER  then
+      if  DEFN.TY = DN_COMPONENT_ID  then
+        declare
+	OFFSET_STR	:constant STRING	:= RECURSE_SELECTED( SELECTED );
+	VAR_STR		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, VAR_ID ) );
+	VAR_LVL_STR	:constant STRING	:= INTEGER'IMAGE( DI( CD_LEVEL, VAR_ID ) );
+        begin
+	PUT_LINE( tab & "LI" & OPER_SIZ_CHAR( EXP_TYPE ) & VAR_LVL_STR & ',' & tab & VAR_STR & "_disp, " & OFFSET_STR );
+        end;
+      else
+        PUT_LINE( tab & 'L' & OPER_SIZ_CHAR( EXP_TYPE ) & tab & RECURSE_SELECTED( SELECTED ) );
+      end if;
+    end if;
   end	CODE_SELECTED;
 	-------------
 

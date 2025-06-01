@@ -619,7 +619,6 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
       --       EMIT( ALO, INTEGER( LVL - LEVEL_NUM( DI( CD_LEVEL, TYPE_SPEC ) ) ) );
             end if;
 	  PUT_LINE( tab & "Sa" & ' ' & LEVEL_NUM'IMAGE( LVL ) & ',' & ASCII.HT & INTEGER'IMAGE( -1 ) );
-
           end;
         end;
       end	COMPILE_ACCESS_VAR;
@@ -763,46 +762,47 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 		------------------
       procedure	COMPILE_RECORD_VAR		( VC_NAME, TYPE_SPEC :TREE )
       is
-        INIT_EXP	: TREE	:= D( SM_INIT_EXP, VC_NAME );
+        VC_STR		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, VC_NAME ) );
+        VC_ADDRESS		: TREE		:= D( SM_ADDRESS, VC_NAME );					-- adresse éventuelle
+        INIT_EXP		: TREE		:= D( SM_INIT_EXP, VC_NAME );
+        LVL		: LEVEL_NUM	renames CODI.CUR_LEVEL;
+        LVL_STR		:constant STRING	:= IMAGE( LVL );
+        TYPE_NAME		: TREE		:= D( XD_SOURCE_NAME, TYPE_SPEC );
+        TYPE_NAME_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, TYPE_NAME ) );
       begin
-        declare
-          VC_STR		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, VC_NAME ) );
-	LVL		: LEVEL_NUM	renames CODI.CUR_LEVEL;
-	TYPE_NAME		: TREE		:= D( XD_SOURCE_NAME, TYPE_SPEC );
-	TYPE_NAME_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, TYPE_NAME ) );
-        begin
+        PUT( "VAR " & VC_STR & "_disp, q" );								-- Ptr to rec
+        if  CODI.DEBUG  then  PUT( tab50 & "; variable record : pointeur au record" ); end if;
+        NEW_LINE;
 
-	PUT( "VAR " & VC_STR & "_disp, q" );								-- Ptr to rec
-	if CODI.DEBUG then PUT( tab50 & "; variable record : pointeur au record" ); end if;
-	NEW_LINE;
+        if  VC_ADDRESS /= TREE_VOID  then								-- Clause adressage présente
+	PUT_LINE( tab & "LI" & tab & PRINT_NUM( D( SM_VALUE, VC_ADDRESS ) ) );
+	PUT_LINE( tab & "Sa"  & tab & LVL_STR & ',' & tab & VC_STR & "_disp" );					-- Stocker l'adresse du rec dans le ptr
+
+        else
 	PUT( TYPE_NAME_STR & tab );									-- Define rec type name and offsets
 	REGIONS_PATH( TYPE_NAME );									-- With struc model
 	PUT_LINE( TYPE_NAME_STR );
 	PUT_LINE( "VAR " & VC_STR & "_rec, " & TYPE_NAME_STR & ".size" );					-- Record space allocation on stack
+	PUT_LINE( tab & "LVA" & tab & LVL_STR & ',' & tab & VC_STR & "_rec" );
+	PUT( tab & "Sa"  & tab & LVL_STR & ',' & tab & VC_STR & "_disp" );					-- Stocker l'adresse du rec dans le ptr
+	if  CODI.DEBUG   then  PUT( tab50 & "; record fin" ); end if;
+	NEW_LINE;
+        end if;
+
+        DI( CD_LEVEL,     VC_NAME, INTEGER( LVL ) );
+        DB( CD_COMPILED,  VC_NAME, TRUE );
+
+        if  INIT_EXP.TY = DN_AGGREGATE  then
 	declare
-	  LVL_STR		:constant STRING	:= IMAGE( CODI.CUR_LEVEL );
+	  GENERAL_ASSOC_SEQ		: SEQ_TYPE	:= LIST( D( SM_NORMALIZED_COMP_S, INIT_EXP ) );
+	  COMP_EXP		: TREE;
 	begin
-	  PUT_LINE( tab & "LVA" & tab & LVL_STR & ',' & tab & VC_STR & "_rec" );
-	  PUT( tab & "Sa"  & tab & LVL_STR & ',' & tab & VC_STR & "_disp" );					-- Stocker l'adresse du rec dans le ptr
-	  if CODI.DEBUG then PUT( tab50 & "; record fin" ); end if;
-	  NEW_LINE;
+	  while not IS_EMPTY( GENERAL_ASSOC_SEQ ) loop
+	    POP( GENERAL_ASSOC_SEQ, COMP_EXP );
+	    EXPRESSIONS.CODE_EXP( COMP_EXP );
+	  end loop;
 	end;
-
-	DI( CD_LEVEL,     VC_NAME, INTEGER( LVL ) );
-          DB( CD_COMPILED,  VC_NAME, TRUE );
-
-	if INIT_EXP.TY = DN_AGGREGATE then
-	  declare
-	    GENERAL_ASSOC_SEQ	: SEQ_TYPE	:= LIST( D( SM_NORMALIZED_COMP_S, INIT_EXP ) );
-	    COMP_EXP		: TREE;
-	  begin
-	    while not IS_EMPTY( GENERAL_ASSOC_SEQ ) loop
-	      POP( GENERAL_ASSOC_SEQ, COMP_EXP );
-	      EXPRESSIONS.CODE_EXP( COMP_EXP );
-	    end loop;
-	  end;
-	end if;
-        end;
+        end if;
       end	COMPILE_RECORD_VAR;
 	------------------
 
@@ -820,12 +820,13 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
       when DN_ACCESS		=> COMPILE_ACCESS_VAR(	    VC_NAME, TYPE_SPEC );
       when DN_RECORD		=> COMPILE_RECORD_VAR(	    VC_NAME, TYPE_SPEC );
       when DN_CONSTRAINED_ARRAY
-        | DN_ARRAY		=> COMPILE_ARRAY_VAR(	    VC_NAME, TYPE_SPEC );
+        | DN_ARRAY			=> COMPILE_ARRAY_VAR(	    VC_NAME, TYPE_SPEC );
       when others =>
         PUT_LINE( "ERREUR CODE_VC_NAME, TYPE_SPEC.TY = " & NODE_NAME'IMAGE( TYPE_SPEC.TY ) );
         raise PROGRAM_ERROR;
       end case;
     end;
+    NEW_LINE;
   end	CODE_VC_NAME;
 	------------
 

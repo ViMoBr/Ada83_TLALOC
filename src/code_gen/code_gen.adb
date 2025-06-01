@@ -837,37 +837,88 @@ null;--	EMIT( JMPT, LABEL_TYPE( DI( CD_LABEL, CHOICE_S ) ), COMMENT=> "TRAITE EX
   			---------------
   procedure		CODE_RECORD_DEF		( RECORD_DEF, TYPE_DECL :TREE )
   is			---------------
+    TYPE_ID	: TREE		:= D( AS_SOURCE_NAME, TYPE_DECL );
+    TYPE_ID_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, TYPE_ID ) );
   begin
-    PUT( "struc " & PRINT_NAME( D( LX_SYMREP, D( AS_SOURCE_NAME, TYPE_DECL ) ) ) );
+    PUT( "struc " & TYPE_ID_STR & "_model" );
     if  CODI.DEBUG  then PUT( tab50 & "; type record" ); end if;
     NEW_LINE;
     PUT_LINE( " label ." );
     PUT_LINE( " virtual at 0" );
 
+			-------------------------
+			TRAITER_LES_DISCRIMINANTS:
     declare
-      V_DECL_S	: SEQ_TYPE	:= LIST( D( AS_DECL_S, D( AS_COMP_LIST, RECORD_DEF ) ) );
+      DSCRMT_DECL_S		: SEQ_TYPE	:= LIST( D( AS_DSCRMT_DECL_S, TYPE_DECL ) );
+      DSCRMT_DECL		: TREE;
+    begin
+      while  not IS_EMPTY( DSCRMT_DECL_S )  loop
+        POP( DSCRMT_DECL_S, DSCRMT_DECL );
+        declare
+	DISCRIMINANT_ID_S	: SEQ_TYPE	:= LIST( D( AS_SOURCE_NAME_S, DSCRMT_DECL ) );
+	TYPE_DEFN		: TREE		:= D( SM_DEFN, D( AS_NAME, DSCRMT_DECL ) );
+	TYPE_SPEC		: TREE		:= D( SM_TYPE_SPEC, TYPE_DEFN );
+	DISCRIMINANT_ID	: TREE;
+	SIZE_CHAR		: CHARACTER	:= 'x';
+        begin
+	if  TYPE_SPEC.TY = DN_INTEGER  then
+	  SIZE_CHAR := OPER_SIZ_CHAR( TYPE_SPEC );
+	end if;
+	while  not IS_EMPTY( DISCRIMINANT_ID_S )  loop
+	  POP( DISCRIMINANT_ID_S, DISCRIMINANT_ID );
+	  PUT_LINE( "  FIELD " & PRINT_NAME( D( LX_SYMREP, DISCRIMINANT_ID ) )  & ", " & SIZE_CHAR );
+	end loop;
+        end;
+      end loop;
+    end	TRAITER_LES_DISCRIMINANTS;
+    	-------------------------
+
+			------------------
+			TRAITER_LES_CHAMPS:
+    declare
+      V_DECL_S		: SEQ_TYPE	:= LIST( D( AS_DECL_S, D( AS_COMP_LIST, RECORD_DEF ) ) );
       V_DECL		: TREE;
     begin
       while  not IS_EMPTY( V_DECL_S )  loop
         POP( V_DECL_S, V_DECL );
         declare
-	COMP_ID_S	: SEQ_TYPE	:= LIST( D( AS_SOURCE_NAME_S, V_DECL ) );
-	COMP_ID	: TREE;
+	TYPE_DEFN		: TREE		:= D( SM_DEFN, D( AS_NAME, D( AS_TYPE_DEF, V_DECL ) ) );
+	TYPE_SPEC		: TREE		:= D( SM_TYPE_SPEC, TYPE_DEFN );
+	COMP_ID_S		: SEQ_TYPE	:= LIST( D( AS_SOURCE_NAME_S, V_DECL ) );
+	COMP_ID		: TREE;
+	SIZE_CHAR		: CHARACTER	:= 'x';
         begin
+	if  TYPE_SPEC.TY = DN_INTEGER  then
+	  SIZE_CHAR := OPER_SIZ_CHAR( TYPE_SPEC );
+	end if;
 	while  not IS_EMPTY( COMP_ID_S )  loop
 	  POP( COMP_ID_S, COMP_ID );
-	  PUT_LINE( "  FIELD " & PRINT_NAME( D( LX_SYMREP, COMP_ID ) )  & ", d" & tab &"; TAILLE A VOIR" );
+
+	  if  TYPE_SPEC.TY = DN_INTEGER  then
+	    PUT_LINE( "  FIELD " & PRINT_NAME( D( LX_SYMREP, COMP_ID ) )  & ", " & SIZE_CHAR );
+
+	  elsif   TYPE_SPEC.TY = DN_RECORD  then
+	    PUT( "  ." & PRINT_NAME( D( LX_SYMREP, COMP_ID ) ) & tab );
+--	    REGIONS_PATH( COMP_ID );
+	    PUT_LINE( PRINT_NAME( D( LX_SYMREP, TYPE_DEFN ) ) & "_model" );
+	    PUT_LINE( "  rb " & PRINT_NAME( D( LX_SYMREP, TYPE_DEFN ) )  & ".size" );
+
+	  end if;
 	end loop;
         end;
       end loop;
-    end;
+    end	TRAITER_LES_CHAMPS;
+    	------------------
 
     PUT_LINE( "  .size = $" );
     PUT_LINE( " end virtual" );
     PUT_LINE( "end struc" );
+    PUT_LINE( TYPE_ID_STR & tab & TYPE_ID_STR & "_model" );
+    NEW_LINE;
 
   end	CODE_RECORD_DEF;
   	---------------
+
 
   --|-------------------------------------------------------------------------------------------
   procedure CODE_CONSTRAINED_DEF ( CONSTRAINED_DEF, TYPE_DECL :TREE ) is
@@ -907,7 +958,9 @@ null;--	EMIT( JMPT, LABEL_TYPE( DI( CD_LABEL, CHOICE_S ) ), COMMENT=> "TRAITE EX
       INT_RANGE		: TREE		:= D( AS_CONSTRAINT, INTEGER_DEF );
       EXP_BORNE		: TREE;
     begin
-      PUT_LINE( "  virtual VARzone" );
+      PUT( "  virtual VARzone" );
+      if  CODI.DEBUG  then  PUT( tab50 & "; type range" ); end if;
+      NEW_LINE;
       PUT_LINE( "    align_d" );
       PUT_LINE( "    " & LOWER_STR & " = $" );
       PUT_LINE( "    dd" & " ?" );
@@ -916,14 +969,16 @@ null;--	EMIT( JMPT, LABEL_TYPE( DI( CD_LABEL, CHOICE_S ) ), COMMENT=> "TRAITE EX
       PUT_LINE( "  end virtual" );
 
       DI( CD_LEVEL,     INTEGER_SPEC, INTEGER( CODI.CUR_LEVEL ) );
-
       DB( CD_COMPILED,  INTEGER_SPEC, TRUE );
+
       EXP_BORNE := D( AS_EXP1, INT_RANGE );
       EXPRESSIONS.CODE_EXP( EXP_BORNE );
       PUT_LINE( tab & "S" & 'd' & ' ' & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & ',' & tab & LOWER_STR );
+
       EXP_BORNE := D( AS_EXP2, INT_RANGE );
       EXPRESSIONS.CODE_EXP( EXP_BORNE );
       PUT_LINE( tab & "S" & 'd' & ' ' & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & ',' & tab & UPPER_STR );
+      NEW_LINE;
     end;
   end;
 
