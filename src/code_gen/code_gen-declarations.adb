@@ -776,12 +776,9 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 
         if  VC_ADDRESS /= TREE_VOID  then								-- Clause adressage présente
 	PUT_LINE( tab & "LI" & tab & PRINT_NUM( D( SM_VALUE, VC_ADDRESS ) ) );
-	PUT_LINE( tab & "Sa"  & tab & LVL_STR & ',' & tab & VC_STR & "_disp" );					-- Stocker l'adresse du rec dans le ptr
+	PUT_LINE( tab & "Sa"  & tab & LVL_STR & ',' & tab & VC_STR & "_disp" );				-- Stocker l'adresse du rec dans le ptr
 
         else
-	PUT( TYPE_NAME_STR & tab );									-- Define rec type name and offsets
-	REGIONS_PATH( TYPE_NAME );									-- With struc model
-	PUT_LINE( TYPE_NAME_STR );
 	PUT_LINE( "VAR " & VC_STR & "_rec, " & TYPE_NAME_STR & ".size" );					-- Record space allocation on stack
 	PUT_LINE( tab & "LVA" & tab & LVL_STR & ',' & tab & VC_STR & "_rec" );
 	PUT( tab & "Sa"  & tab & LVL_STR & ',' & tab & VC_STR & "_disp" );					-- Stocker l'adresse du rec dans le ptr

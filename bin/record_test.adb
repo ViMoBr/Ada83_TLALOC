@@ -21,7 +21,7 @@ end definitions;
 use definitions;
 
   ENREG	: ENREGISTREMENT;
-  for ENREG use at 16#45000#;
+--  for ENREG use at 16#45000#;
   KI	: SHORT;
 
 begin

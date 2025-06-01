@@ -686,15 +686,15 @@ null;--        declare
   is				--------------------
     VAL	: TREE	:= D( SM_VALUE, NUMERIC_LITERAL );
   begin
-    if VAL.PT = HI and then VAl.NOTY = DN_NUM_VAL
+    if  VAL.PT = HI  and then  VAl.NOTY = DN_NUM_VAL
     then
       PUT_LINE( tab & "LI" & tab & INTEGER'IMAGE( DI( SM_VALUE, NUMERIC_LITERAL ) ) );
 
-    elsif VAL.TY = DN_REAL_VAL
-    then
-      PUT_LINE( tab & "LIF" & tab & PRINT_NAME( D( LX_NUMREP, NUMERIC_LITERAL ) ) );
+    elsif  VAL.TY = DN_NUM_VAL  then
+      PUT_LINE( tab & "LI" & tab & PRINT_NUM( VAL ) );
 
---      PUT_LINE( ';' & tab & "CODE_GEN-EXPRESSIONS.CODE_NUMERIC_LITERAL : DN_REAL_VAL (TODO)" );
+    elsif  VAL.TY = DN_REAL_VAL  then
+      PUT_LINE( tab & "LIF" & tab & PRINT_NAME( D( LX_NUMREP, NUMERIC_LITERAL ) ) );
 
     end if;
 

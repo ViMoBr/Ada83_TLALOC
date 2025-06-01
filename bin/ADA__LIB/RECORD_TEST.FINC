@@ -1,6 +1,6 @@
 PRO	RECORD_TEST_L1				;---------- PRO RECORD_TEST
 ELB 1					;    BODY ELAB
-  virtual VARzone
+  virtual VARzone				; type range
     align_d
     BYTE_lower_disp = $
     dd ?
@@ -13,13 +13,14 @@ ELB 1					;    BODY ELAB
 	LI	 127
 	Sd  1,	BYTE_upper_disp
 
-  virtual VARzone
+  virtual VARzone				; type range
     align_d
     SHORT_lower_disp = $
     dd ?
     SHORT_upper_disp = $
     dd ?
   end virtual
+	LI	32768
 	NEG
 	Sd  1,	SHORT_lower_disp
 	LI	 32767
@@ -51,8 +52,9 @@ ENREGISTREMENT	ENREGISTREMENT_model
 
 ; EXC_LBL	L2
 VAR ENREG_disp, q				; variable record : pointeur au record
-	LI	282624
-	Sa	1,	ENREG_disp
+VAR ENREG_rec, ENREGISTREMENT.size
+	LVA	1,	ENREG_rec
+	Sa	1,	ENREG_disp				; record fin
 
 VAR KI_disp, w				; variable entiere
 
