@@ -1,5 +1,5 @@
 include 'DIANA_NODE_ATTR_CLASS_NAMES.FINC'
-VAR PROJECT_PATH_disp, q			; pointeur au tableau
+VAR PROJECT_PATH_disp, q			; variable array : pointeur au tableau
 					; variable tableau contraint
 namespace PROJECT_PATH
 VAR PTR, q
@@ -22,11 +22,13 @@ end namespace
 	CO_VAR					; allocation sur la co-pile
 	Sa	0,	PROJECT_PATH.PTR
 	LVA	0,	PROJECT_PATH.PTR
-	Sa	0,	PROJECT_PATH_disp
+	Sa	0,	PROJECT_PATH_disp			; array fin
+
 VAR PROJECT_PATH_LENGTH_disp, d		; variable entiere
 	LI	 0
 	Sd  0,	PROJECT_PATH_LENGTH_disp
-VAR LIB_PATH_disp, q			; pointeur au tableau
+
+VAR LIB_PATH_disp, q			; variable array : pointeur au tableau
 					; variable tableau contraint
 namespace LIB_PATH
 VAR PTR, q
@@ -49,26 +51,31 @@ end namespace
 	CO_VAR					; allocation sur la co-pile
 	Sa	0,	LIB_PATH.PTR
 	LVA	0,	LIB_PATH.PTR
-	Sa	0,	LIB_PATH_disp
+	Sa	0,	LIB_PATH_disp			; array fin
+
 VAR LIB_PATH_LENGTH_disp, d			; variable entiere
 	LI	 0
 	Sd  0,	LIB_PATH_LENGTH_disp
-VAR DEFAULT_LIB_PATH_disp, q			; pointeur au tableau
+
+VAR DEFAULT_LIB_PATH_disp, q			; variable array : pointeur au tableau
 STR DEFAULT_LIB_PATH, './ADA__LIB/'		; constante string='./ADA__LIB/'
 	LCA	DEFAULT_LIB_PATH_ptr
-	Sa	0,	DEFAULT_LIB_PATH_disp
-  virtual VARzone
+	Sa	0,	DEFAULT_LIB_PATH_disp			; array fin
+
+  virtual VARzone				; type range
     align_d
     SHORT_lower_disp = $
     dd ?
     SHORT_upper_disp = $
     dd ?
   end virtual
+	LI	32768
 	NEG
 	Sd  0,	SHORT_lower_disp
 	LI	 32767
 	Sd  0,	SHORT_upper_disp
-  virtual VARzone
+
+  virtual VARzone				; type range
     align_d
     POSITIVE_SHORT_lower_disp = $
     dd ?
@@ -79,7 +86,8 @@ STR DEFAULT_LIB_PATH, './ADA__LIB/'		; constante string='./ADA__LIB/'
 	Sd  0,	POSITIVE_SHORT_lower_disp
 	LI	 32767
 	Sd  0,	POSITIVE_SHORT_upper_disp
-  virtual VARzone
+
+  virtual VARzone				; type range
     align_d
     PAGE_IDX_lower_disp = $
     dd ?
@@ -90,7 +98,8 @@ STR DEFAULT_LIB_PATH, './ADA__LIB/'		; constante string='./ADA__LIB/'
 	Sd  0,	PAGE_IDX_lower_disp
 	LI	 32767
 	Sd  0,	PAGE_IDX_upper_disp
-  virtual VARzone
+
+  virtual VARzone				; type range
     align_d
     LINE_IDX_lower_disp = $
     dd ?
@@ -101,7 +110,8 @@ STR DEFAULT_LIB_PATH, './ADA__LIB/'		; constante string='./ADA__LIB/'
 	Sd  0,	LINE_IDX_lower_disp
 	LI	 127
 	Sd  0,	LINE_IDX_upper_disp
-  virtual VARzone
+
+  virtual VARzone				; type range
     align_d
     LINE_NBR_lower_disp = $
     dd ?
@@ -112,7 +122,8 @@ STR DEFAULT_LIB_PATH, './ADA__LIB/'		; constante string='./ADA__LIB/'
 	Sd  0,	LINE_NBR_lower_disp
 	LI	 128
 	Sd  0,	LINE_NBR_upper_disp
-  virtual VARzone
+
+  virtual VARzone				; type range
     align_d
     SRCCOL_IDX_lower_disp = $
     dd ?
@@ -123,7 +134,54 @@ STR DEFAULT_LIB_PATH, './ADA__LIB/'		; constante string='./ADA__LIB/'
 	Sd  0,	SRCCOL_IDX_lower_disp
 	LI	 255
 	Sd  0,	SRCCOL_IDX_upper_disp
-					; variable record
-  virtual VARzone
-    TREE_NIL_disp = $
-!! FUNCTION D : PAS D ATTRIBUT CD_IMPL_SIZE DANS [DN_RECORD<247.106]>
+
+struc TREE_model				; type record
+ label .
+ virtual at 0
+  FIELD PT, x
+  .size = $
+ end virtual
+end struc
+TREE	TREE_model
+
+VAR TREE_NIL_disp, q			; variable record : pointeur au record
+VAR TREE_NIL_rec, TREE.size
+	LVA	0,	TREE_NIL_rec
+	Sa	0,	TREE_NIL_disp			; record fin
+	LI	 0
+	LI	 5
+	LI	 0
+	LI	 0
+
+VAR TREE_VOID_disp, q			; variable record : pointeur au record
+VAR TREE_VOID_rec, TREE.size
+	LVA	0,	TREE_VOID_rec
+	Sa	0,	TREE_VOID_disp			; record fin
+	LI	 0
+	LI	 11
+	LI	 0
+	LI	 0
+
+VAR TREE_ROOT_disp, q			; variable record : pointeur au record
+VAR TREE_ROOT_rec, TREE.size
+	LVA	0,	TREE_ROOT_rec
+	Sa	0,	TREE_ROOT_disp			; record fin
+	LI	 0
+	LI	 0
+	LI	 1
+	LI	 0
+
+struc SEQ_TYPE_model			; type record
+ label .
+ virtual at 0
+  .FIRST	TREE_model
+  rb TREE.size
+  .NEXT	TREE_model
+  rb TREE.size
+  .size = $
+ end virtual
+end struc
+SEQ_TYPE	SEQ_TYPE_model
+
+; EXC_LBL	L29
+; EXC_LBL	L30

@@ -1,7 +1,7 @@
 include 'MACHINE_CODE.FINC'
 namespace TEXT_IO				;---------- PACKAGE
 elab_spec:				;    SPEC ELAB
-  virtual VARzone
+  virtual VARzone				; type range
     align_d
     COUNT_lower_disp = $
     dd ?
@@ -12,38 +12,46 @@ elab_spec:				;    SPEC ELAB
 	Sd  0,	COUNT_lower_disp
 	LI 2147483647
 	Sd  0,	COUNT_upper_disp
+
 VAR UNBOUNDED_disp, d			; variable entiere
 	LI	 0
 	Sd  0,	UNBOUNDED_disp
-struc FILE_TYPE				; type record
+
+struc FILE_TYPE_model			; type record
  label .
  virtual at 0
-  FIELD ID, d	; TAILLE A VOIR
-  FIELD MODE, d	; TAILLE A VOIR
-  FIELD PAGE_LENGTH, d	; TAILLE A VOIR
-  FIELD LINE_LENGTH, d	; TAILLE A VOIR
-  FIELD PAGE, d	; TAILLE A VOIR
-  FIELD LINE, d	; TAILLE A VOIR
-  FIELD COL, d	; TAILLE A VOIR
+  FIELD ID, d
+  FIELD PAGE_LENGTH, d
+  FIELD LINE_LENGTH, d
+  FIELD PAGE, d
+  FIELD LINE, d
+  FIELD COL, d
   .size = $
  end virtual
 end struc
+FILE_TYPE	FILE_TYPE_model
+
 					;    BODY ELAB
 VAR STDOUT_MAX_PAGE_LEN_disp, d		; variable entiere
 	LI	 72
 	Sd  0,	STDOUT_MAX_PAGE_LEN_disp
+
 VAR STDOUT_MAX_LINE_LEN_disp, d		; variable entiere
 	LI	 256
 	Sd  0,	STDOUT_MAX_LINE_LEN_disp
+
 VAR STDOUT_PAGE_disp, d			; variable entiere
 	LI	 1
 	Sd  0,	STDOUT_PAGE_disp
+
 VAR STDOUT_LINE_disp, d			; variable entiere
 	LI	 1
 	Sd  0,	STDOUT_LINE_disp
+
 VAR STDOUT_COL_disp, d			; variable entiere
 	LI	 1
 	Sd  0,	STDOUT_COL_disp
+
 
 if defined CREATE_L1_
 PRO	CREATE_L1				;---------- PRO CREATE
@@ -72,7 +80,6 @@ endPRO					;---------- end PRO SYSTEM_CALL
 end if
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -954,9 +961,11 @@ PRMS
 endPRMS
 VAR DEFAULT_WIDTH_disp, d			; variable entiere
 	Sd  0,	DEFAULT_WIDTH_disp
+
 VAR DEFAULT_BASE_disp, d			; variable entiere
 	LI	 10
 	Sd  0,	DEFAULT_BASE_disp
+
 					;    BODY ELAB
 
 if defined GET_L61_
@@ -1008,12 +1017,15 @@ end namespace
 	Sa	1,	CHN.PTR
 	LVA	1,	CHN.PTR
 	Sa	1,	CHN_disp				; array fin
+
 VAR LEN_disp, d				; variable entiere
 	LI	 40
 	Sd  1,	LEN_disp
+
 VAR VAL_disp, d				; variable entiere
 	LI	 0
 	Sd  1,	VAL_disp
+
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	LVA  1,	LEN_disp
@@ -1092,7 +1104,9 @@ PRMS					;    debut parametrage
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 VAR QUOTIENT_disp, d			; variable entiere
+
 VAR RESTE_disp, d				; variable entiere
+
 VAR STR_disp, q				; variable array : pointeur au tableau
 					; variable tableau contraint
 namespace STR
@@ -1117,10 +1131,13 @@ end namespace
 	Sa	1,	STR.PTR
 	LVA	1,	STR.PTR
 	Sa	1,	STR_disp				; array fin
+
 VAR INDEX_disp, d				; variable entiere
 	LId 1,	STR_disp, 16
 	Sd  1,	INDEX_disp
+
 VAR MIN_WIDTH_disp, d			; variable entiere
+
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	UNLINK 1
@@ -1170,13 +1187,16 @@ endPRMS
 VAR DEFAULT_FORE_disp, d			; variable entiere
 	LI	 2
 	Sd  0,	DEFAULT_FORE_disp
+
 VAR DEFAULT_AFT_disp, d			; variable entiere
 	LI	 1
 	SUB
 	Sd  0,	DEFAULT_AFT_disp
+
 VAR DEFAULT_EXP_disp, d			; variable entiere
 	LI	 3
 	Sd  0,	DEFAULT_EXP_disp
+
 					;    BODY ELAB
 
 if defined GET_L67_
@@ -1290,11 +1310,14 @@ PRMS
 endPRMS
 VAR DEFAULT_FORE_disp, d			; variable entiere
 	Sd  0,	DEFAULT_FORE_disp
+
 VAR DEFAULT_AFT_disp, d			; variable entiere
 	Sd  0,	DEFAULT_AFT_disp
+
 VAR DEFAULT_EXP_disp, d			; variable entiere
 	LI	 0
 	Sd  0,	DEFAULT_EXP_disp
+
 					;    BODY ELAB
 
 if defined GET_L73_
@@ -1409,9 +1432,11 @@ endPRMS
 VAR DEFAULT_WIDTH_disp, d			; variable entiere
 	LI	 0
 	Sd  0,	DEFAULT_WIDTH_disp
+
 VAR DEFAULT_SETTING_disp, b			; variable entiere
 	LI	 1
 	Sb  0,	DEFAULT_SETTING_disp
+
 					;    BODY ELAB
 
 if defined GET_L79_

@@ -60,8 +60,6 @@ VAR KI_disp, w				; variable entiere
 
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-	LIw 1,	ENREG_disp, ENREGISTREMENT.R1 + REC_1.I1
-	Sw  1,	KI_disp
 	UNLINK 1
 	RTD
 excep:

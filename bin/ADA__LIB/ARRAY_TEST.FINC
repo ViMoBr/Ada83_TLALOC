@@ -1,11 +1,13 @@
 include 'TEXT_IO.FINC'
 PRO	ARRAY_TEST_L1				;---------- PRO ARRAY_TEST
 ELB 1					;    BODY ELAB
-VAR S_disp, q				; pointeur au tableau
+VAR S_disp, q				; variable array : pointeur au tableau
 STR S, 'Camille'				; constante string='Camille'
 	LCA	S_ptr
-	Sa	1,	S_disp
+	Sa	1,	S_disp				; array fin
+
 VAR C_disp, b				; variable bool char
+
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 VAR	IL2_disp, d				; compteur boucle LOOP__1

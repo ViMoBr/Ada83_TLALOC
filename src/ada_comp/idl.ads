@@ -1,11 +1,12 @@
 --	IDL.ADS	VINCENT MORIN	21/6/2024		UNIVERSITE DE BRETAGNE OCCIDENTALE	(UBO)
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---	1	2	3	4	5	6	7	8	9	0	1	2	3	4	5	6	7	8	9	0
+------------------------------------------------------------------------------------------------------------------------
+--	1	2	3	4	5	6	7	8	9	0	1	2
 
 with DIANA_NODE_ATTR_CLASS_NAMES;
 use  DIANA_NODE_ATTR_CLASS_NAMES;
 					---
 		package			IDL
+					---
 is
 
   PROJECT_PATH			: STRING( 1..256 )		:= (others=>' ');				--| CHEMIN D ACCES AU REPERTOIRE PROJET QUI CONTIENT LA LIBRAIRIE /ADA__LIB
@@ -19,7 +20,7 @@ is
 		--|   C R E A T I O N  /  O U V E R T U R E   F E R M E T U R E   D E   F I C H I E R   D I A N A
    
   procedure CREATE_IDL_TREE_FILE	( PAGE_FILE_NAME :STRING );						--| CREE UN FICHIER D'ARBRE DIANA
-  procedure OPEN_IDL_TREE_FILE	( PAGE_FILE_NAME :STRING );						--| OUVRE UN FICHIER D'ARBRE DEJA EXISTANT
+  procedure OPEN_IDL_TREE_FILE  	( PAGE_FILE_NAME :STRING ); 						--| OUVRE UN FICHIER D'ARBRE DEJA EXISTANT
   procedure CLOSE_IDL_TREE_FILE;									--| FERMETURE DU FICHIER D'ARBRE
   procedure DELETE_IDL_TREE_FILE;
 
@@ -34,10 +35,11 @@ is
   procedure PRETTY_DIANA		( OPTION :CHARACTER := 'U' );
       
 
-  --| DISPOSITIF D'ACCES A UN ARBRE DIANA. POUR UTILISER LES ELEMENTS ATTRIBUTE_NAME ET NODE_NAME ET LES CLASS_, IL FAUT SE REFERER AU DOCUMENT DE L'IDL DIANA
+  --| DISPOSITIF D'ACCES A UN ARBRE DIANA. POUR UTILISER LES ELEMENTS ATTRIBUTE_NAME ET NODE_NAME ET LES CLASS_,
+  --| IL FAUT SE REFERER AU DOCUMENT DE L'IDL DIANA
    
   type SHORT			is range -32_768 .. 32767;		for SHORT'SIZE use 16;
-  type POSITIVE_SHORT		is range 0 .. 32767;		for POSITIVE_SHORT'SIZE use 15;
+  type POSITIVE_SHORT		is range 0 .. 32767; 		for POSITIVE_SHORT'SIZE use 15;
   type PAGE_IDX			is range 0 .. 16#7FFF#;		for PAGE_IDX'SIZE use 15;
   type LINE_IDX			is range 0 .. 127;			for LINE_IDX'SIZE use 7;
   subtype ATTR_NBR			is LINE_IDX;

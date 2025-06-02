@@ -25,6 +25,7 @@ use definitions;
   KI	: SHORT;
 
 begin
-  KI := ENREG.R1.I1;
+--  KI := ENREG.R1.I1;
+  ENREG.R1.I1 := KI;
 end	RECORD_TEST;
 	-----------

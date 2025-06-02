@@ -2,6 +2,7 @@ include 'TEXT_IO.FINC'
 PRO	STRING_TEST_L1				;---------- PRO STRING_TEST
 ELB 1					;    BODY ELAB
 VAR L_disp, d				; variable entiere
+
 namespace NAT_IO				;---------- GENERIC PACKAGE INSTANTIATION
 elab_spec:				;    SPEC ELAB
 VAR NATURAL_last_ofs, q
@@ -13,9 +14,11 @@ Sd 1,	NATURAL_first_ofs
 VAR GFP_disp, q
 VAR DEFAULT_WIDTH_disp, d			; variable entiere
 	Sd  1,	DEFAULT_WIDTH_disp
+
 VAR DEFAULT_BASE_disp, d			; variable entiere
 	LI	 10
 	Sd  1,	DEFAULT_BASE_disp
+
 if defined GET_L61_
 PRO	GET_L61				;---------- PRO GET
 PRMS					;    debut parametrage

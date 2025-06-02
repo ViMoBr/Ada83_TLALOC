@@ -2,6 +2,7 @@ include 'TEXT_IO.FINC'
 PRO	LIS_CARACTERE_L1			;---------- PRO LIS_CARACTERE
 ELB 1					;    BODY ELAB
 VAR C_disp, b				; variable bool char
+
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 STR STR_L1, ' Bonjour '			; constante string=' Bonjour '
