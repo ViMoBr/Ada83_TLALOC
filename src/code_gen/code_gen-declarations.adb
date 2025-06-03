@@ -779,7 +779,10 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 	PUT_LINE( tab & "Sa"  & tab & LVL_STR & ',' & tab & VC_STR & "_disp" );				-- Stocker l'adresse du rec dans le ptr
 
         else
-	PUT_LINE( "VAR " & VC_STR & "_rec, " & TYPE_NAME_STR & ".size" );					-- Record space allocation on stack
+	PUT( "VAR " & VC_STR & "_rec, " );								-- Record space allocation on stack
+	REGIONS_PATH( TYPE_NAME );
+	PUT_LINE( TYPE_NAME_STR & ".size" );
+
 	PUT_LINE( tab & "LVA" & tab & LVL_STR & ',' & tab & VC_STR & "_rec" );
 	PUT( tab & "Sa"  & tab & LVL_STR & ',' & tab & VC_STR & "_disp" );					-- Stocker l'adresse du rec dans le ptr
 	if  CODI.DEBUG   then  PUT( tab50 & "; record fin" ); end if;

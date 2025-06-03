@@ -730,7 +730,6 @@ null;
         CHOICE_LIST		: SEQ_TYPE	:= LIST( D( AS_CHOICE_S, NAMED_ASSOC ) );
         CHOICE_EXP		: TREE;
         USED_OBJECT_ID	: TREE		:= D( AS_EXP, NAMED_ASSOC );
-        USED_OBJECT_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, USED_OBJECT_ID ) );
       begin
 
 				-- OPERATION ASM 0 PARAMETRE
@@ -738,7 +737,7 @@ null;
         if  OP_TYPE_STR = "ASM_OP_0"  then
 	POP( CHOICE_LIST, CHOICE_EXP );
 	if  PRINT_NAME( D( LX_SYMREP, D( AS_EXP, CHOICE_EXP ) ) ) = "OPCODE"  then
-	  PUT_LINE( tab & USED_OBJECT_STR );
+	  PUT_LINE( tab & PRINT_NAME( D( LX_SYMREP, USED_OBJECT_ID ) ) );
 	end if;
 
 				-- OPERATION ASM 1 PARAMETRE
@@ -746,12 +745,12 @@ null;
         elsif  OP_TYPE_STR = "ASM_OP_1"  then
 	POP( CHOICE_LIST, CHOICE_EXP );
 	if  PRINT_NAME( D( LX_SYMREP, D( AS_EXP, CHOICE_EXP ) ) ) = "OPCODE"  then
-	  PUT( tab & USED_OBJECT_STR );
+	  PUT( tab & PRINT_NAME( D( LX_SYMREP, USED_OBJECT_ID ) ) );
 	end if;
 
 	if  PRINT_NAME( D( LX_SYMREP, D( AS_EXP, CHOICE_EXP ) ) ) = "VAL"  then
 	  declare
-	    NUM_REP	:STRING	renames USED_OBJECT_STR;
+	    NUM_REP	:constant STRING	:=   PRINT_NAME( D( LX_NUMREP, USED_OBJECT_ID ) );
 	  begin
 	    if  NUM_REP'LENGTH >= 4 and then NUM_REP( NUM_REP'FIRST .. NUM_REP'FIRST+2) = "16#"  then
 	      PUT_LINE( tab & "0x" & NUM_REP( NUM_REP'FIRST+3 .. NUM_REP'LAST-1 ) );
@@ -766,16 +765,16 @@ null;
         elsif  OP_TYPE_STR = "ASM_OP_2"  then
 	POP( CHOICE_LIST, CHOICE_EXP );
 	if  PRINT_NAME( D( LX_SYMREP, D( AS_EXP, CHOICE_EXP ) ) ) = "OPCODE"  then
-	  PUT( tab & USED_OBJECT_STR );
+	  PUT( tab & PRINT_NAME( D( LX_SYMREP, USED_OBJECT_ID ) ) );
 	end if;
 
 	if  PRINT_NAME( D( LX_SYMREP, D( AS_EXP, CHOICE_EXP ) ) ) = "LVL"  then
-	  PUT( tab & USED_OBJECT_STR & ',' );
+	  PUT( ' ' & PRINT_NAME( D( LX_NUMREP, USED_OBJECT_ID ) ) & ',' );
 	end if;
 
 	if  PRINT_NAME( D( LX_SYMREP, D( AS_EXP, CHOICE_EXP ) ) ) = "OFS"  then
 	  if  USED_OBJECT_ID.TY = DN_NUMERIC_LITERAL  then
-	    PUT_LINE( tab & USED_OBJECT_STR );
+	    PUT_LINE( tab & PRINT_NAME( D( LX_NUMREP, USED_OBJECT_ID ) ) );
 	  elsif  USED_OBJECT_ID.TY = DN_FUNCTION_CALL
 	     and then PRINT_NAME( D( LX_SYMREP, D(AS_NAME, USED_OBJECT_ID ) ) ) = """-"""
 	  then

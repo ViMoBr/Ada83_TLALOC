@@ -452,7 +452,13 @@ null;--        declare
 	else
 	  PUT( 'S' );
 	end if;
-	PUT_LINE( 'I' & SIZ_CHAR & VAR_LVL_STR & ',' & tab & VAR_STR & "_disp, " & OFFSET_STR );
+	PUT( 'I' & SIZ_CHAR & VAR_LVL_STR & ',' & tab );
+	if  VAR_ID.TY = DN_IN_OUT_ID  or VAR_ID.TY = DN_OUT_ID  then
+	  PUT( '-' & VAR_STR & "_ofs, " );
+	else
+	  PUT( VAR_STR & "_disp, " );
+	end if;
+	PUT_LINE( OFFSET_STR );
         end;
 
       else

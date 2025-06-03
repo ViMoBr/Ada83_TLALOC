@@ -2,14 +2,15 @@ include 'TEXT_IO.FINC'
 PRO	FILE_TEST_L1				;---------- PRO FILE_TEST
 ELB 1					;    BODY ELAB
 VAR F_disp, q				; variable record : pointeur au record
-FILE_TYPE	STANDARD.TEXT_IO.FILE_TYPE
-VAR F_rec, FILE_TYPE.size
+VAR F_rec, STANDARD.TEXT_IO.FILE_TYPE.size
 	LVA	1,	F_rec
 	Sa	1,	F_disp				; record fin
+
 VAR NOM_disp, q				; variable array : pointeur au tableau
 STR NOM, './essai.txt'			; constante string='./essai.txt'
 	LCA	NOM_ptr
 	Sa	1,	NOM_disp				; array fin
+
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 STR STR_L1, ''				; constante string=''

@@ -71,7 +71,7 @@ endPRMS					;    fin parametrage
 ELB 2					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-	LA	2,	-8
+	LA 2,	-8
 	FILE_CREATE
 	UNLINK 2
 	RTD	prm_siz
@@ -80,6 +80,7 @@ endPRO					;---------- end PRO SYSTEM_CALL
 end if
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	SId 1,	-FILE_ofs, FILE_TYPE.ID
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -789,7 +790,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-	LA	1,	-8
+	LA 1,	-8
 	GET_CHAR
 	UNLINK 1
 	RTD	prm_siz
@@ -820,7 +821,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-	LB	1,	-8
+	LB 1,	-8
 	PUT_CHAR
 	UNLINK 1
 	RTD	prm_siz
@@ -880,7 +881,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-	LA	1,	-8
+	LA 1,	-8
 	PUT_STR
 	UNLINK 1
 	RTD	prm_siz
@@ -913,8 +914,8 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-	LA	1,	-16
-	LA	1,	-8
+	LA 1,	-16
+	LA 1,	-8
 	GET_STR
 	UNLINK 1
 	RTD	prm_siz
