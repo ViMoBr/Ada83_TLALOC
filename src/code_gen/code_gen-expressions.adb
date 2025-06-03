@@ -413,7 +413,7 @@ null;--        declare
 
 
 				-------------
-  procedure			CODE_SELECTED		( SELECTED :TREE )
+  procedure			CODE_SELECTED		( SELECTED :TREE; IS_SOURCE :BOOLEAN := TRUE )
   is				-------------
     EXP_TYPE	: TREE	:= D( SM_EXP_TYPE, SELECTED );
     DEFN		: TREE	:= D( SM_DEFN, D( AS_DESIGNATOR, SELECTED ) );
@@ -444,12 +444,22 @@ null;--        declare
 	OFFSET_STR	:constant STRING	:= RECURSE_SELECTED( SELECTED );
 	VAR_STR		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, VAR_ID ) );
 	VAR_LVL_STR	:constant STRING	:= INTEGER'IMAGE( DI( CD_LEVEL, VAR_ID ) );
+	SIZ_CHAR		: CHARACTER	:= OPER_SIZ_CHAR( EXP_TYPE );
         begin
-	PUT_LINE( tab & "LI" & OPER_SIZ_CHAR( EXP_TYPE ) & VAR_LVL_STR & ',' & tab & VAR_STR & "_disp, " & OFFSET_STR );
+	PUT( tab );
+	if  IS_SOURCE  then
+	  PUT( 'L' );
+	else
+	  PUT( 'S' );
+	end if;
+	PUT_LINE( 'I' & SIZ_CHAR & VAR_LVL_STR & ',' & tab & VAR_STR & "_disp, " & OFFSET_STR );
         end;
+
       else
-        PUT_LINE( tab & 'L' & OPER_SIZ_CHAR( EXP_TYPE ) & tab & RECURSE_SELECTED( SELECTED ) );
+        PUT_LINE( tab & 'L' &  OPER_SIZ_CHAR( EXP_TYPE )  & tab & RECURSE_SELECTED( SELECTED ) );
       end if;
+    else
+      PUT_LINE( "; CODE_DELECTED NON ENTIER PAS FAIT" );
     end if;
   end	CODE_SELECTED;
 	-------------

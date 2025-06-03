@@ -1,6 +1,6 @@
--------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 -- CC BY SA	CODE_GEN.ADB	VINCENT MORIN	21/6/2024		UNIVERSITE DE BRETAGNE OCCIDENTALE
--------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 --	1	2	3	4	5	6	7	8	9	0	1	2
 
 
@@ -132,6 +132,7 @@ is
     procedure CODE_EXP		( EXP		:TREE );
     procedure CODE_INDEXED		( INDEXED		:TREE );
     procedure CODE_STRING_LITERAL	( STRING_LITERAL	:TREE; STR_NAME :STRING );
+    procedure CODE_SELECTED		( SELECTED	:TREE; IS_SOURCE :BOOLEAN := TRUE );
 
 
   private
@@ -145,7 +146,6 @@ is
     procedure CODE_ALL		( ADA_ALL		:TREE );
 
     procedure CODE_SLICE		( SLICE		:TREE );
-    procedure CODE_SELECTED		( SELECTED	:TREE );
     procedure CODE_ATTRIBUTE		( ATTRIBUTE	:TREE );
     procedure CODE_FUNCTION_CALL	( FUNCTION_CALL	:TREE );
     procedure CODE_QUALIFIED_ALLOCATOR	( QUALIFIED_ALLOCATOR:TREE );
