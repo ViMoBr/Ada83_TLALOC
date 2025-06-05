@@ -653,8 +653,8 @@ null;
     		---------------------
 		STORE_FUNCTION_RESULT:
         declare
-          ENCLOSING_LEVEL	: INTEGER		:= DI ( CD_LEVEL, CODI.ENCLOSING_BODY );
-          RESULT_OFFSET	: INTEGER		:= DI ( CD_RESULT_OFFSET, CODI.ENCLOSING_BODY );
+	BLOCK_BODY	: TREE		:= D( AS_BODY, CODI.ENCLOSING_BODY );
+          ENCLOSING_LEVEL	: INTEGER		:= DI( CD_LEVEL,BLOCK_BODY );
           EXPR_TYPE		: TREE		:= D ( SM_EXP_TYPE, EXP );
         begin
           if  EXPR_TYPE.TY = DN_ARRAY  then
@@ -663,16 +663,17 @@ null;
 --            EMIT( LDC, I, CODI.NUMBER_OF_DIMENSIONS ( EXP ) );
 --            EMIT( PUA );
           elsif  EXPR_TYPE.TY = DN_ENUM_LITERAL_S  then
-            EXPRESSIONS.CODE_EXP ( EXP );
+            EXPRESSIONS.CODE_EXP( EXP );
 --            EMIT( SLD, CODI.CODE_DATA_TYPE_OF ( EXP ), INTEGER( LEVEL_NUM( ENCLOSING_LEVEL) - CODI.CUR_LEVEL ), RESULT_OFFSET );
 	elsif  EXPR_TYPE.TY = DN_INTEGER  then
-	  EXPRESSIONS.CODE_EXP ( EXP );
---            EMIT( SLD, I, INTEGER( LEVEL_NUM( ENCLOSING_LEVEL) - CODI.CUR_LEVEL ), RESULT_OFFSET );
+	  EXPRESSIONS.CODE_EXP( EXP );
+	  PUT_LINE( tab & "S" & CODI.EXP_TYPE_CHAR( EXP ) & ' ' & INTEGER'IMAGE( CODI.CUR_LEVEL ) & ',' & tab & "-result__ofs" );
+
           end if;
         end	STORE_FUNCTION_RESULT;
         		---------------------
       end if;
---      CODI.PERFORM_RETURN ( CODI.ENCLOSING_BODY );
+      PUT_LINE( tab & "BRA ret_lbl" );
     end;
 
   end	CODE_RETURN;

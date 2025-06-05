@@ -161,7 +161,7 @@ null;
 
     if HEADER.TY in CLASS_SUBP_ENTRY_HEADER
     then
-	CODE_PARAM_S( D( AS_PARAM_S, HEADER ) );
+	CODE_PARAM_S( D( AS_PARAM_S, HEADER ), (HEADER.TY = DN_FUNCTION_SPEC) );
 	CODE_SUBP_ENTRY_HEADER( HEADER );
 
     elsif HEADER.TY = DN_PACKAGE_SPEC
@@ -175,7 +175,7 @@ null;
 
 
 			------------
-  procedure		CODE_PARAM_S	( PARAM_S :TREE )
+  procedure		CODE_PARAM_S	( PARAM_S :TREE; FOR_FUNCTION :BOOLEAN := FALSE )
   is
   begin
     declare
@@ -187,7 +187,13 @@ null;
 
       if CODI.OUTPUT_CODE then
         PUT( "PRMS" );
-        if CODI.DEBUG then PUT( tab50 & ";    debut parametrage" ); end if;
+        if  CODI.DEBUG  then  PUT( tab50 & ";    debut parametrage" ); end if;
+        NEW_LINE;
+      end if;
+
+      if  FOR_FUNCTION  then
+        PUT( tab & "PRM result__ofs" );
+        if  CODI.DEBUG  then  PUT( tab50 & "; resutat de fonction" ); end if;
         NEW_LINE;
       end if;
 
@@ -525,12 +531,12 @@ null;
         NEW_LINE;
         DI( CD_LEVEL,     VC_NAME, INTEGER( CODI.CUR_LEVEL ) );
 
---        if  not IN_GENERIC_BODY  then
+        if  not IN_GENERIC_BODY  then
 	if INIT_EXP /= TREE_VOID then
 	  EXPRESSIONS.CODE_EXP( INIT_EXP );
 	  CODI.STORE( VC_NAME );
 	end if;
---        end if;
+        end if;
 
       end	COMPILE_VC_NAME_INTEGER;
 	-----------------------

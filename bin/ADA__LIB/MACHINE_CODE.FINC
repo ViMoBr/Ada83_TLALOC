@@ -1,1 +1,28 @@
+struc ASM_OP_0_model			; type record
+ label .
+ virtual at 0
+  .size = $
+ end virtual
+end struc
+ASM_OP_0	ASM_OP_0_model
+
+struc ASM_OP_1_model			; type record
+ label .
+ virtual at 0
+  FIELD VAL, d
+  .size = $
+ end virtual
+end struc
+ASM_OP_1	ASM_OP_1_model
+
+struc ASM_OP_2_model			; type record
+ label .
+ virtual at 0
+  FIELD LVL, d
+  FIELD OFS, d
+  .size = $
+ end virtual
+end struc
+ASM_OP_2	ASM_OP_2_model
+
 ; EXC_LBL	L1

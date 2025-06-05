@@ -10,7 +10,7 @@ namespace STANDARD
 
 include 'FILE_TEST.FINC'
 	CALL	 STANDARD., FILE_TEST_L1
-	SYSEXIT
+	SYS_EXIT
 
   virtual VARzone
     loc_siz = $

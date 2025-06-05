@@ -19,6 +19,7 @@ STR STR_L1, ''				; constante string=''
 	LI  1
 	La  1,	F_disp
 	CALL	STANDARD.TEXT_IO. ,CREATE_L1
+ret_lbl:
 	UNLINK 1
 	RTD
 excep:

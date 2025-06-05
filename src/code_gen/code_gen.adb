@@ -187,7 +187,7 @@ is
   private
 
     procedure CODE_SUBP_ENTRY_HEADER	( SUBP_ENTRY_HEADER :TREE );
-    procedure CODE_PARAM_S		( PARAM_S :TREE );
+    procedure CODE_PARAM_S		( PARAM_S :TREE; FOR_FUNCTION :BOOLEAN := FALSE );
     procedure CODE_PARAM		( PARAM :TREE );
     procedure CODE_IN		( ADA_IN :TREE );
     procedure CODE_IN_OUT		( ADA_IN_OUT :TREE );
@@ -207,8 +207,6 @@ is
 	------------
 
   package body DECLARATIONS is separate;
-  package body EXPRESSIONS  is separate;
-
 
 
 
@@ -219,11 +217,11 @@ is
 
     procedure CODE_STM_S		( STM_S :TREE );
     procedure CODE_STM		( STM :TREE );
+    procedure CODE_PROCEDURE_CALL	( PROCEDURE_CALL :TREE; USED_NAME_ID : TREE );
 
 
   private
 
-    procedure CODE_PROCEDURE_CALL	( PROCEDURE_CALL :TREE; USED_NAME_ID : TREE );
     procedure CODE_TEST_CLAUSE_ELEM_S	( TEST_CLAUSE_ELEM_S :TREE; STM_END_LBL :STRING );
     procedure CODE_COND_CLAUSE	( COND_CLAUSE :TREE; STM_END_LBL :STRING );
     procedure CODE_STM_ELEM		( STM_ELEM :TREE );
@@ -262,6 +260,7 @@ is
   end	INSTRUCTIONS;
 	------------
 
+  package body EXPRESSIONS  is separate;
 
 
 

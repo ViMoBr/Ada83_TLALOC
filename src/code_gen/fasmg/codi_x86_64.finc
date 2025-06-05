@@ -75,6 +75,13 @@ macro			POP_RBX
 end macro
 
 ;			.......
+macro			POP_RCX
+;			.......
+  db 0x48, 0x8B, 0x4D, 0x00				; mov rcx, QWORD PTR [rbp]		(lire dans RCX la valeur top sur le rbp)
+  db 0x48, 0x8D, 0x6D, 0xF8				; lea rbp, [rbp-0x8]		(puis DESCENDRE le rbp car pile croissante vers adresses hautes)
+end macro
+
+;			.......
 macro			POP_RSI
 ;			.......
   db 0x48, 0x8B, 0x75, 0x00				; mov rsi, QWORD PTR [rbp]		(lire dans RSI la valeur top sur le rbp)
@@ -560,6 +567,14 @@ macro			NEG?
   db 0x48, 0xF7, 0x5D, 0x00						; neg qword ptr [rbp]
 end macro
 ;			----
+macro			ABS?
+;			----
+  db 0x48, 0x8B, 0x45, 0x00						; mov rax, QWORD PTR [rbp]		(lire dans RAX la valeur top X sur le rbp)
+  db 0x48, 0xC1, 0xF8, 0x3F						; sar rax, 63			(RAX = tout bit de signe = allsign)
+  db 0x48, 0x31, 0x45, 0x00						; xor QWORD PTR [rbp], rax		(X xor allsign)
+  db 0x48, 0x29, 0x45, 0x00						; sub QWORD PTR [rbp], rax		( (X xor allsign) - allsign )
+end macro
+;			----
 macro			ADD?
 ;			----
   POP_RAX
@@ -596,6 +611,18 @@ macro			REM?
   db 0x48, 0x31, 0xD2						; xor rdx, rdx
   db 0x48, 0xF7, 0xFB						; idiv rbx
   PUSH_RDX
+end macro
+;			----
+macro			SAR?					; decalage arithmetique droit
+;			----
+  POP_RCX								; nombre de positions de decalage
+  db 0x48, 0xD3, 0x7D, 0x00						; sar qword ptr [rbp], cl
+end macro
+;			----
+macro			SHL?					; decalage gauche
+;			----
+  POP_RCX								; nombre de positions de decalage
+  db 0x48, 0xD3, 0x65, 0x00						; shl qword ptr [rbp], cl
 end macro
 ;			----
 macro			CGT?					; A > B A empile puis B
@@ -866,9 +893,9 @@ end macro
 ;				------------------------------
 
 
-;			---------
-macro			PUT_CHAR?			; affiche un seul caractere sur stdout
-;			---------
+;			-------------
+macro			SYS_PUT_CHAR?			; affiche un seul caractere sur stdout
+;			-------------
 
   db 0x48, 0x89, 0xEE				; mov rsi, rbp	(ADRESSE du caractere empile sur la pile)
   db 0x6A, 0x01					; push 1
@@ -879,9 +906,9 @@ macro			PUT_CHAR?			; affiche un seul caractere sur stdout
   DROP						; caractere consomme
 end macro
 
-;			--------
-macro			PUT_STR?			; affiche tout une chaine sur stdout
-;			--------
+;			------------
+macro			SYS_PUT_STR?			; affiche tout une chaine sur stdout
+;			------------
   POP_RSI						;			(l'adresse du champ PTR_TO_CHARS du descripteur a ete empilee)
   db 0x8B, 0x56, 0x10				; mov edx, dword ptr[rsi+16]	(edx=last)
   db 0xFF, 0xC2					; inc edx			(last+1)
@@ -906,9 +933,9 @@ end macro
 ;        .c_ispeed	rd 1				; input speed
 ;        .c_ospeed	rd 1				; output speed
 ;}
-;			---------
-macro			GET_CHAR?			; lit un seul caractere sur stdin en mode non canonique
-;			---------
+;			-------------
+macro			SYS_GET_CHAR?			; lit un seul caractere sur stdin en mode non canonique
+;			-------------
 			; reserver le termios sur la micro-pile du rsp
   db 0x48, 0x83, 0xEC, 0x40				; sub rsp, 64 (espace large pour le termios)
 			; amener le termios
@@ -949,9 +976,9 @@ macro			GET_CHAR?			; lit un seul caractere sur stdin en mode non canonique
 end macro
 
 
-;			--------
-macro			GET_STR?			; lit une ligne sur stdin
-;			--------
+;			------------
+macro			SYS_GET_STR?			; lit une ligne sur stdin
+;			------------
   POP_RSI						;			(adresse du descripteur sur la pile croissante)
   db 0x8B, 0x56, 0x10				; mov edx, dword ptr[rsi+16]	(edx=last de ITEM)
   db 0xFF, 0xC2					; inc edx			(last+1)
@@ -982,32 +1009,28 @@ macro			COPY_STRING_APPEND_NUL	; donne le descripteur pointe par RSI, copie la c
   db 0xAC						; lods al, BYTE PTR ds:[rsi]
   db 0xAA						; stos BYTE PTR es:[rdi], al
   db 0xE2, 0xFC					; loop transfer		(transfere ecx octets
-  db 0x6A, 0x00					; push 0
-  db 0x58						; pop rax
-  db 0x88, 0x07					; mov BYTE PTR[rdi], al	(caractere NUL de fin chaine C)
+  db 0xC6, 0x07, 0x00				; mov BYTE PTR[rdi], 0	(caractere NUL de fin chaine C)
   db 0x48, 0x8D, 0x7D, 0x08				; lea rdi, [rbp+0x8]	(remettre RDI sur le debut de chaine)
 end macro
 
 
-;			------------
-macro			FILE_CREATE?		; creation d'un fichier	rax=2 rdi=ptr_name rsi=flags(O_CREAT) rdx=mode(S_IRWXU)
-;			------------
+;			----------------
+macro			SYS_FILE_CREATE?		; FONCTION creation d'un fichier	rax=2 rdi=ptr_name rsi=flags(O_CREAT) rdx=mode(S_IRWXU) retour rax=ID
+;			----------------
   POP_RSI						; adresse du descripteur de chaine Ada
   COPY_STRING_APPEND_NUL				; faire une copie sur pile avec NUL en fin pointee par RDI
   db 0x6A, 0x02					; push 2
   db 0x58						; pop rax			(rax=2=sys_open )
-  db 0x68, 0x00, 0x01, 0x00, 0x00			; push 0x100
-  db 0x5E						; pop rsi			(rsi=0x100=O_CREAT)
-  db 0x68, 0x00, 0x07, 0x00, 0x00			; push 0x700
-  db 0x5A						; pop rdx			(rdx=0x700=S_IRWXU)
+  db 0xBE, 0x40, 0x00, 0x00, 0x00			; mov esi, 0x40		(rsi=0x40=O_CREAT)
+  db 0xBA, 0x00, 0x07, 0x00, 0x00			; mov edx, 0x700		(rdx=0x700=S_IRWXU)
   db 0x0F, 0x05					; syscall
-  PUSH_RAX					; ID de fichier rendu
+  db 0x48, 0x89, 0x45, 0x00				; mov QWORD PTR [rbp], rax	(ATTENTION PAS PUSH ! ID de fichier rendu sur le lieu result de la fonction)
 end macro
 
 
-;			----------
-macro			FILE_OPEN?		; ouverture d'un fichier
-;			----------
+;			--------------
+macro			SYS_FILE_OPEN?		; FONCTION ouverture d'un fichier
+;			--------------
   POP_RDI						; adresse de la chaine nom de fichier (avec NUL de fin, chaine C)
   db 0x6A, 0x02					; push 2
   db 0x58						; pop rax			(rax=2=sys_open )
@@ -1015,30 +1038,36 @@ macro			FILE_OPEN?		; ouverture d'un fichier
   db 0x5E						; pop rsi			(rsi=2=flags=RDWR)
   db 0x48, 0x31, 0xD2				; xor rdx,rdx		(mode= 0 sans importance)
   db 0x0F, 0x05					; syscall
+  db 0x48, 0x89, 0x45, 0x00				; mov QWORD PTR [rbp], rax	(ATTENTION PAS PUSH ! ID de fichier rendu sur le lieu result de la fonction)
 end macro
 
 
-;			-----------
-macro			FILE_CLOSE?		; fermeture d'un fichier
-;			-----------
+;			---------------
+macro			SYS_FILE_CLOSE?		; fermeture d'un fichier
+;			---------------
   POP_RDI						; ID fichier empile
   db 0x6A, 0x03					; push 3
   db 0x58						; pop rax			(rax=3=sys_close )
 end macro
 
 
-;			------------
-macro			FILE_DELETE?		; destruction d'un fichier
-;			------------
-  POP_RDI						; empilee : adresse du nom de fichier termine NUL chaine C
-  db 0x6A, 0x57					; push 87
-  db 0x58						; pop rax			(rax=87=sys_unlink )
+;			----------------
+macro			SYS_FILE_DELETE?		; destruction d'un fichier
+;			----------------
+  POP_RDI						; ID fichier ouvert
+  db 0x67, 0x48, 0x8D, 0x75, 0x08			; lea rsi, [ebp+8]			(adresse chaine "./nul" sur pile
+  db 0xC6, 0x06, 0x2E				; mov BYTE PTR [rsi], 0x2E
+  db 0xC6, 0x06, 0x2F				; mov BYTE PTR [rsi+1], 0x2F
+  db 0xC6, 0x06, 0x00				; mov BYTE PTR [rsi+2], 0
+  db 0x31, 0xD2					; xor edx, edx			(flags=0)
+  db 0xB8, 0x07, 0x01, 0x00, 0x00			; mov eax, 263			(rax=263=sys_unlinkat )
+  db 0x0F, 0x05					; syscall
 end macro
 
 
-;			--------
-macro			SYSEXIT?					; retour au systeme
-;			--------
+;			---------
+macro			SYS_EXIT?					; retour au systeme
+;			---------
   db 0x6A, 0x3C							; push x3C  (sys_exit rax=60)
   db 0x58								; pop rax
   db 0x31, 0xFF							; xor edi, edi (err_code=0)

@@ -24,7 +24,7 @@ is					-------
     is
     begin
       ASM_OP_2'( OPCODE => LA, LVL => 2, OFS => -8 );
-      ASM_OP_0'( OPCODE => FILE_CREATE );
+      ASM_OP_0'( OPCODE => SYS_FILE_CREATE );
     end	SYSTEM_CALL;
 
   begin
@@ -448,7 +448,7 @@ is					-------
   is
   begin
     ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -8 );
-    ASM_OP_0'( OPCODE => GET_CHAR );
+    ASM_OP_0'( OPCODE => SYS_GET_CHAR );
 
   end	GET;
 	----
@@ -466,7 +466,7 @@ is					-------
   is
   begin
     ASM_OP_2'( OPCODE => LB, LVL => 1, OFS => -8 );
-    ASM_OP_0'( OPCODE => PUT_CHAR );
+    ASM_OP_0'( OPCODE => SYS_PUT_CHAR );
 
   end	PUT;
 	----
@@ -502,7 +502,7 @@ is					-------
   is
   begin
     ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -8 );
-    ASM_OP_0'( OPCODE => PUT_STR );
+    ASM_OP_0'( OPCODE => SYS_PUT_STR );
 
   end	PUT;
 	----
@@ -524,7 +524,7 @@ is					-------
   begin
     ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -16 );		-- adresse de LAST
     ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -8 );		-- adresse du descripteur de la chaine ITEM
-    ASM_OP_0'( OPCODE => GET_STR );
+    ASM_OP_0'( OPCODE => SYS_GET_STR );
 
   end	GET_LINE;
 	--------

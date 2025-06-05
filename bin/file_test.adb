@@ -3,6 +3,7 @@ use  TEXT_IO;
 			---------
 procedure			FILE_TEST
 is			---------
+
   F	: TEXT_IO.FILE_TYPE;
   NOM	:constant STRING	:= "./essai.txt";
 begin

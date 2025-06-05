@@ -639,6 +639,9 @@ null;--        declare
         return;
 <<UNARY>>
         if OP_STR = """-""" then PUT_LINE( ASCII.HT & "NEG" ); end if;
+        if OP_STR = """ABS""" then
+	PUT_LINE( ASCII.HT & "ABS" );
+        end if;
       end;
 
     end if;
@@ -646,6 +649,8 @@ null;--        declare
     	------------------------
 
   begin
+
+
     if  NAME.TY = DN_ATTRIBUTE  then
       declare
         PRM_S	: SEQ_TYPE	:= LIST( PARAMS );
@@ -655,8 +660,18 @@ null;--        declare
         CODE_EXP( PRM );
       end;
       CODE_ATTRIBUTE( NAME );
-    else
+
+    elsif  NAME.TY = DN_USED_NAME_ID  then
+      PUT( tab & "LI" & tab & "0" );
+      if  CODI.DEBUG  then  PUT( tab50 & "; lieu resultat sur pile" ); end if;
+      NEW_LINE;
+      INSTRUCTIONS.CODE_PROCEDURE_CALL( FUNCTION_CALL, NAME );
+
+    elsif  NAME.TY = DN_USED_OP  then
       CODE_DN_BLTN_OPERATOR_ID;
+
+    else
+      PUT_LINE( "; CODE_FUNCTION_CALL NAME.TY PAS GERE" );
     end if;
   end	CODE_FUNCTION_CALL;
 	------------------

@@ -66,21 +66,30 @@ ELB 1					;    BODY ELAB
 if defined SYSTEM_CALL_L1_
 PRO	SYSTEM_CALL_L1				;---------- PRO SYSTEM_CALL
 PRMS					;    debut parametrage
+	PRM result__ofs				; resutat de fonction
 	PRM NAME_ofs				; in
 endPRMS					;    fin parametrage
 ELB 2					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	LA 2,	-8
-	FILE_CREATE
+
+db 0xCC
+
+	SYS_FILE_CREATE
+ret_lbl:
 	UNLINK 2
-	RTD	prm_siz
+	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO SYSTEM_CALL
 end if
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	LI	0					; lieu resultat sur pile
+	La  1,	-NAME_ofs
+	CALL	STANDARD.TEXT_IO.CREATE_L1. ,SYSTEM_CALL_L1
 	SId 1,	-FILE_ofs, FILE_TYPE.ID
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -98,6 +107,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -112,6 +122,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -126,6 +137,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -141,6 +153,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -155,6 +168,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -164,13 +178,15 @@ end if
 if defined MODE_L7_
 PRO	MODE_L7				;---------- PRO MODE
 PRMS					;    debut parametrage
+	PRM result__ofs				; resutat de fonction
 	PRM FILE_ofs				; in
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MODE
 end if
@@ -178,13 +194,15 @@ end if
 if defined NAME_L8_
 PRO	NAME_L8				;---------- PRO NAME
 PRMS					;    debut parametrage
+	PRM result__ofs				; resutat de fonction
 	PRM FILE_ofs				; in
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO NAME
 end if
@@ -192,13 +210,15 @@ end if
 if defined FORM_L9_
 PRO	FORM_L9				;---------- PRO FORM
 PRMS					;    debut parametrage
+	PRM result__ofs				; resutat de fonction
 	PRM FILE_ofs				; in
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO FORM
 end if
@@ -206,13 +226,15 @@ end if
 if defined IS_OPEN_L10_
 PRO	IS_OPEN_L10				;---------- PRO IS_OPEN
 PRMS					;    debut parametrage
+	PRM result__ofs				; resutat de fonction
 	PRM FILE_ofs				; in
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_OPEN
 end if
@@ -225,6 +247,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -239,6 +262,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -250,6 +274,7 @@ PRO	STANDARD_INPUT_L13			;---------- PRO STANDARD_INPUT
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD
 excep:
@@ -261,6 +286,7 @@ PRO	STANDARD_OUTPUT_L14			;---------- PRO STANDARD_OUTPUT
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD
 excep:
@@ -272,6 +298,7 @@ PRO	CURRENT_INPUT_L15			;---------- PRO CURRENT_INPUT
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD
 excep:
@@ -283,6 +310,7 @@ PRO	CURRENT_OUTPUT_L16			;---------- PRO CURRENT_OUTPUT
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD
 excep:
@@ -298,6 +326,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -314,6 +343,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 	Ld  1,	-TO_ofs
 	Sd  0,	STDOUT_MAX_LINE_LEN_disp
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -329,6 +359,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -345,6 +376,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 	Ld  1,	-TO_ofs
 	Sd  0,	STDOUT_MAX_PAGE_LEN_disp
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -354,13 +386,15 @@ end if
 if defined LINE_LENGTH_L21_
 PRO	LINE_LENGTH_L21				;---------- PRO LINE_LENGTH
 PRMS					;    debut parametrage
+	PRM result__ofs				; resutat de fonction
 	PRM FILE_ofs				; in
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO LINE_LENGTH
 end if
@@ -370,6 +404,7 @@ PRO	LINE_LENGTH_L22				;---------- PRO LINE_LENGTH
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD
 excep:
@@ -379,13 +414,15 @@ end if
 if defined PAGE_LENGTH_L23_
 PRO	PAGE_LENGTH_L23				;---------- PRO PAGE_LENGTH
 PRMS					;    debut parametrage
+	PRM result__ofs				; resutat de fonction
 	PRM FILE_ofs				; in
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO PAGE_LENGTH
 end if
@@ -395,6 +432,7 @@ PRO	PAGE_LENGTH_L24				;---------- PRO PAGE_LENGTH
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD
 excep:
@@ -410,6 +448,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -470,6 +509,7 @@ L2:					; post loop LOOP__1
 	BRA	L4
 L5:
 L4:					; post if
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -485,6 +525,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -503,6 +544,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	Ld  1,	-SPACING_ofs
 	ADD
 	Sd  0,	STDOUT_LINE_disp
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -512,13 +554,15 @@ end if
 if defined END_OF_LINE_L29_
 PRO	END_OF_LINE_L29				;---------- PRO END_OF_LINE
 PRMS					;    debut parametrage
+	PRM result__ofs				; resutat de fonction
 	PRM FILE_ofs				; in
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO END_OF_LINE
 end if
@@ -528,6 +572,7 @@ PRO	END_OF_LINE_L30				;---------- PRO END_OF_LINE
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD
 excep:
@@ -542,6 +587,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -553,6 +599,7 @@ PRO	NEW_PAGE_L32				;---------- PRO NEW_PAGE
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD
 excep:
@@ -567,6 +614,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -578,6 +626,7 @@ PRO	SKIP_PAGE_L34				;---------- PRO SKIP_PAGE
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD
 excep:
@@ -587,13 +636,15 @@ end if
 if defined END_OF_PAGE_L35_
 PRO	END_OF_PAGE_L35				;---------- PRO END_OF_PAGE
 PRMS					;    debut parametrage
+	PRM result__ofs				; resutat de fonction
 	PRM FILE_ofs				; in
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO END_OF_PAGE
 end if
@@ -603,6 +654,7 @@ PRO	END_OF_PAGE_L36				;---------- PRO END_OF_PAGE
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD
 excep:
@@ -612,13 +664,15 @@ end if
 if defined END_OF_FILE_L37_
 PRO	END_OF_FILE_L37				;---------- PRO END_OF_FILE
 PRMS					;    debut parametrage
+	PRM result__ofs				; resutat de fonction
 	PRM FILE_ofs				; in
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO END_OF_FILE
 end if
@@ -628,6 +682,7 @@ PRO	END_OF_FILE_L38				;---------- PRO END_OF_FILE
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD
 excep:
@@ -643,6 +698,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -657,6 +713,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -672,6 +729,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -686,6 +744,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -695,13 +754,15 @@ end if
 if defined COL_L43_
 PRO	COL_L43				;---------- PRO COL
 PRMS					;    debut parametrage
+	PRM result__ofs				; resutat de fonction
 	PRM FILE_ofs				; in
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO COL
 end if
@@ -711,6 +772,7 @@ PRO	COL_L44				;---------- PRO COL
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD
 excep:
@@ -720,13 +782,15 @@ end if
 if defined LINE_L45_
 PRO	LINE_L45				;---------- PRO LINE
 PRMS					;    debut parametrage
+	PRM result__ofs				; resutat de fonction
 	PRM FILE_ofs				; in
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO LINE
 end if
@@ -736,6 +800,7 @@ PRO	LINE_L46				;---------- PRO LINE
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD
 excep:
@@ -745,13 +810,15 @@ end if
 if defined PAGE_L47_
 PRO	PAGE_L47				;---------- PRO PAGE
 PRMS					;    debut parametrage
+	PRM result__ofs				; resutat de fonction
 	PRM FILE_ofs				; in
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO PAGE
 end if
@@ -761,6 +828,7 @@ PRO	PAGE_L48				;---------- PRO PAGE
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD
 excep:
@@ -776,6 +844,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -791,7 +860,8 @@ ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	LA 1,	-8
-	GET_CHAR
+	SYS_GET_CHAR
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -807,6 +877,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -822,7 +893,8 @@ ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	LB 1,	-8
-	PUT_CHAR
+	SYS_PUT_CHAR
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -838,6 +910,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -852,6 +925,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -867,6 +941,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -882,7 +957,8 @@ ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	LA 1,	-8
-	PUT_STR
+	SYS_PUT_STR
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -899,6 +975,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -916,7 +993,8 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 	LA 1,	-16
 	LA 1,	-8
-	GET_STR
+	SYS_GET_STR
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -932,6 +1010,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -950,6 +1029,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	CALL	STANDARD.TEXT_IO. ,PUT_L56
 	LI	 1
 	CALL	STANDARD.TEXT_IO. ,NEW_LINE_L26
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -961,11 +1041,8 @@ PRMS
 	PRM NUM_last_ofs
 endPRMS
 VAR DEFAULT_WIDTH_disp, d			; variable entiere
-	Sd  0,	DEFAULT_WIDTH_disp
 
 VAR DEFAULT_BASE_disp, d			; variable entiere
-	LI	 10
-	Sd  0,	DEFAULT_BASE_disp
 
 					;    BODY ELAB
 
@@ -980,6 +1057,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -1020,12 +1098,8 @@ end namespace
 	Sa	1,	CHN_disp				; array fin
 
 VAR LEN_disp, d				; variable entiere
-	LI	 40
-	Sd  1,	LEN_disp
 
 VAR VAL_disp, d				; variable entiere
-	LI	 0
-	Sd  1,	VAL_disp
 
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
@@ -1071,6 +1145,7 @@ L6:					; post loop LOOP__2
 	SId  1,	-ITEM_ofs
 	La  1,	CHN_disp
 	CALL	STANDARD.TEXT_IO. ,PUT_L56
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -1089,6 +1164,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -1134,13 +1210,12 @@ end namespace
 	Sa	1,	STR_disp				; array fin
 
 VAR INDEX_disp, d				; variable entiere
-	LId 1,	STR_disp, 16
-	Sd  1,	INDEX_disp
 
 VAR MIN_WIDTH_disp, d			; variable entiere
 
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -1158,6 +1233,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -1175,6 +1251,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -1186,17 +1263,10 @@ namespace FLOAT_IO				;---------- GENERIC PACKAGE
 PRMS
 endPRMS
 VAR DEFAULT_FORE_disp, d			; variable entiere
-	LI	 2
-	Sd  0,	DEFAULT_FORE_disp
 
 VAR DEFAULT_AFT_disp, d			; variable entiere
-	LI	 1
-	SUB
-	Sd  0,	DEFAULT_AFT_disp
 
 VAR DEFAULT_EXP_disp, d			; variable entiere
-	LI	 3
-	Sd  0,	DEFAULT_EXP_disp
 
 					;    BODY ELAB
 
@@ -1211,6 +1281,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -1227,6 +1298,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -1246,6 +1318,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -1264,6 +1337,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -1281,6 +1355,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -1299,6 +1374,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -1310,14 +1386,10 @@ namespace FIXED_IO				;---------- GENERIC PACKAGE
 PRMS
 endPRMS
 VAR DEFAULT_FORE_disp, d			; variable entiere
-	Sd  0,	DEFAULT_FORE_disp
 
 VAR DEFAULT_AFT_disp, d			; variable entiere
-	Sd  0,	DEFAULT_AFT_disp
 
 VAR DEFAULT_EXP_disp, d			; variable entiere
-	LI	 0
-	Sd  0,	DEFAULT_EXP_disp
 
 					;    BODY ELAB
 
@@ -1332,6 +1404,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -1348,6 +1421,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -1367,6 +1441,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -1385,6 +1460,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -1402,6 +1478,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -1420,6 +1497,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -1431,12 +1509,8 @@ namespace ENUMERATION_IO			;---------- GENERIC PACKAGE
 PRMS
 endPRMS
 VAR DEFAULT_WIDTH_disp, d			; variable entiere
-	LI	 0
-	Sd  0,	DEFAULT_WIDTH_disp
 
 VAR DEFAULT_SETTING_disp, b			; variable entiere
-	LI	 1
-	Sb  0,	DEFAULT_SETTING_disp
 
 					;    BODY ELAB
 
@@ -1450,6 +1524,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -1465,6 +1540,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -1483,6 +1559,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -1500,6 +1577,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -1517,6 +1595,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:
@@ -1534,6 +1613,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
 excep:

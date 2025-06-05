@@ -177,10 +177,15 @@ null;
 
     CODE_BODY( D( AS_BODY, SUBPROGRAM_BODY ) );
 
+    PUT_LINE( "ret_lbl:" );
     PUT_LINE( tab & "UNLINK" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );
 
     PUT( tab & "RTD" );
-    if CODI.NO_SUBP_PARAMS = FALSE then PUT( tab & "prm_siz" ); end if;
+    if  CODI.NO_SUBP_PARAMS = FALSE  then  PUT( tab & "prm_siz" );
+      if  SOURCE_NAME.TY = DN_FUNCTION_ID  then
+        PUT( INTEGER'IMAGE( - STACK_ELEMENT_SIZE ) );							-- POUR UNE FONCTION NE PAS LIBERER LE RESULTAT
+      end if;
+    end if;
     CODI.NO_SUBP_PARAMS := SAVE_NO_SUB_PARAM;
     NEW_LINE;
     PUT_LINE( "excep:" );
