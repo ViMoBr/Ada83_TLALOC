@@ -904,7 +904,8 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
         DIM_NBR		: NATURAL		:= 1;
         LVL		: LEVEL_NUM	renames CODI.CUR_LEVEL;
         LVL_STR		:constant STRING	:= IMAGE( CODI.CUR_LEVEL );
-        STR_INTER		:constant STRING	:= ' ' & LVL_STR & ',' & tab & SUBTYPE_STR & "__i.";
+--        STR_INTER		:constant STRING	:= ' ' & LVL_STR & ',' & tab & SUBTYPE_STR & "__i.";
+        STR_INTER		:constant STRING	:= ' ' & LVL_STR & ',' & tab;
 
 		-----------------------------
         procedure	ARRAY_TYPE_DIMENSION_SET_DESC	( IDX_TYPE_LIST :in out SEQ_TYPE )
@@ -943,14 +944,14 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 	    ELEMENT_SIZ_STR		:constant STRING	:= IMAGE( ELEMENT_SIZ );
 	  begin
 	    PUT_LINE( tab & "LI" & tab & ELEMENT_SIZ_STR );						-- TAILLE D'UN ELEMENT DU TABLEAU
-	    PUT_LINE( tab & "Sd" & ' ' & LVL_STR & ',' & tab & SUBTYPE_STR & "__i.SIZ_" & DIM_NBR_STR );
+	    PUT_LINE( tab & "Sd" & STR_INTER & "SIZ_" & DIM_NBR_STR );
 	  end;
 	else
 	  DIM_NBR := DIM_NBR + 1;
 	  ARRAY_TYPE_DIMENSION_FILL_DESCR( IDX_TYPE_LIST );
 	  DIM_NBR := DIM_NBR - 1;
 
-	  PUT_LINE( tab & "Sd" & ' ' & LVL_STR & ',' & tab & SUBTYPE_STR & "__i.SIZ_" & DIM_NBR_STR );
+	  PUT_LINE( tab & "Sd" & STR_INTER & "SIZ_" & DIM_NBR_STR );
 	end if;
 
 	if  IDX_TYPE.TY = DN_INTEGER  then
@@ -984,12 +985,11 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 
         ARRAY_TYPE_DIMENSION_SET_DESC( INDEX_SUBTYPE_S );
 
-        PUT_LINE( "end namespace" );
-
         INDEX_SUBTYPE_S := LIST( D( SM_INDEX_SUBTYPE_S,  TYPE_SPEC) );
         ARRAY_TYPE_DIMENSION_FILL_DESCR( INDEX_SUBTYPE_S );
-
         PUT_LINE( tab & "Sd" & STR_INTER & "SIZ" );
+
+        PUT_LINE( "end namespace" );
 
         NEW_LINE;
       end			PROCESS_CONSTRAINED_ARRAY;

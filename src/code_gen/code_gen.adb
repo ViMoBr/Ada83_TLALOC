@@ -715,34 +715,34 @@ null;--	EMIT( JMPT, LABEL_TYPE( DI( CD_LABEL, CHOICE_S ) ), COMMENT=> "TRAITE EX
   begin
 
     if TYPE_DEF.TY = DN_ENUMERATION_DEF then
-      CODE_ENUMERATION_DEF ( TYPE_DEF, TYPE_DECL );
+      CODE_ENUMERATION_DEF( TYPE_DEF, TYPE_DECL );
 
     elsif TYPE_DEF.TY = DN_RECORD_DEF then
-      CODE_RECORD_DEF ( TYPE_DEF, TYPE_DECL );
+      CODE_RECORD_DEF( TYPE_DEF, TYPE_DECL );
 
     elsif TYPE_DEF.TY = DN_FORMAL_DSCRT_DEF then
-      CODE_FORMAL_DSCRT_DEF ( TYPE_DEF );
+      CODE_FORMAL_DSCRT_DEF( TYPE_DEF );
 
     elsif TYPE_DEF.TY = DN_FORMAL_INTEGER_DEF then
-      CODE_FORMAL_INTEGER_DEF ( TYPE_DEF );
+      CODE_FORMAL_INTEGER_DEF( TYPE_DEF );
 
     elsif TYPE_DEF.TY = DN_FORMAL_FIXED_DEF then
-      CODE_FORMAL_FIXED_DEF ( TYPE_DEF );
+      CODE_FORMAL_FIXED_DEF( TYPE_DEF );
 
     elsif TYPE_DEF.TY = DN_FORMAL_FLOAT_DEF then
-      CODE_FORMAL_FLOAT_DEF ( TYPE_DEF );
+      CODE_FORMAL_FLOAT_DEF( TYPE_DEF );
 
     elsif TYPE_DEF.TY = DN_PRIVATE_DEF then
-      CODE_PRIVATE_DEF ( TYPE_DEF );
+      CODE_PRIVATE_DEF( TYPE_DEF );
 
     elsif TYPE_DEF.TY = DN_L_PRIVATE_DEF then
-      CODE_L_PRIVATE_DEF ( TYPE_DEF );
+      CODE_L_PRIVATE_DEF( TYPE_DEF );
 
     elsif TYPE_DEF.TY in CLASS_CONSTRAINED_DEF then
-      CODE_CONSTRAINED_DEF ( TYPE_DEF, TYPE_DECL );
+      CODE_CONSTRAINED_DEF( TYPE_DEF, TYPE_DECL );
 
     elsif TYPE_DEF.TY in CLASS_ARR_ACC_DER_DEF then
-      CODE_ARR_ACC_DER_DEF ( TYPE_DEF, TYPE_DECL );
+      CODE_ARR_ACC_DER_DEF( TYPE_DEF, TYPE_DECL );
 
     end if;
   end;
@@ -921,8 +921,6 @@ null;--	EMIT( JMPT, LABEL_TYPE( DI( CD_LABEL, CHOICE_S ) ), COMMENT=> "TRAITE EX
     end	INSERE_LES_CHAMPS;
     	-----------------
 
-    PUT_LINE( "end namespace" );
-
     			-------------------------
 			TRAITER_LES_DISCRIMINANTS:
     declare
@@ -947,10 +945,10 @@ null;--	EMIT( JMPT, LABEL_TYPE( DI( CD_LABEL, CHOICE_S ) ), COMMENT=> "TRAITE EX
 	  PUT( tab & "LVA" & INTEGER'IMAGE( DI( CD_LEVEL, DISCR_TYPE_SPEC ) ) & ", " );
 	  REGIONS_PATH( DISCR_TYPE_DEFN );
 	  PUT_LINE( PRINT_NAME( D( LX_SYMREP, D( XD_SOURCE_NAME, DISCR_TYPE_SPEC ) ) )  & "__i.SIZ" );
-	  PUT_LINE( tab & "Sa " & LVL_STR & ", " & TYPE_ID_STR & "__i." & PRINT_NAME( D( LX_SYMREP, DISCRIMINANT_ID ) ) & "__u" );
+	  PUT_LINE( tab & "Sa " & LVL_STR & ", " & PRINT_NAME( D( LX_SYMREP, DISCRIMINANT_ID ) ) & "__u" );
 
 	  PUT_LINE( tab & "LI 0" & tab & " ; offset a faire" );
-	  PUT_LINE( tab & "Sd " & LVL_STR & ", " & TYPE_ID_STR & "__i." & PRINT_NAME( D( LX_SYMREP, DISCRIMINANT_ID ) ) & "__o" );
+	  PUT_LINE( tab & "Sd " & LVL_STR & ", " & PRINT_NAME( D( LX_SYMREP, DISCRIMINANT_ID ) ) & "__o" );
 
 	end loop;
         end;
@@ -982,37 +980,23 @@ null;--	EMIT( JMPT, LABEL_TYPE( DI( CD_LABEL, CHOICE_S ) ), COMMENT=> "TRAITE EX
 	while  not IS_EMPTY( COMP_ID_S )  loop
 	  POP( COMP_ID_S, COMP_ID );
 
-	  PUT( tab & "LVA" & INTEGER'IMAGE( DI( CD_LEVEL, FIELD_TYPE_SPEC ) ) & ", " );
+	  if  FIELD_TYPE_SPEC.TY = DN_ENUMERATION  then							-- LES ENUM INFOS SONT EN CONSTANTES
+	    PUT( tab & "LCA " );
+	  else
+	    PUT( tab & "LVA" & INTEGER'IMAGE( DI( CD_LEVEL, FIELD_TYPE_SPEC ) ) & ", " );
+	  end if;
 	  REGIONS_PATH( FIELD_TYPE_DEFN );
---	  PUT_LINE( PRINT_NAME( D( LX_SYMREP, D( XD_SOURCE_NAME, FIELD_TYPE_SPEC ) ) )  & "__i.SIZ" );
 	  PUT_LINE( PRINT_NAME( D( LX_SYMREP, FIELD_TYPE_NAME ) )  & "__i.SIZ" );
 
-	  PUT_LINE( tab & "Sa " & LVL_STR & ", " & TYPE_ID_STR & "__i." & PRINT_NAME( D( LX_SYMREP, COMP_ID ) ) & "__u" );
+	  PUT_LINE( tab & "Sa " & LVL_STR & ", " & PRINT_NAME( D( LX_SYMREP, COMP_ID ) ) & "__u" );
 
---	  if  TYPE_SPEC.TY = DN_INTEGER  then
---	    PUT_LINE( "VAR " & PRINT_NAME( D( LX_SYMREP, COMP_ID ) )  & "__o, d" );
---	    PUT_LINE( "VAR " & PRINT_NAME( D( LX_SYMREP, COMP_ID ) )  & "__u, q" );
-
---	  elsif   TYPE_SPEC.TY = DN_RECORD  then
---	    PUT( "  ." & PRINT_NAME( D( LX_SYMREP, COMP_ID ) ) & tab );
---	    REGIONS_PATH( COMP_ID );
---	    PUT_LINE( PRINT_NAME( D( LX_SYMREP, TYPE_DEFN ) ) & "_model" );
---	    PUT_LINE( "  rb " & PRINT_NAME( D( LX_SYMREP, TYPE_DEFN ) )  & ".size" );
-
---	  elsif   TYPE_SPEC.TY = DN_CONSTRAINED_ARRAY  then
---	    PUT_LINE( "; CODE_RECORD_DEF.TRAITER_LES_CHAMPS : DN_CONSTRAINED_ARRAY" );
---	    PUT_LINE( "  FIELD " & PRINT_NAME( D( LX_SYMREP, COMP_ID ) )  & ", " & "b,"
---		    & INTEGER'IMAGE( DI( CD_IMPL_SIZE, TYPE_SPEC ) ) );
-
---	  else
---	    PUT_LINE( "; CODE_RECORD_DEF.TRAITER_LES_CHAMPS : NON TRAITE TYPE_SPEC.TY = "
---		    & NODE_NAME'IMAGE( TYPE_SPEC.TY ) );
---	  end if;
 	end loop;
         end;
       end loop;
     end	TRAITER_LES_CHAMPS;
     ------------------
+
+    PUT_LINE( "end namespace" );
 
     if  CODI.DEBUG  then  NEW_LINE; end if;
 
@@ -1073,14 +1057,17 @@ null;--	EMIT( JMPT, LABEL_TYPE( DI( CD_LABEL, CHOICE_S ) ), COMMENT=> "TRAITE EX
     PUT_LINE( "VAR SIZ, b" );
     PUT_LINE( "VAR FST, " & SIZE_CHAR );
     PUT_LINE( "VAR LST, " & SIZE_CHAR );
-    PUT_LINE( "end namespace" );
+
+    PUT_LINE( tab & "LI" & INTEGER'IMAGE( DI( CD_IMPL_SIZE, INTEGER_SPEC ) ) );
+    PUT_LINE( tab & "Sb " & LVL_STR & ',' & tab & "SIZ" );
 
     EXPRESSIONS.CODE_EXP( EXP_FST );
-    PUT_LINE( tab & 'S' & SIZE_CHAR & ' ' & LVL_STR & ',' & tab & TYPE_STR & "__i.FST" );
+    PUT_LINE( tab & 'S' & SIZE_CHAR & ' ' & LVL_STR & ',' & tab & "FST" );
 
     EXPRESSIONS.CODE_EXP( EXP_LST );
-    PUT_LINE( tab & 'S' & SIZE_CHAR & ' ' & LVL_STR & ',' & tab & TYPE_STR & "__i.LST" );
+    PUT_LINE( tab & 'S' & SIZE_CHAR & ' ' & LVL_STR & ',' & tab & "LST" );
 
+    PUT_LINE( "end namespace" );
     if  CODI.DEBUG  then  NEW_LINE; end if;
 
   end	CODE_INTEGER_DEF;
