@@ -464,8 +464,13 @@ null;--        declare
       else
         PUT_LINE( tab & 'L' &  OPER_SIZ_CHAR( EXP_TYPE )  & tab & RECURSE_SELECTED( SELECTED ) );
       end if;
+
+    elsif  EXP_TYPE.TY = DN_ENUMERATION  then
+      PUT_LINE( tab & "LI" & tab & PRINT_NUM( D( SM_VALUE, SELECTED ) ) );
+
     else
-      PUT_LINE( "; CODE_DELECTED NON ENTIER PAS FAIT" );
+      PUT_LINE( "; EXPRESSIONS.CODE_SELECTED TYPE PAS FAIT " & NODE_NAME'IMAGE( EXP_TYPE.TY ) );
+
     end if;
   end	CODE_SELECTED;
 	-------------
@@ -616,15 +621,15 @@ null;--        declare
     begin
     if DEFN.TY = DN_BLTN_OPERATOR_ID then
       declare
-        OP_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, DEFN ) );
-        PRM_S	: SEQ_TYPE	:= LIST( PARAMS );
-        PRM	: TREE;
+        OP_STR		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, DEFN ) );
+        PRM_S		: SEQ_TYPE	:= LIST( PARAMS );
+        PRM_1, PRM_2	: TREE;
       begin
-        POP( PRM_S, PRM );
-        CODE_EXP( PRM );
+        POP( PRM_S, PRM_1 );
+        CODE_EXP( PRM_1 );
         if IS_EMPTY( PRM_S ) then goto UNARY; end if;
-        POP( PRM_S, PRM );
-        CODE_EXP( PRM );
+        POP( PRM_S, PRM_2 );
+        CODE_EXP( PRM_2 );
         if OP_STR = """+""" then  PUT_LINE( ASCII.HT & "ADD" );
         elsif OP_STR = """-""" then  PUT_LINE( ASCII.HT & "SUB" );
         elsif OP_STR = """*""" then  PUT_LINE( ASCII.HT & "MUL" );
@@ -635,6 +640,13 @@ null;--        declare
         elsif OP_STR = """/=""" then  PUT_LINE( ASCII.HT & "CNE" );
         elsif OP_STR = """>=""" then  PUT_LINE( ASCII.HT & "CGE" );
         elsif OP_STR = """<=""" then  PUT_LINE( ASCII.HT & "CIE" );
+        elsif OP_STR = """**""" then
+	if  PRM_1.TY = DN_NUMERIC_LITERAL and then DI( SM_VALUE, PRM_1 ) = 2  then
+	  PUT_LINE( ASCII.HT & "DEC" );
+	  PUT_LINE( ASCII.HT & "SHL" );
+	else
+	  PUT_LINE( "; CODE_DN_BLTN_OPERATOR_ID : EXPONENTIATION DE BASE /= 2 A FAIRE" );
+	end if;
         end if;
         return;
 <<UNARY>>

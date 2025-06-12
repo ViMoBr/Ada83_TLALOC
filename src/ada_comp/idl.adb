@@ -474,18 +474,23 @@ is					---
   function		PRINT_NUM		( T :TREE ) return STRING					--| POUR DN_NUMVAL
   is			---------
   begin
-    if T.TY /= DN_NUM_VAL then									--| SI CE N'EST PAS UN NUMVAL
-      return "PAS UN DN_NUM_VAL PAS DE CHAINE ???";							--| CHAINE PAS DE NOM
-    end if;
 
-    if T.PT = HI then										--| VALEUR COURTE 16 BITS
-      if T.NSIZ = 1 then										--| VALEUR NEGATIVE
-        return POSITIVE_SHORT'IMAGE( -T.ABSS - 1 );
-      else											--| VALEUR POSITIVE
-        return POSITIVE_SHORT'IMAGE( T.ABSS + 1 );
+    if  T.PT = HI  then										--| VALEUR COURTE 16 BITS
+      if  T.NOTY /= DN_NUM_VAL  then									--| SI CE N'EST PAS UN NUMVAL
+        return "PRINT_NUM : LE HI N EST PAS UN DN_NUM_VAL PAS DE CHAINE ???";					--| CHAINE PAS DE NOM
       end if;
 
-    elsif T.PT = P then
+      if  T.NSIZ = 1  then										--| VALEUR NEGATIVE
+        return POSITIVE_SHORT'IMAGE( -T.ABSS - 1 );
+      else											--| VALEUR POSITIVE
+        return POSITIVE_SHORT'IMAGE( T.ABSS );
+      end if;
+
+    elsif  T.PT = P then
+      if  T.TY /= DN_NUM_VAL  then									--| SI CE N'EST PAS UN NUMVAL
+        return "PRINT_NUM : LE HI N EST PAS UN DN_NUM_VAL PAS DE CHAINE ???";					--| CHAINE PAS DE NOM
+      end if;
+
       declare											--| UN VRAI DN_NUM_VAL
         ENTETE		: TREE		:= DABS( 0, T );						--| ENTETE CONTENANT LE NOMBRE DE DIGITS
         type DOUBLET	is array( 1..2 ) of SHORT;
@@ -501,7 +506,7 @@ is					---
 	STR1	:constant STRING	:= SHORT'IMAGE( DD1 );
         begin
 	if  ID = ENTETE.NSIZ  then
-	  if DD2 = 0  then
+	  if  DD2 = 0  then
 	    return STR1( 2 .. STR1'LAST );
 	  else
 	    return STR2( 2 .. STR2'LAST ) & STR1( 2 .. STR1'LAST );
@@ -514,7 +519,7 @@ is					---
 		----------------
 
       begin
-        if ENTETE.ABSS = 1 then									--| ABSS 1 POUR NB NEGATIF
+        if  ENTETE.ABSS = 1  then									--| ABSS 1 POUR NB NEGATIF
 	return '-' & RECURSE_DOUBLETS; 								--| CHIFFRE NEGATIF
         else
 	return RECURSE_DOUBLETS;

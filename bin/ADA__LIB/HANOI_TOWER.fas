@@ -5,12 +5,13 @@ namespace STANDARD
     VARzone::
     VARzone.DISP = $
   end virtual
+include '../../bin/ADA__LIB/_STANDRD.FINC'
 
 	LINK	0, loc_siz
 
 include 'HANOI_TOWER.FINC'
 	CALL	STANDARD., HANOI_TOWER_L1
-	SYSEXIT
+	SYS_EXIT
 
   virtual VARzone
     loc_siz = $

@@ -20,17 +20,22 @@ is					-------
 					  FORM :in STRING := ""
 					)
   is
-    function	SYSTEM_CALL	( NAME :in STRING )	return INTEGER
+		------------------
+    function	CREATE_SYSTEM_CALL	( NAME :in STRING )	return INTEGER
     is
     begin
       ASM_OP_2'( OPCODE => LA, LVL => 2, OFS => -8 );
       ASM_OP_0'( OPCODE => SYS_FILE_CREATE );
-    end	SYSTEM_CALL;
-
+      ASM_OP_2'( OPCODE => SD, LVL => 2, OFS => -16 );
+    end	CREATE_SYSTEM_CALL;
+	------------------
   begin
-    FILE.ID := SYSTEM_CALL( NAME );
+    FILE.NAME( 1 .. NAME'LENGTH )  := NAME;
+    FILE.ID := CREATE_SYSTEM_CALL( NAME );
+
   end	CREATE;
 	------
+
 
 			----
   procedure		OPEN		( FILE :in out FILE_TYPE;
@@ -39,26 +44,57 @@ is					-------
 					  FORM :in STRING := ""
 					)
   is
-  begin null;
+		----------------
+    function	OPEN_SYSTEM_CALL	( NAME :in STRING )	return INTEGER
+    is
+    begin
+      ASM_OP_2'( OPCODE => LA, LVL => 2, OFS => -8 );
+      ASM_OP_0'( OPCODE => SYS_FILE_OPEN );
+      ASM_OP_2'( OPCODE => SD, LVL => 2, OFS => -16 );							-- Retour du File ID
+    end	OPEN_SYSTEM_CALL;
+	----------------
+  begin
+    FILE.ID := OPEN_SYSTEM_CALL( NAME );
 
   end	OPEN;
 	----
 
+
 			-----
-  procedure		CLOSE		( FILE :in out FILE_TYPE )
-  is
-  begin null;
+  procedure		CLOSE		( FILE :in out FILE_TYPE )	is
+			-----
+ 		------------------
+    procedure	CLOSE_SYSTEM_CALL	( FILE_ID :in INTEGER )
+    is
+    begin
+      ASM_OP_2'( OPCODE => Ld, LVL => 2, OFS => -8 );
+      ASM_OP_0'( OPCODE => SYS_FILE_CLOSE );
+    end	CLOSE_SYSTEM_CALL;
+	------------------
+  begin
+    CLOSE_SYSTEM_CALL( FILE.ID );
 
   end	CLOSE;
 	-----
 
+
 			------
-  procedure		DELETE		( FILE :in out FILE_TYPE )
-  is
-  begin null;
+  procedure		DELETE		( FILE :in out FILE_TYPE )	is
+			------
+		------------------
+    procedure	DELETE_SYSTEM_CALL	( FILE_ID :in INTEGER )
+    is
+    begin
+      ASM_OP_2'( OPCODE => Ld, LVL => 2, OFS => -8 );
+      ASM_OP_0'( OPCODE => SYS_FILE_DELETE );
+    end	DELETE_SYSTEM_CALL;
+	------------------
+  begin
+    DELETE_SYSTEM_CALL( FILE.ID );
 
   end	DELETE;
 	------
+
 
 			-----
   procedure		RESET		( FILE :in out FILE_TYPE; MODE :in FILE_MODE )
@@ -243,11 +279,11 @@ is					-------
   begin
     PUT( ASCII.CR );
     STDOUT_COL := 1;										-- LRM 14.3.4(3) col := 1
-    for N in 1 .. SPACING loop
+    for  N in 1 .. SPACING  loop
       PUT( ASCII.LF );
     end loop;
     STDOUT_LINE := STDOUT_LINE + SPACING;
-    if STDOUT_LINE > STDOUT_MAX_PAGE_LEN then
+    if  STDOUT_LINE > STDOUT_MAX_PAGE_LEN  then
       PUT( ASCII.FF );
       STDOUT_PAGE := STDOUT_PAGE + 1;
       STDOUT_LINE := 1;

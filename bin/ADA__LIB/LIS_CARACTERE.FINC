@@ -8,7 +8,7 @@ begin:					;---------- BDY INSTRUCTIONS
 STR STR_L1, ' Bonjour '			; constante string=' Bonjour '
 	LCA	STR_L1_ptr
 	CALL	STANDARD.TEXT_IO. ,PUT_L56
-	LI	 1
+	LI	 2
 	CALL	STANDARD.TEXT_IO. ,NEW_LINE_L26
 LIRE_UN:
 STR STR_L3, ' Entrez un caractere ! '		; constante string=' Entrez un caractere ! '
@@ -29,6 +29,7 @@ STR STR_L4, ' Vous avez tape : '		; constante string=' Vous avez tape : '
 	BT	L2
 	BRA	LIRE_UN
 L2:					; post loop LIRE_UN
+ret_lbl:
 	UNLINK 1
 	RTD
 excep:

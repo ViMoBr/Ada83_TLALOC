@@ -1,0 +1,536 @@
+namespace _STANDRD				;---------- PACKAGE DECLARATION
+namespace STANDARD				;---------- PACKAGE DECLARATION
+namespace BOOLEAN__i			; BOOLEAN ENUMERATION TYPE INFO
+CST SIZ, b, 1
+CST , , 5, "FALSE"
+CST , , 4, "TRUE"
+end namespace 
+
+namespace SHORT_INTEGER__i			; SHORT_INTEGER TYPE RANGE INFO
+VAR SIZ, b
+VAR FST, w
+VAR LST, w
+end namespace
+	LI	 2
+	LI	 15
+	DEC
+	SHL
+	NEG
+	Sw 0,	SHORT_INTEGER__i.FST
+	LI	 2
+	LI	 15
+	DEC
+	SHL
+	LI	 1
+	SUB
+	Sw 0,	SHORT_INTEGER__i.LST
+
+namespace INTEGER__i			; INTEGER TYPE RANGE INFO
+VAR SIZ, b
+VAR FST, d
+VAR LST, d
+end namespace
+	LI	 2
+	LI	 31
+	DEC
+	SHL
+	NEG
+	Sd 0,	INTEGER__i.FST
+	LI	 2
+	LI	 31
+	DEC
+	SHL
+	LI	 1
+	SUB
+	Sd 0,	INTEGER__i.LST
+
+namespace LONG_INTEGER__i			; LONG_INTEGER TYPE RANGE INFO
+VAR SIZ, b
+VAR FST, q
+VAR LST, q
+end namespace
+	LI	 2
+	LI	 63
+	DEC
+	SHL
+	NEG
+	Sq 0,	LONG_INTEGER__i.FST
+	LI	 2
+	LI	 63
+	DEC
+	SHL
+	LI	 1
+	SUB
+	Sq 0,	LONG_INTEGER__i.LST
+
+namespace CHARACTER__i			; CHARACTER ENUMERATION TYPE INFO
+CST SIZ, b, 8
+CST , , 4, "_NUL"
+CST , , 4, "_SOH"
+CST , , 4, "_STX"
+CST , , 4, "_ETX"
+CST , , 4, "_EOT"
+CST , , 4, "_ENQ"
+CST , , 4, "_ACK"
+CST , , 4, "_BEL"
+CST , , 3, "_BS"
+CST , , 3, "_HT"
+CST , , 3, "_LF"
+CST , , 3, "_VT"
+CST , , 3, "_FF"
+CST , , 3, "_CR"
+CST , , 3, "_SO"
+CST , , 3, "_SI"
+CST , , 4, "_DLE"
+CST , , 4, "_DC1"
+CST , , 4, "_DC2"
+CST , , 4, "_DC3"
+CST , , 4, "_DC4"
+CST , , 4, "_NAK"
+CST , , 4, "_SYN"
+CST , , 4, "_ETB"
+CST , , 4, "_CAN"
+CST , , 3, "_EM"
+CST , , 4, "_SUB"
+CST , , 4, "_ESC"
+CST , , 3, "_FS"
+CST , , 3, "_GS"
+CST , , 3, "_RS"
+CST , , 3, "_US"
+CST , , 3, "' '"
+CST , , 3, "'!'"
+CST , , 3, "'""'"
+CST , , 3, "'#'"
+CST , , 3, "'$'"
+CST , , 3, "'%'"
+CST , , 3, "'&'"
+CST , , 3, "'''"
+CST , , 3, "'('"
+CST , , 3, "')'"
+CST , , 3, "'*'"
+CST , , 3, "'+'"
+CST , , 3, "','"
+CST , , 3, "'-'"
+CST , , 3, "'.'"
+CST , , 3, "'/'"
+CST , , 3, "'0'"
+CST , , 3, "'1'"
+CST , , 3, "'2'"
+CST , , 3, "'3'"
+CST , , 3, "'4'"
+CST , , 3, "'5'"
+CST , , 3, "'6'"
+CST , , 3, "'7'"
+CST , , 3, "'8'"
+CST , , 3, "'9'"
+CST , , 3, "':'"
+CST , , 3, "';'"
+CST , , 3, "'<'"
+CST , , 3, "'='"
+CST , , 3, "'>'"
+CST , , 3, "'?'"
+CST , , 3, "'@'"
+CST , , 3, "'A'"
+CST , , 3, "'B'"
+CST , , 3, "'C'"
+CST , , 3, "'D'"
+CST , , 3, "'E'"
+CST , , 3, "'F'"
+CST , , 3, "'G'"
+CST , , 3, "'H'"
+CST , , 3, "'I'"
+CST , , 3, "'J'"
+CST , , 3, "'K'"
+CST , , 3, "'L'"
+CST , , 3, "'M'"
+CST , , 3, "'N'"
+CST , , 3, "'O'"
+CST , , 3, "'P'"
+CST , , 3, "'Q'"
+CST , , 3, "'R'"
+CST , , 3, "'S'"
+CST , , 3, "'T'"
+CST , , 3, "'U'"
+CST , , 3, "'V'"
+CST , , 3, "'W'"
+CST , , 3, "'X'"
+CST , , 3, "'Y'"
+CST , , 3, "'Z'"
+CST , , 3, "'['"
+CST , , 3, "'\'"
+CST , , 3, "']'"
+CST , , 3, "'^'"
+CST , , 3, "'_'"
+CST , , 3, "'`'"
+CST , , 3, "'a'"
+CST , , 3, "'b'"
+CST , , 3, "'c'"
+CST , , 3, "'d'"
+CST , , 3, "'e'"
+CST , , 3, "'f'"
+CST , , 3, "'g'"
+CST , , 3, "'h'"
+CST , , 3, "'i'"
+CST , , 3, "'j'"
+CST , , 3, "'k'"
+CST , , 3, "'l'"
+CST , , 3, "'m'"
+CST , , 3, "'n'"
+CST , , 3, "'o'"
+CST , , 3, "'p'"
+CST , , 3, "'q'"
+CST , , 3, "'r'"
+CST , , 3, "'s'"
+CST , , 3, "'t'"
+CST , , 3, "'u'"
+CST , , 3, "'v'"
+CST , , 3, "'w'"
+CST , , 3, "'x'"
+CST , , 3, "'y'"
+CST , , 3, "'z'"
+CST , , 3, "'{'"
+CST , , 3, "'|'"
+CST , , 3, "'}'"
+CST , , 3, "'~'"
+CST , , 4, "_DEL"
+end namespace 
+
+namespace ASCII				;---------- PACKAGE DECLARATION
+VAR NUL_disp, b				; variable bool char
+	LI	 0
+	Sb  0,	NUL_disp
+
+VAR SOH_disp, b				; variable bool char
+	LI	 1
+	Sb  0,	SOH_disp
+
+VAR STX_disp, b				; variable bool char
+	LI	 2
+	Sb  0,	STX_disp
+
+VAR ETX_disp, b				; variable bool char
+	LI	 3
+	Sb  0,	ETX_disp
+
+VAR EOT_disp, b				; variable bool char
+	LI	 4
+	Sb  0,	EOT_disp
+
+VAR ENQ_disp, b				; variable bool char
+	LI	 5
+	Sb  0,	ENQ_disp
+
+VAR ACK_disp, b				; variable bool char
+	LI	 6
+	Sb  0,	ACK_disp
+
+VAR BEL_disp, b				; variable bool char
+	LI	 7
+	Sb  0,	BEL_disp
+
+VAR BS_disp, b				; variable bool char
+	LI	 8
+	Sb  0,	BS_disp
+
+VAR HT_disp, b				; variable bool char
+	LI	 9
+	Sb  0,	HT_disp
+
+VAR LF_disp, b				; variable bool char
+	LI	 10
+	Sb  0,	LF_disp
+
+VAR VT_disp, b				; variable bool char
+	LI	 11
+	Sb  0,	VT_disp
+
+VAR FF_disp, b				; variable bool char
+	LI	 12
+	Sb  0,	FF_disp
+
+VAR CR_disp, b				; variable bool char
+	LI	 13
+	Sb  0,	CR_disp
+
+VAR SO_disp, b				; variable bool char
+	LI	 14
+	Sb  0,	SO_disp
+
+VAR SI_disp, b				; variable bool char
+	LI	 15
+	Sb  0,	SI_disp
+
+VAR DLE_disp, b				; variable bool char
+	LI	 16
+	Sb  0,	DLE_disp
+
+VAR DC1_disp, b				; variable bool char
+	LI	 17
+	Sb  0,	DC1_disp
+
+VAR DC2_disp, b				; variable bool char
+	LI	 18
+	Sb  0,	DC2_disp
+
+VAR DC3_disp, b				; variable bool char
+	LI	 19
+	Sb  0,	DC3_disp
+
+VAR DC4_disp, b				; variable bool char
+	LI	 20
+	Sb  0,	DC4_disp
+
+VAR NAK_disp, b				; variable bool char
+	LI	 21
+	Sb  0,	NAK_disp
+
+VAR SYN_disp, b				; variable bool char
+	LI	 22
+	Sb  0,	SYN_disp
+
+VAR ETB_disp, b				; variable bool char
+	LI	 23
+	Sb  0,	ETB_disp
+
+VAR CAN_disp, b				; variable bool char
+	LI	 24
+	Sb  0,	CAN_disp
+
+VAR EM_disp, b				; variable bool char
+	LI	 25
+	Sb  0,	EM_disp
+
+VAR SUB_disp, b				; variable bool char
+	LI	 26
+	Sb  0,	SUB_disp
+
+VAR ESC_disp, b				; variable bool char
+	LI	 27
+	Sb  0,	ESC_disp
+
+VAR FS_disp, b				; variable bool char
+	LI	 28
+	Sb  0,	FS_disp
+
+VAR GS_disp, b				; variable bool char
+	LI	 29
+	Sb  0,	GS_disp
+
+VAR RS_disp, b				; variable bool char
+	LI	 30
+	Sb  0,	RS_disp
+
+VAR US_disp, b				; variable bool char
+	LI	 31
+	Sb  0,	US_disp
+
+VAR DEL_disp, b				; variable bool char
+	LI	 127
+	Sb  0,	DEL_disp
+
+VAR EXCLAM_disp, b				; variable bool char
+	LI	 33
+	Sb  0,	EXCLAM_disp
+
+VAR SHARP_disp, b				; variable bool char
+	LI	 35
+	Sb  0,	SHARP_disp
+
+VAR PERCENT_disp, b				; variable bool char
+	LI	 37
+	Sb  0,	PERCENT_disp
+
+VAR COLON_disp, b				; variable bool char
+	LI	 58
+	Sb  0,	COLON_disp
+
+VAR QUERY_disp, b				; variable bool char
+	LI	 63
+	Sb  0,	QUERY_disp
+
+VAR L_BRACKET_disp, b			; variable bool char
+	LI	 91
+	Sb  0,	L_BRACKET_disp
+
+VAR R_BRACKET_disp, b			; variable bool char
+	LI	 93
+	Sb  0,	R_BRACKET_disp
+
+VAR UNDERLINE_disp, b			; variable bool char
+	LI	 95
+	Sb  0,	UNDERLINE_disp
+
+VAR L_BRACE_disp, b				; variable bool char
+	LI	 123
+	Sb  0,	L_BRACE_disp
+
+VAR R_BRACE_disp, b				; variable bool char
+	LI	 125
+	Sb  0,	R_BRACE_disp
+
+VAR QUOTATION_disp, b			; variable bool char
+	LI	 34
+	Sb  0,	QUOTATION_disp
+
+VAR DOLLAR_disp, b				; variable bool char
+	LI	 36
+	Sb  0,	DOLLAR_disp
+
+VAR AMPERSAND_disp, b			; variable bool char
+	LI	 38
+	Sb  0,	AMPERSAND_disp
+
+VAR SEMICOLON_disp, b			; variable bool char
+	LI	 59
+	Sb  0,	SEMICOLON_disp
+
+VAR AT_SIGN_disp, b				; variable bool char
+	LI	 64
+	Sb  0,	AT_SIGN_disp
+
+VAR BACK_SLASH_disp, b			; variable bool char
+	LI	 92
+	Sb  0,	BACK_SLASH_disp
+
+VAR CIRCUMFLEX_disp, b			; variable bool char
+	LI	 94
+	Sb  0,	CIRCUMFLEX_disp
+
+VAR GRAVE_disp, b				; variable bool char
+	LI	 96
+	Sb  0,	GRAVE_disp
+
+VAR BAR_disp, b				; variable bool char
+	LI	 124
+	Sb  0,	BAR_disp
+
+VAR TILDE_disp, b				; variable bool char
+	LI	 126
+	Sb  0,	TILDE_disp
+
+VAR LC_A_disp, b				; variable bool char
+	LI	 97
+	Sb  0,	LC_A_disp
+
+VAR LC_B_disp, b				; variable bool char
+	LI	 98
+	Sb  0,	LC_B_disp
+
+VAR LC_C_disp, b				; variable bool char
+	LI	 99
+	Sb  0,	LC_C_disp
+
+VAR LC_D_disp, b				; variable bool char
+	LI	 100
+	Sb  0,	LC_D_disp
+
+VAR LC_E_disp, b				; variable bool char
+	LI	 101
+	Sb  0,	LC_E_disp
+
+VAR LC_F_disp, b				; variable bool char
+	LI	 102
+	Sb  0,	LC_F_disp
+
+VAR LC_G_disp, b				; variable bool char
+	LI	 103
+	Sb  0,	LC_G_disp
+
+VAR LC_H_disp, b				; variable bool char
+	LI	 104
+	Sb  0,	LC_H_disp
+
+VAR LC_I_disp, b				; variable bool char
+	LI	 105
+	Sb  0,	LC_I_disp
+
+VAR LC_J_disp, b				; variable bool char
+	LI	 106
+	Sb  0,	LC_J_disp
+
+VAR LC_K_disp, b				; variable bool char
+	LI	 107
+	Sb  0,	LC_K_disp
+
+VAR LC_L_disp, b				; variable bool char
+	LI	 108
+	Sb  0,	LC_L_disp
+
+VAR LC_M_disp, b				; variable bool char
+	LI	 109
+	Sb  0,	LC_M_disp
+
+VAR LC_N_disp, b				; variable bool char
+	LI	 110
+	Sb  0,	LC_N_disp
+
+VAR LC_O_disp, b				; variable bool char
+	LI	 111
+	Sb  0,	LC_O_disp
+
+VAR LC_P_disp, b				; variable bool char
+	LI	 112
+	Sb  0,	LC_P_disp
+
+VAR LC_Q_disp, b				; variable bool char
+	LI	 113
+	Sb  0,	LC_Q_disp
+
+VAR LC_R_disp, b				; variable bool char
+	LI	 114
+	Sb  0,	LC_R_disp
+
+VAR LC_S_disp, b				; variable bool char
+	LI	 115
+	Sb  0,	LC_S_disp
+
+VAR LC_T_disp, b				; variable bool char
+	LI	 116
+	Sb  0,	LC_T_disp
+
+VAR LC_U_disp, b				; variable bool char
+	LI	 117
+	Sb  0,	LC_U_disp
+
+VAR LC_V_disp, b				; variable bool char
+	LI	 118
+	Sb  0,	LC_V_disp
+
+VAR LC_W_disp, b				; variable bool char
+	LI	 119
+	Sb  0,	LC_W_disp
+
+VAR LC_X_disp, b				; variable bool char
+	LI	 120
+	Sb  0,	LC_X_disp
+
+VAR LC_Y_disp, b				; variable bool char
+	LI	 121
+	Sb  0,	LC_Y_disp
+
+VAR LC_Z_disp, b				; variable bool char
+	LI	 122
+	Sb  0,	LC_Z_disp
+
+; EXC_LBL	L1
+end namespace
+namespace NATURAL__i			; NATURAL INTEGER SUBTYPE INFO
+VAR SIZ, b
+end namespace
+
+namespace POSITIVE__i			; POSITIVE INTEGER SUBTYPE INFO
+VAR SIZ, b
+end namespace
+
+namespace STRING__i				; STRING CONSTRAINED ARRAY SUBTYPE INFO
+VAR SIZ, b
+end namespace 
+; EXL	L2
+; EXL	L3
+; EXL	L4
+; EXL	L5
+; EXL	L6
+; EXC_LBL	L7
+end namespace
+; EXC_LBL	L8
+end namespace

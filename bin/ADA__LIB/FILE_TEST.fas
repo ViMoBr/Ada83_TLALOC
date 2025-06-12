@@ -5,6 +5,7 @@ namespace STANDARD
     VARzone::
     VARzone.DISP = $
   end virtual
+include '../../bin/ADA__LIB/_STANDRD.FINC'
 
 	LINK	0, loc_siz
 

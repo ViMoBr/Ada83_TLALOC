@@ -302,8 +302,11 @@ is					-------
 
 private
 
+  subtype FILE_NAME_BUFFER	is STRING( 1 .. 256 );
+
   type FILE_TYPE		is record
 			  ID		: INTEGER;
+			  NAME		: FILE_NAME_BUFFER;
 			  MODE		: FILE_MODE;
 			  PAGE_LENGTH,
 			  LINE_LENGTH,

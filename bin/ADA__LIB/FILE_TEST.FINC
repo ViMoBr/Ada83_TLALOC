@@ -11,6 +11,13 @@ STR NOM, './essai.txt'			; constante string='./essai.txt'
 	LCA	NOM_ptr
 	Sa	1,	NOM_disp				; array fin
 
+VAR C_disp, b				; variable bool char
+
+VAR PROMPT_disp, q				; variable array : pointeur au tableau
+STR PROMPT, 'Taper un caractere '		; constante string='Taper un caractere '
+	LCA	PROMPT_ptr
+	Sa	1,	PROMPT_disp				; array fin
+
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 STR STR_L1, ''				; constante string=''
@@ -18,7 +25,13 @@ STR STR_L1, ''				; constante string=''
 	La  1,	NOM_disp
 	LI  1
 	La  1,	F_disp
-	CALL	STANDARD.TEXT_IO. ,CREATE_L1
+	CALL	STANDARD.TEXT_IO. ,OPEN_L2
+	La  1,	PROMPT_disp
+	CALL	STANDARD.TEXT_IO. ,PUT_L56
+	LVA  1,	C_disp
+	CALL	STANDARD.TEXT_IO. ,GET_L50
+	La  1,	F_disp
+	CALL	STANDARD.TEXT_IO. ,DELETE_L4
 ret_lbl:
 	UNLINK 1
 	RTD

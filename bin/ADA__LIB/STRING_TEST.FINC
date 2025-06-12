@@ -5,6 +5,7 @@ VAR L_disp, d				; variable entiere
 
 namespace NAT_IO				;---------- GENERIC PACKAGE INSTANTIATION
 elab_spec:				;    SPEC ELAB
+
 VAR NATURAL_last_ofs, q
 LI 2147483647
 Sd 1,	NATURAL_last_ofs
@@ -127,16 +128,20 @@ begin:
 	RTD	prm_siz
 endPRO					;---------- end PRO PUT
 end if
-end namespace 				;---------- end generic package instantiation NAT_IO
-; EXC_LBL	L7
+					;---------- end generic package instantiation NAT_IO
+end namespace
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-STR STR_L8, 'Entrez un nombre entier : '	; constante string='Entrez un nombre entier : '
-	LCA	STR_L8_ptr
+STR STR_L7, 'Entrez un nombre entier : '	; constante string='Entrez un nombre entier : '
+	LCA	STR_L7_ptr
 	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
 	LI	 0
 	LVA  1,	L_disp
 	CALL	STANDARD.STRING_TEST_L1.NAT_IO. ,GET_L62
+STR STR_L8, 'Merci'				; constante string='Merci'
+	LCA	STR_L8_ptr
+	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
+ret_lbl:
 	UNLINK 1
 	RTD
 excep:

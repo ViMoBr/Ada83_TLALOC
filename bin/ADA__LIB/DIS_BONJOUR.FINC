@@ -6,6 +6,7 @@ begin:					;---------- BDY INSTRUCTIONS
 STR STR_L1, ' Bonjour '			; constante string=' Bonjour '
 	LCA	STR_L1_ptr
 	CALL	STANDARD.TEXT_IO. ,PUT_L56
+ret_lbl:
 	UNLINK 1
 	RTD
 excep:

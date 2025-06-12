@@ -63,8 +63,9 @@ is
   procedure CODE_NAME_DEFAULT ( NAME_DEFAULT :TREE );
   procedure CODE_BOX_DEFAULT ( BOX_DEFAULT :TREE );
   procedure CODE_NO_DEFAULT ( NO_DEFAULT :TREE );
+
   procedure CODE_TYPE_DEF ( TYPE_DEF, TYPE_DECL :TREE );
-  procedure CODE_ENUMERATION_DEF ( ENUMERATION_DEF :TREE );
+  procedure CODE_ENUMERATION_DEF		( ENUMERATION_DEF, TYPE_DECL :TREE );
   procedure CODE_ENUM_LITERAL_S ( ENUM_LITERAL_S :TREE );
   procedure CODE_ENUM_LITERAL ( ENUM_LITERAL :TREE );
   procedure CODE_CHARACTER_ID ( CHARACTER_ID :TREE );
@@ -74,17 +75,18 @@ is
   procedure CODE_FORMAL_DSCRT_DEF ( FORMAL_DSCRT_DEF :TREE );
   procedure CODE_PRIVATE_DEF ( PRIVATE_DEF :TREE );
   procedure CODE_L_PRIVATE_DEF ( L_PRIVATE_DEF :TREE );
-  procedure CODE_RECORD_DEF ( RECORD_DEF, TYPE_DECL :TREE );
+  procedure CODE_RECORD_DEF			( RECORD_DEF, TYPE_DECL :TREE );
   procedure CODE_CONSTRAINED_DEF ( CONSTRAINED_DEF, TYPE_DECL :TREE );
-  procedure CODE_SUBTYPE_INDICATION ( SUBTYPE_INDICATION :TREE );
+  procedure CODE_SUBTYPE_INDICATION		( SUBTYPE_INDICATION, TYPE_DECL :TREE );
   procedure CODE_INTEGER_DEF ( INTEGER_DEF, TYPE_DECL :TREE );
   procedure CODE_FIXED_DEF ( FIXED_DEF :TREE );
   procedure CODE_FLOAT_DEF ( FLOAT_DEF :TREE );
-  procedure CODE_ARR_ACC_DER_DEF ( ARR_ACC_DER_DEF :TREE );
+  procedure CODE_ARR_ACC_DER_DEF		( ARR_ACC_DER_DEF, TYPE_DECL :TREE );
   procedure CODE_CONSTRAINED_ARRAY_DEF ( CONSTRAINED_ARRAY_DEF :TREE );
-  procedure CODE_UNCONSTRAINED_ARRAY_DEF ( UNCONSTRAINED_ARRAY_DEF :TREE );
-  procedure CODE_ACCESS_DEF ( ACCESS_DEF :TREE );
+  procedure CODE_UNCONSTRAINED_ARRAY_DEF	( UNCONSTRAINED_ARRAY_DEF, TYPE_DECL :TREE );
+  procedure CODE_ACCESS_DEF			( ACCESS_DEF, TYPE_DECL :TREE );
   procedure CODE_DERIVED_DEF ( DERIVED_DEF :TREE );
+
   procedure CODE_UNIT_NAME ( UNIT_NAME :TREE );
   procedure CODE_NUMBER_ID ( NUMBER_ID :TREE );
   procedure CODE_TYPE_NAME ( TYPE_NAME :TREE );
@@ -713,7 +715,7 @@ null;--	EMIT( JMPT, LABEL_TYPE( DI( CD_LABEL, CHOICE_S ) ), COMMENT=> "TRAITE EX
   begin
 
     if TYPE_DEF.TY = DN_ENUMERATION_DEF then
-      CODE_ENUMERATION_DEF ( TYPE_DEF );
+      CODE_ENUMERATION_DEF ( TYPE_DEF, TYPE_DECL );
 
     elsif TYPE_DEF.TY = DN_RECORD_DEF then
       CODE_RECORD_DEF ( TYPE_DEF, TYPE_DECL );
@@ -740,35 +742,61 @@ null;--	EMIT( JMPT, LABEL_TYPE( DI( CD_LABEL, CHOICE_S ) ), COMMENT=> "TRAITE EX
       CODE_CONSTRAINED_DEF ( TYPE_DEF, TYPE_DECL );
 
     elsif TYPE_DEF.TY in CLASS_ARR_ACC_DER_DEF then
-      CODE_ARR_ACC_DER_DEF ( TYPE_DEF );
+      CODE_ARR_ACC_DER_DEF ( TYPE_DEF, TYPE_DECL );
 
     end if;
   end;
 
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_ENUMERATION_DEF ( ENUMERATION_DEF :TREE ) is
+			--------------------
+  procedure		CODE_ENUMERATION_DEF	( ENUMERATION_DEF, TYPE_DECL :TREE )
+  is			--------------------
+    TYPE_ID	: TREE		:= D( AS_SOURCE_NAME, TYPE_DECL );
+    TYPE_SPEC	: TREE		:= D( SM_TYPE_SPEC, TYPE_ID );
+    TYPE_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, TYPE_ID ) );
   begin
-      CODE_ENUM_LITERAL_S ( D ( AS_ENUM_LITERAL_S, ENUMERATION_DEF ) );
-  end;
+    DI( CD_LEVEL,     TYPE_SPEC, INTEGER( CODI.CUR_LEVEL ) );
+    DB( CD_COMPILED,  TYPE_SPEC, TRUE );
 
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_ENUM_LITERAL_S ( ENUM_LITERAL_S :TREE ) is
+    PUT( "namespace " & TYPE_STR & "__i");
+    if  CODI.DEBUG  then PUT( tab50 & "; " & TYPE_STR & " ENUMERATION TYPE INFO" ); end if;
+    NEW_LINE;
+
+    PUT_LINE( "CST " & "SIZ, b," & INTEGER'IMAGE( DI( CD_IMPL_SIZE, TYPE_SPEC ) ) );
+
+    CODE_ENUM_LITERAL_S ( D ( AS_ENUM_LITERAL_S, ENUMERATION_DEF ) );
+
+    PUT_LINE( "end namespace ");
+    if  CODI.DEBUG  then NEW_LINE; end if;
+
+  end	CODE_ENUMERATION_DEF;
+  	--------------------
+
+
+			-------------------
+  procedure		CODE_ENUM_LITERAL_S		( ENUM_LITERAL_S :TREE )
+  is
+    ENUM_LITERAL_SEQ	: SEQ_TYPE	:= LIST ( ENUM_LITERAL_S );
+    ENUM_LITERAL_ID		: TREE;
+    LAST_LITERAL		: TREE;
   begin
-    declare
-      LAST_LITERAL :TREE;
-    begin
-    declare
-      ENUM_LITERAL_SEQ : SEQ_TYPE := LIST ( ENUM_LITERAL_S );
-      ENUM_LITERAL : TREE;
-    begin
-      while not IS_EMPTY ( ENUM_LITERAL_SEQ ) loop
-        POP ( ENUM_LITERAL_SEQ, ENUM_LITERAL );
-        LAST_LITERAL := ENUM_LITERAL;
+    while not IS_EMPTY ( ENUM_LITERAL_SEQ ) loop
+      POP ( ENUM_LITERAL_SEQ, ENUM_LITERAL_ID );
+      declare
+	ENUM_ID_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, ENUM_LITERAL_ID ) );
+      begin
+        if  ENUM_ID_STR /= "'""'" then
+	PUT_LINE( "CST , ," & INTEGER'IMAGE( ENUM_ID_STR'LENGTH ) & ", """ & ENUM_ID_STR & """" );
+        else
+	PUT_LINE( "CST , ," & INTEGER'IMAGE( ENUM_ID_STR'LENGTH ) & ", ""'""""'""" );
+        end if;
+      end;
+      LAST_LITERAL := ENUM_LITERAL_ID;
     end loop;
-    end;
     DI ( CD_LAST, ENUM_LITERAL_S, DI ( SM_REP, LAST_LITERAL ) );
-    end;
-  end;
+
+  end	CODE_ENUM_LITERAL_S;
+  	-------------------
+
 
   procedure			CODE_ENUMERATION_ID		( ENUMERATION_ID :TREE )
   is
@@ -837,15 +865,65 @@ null;--	EMIT( JMPT, LABEL_TYPE( DI( CD_LABEL, CHOICE_S ) ), COMMENT=> "TRAITE EX
   procedure		CODE_RECORD_DEF		( RECORD_DEF, TYPE_DECL :TREE )
   is			---------------
     TYPE_ID	: TREE		:= D( AS_SOURCE_NAME, TYPE_DECL );
+    TYPE_SPEC	: TREE		:= D( SM_TYPE_SPEC, TYPE_ID );
     TYPE_ID_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, TYPE_ID ) );
-  begin
-    PUT( "struc " & TYPE_ID_STR & "_model" );
-    if  CODI.DEBUG  then PUT( tab50 & "; type record" ); end if;
-    NEW_LINE;
-    PUT_LINE( " label ." );
-    PUT_LINE( " virtual at 0" );
+    LVL		: LEVEL_NUM	renames CODI.CUR_LEVEL;
+    LVL_STR	:constant STRING	:= IMAGE( LVL );
 
-			-------------------------
+  begin
+    DI( CD_LEVEL,     TYPE_SPEC, INTEGER( CODI.CUR_LEVEL ) );
+    DB( CD_COMPILED,  TYPE_SPEC, TRUE );
+
+    PUT( "namespace " & TYPE_ID_STR & "__i" );
+    if  CODI.DEBUG  then PUT( tab50 & "; " & TYPE_ID_STR & " RECORD TYPE INFO" ); end if;
+    NEW_LINE;
+    PUT_LINE( "VAR " & "SIZ, b" );
+
+			------------------------
+			INSERE_LES_DISCRIMINANTS:
+    declare
+      DSCRMT_DECL_S		: SEQ_TYPE	:= LIST( D( AS_DSCRMT_DECL_S, TYPE_DECL ) );
+      DSCRMT_DECL		: TREE;
+    begin
+      while  not IS_EMPTY( DSCRMT_DECL_S )  loop
+        POP( DSCRMT_DECL_S, DSCRMT_DECL );
+        declare
+	DISCRIMINANT_ID_S	: SEQ_TYPE	:= LIST( D( AS_SOURCE_NAME_S, DSCRMT_DECL ) );
+	DISCRIMINANT_ID	: TREE;
+        begin
+	while  not IS_EMPTY( DISCRIMINANT_ID_S )  loop
+	  POP( DISCRIMINANT_ID_S, DISCRIMINANT_ID );
+	  PUT_LINE( "FIELD " & PRINT_NAME( D( LX_SYMREP, DISCRIMINANT_ID ) ) );
+	end loop;
+        end;
+      end loop;
+    end	INSERE_LES_DISCRIMINANTS;
+    	------------------------
+
+    			-----------------
+			INSERE_LES_CHAMPS:
+    declare
+      V_DECL_S		: SEQ_TYPE	:= LIST( D( AS_DECL_S, D( AS_COMP_LIST, RECORD_DEF ) ) );
+      V_DECL		: TREE;
+    begin
+      while  not IS_EMPTY( V_DECL_S )  loop
+        POP( V_DECL_S, V_DECL );
+        declare
+	COMP_ID_S		: SEQ_TYPE	:= LIST( D( AS_SOURCE_NAME_S, V_DECL ) );
+	COMP_ID		: TREE;
+        begin
+	while  not IS_EMPTY( COMP_ID_S )  loop
+	  POP( COMP_ID_S, COMP_ID );
+	  PUT_LINE( "FIELD " & PRINT_NAME( D( LX_SYMREP, COMP_ID ) ) );
+	end loop;
+        end;
+      end loop;
+    end	INSERE_LES_CHAMPS;
+    	-----------------
+
+    PUT_LINE( "end namespace" );
+
+    			-------------------------
 			TRAITER_LES_DISCRIMINANTS:
     declare
       DSCRMT_DECL_S		: SEQ_TYPE	:= LIST( D( AS_DSCRMT_DECL_S, TYPE_DECL ) );
@@ -855,8 +933,8 @@ null;--	EMIT( JMPT, LABEL_TYPE( DI( CD_LABEL, CHOICE_S ) ), COMMENT=> "TRAITE EX
         POP( DSCRMT_DECL_S, DSCRMT_DECL );
         declare
 	DISCRIMINANT_ID_S	: SEQ_TYPE	:= LIST( D( AS_SOURCE_NAME_S, DSCRMT_DECL ) );
-	TYPE_DEFN		: TREE		:= D( SM_DEFN, D( AS_NAME, DSCRMT_DECL ) );
-	TYPE_SPEC		: TREE		:= D( SM_TYPE_SPEC, TYPE_DEFN );
+	DISCR_TYPE_DEFN	: TREE		:= D( SM_DEFN, D( AS_NAME, DSCRMT_DECL ) );
+	DISCR_TYPE_SPEC	: TREE		:= D( SM_TYPE_SPEC, DISCR_TYPE_DEFN );
 	DISCRIMINANT_ID	: TREE;
 	SIZE_CHAR		: CHARACTER	:= 'x';
         begin
@@ -865,7 +943,15 @@ null;--	EMIT( JMPT, LABEL_TYPE( DI( CD_LABEL, CHOICE_S ) ), COMMENT=> "TRAITE EX
 	end if;
 	while  not IS_EMPTY( DISCRIMINANT_ID_S )  loop
 	  POP( DISCRIMINANT_ID_S, DISCRIMINANT_ID );
-	  PUT_LINE( "  FIELD " & PRINT_NAME( D( LX_SYMREP, DISCRIMINANT_ID ) )  & ", " & SIZE_CHAR );
+
+	  PUT( tab & "LVA" & INTEGER'IMAGE( DI( CD_LEVEL, DISCR_TYPE_SPEC ) ) & ", " );
+	  REGIONS_PATH( DISCR_TYPE_DEFN );
+	  PUT_LINE( PRINT_NAME( D( LX_SYMREP, D( XD_SOURCE_NAME, DISCR_TYPE_SPEC ) ) )  & "__i.SIZ" );
+	  PUT_LINE( tab & "Sa " & LVL_STR & ", " & TYPE_ID_STR & "__i." & PRINT_NAME( D( LX_SYMREP, DISCRIMINANT_ID ) ) & "__u" );
+
+	  PUT_LINE( tab & "LI 0" & tab & " ; offset a faire" );
+	  PUT_LINE( tab & "Sd " & LVL_STR & ", " & TYPE_ID_STR & "__i." & PRINT_NAME( D( LX_SYMREP, DISCRIMINANT_ID ) ) & "__o" );
+
 	end loop;
         end;
       end loop;
@@ -881,8 +967,11 @@ null;--	EMIT( JMPT, LABEL_TYPE( DI( CD_LABEL, CHOICE_S ) ), COMMENT=> "TRAITE EX
       while  not IS_EMPTY( V_DECL_S )  loop
         POP( V_DECL_S, V_DECL );
         declare
-	TYPE_DEFN		: TREE		:= D( SM_DEFN, D( AS_NAME, D( AS_TYPE_DEF, V_DECL ) ) );
-	TYPE_SPEC		: TREE		:= D( SM_TYPE_SPEC, TYPE_DEFN );
+	FIELD_TYPE_DEF	: TREE		:= D( AS_TYPE_DEF, V_DECL );
+	FIELD_TYPE_NAME	: TREE		:= D( AS_NAME, FIELD_TYPE_DEF );
+
+	FIELD_TYPE_DEFN	: TREE		:= D( SM_DEFN, FIELD_TYPE_NAME );
+	FIELD_TYPE_SPEC	: TREE		:= D( SM_TYPE_SPEC, FIELD_TYPE_DEFN );
 	COMP_ID_S		: SEQ_TYPE	:= LIST( D( AS_SOURCE_NAME_S, V_DECL ) );
 	COMP_ID		: TREE;
 	SIZE_CHAR		: CHARACTER	:= 'x';
@@ -893,27 +982,39 @@ null;--	EMIT( JMPT, LABEL_TYPE( DI( CD_LABEL, CHOICE_S ) ), COMMENT=> "TRAITE EX
 	while  not IS_EMPTY( COMP_ID_S )  loop
 	  POP( COMP_ID_S, COMP_ID );
 
-	  if  TYPE_SPEC.TY = DN_INTEGER  then
-	    PUT_LINE( "  FIELD " & PRINT_NAME( D( LX_SYMREP, COMP_ID ) )  & ", " & SIZE_CHAR );
+	  PUT( tab & "LVA" & INTEGER'IMAGE( DI( CD_LEVEL, FIELD_TYPE_SPEC ) ) & ", " );
+	  REGIONS_PATH( FIELD_TYPE_DEFN );
+--	  PUT_LINE( PRINT_NAME( D( LX_SYMREP, D( XD_SOURCE_NAME, FIELD_TYPE_SPEC ) ) )  & "__i.SIZ" );
+	  PUT_LINE( PRINT_NAME( D( LX_SYMREP, FIELD_TYPE_NAME ) )  & "__i.SIZ" );
 
-	  elsif   TYPE_SPEC.TY = DN_RECORD  then
-	    PUT( "  ." & PRINT_NAME( D( LX_SYMREP, COMP_ID ) ) & tab );
+	  PUT_LINE( tab & "Sa " & LVL_STR & ", " & TYPE_ID_STR & "__i." & PRINT_NAME( D( LX_SYMREP, COMP_ID ) ) & "__u" );
+
+--	  if  TYPE_SPEC.TY = DN_INTEGER  then
+--	    PUT_LINE( "VAR " & PRINT_NAME( D( LX_SYMREP, COMP_ID ) )  & "__o, d" );
+--	    PUT_LINE( "VAR " & PRINT_NAME( D( LX_SYMREP, COMP_ID ) )  & "__u, q" );
+
+--	  elsif   TYPE_SPEC.TY = DN_RECORD  then
+--	    PUT( "  ." & PRINT_NAME( D( LX_SYMREP, COMP_ID ) ) & tab );
 --	    REGIONS_PATH( COMP_ID );
-	    PUT_LINE( PRINT_NAME( D( LX_SYMREP, TYPE_DEFN ) ) & "_model" );
-	    PUT_LINE( "  rb " & PRINT_NAME( D( LX_SYMREP, TYPE_DEFN ) )  & ".size" );
+--	    PUT_LINE( PRINT_NAME( D( LX_SYMREP, TYPE_DEFN ) ) & "_model" );
+--	    PUT_LINE( "  rb " & PRINT_NAME( D( LX_SYMREP, TYPE_DEFN ) )  & ".size" );
 
-	  end if;
+--	  elsif   TYPE_SPEC.TY = DN_CONSTRAINED_ARRAY  then
+--	    PUT_LINE( "; CODE_RECORD_DEF.TRAITER_LES_CHAMPS : DN_CONSTRAINED_ARRAY" );
+--	    PUT_LINE( "  FIELD " & PRINT_NAME( D( LX_SYMREP, COMP_ID ) )  & ", " & "b,"
+--		    & INTEGER'IMAGE( DI( CD_IMPL_SIZE, TYPE_SPEC ) ) );
+
+--	  else
+--	    PUT_LINE( "; CODE_RECORD_DEF.TRAITER_LES_CHAMPS : NON TRAITE TYPE_SPEC.TY = "
+--		    & NODE_NAME'IMAGE( TYPE_SPEC.TY ) );
+--	  end if;
 	end loop;
         end;
       end loop;
     end	TRAITER_LES_CHAMPS;
-    	------------------
+    ------------------
 
-    PUT_LINE( "  .size = $" );
-    PUT_LINE( " end virtual" );
-    PUT_LINE( "end struc" );
-    PUT_LINE( TYPE_ID_STR & tab & TYPE_ID_STR & "_model" );
-    NEW_LINE;
+    if  CODI.DEBUG  then  NEW_LINE; end if;
 
   end	CODE_RECORD_DEF;
   	---------------
@@ -924,7 +1025,7 @@ null;--	EMIT( JMPT, LABEL_TYPE( DI( CD_LABEL, CHOICE_S ) ), COMMENT=> "TRAITE EX
   begin
 
     if CONSTRAINED_DEF.TY = DN_SUBTYPE_INDICATION then
-      CODE_SUBTYPE_INDICATION ( CONSTRAINED_DEF );
+      CODE_SUBTYPE_INDICATION ( CONSTRAINED_DEF, TYPE_DECL );
 
     elsif CONSTRAINED_DEF.TY = DN_INTEGER_DEF then
       CODE_INTEGER_DEF ( CONSTRAINED_DEF, TYPE_DECL );
@@ -939,47 +1040,51 @@ null;--	EMIT( JMPT, LABEL_TYPE( DI( CD_LABEL, CHOICE_S ) ), COMMENT=> "TRAITE EX
   end;
 
 
-
-  procedure CODE_SUBTYPE_INDICATION ( SUBTYPE_INDICATION :TREE ) is
+			-----------------------
+  procedure		CODE_SUBTYPE_INDICATION	( SUBTYPE_INDICATION, TYPE_DECL :TREE )
+  is			-----------------------
+    TYPE_ID		: TREE		:= D( AS_SOURCE_NAME, TYPE_DECL );
+    INTEGER_SPEC		: TREE		:= D( SM_TYPE_SPEC, TYPE_ID );
   begin
-    null;
-  end;
+    DI( CD_LEVEL,     INTEGER_SPEC, INTEGER( CODI.CUR_LEVEL ) );
+    DB( CD_COMPILED,  INTEGER_SPEC, TRUE );
 
+  end	CODE_SUBTYPE_INDICATION;
+	-----------------------
 
-
-  procedure CODE_INTEGER_DEF ( INTEGER_DEF, TYPE_DECL :TREE ) is
+			----------------
+  procedure		CODE_INTEGER_DEF		( INTEGER_DEF, TYPE_DECL :TREE )
+  is			----------------
+    LVL_STR		:constant STRING	:= IMAGE( CODI.CUR_LEVEL );
+    TYPE_ID		: TREE		:= D( AS_SOURCE_NAME, TYPE_DECL );
+    INTEGER_SPEC		: TREE		:= D( SM_TYPE_SPEC, TYPE_ID );
+    TYPE_STR		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, D( AS_SOURCE_NAME, TYPE_DECL ) ) );
+    INT_RANGE		: TREE		:= D( AS_CONSTRAINT, INTEGER_DEF );
+    EXP_FST		: TREE		:= D( AS_EXP1, INT_RANGE );
+    EXP_LST		: TREE		:= D( AS_EXP2, INT_RANGE );
+    SIZE_CHAR		: CHARACTER	:= OPER_SIZ_CHAR( INTEGER_SPEC );
   begin
-    declare
-      TYPE_ID		: TREE		:= D( AS_SOURCE_NAME, TYPE_DECL );
-      INTEGER_SPEC		: TREE		:= D( SM_TYPE_SPEC, TYPE_ID );
-      LOWER_STR		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, D( AS_SOURCE_NAME, TYPE_DECL ) ) ) & "_lower_disp";
-      UPPER_STR		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, D( AS_SOURCE_NAME, TYPE_DECL ) ) ) & "_upper_disp";
-      INT_RANGE		: TREE		:= D( AS_CONSTRAINT, INTEGER_DEF );
-      EXP_BORNE		: TREE;
-    begin
-      PUT( "  virtual VARzone" );
-      if  CODI.DEBUG  then  PUT( tab50 & "; type range" ); end if;
-      NEW_LINE;
-      PUT_LINE( "    align_d" );
-      PUT_LINE( "    " & LOWER_STR & " = $" );
-      PUT_LINE( "    dd" & " ?" );
-      PUT_LINE( "    " & UPPER_STR & " = $" );
-      PUT_LINE( "    dd" & " ?" );
-      PUT_LINE( "  end virtual" );
+    DI( CD_LEVEL,     INTEGER_SPEC, INTEGER( CODI.CUR_LEVEL ) );
+    DB( CD_COMPILED,  INTEGER_SPEC, TRUE );
 
-      DI( CD_LEVEL,     INTEGER_SPEC, INTEGER( CODI.CUR_LEVEL ) );
-      DB( CD_COMPILED,  INTEGER_SPEC, TRUE );
+    PUT( "namespace " & TYPE_STR & "__i" );
+    if  CODI.DEBUG  then  PUT( tab50 & "; " & TYPE_STR & " TYPE RANGE INFO" ); end if;
+    NEW_LINE;
+    PUT_LINE( "VAR SIZ, b" );
+    PUT_LINE( "VAR FST, " & SIZE_CHAR );
+    PUT_LINE( "VAR LST, " & SIZE_CHAR );
+    PUT_LINE( "end namespace" );
 
-      EXP_BORNE := D( AS_EXP1, INT_RANGE );
-      EXPRESSIONS.CODE_EXP( EXP_BORNE );
-      PUT_LINE( tab & "S" & 'd' & ' ' & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & ',' & tab & LOWER_STR );
+    EXPRESSIONS.CODE_EXP( EXP_FST );
+    PUT_LINE( tab & 'S' & SIZE_CHAR & ' ' & LVL_STR & ',' & tab & TYPE_STR & "__i.FST" );
 
-      EXP_BORNE := D( AS_EXP2, INT_RANGE );
-      EXPRESSIONS.CODE_EXP( EXP_BORNE );
-      PUT_LINE( tab & "S" & 'd' & ' ' & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & ',' & tab & UPPER_STR );
-      NEW_LINE;
-    end;
-  end;
+    EXPRESSIONS.CODE_EXP( EXP_LST );
+    PUT_LINE( tab & 'S' & SIZE_CHAR & ' ' & LVL_STR & ',' & tab & TYPE_STR & "__i.LST" );
+
+    if  CODI.DEBUG  then  NEW_LINE; end if;
+
+  end	CODE_INTEGER_DEF;
+  	----------------
 
 
 
@@ -997,17 +1102,17 @@ null;--	EMIT( JMPT, LABEL_TYPE( DI( CD_LABEL, CHOICE_S ) ), COMMENT=> "TRAITE EX
 
 
 
-  procedure CODE_ARR_ACC_DER_DEF ( ARR_ACC_DER_DEF :TREE ) is
+  procedure CODE_ARR_ACC_DER_DEF ( ARR_ACC_DER_DEF, TYPE_DECL :TREE ) is
   begin
 
     if ARR_ACC_DER_DEF.TY = DN_CONSTRAINED_ARRAY_DEF then
       CODE_CONSTRAINED_ARRAY_DEF ( ARR_ACC_DER_DEF );
 
     elsif ARR_ACC_DER_DEF.TY = DN_UNCONSTRAINED_ARRAY_DEF then
-      CODE_UNCONSTRAINED_ARRAY_DEF ( ARR_ACC_DER_DEF );
+      CODE_UNCONSTRAINED_ARRAY_DEF ( ARR_ACC_DER_DEF, TYPE_DECL );
 
     elsif ARR_ACC_DER_DEF.TY = DN_ACCESS_DEF then
-      CODE_ACCESS_DEF ( ARR_ACC_DER_DEF );
+      CODE_ACCESS_DEF ( ARR_ACC_DER_DEF, TYPE_DECL );
 
     elsif ARR_ACC_DER_DEF.TY = DN_DERIVED_DEF then
       CODE_DERIVED_DEF ( ARR_ACC_DER_DEF );
@@ -1016,22 +1121,40 @@ null;--	EMIT( JMPT, LABEL_TYPE( DI( CD_LABEL, CHOICE_S ) ), COMMENT=> "TRAITE EX
   end;
 
 
-
-  procedure CODE_CONSTRAINED_ARRAY_DEF ( CONSTRAINED_ARRAY_DEF :TREE ) is
+		--------------------------
+  procedure	CODE_CONSTRAINED_ARRAY_DEF	( CONSTRAINED_ARRAY_DEF :TREE )
+  is
   begin
     null;
-  end;
+  end	CODE_CONSTRAINED_ARRAY_DEF;
+  	--------------------------
 
 
-
-  procedure CODE_UNCONSTRAINED_ARRAY_DEF ( UNCONSTRAINED_ARRAY_DEF :TREE ) is
+		----------------------------
+  procedure	CODE_UNCONSTRAINED_ARRAY_DEF	( UNCONSTRAINED_ARRAY_DEF, TYPE_DECL :TREE )
+  is
+    TYPE_ID	: TREE		:= D( AS_SOURCE_NAME, TYPE_DECL );
+    TYPE_ID_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, TYPE_ID ) );
+    TYPE_SPEC	: TREE		:= D( SM_TYPE_SPEC, TYPE_ID );
   begin
-    null;
-  end;
+    DI( CD_LEVEL,     TYPE_SPEC, INTEGER( CODI.CUR_LEVEL ) );
+    DB( CD_COMPILED,  TYPE_SPEC, TRUE );
+
+    PUT( "namespace " & TYPE_ID_STR & "__i");
+    if  CODI.DEBUG  then PUT( tab50 & "; " & TYPE_ID_STR & " CONSTRAINED ARRAY SUBTYPE INFO" ); end if;
+    NEW_LINE;
+    PUT_LINE( "VAR " & "SIZ, b" );
+    PUT_LINE( "end namespace " );
+
+  end	CODE_UNCONSTRAINED_ARRAY_DEF;
+  	----------------------------
 
 
 
-  procedure CODE_ACCESS_DEF ( ACCESS_DEF :TREE ) is
+  procedure CODE_ACCESS_DEF ( ACCESS_DEF, TYPE_DECL :TREE )
+  is
+    TYPE_ID	: TREE		:= D( AS_SOURCE_NAME, TYPE_DECL );
+    TYPE_SPEC	: TREE		:= D( SM_TYPE_SPEC, TYPE_ID );
   begin
     null;
   end;

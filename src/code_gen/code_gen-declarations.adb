@@ -189,12 +189,11 @@ null;
         PUT( "PRMS" );
         if  CODI.DEBUG  then  PUT( tab50 & ";    debut parametrage" ); end if;
         NEW_LINE;
-      end if;
-
-      if  FOR_FUNCTION  then
-        PUT( tab & "PRM result__ofs" );
-        if  CODI.DEBUG  then  PUT( tab50 & "; resutat de fonction" ); end if;
-        NEW_LINE;
+        if  FOR_FUNCTION  then
+	PUT( tab & "PRM result__ofs" );
+	if  CODI.DEBUG  then  PUT( tab50 & "; resutat de fonction" ); end if;
+	NEW_LINE;
+        end if;
       end if;
 
       while not IS_EMPTY( PARAM_SEQ ) loop
@@ -655,17 +654,17 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 	  declare
 	    TYPE_BASE		: TREE		:= D( SM_BASE_TYPE, TYPE_SPEC );
 	    TYPE_ELEMENT		: TREE		:= D( SM_COMP_TYPE, TYPE_BASE );
-	    ELEMENT_SIZ		: NATURAL		:= DI( CD_IMPL_SIZE, TYPE_ELEMENT ) / 8;	-- TAILLE EN OCTETS
+	    ELEMENT_SIZ		: NATURAL		:= DI( CD_IMPL_SIZE, TYPE_ELEMENT ) / 8;		-- TAILLE EN OCTETS
 	    ELEMENT_SIZ_STR		:constant STRING	:= IMAGE( ELEMENT_SIZ );
 	  begin
-	    PUT_LINE( tab & "LI" & tab & ELEMENT_SIZ_STR );					-- TAILLE D'UN ELEMENT DU TABLEAU
-	    PUT_LINE( tab & "Sd" & ' ' & LVL_STR & ',' & tab & "SIZ_" & DIM_NBR_STR );			-- DWORD SIZ_
+	    PUT_LINE( tab & "LI" & tab & ELEMENT_SIZ_STR );						-- TAILLE D'UN ELEMENT DU TABLEAU
+	    PUT_LINE( tab & "Sd" & ' ' & LVL_STR & ',' & tab & "SIZ_" & DIM_NBR_STR );				-- DWORD SIZ_
 	  end;
 	else
 	  DIM_NBR := DIM_NBR + 1;
 	  COMPILE_ARRAY_TYPE_DIMENSION( IDX_TYPE_LIST );
 
-	  PUT_LINE( tab & "Sd" & ' ' & LVL_STR & ',' & tab & "SIZ_" & DIM_NBR_STR );			-- METTRE LA TAILLE TRANCHE A CELLE LAISSEE PAR LE CALCUL SUR LA DIM PRECEDENTE
+	  PUT_LINE( tab & "Sd" & ' ' & LVL_STR & ',' & tab & "SIZ_" & DIM_NBR_STR );				-- METTRE LA TAILLE TRANCHE A CELLE LAISSEE PAR LE CALCUL SUR LA DIM PRECEDENTE
 	end if;
 
 	if  IDX_TYPE.TY = DN_INTEGER  then
@@ -707,7 +706,7 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 	begin
 	  COMPILE_ARRAY_TYPE_DIMENSION( IDX_TYPE_LIST );
 	end;
-	PUT_LINE( "end namespace " );
+	PUT_LINE( "end namespace" );
 
 	PUT( tab & "CO_VAR"  );
 	if CODI.DEBUG then PUT( tab50 & "; allocation sur la co-pile" ); end if;
@@ -828,7 +827,7 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
       when DN_CONSTRAINED_ARRAY
         | DN_ARRAY			=> COMPILE_ARRAY_VAR(	    VC_NAME, TYPE_SPEC );
       when others =>
-        PUT_LINE( "ERREUR CODE_VC_NAME, TYPE_SPEC.TY = " & NODE_NAME'IMAGE( TYPE_SPEC.TY ) );
+        PUT_LINE( "; ERREUR CODE_VC_NAME, TYPE_SPEC.TY = " & NODE_NAME'IMAGE( TYPE_SPEC.TY ) );
         raise PROGRAM_ERROR;
       end case;
     end;
@@ -871,21 +870,162 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
     end if;
   end;
 
-
-  procedure CODE_TYPE_DECL ( TYPE_DECL :TREE ) is
+				--------------
+  procedure			CODE_TYPE_DECL		( TYPE_DECL :TREE )
+  is
   begin
-
-    if TYPE_DECL.TY = DN_TYPE_DECL then
+    if  TYPE_DECL.TY = DN_TYPE_DECL  then
       CODE_TYPE_DEF ( D ( AS_TYPE_DEF, TYPE_DECL ), TYPE_DECL );
-
     end if;
-  end;
 
-  --|-------------------------------------------------------------------------------------------
-  procedure CODE_SUBTYPE_DECL ( SUBTYPE_DECL :TREE ) is
+  end	CODE_TYPE_DECL;
+	--------------
+
+
+  				-----------------
+  procedure			CODE_SUBTYPE_DECL		( SUBTYPE_DECL :TREE )
+  is				-----------------
+    SUBTYPE_ID		: TREE		:= D( AS_SOURCE_NAME, SUBTYPE_DECL) ;
+    TYPE_SPEC		: TREE		:= D( SM_TYPE_SPEC, SUBTYPE_ID );
+    SUBTYPE_STR		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, SUBTYPE_ID ) );
   begin
-    null;
-  end;
+    DI( CD_LEVEL,     TYPE_SPEC, INTEGER( CODI.CUR_LEVEL ) );
+    DB( CD_COMPILED,  TYPE_SPEC, TRUE );
+
+    if  TYPE_SPEC.TY = DN_CONSTRAINED_ARRAY
+    then
+			-------------------------
+			PROCESS_CONSTRAINED_ARRAY:
+      declare
+        BASE_TYPE		: TREE		:= D( SM_BASE_TYPE, TYPE_SPEC );
+        COMP_TYPE		: TREE		:= D( SM_COMP_TYPE, BASE_TYPE );
+        COMP_SIZE		: INTEGER		:= DI( CD_IMPL_SIZE, COMP_TYPE );
+        INDEX_SUBTYPE_S	: SEQ_TYPE	:= LIST( D( SM_INDEX_SUBTYPE_S,  TYPE_SPEC) );
+        DIM_NBR		: NATURAL		:= 1;
+        LVL		: LEVEL_NUM	renames CODI.CUR_LEVEL;
+        LVL_STR		:constant STRING	:= IMAGE( CODI.CUR_LEVEL );
+        STR_INTER		:constant STRING	:= ' ' & LVL_STR & ',' & tab & SUBTYPE_STR & "__i.";
+
+		-----------------------------
+        procedure	ARRAY_TYPE_DIMENSION_SET_DESC	( IDX_TYPE_LIST :in out SEQ_TYPE )
+        is	-----------------------------
+	IDX_TYPE		: TREE;
+	DIM_NBR_STR	:constant STRING	:= IMAGE( DIM_NBR );
+        begin
+	POP( IDX_TYPE_LIST, IDX_TYPE );
+	PUT_LINE( "VAR " & "SIZ, d" );
+	PUT_LINE( "VAR " & "SIZ_" & DIM_NBR_STR & ", d" );
+	PUT_LINE( "VAR " & "FST_" & DIM_NBR_STR & ", d" );
+	PUT_LINE( "VAR " & "LST_" & DIM_NBR_STR & ", d" );
+
+	if  not IS_EMPTY( IDX_TYPE_LIST )  then
+	  DIM_NBR := DIM_NBR + 1;
+	  ARRAY_TYPE_DIMENSION_SET_DESC( IDX_TYPE_LIST );
+	  DIM_NBR := DIM_NBR - 1;
+	end if;
+
+        end	ARRAY_TYPE_DIMENSION_SET_DESC;
+		-----------------------------
+
+		-------------------------------
+        procedure	ARRAY_TYPE_DIMENSION_FILL_DESCR	( IDX_TYPE_LIST :in out SEQ_TYPE )
+        is	-------------------------------
+	IDX_TYPE		: TREE;
+	DIM_NBR_STR	:constant STRING	:= IMAGE( DIM_NBR );
+        begin
+	POP( IDX_TYPE_LIST, IDX_TYPE );
+
+	if  IS_EMPTY( IDX_TYPE_LIST )  then
+	  declare
+	    TYPE_BASE		: TREE		:= D( SM_BASE_TYPE, TYPE_SPEC );
+	    TYPE_ELEMENT		: TREE		:= D( SM_COMP_TYPE, TYPE_BASE );
+	    ELEMENT_SIZ		: NATURAL		:= DI( CD_IMPL_SIZE, TYPE_ELEMENT ) / 8;		-- TAILLE EN OCTETS
+	    ELEMENT_SIZ_STR		:constant STRING	:= IMAGE( ELEMENT_SIZ );
+	  begin
+	    PUT_LINE( tab & "LI" & tab & ELEMENT_SIZ_STR );						-- TAILLE D'UN ELEMENT DU TABLEAU
+	    PUT_LINE( tab & "Sd" & ' ' & LVL_STR & ',' & tab & SUBTYPE_STR & "__i.SIZ_" & DIM_NBR_STR );
+	  end;
+	else
+	  DIM_NBR := DIM_NBR + 1;
+	  ARRAY_TYPE_DIMENSION_FILL_DESCR( IDX_TYPE_LIST );
+	  DIM_NBR := DIM_NBR - 1;
+
+	  PUT_LINE( tab & "Sd" & ' ' & LVL_STR & ',' & tab & SUBTYPE_STR & "__i.SIZ_" & DIM_NBR_STR );
+	end if;
+
+	if  IDX_TYPE.TY = DN_INTEGER  then
+	  declare
+	      IDX_RANGE	: TREE		:= D( SM_RANGE, IDX_TYPE );
+	      RANGE_FIRST	: TREE		:= D( AS_EXP1, IDX_RANGE );
+	      RANGE_LAST 	: TREE		:= D( AS_EXP2, IDX_RANGE );
+	  begin
+	      EXPRESSIONS.CODE_EXP( RANGE_FIRST );
+	      PUT_LINE( tab & "Sd" & STR_INTER & "FST_" & DIM_NBR_STR );
+	      EXPRESSIONS.CODE_EXP( RANGE_LAST );
+	      PUT_LINE( tab & "Sd" & STR_INTER & "LST_" & DIM_NBR_STR );
+
+	      -- CALCULER LA TAILLE DE LA TRANCHE COMPTE TENU DE LA TAILLE D'ELEMENT DE DIMENSION SUIVANTE
+
+	        PUT_LINE( tab & "Ld" & STR_INTER & "LST_" & DIM_NBR_STR );
+	        PUT_LINE( tab & "INC" );
+	        PUT_LINE( tab & "Ld" & STR_INTER & "FST_" & DIM_NBR_STR );
+	        PUT_LINE( tab & "SUB" );
+	        PUT_LINE( tab & "Ld" & STR_INTER & "SIZ_" & DIM_NBR_STR );
+	        PUT_LINE( tab & "MUL" );
+	  end;
+	end if;
+
+        end	ARRAY_TYPE_DIMENSION_FILL_DESCR;
+		-------------------------------
+      begin
+        PUT( "namespace " & SUBTYPE_STR & "__i");
+        if  CODI.DEBUG  then PUT( tab50 & "; " & SUBTYPE_STR & " CONSTRAINED ARRAY SUBTYPE INFO" ); end if;
+        NEW_LINE;
+
+        ARRAY_TYPE_DIMENSION_SET_DESC( INDEX_SUBTYPE_S );
+
+        PUT_LINE( "end namespace" );
+
+        INDEX_SUBTYPE_S := LIST( D( SM_INDEX_SUBTYPE_S,  TYPE_SPEC) );
+        ARRAY_TYPE_DIMENSION_FILL_DESCR( INDEX_SUBTYPE_S );
+
+        PUT_LINE( tab & "Sd" & STR_INTER & "SIZ" );
+
+        NEW_LINE;
+      end			PROCESS_CONSTRAINED_ARRAY;
+      			-------------------------
+
+
+    elsif  TYPE_SPEC.TY = DN_ENUMERATION
+    then
+      PUT( "namespace " & SUBTYPE_STR & "__i");
+      if  CODI.DEBUG  then PUT( tab50 & "; " & SUBTYPE_STR & " ENUMERATION SUBTYPE INFO" ); end if;
+      NEW_LINE;
+      PUT_LINE( "VAR " & "SIZ, b" );
+--      D( SM_BASE_TYPE, TYPE_SPEC );
+--      D( SM_RANGE, TYPE_SPEC );
+      PUT_LINE( "end namespace" );
+      if  CODI.DEBUG  then NEW_LINE; end if;
+
+
+    elsif  TYPE_SPEC.TY = DN_INTEGER
+    then
+      PUT( "namespace " & SUBTYPE_STR & "__i");
+      if  CODI.DEBUG  then PUT( tab50 & "; " & SUBTYPE_STR & " INTEGER SUBTYPE INFO" ); end if;
+      NEW_LINE;
+      PUT_LINE( "VAR " & "SIZ, b" );
+--      D( SM_BASE_TYPE, TYPE_SPEC );
+--      D( SM_RANGE, TYPE_SPEC );
+      PUT_LINE( "end namespace" );
+      if  CODI.DEBUG  then NEW_LINE; end if;
+
+    else
+      PUT_LINE( ";  CODE_SUBTYPE_DECL : TYPE_SPEC.TY PAS FAIT " & NODE_NAME'IMAGE( TYPE_SPEC.TY ) );
+    end if;
+
+  end	CODE_SUBTYPE_DECL;
+  	-----------------
+
 
   --|-------------------------------------------------------------------------------------------
   procedure CODE_TASK_DECL ( TASK_DECL :TREE ) is
@@ -987,56 +1127,54 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 				-----------------
   procedure			CODE_PACKAGE_DECL		( PACKAGE_DECL :TREE )
   is
+    PACK_ID		: TREE		:= D( AS_SOURCE_NAME, PACKAGE_DECL );
+    PACK_NAME		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, PACK_ID ) );
+    UNIT_KIND		: TREE		:= D( AS_UNIT_KIND, PACKAGE_DECL );
     SAVE_NO_SUB_PARAM	: BOOLEAN		:= CODI.NO_SUBP_PARAMS;
     SAVE_MODEL_SEQ		: SEQ_TYPE	:= CODI.GENERIC_MODEL_DECL_SEQ;
-    UNIT_KIND		: TREE		:= D( AS_UNIT_KIND, PACKAGE_DECL );
   begin
+    PUT( "namespace " & PACK_NAME );
 
     if  UNIT_KIND.TY = DN_INSTANTIATION
     then
+      if  CODI.DEBUG  then PUT( tab50 & ";---------- GENERIC PACKAGE INSTANTIATION" ); end if;
+      NEW_LINE;
+
       CODI.IN_GENERIC_INSTANTIATION := TRUE;
       CODI.INSTANTIATION_MODEL_NAME := D( AS_NAME, UNIT_KIND );
       CODI.GENERIC_MODEL_DECL_SEQ := LIST( D( AS_DECL_S1, D( SM_SPEC, D( SM_DEFN, CODI.INSTANTIATION_MODEL_NAME ) ) ) );
+
+      PUT( "elab_spec:" );
+      if  CODI.DEBUG  then PUT_LINE( tab50 & ";    SPEC ELAB" ); end if;
+      NEW_LINE;
+
       declare
-        PACK_ID	: TREE		:= D( AS_SOURCE_NAME, PACKAGE_DECL );
-        PACK_NAME	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, PACK_ID ) );
+        GNAME_SEQ	: SEQ_TYPE	:= LIST( D( AS_GENERAL_ASSOC_S, UNIT_KIND ) );
+        GNAME	: TREE;
       begin
-        PUT( "namespace " & PACK_NAME );
-        if CODI.DEBUG then PUT( tab50 & ";---------- GENERIC PACKAGE INSTANTIATION" ); end if;
-        NEW_LINE;
+        while not IS_EMPTY( GNAME_SEQ ) loop
+	POP( GNAME_SEQ, GNAME );
+	declare
+  	  DEFN	: TREE	:= D( SM_DEFN, GNAME );
+	begin
+	  if  DEFN.TY = DN_SUBTYPE_ID  then
+	    if  D( SM_TYPE_SPEC, DEFN ).TY = DN_INTEGER  then
+	      PUT_LINE( "VAR " & PRINT_NAME( D( LX_SYMREP, GNAME ) ) & "_last_ofs, q" );
+	      PUT_LINE( "LI " & PRINT_NAME( D( LX_NUMREP, D( AS_EXP2, D( SM_RANGE, D( SM_TYPE_SPEC, DEFN ) ) ) ) ) );
+	      PUT_LINE( "Sd" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & "," & tab & PRINT_NAME( D( LX_SYMREP, GNAME ) ) & "_last_ofs" );
 
-        PUT( "elab_spec:" );
-        if CODI.DEBUG then PUT( tab50 & ";    SPEC ELAB" ); end if;
-        NEW_LINE;
-
-        declare
-	GNAME_SEQ	: SEQ_TYPE	:= LIST( D( AS_GENERAL_ASSOC_S, UNIT_KIND ) );
-	GNAME	: TREE;
-        begin
-	while not IS_EMPTY( GNAME_SEQ ) loop
-	  POP( GNAME_SEQ, GNAME );
-	  declare
-	    DEFN	: TREE	:= D( SM_DEFN, GNAME );
-	  begin
-	    if  DEFN.TY = DN_SUBTYPE_ID  then
-	      if  D( SM_TYPE_SPEC, DEFN ).TY = DN_INTEGER  then
-	        PUT_LINE( "VAR " & PRINT_NAME( D( LX_SYMREP, GNAME ) ) & "_last_ofs, q" );
-	        PUT_LINE( "LI " & PRINT_NAME( D( LX_NUMREP, D( AS_EXP2, D( SM_RANGE, D( SM_TYPE_SPEC, DEFN ) ) ) ) ) );
-	        PUT_LINE( "Sd" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & "," & tab & PRINT_NAME( D( LX_SYMREP, GNAME ) ) & "_last_ofs" );
-
-	        PUT_LINE( "VAR " & PRINT_NAME( D( LX_SYMREP, GNAME ) ) & "_first_ofs, q" );
-	        PUT_LINE( "LI " & PRINT_NAME( D( LX_NUMREP, D( AS_EXP1, D( SM_RANGE, D( SM_TYPE_SPEC, DEFN ) ) ) ) ) );
-	        PUT_LINE( "Sd" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & "," & tab & PRINT_NAME( D( LX_SYMREP, GNAME ) ) & "_first_ofs" );
-	      end if;
+	      PUT_LINE( "VAR " & PRINT_NAME( D( LX_SYMREP, GNAME ) ) & "_first_ofs, q" );
+	      PUT_LINE( "LI " & PRINT_NAME( D( LX_NUMREP, D( AS_EXP1, D( SM_RANGE, D( SM_TYPE_SPEC, DEFN ) ) ) ) ) );
+	      PUT_LINE( "Sd" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & "," & tab & PRINT_NAME( D( LX_SYMREP, GNAME ) ) & "_first_ofs" );
 	    end if;
-	  end;
-	end loop;
-        end;
+	  end if;
+	end;
+        end loop;
 
         PUT_LINE(  "VAR GFP_disp, q" );
         CODE_PACKAGE_SPEC( D( SM_SPEC, D( AS_SOURCE_NAME, PACKAGE_DECL ) ) );
 
-        PUT( "end namespace " );
+--        PUT( "end namespace" );
         if CODI.DEBUG then
           PUT( tab50 & ";---------- end generic package instantiation " & PACK_NAME );
         end if;
@@ -1047,15 +1185,19 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
       CODI.IN_GENERIC_INSTANTIATION := FALSE;
 
     else
+      if  CODI.DEBUG  then PUT( tab50 & ";---------- PACKAGE DECLARATION" ); end if;
+      NEW_LINE;
+
       CODE_HEADER( D( AS_HEADER, PACKAGE_DECL ) );
 
+      declare
+        EXC_LBL		:constant STRING	:= NEW_LABEL;
+      begin
+        PUT_LINE( "; EXC_LBL" & tab & EXC_LBL );
+      end;
     end if;
 
-    declare
-      EXC_LBL		:constant STRING	:= NEW_LABEL;
-    begin
-      PUT_LINE( "; EXC_LBL" & tab & EXC_LBL );
-    end;
+    PUT_LINE( "end namespace" );
 
     CODI.NO_SUBP_PARAMS := SAVE_NO_SUB_PARAM;
 

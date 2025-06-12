@@ -542,9 +542,12 @@ null;
 
         INVERSE_RECURSE_ON_PARAMETERS;
 
-        if  ACT_PRM.TY = DN_SELECTED  then ACT_PRM := D( AS_DESIGNATOR, ACT_PRM ); end if;
+--        if  ACT_PRM.TY = DN_SELECTED  then ACT_PRM := D( AS_DESIGNATOR, ACT_PRM ); end if;
+        if  ACT_PRM.TY = DN_SELECTED
+        then
+	EXPRESSIONS.CODE_SELECTED( ACT_PRM );
 
-        if  ACT_PRM.TY = DN_USED_OBJECT_ID  then
+        elsif  ACT_PRM.TY = DN_USED_OBJECT_ID  then
 	declare
 	  DEFN		: TREE	:= D( SM_DEFN, ACT_PRM );
 	  EXP_TYPE	: TREE	:= D( SM_EXP_TYPE, ACT_PRM );
@@ -578,8 +581,13 @@ null;
 	  elsif  DEFN.TY = DN_ENUMERATION_ID  then							-- Appel avec un énuméré
 	    PUT_LINE( tab & "LI" & ' ' & INTEGER'IMAGE( DI( SM_POS, DEFN ) ) );
 
+	  elsif  DEFN.TY = DN_COMPONENT_ID  then							-- Appel avec un énuméré
+
+	    PUT_LINE( tab & "LI" & ' ' );
+
 	  else
-	    PUT_LINE( tab & "; DEFN.TY NON FAIT " & NODE_NAME'IMAGE( DEFN.TY ) );
+	    PUT_LINE( tab & "; CODE_PROCEDURE_CALL.INVERSE_RECURSE_ON_PARAMETERS : DEFN.TY NON FAIT "
+		    & NODE_NAME'IMAGE( DEFN.TY ) );
 
 	  end if;
 	end;

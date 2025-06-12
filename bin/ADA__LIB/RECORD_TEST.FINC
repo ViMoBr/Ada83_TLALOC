@@ -1,58 +1,52 @@
 PRO	RECORD_TEST_L1				;---------- PRO RECORD_TEST
 ELB 1					;    BODY ELAB
-  virtual VARzone				; type range
-    align_d
-    BYTE_lower_disp = $
-    dd ?
-    BYTE_upper_disp = $
-    dd ?
-  end virtual
-	LI	 128
-	NEG
-	Sd  1,	BYTE_lower_disp
-	LI	 127
-	Sd  1,	BYTE_upper_disp
-
-  virtual VARzone				; type range
-    align_d
-    SHORT_lower_disp = $
-    dd ?
-    SHORT_upper_disp = $
-    dd ?
-  end virtual
+namespace DEFINITIONS			;---------- PACKAGE DECLARATION
+namespace SHORT__i				; SHORT TYPE RANGE INFO
+VAR SIZ, b
+VAR FST, w
+VAR LST, w
+end namespace
 	LI	32768
 	NEG
-	Sd  1,	SHORT_lower_disp
+	Sw 1,	SHORT__i.FST
 	LI	 32767
-	Sd  1,	SHORT_upper_disp
+	Sw 1,	SHORT__i.LST
 
-struc REC_1_model				; type record
- label .
- virtual at 0
-  FIELD I1, w
-  FIELD I2, w
-  .size = $
- end virtual
-end struc
-REC_1	REC_1_model
+namespace REC__i				; REC RECORD TYPE INFO
+VAR SIZ, b
+FIELD I1
+FIELD I2
+end namespace
+	LVA 1, STANDARD.RECORD_TEST_L1.DEFINITIONS.SHORT__i.SIZ
+	Sa 1, REC__i.I1__u
+	LVA 1, STANDARD.RECORD_TEST_L1.DEFINITIONS.SHORT__i.SIZ
+	Sa 1, REC__i.I2__u
 
-struc ENREGISTREMENT_model			; type record
- label .
- virtual at 0
-  FIELD DISCR, d
-  FIELD SH, w
-  .R1	REC_1_model
-  rb REC_1.size
-  FIELD INT, d
-  FIELD B, w
-  .size = $
- end virtual
-end struc
-ENREGISTREMENT	ENREGISTREMENT_model
+namespace TAB__i				; TAB CONSTRAINED ARRAY SUBTYPE INFO
+VAR SIZ, b
+end namespace 
+namespace ENREGISTREMENT__i			; ENREGISTREMENT RECORD TYPE INFO
+VAR SIZ, b
+FIELD LEN
+FIELD SH
+FIELD R1
+FIELD T1
+end namespace
+	LVA 0, STANDARD.INTEGER__i.SIZ
+	Sa 1, ENREGISTREMENT__i.LEN__u
+	LI 0	 ; offset a faire
+	Sd 1, ENREGISTREMENT__i.LEN__o
+	LVA 1, STANDARD.RECORD_TEST_L1.DEFINITIONS.SHORT__i.SIZ
+	Sa 1, ENREGISTREMENT__i.SH__u
+	LVA 1, STANDARD.RECORD_TEST_L1.DEFINITIONS.REC__i.SIZ
+	Sa 1, ENREGISTREMENT__i.R1__u
+	LVA 1, STANDARD.RECORD_TEST_L1.DEFINITIONS.TAB__i.SIZ
+	Sa 1, ENREGISTREMENT__i.T1__u
 
 ; EXC_LBL	L2
+end namespace 
 VAR ENREG_disp, q				; variable record : pointeur au record
-VAR ENREG_rec, ENREGISTREMENT.size
+;VAR ENREG_rec, STANDARD.RECORD_TEST_L1.DEFINITIONS.ENREGISTREMENT.size
 	LVA	1,	ENREG_rec
 	Sa	1,	ENREG_disp				; record fin
 
@@ -61,7 +55,8 @@ VAR KI_disp, w				; variable entiere
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	Lw  1,	KI_disp
-	SIw 1,	ENREG_disp, ENREGISTREMENT.R1 + REC_1.I1
+	SIw 1,	ENREG_disp, ENREGISTREMENT.R1 + REC.I1
+ret_lbl:
 	UNLINK 1
 	RTD
 excep:

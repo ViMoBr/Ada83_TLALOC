@@ -5,12 +5,13 @@ namespace STANDARD
     VARzone::
     VARzone.DISP = $
   end virtual
+include '../../bin/ADA__LIB/_STANDRD.FINC'
 
 	LINK	0, loc_siz
 
 include 'ARRAY_TEST.FINC'
 	CALL	STANDARD., ARRAY_TEST_L1
-	SYSEXIT
+	SYS_EXIT
 
   virtual VARzone
     loc_siz = $

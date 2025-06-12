@@ -5,12 +5,13 @@ namespace STANDARD
     VARzone::
     VARzone.DISP = $
   end virtual
+include '../../bin/ADA__LIB/_STANDRD.FINC'
 
 	LINK	0, loc_siz
 
-include 'DIS_BONJOUR.FINC'
+ include 'DIS_BONJOUR.FINC'
 	CALL	STANDARD., DIS_BONJOUR_L1
-	SYSEXIT
+	SYS_EXIT
 
   virtual VARzone
     loc_siz = $						; Ce n'est que là que l'on calcule la taille des globales qui sera retropropagee au LINK 0

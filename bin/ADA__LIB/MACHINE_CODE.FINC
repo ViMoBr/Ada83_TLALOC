@@ -1,28 +1,89 @@
-struc ASM_OP_0_model			; type record
- label .
- virtual at 0
-  .size = $
- end virtual
-end struc
-ASM_OP_0	ASM_OP_0_model
+namespace MACHINE_CODE			;---------- PACKAGE DECLARATION
+namespace ASM_OPCODE__i			; ASM_OPCODE ENUMERATION TYPE INFO
+CST SIZ, b, 8
+CST , , 2, "ET"
+CST , , 2, "OU"
+CST , , 3, "NON"
+CST , , 3, "OUX"
+CST , , 7, "SYSCALL"
+CST , , 12, "SYS_PUT_CHAR"
+CST , , 11, "SYS_PUT_STR"
+CST , , 12, "SYS_GET_CHAR"
+CST , , 11, "SYS_GET_STR"
+CST , , 15, "SYS_FILE_CREATE"
+CST , , 13, "SYS_FILE_OPEN"
+CST , , 14, "SYS_FILE_CLOSE"
+CST , , 15, "SYS_FILE_DELETE"
+CST , , 2, "DB"
+CST , , 2, "LI"
+CST , , 3, "LIF"
+CST , , 3, "LCA"
+CST , , 4, "LINK"
+CST , , 6, "UNLINK"
+CST , , 2, "LB"
+CST , , 2, "LW"
+CST , , 2, "LD"
+CST , , 2, "LQ"
+CST , , 2, "LA"
+CST , , 3, "LIB"
+CST , , 3, "LIW"
+CST , , 3, "LID"
+CST , , 3, "LIQ"
+CST , , 3, "LIA"
+CST , , 3, "LVA"
+CST , , 2, "SB"
+CST , , 2, "SW"
+CST , , 2, "SD"
+CST , , 2, "SQ"
+CST , , 2, "SA"
+CST , , 3, "SIB"
+CST , , 3, "SIW"
+CST , , 3, "SID"
+CST , , 3, "SIQ"
+CST , , 3, "SIA"
+end namespace 
 
-struc ASM_OP_1_model			; type record
- label .
- virtual at 0
-  FIELD VAL, d
-  .size = $
- end virtual
-end struc
-ASM_OP_1	ASM_OP_1_model
+namespace ASM_OPCODE_0__i			; ASM_OPCODE_0 ENUMERATION SUBTYPE INFO
+VAR SIZ, b
+end namespace
 
-struc ASM_OP_2_model			; type record
- label .
- virtual at 0
-  FIELD LVL, d
-  FIELD OFS, d
-  .size = $
- end virtual
-end struc
-ASM_OP_2	ASM_OP_2_model
+namespace ASM_OPCODE_1__i			; ASM_OPCODE_1 ENUMERATION SUBTYPE INFO
+VAR SIZ, b
+end namespace
+
+namespace ASM_OPCODE_2__i			; ASM_OPCODE_2 ENUMERATION SUBTYPE INFO
+VAR SIZ, b
+end namespace
+
+namespace ASM_OP_0__i			; ASM_OP_0 RECORD TYPE INFO
+VAR SIZ, b
+FIELD OPCODE
+end namespace
+	LVA 0, STANDARD.MACHINE_CODE.ASM_OPCODE_0__i.SIZ
+	Sa 0, ASM_OP_0__i.OPCODE__u
+
+namespace ASM_OP_1__i			; ASM_OP_1 RECORD TYPE INFO
+VAR SIZ, b
+FIELD OPCODE
+FIELD VAL
+end namespace
+	LVA 0, STANDARD.MACHINE_CODE.ASM_OPCODE_1__i.SIZ
+	Sa 0, ASM_OP_1__i.OPCODE__u
+	LVA 0, STANDARD.INTEGER__i.SIZ
+	Sa 0, ASM_OP_1__i.VAL__u
+
+namespace ASM_OP_2__i			; ASM_OP_2 RECORD TYPE INFO
+VAR SIZ, b
+FIELD OPCODE
+FIELD LVL
+FIELD OFS
+end namespace
+	LVA 0, STANDARD.MACHINE_CODE.ASM_OPCODE_2__i.SIZ
+	Sa 0, ASM_OP_2__i.OPCODE__u
+	LVA 0, STANDARD.NATURAL__i.SIZ
+	Sa 0, ASM_OP_2__i.LVL__u
+	LVA 0, STANDARD.INTEGER__i.SIZ
+	Sa 0, ASM_OP_2__i.OFS__u
 
 ; EXC_LBL	L1
+end namespace

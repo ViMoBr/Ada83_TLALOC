@@ -659,13 +659,13 @@ end macro
 macro			BRA?	lbl
 ;			-------------
   local disp
-  if disp > -128 & disp < 127
-    db 0xEB							; jmp rel8
-    db disp
-  else
+;  if disp >= -128 & disp <= 127
+;    db 0xEB							; jmp rel8
+;    db disp
+;  else
     db 0xE9							; jmp rel32
     dd disp
-  end if
+;  end if
   disp = lbl-$
 end macro
 
@@ -675,7 +675,7 @@ macro			BT?	lbl
   POP_RAX
   db 0x08, 0xC0							; or AL, AL
   local disp
-  if disp > -128 & disp < 127
+  if disp >= -128 & disp <= 127
     db 0x75							; jnz rel8
     db disp
   else
@@ -691,7 +691,7 @@ macro			BF?	lbl
   POP_RAX
   db 0x08, 0xC0							; or AL, AL
   local disp
-  if disp > -128 & disp < 127
+  if disp >= -128 & disp <= 127
     db 0x74							; jz rel8
     db disp
   else
@@ -829,36 +829,54 @@ macro			STR	name, bytes			; Definition d'une constante chaine au format d'un tab
   postpone
     local str_byte_size
     local debut_cars
+    local use_info
     align_q							; aligner le descripteur sur un quadword
 
+    dq	use_info							; adresse de l'info utilisation (size first last)
     name#_ptr = $							; adresse de la constante STRING, en fait adresse de l'adresse des caracteres
     dq	debut_cars						; PTR_TO_CHARS adresse des caracteres (juste apres dans le cas present)
+
+    use_info = $
     dd	1, 1, str_byte_size						; CAR_SIZ=1, FIRST=1, LAST=str_byte_size
+
     debut_cars = $							; pour une constante les caracteres suivent (pour une chaine variable ce n'est pas le cas, les octets sont dans la co-pile)
     db	bytes
     str_byte_size = $ - debut_cars					; Calculer la longueur effective pour mettre dans LAST
   end postpone
-
 end macro
 
-;			-----------------------------------
-macro			FIELD	name_disp, sizChar, siz:1		; Definition d'un champ de struc
-;			-----------------------------------
+;			-----------------------------------------
+macro			CST	name_cst:_nil_, sizChar:b, val&	; Definition d'une constante
+;			-----------------------------------------
+  postpone
     align_#sizChar							; aligner en fonction de l'unite de reservation
-    .name_disp = $							; lieu offset du champ (descendant du label . )
-    r#sizChar siz							; reservation
+    name_cst = $							;
+    d#sizChar val							; reservation
+  end postpone
+end macro
+
+;			--------------
+macro			FIELD	name				; Definition d'un champ de struc
+;			--------------
+  virtual VARzone
+    align_q							; aligner en fonction de l'unite de reservation
+    name#__u = $							; lieu ptr use info
+    rq 1								; reservation
+    name#__o = $							; lieu offset du champ
+    rd 1								; reservation
+  end virtual
 end macro
 
 ;			-----------------------------------
 macro			VAR	name_disp, sizChar, siz:1		; Definition d'un lieu de variable
 ;			-----------------------------------
   virtual VARzone
+    name_disp = $							; displacement des data de variable
     if `sizChar = 'b'  |  `sizChar = 'w'  |  `sizChar = 'd'  |  `sizChar = 'q'
-      align_#sizChar						; aligner en fonction de l'unite de reservation
-      name_disp = $							; lieu offset de la variable
+      align_#sizChar
       r#sizChar siz							; reservation
     else
-      name_disp = $
+      align_q							; assurer l'alignement de pile dans tous les cas possibles
       rb sizChar
     end if
   end virtual
@@ -983,9 +1001,8 @@ macro			SYS_GET_STR?			; lit une ligne sur stdin
   db 0x8B, 0x56, 0x10				; mov edx, dword ptr[rsi+16]	(edx=last de ITEM)
   db 0xFF, 0xC2					; inc edx			(last+1)
   db 0x2B, 0x56, 0x0C				; sub edx, dword ptr[rsi+12]   (edx=max length =last+1 - first)
-  db 0x6A, 0x00					; push 0
-  db 0x58						; pop rax			(rax=0=sys_read )
-  db 0x48, 0x89, 0xC7				; mov rdi,rax		(rdi=stdin=0)
+  db 0x31, 0xC0					; xor eax, eax		(rax=0=sys_read )
+  db 0x31, 0xFF					; xor edi, edi		(rdi=stdin=0)
   db 0x48, 0x8B, 0x36				; mov rsi, [rsi]		(rsi est maintenant l'adresse des caracteres)
   db 0x0F, 0x05					; syscall
   POP_RSI						;			(sur la pile croissante, adresse de la longueur effectivement lue qui peut etre inferieure a la longueur de string)
@@ -1031,7 +1048,8 @@ end macro
 ;			--------------
 macro			SYS_FILE_OPEN?		; FONCTION ouverture d'un fichier
 ;			--------------
-  POP_RDI						; adresse de la chaine nom de fichier (avec NUL de fin, chaine C)
+  POP_RSI						; adresse du descripteur de chaine Ada
+  COPY_STRING_APPEND_NUL				; faire une copie sur pile avec NUL en fin pointee par RDI
   db 0x6A, 0x02					; push 2
   db 0x58						; pop rax			(rax=2=sys_open )
   db 0x6A, 0x02					; push 2
@@ -1055,10 +1073,10 @@ end macro
 macro			SYS_FILE_DELETE?		; destruction d'un fichier
 ;			----------------
   POP_RDI						; ID fichier ouvert
-  db 0x67, 0x48, 0x8D, 0x75, 0x08			; lea rsi, [ebp+8]			(adresse chaine "./nul" sur pile
+  db 0x48, 0x8D, 0x75, 0x08				; lea rsi, [rbp+8]			(adresse chaine "./nul" sur pile
   db 0xC6, 0x06, 0x2E				; mov BYTE PTR [rsi], 0x2E
-  db 0xC6, 0x06, 0x2F				; mov BYTE PTR [rsi+1], 0x2F
-  db 0xC6, 0x06, 0x00				; mov BYTE PTR [rsi+2], 0
+  db 0xC6, 0x46, 0x01, 0x2F				; mov BYTE PTR [rsi+1], 0x2F
+  db 0xC6, 0x46, 0x02, 0x00				; mov BYTE PTR [rsi+2], 0
   db 0x31, 0xD2					; xor edx, edx			(flags=0)
   db 0xB8, 0x07, 0x01, 0x00, 0x00			; mov eax, 263			(rax=263=sys_unlinkat )
   db 0x0F, 0x05					; syscall

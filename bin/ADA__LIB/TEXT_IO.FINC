@@ -1,35 +1,92 @@
 include 'MACHINE_CODE.FINC'
 namespace TEXT_IO				;---------- PACKAGE
 elab_spec:				;    SPEC ELAB
-  virtual VARzone				; type range
-    align_d
-    COUNT_lower_disp = $
-    dd ?
-    COUNT_upper_disp = $
-    dd ?
-  end virtual
+
+namespace FILE_MODE__i			; FILE_MODE ENUMERATION TYPE INFO
+CST SIZ, b, 8
+CST , , 7, "IN_FILE"
+CST , , 8, "OUT_FILE"
+end namespace 
+
+namespace COUNT__i				; COUNT TYPE RANGE INFO
+VAR SIZ, b
+VAR FST, d
+VAR LST, d
+end namespace
 	LI	 0
-	Sd  0,	COUNT_lower_disp
+	Sd 0,	COUNT__i.FST
 	LI 2147483647
-	Sd  0,	COUNT_upper_disp
+	Sd 0,	COUNT__i.LST
+
+namespace POSITIVE_COUNT__i			; POSITIVE_COUNT INTEGER SUBTYPE INFO
+VAR SIZ, b
+end namespace
 
 VAR UNBOUNDED_disp, d			; variable entiere
 	LI	 0
 	Sd  0,	UNBOUNDED_disp
 
-struc FILE_TYPE_model			; type record
- label .
- virtual at 0
-  FIELD ID, d
-  FIELD PAGE_LENGTH, d
-  FIELD LINE_LENGTH, d
-  FIELD PAGE, d
-  FIELD LINE, d
-  FIELD COL, d
-  .size = $
- end virtual
-end struc
-FILE_TYPE	FILE_TYPE_model
+namespace FIELD__i				; FIELD INTEGER SUBTYPE INFO
+VAR SIZ, b
+end namespace
+
+namespace NUMBER_BASE__i			; NUMBER_BASE INTEGER SUBTYPE INFO
+VAR SIZ, b
+end namespace
+
+namespace TYPE_SET__i			; TYPE_SET ENUMERATION TYPE INFO
+CST SIZ, b, 8
+CST , , 10, "LOWER_CASE"
+CST , , 10, "UPPER_CASE"
+end namespace 
+
+namespace FILE_NAME_BUFFER__i			; FILE_NAME_BUFFER CONSTRAINED ARRAY SUBTYPE INFO
+VAR SIZ, d
+VAR SIZ_1, d
+VAR FST_1, d
+VAR LST_1, d
+end namespace
+	LI	1
+	Sd 0,	FILE_NAME_BUFFER__i.SIZ_1
+	LI	 1
+	Sd 0,	FILE_NAME_BUFFER__i.FST_1
+	LI	 256
+	Sd 0,	FILE_NAME_BUFFER__i.LST_1
+	Ld 0,	FILE_NAME_BUFFER__i.LST_1
+	INC
+	Ld 0,	FILE_NAME_BUFFER__i.FST_1
+	SUB
+	Ld 0,	FILE_NAME_BUFFER__i.SIZ_1
+	MUL
+	Sd 0,	FILE_NAME_BUFFER__i.SIZ
+
+namespace FILE_TYPE__i			; FILE_TYPE RECORD TYPE INFO
+VAR SIZ, b
+FIELD ID
+FIELD NAME
+FIELD MODE
+FIELD PAGE_LENGTH
+FIELD LINE_LENGTH
+FIELD PAGE
+FIELD LINE
+FIELD COL
+end namespace
+	LVA 0, STANDARD.INTEGER__i.SIZ
+	Sa 0, FILE_TYPE__i.ID__u
+	LVA 0, STANDARD.TEXT_IO.FILE_NAME_BUFFER__i.SIZ
+	Sa 0, FILE_TYPE__i.NAME__u
+	LVA 0, STANDARD.TEXT_IO.FILE_MODE__i.SIZ
+	Sa 0, FILE_TYPE__i.MODE__u
+	LVA 0, STANDARD.TEXT_IO.POSITIVE_COUNT__i.SIZ
+	Sa 0, FILE_TYPE__i.PAGE_LENGTH__u
+	LVA 0, STANDARD.TEXT_IO.POSITIVE_COUNT__i.SIZ
+	Sa 0, FILE_TYPE__i.LINE_LENGTH__u
+	LVA 0, STANDARD.TEXT_IO.POSITIVE_COUNT__i.SIZ
+	Sa 0, FILE_TYPE__i.PAGE__u
+	LVA 0, STANDARD.TEXT_IO.POSITIVE_COUNT__i.SIZ
+	Sa 0, FILE_TYPE__i.LINE__u
+	LVA 0, STANDARD.TEXT_IO.POSITIVE_COUNT__i.SIZ
+	Sa 0, FILE_TYPE__i.COL__u
 
 					;    BODY ELAB
 VAR STDOUT_MAX_PAGE_LEN_disp, d		; variable entiere
@@ -63,8 +120,8 @@ PRMS					;    debut parametrage
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 
-if defined SYSTEM_CALL_L1_
-PRO	SYSTEM_CALL_L1				;---------- PRO SYSTEM_CALL
+if defined CREATE_SYSTEM_CALL_L1_
+PRO	CREATE_SYSTEM_CALL_L1			;---------- PRO CREATE_SYSTEM_CALL
 PRMS					;    debut parametrage
 	PRM result__ofs				; resutat de fonction
 	PRM NAME_ofs				; in
@@ -73,25 +130,23 @@ ELB 2					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	LA 2,	-8
-
-db 0xCC
-
 	SYS_FILE_CREATE
+	SD 2,	-16
 ret_lbl:
 	UNLINK 2
-	RTD	prm_siz-8
+	RTD	(prm_siz-8)
 excep:
-endPRO					;---------- end PRO SYSTEM_CALL
+endPRO					;---------- end PRO CREATE_SYSTEM_CALL
 end if
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	LI	0					; lieu resultat sur pile
 	La  1,	-NAME_ofs
-	CALL	STANDARD.TEXT_IO.CREATE_L1. ,SYSTEM_CALL_L1
+	CALL	STANDARD.TEXT_IO.CREATE_L1. ,CREATE_SYSTEM_CALL_L1
 	SId 1,	-FILE_ofs, FILE_TYPE.ID
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO CREATE
 end if
@@ -105,11 +160,34 @@ PRMS					;    debut parametrage
 	PRM FORM_ofs				; in
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
+
+if defined OPEN_SYSTEM_CALL_L2_
+PRO	OPEN_SYSTEM_CALL_L2			;---------- PRO OPEN_SYSTEM_CALL
+PRMS					;    debut parametrage
+	PRM result__ofs				; resutat de fonction
+	PRM NAME_ofs				; in
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	LA 2,	-8
+	SYS_FILE_OPEN
+	SD 2,	-16
+ret_lbl:
+	UNLINK 2
+	RTD	(prm_siz-8)
+excep:
+endPRO					;---------- end PRO OPEN_SYSTEM_CALL
+end if
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	LI	0					; lieu resultat sur pile
+	La  1,	-NAME_ofs
+	CALL	STANDARD.TEXT_IO.OPEN_L2. ,OPEN_SYSTEM_CALL_L2
+	SId 1,	-FILE_ofs, FILE_TYPE.ID
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO OPEN
 end if
@@ -120,11 +198,30 @@ PRMS					;    debut parametrage
 	PRM FILE_ofs				; in out
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
+
+if defined CLOSE_SYSTEM_CALL_L3_
+PRO	CLOSE_SYSTEM_CALL_L3			;---------- PRO CLOSE_SYSTEM_CALL
+PRMS					;    debut parametrage
+	PRM FILE_ID_ofs				; in
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	LD 2,	-8
+	SYS_FILE_CLOSE
+ret_lbl:
+	UNLINK 2
+	RTD	(prm_siz)
+excep:
+endPRO					;---------- end PRO CLOSE_SYSTEM_CALL
+end if
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	LId 1,	-FILE_ofs, FILE_TYPE.ID
+	CALL	STANDARD.TEXT_IO.CLOSE_L3. ,CLOSE_SYSTEM_CALL_L3
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO CLOSE
 end if
@@ -135,11 +232,30 @@ PRMS					;    debut parametrage
 	PRM FILE_ofs				; in out
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
+
+if defined DELETE_SYSTEM_CALL_L4_
+PRO	DELETE_SYSTEM_CALL_L4			;---------- PRO DELETE_SYSTEM_CALL
+PRMS					;    debut parametrage
+	PRM FILE_ID_ofs				; in
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	LD 2,	-8
+	SYS_FILE_DELETE
+ret_lbl:
+	UNLINK 2
+	RTD	(prm_siz)
+excep:
+endPRO					;---------- end PRO DELETE_SYSTEM_CALL
+end if
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	LId 1,	-FILE_ofs, FILE_TYPE.ID
+	CALL	STANDARD.TEXT_IO.DELETE_L4. ,DELETE_SYSTEM_CALL_L4
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO DELETE
 end if
@@ -155,7 +271,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO RESET
 end if
@@ -170,7 +286,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO RESET
 end if
@@ -186,7 +302,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz-8
+	RTD	(prm_siz-8)
 excep:
 endPRO					;---------- end PRO MODE
 end if
@@ -202,7 +318,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz-8
+	RTD	(prm_siz-8)
 excep:
 endPRO					;---------- end PRO NAME
 end if
@@ -218,7 +334,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz-8
+	RTD	(prm_siz-8)
 excep:
 endPRO					;---------- end PRO FORM
 end if
@@ -234,7 +350,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz-8
+	RTD	(prm_siz-8)
 excep:
 endPRO					;---------- end PRO IS_OPEN
 end if
@@ -249,7 +365,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO SET_INPUT
 end if
@@ -264,7 +380,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO SET_OUTPUT
 end if
@@ -328,7 +444,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO SET_LINE_LENGTH
 end if
@@ -345,7 +461,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	Sd  0,	STDOUT_MAX_LINE_LEN_disp
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO SET_LINE_LENGTH
 end if
@@ -361,7 +477,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO SET_PAGE_LENGTH
 end if
@@ -378,7 +494,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	Sd  0,	STDOUT_MAX_PAGE_LEN_disp
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO SET_PAGE_LENGTH
 end if
@@ -394,7 +510,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz-8
+	RTD	(prm_siz-8)
 excep:
 endPRO					;---------- end PRO LINE_LENGTH
 end if
@@ -422,7 +538,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz-8
+	RTD	(prm_siz-8)
 excep:
 endPRO					;---------- end PRO PAGE_LENGTH
 end if
@@ -450,7 +566,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO NEW_LINE
 end if
@@ -467,28 +583,28 @@ begin:					;---------- BDY INSTRUCTIONS
 	CALL	STANDARD.TEXT_IO. ,PUT_L52
 	LI	 1
 	Sd  0,	STDOUT_COL_disp
-VAR	NL3_disp, d				; compteur boucle LOOP__1
+VAR	NL6_disp, d				; compteur boucle LOOP__1
 	LI	 1
-	Sd  1,	NL3_disp
-VAR	LMT_NL3_disp, d				; limite boucle LOOP__1
+	Sd  1,	NL6_disp
+VAR	LMT_NL6_disp, d				; limite boucle LOOP__1
 	Ld  1,	-SPACING_ofs
-	Sd  1,	LMT_NL3_disp
-	Ld  1,	NL3_disp				; test null range LOOP__1
-	Ld  1,	LMT_NL3_disp
+	Sd  1,	LMT_NL6_disp
+	Ld  1,	NL6_disp				; test null range LOOP__1
+	Ld  1,	LMT_NL6_disp
 	CGT
-	BT	L2
+	BT	L5
 LOOP__1:					; corps boucle LOOP__1
 	LI	 10
 	CALL	STANDARD.TEXT_IO. ,PUT_L52
-	Ld  1,	NL3_disp				; test de sortie LOOP__1
-	Ld  1,	LMT_NL3_disp
+	Ld  1,	NL6_disp				; test de sortie LOOP__1
+	Ld  1,	LMT_NL6_disp
 	CEQ
-	BT	L2
-	Ld  1,	NL3_disp				; mise a jour compteur LOOP__1
+	BT	L5
+	Ld  1,	NL6_disp				; mise a jour compteur LOOP__1
 	INC
-	Sd  1,	NL3_disp
+	Sd  1,	NL6_disp
 	BRA	LOOP__1				; iteration suivante LOOP__1
-L2:					; post loop LOOP__1
+L5:					; post loop LOOP__1
 	Ld  0,	STDOUT_LINE_disp
 	Ld  1,	-SPACING_ofs
 	ADD
@@ -497,7 +613,7 @@ L2:					; post loop LOOP__1
 	Ld  0,	STDOUT_LINE_disp
 	Ld  0,	STDOUT_MAX_PAGE_LEN_disp
 	CGT
-	BF	L5
+	BF	L8
 	LI	 12
 	CALL	STANDARD.TEXT_IO. ,PUT_L52
 	Ld  0,	STDOUT_PAGE_disp
@@ -506,12 +622,12 @@ L2:					; post loop LOOP__1
 	Sd  0,	STDOUT_PAGE_disp
 	LI	 1
 	Sd  0,	STDOUT_LINE_disp
-	BRA	L4
-L5:
-L4:					; post if
+	BRA	L7
+L8:
+L7:					; post if
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO NEW_LINE
 end if
@@ -527,7 +643,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO SKIP_LINE
 end if
@@ -546,7 +662,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	Sd  0,	STDOUT_LINE_disp
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO SKIP_LINE
 end if
@@ -562,7 +678,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz-8
+	RTD	(prm_siz-8)
 excep:
 endPRO					;---------- end PRO END_OF_LINE
 end if
@@ -589,7 +705,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO NEW_PAGE
 end if
@@ -616,7 +732,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO SKIP_PAGE
 end if
@@ -644,7 +760,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz-8
+	RTD	(prm_siz-8)
 excep:
 endPRO					;---------- end PRO END_OF_PAGE
 end if
@@ -672,7 +788,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz-8
+	RTD	(prm_siz-8)
 excep:
 endPRO					;---------- end PRO END_OF_FILE
 end if
@@ -700,7 +816,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO SET_COL
 end if
@@ -715,7 +831,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO SET_COL
 end if
@@ -731,7 +847,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO SET_LINE
 end if
@@ -746,7 +862,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO SET_LINE
 end if
@@ -762,7 +878,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz-8
+	RTD	(prm_siz-8)
 excep:
 endPRO					;---------- end PRO COL
 end if
@@ -790,7 +906,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz-8
+	RTD	(prm_siz-8)
 excep:
 endPRO					;---------- end PRO LINE
 end if
@@ -818,7 +934,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz-8
+	RTD	(prm_siz-8)
 excep:
 endPRO					;---------- end PRO PAGE
 end if
@@ -846,7 +962,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO GET
 end if
@@ -863,7 +979,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SYS_GET_CHAR
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO GET
 end if
@@ -879,7 +995,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO PUT
 end if
@@ -896,7 +1012,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SYS_PUT_CHAR
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO PUT
 end if
@@ -912,7 +1028,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO GET
 end if
@@ -927,7 +1043,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO GET
 end if
@@ -943,7 +1059,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO PUT
 end if
@@ -960,7 +1076,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SYS_PUT_STR
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO PUT
 end if
@@ -977,7 +1093,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO GET_LINE
 end if
@@ -996,7 +1112,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SYS_GET_STR
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO GET_LINE
 end if
@@ -1012,7 +1128,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO PUT_LINE
 end if
@@ -1031,7 +1147,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	CALL	STANDARD.TEXT_IO. ,NEW_LINE_L26
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO PUT_LINE
 end if
@@ -1059,7 +1175,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO GET
 end if
@@ -1091,7 +1207,7 @@ VAR LST_1, d
 	SUB
 	Ld 1,	SIZ_1
 	MUL
-end namespace 
+end namespace
 	CO_VAR					; allocation sur la co-pile
 	Sa	1,	CHN.PTR
 	LVA	1,	CHN.PTR
@@ -1106,22 +1222,22 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA  1,	LEN_disp
 	La  1,	CHN_disp
 	CALL	STANDARD.TEXT_IO. ,GET_LINE_L58
-VAR	IL7_disp, d				; compteur boucle LOOP__2
+VAR	IL10_disp, d				; compteur boucle LOOP__2
 	LI	 1
-	Sd  1,	IL7_disp
-VAR	LMT_IL7_disp, d				; limite boucle LOOP__2
+	Sd  1,	IL10_disp
+VAR	LMT_IL10_disp, d			; limite boucle LOOP__2
 	Ld  1,	LEN_disp
-	Sd  1,	LMT_IL7_disp
-	Ld  1,	IL7_disp				; test null range LOOP__2
-	Ld  1,	LMT_IL7_disp
+	Sd  1,	LMT_IL10_disp
+	Ld  1,	IL10_disp				; test null range LOOP__2
+	Ld  1,	LMT_IL10_disp
 	CGT
-	BT	L6
+	BT	L9
 LOOP__2:					; corps boucle LOOP__2
 	LI	 10
 	Ld  1,	VAL_disp
 	MUL
 	LIa 1,	CHN_disp
-	Ld  1,	IL7_disp
+	Ld  1,	IL10_disp
 	LId 1,	CHN_disp, 12			; (index - FST_1) * SIZ_1
 	SUB
 	LId 1,	CHN_disp, 8
@@ -1132,22 +1248,22 @@ LOOP__2:					; corps boucle LOOP__2
 	LI	 48
 	SUB
 	Sd  1,	VAL_disp
-	Ld  1,	IL7_disp				; test de sortie LOOP__2
-	Ld  1,	LMT_IL7_disp
+	Ld  1,	IL10_disp				; test de sortie LOOP__2
+	Ld  1,	LMT_IL10_disp
 	CEQ
-	BT	L6
-	Ld  1,	IL7_disp				; mise a jour compteur LOOP__2
+	BT	L9
+	Ld  1,	IL10_disp				; mise a jour compteur LOOP__2
 	INC
-	Sd  1,	IL7_disp
+	Sd  1,	IL10_disp
 	BRA	LOOP__2				; iteration suivante LOOP__2
-L6:					; post loop LOOP__2
+L9:					; post loop LOOP__2
 	Ld  1,	VAL_disp
 	SId  1,	-ITEM_ofs
 	La  1,	CHN_disp
 	CALL	STANDARD.TEXT_IO. ,PUT_L56
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO GET
 end if
@@ -1166,7 +1282,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO PUT
 end if
@@ -1203,7 +1319,7 @@ VAR LST_1, d
 	SUB
 	Ld 1,	SIZ_1
 	MUL
-end namespace 
+end namespace
 	CO_VAR					; allocation sur la co-pile
 	Sa	1,	STR.PTR
 	LVA	1,	STR.PTR
@@ -1217,7 +1333,7 @@ VAR MIN_WIDTH_disp, d			; variable entiere
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO PUT
 end if
@@ -1235,7 +1351,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO GET
 end if
@@ -1253,7 +1369,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO PUT
 end if
@@ -1283,7 +1399,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO GET
 end if
@@ -1300,7 +1416,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO GET
 end if
@@ -1320,7 +1436,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO PUT
 end if
@@ -1339,7 +1455,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO PUT
 end if
@@ -1357,7 +1473,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO GET
 end if
@@ -1376,7 +1492,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO PUT
 end if
@@ -1406,7 +1522,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO GET
 end if
@@ -1423,7 +1539,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO GET
 end if
@@ -1443,7 +1559,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO PUT
 end if
@@ -1462,7 +1578,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO PUT
 end if
@@ -1480,7 +1596,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO GET
 end if
@@ -1499,7 +1615,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO PUT
 end if
@@ -1526,7 +1642,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO GET
 end if
@@ -1542,7 +1658,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO GET
 end if
@@ -1561,7 +1677,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO PUT
 end if
@@ -1579,7 +1695,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO PUT
 end if
@@ -1597,7 +1713,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO GET
 end if
@@ -1615,7 +1731,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
 	UNLINK 1
-	RTD	prm_siz
+	RTD	(prm_siz)
 excep:
 endPRO					;---------- end PRO PUT
 end if
@@ -1623,3 +1739,4 @@ begin:					;---------- package BDY INSTRUCTIONS
 end namespace 				;---------- end generic package BDY ENUMERATION_IO
 begin:					;---------- package BDY INSTRUCTIONS
 end namespace 				;---------- end package BDY TEXT_IO
+

@@ -1,0 +1,988 @@
+ 13 Clauses de représentation et fonctionnalités dépendantes de l'implémentation
+
+Ce chapitre décrit les clauses de représentation, certaines mises en œuvre-
+fonctionnalités dépendantes et autres fonctionnalités utilisées dans le système
+la programmation.
+
+13.1 Clauses de représentation
+
+Les clauses de représentation précisent comment les types du langage doivent être
+mappé sur la machine sous-jacente. Ils peuvent être fournis pour donner plus
+représentation efficace ou pour s'interfacer avec des fonctionnalités extérieures
+le domaine du langage (par exemple, le matériel périphérique).
+
+       clause_de représentation ::=
+             type_representation_clause | clause_adresse
+
+       type_representation_clause ::= length_clause
+             | clause_représentation_énumération
+             |record_representation_clause
+
+Une clause de représentation de type s'applique soit à un type, soit à un premier
+sous-type nommé (c'est-à-dire à un sous-type déclaré par une déclaration de type,
+le type de base étant donc anonyme). Une telle représentation
+La clause s'applique à tous les objets qui ont ce type ou ce premier nommé
+sous-type. Au plus une clause d'énumération ou de représentation d'enregistrement est
+autorisé pour un type donné : une clause de représentation par énumération est uniquement
+autorisé pour un type d’énumération ; une clause de représentation record, uniquement
+pour un type d'enregistrement. (D'un autre côté, plus d'une clause de longueur
+peut être prévu pour un type donné ; de plus, à la fois une clause de longueur et
+une clause d'énumération ou de représentation d'enregistrement peut être fournie.)
+La clause de longueur est la seule forme de clause de représentation autorisée pour un
+type dérivé d'un type parent qui a (défini par l'utilisateur) dérivable
+sous-programmes.
+
+Une clause d'adresse s'applique soit à un objet ; à un sous-programme,
+package ou unité de tâches ; ou à une entrée. Au plus une clause d'adresse est
+autorisé pour l’une de ces entités.
+
+Une clause de représentation et une déclaration de l'entité à laquelle le
+la clause s'applique doivent toutes deux apparaître immédiatement dans le même déclaratif
+spécification de pièce, de package ou de tâche ; la déclaration
+doit intervenir avant la clause. En l'absence de représentation
+clause pour une déclaration donnée, une représentation par défaut de cette
+La déclaration est déterminée par la mise en œuvre. Un tel défaut
+la détermination intervient au plus tard à la fin de la période immédiatement
+englobant une partie déclarative, une spécification de package ou une tâche
+spécification. Pour une déclaration donnée dans une partie déclarative, ceci
+la détermination par défaut a lieu avant tout corps fermé.
+
+Dans le cas d'un type, certaines occurrences de son nom impliquent que le
+la représentation du type doit déjà avoir été déterminée. 
+Par conséquent, ces événements forcent la détermination par défaut de tout
+aspect de la représentation non déjà déterminé par un type antérieur
+clause de représentation. Cette détermination par défaut est également forcée par
+occurrences similaires du nom d'un sous-type du type, ou du
+nom de tout type ou sous-type comportant des sous-composants du type. UN
+une occurrence forcée est toute occurrence autre que dans un type ou un sous-type
+déclaration, une spécification de sous-programme, une déclaration d'entrée, un
+déclaration constante, un pragma ou une clause de représentation pour le type
+lui-même. Dans tous les cas, une occurrence au sein d’une expression est toujours forçante.
+
+
+Une clause de représentation d'une entité donnée ne doit pas apparaître après une
+occurrence du nom de l'entité si cette occurrence force une
+détermination par défaut de la représentation de l’entité.
+
+Des restrictions similaires existent pour les clauses d'adresse. Pour un objet, n'importe quel
+l'occurrence de son nom (après la déclaration de l'objet) est un forçage
+occurrence. Pour un sous-programme, un package, une unité de tâche ou une entrée, tout
+l'occurrence d'un attribut de représentation d'une telle entité est une
+forcer l'occurrence.
+
+L’effet de l’élaboration d’une clause de représentation est de définir
+les aspects correspondants de la représentation.
+
+L'interprétation de certaines des expressions qui apparaissent dans
+Les clauses de représentation dépendent de l'implémentation, par exemple :
+expressions spécifiant des adresses. Une implémentation peut limiter son
+acceptation des clauses de représentation à celles qui peuvent être traitées
+simplement par le matériel sous-jacent. Si une clause de représentation est
+accepté par une implémentation, le compilateur doit garantir que le
+l'effet net du programme n'est pas modifié par la présence de la clause, sauf
+pour les clauses d'adresse et pour les parties du programme qui interrogent
+attributs de représentation. Si un programme contient une clause de représentation
+cela n'est pas accepté, le programme est illégal. Pour chaque implémentation,
+les clauses de représentation autorisées et les conventions utilisées pour la mise en œuvre-
+expressions dépendantes, doivent être documentées à l’Annexe F du
+Manuel de référence.
+
+Alors qu'une clause de représentation est utilisée pour imposer certaines
+caractéristiques de la cartographie d'une entité sur le sous-jacent
+machine, les pragmas peuvent être utilisés pour fournir une implémentation, avec
+critères de sélection d’une telle cartographie. Le PACK pragma
+précise que la minimisation du stockage doit être le critère principal lorsque
+sélectionner la représentation d’un type d’enregistrement ou de tableau. Sa forme est
+comme suit:
+
+       pragma PACK (type_simple_name);
+
+L'emballage signifie que les espaces entre les zones de stockage allouées à
+les composants consécutifs doivent être minimisés. Il n’est cependant pas nécessaire
+affecter le mappage de chaque composant sur le stockage. Cette cartographie peut
+être lui-même influencé par un pragma (ou contrôlé par une représentation
+clause) pour le composant ou le type de composant. La position d'un PACK
+pragma, et les restrictions sur le type nommé, sont régies par le
+mêmes règles que pour une clause de représentation ; en particulier, le pragma
+doit apparaître avant toute utilisation d'un attribut de représentation du paquet
+entité.
+
+Le pragma PACK est le seul pragma de représentation défié par le langage.
+Des pragmas de représentation supplémentaires peuvent être fournis par un
+mise en œuvre; ceux-ci doivent être documentés dans l'Annexe F. (contrairement
+aux clauses de représentation, un pragma qui n’est pas accepté par les
+la mise en œuvre est ignorée).
+
+Note:
+
+Aucune clause de représentation n'est autorisée pour un type formel générique.
+
+Références : clause d'adresse 13.5, autorisation 1.6, corps 3.9, composant 3.3,
+déclaration 3.1, partie déclarative 3.9, expression par défaut 3.2.1,
+déclaration de constante différée 7.4, sous-programme dérivable 3.4, dérivé
+type 3.4, entité 3.1, entrée 9.5, clause de représentation par énumération
+13.3, expression 4.4, type formel générique 12.1.2, illégal 1.6, longueur
+clause 13.2, doit 1.6, nom 4.1, objet 3.2, apparaître immédiatement dans
+8.1, package 7, spécification de package 7.1, type parent 3.4, pragma
+2.8, clause de représentation d'enregistrement 13.4, attribut de représentation
+13.7.2, 13.7.3, sous-composant 3.3, sous-programme 6, sous-type 3.3, sous-type
+déclaration 3.3.2, spécification de tâche 9.1, unité de tâche 9, type 3.3, type
+déclaration 3.3.1
+
+
+13.2 Clauses de durée
+
+Une clause de longueur spécifie une quantité de stockage associée à un type.
+
+length_clause ::= pour l'attribut, utilisez simple_expression ;
+
+L'expression doit être d'un type numérique et est évaluée lors de la
+élaboration de la clause de longueur (sauf s'il s'agit d'une expression statique). Le
+Le préfixe de l'attribut doit désigner soit un type, soit un premier sous-type nommé. 
+Le préfixe est appelé T dans ce qui suit. Le seul attribut autorisé
+les désignateurs dans une clause de longueur sont SIZE, STORAGE_SIZE et SMALL. L'effet
+de la clause de longueur dépend du désignateur d'attribut :
+
+(a) Spécification de taille : T'SIZE
+
+    L'expression doit être une expression statique d'un type entier. Le
+    la valeur de l'expression spécifie une limite supérieure pour le nombre de bits
+    à attribuer aux objets du type ou premier sous-type nommé T. Le
+    les spécifications de taille doivent prévoir suffisamment d'espace de stockage pour accueillir
+    chaque valeur admissible de ces objets. Une spécification de taille pour un
+    le type composite peut affecter la taille des espaces entre les zones de stockage
+    affectés à des composants consécutifs. D’un autre côté, il n’est pas nécessaire
+    affectent la taille de la zone de stockage allouée à chaque composant.
+
+    La spécification de taille n'est autorisée que si les contraintes sur T et sur son
+    les sous-composants (le cas échéant) sont statiques. Dans le cas d'un sans contrainte
+    type de tableau, les sous-types d’index doivent également être statiques. 
+
+(b) Spécification de la taille de la collection : T'STORAGE_SIZE
+
+    Le préfixe T doit désigner un type d'accès. L'expression doit être de certains
+    type entier (mais pas nécessairement statique) ; sa valeur précise le nombre de
+    les unités de stockage à réserver à la collection, c'est-à-dire les unités de stockage
+    espace nécessaire pour contenir tous les objets désignés par les valeurs de l'accès
+    type et par les valeurs d'autres types dérivées du type d'accès, directement
+    ou indirectement. Cette forme de clause de longueur n'est pas autorisée pour un type
+    dérivé d’un type d’accès.
+
+(c) Spécification du stockage pour l'activation d'une tâche : T'STORAGE_SIZE
+
+    Le préfixe T doit désigner un type de tâche. L'expression doit être de certains
+    type entier (mais pas nécessairement statique) ; sa valeur précise le nombre de
+    unités de stockage à réserver pour une activation (pas le code) d'une tâche
+    du genre.
+
+(d) Spécification de small pour un type à virgule fixe : T'SMALL
+
+    Le préfixe T doit désigner le premier sous-type nommé d'un type à virgule fixe. 
+    L'expression doit être une expression statique d'un type réel ; Sa valeur
+    doit être supérieur au delta du premier sous-type nommé. L'effet de
+    la clause de longueur consiste à utiliser cette valeur de small pour la représentation de
+    valeurs de type base à virgule fixe. (La clause de longueur ainsi également
+    affecte la quantité de stockage pour les objets de ce type).
+
+Remarques:
+
+Une spécification de taille est autorisée pour un type d'accès, de tâche ou de virgule fixe,
+si une autre forme de clause de longueur est également donnée pour le type. 
+
+Ce qui est considéré comme faisant partie du stockage réservé à une collection ou
+car l’activation d’une tâche dépend de l’implémentation. Le contrôle
+offerte par les clauses de longueur est donc relative à la mise en œuvre
+conventions. Par exemple, le langage ne définit pas si le stockage
+réservé à une activation d'une tâche inclut tout stockage nécessaire à l'exécution
+collection associée à un type d’accès déclaré dans le corps de la tâche. 
+Il ne définit pas non plus la méthode d'allocation des objets désignés par
+valeurs d’un type d’accès. Par exemple, l'espace alloué pourrait être sur un
+empiler; alternativement, un schéma d'aliocation dynamique général ou un stockage fixe
+peut être utilisé. 
+
+Les objets alloués dans une collection ne doivent pas nécessairement avoir la même taille si le
+le type désigné est un type tableau sans contrainte ou un type sans contrainte avec
+discriminants. Notez également que l'allocateur lui-même peut nécessiter un peu d'espace
+pour les tables et liens internes. D'où une clause de longueur pour la collecte des
+un type d'accès ne donne pas toujours un contrôle précis sur le nombre maximum
+des objets alloués.
+
+Exemples:
+
+     --déclarations supposées :
+
+     le type MEDIUM est la plage 0 .. 65000 ;
+     le type SHORT est la plage delta 0,01 -100,0 .. 100,0 ;
+     le type DEGREE est la plage delta 0,1 -360,0 .. 360,0 ;
+
+     OCTET : constante := 8;
+     PAGE : constante := 2000;
+
+     --longueur des clauses :
+
+     pour COLOR'SIZE, utilisez 1*BYTE ; -- voir 3.5.1
+     pour MEDIUM'SIZE, utilisez 2*BYTE ;
+     pour SHORT'SIZE, utilisez 15 ;
+
+     pour l'utilisation de CAR_NAME'STORAGE_SIZE : environ 2 000 voitures
+             2000*((CAR'SIZE/SYSTEM.STORAGE_UNIT) +1);
+
+     pour KEYBOARD_DRIVERS'STORAGE_SIZE, utilisez 1*PAGE ;
+
+pour DEGREE'SMALL, utilisez 360.0/2**(SYSTEM.STORAGE_UNIT -1);
+
+Notes sur les exemples :
+
+Dans la clause de longueur pour SHORT, quinze bits est le minimum nécessaire,
+puisque la définition de type nécessite SHORT'SMALL=2**(-7) et SHORT'MANTISSA =
+14. La clause de longueur pour DEGREE force les numéros de modèle à s'étendre exactement
+la plage du type.
+
+Références : type d'accès 3.8, allocateur 4.8, autoriser 1.6, type de tableau 3.6,
+attribut 4.1.4, collection 3.8, type composite 3.3, contrainte 3.3, delta
+d'un type à virgule fixe 3.5.9, type dérivé 3.4, désigner 3.8, élaboration
+3.9, entité 3.1, évaluation 4.5, expression 4.4, premier sous-type nommé 13.1,
+type à virgule fixe 3.5.9, sous-type d'index 3.6, type entier 3.5.4, doit 1.6,
+type numérique 3.5, objet 3.2, type réel 3.5.6, type d'enregistrement 3.7, petit d'un
+type à virgule fixe 3.5.10, contrainte statique 4.9, expression statique 4.9,
+sous-type statique 4.9, unité de stockage 13.7, sous-composant 3.3, package système
+13.7, tâche 9, activation de tâche 9.3, spécification de tâche 9.1, type de tâche 9.2,
+type 3.3, tableau sans contrainte type 3.6          
+
+13.3 Clauses de représentation en énumération
+
+Une clause de représentation par énumération spécifie les codes internes du
+littéraux du type énumération nommé dans la clause.
+
+     enumeration_representation_clause ::= pour l'utilisation de type_simple_name
+              agrégat;
+
+L'agrégat utilisé pour spécifier ce mappage est écrit sous la forme d'un agrégat unidimensionnel.
+agrégat, pour lequel le sous-type d'index est le type d'énumération et le
+Le type de composant est universal_integer.
+
+Tous les littéraux du type énumération doivent être fournis avec un entier distinct
+codes, et tous les choix et valeurs des composants donnés dans l'agrégat doivent être
+statique. Les codes entiers spécifiés pour le type d'énumération doivent satisfaire
+la relation d'ordre prédéfinie du type.
+
+Exemple:
+
+     le type MIX_CODE est (ADD, SUB, MUL, LDA, STA, STZ) ;
+
+     pour une utilisation MIX_CODE
+        (ADD => 1, SUB =.2, MUL => 3, LDA => 8, STA => 24, STZ =>33) ;
+
+Remarques:
+
+Les attributs SUCC, PRED et POS sont définis même pour les types d'énumération
+avec une représentation non contiguë ; leur définition correspond à la
+déclaration de type (logique) et n'est pas affecté par l'énumération
+clause de représentation. Dans l'exemple, en raison de la nécessité d'éviter le
+valeurs omises, ces fonctions sont susceptibles d'être moins efficaces
+mises en œuvre qu’elles ne pourraient l’être en l’absence d’une clause de représentation. 
+Des considérations similaires s’appliquent lorsque de tels types sont utilisés pour l’indexation.
+
+Références : agrégat 4.3, agrégat de tableau 4.3.2, type de tableau 3.6, attribut
+d'un type d'énumération 3.5.5, choix 3.7.3, composante 3.3, énumération
+littéral 3.5.1, type d'énumération 3.5.1, fonction 6.5, index 3.6, index
+sous-type 3.6, littéral 4.2, relation d'ordre d'un type d'énumération 3.5.1,
+clause de représentation 13.1, nom simple 4.1, expression statique 4.9, type
+3.3, déclaration de type 3.3.1, type universal_integer 3.5.4
+
+13.4 Clauses de représentation des dossiers
+
+Une clause de représentation d'enregistrement spécifie la représentation de stockage de
+enregistrements, c'est-à-dire l'ordre, la position et la taille des composants de l'enregistrement
+(y compris les discriminants, le cas échéant).
+
+     record_representation_clause ::=
+       pour type_simple_name, utilisez
+         enregistrer [alignment_clause]
+           {clause composant}
+         terminer l'enregistrement ;
+
+     alignement_clause ::= au mod static_simple_expression ;
+
+     clause_composant ::=
+       nom_composant dans la plage static_simple_expression static_range ;
+
+
+L'expression simple donnée après les mots réservés au mod dans un alignement
+clause, ou après le mot réservé at dans une clause composante, doit être un
+expression statique d’un type entier. Si les limites de la portée d'un
+clause de composant sont définies par des expressions simples, puis chaque limite de la
+La plage doit être définie par une expression statique d'un type entier, mais la
+deux limites n'ont pas besoin d'avoir le même type entier.
+
+Une clause d'alignement force chaque enregistrement du type donné à être alloué à
+une adresse de départ qui est un multiple de la valeur de l'expression donnée
+(c'est-à-dire que l'adresse modulo l'expression doit être nulle). Un
+la mise en œuvre peut imposer des restrictions sur les alignements autorisés.
+
+Une clause de composant spécifie l'emplacement de stockage d'un composant, par rapport à
+le début du disque. L'entier défini par l'expression statique d'un
+La clause composant est une adresse relative exprimée en unités de stockage. Le
+range définit les positions des bits de l'emplacement de stockage, par rapport au
+unité de stockage. La première unité de stockage d'un enregistrement est numérotée zéro.
+le premier bit d'une unité de stockage est numéroté zéro. L'ordre des bits dans un
+l'unité de stockage dépend de la machine et peut s'étendre aux unités de stockage adjacentes
+(Pour une machine spécifique, la taille en bits d'une unité de stockage est donnée par le
+numéro nommé SYSTEM.STORAGE_UNIT dépendant de la configuration.) Si un
+Le composant est autorisé à chevaucher une limite de stockage, et si oui, comment, est-ce
+défini par l'implémentation.
+
+Au plus une clause de composant est autorisée pour chaque composant de l'enregistrement.
+type, y compris pour chaque discriminant (des clauses composantes peuvent être données pour
+certains, tous ou aucun des composants). Si aucune clause de composant n'est donnée pour
+un composant, alors le choix du lieu de stockage du composant est laissé
+au compilateur. Si des clauses de composants sont données pour tous les composants, le
+La clause de représentation d'enregistrement spécifie complètement la représentation du
+type d'enregistrement et doit être respecté exactement par le compilateur.
+
+Les emplacements de stockage au sein d'une variante d'enregistrement ne doivent pas se chevaucher, mais les
+le stockage de variantes distinctes est autorisé. Chaque clause composante doit permettre
+pour suffisamment d'espace de stockage pour accueillir toutes les valeurs autorisées du
+composant. Une clause de composant n'est autorisée que pour un composant, le cas échéant.
+la contrainte sur ce composant ou sur l’un de ses sous-composants est statique.
+
+Une implémentation peut générer des noms qui désignent des éléments dépendants de l'implémentation.
+composants (par exemple, un contenant le décalage d’un autre composant). 
+De tels noms dépendants de l'implémentation peuvent être utilisés dans la représentation des enregistrements
+clauses (ces noms ne doivent pas nécessairement être des noms simples ; par exemple, ils pourraient être
+attributs dépendants de l'implémentation).
+
+Exemple:
+
+     MOT : constante := 4; -- l'unité de stockage est un octet, 4 octets par mot
+
+tapez STATE est (A, M, W, P);
+le type MODE est (FIX, DEC, EXP, SIGNIF) ;
+
+le type BYTE_MASK est un tableau (0.. 7) de BOOLEAN ;
+le type STATE_MASK est un tableau (STATE) de BOOLEAN ;
+le type MODE_MASK est un tableau (MODE) de BOOLEAN ;
+
+tapez PROGRAM_STATUS_WORD est
+ enregistrer
+     SYSTEM_MASK : BYTE_MASK ;
+     PROTECTION_KEY : plage INTEGER 0 .. 3 ;
+     MACHINE_STATE : STATE_MASK ;
+     INTERRUPT_CAUSE : INTERRUPTION_CODE;
+     ILC : plage INTEGER 0 .. 3 ;
+     CC : plage INTEGER 0 .. 3 ;
+     PROGRAMME_MASK : MODE_MASK ;
+     INST_ADDRESS : ADRESSE ;
+terminer l'enregistrement ;
+
+
+ pour l'utilisation de PROGRAM_STATUS_WORD
+   enregistrer au mod 8 ;
+       SYSTEM_MASK à 0*WORD plage 0 .. 7 ; 
+       PROTECTION_KEY à 0*WORD plage 10 .. 11 ; -- bits 8,9 inutilisés
+       MACHINE_STATE à 0*WORD plage 12 .. 15 ;
+       INTERRUPT_CAUSE à 0*WORD plage 16 .. 31 ;
+       ILC à 1*WORD plage 0 .. 1 ; -- deuxième mot
+       CC à 1*WORD plage 2 .. 3 ;
+       PROGRAM_MASK à 1*WORD plage 4 .. 7 ;
+       INST_ADDRESS à 1*WORD plage 8 .. 31 ;
+   terminer l'enregistrement ;
+
+ pour PROGRAM_STATUS_WORD'SIZE, utilisez 8*SYSTEM.STORAGE_UNIT ;
+
+Remarque sur l'exemple :
+
+La clause de représentation d'enregistrement définit la présentation d'enregistrement. La durée
+Cette clause garantit qu’exactement huit unités de stockage sont utilisées.
+
+Références : autoriser 1.6, attribut 4.1.4, constante 3.2.1, contrainte 3.3,
+discriminant 3.7.1, type entier 3.5.4, doit 1.6, nommé numéro 3.2, plage
+3.5, composant d'enregistrement 3.7, type d'enregistrement 3.7, expression simple 4.4, simple
+nom 4.1, contrainte statique 4.9, expression statique 4.9, unité de stockage 13.7,
+sous-composant 3.3, package système 13.7, variante 3.7.3
+
+13.5 Clauses d'adresse
+
+Une clause d'adresse spécifie une adresse requise en stockage pour une entité.
+
+     adresse_clause ::= pour simple_name, à utiliser sur simple_expression ;
+
+L'expression donnée après le mot réservé à doit être du type ADRESSE
+défini dans le package SYSTEM (voir 13.7); ce paquet doit être nommé par un
+avec clause qui s'applique à l'unité de compilation dans laquelle l'adresse
+la clause se produit. Les conventions qui définissent l'interprétation d'une valeur
+du type ADDRESS comme adresse, comme niveau d'interruption, ou quoi que ce soit
+peuvent être, dépendent de la mise en œuvre. Le caractère permis du simple
+le nom et la signification de l’adresse correspondante sont les suivants :
+
+(a) Nom d'un objet : l'adresse est celle requise pour l'objet
+   (variable ou constante).
+
+(b) Nom d'un sous-programme, d'un package ou d'une unité de tâches : l'adresse est celle
+   requis pour le code machine associé au corps du programme
+   unité.
+
+(c) Nom d'une entrée unique : l'adresse spécifie une interruption matérielle à
+   auquel l'entrée unique doit être liée.
+
+Si le nom simple est celui d’une seule tâche, la clause d’adresse est
+compris comme faisant référence à l'unité de tâche et non à l'objet de tâche. Dans tout
+Dans certains cas, la clause d'adresse n'est légale que si exactement une déclaration avec
+cet identifiant apparaît plus tôt, immédiatement dans le même déclaratif
+pièce, spécification de package ou spécification de tâche. Un nom déclaré par un
+la déclaration de renommage n’est pas autorisée comme nom simple. 
+
+Les clauses d'adresse ne doivent pas être utilisées pour réaliser des superpositions d'objets ou
+superpositions d’unités de programme. Une interruption donnée ne doit pas non plus être liée à d'autres
+plus d'une entrée. Tout programme utilisant des clauses d'adresse pour obtenir de tels effets
+est erroné.
+
+
+Exemple:
+
+   pour une utilisation CONTROL à 16#0020# ; -- en supposant que SYSTEM.ADDRESS est un entier
+   taper
+
+Remarques:
+
+Les règles ci-dessus impliquent que si deux sous-programmes se surchargent mutuellement et sont
+visible à un moment donné, une clause d'adresse pour l'un d'entre eux n'est pas légale à
+ce point. De même, si une spécification de tâche déclare des entrées qui
+se surchargent mutuellement, ils ne peuvent pas être des entrées d'interruption. La syntaxe ne
+autoriser une clause d'adresse pour une unité de bibliothèque. Une implémentation peut fournir
+pragmas pour la spécification des superpositions de programmes.
+
+Références : adresse prédéfinie de type 13.7, appliquer 10.1.1, unité de compilation
+10.1, constante 3.2.1, entité 3.1, entrée 9.5, erronée 1.6, expression
+4.4, unité de bibliothèque 10.1, nom 4.1, objet 3.2, package 7, pragma 2.8,
+unité de programme 6, mot réservé 2.9, expression simple 4.4, nom simple 4.1,
+sous-programme 6, corps du sous-programme 6.3, package système 13.7, corps de la tâche 9.1, tâche
+objet 9.2, unité de tâche 9, type 3.3, variable 3.2.1, avec clause 10.1.1
+
+13.5.1 Interruptions
+
+Une clause d'adresse donnée pour une entrée associe l'entrée à un périphérique
+cela peut provoquer une interruption ; une telle entrée est mentionnée dans cette section
+comme entrée d'interruption. Si des informations de contrôle sont fournies lors d'un
+interruption, il est transmis à une entrée d'interruption associée sous la forme d'un ou plusieurs
+paramètres de mode en ; seuls les paramètres de ce mode sont autorisés.
+
+Une interruption agit comme un appel d'entrée émis par une tâche matérielle dont la priorité
+est supérieur à la priorité du programme principal, et également supérieur à la
+priorité de toute tâche définie par l'utilisateur (c'est-à-dire toute tâche dont le type est déclaré
+par une unité de tâche dans le programme). L'appel d'entrée peut être un appel d'entrée ordinaire
+appel d'entrée, un appel d'entrée temporisé ou un appel d'entrée conditionnel, selon le
+sorte d'interruption et sur la mise en œuvre. 
+
+Si une instruction select contient à la fois une alternative de fin et une option d'acceptation
+alternative pour une entrée d’interruption, alors une implémentation peut imposer
+d'autres exigences pour la sélection de l'alternative de terminaison dans
+en plus de ceux donnés à la section 9.4.
+
+Exemple:
+
+     la tâche INTERRUPT_HANDLER est
+       entrée FAIT ;
+       pour une utilisation DONE à 16#40# ; en supposant que SYSTEM.ADDRESS est un entier
+         taper
+       terminer INTERRUPT_HANDLER ;
+
+Remarques:
+
+Les appels d’entrée par interruption doivent uniquement avoir la sémantique décrite ci-dessus ; ils
+peut être implémenté en demandant au matériel d'exécuter directement le
+accepter les déclarations.
+
+Les interruptions en file d'attente correspondent à des appels d'entrée ordinaires. Les interruptions qui sont
+Les appels perdus s'ils ne sont pas traités immédiatement correspondent à des appels d'entrée conditionnelle. Il
+est une conséquence des règles de priorité selon lesquelles une instruction accept exécutée dans
+la réponse à une interruption a priorité sur la réponse ordinaire définie par l'utilisateur
+tâches et peut être exécuté sans appeler au préalable une action de planification.
+
+L'un des effets possibles d'une clause d'adresse pour une entrée d'interruption est
+pour spécifier la priorité de l'interruption (directement ou indirectement). Direct
+les appels vers une entrée d’interruption sont autorisés.
+
+Références : accepter l'alternative 9.7.1, accepter la déclaration 9.5, adresse
+type prédéfini 13.7, autorisation 1.6, appel d'entrée conditionnelle 9.7.2, entrée 9.5,
+mode 6.1, paramètre d'un sous-programme 6.2, priorité d'une tâche 9.8, sélection
+alternative 9.7.1, instruction select 9.7, package système 13.7, tâche 9,
+terminer l'alternative 9.7.1, appel d'entrée programmé 9.7.3
+
+13.6 Changement de représentation
+
+Au plus une clause de représentation est autorisée pour un type donné et un
+aspect de sa représentation. Par conséquent, si une représentation alternative est
+nécessaire, il faut déclarer un deuxième type, dérivé du premier,
+et de spécifier une représentation différente pour le deuxième type.
+
+Exemple:
+
+ -- PACKED_DESCRIPTOR et DESCRIPTOR sont deux types différents
+ -- présentant des caractéristiques identiques, hormis leur représentation
+
+ le type DESCRIPTEUR est
+     enregistrer
+       -- composants d'un descripteur
+     terminer l'enregistrement ;
+
+ tapez PACKED_DESCRIPTOR est le nouveau DESCRIPTOR ;
+
+ pour l'utilisation de PACKED_DESCRIPTOR
+     enregistrer
+       -- clauses de composants pour certains ou pour tous les composants
+     terminer l'enregistrement ;
+
+Le changement de représentation peut désormais être accompli par affectation avec des
+conversions de types :
+
+     D : DESCRIPTEUR ;
+     P : PACKED_DESCRIPTOR;
+
+     P := PACKED_DESCRIPTOR (D); -- paquet D
+     D := DESCRIPTEUR(P); -- déballer P
+
+Références : affectation 5.2, type dérivé 3.4, type 3.3, conversion de type
+4.6, déclaration de type 3.1, clause de représentation 13.1
+
+13.7 Le système de packages
+
+Pour chaque implémentation, il existe un package de bibliothèque prédéfini appelé SYSTEM
+qui comprend les définitions de certains paramètres dépendants de la configuration
+caractéristiques. La spécification du package SYSTEM est
+dépend de la mise en œuvre et doit être donnée en annexe F. La partie visible
+de ce package doit contenir au moins les déclarations suivantes.
+
+
+Le package SYSTEM est
+     le type ADDRESS est défini par l'implémentation ;
+     le type NOM est mise en œuvre_définie_enumeration_type ;
+
+     SYSTEM_NAME : constante NAME := mise en œuvre_définie ;
+
+     STORAGE_UNIT : constante := mise en œuvre_définie ;
+     MEMORY_SIZE : constante := mise en œuvre_définie ;
+
+     --Numéros nommés dépendants du système :
+
+     MIN_INT : constante := mise en œuvre_définie ;
+     MAX_INT : constante := mise en œuvre_définie ;
+     MAX_DIGITS : constante := mise en œuvre_définie ;
+     MAX_MANTISSA : constante := mise en œuvre_définie ;
+     FINE_DELTA : constante := mise en œuvre_définie ;
+     TICK : constante := mise en œuvre_définie ;
+
+     --Autres déclarations System_Dependent
+
+     le sous-type PRIORITY est une plage INTEGER mise en œuvre_définie ;
+
+     ...
+ fin du SYSTÈME ;
+
+Le type ADDRESS est le type des adresses fournies dans les clauses d'adresse ;
+c'est aussi le type du résultat délivré par l'attribut ADDRESS.
+Les valeurs du type d'énumération NOM sont les noms de machines alternatives
+configurations gérées par l’implémentation ; l'un d'eux est la constante
+SYSTEM_NAME. Le nombre nommé STORAGE_UNIT est le nombre de bits par
+unité de stockage; le nombre nommé MEMORY_SIZE est le nombre de disponibles
+unités de stockage dans la configuration ; ces numéros nommés sont du type
+entier_universel.
+
+Une forme alternative du package SYSTEM, avec des valeurs données pour l'un des
+SYSTEM_NAME, STORAGE_UNIT et MEMORY_SIZE peuvent être obtenus au moyen du
+pragmas correspondants. Ces pragmas ne sont autorisés qu'au début d'un
+compilation, avant la première unité de compilation (le cas échéant) de la compilation.
+
+     pragma SYSTEM_NAME (enumeration_literal);
+
+L'effet du pragma ci-dessus est d'utiliser le littéral d'énumération avec le
+identifiant spécifié pour la définition de la constante SYSTEM_NAME. Ce
+pragma n'est autorisé que si l'identifiant spécifié correspond à l'un des
+les littéraux du type NAME.
+
+     pragma STORAGE_UNIT (numeric_literal);
+
+L'effet du pragma ci-dessus est d'utiliser la valeur du nombre numérique spécifié
+littéral pour la définition du numéro nommé STORAGE_UNIT.
+
+     pragma MEMORY_SIZE (numeric_literal);
+
+L'effet du pragma ci-dessus est d'utiliser la valeur du nombre numérique spécifié
+littéral pour la définition du nombre nommé MEMORY_SIZE.
+
+La compilation de l'un de ces pragmas provoque une recompilation implicite de
+le package SYSTÈME. Par conséquent, toute unité de compilation qui nomme SYSTEM dans
+sa clause de contexte devient obsolète après cette recompilation implicite. Un
+la mise en œuvre peut imposer des limitations supplémentaires à l’utilisation de ces pragmas.
+Par exemple, une implémentation peut les autoriser uniquement au début de la
+première compilation, lors de la création d'une nouvelle bibliothèque de programmes.
+
+Note:
+
+C'est une conséquence des règles de visibilité qu'une déclaration faite dans le
+Le package SYSTEM n'est pas visible dans une unité de compilation à moins que ce package ne soit
+mentionné par une clause with qui s'applique (directement ou indirectement) au
+unité de compilation.
+
+Références : clause d'adresse 13.5, appliquer 10.1.1, attribut 4.1.4, compilation
+unité 10.1, doit 1.6, numéro nommé 3.2, déclaration numérique 3.2.2, numérique
+littéral 2.4, package 7, spécification du package 7.1, pragma 2.8, programme
+bibliothèque 10.1, type 3.3, visibilité 8.3, partie visible 7.2, avec clause
+10.1.1
+
+13.7.1 Numéros nommés dépendants du système
+
+Dans le package SYSTEM, les numéros nommés suivants sont déclarés. Le
+les nombres FINE_DELTA et TICK sont du type universal_real ; les autres sont
+du type universal_integer.
+
+MIN_INT La valeur la plus petite (la plus négative) de tous les entiers prédéfinis
+            les types.
+
+MAX_INT La valeur la plus grande (la plus positive) de tous les entiers prédéfinis
+            les types.
+
+MAX_DIGITS La plus grande valeur autorisée pour le nombre de valeurs significatives.
+            chiffres décimaux dans une contrainte à virgule flottante.
+
+MAX_MANTISSA Le plus grand nombre possible de chiffres binaires dans la mantisse
+            de numéros de modèle d'un sous-type à virgule fixe.
+
+FINE_DELTA Le plus petit delta autorisé dans une contrainte de point fixe qui
+            a la contrainte de plage -1.0 .. 1.0.
+
+COCHE La période d'horloge de base, en secondes.
+
+Références : autoriser 1.6, delta d'une contrainte de point fixe 3.5.9, point fixe
+contrainte 3.5.9, contrainte de virgule flottante 3.5.7, type entier 3.5.4,
+numéro de modèle 3.5.6, nommé numéro 3.2, package 7, contrainte de portée 3.5,
+package système 13.7, type 3.3, universal_integer type 3.5.4, universal_real
+tapez 3.5.6
+
+13.7.2 Attributs de représentation
+
+Les valeurs de certaines caractéristiques dépendant de l'implémentation peuvent être
+obtenu en interrogeant les attributs de représentation appropriés. Ces
+les attributs sont décrits ci-dessous.
+
+Pour tout objet, unité de programme, étiquette ou entrée X :
+
+X'ADDRESS Donne l'adresse de la première des unités de stockage
+              alloué à X. Pour un sous-programme, un package, une unité de tâche ou
+              étiquette, cette valeur fait référence au code machine associé à
+              le corps ou la déclaration correspondante. Pour une entrée pour laquelle
+              une clause d'adresse a été donnée, la valeur fait référence au
+              interruption matérielle correspondante. La valeur de ceci
+              l'attribut est du type ADDRESS défini dans le package
+              SYSTÈME.
+
+Pour tout type ou sous-type X ou pour tout objet X :
+
+X'SIZE Appliqué à un objet, donne le nombre de bits alloués à
+              tenir l'objet. Appliqué à un type ou un sous-type, donne le
+              nombre minimum de bits requis par l'implémentation
+              pour contenir tout objet possible de ce type ou sous-type. Le
+              la valeur de cet attribut est du type universal_integer.
+
+Pour les deux attributs de représentation ci-dessus, si le préfixe est le nom d'un
+fonction, l'attribut s'entend comme un attribut de la fonction
+(pas du résultat de l'appel de la fonction). De même, si le type de
+le préfixe est un type d'accès, l'attribut s'entend comme un attribut de
+le préfixe (pas de l'objet désigné : les attributs de ce dernier peuvent être
+écrit avec un préfixe se terminant par le mot réservé all).
+
+Pour tout composant C d’un objet enregistrement R :
+
+RC'POSITION Donne le décalage, à partir du début de la première unité de stockage
+              occupé par le dossier, de la première des unités de stockage
+              occupé par C. Ce décalage est mesuré en unités de stockage. 
+              La valeur de cet attribut est du type
+              entier_universel.
+
+RC'FIRST_BIT Renvoie le décalage, à partir du début du premier des
+              unités de stockage occupées par C, du dernier bit occupé par C. 
+              Ce décalage est mesuré en bits. La valeur de ceci
+              l'attribut est du type universal_integer.
+
+RC'LAST_BIT Renvoie le décalage, à partir du début du premier des
+              unités de stockage occupées par C, du dernier bit occupé par C. 
+              Ce décalage est mesuré en bits. La valeur de cet attribut
+              est du type universal_integer.
+
+Pour tout type ou sous-type d’accès T :
+
+T'STORAGE_SIZE Renvoie le nombre total d'unités de stockage réservées au
+              collection associée au type de base de T. La valeur de
+              cet attribut est du type universal_integer.
+
+Pour tout type de tâche ou objet de tâche T :
+
+T'STORAGE_SIZE Renvoie le nombre d'unités de stockage réservées pour chaque
+              activation d'une tâche de type T ou pour l'activation de
+              l'objet tâche T. La valeur de cet attribut est de la
+              tapez universal_integer.
+
+Remarques:
+
+Pour un objet tâche X, l'attribut X'SIZE donne le nombre de bits utilisés pour
+contient l'objet X, alors que X'STORAGE_SIZE donne le nombre d'unités de stockage
+alloué pour l’activation de la tâche désignée par X. Pour un
+paramètre X, si le passage du paramètre est réalisé par copie, alors l'attribut
+X'ADDRESS donne l'adresse de la copie locale ; si le passage des paramètres se fait par
+référence, alors l’adresse est celle du paramètre réel.
+
+Références : sous-type d'accès 3.8, type d'accès 3.8, activation 9.3, réel
+paramètre 6.2, clause d'adresse 13.5, type d'adresse prédéfini 13.7, attribut
+4.1.4, type de base 3.3, collection 3.8, composant 3.3, entrée 9.5, formel
+paramètre 6.1 6.2, étiquette 5.1, objet 3.2, package 7, corps du package 7.1,
+paramètre passant 6.2, unité de programme 6, objet d'enregistrement 3.7, instruction 5,
+unité de stockage 13.7, sous-programme 6, corps du sous-programme 6.3, sous-type 3.3, système
+package prédéfini 13.7, tâche 9, corps de tâche 9.1, objet de tâche 9.2, type de tâche
+9.2, unité de tâche 9, type 3.3, type universal_integer 3.5.4
+
+13.7.3 Attributs de représentation des types réels
+
+Pour chaque type ou sous-type réel T, les éléments suivants, dépendants de la machine
+des attributs sont définis, qui ne sont pas liés aux numéros de modèle. 
+Les programmes utilisant ces attributs peuvent ainsi exploiter des propriétés qui vont
+au-delà des propriétés minimales associées au type numérique (voir section
+4.5.7 pour les règles définissant la précision des opérations avec des valeurs réelles
+opérandes). Des précautions doivent donc être prises lors de l'utilisation de ces machines-
+attributs dépendants si la portabilité doit être assurée.
+
+Pour les types à virgule flottante et à virgule fixe :
+
+T'MACHINE_ROUNDS Renvoie la valeur TRUE si chaque arithmétique prédéfinie
+                   l'opération sur les valeurs du type de base de T renvoie soit
+                   un résultat exact ou effectue un arrondi ; donne la valeur
+                   FAUX sinon. La valeur de cet attribut est de
+                   type prédéfini BOOLEAN.
+
+T'MACHINE_OVERFLOWS Renvoie la valeur TRUE si chaque opération prédéfinie sur
+                   les valeurs du type de base de T fournissent soit une valeur correcte
+                   résultat, ou déclenche l'exception NUMERIC_ERROR dans
+                   situations de débordement (voir 4.5.7) ; donne la valeur FALSE
+                   sinon. La valeur de cet attribut est de
+                   type prédéfini BOOLEAN.
+
+Pour les types à virgule flottante, les attributs suivants fournissent des caractéristiques
+de la représentation machine sous-jacente, en termes de forme canonique
+défini à la section 3.5.7 :
+
+T'MACHINE_RADIX Renvoie la valeur de la base utilisée par la machine
+                   représentation du type de base de T (les chiffres sont
+                   chiffres étendus compris entre 0 et T'MACHINE_RADIX -1).
+                   La valeur de cet attribut est du type
+                   entier_universel.
+
+T'MACHINE_EMAX Donne la plus grande valeur d'exposant pour la machine
+                   représentation du type de base de T. La valeur de
+                   cet attribut est du type universal_integer.
+
+T'MACHINE_EMIN Donne la valeur la plus petite (la plus négative) de l'exposant
+                   pour la représentation machine du type de base de T. 
+                   La valeur de cet attribut est du type
+                   entier_universel.
+
+Remarque : Pour de nombreuses machines, le plus grand nombre représentable de machines de type F
+est presque
+     (F'MACHINE_RADIX)**(F'MACHINE_EMAX),
+
+et le plus petit nombre représentable positif est
+
+     F'MACHINE_RADIX** (F'MACHINE_EMIN -1)
+
+Références : opérateur arithmétique 4.5, attribut 4.1.4, type de base 3.3, booléen
+type prédéfini 3.5.3, fausse valeur booléenne 3.5.3, type à virgule fixe 3.5.9,
+type à virgule flottante 3.5.7, numéro de modèle 3.5.6, type numérique 3.5,
+exception numeric_error 11.1, opération prédéfinie 3.3.3, base 3.5.7, réel
+type 3.5.6, sous-type 3.3, vraie valeur booléenne 3.5.3, type 3.3,
+type universel_entier 3.5.4
+
+13.8 Insertions de codes machine
+
+Une insertion de code machine peut être réalisée par un appel à une procédure dont
+la séquence d'instructions contient des instructions de code.
+
+     code_statement ::= type_mark'record_aggregate;
+
+Une instruction de code n'est autorisée que dans la séquence d'instructions d'un
+corps de procédure. Si un corps de procédure contient des instructions de code, alors dans
+ce corps de procédure, la seule forme d'instruction autorisée est une instruction de code
+(étiquetés ou non), les seuls éléments déclaratifs autorisés sont les clauses d'utilisation, et
+aucun gestionnaire d'exception n'est autorisé (les commentaires et les pragmas sont autorisés comme
+habituel). 
+
+Chaque instruction machine apparaît sous la forme d'un agrégat d'enregistrements d'un type d'enregistrement
+qui définit l’instruction correspondante. Le type de base de la marque de type
+d'une instruction de code doit être déclarée dans le package de bibliothèque prédéfini
+appelé MACHINE_CODE ; ce package doit être nommé par une clause with qui
+s'applique à l'unité de compilation dans laquelle l'instruction de code apparaît. Un
+la mise en œuvre n’est pas nécessaire pour fournir un tel package.
+
+Une implémentation est autorisée à imposer des restrictions supplémentaires sur l'enregistrement
+agrégats autorisés dans les instructions de code. Par exemple, cela peut exiger que
+les expressions contenues dans de tels agrégats soient des expressions statiques. 
+
+Une implémentation peut fournir des pragmas dépendants de la machine spécifiant le registre
+conventions et conventions d’appel. Ces pragmas doivent être documentés dans
+Annexe F
+
+Exemple:
+
+     M : MASQUE
+     procédure SET_MASK ; pragma INLINE(SET_MASK);
+
+     la procédure SET_MASK est
+       utilisez MACHINE_CODE ;
+     commencer
+       SI_FORMAT'(CODE => SSM, B => M'BASE_REG, D => M'DISP) ;
+       -- M'BASE_REG et M'DISP sont prédéfinis spécifiques à l'implémentation
+           les attributs
+     fin;
+
+Références : autoriser 1.6, appliquer 10.1.1, commentaire 2.7, unité de compilation 10.1,
+élément déclaratif 3.9, gestionnaire d'exceptions 11.2, pragma en ligne 6.3.2, étiqueté
+instruction 5.1, unité de bibliothèque 10.1, package 7, pragma 2.8, procédure 6 6.1,
+corps de procédure 6.3, agrégat d'enregistrement 4.3.1, type d'enregistrement 3.7, séquence de
+instructions 5.1, instruction 5, expression statique 4.9, utilisez la clause 5.4, avec
+clause 10.1.1
+
+13.9 Interface vers d'autres langues
+
+Un sous-programme écrit dans un autre langage peut être appelé depuis un programme Ada
+à condition que toutes les communications soient réalisées via des paramètres et des fonctions
+résultats. Un pragme de la forme
+
+     pragma INTERFACE (nom_langue, nom_sous-programme) ;
+
+doit être indiqué pour chacun de ces sous-programmes ; un nom de sous-programme est autorisé à
+représentent plusieurs sous-programmes surchargés. Ce pragma est autorisé au
+place d'une rubrique déclarative, et doit s'appliquer dans ce cas à un sous-programme
+déclaré par un élément déclaratif antérieur de la même partie déclarative ou
+spécification du paquet. Le pragma est également autorisé pour une unité de bibliothèque ; dans
+dans ce cas, le pragma doit apparaître après la déclaration du sous-programme, et
+avant toute unité de compilation ultérieure. Le pragma précise l'autre
+langage (et donc les conventions d'appel) et informe le compilateur
+qu'un module objet sera fourni pour le sous-programme correspondant. UN
+body n'est pas autorisé pour un tel sous-programme (pas même sous la forme d'un corps
+stub) puisque les instructions du sous-programme sont écrites dans un autre
+langue. 
+
+Cette capacité n'est pas nécessairement fournie par toutes les mises en œuvre. Un
+la mise en œuvre peut imposer des restrictions sur les formes et les lieux autorisés de
+paramètres et appels.
+
+Exemple:
+
+     le package FORT_LIB est
+       la fonction SQRT (X : FLOAT) renvoie FLOAT ;
+       fonction EXP (X : FLOAT) renvoie FLOAT ;
+     privé
+       pragma INTERFACE(FORTRAN, SQRT);
+       pragma INTERFACE(FORTRAN, EXP);
+     fin FORT_LIB ;
+
+Remarques:
+
+Les conventions utilisées par d'autres processeurs de langage qui appellent les programmes Ada
+ne font pas partie de la définition du langage Ada. De telles conventions doivent être
+défini par ces autres processeurs de langage.
+
+Le pragma INTERFACE n'est pas défini pour les sous-programmes génériques.
+
+Références : autoriser 1.6, stub de corps 10.2, unité de compilation 10.1, déclaration
+3.1, élément déclaratif 3.9, partie déclarative 3.9, résultat de la fonction 6.5,
+unité de bibliothèque 10.1, doit 1.6, nom 4.1, sous-programme surchargé 6.6, package
+spécification 7.1, paramètre d'un sous-programme 6.2, pragma 2.8, sous-programme 6,
+corps du sous-programme 6.3, appel du sous-programme 6.4, déclaration du sous-programme 6.1
+
+13.10 Programmation non cochée
+
+Les sous-programmes de bibliothèque générique prédéfinis UNCHECKED_DEALLOCATION et
+UNCHECKED_CONVERSION sont utilisés pour la désallocation de stockage non contrôlée et pour
+conversions de type non vérifiées.
+
+     générique
+        le type OBJECT est limité à privé ;
+        tapez NOM est accès OBJET ;
+     procédure UNCHECKED_DEALLOCATION(X : entrée sortie NOM);
+
+     générique
+        le type SOURCE est privé limité ;
+        le type TARGET est limité en privé ;
+     la fonction UNCHECKED_CONVERSION(S : SOURCE) renvoie CIBLE ;
+
+Références : sous-programme générique 12.1, unité bibliothèque 10.1, type 3.3
+
+13.10.1 Désallocation de stockage non contrôlée
+
+Désallocation de stockage non contrôlée d'un objet désigné par une valeur d'un
+Le type d'accès est obtenu par un appel d'une procédure obtenue par
+instanciation de la procédure générique UNCHECKED_DEALLOCATION. Pour
+exemple:
+
+     la procédure FREE est nouvelle UNCHECKED_DEALLOCATION(object_type_name,
+            nom_type_d'accès);
+
+Une telle procédure GRATUITE a l’effet suivant :
+
+(a) après avoir exécuté FREE(X), la valeur de X est nulle ;
+
+(b) FREE(X), lorsque X est déjà égal à null, n'a aucun effet ;
+
+(c) FREE(X), lorsque X n'est pas égal à null, est une indication que l'objet
+   désigné par X n'est plus nécessaire, et que le stockage qu'il occupe
+   est à récupérer.
+
+Si X et Y désignent le même objet, alors accéder à cet objet via Y
+est erroné si cet accès est effectué (ou tenté) après l'appel
+GRATUIT(X); l'effet de chacun de ces accès n'est pas défini par la langue.
+
+Remarques:
+
+C'est une conséquence des règles de visibilité que la procédure générique
+UNCHECKED_DEALLOCATION n'est pas visible dans une unité de compilation sauf si
+la procédure générique est mentionnée par une clause with qui s'applique au
+unité de compilation.
+
+Si X désigne un objet tâche, l'appel FREE(X); n'a aucun effet sur la tâche
+désigné par la valeur de cet objet tâche. Il en va de même pour tout
+sous-composant de l'objet désigné par X, si ce sous-composant est une tâche
+objet.
+
+Références : type d'accès 3.8, appliquer 10.1.1, unité de compilation 10.1, désigner
+3.8 9.1, erroné 1.6, instanciation générique 12.3, procédure générique 12.1,
+unité générique 12, unité de bibliothèque 10.1, valeur d'accès nulle 3.8, objet 3.2,
+procédure 6, appel de procédure 6.4, sous-composant 3.3, tâche 9, objet de tâche 9.2,
+visibilité 8.3, avec clause 10.1.1
+
+13.10.2 Conversions de types non vérifiées
+
+Une conversion de type non contrôlée peut être réalisée par un appel d'une fonction qui
+est obtenu par instanciation de la fonction générique UNCHECKED_CONVERSION.
+
+L'effet d'une conversion non contrôlée est de renvoyer le (non interprété)
+valeur du paramètre en tant que valeur du type cible, c'est-à-dire la configuration binaire
+la définition de la valeur source est renvoyée inchangée en tant que configuration binaire définissant
+une valeur du type cible. Une implémentation peut imposer des restrictions sur
+conversions non contrôlées, par exemple, restrictions en fonction du
+tailles respectives des objets de type source et cible. Tel
+les restrictions doivent être documentées à l’annexe F.
+
+Chaque fois que des conversions non contrôlées sont utilisées, c'est le programmeur
+responsabilité de garantir que ces conversions maintiennent les propriétés
+qui sont garantis par le langage pour les objets du type cible. 
+Programmes qui violent ces propriétés au moyen de conversions non contrôlées
+sont erronées.
+
+Note:
+
+C'est une conséquence des règles de visibilité que la fonction générique
+UNCHECKED_CONVERSION n'est pas visible dans une unité de compilation à moins que cela
+la fonction générique est mentionnée par une clause with qui s'applique au
+unité de compilation.
+
+Références : appliquer 10.1.1, unité de compilation 10.1, erroné 1.6, générique
+fonction 12.1, instanciation 12.3, paramètre d'un sous-programme 6.2, type 3.3,
+avec la clause 10.1.1

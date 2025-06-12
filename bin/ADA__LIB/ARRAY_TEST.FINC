@@ -43,6 +43,9 @@ LOOP__1:					; corps boucle LOOP__1
 	Sd  1,	IL2_disp
 	BRA	LOOP__1				; iteration suivante LOOP__1
 L1:					; post loop LOOP__1
+	LI	 1
+	CALL	STANDARD.TEXT_IO. ,NEW_LINE_L26
+ret_lbl:
 	UNLINK 1
 	RTD
 excep:
