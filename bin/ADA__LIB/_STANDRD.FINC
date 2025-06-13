@@ -10,58 +10,64 @@ namespace SHORT_INTEGER__i			; SHORT_INTEGER TYPE RANGE INFO
 VAR SIZ, b
 VAR FST, w
 VAR LST, w
-end namespace
+	LI 16
+	Sb 0,	SIZ
 	LI	 2
 	LI	 15
 	DEC
 	SHL
 	NEG
-	Sw 0,	SHORT_INTEGER__i.FST
+	Sw 0,	FST
 	LI	 2
 	LI	 15
 	DEC
 	SHL
 	LI	 1
 	SUB
-	Sw 0,	SHORT_INTEGER__i.LST
+	Sw 0,	LST
+end namespace
 
 namespace INTEGER__i			; INTEGER TYPE RANGE INFO
 VAR SIZ, b
 VAR FST, d
 VAR LST, d
-end namespace
+	LI 32
+	Sb 0,	SIZ
 	LI	 2
 	LI	 31
 	DEC
 	SHL
 	NEG
-	Sd 0,	INTEGER__i.FST
+	Sd 0,	FST
 	LI	 2
 	LI	 31
 	DEC
 	SHL
 	LI	 1
 	SUB
-	Sd 0,	INTEGER__i.LST
+	Sd 0,	LST
+end namespace
 
 namespace LONG_INTEGER__i			; LONG_INTEGER TYPE RANGE INFO
 VAR SIZ, b
 VAR FST, q
 VAR LST, q
-end namespace
+	LI 64
+	Sb 0,	SIZ
 	LI	 2
 	LI	 63
 	DEC
 	SHL
 	NEG
-	Sq 0,	LONG_INTEGER__i.FST
+	Sq 0,	FST
 	LI	 2
 	LI	 63
 	DEC
 	SHL
 	LI	 1
 	SUB
-	Sq 0,	LONG_INTEGER__i.LST
+	Sq 0,	LST
+end namespace
 
 namespace CHARACTER__i			; CHARACTER ENUMERATION TYPE INFO
 CST SIZ, b, 8

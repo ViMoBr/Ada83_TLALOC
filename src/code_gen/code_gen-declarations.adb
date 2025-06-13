@@ -875,7 +875,7 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
   is
   begin
     if  TYPE_DECL.TY = DN_TYPE_DECL  then
-      CODE_TYPE_DEF ( D ( AS_TYPE_DEF, TYPE_DECL ), TYPE_DECL );
+      CODE_TYPE_DEF( D( AS_TYPE_DEF, TYPE_DECL ), TYPE_DECL );
     end if;
 
   end	CODE_TYPE_DECL;
@@ -899,13 +899,14 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
       declare
         BASE_TYPE		: TREE		:= D( SM_BASE_TYPE, TYPE_SPEC );
         COMP_TYPE		: TREE		:= D( SM_COMP_TYPE, BASE_TYPE );
-        COMP_SIZE		: INTEGER		:= DI( CD_IMPL_SIZE, COMP_TYPE );
+        COMP_SIZE_TREE	: TREE		:= D( CD_IMPL_SIZE, COMP_TYPE );
         INDEX_SUBTYPE_S	: SEQ_TYPE	:= LIST( D( SM_INDEX_SUBTYPE_S,  TYPE_SPEC) );
         DIM_NBR		: NATURAL		:= 1;
         LVL		: LEVEL_NUM	renames CODI.CUR_LEVEL;
         LVL_STR		:constant STRING	:= IMAGE( CODI.CUR_LEVEL );
---        STR_INTER		:constant STRING	:= ' ' & LVL_STR & ',' & tab & SUBTYPE_STR & "__i.";
         STR_INTER		:constant STRING	:= ' ' & LVL_STR & ',' & tab;
+        IS_STATIC		: BOOLEAN		:= COMP_SIZE_TREE /= TREE_VOID ;
+        ARRAY_STATIC_SIZE	: NATURAL		:= 0;
 
 		-----------------------------
         procedure	ARRAY_TYPE_DIMENSION_SET_DESC	( IDX_TYPE_LIST :in out SEQ_TYPE )
@@ -918,6 +919,16 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 	PUT_LINE( "VAR " & "SIZ_" & DIM_NBR_STR & ", d" );
 	PUT_LINE( "VAR " & "FST_" & DIM_NBR_STR & ", d" );
 	PUT_LINE( "VAR " & "LST_" & DIM_NBR_STR & ", d" );
+
+	declare
+	  INDEX_RANGE	: TREE	:= D( SM_RANGE, IDX_TYPE );
+	begin
+	  if  D( AS_EXP1, INDEX_RANGE ).TY /= DN_NUMERIC_LITERAL
+	  or  D( AS_EXP2, INDEX_RANGE ).TY /= DN_NUMERIC_LITERAL
+	  then
+	    IS_STATIC := FALSE;
+	  end if;
+	end;
 
 	if  not IS_EMPTY( IDX_TYPE_LIST )  then
 	  DIM_NBR := DIM_NBR + 1;
@@ -945,6 +956,9 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 	  begin
 	    PUT_LINE( tab & "LI" & tab & ELEMENT_SIZ_STR );						-- TAILLE D'UN ELEMENT DU TABLEAU
 	    PUT_LINE( tab & "Sd" & STR_INTER & "SIZ_" & DIM_NBR_STR );
+	    if  IS_STATIC  then
+	      ARRAY_STATIC_SIZE := ELEMENT_SIZ;
+	    end if;
 	  end;
 	else
 	  DIM_NBR := DIM_NBR + 1;
@@ -956,23 +970,27 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 
 	if  IDX_TYPE.TY = DN_INTEGER  then
 	  declare
-	      IDX_RANGE	: TREE		:= D( SM_RANGE, IDX_TYPE );
-	      RANGE_FIRST	: TREE		:= D( AS_EXP1, IDX_RANGE );
-	      RANGE_LAST 	: TREE		:= D( AS_EXP2, IDX_RANGE );
+	    IDX_RANGE	: TREE		:= D( SM_RANGE, IDX_TYPE );
+	    RANGE_FIRST	: TREE		:= D( AS_EXP1, IDX_RANGE );
+	    RANGE_LAST 	: TREE		:= D( AS_EXP2, IDX_RANGE );
 	  begin
-	      EXPRESSIONS.CODE_EXP( RANGE_FIRST );
-	      PUT_LINE( tab & "Sd" & STR_INTER & "FST_" & DIM_NBR_STR );
-	      EXPRESSIONS.CODE_EXP( RANGE_LAST );
-	      PUT_LINE( tab & "Sd" & STR_INTER & "LST_" & DIM_NBR_STR );
+	    EXPRESSIONS.CODE_EXP( RANGE_FIRST );
+	    PUT_LINE( tab & "Sd" & STR_INTER & "FST_" & DIM_NBR_STR );
+	    EXPRESSIONS.CODE_EXP( RANGE_LAST );
+	    PUT_LINE( tab & "Sd" & STR_INTER & "LST_" & DIM_NBR_STR );
 
 	      -- CALCULER LA TAILLE DE LA TRANCHE COMPTE TENU DE LA TAILLE D'ELEMENT DE DIMENSION SUIVANTE
 
-	        PUT_LINE( tab & "Ld" & STR_INTER & "LST_" & DIM_NBR_STR );
-	        PUT_LINE( tab & "INC" );
-	        PUT_LINE( tab & "Ld" & STR_INTER & "FST_" & DIM_NBR_STR );
-	        PUT_LINE( tab & "SUB" );
-	        PUT_LINE( tab & "Ld" & STR_INTER & "SIZ_" & DIM_NBR_STR );
-	        PUT_LINE( tab & "MUL" );
+	    PUT_LINE( tab & "Ld" & STR_INTER & "LST_" & DIM_NBR_STR );
+	    PUT_LINE( tab & "INC" );
+	    PUT_LINE( tab & "Ld" & STR_INTER & "FST_" & DIM_NBR_STR );
+	    PUT_LINE( tab & "SUB" );
+	    PUT_LINE( tab & "Ld" & STR_INTER & "SIZ_" & DIM_NBR_STR );
+	    PUT_LINE( tab & "MUL" );
+
+	    if  IS_STATIC  then
+	      ARRAY_STATIC_SIZE := ( DI( SM_VALUE, RANGE_LAST ) + 1 - DI( SM_VALUE, RANGE_FIRST ) ) * ARRAY_STATIC_SIZE;
+	    end if;
 	  end;
 	end if;
 
@@ -988,6 +1006,9 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
         INDEX_SUBTYPE_S := LIST( D( SM_INDEX_SUBTYPE_S,  TYPE_SPEC) );
         ARRAY_TYPE_DIMENSION_FILL_DESCR( INDEX_SUBTYPE_S );
         PUT_LINE( tab & "Sd" & STR_INTER & "SIZ" );
+        if  IS_STATIC  then
+	DI( CD_IMPL_SIZE, TYPE_SPEC,  8 * ARRAY_STATIC_SIZE );
+        end if;
 
         PUT_LINE( "end namespace" );
 
@@ -1198,6 +1219,7 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
     end if;
 
     PUT_LINE( "end namespace" );
+    if  CODI.DEBUG  then  NEW_LINE; end if;
 
     CODI.NO_SUBP_PARAMS := SAVE_NO_SUB_PARAM;
 

@@ -856,15 +856,19 @@ macro			CST	name_cst:_nil_, sizChar:b, val&	; Definition d'une constante
 end macro
 
 ;			--------------
-macro			FIELD	name				; Definition d'un champ de struc
+macro			USEINFO	name				; Definition d'un champ de struc
 ;			--------------
   virtual VARzone
     align_q							; aligner en fonction de l'unite de reservation
     name#__u = $							; lieu ptr use info
     rq 1								; reservation
-    name#__o = $							; lieu offset du champ
-    rd 1								; reservation
   end virtual
+end macro
+;			-------------------
+macro			STATOFS	name, siz				; Definition de l'offset statique (pour un record statique, dans une virtual at 0)
+;			-------------------
+    name#__o = $							; nom offset du champ
+    rb siz							; reservation
 end macro
 
 ;			-----------------------------------

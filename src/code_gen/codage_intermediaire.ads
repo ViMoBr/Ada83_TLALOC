@@ -27,6 +27,7 @@ is
   subtype LEVEL_NUM			is NATURAL		range 0 .. MAX_LEVEL;
   subtype OFFSET_VAL		is INTEGER		range -MAX_OFFSET .. MAX_OFFSET;
 
+  STORAGE_UNIT			: constant		:= 8;					--| OCTET DE 8 bits
   STACK_ELEMENT_SIZE		: constant		:= 8;					--| LA PILE EST GEREE PAR QUAD WORDS SUR X86-64
   ADDR_SIZE			: constant		:= 8;					--| ADRESSES SUR 64 BITS
   BOOL_SIZE			: constant		:= 1;					--| BOOLEEN SUR 1 OCTET
