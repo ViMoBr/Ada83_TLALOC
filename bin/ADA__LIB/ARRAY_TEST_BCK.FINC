@@ -2,38 +2,32 @@ include 'TEXT_IO.FINC'
 PRO	ARRAY_TEST_L1				;---------- PRO ARRAY_TEST
 ELB 1					;    BODY ELAB
 VAR S_disp, q				; variable array : pointeur au tableau
-VAR S__u, q				; variable array useinfo : pointeur au rec info
 STR S, 'Camille'				; constante string='Camille'
 	LCA	S_ptr
-	Sa	1,	S_disp				; array data ptr at _disp
-	LCA	S__i
-	Sa	1,	S__u				; array info ptr at __u
-
+	Sa	1,	S_disp				; array fin
 
 VAR C_disp, b				; variable bool char
 
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-	La  1,	S_disp
-	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
 VAR	IL2_disp, d				; compteur boucle LOOP__1
-	LId 1,	S__u, S.FST_1
+	LId 1,	S_disp, 12
 	Sd  1,	IL2_disp
 VAR	LMT_IL2_disp, d				; limite boucle LOOP__1
-	LId 1,	S__u, S.LST_1
+	LId 1,	S_disp, 16
 	Sd  1,	LMT_IL2_disp
 	Ld  1,	IL2_disp				; test null range LOOP__1
 	Ld  1,	LMT_IL2_disp
 	CGT
 	BT	L1
 LOOP__1:					; corps boucle LOOP__1
-	LIa 1,	S_disp				; array data start address on stack
+	LIa 1,	S_disp
 	Ld  1,	IL2_disp
-	LId 1,	S__u, S.FST_1			; (index - FST_1) * SIZ_1
+	LId 1,	S_disp, 12				; (index - FST_1) * SIZ_1
 	SUB
-	LId 1,	S__u, S.COMP_SIZ
+	LId 1,	S_disp, 8
 	MUL
-	ADD					; add offset to start address
+	ADD					; add offset
 	Lb					; charge depuis adresse empilee 
 	Sb  1,	C_disp
 	Lb  1,	C_disp

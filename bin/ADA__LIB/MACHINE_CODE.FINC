@@ -41,7 +41,7 @@ CST , , 3, "SIW"
 CST , , 3, "SID"
 CST , , 3, "SIQ"
 CST , , 3, "SIA"
-end namespace 
+end namespace
 
 namespace ASM_OPCODE_0__i			; ASM_OPCODE_0 ENUMERATION SUBTYPE INFO
 VAR SIZ, b
@@ -99,3 +99,4 @@ end namespace
 
 ; EXC_LBL	L1
 end namespace
+

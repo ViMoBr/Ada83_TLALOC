@@ -6,6 +6,8 @@ is			----------
   S	:constant STRING := "Camille";
   C	: CHARACTER;
 begin
+  PUT_LINE( S );
+
   for I in S'FIRST .. S'LAST loop
     C := S( I );
     PUT( C ); PUT( '_' );

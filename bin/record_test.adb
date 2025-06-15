@@ -25,7 +25,7 @@ package definitions is
 end definitions;
 use definitions;
 
-  ENREG	: ENREGISTREMENT;
+  ENREG	: ENREGISTREMENT( 10 );
 --  for ENREG use at 16#45000#;
   KI	: SHORT;
 

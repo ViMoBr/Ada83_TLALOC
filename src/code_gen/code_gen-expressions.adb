@@ -367,25 +367,29 @@ null;--        declare
     INDEX_NUM	: INTEGER		:= 1;
   begin
     declare
-
-      procedure INDEX ( EXP :TREE ) is
-        CHN		:constant STRING	:= tab & "LId" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & ARRAY_NAME & "_disp";
+		-----
+      procedure	INDEX	( EXP :TREE )
+      is
+        CHN		:constant STRING	:= tab & "LId" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & ARRAY_NAME & "__u";
         INDEX_NUM_IMG	:constant STRING	:= IMAGE( INDEX_NUM );
       begin
         CODE_EXP( EXP );
-        PUT( CHN & ',' & INTEGER'IMAGE( 8 + 12 * (INDEX_NUM-1) + 4 ) );
+        PUT( CHN & ", " &  ARRAY_NAME & ".FST_" & INDEX_NUM_IMG );
         if CODI.DEBUG then PUT( tab50 & "; (index - FST_" & INDEX_NUM_IMG & ") * SIZ_" & INDEX_NUM_IMG ); end if;
         NEW_LINE;
         PUT_LINE( tab & "SUB" );
-        PUT_LINE( CHN & ',' & INTEGER'IMAGE( 8 + 12 * (INDEX_NUM-1) ) );
+        PUT_LINE( CHN & ", " & ARRAY_NAME & ".COMP_SIZ" );
         PUT_LINE( tab & "MUL" );
         PUT( tab & "ADD" );
-        if CODI.DEBUG then PUT( tab50 & "; add offset" ); end if;
+        if CODI.DEBUG then PUT( tab50 & "; add offset to start address" ); end if;
         NEW_LINE;
-      end INDEX;
+      end	INDEX;
+      	-----
 
     begin
-      PUT_LINE(  tab & "LIa" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & ARRAY_NAME & "_disp" );			-- EMPILE L ADRESSE DE BASE DU CONTENU DE TABLEAU
+      PUT(  tab & "LIa" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & ARRAY_NAME & "_disp" );			-- EMPILE L ADRESSE DE BASE DU CONTENU DE TABLEAU
+      if CODI.DEBUG then PUT( tab50 & "; array data start address on stack" ); end if;
+      NEW_LINE;
 
       declare
         EXP_SEQ	: SEQ_TYPE	:= LIST( D( AS_EXP_S, INDEXED ) );
@@ -498,15 +502,20 @@ null;--        declare
 	  ARRAY_LVL	: INTEGER		:= DI( CD_LEVEL, PREFIX_DEFN );
 	  DIM_EXP		: TREE		:= D( AS_EXP, ATTRIBUTE );
 	  NUM_DIM		: INTEGER		:= 1;
-	  ATTR_VAL_OFS	: INTEGER		:= 4;							-- POUR ARRAY'FIRST
 	begin
 	  if DIM_EXP /= TREE_VOID then
 	    NUM_DIM := DI( SM_VALUE, DIM_EXP );
 	  end if;
-	  if  IS_LAST  then ATTR_VAL_OFS := 8;								-- POUR ARRAY'LAST
-            end if;
-	  PUT_LINE( tab & "LId" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & CHN_PREFIX & "_disp" & ','
-		    & INTEGER'IMAGE( 8 + 12*(NUM_DIM-1) + ATTR_VAL_OFS ) );
+	  PUT( tab & "LId" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & CHN_PREFIX & "__u" & ", " & CHN_PREFIX );
+	  if  IS_LAST  then
+	    PUT( ".LST_"  );
+	  else
+	    PUT( ".FST_" );
+	  end if;
+	  PUT_LINE( IMAGE( NUM_DIM ) );
+
+--	  PUT_LINE( tab & "LId" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & CHN_PREFIX & "_disp" & ','
+--		    & INTEGER'IMAGE( 8 + 12*(NUM_DIM-1) + ATTR_VAL_OFS ) );
 	end;
         end if;
 

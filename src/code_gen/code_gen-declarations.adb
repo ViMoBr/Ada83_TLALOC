@@ -721,6 +721,10 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
         PUT( "VAR " & VC_STR & "_disp, q" );
         if CODI.DEBUG then PUT( tab50 & "; variable array : pointeur au tableau" ); end if;
         NEW_LINE;
+        PUT( "VAR " & VC_STR & "__u, q" );
+        if CODI.DEBUG then PUT( tab50 & "; variable array useinfo : pointeur au rec info" ); end if;
+        NEW_LINE;
+
         DI( CD_LEVEL, VC_NAME, INTEGER( LVL ) );
 
 	declare
@@ -752,7 +756,11 @@ null;--              LOAD_TYPE_SIZE( TYPE_SPEC  );
 	  end if;
 
 	  PUT( tab & "Sa" & tab & LVL_STR & ',' & tab & VC_STR & "_disp" );
-	  if CODI.DEBUG then PUT( tab50 & "; array fin" ); end if;
+	  if CODI.DEBUG then PUT( tab50 & "; array data ptr at _disp" ); end if;
+	  NEW_LINE;
+	  PUT_LINE( tab & "LCA" & tab & VC_STR & "__i" );							-- LOAD CONSTANT ADDRESS FOR INFO
+	  PUT( tab & "Sa" & tab & LVL_STR & ',' & tab & VC_STR & "__u" );
+	  if CODI.DEBUG then PUT_LINE( tab50 & "; array info ptr at __u" ); end if;
 	  NEW_LINE;
 
 	end;

@@ -63,19 +63,4 @@ end namespace
 ; EXC_LBL	L2
 end namespace
 
-VAR ENREG_disp, q				; variable record : pointeur au record
-VAR ENREG_rec, STANDARD.RECORD_TEST_L1.DEFINITIONS.ENREGISTREMENT.size
-	LVA	1,	ENREG_rec
-	Sa	1,	ENREG_disp				; record fin
-
-VAR KI_disp, w				; variable entiere
-
-					;    end elab
-begin:					;---------- BDY INSTRUCTIONS
-	Lw  1,	KI_disp
-	SIw 1,	ENREG_disp, ENREGISTREMENT.R1 + REC.I1
-ret_lbl:
-	UNLINK 1
-	RTD
-excep:
-endPRO					;---------- end PRO RECORD_TEST
+; ERREUR CODE_VC_NAME, TYPE_SPEC.TY = DN_CONSTRAINED_RECORD

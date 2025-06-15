@@ -6,7 +6,7 @@ namespace FILE_MODE__i			; FILE_MODE ENUMERATION TYPE INFO
 CST SIZ, b, 8
 CST , , 7, "IN_FILE"
 CST , , 8, "OUT_FILE"
-end namespace 
+end namespace
 
 namespace COUNT__i				; COUNT TYPE RANGE INFO
 VAR SIZ, b
@@ -40,7 +40,7 @@ namespace TYPE_SET__i			; TYPE_SET ENUMERATION TYPE INFO
 CST SIZ, b, 8
 CST , , 10, "LOWER_CASE"
 CST , , 10, "UPPER_CASE"
-end namespace 
+end namespace
 
 namespace FILE_NAME_BUFFER__i			; FILE_NAME_BUFFER CONSTRAINED ARRAY SUBTYPE INFO
 VAR SIZ, d
@@ -1201,6 +1201,7 @@ PRMS					;    debut parametrage
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 VAR CHN_disp, q				; variable array : pointeur au tableau
+VAR CHN__u, q				; variable array useinfo : pointeur au rec info
 					; variable tableau contraint
 namespace CHN
 VAR PTR, q
@@ -1223,7 +1224,10 @@ end namespace
 	CO_VAR					; allocation sur la co-pile
 	Sa	1,	CHN.PTR
 	LVA	1,	CHN.PTR
-	Sa	1,	CHN_disp				; array fin
+	Sa	1,	CHN_disp				; array data ptr at _disp
+	LCA	CHN__i
+	Sa	1,	CHN__u				; array info ptr at __u
+
 
 VAR LEN_disp, d				; variable entiere
 
@@ -1248,13 +1252,13 @@ LOOP__2:					; corps boucle LOOP__2
 	LI	 10
 	Ld  1,	VAL_disp
 	MUL
-	LIa 1,	CHN_disp
+	LIa 1,	CHN_disp				; array data start address on stack
 	Ld  1,	IL10_disp
-	LId 1,	CHN_disp, 12			; (index - FST_1) * SIZ_1
+	LId 1,	CHN__u, CHN.FST_1			; (index - FST_1) * SIZ_1
 	SUB
-	LId 1,	CHN_disp, 8
+	LId 1,	CHN__u, CHN.COMP_SIZ
 	MUL
-	ADD					; add offset
+	ADD					; add offset to start address
 	Lb					; charge depuis adresse empilee 
 	ADD
 	LI	 48
@@ -1313,6 +1317,7 @@ VAR QUOTIENT_disp, d			; variable entiere
 VAR RESTE_disp, d				; variable entiere
 
 VAR STR_disp, q				; variable array : pointeur au tableau
+VAR STR__u, q				; variable array useinfo : pointeur au rec info
 					; variable tableau contraint
 namespace STR
 VAR PTR, q
@@ -1335,7 +1340,10 @@ end namespace
 	CO_VAR					; allocation sur la co-pile
 	Sa	1,	STR.PTR
 	LVA	1,	STR.PTR
-	Sa	1,	STR_disp				; array fin
+	Sa	1,	STR_disp				; array data ptr at _disp
+	LCA	STR__i
+	Sa	1,	STR__u				; array info ptr at __u
+
 
 VAR INDEX_disp, d				; variable entiere
 
