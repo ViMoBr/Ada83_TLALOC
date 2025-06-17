@@ -8,10 +8,10 @@ elab_spec:				;    SPEC ELAB
 
 VAR NATURAL_last_ofs, q
 LI 2147483647
-Sd 1,	NATURAL_last_ofs
+Sd 1, NATURAL_last_ofs
 VAR NATURAL_first_ofs, q
 LI 0
-Sd 1,	NATURAL_first_ofs
+Sd 1, NATURAL_first_ofs
 VAR GFP_disp, q
 VAR DEFAULT_WIDTH_disp, d			; variable entiere
 	Sd  1,	DEFAULT_WIDTH_disp

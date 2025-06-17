@@ -44,15 +44,15 @@ CST , , 3, "SIA"
 end namespace
 
 namespace ASM_OPCODE_0__i			; ASM_OPCODE_0 ENUMERATION SUBTYPE INFO
-VAR SIZ, b
+VAR SIZ, d
 end namespace
 
 namespace ASM_OPCODE_1__i			; ASM_OPCODE_1 ENUMERATION SUBTYPE INFO
-VAR SIZ, b
+VAR SIZ, d
 end namespace
 
 namespace ASM_OPCODE_2__i			; ASM_OPCODE_2 ENUMERATION SUBTYPE INFO
-VAR SIZ, b
+VAR SIZ, d
 end namespace
 
 namespace ASM_OP_0__i			; ASM_OP_0 RECORD TYPE INFO

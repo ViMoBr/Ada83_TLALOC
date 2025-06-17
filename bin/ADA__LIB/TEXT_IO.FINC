@@ -14,15 +14,15 @@ VAR SIZ, d
 VAR FST, d
 VAR LST, d
 	LI 32
-	Sb 0,	SIZ
+	Sb 0, SIZ
 	LI	0
-	Sd 0,	FST
+	Sd 0, FST
 	LI 2147483647
-	Sd 0,	LST
+	Sd 0, LST
 end namespace
 
 namespace POSITIVE_COUNT__i			; POSITIVE_COUNT INTEGER SUBTYPE INFO
-VAR SIZ, b
+VAR SIZ, d
 end namespace
 
 VAR UNBOUNDED_disp, d			; variable entiere
@@ -30,11 +30,11 @@ VAR UNBOUNDED_disp, d			; variable entiere
 	Sd  0,	UNBOUNDED_disp
 
 namespace FIELD__i				; FIELD INTEGER SUBTYPE INFO
-VAR SIZ, b
+VAR SIZ, d
 end namespace
 
 namespace NUMBER_BASE__i			; NUMBER_BASE INTEGER SUBTYPE INFO
-VAR SIZ, b
+VAR SIZ, d
 end namespace
 
 namespace TYPE_SET__i			; TYPE_SET ENUMERATION TYPE INFO
@@ -50,26 +50,26 @@ VAR COMP_SIZ, d
 VAR FST_1, d
 VAR LST_1, d
 	LI	1
-	Sd 0,	COMP_SIZ
+	Sd 0, COMP_SIZ
+	Ld 0, COMP_SIZ
 	LI	1
-	Sd 0,	FST_1
+	Sd 0, FST_1
 	LI	256
-	Sd 0,	LST_1
-	Ld 0,	LST_1
+	Sd 0, LST_1
+	Ld 0, LST_1
 	INC
-	Ld 0,	FST_1
+	Ld 0, FST_1
 	SUB
-	Ld 0,	COMP_SIZ
 	MUL
-	Sd 0,	SIZ
+	Sd 0, SIZ
   end namespace
   virtual at 4
 COMP_SIZ = $
-rd 1 
+	rd 1 
 FST_1 = $
-rd 1 
+	rd 1 
 LST_1 = $
-rd 1 
+	rd 1 
   end virtual
 end namespace
 
@@ -1221,36 +1221,36 @@ VAR COMP_SIZ, d
 VAR FST_1, d
 VAR LST_1, d
 	LI	1
-	Sd 1,	COMP_SIZ
+	Sd 1, COMP_SIZ
+	Ld 1, COMP_SIZ
 	LI	1
-	Sd 1,	FST_1
+	Sd 1, FST_1
 	LI	40
-	Sd 1,	LST_1
-	Ld 1,	LST_1
+	Sd 1, LST_1
+	Ld 1, LST_1
 	INC
-	Ld 1,	FST_1
+	Ld 1, FST_1
 	SUB
-	Ld 1,	COMP_SIZ
 	MUL
-	Sd 1,	SIZ
+	Sd 1, SIZ
   end namespace
   virtual at 4
 COMP_SIZ = $
-rd 1 
+	rd 1 
 FST_1 = $
-rd 1 
+	rd 1 
 LST_1 = $
-rd 1 
+	rd 1 
   end virtual
 end namespace
 
 VAR CHN_disp, q				; variable array : pointeur aux data
 VAR CHN__u, q				; variable array : useinfo pointeur au rec info
-	Ld 1,	CHN.SIZ
+	Ld 1, CHN.SIZ
 	CO_VAR
-	Sa	1,	CHN_disp				; array data ptr at _disp
+	Sa 1, CHN_disp				; array data ptr at _disp
 	LVA 1, 	CHN.SIZ
-	Sa	1,	CHN__u				; array info ptr at __u
+	Sa 1, CHN__u				; array info ptr at __u
 
 VAR LEN_disp, d				; variable entiere
 	LI	40
@@ -1350,36 +1350,36 @@ VAR COMP_SIZ, d
 VAR FST_1, d
 VAR LST_1, d
 	LI	1
-	Sd 1,	COMP_SIZ
+	Sd 1, COMP_SIZ
+	Ld 1, COMP_SIZ
 	LI	1
-	Sd 1,	FST_1
+	Sd 1, FST_1
 	LI	68
-	Sd 1,	LST_1
-	Ld 1,	LST_1
+	Sd 1, LST_1
+	Ld 1, LST_1
 	INC
-	Ld 1,	FST_1
+	Ld 1, FST_1
 	SUB
-	Ld 1,	COMP_SIZ
 	MUL
-	Sd 1,	SIZ
+	Sd 1, SIZ
   end namespace
   virtual at 4
 COMP_SIZ = $
-rd 1 
+	rd 1 
 FST_1 = $
-rd 1 
+	rd 1 
 LST_1 = $
-rd 1 
+	rd 1 
   end virtual
 end namespace
 
 VAR STR_disp, q				; variable array : pointeur aux data
 VAR STR__u, q				; variable array : useinfo pointeur au rec info
-	Ld 1,	STR.SIZ
+	Ld 1, STR.SIZ
 	CO_VAR
-	Sa	1,	STR_disp				; array data ptr at _disp
+	Sa 1, STR_disp				; array data ptr at _disp
 	LVA 1, 	STR.SIZ
-	Sa	1,	STR__u				; array info ptr at __u
+	Sa 1, STR__u				; array info ptr at __u
 
 VAR INDEX_disp, d				; variable entiere
 	LId 1,	STR__u, STR.LST_1

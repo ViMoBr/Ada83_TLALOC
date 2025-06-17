@@ -6,10 +6,10 @@ VAR S__u, q				; variable array : useinfo pointeur au rec info
 STR S, 'Camille'				; constante string='Camille'
 	LCA	S.data_ptr
 	La
-	Sa	1,	S_disp				; array data ptr at _disp
+	Sa 1, S_disp				; array data ptr at _disp
 	LCA	S.info_ptr
 	La
-	Sa	1,	S__u				; array info ptr at __u
+	Sa 1, S__u				; array info ptr at __u
 
 VAR C_disp, b				; variable bool char
 
