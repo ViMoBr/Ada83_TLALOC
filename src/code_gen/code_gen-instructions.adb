@@ -559,7 +559,9 @@ null;
 	      PUT_LINE( tab & "LI" & tab & INTEGER'IMAGE( DI( SM_VALUE, ACT_PRM ) ) );
 
 	    elsif EXP_TYPE.TY = DN_ARRAY then
-	      PUT_LINE( tab & "La" & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & DEFN_STR & "_disp" );
+	      PUT( tab & "LVA" & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & DEFN_STR & "_disp" );
+	      if  CODI.DEBUG  then PUT( tab50 & "; array actual" ); end if;
+	      NEW_LINE;
 
 	    end if;
 
@@ -571,7 +573,7 @@ null;
 	      if  D( SM_OBJ_TYPE, DEFN ).TY in CLASS_SCALAR  then
 	        PUT_LINE( tab & "LVA" & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & DEFN_STR & "_disp" );
 	      else
-	        PUT_LINE( tab & "La" & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & DEFN_STR & "_disp" );
+	        PUT_LINE( tab & "LVA" & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & DEFN_STR & "_disp" );
 	      end if;
 	    end if;
 
@@ -592,12 +594,12 @@ null;
 	  end if;
 	end;
 
-        elsif ACT_PRM.TY = DN_STRING_LITERAL then
+        elsif  ACT_PRM.TY = DN_STRING_LITERAL  then
 	declare
 	  NOM_ANONYME	:constant STRING	:= "STR_" & NEW_LABEL;
 	begin
 	  EXPRESSIONS.CODE_STRING_LITERAL( ACT_PRM, NOM_ANONYME );
-	  PUT_LINE( tab & "LCA" & tab & NOM_ANONYME & "_ptr" );						-- LOAD CONSTANT ADDRESS
+	  PUT_LINE( tab & "LCA" & tab & NOM_ANONYME & ".data_ptr" );						-- LOAD CONSTANT ADDRESS
 	end;
 
         else

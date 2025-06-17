@@ -315,7 +315,7 @@ is
         end;
 
      else												-- variable non scalaire
-        PUT( tab & "La " & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab );
+        PUT( tab & "LVa " & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab );
         PUT_LINE( PRINT_NAME( D( LX_SYMREP, DEFN ) )  & "_disp" );
 
      end if;

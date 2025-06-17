@@ -1,76 +1,78 @@
 namespace _STANDRD				;---------- PACKAGE DECLARATION
 namespace STANDARD				;---------- PACKAGE DECLARATION
 namespace BOOLEAN__i			; BOOLEAN ENUMERATION TYPE INFO
-CST SIZ, b, 1
+CST SIZ, d, 1
 CST , , 5, "FALSE"
 CST , , 4, "TRUE"
 end namespace
 
 namespace SHORT_INTEGER__i			; SHORT_INTEGER TYPE RANGE INFO
-VAR SIZ, b
+VAR SIZ, d
 VAR FST, w
 VAR LST, w
 	LI 16
 	Sb 0,	SIZ
-	LI	 2
-	LI	 15
+	LI	2
+	LI	15
 	DEC
 	SHL
 	NEG
 	Sw 0,	FST
-	LI	 2
-	LI	 15
+	LI	2
+	LI	15
 	DEC
 	SHL
-	LI	 1
+	LI	1
 	SUB
 	Sw 0,	LST
 end namespace
 
 namespace INTEGER__i			; INTEGER TYPE RANGE INFO
-VAR SIZ, b
+VAR SIZ, d
 VAR FST, d
 VAR LST, d
 	LI 32
 	Sb 0,	SIZ
-	LI	 2
-	LI	 31
+	LI	2
+	LI	31
 	DEC
 	SHL
 	NEG
 	Sd 0,	FST
-	LI	 2
-	LI	 31
+	LI	2
+	LI	31
 	DEC
 	SHL
-	LI	 1
+	LI	1
 	SUB
 	Sd 0,	LST
 end namespace
 
 namespace LONG_INTEGER__i			; LONG_INTEGER TYPE RANGE INFO
-VAR SIZ, b
+VAR SIZ, d
 VAR FST, q
 VAR LST, q
 	LI 64
 	Sb 0,	SIZ
-	LI	 2
-	LI	 63
+	LI	2
+	LI	63
 	DEC
 	SHL
 	NEG
 	Sq 0,	FST
-	LI	 2
-	LI	 63
+	LI	2
+	LI	63
 	DEC
 	SHL
-	LI	 1
+	LI	1
 	SUB
 	Sq 0,	LST
 end namespace
 
+; CODE_GEN.DECLARATIONS.CODE_TYPE_DECL : TYPE_SPEC.TY (DN_FLOAT NON FAIT POUR ) FLOAT
+; CODE_GEN.DECLARATIONS.CODE_TYPE_DECL : TYPE_SPEC.TY (DN_FLOAT NON FAIT POUR ) LONG_FLOAT
 namespace CHARACTER__i			; CHARACTER ENUMERATION TYPE INFO
-CST SIZ, b, 8
+CST SIZ, d, 8
 CST , , 4, "_NUL"
 CST , , 4, "_SOH"
 CST , , 4, "_STX"
@@ -203,319 +205,319 @@ end namespace
 
 namespace ASCII				;---------- PACKAGE DECLARATION
 VAR NUL_disp, b				; variable bool char
-	LI	 0
+	LI	0
 	Sb  0,	NUL_disp
 
 VAR SOH_disp, b				; variable bool char
-	LI	 1
+	LI	1
 	Sb  0,	SOH_disp
 
 VAR STX_disp, b				; variable bool char
-	LI	 2
+	LI	2
 	Sb  0,	STX_disp
 
 VAR ETX_disp, b				; variable bool char
-	LI	 3
+	LI	3
 	Sb  0,	ETX_disp
 
 VAR EOT_disp, b				; variable bool char
-	LI	 4
+	LI	4
 	Sb  0,	EOT_disp
 
 VAR ENQ_disp, b				; variable bool char
-	LI	 5
+	LI	5
 	Sb  0,	ENQ_disp
 
 VAR ACK_disp, b				; variable bool char
-	LI	 6
+	LI	6
 	Sb  0,	ACK_disp
 
 VAR BEL_disp, b				; variable bool char
-	LI	 7
+	LI	7
 	Sb  0,	BEL_disp
 
 VAR BS_disp, b				; variable bool char
-	LI	 8
+	LI	8
 	Sb  0,	BS_disp
 
 VAR HT_disp, b				; variable bool char
-	LI	 9
+	LI	9
 	Sb  0,	HT_disp
 
 VAR LF_disp, b				; variable bool char
-	LI	 10
+	LI	10
 	Sb  0,	LF_disp
 
 VAR VT_disp, b				; variable bool char
-	LI	 11
+	LI	11
 	Sb  0,	VT_disp
 
 VAR FF_disp, b				; variable bool char
-	LI	 12
+	LI	12
 	Sb  0,	FF_disp
 
 VAR CR_disp, b				; variable bool char
-	LI	 13
+	LI	13
 	Sb  0,	CR_disp
 
 VAR SO_disp, b				; variable bool char
-	LI	 14
+	LI	14
 	Sb  0,	SO_disp
 
 VAR SI_disp, b				; variable bool char
-	LI	 15
+	LI	15
 	Sb  0,	SI_disp
 
 VAR DLE_disp, b				; variable bool char
-	LI	 16
+	LI	16
 	Sb  0,	DLE_disp
 
 VAR DC1_disp, b				; variable bool char
-	LI	 17
+	LI	17
 	Sb  0,	DC1_disp
 
 VAR DC2_disp, b				; variable bool char
-	LI	 18
+	LI	18
 	Sb  0,	DC2_disp
 
 VAR DC3_disp, b				; variable bool char
-	LI	 19
+	LI	19
 	Sb  0,	DC3_disp
 
 VAR DC4_disp, b				; variable bool char
-	LI	 20
+	LI	20
 	Sb  0,	DC4_disp
 
 VAR NAK_disp, b				; variable bool char
-	LI	 21
+	LI	21
 	Sb  0,	NAK_disp
 
 VAR SYN_disp, b				; variable bool char
-	LI	 22
+	LI	22
 	Sb  0,	SYN_disp
 
 VAR ETB_disp, b				; variable bool char
-	LI	 23
+	LI	23
 	Sb  0,	ETB_disp
 
 VAR CAN_disp, b				; variable bool char
-	LI	 24
+	LI	24
 	Sb  0,	CAN_disp
 
 VAR EM_disp, b				; variable bool char
-	LI	 25
+	LI	25
 	Sb  0,	EM_disp
 
 VAR SUB_disp, b				; variable bool char
-	LI	 26
+	LI	26
 	Sb  0,	SUB_disp
 
 VAR ESC_disp, b				; variable bool char
-	LI	 27
+	LI	27
 	Sb  0,	ESC_disp
 
 VAR FS_disp, b				; variable bool char
-	LI	 28
+	LI	28
 	Sb  0,	FS_disp
 
 VAR GS_disp, b				; variable bool char
-	LI	 29
+	LI	29
 	Sb  0,	GS_disp
 
 VAR RS_disp, b				; variable bool char
-	LI	 30
+	LI	30
 	Sb  0,	RS_disp
 
 VAR US_disp, b				; variable bool char
-	LI	 31
+	LI	31
 	Sb  0,	US_disp
 
 VAR DEL_disp, b				; variable bool char
-	LI	 127
+	LI	127
 	Sb  0,	DEL_disp
 
 VAR EXCLAM_disp, b				; variable bool char
-	LI	 33
+	LI	33
 	Sb  0,	EXCLAM_disp
 
 VAR SHARP_disp, b				; variable bool char
-	LI	 35
+	LI	35
 	Sb  0,	SHARP_disp
 
 VAR PERCENT_disp, b				; variable bool char
-	LI	 37
+	LI	37
 	Sb  0,	PERCENT_disp
 
 VAR COLON_disp, b				; variable bool char
-	LI	 58
+	LI	58
 	Sb  0,	COLON_disp
 
 VAR QUERY_disp, b				; variable bool char
-	LI	 63
+	LI	63
 	Sb  0,	QUERY_disp
 
 VAR L_BRACKET_disp, b			; variable bool char
-	LI	 91
+	LI	91
 	Sb  0,	L_BRACKET_disp
 
 VAR R_BRACKET_disp, b			; variable bool char
-	LI	 93
+	LI	93
 	Sb  0,	R_BRACKET_disp
 
 VAR UNDERLINE_disp, b			; variable bool char
-	LI	 95
+	LI	95
 	Sb  0,	UNDERLINE_disp
 
 VAR L_BRACE_disp, b				; variable bool char
-	LI	 123
+	LI	123
 	Sb  0,	L_BRACE_disp
 
 VAR R_BRACE_disp, b				; variable bool char
-	LI	 125
+	LI	125
 	Sb  0,	R_BRACE_disp
 
 VAR QUOTATION_disp, b			; variable bool char
-	LI	 34
+	LI	34
 	Sb  0,	QUOTATION_disp
 
 VAR DOLLAR_disp, b				; variable bool char
-	LI	 36
+	LI	36
 	Sb  0,	DOLLAR_disp
 
 VAR AMPERSAND_disp, b			; variable bool char
-	LI	 38
+	LI	38
 	Sb  0,	AMPERSAND_disp
 
 VAR SEMICOLON_disp, b			; variable bool char
-	LI	 59
+	LI	59
 	Sb  0,	SEMICOLON_disp
 
 VAR AT_SIGN_disp, b				; variable bool char
-	LI	 64
+	LI	64
 	Sb  0,	AT_SIGN_disp
 
 VAR BACK_SLASH_disp, b			; variable bool char
-	LI	 92
+	LI	92
 	Sb  0,	BACK_SLASH_disp
 
 VAR CIRCUMFLEX_disp, b			; variable bool char
-	LI	 94
+	LI	94
 	Sb  0,	CIRCUMFLEX_disp
 
 VAR GRAVE_disp, b				; variable bool char
-	LI	 96
+	LI	96
 	Sb  0,	GRAVE_disp
 
 VAR BAR_disp, b				; variable bool char
-	LI	 124
+	LI	124
 	Sb  0,	BAR_disp
 
 VAR TILDE_disp, b				; variable bool char
-	LI	 126
+	LI	126
 	Sb  0,	TILDE_disp
 
 VAR LC_A_disp, b				; variable bool char
-	LI	 97
+	LI	97
 	Sb  0,	LC_A_disp
 
 VAR LC_B_disp, b				; variable bool char
-	LI	 98
+	LI	98
 	Sb  0,	LC_B_disp
 
 VAR LC_C_disp, b				; variable bool char
-	LI	 99
+	LI	99
 	Sb  0,	LC_C_disp
 
 VAR LC_D_disp, b				; variable bool char
-	LI	 100
+	LI	100
 	Sb  0,	LC_D_disp
 
 VAR LC_E_disp, b				; variable bool char
-	LI	 101
+	LI	101
 	Sb  0,	LC_E_disp
 
 VAR LC_F_disp, b				; variable bool char
-	LI	 102
+	LI	102
 	Sb  0,	LC_F_disp
 
 VAR LC_G_disp, b				; variable bool char
-	LI	 103
+	LI	103
 	Sb  0,	LC_G_disp
 
 VAR LC_H_disp, b				; variable bool char
-	LI	 104
+	LI	104
 	Sb  0,	LC_H_disp
 
 VAR LC_I_disp, b				; variable bool char
-	LI	 105
+	LI	105
 	Sb  0,	LC_I_disp
 
 VAR LC_J_disp, b				; variable bool char
-	LI	 106
+	LI	106
 	Sb  0,	LC_J_disp
 
 VAR LC_K_disp, b				; variable bool char
-	LI	 107
+	LI	107
 	Sb  0,	LC_K_disp
 
 VAR LC_L_disp, b				; variable bool char
-	LI	 108
+	LI	108
 	Sb  0,	LC_L_disp
 
 VAR LC_M_disp, b				; variable bool char
-	LI	 109
+	LI	109
 	Sb  0,	LC_M_disp
 
 VAR LC_N_disp, b				; variable bool char
-	LI	 110
+	LI	110
 	Sb  0,	LC_N_disp
 
 VAR LC_O_disp, b				; variable bool char
-	LI	 111
+	LI	111
 	Sb  0,	LC_O_disp
 
 VAR LC_P_disp, b				; variable bool char
-	LI	 112
+	LI	112
 	Sb  0,	LC_P_disp
 
 VAR LC_Q_disp, b				; variable bool char
-	LI	 113
+	LI	113
 	Sb  0,	LC_Q_disp
 
 VAR LC_R_disp, b				; variable bool char
-	LI	 114
+	LI	114
 	Sb  0,	LC_R_disp
 
 VAR LC_S_disp, b				; variable bool char
-	LI	 115
+	LI	115
 	Sb  0,	LC_S_disp
 
 VAR LC_T_disp, b				; variable bool char
-	LI	 116
+	LI	116
 	Sb  0,	LC_T_disp
 
 VAR LC_U_disp, b				; variable bool char
-	LI	 117
+	LI	117
 	Sb  0,	LC_U_disp
 
 VAR LC_V_disp, b				; variable bool char
-	LI	 118
+	LI	118
 	Sb  0,	LC_V_disp
 
 VAR LC_W_disp, b				; variable bool char
-	LI	 119
+	LI	119
 	Sb  0,	LC_W_disp
 
 VAR LC_X_disp, b				; variable bool char
-	LI	 120
+	LI	120
 	Sb  0,	LC_X_disp
 
 VAR LC_Y_disp, b				; variable bool char
-	LI	 121
+	LI	121
 	Sb  0,	LC_Y_disp
 
 VAR LC_Z_disp, b				; variable bool char
-	LI	 122
+	LI	122
 	Sb  0,	LC_Z_disp
 
 ; EXC_LBL	L1
@@ -530,7 +532,7 @@ VAR SIZ, b
 end namespace
 
 namespace STRING__i				; STRING UNCONSTRAINED ARRAY SUBTYPE INFO
-VAR SIZ, b
+VAR SIZ, d
 VAR NDIMS, b
 	LI 1
 	Sb 0, NDIMS
@@ -540,11 +542,33 @@ USEINFO DIM_1
 	Sa 0, DIM_1__u
 end namespace
 
+; CODE_GEN.DECLARATIONS.CODE_TYPE_DECL : TYPE_SPEC.TY (DN_FIXED NON FAIT POUR ) DURATION
 ; EXL	L2
 ; EXL	L3
 ; EXL	L4
 ; EXL	L5
 ; EXL	L6
+namespace _ADDRESS__i			; _ADDRESS TYPE RANGE INFO
+VAR SIZ, d
+VAR FST, q
+VAR LST, q
+	LI 64
+	Sb 0,	SIZ
+	LI	2
+	LI	63
+	DEC
+	SHL
+	NEG
+	Sq 0,	FST
+	LI	2
+	LI	63
+	DEC
+	SHL
+	LI	1
+	SUB
+	Sq 0,	LST
+end namespace
+
 ; EXC_LBL	L7
 end namespace
 

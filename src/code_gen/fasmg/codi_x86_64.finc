@@ -827,33 +827,34 @@ macro			STR	name, bytes			; Definition d'une constante chaine au format d'un tab
 ; et des caracteres qui pointes par PTR_TO_CHARS peuvent etre detaches du descripteur. Ici, cas de constante, les caracteres sont juste apres le descripteur.
 ;
   postpone
+    local data
+    local info
     local str_byte_size
-    local debut_cars
     align_q							; aligner le descripteur sur un quadword
 
-  name#_ptr = $							; adresse de la constante STRING, en fait adresse de l'adresse des caracteres
-    dq	debut_cars						; PTR_TO_CHARS adresse des caracteres (juste apres dans le cas present)
+  namespace name
 
-  name#__i = $							; use info
-    dd	str_byte_size, 1, 4, 1, str_byte_size				; TOT_SIZ=str_byte_size COMP_SIZ=1 IDX_SIZ=4 FST=1, LST=str_byte_size
+  data_ptr = $							; adresse de la constante STRING (en fait double pointeur)
+    dq	data							; offset 0 : adresse des caracteres (juste apres dans le cas present)
+  info_ptr = $							;
+    dq	info						; offset 8 : adresse des infos TOT_SIZ, COMP_SIZ, FST_1, LST_1
 
-namespace name
-    virtual at 0
-    TOT_SIZ = $
+  info = $							; use info
+    dd	str_byte_size, 1, 1, str_byte_size				; offset 16 : TOT_SIZ=str_byte_size ; offset 20 : COMP_SIZ=1 ; offset 24 : FST=1 ; offset 28 : LST=str_byte_size
+    virtual at 0							; definition des offsets sur le useinfo
+    SIZ = $
     rd 1
     COMP_SIZ = $
-    rd 1
-    IDX_SIZ = $
     rd 1
     FST_1 = $
     rd 1
     LST_1 = $
     end virtual
-end namespace
-
-    debut_cars = $							; pour une constante les caracteres suivent (pour une chaine variable ce n'est pas le cas, les octets sont dans la co-pile)
+  data = $							; pour une constante les caracteres suivent (pour une chaine variable ce n'est pas le cas, les octets sont dans la co-pile)
     db	bytes
-    str_byte_size = $ - debut_cars					; Calculer la longueur effective pour mettre dans LAST
+    str_byte_size = $ - data						; Calculer la longueur effective pour mettre dans LAST
+  end namespace
+
   end postpone
 end macro
 
@@ -868,7 +869,7 @@ macro			CST	name_cst:_nil_, sizChar:b, val&	; Definition d'une constante
 end macro
 
 ;			--------------
-macro			USEINFO	name				; Definition d'un champ de struc
+macro			USEINFO	name				; Reference __u a un __i info
 ;			--------------
   virtual VARzone
     align_q							; aligner en fonction de l'unite de reservation
@@ -881,6 +882,7 @@ macro			STATOFS	name, siz				; Definition de l'offset statique (pour un record s
 ;			-------------------
     name#__o = $							; nom offset du champ
     rb siz							; reservation
+size = $
 end macro
 
 ;			-----------------------------------
@@ -943,13 +945,14 @@ end macro
 ;			------------
 macro			SYS_PUT_STR?			; affiche tout une chaine sur stdout
 ;			------------
-  POP_RSI						;			(l'adresse du champ PTR_TO_CHARS du descripteur a ete empilee)
-  db 0x8B, 0x56, 0x18				; mov edx, dword ptr[rsi+24]	(edx=last)
+  POP_RSI						;			(l'adresse du doublet @DATA | @USEINFO a ete empilee)
+  db 0x48, 0x8B, 0x46, 0x08				; mov rax, [rsi+8]		(rax contient l'adresse du USEINFO
+  db 0x8B, 0x50, 0x0C				; mov edx, dword ptr[rax+12]	(edx=last)
   db 0xFF, 0xC2					; inc edx			(last+1)
-  db 0x2B, 0x56, 0x14				; sub edx, dword ptr[rsi+20]   edx=length (=last+1 - first)
+  db 0x2B, 0x50, 0x08				; sub edx, dword ptr[rax+8]   edx=length (=last+1 - first)
   db 0x6A, 0x01					; push 1
   db 0x58						; pop rax			(rax=1=sys_write )
-  db 0x48, 0x89, 0xC7				; mov rdi,rax		(rdi=stdout=1)
+  db 0x48, 0x89, 0xC7				; mov rdi, rax		(rdi=stdout=1)
   db 0x48, 0x8B, 0x36				; mov rsi, [rsi]		(rsi est maintenant l'adresse des caracteres)
   db 0x0F, 0x05					; syscall
 end macro
@@ -1013,10 +1016,11 @@ end macro
 ;			------------
 macro			SYS_GET_STR?			; lit une ligne sur stdin
 ;			------------
-  POP_RSI						;			(adresse du descripteur sur la pile croissante)
-  db 0x8B, 0x56, 0x18				; mov edx, dword ptr[rsi+24]	(edx=last de ITEM)
+  POP_RSI						;			(l'adresse du doublet @DATA | @USEINFO a ete empilee)
+  db 0x48, 0x8B, 0x46, 0x08				; mov rax, [rsi+8]		(rax contient l'adresse du USEINFO
+  db 0x8B, 0x50, 0x0C				; mov edx, dword ptr[rax+12]	(edx=last)
   db 0xFF, 0xC2					; inc edx			(last+1)
-  db 0x2B, 0x56, 0x14				; sub edx, dword ptr[rsi+20]   (edx=max length =last+1 - first)
+  db 0x2B, 0x50, 0x08				; sub edx, dword ptr[rax+8]   edx=length (=last+1 - first)
   db 0x31, 0xC0					; xor eax, eax		(rax=0=sys_read )
   db 0x31, 0xFF					; xor edi, edi		(rdi=stdin=0)
   db 0x48, 0x8B, 0x36				; mov rsi, [rsi]		(rsi est maintenant l'adresse des caracteres)
@@ -1031,10 +1035,11 @@ end macro
 ;			----------------------
 macro			COPY_STRING_APPEND_NUL	; donne le descripteur pointe par RSI, copie la chaine sur la pile montante et ajoute un NUL de fin
 ;			----------------------
+  db 0x48, 0x8B, 0x46, 0x08				; mov rax, [rsi+8]		(rax contient l'adresse du USEINFO
 
-  db 0x8B, 0x4E, 0x18				; mov ecx, dword ptr[rsi+24]	(ecx=last de ITEM)
+  db 0x8B, 0x48, 0x0C				; mov ecx, dword ptr[rax+12]	(ecx=last)
   db 0xFF, 0xC1					; inc ecx			(last+1)
-  db 0x2B, 0x4E, 0x14				; sub ecx, dword ptr[rsi+20]  (ecx= nombre de caracteres =last+1 - first)
+  db 0x2B, 0x48, 0x08				; sub ecx, dword ptr[rax+8]	(ecx= nombre de caracteres =last+1 - first)
   db 0x48, 0x8B, 0x36				; mov rsi, qword ptr[rsi]	(rsi= adresse des caracteres)
   db 0x48, 0x8D, 0x7D, 0x08				; lea rdi, [rbp+0x8]	(on va empiler la chaine sur la pile)
   db 0xFC						; cld			(direction flag montant)

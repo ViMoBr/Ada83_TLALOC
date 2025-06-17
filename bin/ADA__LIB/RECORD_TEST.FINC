@@ -1,8 +1,14 @@
 PRO	RECORD_TEST_L1				;---------- PRO RECORD_TEST
 ELB 1					;    BODY ELAB
-namespace DEFINITIONS			;---------- PACKAGE DECLARATION
+namespace ENUM__i				; ENUM ENUMERATION TYPE INFO
+CST SIZ, d, 8
+CST , , 4, "ENU1"
+CST , , 4, "ENU2"
+CST , , 4, "ENU3"
+end namespace
+
 namespace SHORT__i				; SHORT TYPE RANGE INFO
-VAR SIZ, b
+VAR SIZ, d
 VAR FST, w
 VAR LST, w
 	LI 16
@@ -14,22 +20,28 @@ VAR LST, w
 	Sw 1,	LST
 end namespace
 
-namespace REC__i				; REC RECORD TYPE INFO
-VAR SIZ, b
-USEINFO I1
-USEINFO I2
-virtual at 0
-STATOFS I1, 2
-	LVA 1, STANDARD.RECORD_TEST_L1.DEFINITIONS.SHORT__i.SIZ
-	Sa 1, I1__u
-STATOFS I2, 2
-	LVA 1, STANDARD.RECORD_TEST_L1.DEFINITIONS.SHORT__i.SIZ
-	Sa 1, I2__u
-end virtual
+namespace BUFFER__i				; BUFFER CONSTRAINED ARRAY SUBTYPE INFO
+VAR SIZ, d
+VAR COMP_SIZ, d
+VAR FST_1, d
+VAR LST_1, d
+	LI	1
+	Sd 1,	SIZ_1
+	LI	 1
+	Sd 1,	FST_1
+	LI	 16
+	Sd 1,	LST_1
+	Ld 1,	LST_1
+	INC
+	Ld 1,	FST_1
+	SUB
+	Ld 1,	SIZ_1
+	MUL
+	Sd 1,	SIZ
 end namespace
 
-namespace TAB__i				; TAB UNCONSTRAINED ARRAY SUBTYPE INFO
-VAR SIZ, b
+namespace UARR__i				; UARR UNCONSTRAINED ARRAY SUBTYPE INFO
+VAR SIZ, d
 VAR NDIMS, b
 	LI 1
 	Sb 1, NDIMS
@@ -39,28 +51,79 @@ USEINFO DIM_1
 	Sa 1, DIM_1__u
 end namespace
 
-namespace ENREGISTREMENT__i			; ENREGISTREMENT RECORD TYPE INFO
-VAR SIZ, b
-USEINFO LEN
-USEINFO SH
-USEINFO R1
-USEINFO T1
+namespace MAT__i				; array decl constrained array type info
+VAR SIZ, d
+VAR COMP_SIZ, d
+VAR FST_2, d
+VAR LST_2, d
+	LI	4
+	Sd 1,	SIZ_2
+	LI	 1
+	Sd 1,	FST_2
+	LI	 32
+	Sd 1,	LST_2
+	Ld 1,	LST_2
+	INC
+	Ld 1,	FST_2
+	SUB
+	Ld 1,	SIZ_2
+	MUL
+VAR SIZ_1, d
+VAR FST_1, d
+VAR LST_1, d
+	Sd 1,	SIZ_1
+	LI	 1
+	Sd 1,	FST_1
+	LI	 16
+	Sd 1,	LST_1
+	Ld 1,	LST_1
+	INC
+	Ld 1,	FST_1
+	SUB
+	Ld 1,	SIZ_1
+	MUL
+	Sd 1,	SIZ
+end namespace
+
+namespace REC__i				; REC RECORD TYPE INFO
+VAR SIZ, d
+USEINFO I1
+USEINFO LONG
+USEINFO NOM
+virtual at 0
+STATOFS I1, 4
 	LVA 0, STANDARD.INTEGER__i.SIZ
-	Sa 1, LEN__u
-	LI 0	 ; offset a faire
-	Sd 1, LEN__o
-; OFFSET NON STATIQUE A FAIRE
-	LVA 1, STANDARD.RECORD_TEST_L1.DEFINITIONS.SHORT__i.SIZ
-	Sa 1, SH__u
-; OFFSET NON STATIQUE A FAIRE
-	LVA 1, STANDARD.RECORD_TEST_L1.DEFINITIONS.REC__i.SIZ
-	Sa 1, R1__u
-; OFFSET NON STATIQUE A FAIRE
-	LVA 1, STANDARD.RECORD_TEST_L1.DEFINITIONS.TAB__i.SIZ
-	Sa 1, T1__u
+	Sa 1, I1__u
+STATOFS LONG, 2
+	LVA 1, STANDARD.RECORD_TEST_L1.SHORT__i.SIZ
+	Sa 1, LONG__u
+STATOFS NOM, 0
+	LVA 1, STANDARD.RECORD_TEST_L1.BUFFER__i.SIZ
+	Sa 1, NOM__u
+end virtual
 end namespace
 
-; EXC_LBL	L2
-end namespace
+VAR ENREG_disp, q				; variable record : pointeur aux data record
+VAR ENREG__dat, STANDARD.RECORD_TEST_L1.REC__i.size
+	LVA	1,	ENREG__dat
+	Sa	1,	ENREG_disp				; record fin
 
-; ERREUR CODE_VC_NAME, TYPE_SPEC.TY = DN_CONSTRAINED_RECORD
+VAR M_disp, q				; variable array : pointeur aux data
+VAR M__u, q				; variable array : useinfo pointeur au rec info
+	Ld 1,	M.SIZ
+	CO_VAR
+	Sa	1,	M_disp				; array data ptr at _disp
+	LVA 1, 	M.SIZ
+	Sa	1,	M__u				; array info ptr at __u
+
+VAR KI_disp, w				; variable entiere
+
+VAR C_disp, b				; variable bool char
+
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
+	UNLINK 1
+	RTD
+excep:
+endPRO					;---------- end PRO RECORD_TEST

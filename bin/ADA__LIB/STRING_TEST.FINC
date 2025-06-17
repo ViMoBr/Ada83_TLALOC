@@ -17,7 +17,7 @@ VAR DEFAULT_WIDTH_disp, d			; variable entiere
 	Sd  1,	DEFAULT_WIDTH_disp
 
 VAR DEFAULT_BASE_disp, d			; variable entiere
-	LI	 10
+	LI	10
 	Sd  1,	DEFAULT_BASE_disp
 
 if defined GET_L61_
@@ -130,16 +130,17 @@ endPRO					;---------- end PRO PUT
 end if
 					;---------- end generic package instantiation NAT_IO
 end namespace
+
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 STR STR_L7, 'Entrez un nombre entier : '	; constante string='Entrez un nombre entier : '
-	LCA	STR_L7_ptr
+	LCA	STR_L7.data_ptr
 	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
-	LI	 0
+	LI	0
 	LVA  1,	L_disp
 	CALL	STANDARD.STRING_TEST_L1.NAT_IO. ,GET_L62
 STR STR_L8, 'Merci'				; constante string='Merci'
-	LCA	STR_L8_ptr
+	LCA	STR_L8.data_ptr
 	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
 ret_lbl:
 	UNLINK 1

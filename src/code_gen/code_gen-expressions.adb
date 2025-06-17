@@ -316,7 +316,7 @@ null;--        declare
   procedure			CODE_USED_CHAR		( USED_CHAR :TREE )
   is				--------------
   begin
-    PUT_LINE( tab & "LI" & tab & INTEGER'IMAGE( DI( SM_VALUE, USED_CHAR ) ) );
+    PUT_LINE( tab & "LI" & tab & IMAGE( DI( SM_VALUE, USED_CHAR ) ) );
   end	CODE_USED_CHAR;
 	--------------
 
@@ -339,7 +339,7 @@ null;--        declare
         PUT_LINE( tab & "L" & TYPE_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, ITERATION_ID ) ) & ',' & tab & ITERATION_ID_VARSTR );
       end;
 
-    when DN_ENUMERATION_ID | DN_CHARACTER_ID	=> PUT_LINE( ASCII.HT & "LI" & ASCII.HT & INTEGER'IMAGE( DI( SM_REP, DEFN ) ) );
+    when DN_ENUMERATION_ID | DN_CHARACTER_ID	=> PUT_LINE( ASCII.HT & "LI" & ASCII.HT & IMAGE( DI( SM_REP, DEFN ) ) );
     when DN_IN_ID | DN_IN_OUT_ID		=> LOAD_MEM( DEFN );
 --    when DN_OUT_ID				=> CODE_PRM_ID( DEFN );
     when others => raise PROGRAM_ERROR;
@@ -375,27 +375,27 @@ null;--        declare
       begin
         CODE_EXP( EXP );
         PUT( CHN & ", " &  ARRAY_NAME & ".FST_" & INDEX_NUM_IMG );
-        if CODI.DEBUG then PUT( tab50 & "; (index - FST_" & INDEX_NUM_IMG & ") * SIZ_" & INDEX_NUM_IMG ); end if;
+        if  CODI.DEBUG  then PUT( tab50 & "; (index - FST_" & INDEX_NUM_IMG & ") * SIZ_" & INDEX_NUM_IMG ); end if;
         NEW_LINE;
         PUT_LINE( tab & "SUB" );
         PUT_LINE( CHN & ", " & ARRAY_NAME & ".COMP_SIZ" );
         PUT_LINE( tab & "MUL" );
         PUT( tab & "ADD" );
-        if CODI.DEBUG then PUT( tab50 & "; add offset to start address" ); end if;
+        if  CODI.DEBUG  then PUT( tab50 & "; add offset to start address" ); end if;
         NEW_LINE;
       end	INDEX;
       	-----
 
     begin
-      PUT(  tab & "LIa" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & ARRAY_NAME & "_disp" );			-- EMPILE L ADRESSE DE BASE DU CONTENU DE TABLEAU
-      if CODI.DEBUG then PUT( tab50 & "; array data start address on stack" ); end if;
+      PUT(  tab & "La" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & ARRAY_NAME & "_disp" );				-- EMPILE L ADRESSE DE BASE DU CONTENU DE TABLEAU
+      if  CODI.DEBUG  then PUT( tab50 & "; array data start address on stack" ); end if;
       NEW_LINE;
 
       declare
         EXP_SEQ	: SEQ_TYPE	:= LIST( D( AS_EXP_S, INDEXED ) );
         EXP	: TREE;
       begin
-        while not IS_EMPTY( EXP_SEQ ) loop
+        while  not IS_EMPTY( EXP_SEQ )  loop
 	POP( EXP_SEQ, EXP );
 	INDEX( EXP );
 	INDEX_NUM := INDEX_NUM + 1;
@@ -746,7 +746,7 @@ null;--        declare
   begin
     if  VAL.PT = HI  and then  VAl.NOTY = DN_NUM_VAL
     then
-      PUT_LINE( tab & "LI" & tab & INTEGER'IMAGE( DI( SM_VALUE, NUMERIC_LITERAL ) ) );
+      PUT_LINE( tab & "LI" & tab & IMAGE( DI( SM_VALUE, NUMERIC_LITERAL ) ) );
 
     elsif  VAL.TY = DN_NUM_VAL  then
       PUT_LINE( tab & "LI" & tab & PRINT_NUM( VAL ) );

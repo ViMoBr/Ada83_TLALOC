@@ -2,19 +2,20 @@ include 'MACHINE_CODE.FINC'
 namespace TEXT_IO				;---------- PACKAGE
 elab_spec:				;    SPEC ELAB
 
+; CODE_GEN.DECLARATIONS.CODE_TYPE_DECL : TYPE_SPEC.TY (DN_L_PRIVATE NON FAIT POUR ) FILE_TYPE
 namespace FILE_MODE__i			; FILE_MODE ENUMERATION TYPE INFO
-CST SIZ, b, 8
+CST SIZ, d, 8
 CST , , 7, "IN_FILE"
 CST , , 8, "OUT_FILE"
 end namespace
 
 namespace COUNT__i				; COUNT TYPE RANGE INFO
-VAR SIZ, b
+VAR SIZ, d
 VAR FST, d
 VAR LST, d
 	LI 32
 	Sb 0,	SIZ
-	LI	 0
+	LI	0
 	Sd 0,	FST
 	LI 2147483647
 	Sd 0,	LST
@@ -25,7 +26,7 @@ VAR SIZ, b
 end namespace
 
 VAR UNBOUNDED_disp, d			; variable entiere
-	LI	 0
+	LI	0
 	Sd  0,	UNBOUNDED_disp
 
 namespace FIELD__i				; FIELD INTEGER SUBTYPE INFO
@@ -37,33 +38,43 @@ VAR SIZ, b
 end namespace
 
 namespace TYPE_SET__i			; TYPE_SET ENUMERATION TYPE INFO
-CST SIZ, b, 8
+CST SIZ, d, 8
 CST , , 10, "LOWER_CASE"
 CST , , 10, "UPPER_CASE"
 end namespace
 
 namespace FILE_NAME_BUFFER__i			; FILE_NAME_BUFFER CONSTRAINED ARRAY SUBTYPE INFO
 VAR SIZ, d
-VAR SIZ_1, d
+  namespace info
+VAR COMP_SIZ, d
 VAR FST_1, d
 VAR LST_1, d
 	LI	1
-	Sd 0,	SIZ_1
-	LI	 1
+	Sd 0,	COMP_SIZ
+	LI	1
 	Sd 0,	FST_1
-	LI	 256
+	LI	256
 	Sd 0,	LST_1
 	Ld 0,	LST_1
 	INC
 	Ld 0,	FST_1
 	SUB
-	Ld 0,	SIZ_1
+	Ld 0,	COMP_SIZ
 	MUL
 	Sd 0,	SIZ
+  end namespace
+  virtual at 4
+COMP_SIZ = $
+rd 1 
+FST_1 = $
+rd 1 
+LST_1 = $
+rd 1 
+  end virtual
 end namespace
 
 namespace FILE_TYPE__i			; FILE_TYPE RECORD TYPE INFO
-VAR SIZ, b
+VAR SIZ, d
 USEINFO ID
 USEINFO NAME
 USEINFO MODE
@@ -76,7 +87,7 @@ virtual at 0
 STATOFS ID, 4
 	LVA 0, STANDARD.INTEGER__i.SIZ
 	Sa 0, ID__u
-STATOFS NAME, 256
+STATOFS NAME, 0
 	LVA 0, STANDARD.TEXT_IO.FILE_NAME_BUFFER__i.SIZ
 	Sa 0, NAME__u
 STATOFS MODE, 1
@@ -102,23 +113,23 @@ end namespace
 
 					;    BODY ELAB
 VAR STDOUT_MAX_PAGE_LEN_disp, d		; variable entiere
-	LI	 72
+	LI	72
 	Sd  0,	STDOUT_MAX_PAGE_LEN_disp
 
 VAR STDOUT_MAX_LINE_LEN_disp, d		; variable entiere
-	LI	 256
+	LI	256
 	Sd  0,	STDOUT_MAX_LINE_LEN_disp
 
 VAR STDOUT_PAGE_disp, d			; variable entiere
-	LI	 1
+	LI	1
 	Sd  0,	STDOUT_PAGE_disp
 
 VAR STDOUT_LINE_disp, d			; variable entiere
-	LI	 1
+	LI	1
 	Sd  0,	STDOUT_LINE_disp
 
 VAR STDOUT_COL_disp, d			; variable entiere
-	LI	 1
+	LI	1
 	Sd  0,	STDOUT_COL_disp
 
 
@@ -593,10 +604,10 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 	LI	 13
 	CALL	STANDARD.TEXT_IO. ,PUT_L52
-	LI	 1
+	LI	1
 	Sd  0,	STDOUT_COL_disp
 VAR	NL6_disp, d				; compteur boucle LOOP__1
-	LI	 1
+	LI	1
 	Sd  1,	NL6_disp
 VAR	LMT_NL6_disp, d				; limite boucle LOOP__1
 	Ld  1,	-SPACING_ofs
@@ -629,10 +640,10 @@ L5:					; post loop LOOP__1
 	LI	 12
 	CALL	STANDARD.TEXT_IO. ,PUT_L52
 	Ld  0,	STDOUT_PAGE_disp
-	LI	 1
+	LI	1
 	ADD
 	Sd  0,	STDOUT_PAGE_disp
-	LI	 1
+	LI	1
 	Sd  0,	STDOUT_LINE_disp
 	BRA	L7
 L8:
@@ -1155,7 +1166,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 	La  1,	-ITEM_ofs
 	CALL	STANDARD.TEXT_IO. ,PUT_L56
-	LI	 1
+	LI	1
 	CALL	STANDARD.TEXT_IO. ,NEW_LINE_L26
 ret_lbl:
 	UNLINK 1
@@ -1169,8 +1180,11 @@ PRMS
 	PRM NUM_last_ofs
 endPRMS
 VAR DEFAULT_WIDTH_disp, d			; variable entiere
+	Sd  0,	DEFAULT_WIDTH_disp
 
 VAR DEFAULT_BASE_disp, d			; variable entiere
+	LI	10
+	Sd  0,	DEFAULT_BASE_disp
 
 					;    BODY ELAB
 
@@ -1200,46 +1214,59 @@ PRMS					;    debut parametrage
 	PRM GFP_ofs
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
-VAR CHN_disp, q				; variable array : pointeur au tableau
-VAR CHN__u, q				; variable array useinfo : pointeur au rec info
-					; variable tableau contraint
-namespace CHN
-VAR PTR, q
-VAR SIZ_1, d
+namespace CHN				; array var constrained array type info
+VAR SIZ, d
+  namespace info
+VAR COMP_SIZ, d
 VAR FST_1, d
 VAR LST_1, d
 	LI	1
-	Sd 1,	SIZ_1
-	LI	 1
+	Sd 1,	COMP_SIZ
+	LI	1
 	Sd 1,	FST_1
-	LI	 40
+	LI	40
 	Sd 1,	LST_1
 	Ld 1,	LST_1
 	INC
 	Ld 1,	FST_1
 	SUB
-	Ld 1,	SIZ_1
+	Ld 1,	COMP_SIZ
 	MUL
+	Sd 1,	SIZ
+  end namespace
+  virtual at 4
+COMP_SIZ = $
+rd 1 
+FST_1 = $
+rd 1 
+LST_1 = $
+rd 1 
+  end virtual
 end namespace
-	CO_VAR					; allocation sur la co-pile
-	Sa	1,	CHN.PTR
-	LVA	1,	CHN.PTR
+
+VAR CHN_disp, q				; variable array : pointeur aux data
+VAR CHN__u, q				; variable array : useinfo pointeur au rec info
+	Ld 1,	CHN.SIZ
+	CO_VAR
 	Sa	1,	CHN_disp				; array data ptr at _disp
-	LCA	CHN__i
+	LVA 1, 	CHN.SIZ
 	Sa	1,	CHN__u				; array info ptr at __u
 
-
 VAR LEN_disp, d				; variable entiere
+	LI	40
+	Sd  1,	LEN_disp
 
 VAR VAL_disp, d				; variable entiere
+	LI	0
+	Sd  1,	VAL_disp
 
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	LVA  1,	LEN_disp
-	La  1,	CHN_disp
+	LVA  1,	CHN_disp
 	CALL	STANDARD.TEXT_IO. ,GET_LINE_L58
 VAR	IL10_disp, d				; compteur boucle LOOP__2
-	LI	 1
+	LI	1
 	Sd  1,	IL10_disp
 VAR	LMT_IL10_disp, d			; limite boucle LOOP__2
 	Ld  1,	LEN_disp
@@ -1249,10 +1276,10 @@ VAR	LMT_IL10_disp, d			; limite boucle LOOP__2
 	CGT
 	BT	L9
 LOOP__2:					; corps boucle LOOP__2
-	LI	 10
+	LI	10
 	Ld  1,	VAL_disp
 	MUL
-	LIa 1,	CHN_disp				; array data start address on stack
+	La 1,	CHN_disp				; array data start address on stack
 	Ld  1,	IL10_disp
 	LId 1,	CHN__u, CHN.FST_1			; (index - FST_1) * SIZ_1
 	SUB
@@ -1261,7 +1288,7 @@ LOOP__2:					; corps boucle LOOP__2
 	ADD					; add offset to start address
 	Lb					; charge depuis adresse empilee 
 	ADD
-	LI	 48
+	LI	48
 	SUB
 	Sd  1,	VAL_disp
 	Ld  1,	IL10_disp				; test de sortie LOOP__2
@@ -1275,7 +1302,7 @@ LOOP__2:					; corps boucle LOOP__2
 L9:					; post loop LOOP__2
 	Ld  1,	VAL_disp
 	SId  1,	-ITEM_ofs
-	La  1,	CHN_disp
+	LVa  1,	CHN_disp
 	CALL	STANDARD.TEXT_IO. ,PUT_L56
 ret_lbl:
 	UNLINK 1
@@ -1316,36 +1343,47 @@ VAR QUOTIENT_disp, d			; variable entiere
 
 VAR RESTE_disp, d				; variable entiere
 
-VAR STR_disp, q				; variable array : pointeur au tableau
-VAR STR__u, q				; variable array useinfo : pointeur au rec info
-					; variable tableau contraint
-namespace STR
-VAR PTR, q
-VAR SIZ_1, d
+namespace STR				; array var constrained array type info
+VAR SIZ, d
+  namespace info
+VAR COMP_SIZ, d
 VAR FST_1, d
 VAR LST_1, d
 	LI	1
-	Sd 1,	SIZ_1
-	LI	 1
+	Sd 1,	COMP_SIZ
+	LI	1
 	Sd 1,	FST_1
-	LI	 68
+	LI	68
 	Sd 1,	LST_1
 	Ld 1,	LST_1
 	INC
 	Ld 1,	FST_1
 	SUB
-	Ld 1,	SIZ_1
+	Ld 1,	COMP_SIZ
 	MUL
+	Sd 1,	SIZ
+  end namespace
+  virtual at 4
+COMP_SIZ = $
+rd 1 
+FST_1 = $
+rd 1 
+LST_1 = $
+rd 1 
+  end virtual
 end namespace
-	CO_VAR					; allocation sur la co-pile
-	Sa	1,	STR.PTR
-	LVA	1,	STR.PTR
+
+VAR STR_disp, q				; variable array : pointeur aux data
+VAR STR__u, q				; variable array : useinfo pointeur au rec info
+	Ld 1,	STR.SIZ
+	CO_VAR
 	Sa	1,	STR_disp				; array data ptr at _disp
-	LCA	STR__i
+	LVA 1, 	STR.SIZ
 	Sa	1,	STR__u				; array info ptr at __u
 
-
 VAR INDEX_disp, d				; variable entiere
+	LId 1,	STR__u, STR.LST_1
+	Sd  1,	INDEX_disp
 
 VAR MIN_WIDTH_disp, d			; variable entiere
 
@@ -1399,10 +1437,17 @@ namespace FLOAT_IO				;---------- GENERIC PACKAGE
 PRMS
 endPRMS
 VAR DEFAULT_FORE_disp, d			; variable entiere
+	LI	2
+	Sd  0,	DEFAULT_FORE_disp
 
 VAR DEFAULT_AFT_disp, d			; variable entiere
+	LI	1
+	SUB
+	Sd  0,	DEFAULT_AFT_disp
 
 VAR DEFAULT_EXP_disp, d			; variable entiere
+	LI	3
+	Sd  0,	DEFAULT_EXP_disp
 
 					;    BODY ELAB
 
@@ -1522,10 +1567,14 @@ namespace FIXED_IO				;---------- GENERIC PACKAGE
 PRMS
 endPRMS
 VAR DEFAULT_FORE_disp, d			; variable entiere
+	Sd  0,	DEFAULT_FORE_disp
 
 VAR DEFAULT_AFT_disp, d			; variable entiere
+	Sd  0,	DEFAULT_AFT_disp
 
 VAR DEFAULT_EXP_disp, d			; variable entiere
+	LI	0
+	Sd  0,	DEFAULT_EXP_disp
 
 					;    BODY ELAB
 
@@ -1645,8 +1694,12 @@ namespace ENUMERATION_IO			;---------- GENERIC PACKAGE
 PRMS
 endPRMS
 VAR DEFAULT_WIDTH_disp, d			; variable entiere
+	LI	0
+	Sd  0,	DEFAULT_WIDTH_disp
 
 VAR DEFAULT_SETTING_disp, b			; variable entiere
+	LI	1
+	Sb  0,	DEFAULT_SETTING_disp
 
 					;    BODY ELAB
 

@@ -1,20 +1,21 @@
 include 'TEXT_IO.FINC'
 PRO	ARRAY_TEST_L1				;---------- PRO ARRAY_TEST
 ELB 1					;    BODY ELAB
-VAR S_disp, q				; variable array : pointeur au tableau
-VAR S__u, q				; variable array useinfo : pointeur au rec info
+VAR S_disp, q				; variable array : pointeur aux data
+VAR S__u, q				; variable array : useinfo pointeur au rec info
 STR S, 'Camille'				; constante string='Camille'
-	LCA	S_ptr
+	LCA	S.data_ptr
+	La
 	Sa	1,	S_disp				; array data ptr at _disp
-	LCA	S__i
+	LCA	S.info_ptr
+	La
 	Sa	1,	S__u				; array info ptr at __u
-
 
 VAR C_disp, b				; variable bool char
 
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-	La  1,	S_disp
+	LVA  1,	S_disp				; array actual
 	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
 VAR	IL2_disp, d				; compteur boucle LOOP__1
 	LId 1,	S__u, S.FST_1
@@ -27,7 +28,7 @@ VAR	LMT_IL2_disp, d				; limite boucle LOOP__1
 	CGT
 	BT	L1
 LOOP__1:					; corps boucle LOOP__1
-	LIa 1,	S_disp				; array data start address on stack
+	La 1,	S_disp				; array data start address on stack
 	Ld  1,	IL2_disp
 	LId 1,	S__u, S.FST_1			; (index - FST_1) * SIZ_1
 	SUB
@@ -38,7 +39,7 @@ LOOP__1:					; corps boucle LOOP__1
 	Sb  1,	C_disp
 	Lb  1,	C_disp
 	CALL	STANDARD.TEXT_IO. ,PUT_L52
-	LI	 95
+	LI	95
 	CALL	STANDARD.TEXT_IO. ,PUT_L52
 	Ld  1,	IL2_disp				; test de sortie LOOP__1
 	Ld  1,	LMT_IL2_disp
@@ -49,7 +50,7 @@ LOOP__1:					; corps boucle LOOP__1
 	Sd  1,	IL2_disp
 	BRA	LOOP__1				; iteration suivante LOOP__1
 L1:					; post loop LOOP__1
-	LI	 1
+	LI	1
 	CALL	STANDARD.TEXT_IO. ,NEW_LINE_L26
 ret_lbl:
 	UNLINK 1

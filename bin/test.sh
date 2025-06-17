@@ -1,3 +1,9 @@
+./a83.sh ./ ./_standrd.ads W
+./a83.sh ./ ./io_exceptions.ads W
+./a83.sh ./ ./machine_code.ads W
+./a83.sh ./ ./text_io.ads W
+./a83.sh ./ ./text_io.adb W
+
 ./a83.sh ./ ./dis_bonjour.adb W
 cd ./ADA__LIB
 ./fasmg DIS_BONJOUR.fas
