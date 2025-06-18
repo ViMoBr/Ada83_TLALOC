@@ -509,16 +509,21 @@ package body EXPRESO is
     D (SM_TYPE_SPEC, RANGE_NODE, BASE_TYPE);
   end WALK_RANGE;
 
-  procedure RESOLVE_SUBTYPE_INDICATION (EXP : in out TREE; SUBTYPE_SPEC : out TREE) is
-    NAME          : TREE;
-    NAME_DEFN     : TREE;
-    CONSTRAINT    : TREE;
-    TYPE_STRUCT   : TREE;
-    DESIG_STRUCT  : TREE;
-    NEW_TYPE_SPEC : TREE := TREE_VOID;
+
+			--------------------------
+  procedure		RESOLVE_SUBTYPE_INDICATION		( EXP :in out TREE; SUBTYPE_SPEC :out TREE )
+  is			--------------------------
+
+    NAME		: TREE;
+    NAME_DEFN	: TREE;
+    CONSTRAINT	: TREE;
+    TYPE_STRUCT	: TREE;
+    DESIG_STRUCT	: TREE;
+    NEW_TYPE_SPEC	: TREE	:= TREE_VOID;
+
   begin
-    if EXP.TY /= DN_SUBTYPE_INDICATION then
-      if EXP.TY = DN_FUNCTION_CALL then
+    if  EXP.TY /= DN_SUBTYPE_INDICATION  then
+      if  EXP.TY = DN_FUNCTION_CALL  then
         Put_Line ("!! SUBTYPE_IND IS FUNCTION CALL $$$$$$");
         raise Program_Error;
       end if;
@@ -534,7 +539,7 @@ package body EXPRESO is
     if NAME_DEFN /= TREE_VOID then
       NEW_TYPE_SPEC := D (SM_TYPE_SPEC, NAME_DEFN);
     end if;
-    TYPE_STRUCT := GET_BASE_STRUCT (NEW_TYPE_SPEC);
+    TYPE_STRUCT := GET_BASE_STRUCT( NEW_TYPE_SPEC );
     if NEW_TYPE_SPEC.TY in CLASS_PRIVATE_SPEC
                                 --AND THEN KIND(TYPE_STRUCT) NOT IN CLASS_PRIVATE_SPEC THEN
       and then TYPE_STRUCT /= D (SM_TYPE_SPEC, D (XD_SOURCE_NAME, TYPE_STRUCT)) then
@@ -694,8 +699,31 @@ package body EXPRESO is
             CONSTRAINT := MAKE_INDEX_CONSTRAINT (AS_DISCRETE_RANGE_S => MAKE_DISCRETE_RANGE_S (LIST => NEW_RANGE_LIST, LX_SRCPOS => D (LX_SRCPOS, CONSTRAINT)), LX_SRCPOS => D (LX_SRCPOS, CONSTRAINT));
             D (AS_CONSTRAINT, EXP, CONSTRAINT);
 
-                                                -- MAKE NEW CONSTRAINED ARRAY SUBTYPE
-            NEW_TYPE_SPEC := MAKE_CONSTRAINED_ARRAY (SM_INDEX_SUBTYPE_S => MAKE_SCALAR_S (LIST => SCALAR_LIST), SM_BASE_TYPE => D (SM_BASE_TYPE, DESIG_STRUCT), XD_SOURCE_NAME => D (XD_SOURCE_NAME, DESIG_STRUCT));
+            NEW_TYPE_SPEC := MAKE_CONSTRAINED_ARRAY( SM_INDEX_SUBTYPE_S => MAKE_SCALAR_S( LIST => SCALAR_LIST ),
+					   SM_BASE_TYPE	  => D( SM_BASE_TYPE, DESIG_STRUCT )
+--					   XD_SOURCE_NAME	  => D( XD_SOURCE_NAME, DESIG_STRUCT )		-- anonyme pas de vrai source name
+					);
+-- MODIF V.MORIN 18/6/2025
+	  DB( SM_IS_ANONYMOUS, NEW_TYPE_SPEC, TRUE );
+				----------------
+				ANON_SOURCE_NAME:
+	  declare
+	    SPOS		: TREE		:= D( LX_SRCPOS, EXP );
+	    IML		:constant STRING	:= INTEGER'IMAGE( DI( XD_NUMBER, GET_SOURCE_LINE( SPOS ) ) );
+	    IMC		:constant STRING	:= SRCCOL_IDX'IMAGE( GET_SOURCE_COL( SPOS ) );
+	    ANON_LC_STR	:constant STRING	:= "ANON_" & IML( 2 .. IML'LENGTH ) & '_' & IMC( 2 .. IMC'LENGTH );
+	    SUBTYPE_ID	: TREE		:= MAKE_SUBTYPE_ID( LX_SRCPOS => TREE_VOID,
+						LX_SYMREP => STORE_TEXT( ANON_LC_STR ),
+						SM_TYPE_SPEC => NEW_TYPE_SPEC,
+						XD_REGION => TREE_VOID
+						);
+	  begin
+	    D( XD_SOURCE_NAME, NEW_TYPE_SPEC, SUBTYPE_ID );
+            end	ANON_SOURCE_NAME;
+		----------------
+
+-- put_line( "; EXPRESO.RESOLVE_SUBTYPE_INDICATION line 702 xd_source_name= " & PRINT_NAME( D( LX_SYMREP, D( XD_SOURCE_NAME, DESIG_STRUCT ) ) ) );
+
           end;
 
         else
@@ -707,6 +735,7 @@ package body EXPRESO is
 
                                         -- MAKE CONSTRAINED ACCESS SUBTYPE
           NEW_TYPE_SPEC := MAKE_CONSTRAINED_ACCESS (SM_DESIG_TYPE => NEW_TYPE_SPEC, SM_BASE_TYPE => GET_BASE_STRUCT (TYPE_STRUCT), XD_SOURCE_NAME => D (XD_SOURCE_NAME, TYPE_STRUCT));
+
         end if;
 
       when others =>

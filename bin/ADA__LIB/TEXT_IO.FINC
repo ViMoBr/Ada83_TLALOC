@@ -75,39 +75,23 @@ end namespace
 
 namespace FILE_TYPE__i			; FILE_TYPE RECORD TYPE INFO
 VAR SIZ, d
-USEINFO ID
-USEINFO NAME
-USEINFO MODE
-USEINFO PAGE_LENGTH
-USEINFO LINE_LENGTH
-USEINFO PAGE
-USEINFO LINE
-USEINFO COL
+USEINFO 0, ID, 	LVA 0, STANDARD.INTEGER__i.SIZ
+USEINFO 0, NAME, 	LVA 0, STANDARD.TEXT_IO.FILE_NAME_BUFFER__i.SIZ
+USEINFO 0, MODE, 	LCA STANDARD.TEXT_IO.FILE_MODE__i.SIZ
+USEINFO 0, PAGE_LENGTH, 	LVA 0, STANDARD.TEXT_IO.POSITIVE_COUNT__i.SIZ
+USEINFO 0, LINE_LENGTH, 	LVA 0, STANDARD.TEXT_IO.POSITIVE_COUNT__i.SIZ
+USEINFO 0, PAGE, 	LVA 0, STANDARD.TEXT_IO.POSITIVE_COUNT__i.SIZ
+USEINFO 0, LINE, 	LVA 0, STANDARD.TEXT_IO.POSITIVE_COUNT__i.SIZ
+USEINFO 0, COL, 	LVA 0, STANDARD.TEXT_IO.POSITIVE_COUNT__i.SIZ
 virtual at 0
 STATOFS ID, 4
-	LVA 0, STANDARD.INTEGER__i.SIZ
-	Sa 0, ID__u
 STATOFS NAME, 0
-	LVA 0, STANDARD.TEXT_IO.FILE_NAME_BUFFER__i.SIZ
-	Sa 0, NAME__u
 STATOFS MODE, 1
-	LCA STANDARD.TEXT_IO.FILE_MODE__i.SIZ
-	Sa 0, MODE__u
 STATOFS PAGE_LENGTH, 4
-	LVA 0, STANDARD.TEXT_IO.POSITIVE_COUNT__i.SIZ
-	Sa 0, PAGE_LENGTH__u
 STATOFS LINE_LENGTH, 4
-	LVA 0, STANDARD.TEXT_IO.POSITIVE_COUNT__i.SIZ
-	Sa 0, LINE_LENGTH__u
 STATOFS PAGE, 4
-	LVA 0, STANDARD.TEXT_IO.POSITIVE_COUNT__i.SIZ
-	Sa 0, PAGE__u
 STATOFS LINE, 4
-	LVA 0, STANDARD.TEXT_IO.POSITIVE_COUNT__i.SIZ
-	Sa 0, LINE__u
 STATOFS COL, 4
-	LVA 0, STANDARD.TEXT_IO.POSITIVE_COUNT__i.SIZ
-	Sa 0, COL__u
 end virtual
 end namespace
 
@@ -1214,7 +1198,7 @@ PRMS					;    debut parametrage
 	PRM GFP_ofs
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
-namespace CHN				; array var constrained array type info
+namespace CHN__i				; array var constrained array type info
 VAR SIZ, d
   namespace info
 VAR COMP_SIZ, d
@@ -1246,10 +1230,10 @@ end namespace
 
 VAR CHN_disp, q				; variable array : pointeur aux data
 VAR CHN__u, q				; variable array : useinfo pointeur au rec info
-	Ld 1, CHN.SIZ
+	Ld 1, CHN__i.SIZ
 	CO_VAR
 	Sa 1, CHN_disp				; array data ptr at _disp
-	LVA 1, 	CHN.SIZ
+	LVA 1, CHN__i.SIZ
 	Sa 1, CHN__u				; array info ptr at __u
 
 VAR LEN_disp, d				; variable entiere
@@ -1281,9 +1265,9 @@ LOOP__2:					; corps boucle LOOP__2
 	MUL
 	La 1,	CHN_disp				; array data start address on stack
 	Ld  1,	IL10_disp
-	LId 1,	CHN__u, CHN.FST_1			; (index - FST_1) * SIZ_1
+	LId 1,	CHN__u, CHN__i.FST_1			; (index - FST_1) * SIZ_1
 	SUB
-	LId 1,	CHN__u, CHN.COMP_SIZ
+	LId 1,	CHN__u, CHN__i.COMP_SIZ
 	MUL
 	ADD					; add offset to start address
 	Lb					; charge depuis adresse empilee 
@@ -1343,7 +1327,7 @@ VAR QUOTIENT_disp, d			; variable entiere
 
 VAR RESTE_disp, d				; variable entiere
 
-namespace STR				; array var constrained array type info
+namespace STR__i				; array var constrained array type info
 VAR SIZ, d
   namespace info
 VAR COMP_SIZ, d
@@ -1375,14 +1359,14 @@ end namespace
 
 VAR STR_disp, q				; variable array : pointeur aux data
 VAR STR__u, q				; variable array : useinfo pointeur au rec info
-	Ld 1, STR.SIZ
+	Ld 1, STR__i.SIZ
 	CO_VAR
 	Sa 1, STR_disp				; array data ptr at _disp
-	LVA 1, 	STR.SIZ
+	LVA 1, STR__i.SIZ
 	Sa 1, STR__u				; array info ptr at __u
 
 VAR INDEX_disp, d				; variable entiere
-	LId 1,	STR__u, STR.LST_1
+	LId 1,	STR__u, STR__i.LST_1
 	Sd  1,	INDEX_disp
 
 VAR MIN_WIDTH_disp, d			; variable entiere

@@ -361,28 +361,43 @@ null;--        declare
 				------------
   procedure			CODE_INDEXED	( INDEXED :TREE )
   is				------------
-    NAME		: TREE		:= D( AS_NAME, INDEXED );
-    ARRAY_NAME	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, NAME) );
-    ARRAY_LVL	: INTEGER		:= DI( CD_LEVEL, D( SM_DEFN, NAME ) );
-    INDEX_NUM	: INTEGER		:= 1;
+
+    NAME			: TREE			:= D( AS_NAME, INDEXED );
+
   begin
+
+    if  NAME.TY = DN_SELECTED  then
+      CODE_SELECTED( NAME );
+      NAME := D( AS_NAME, NAME );
+    end if;
+
     declare
+    ARRAY_NAME		:constant STRING		:= PRINT_NAME( D( LX_SYMREP, NAME ) );
+    EXP_TYPE		: TREE			:= D( SM_EXP_TYPE, NAME );
+    EXP_TYPE_NAME		: TREE			:= D( XD_SOURCE_NAME, EXP_TYPE );
+    TYPE_NAME_STR		:constant STRING		:= PRINT_NAME( D( LX_SYMREP, EXP_TYPE_NAME ) );
+    ARRAY_LVL		: INTEGER			:= DI( CD_LEVEL, D( SM_DEFN, NAME ) );
+    INDEX_NUM		: INTEGER			:= 1;
 		-----
       procedure	INDEX	( EXP :TREE )
-      is
-        CHN		:constant STRING	:= tab & "LId" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & ARRAY_NAME & "__u";
+      is		-----
+
+        CHN		:constant STRING	:= tab & "LId" & INTEGER'IMAGE( ARRAY_LVL )
+					   & ", " & ARRAY_NAME & "__u";
         INDEX_NUM_IMG	:constant STRING	:= IMAGE( INDEX_NUM );
+
       begin
         CODE_EXP( EXP );
-        PUT( CHN & ", " &  ARRAY_NAME & ".FST_" & INDEX_NUM_IMG );
+        PUT( CHN & ", " &  TYPE_NAME_STR & "__i.FST_" & INDEX_NUM_IMG );
         if  CODI.DEBUG  then PUT( tab50 & "; (index - FST_" & INDEX_NUM_IMG & ") * SIZ_" & INDEX_NUM_IMG ); end if;
         NEW_LINE;
         PUT_LINE( tab & "SUB" );
-        PUT_LINE( CHN & ", " & ARRAY_NAME & ".COMP_SIZ" );
+        PUT_LINE( CHN & ", " & TYPE_NAME_STR & "__i.COMP_SIZ" );
         PUT_LINE( tab & "MUL" );
         PUT( tab & "ADD" );
         if  CODI.DEBUG  then PUT( tab50 & "; add offset to start address" ); end if;
         NEW_LINE;
+
       end	INDEX;
       	-----
 
@@ -506,7 +521,7 @@ null;--        declare
 	  if DIM_EXP /= TREE_VOID then
 	    NUM_DIM := DI( SM_VALUE, DIM_EXP );
 	  end if;
-	  PUT( tab & "LId" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & CHN_PREFIX & "__u" & ", " & CHN_PREFIX );
+	  PUT( tab & "LId" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & CHN_PREFIX & "__u" & ", " & CHN_PREFIX & "__i" );
 	  if  IS_LAST  then
 	    PUT( ".LST_"  );
 	  else

@@ -188,7 +188,6 @@ procedure FIX_PRE is
                
           SUBTYPE_NODE := TYPE_SPEC_FOR_SUBTYPE( SUBTYPE_INDICATION );
           D( SM_TYPE_SPEC, D( AS_SOURCE_NAME, NODE ), SUBTYPE_NODE );
-               
           if D( AS_CONSTRAINT, SUBTYPE_INDICATION ) /= TREE_VOID then
             D( XD_SOURCE_NAME, SUBTYPE_NODE, D(  AS_SOURCE_NAME, NODE ) );
           end if;

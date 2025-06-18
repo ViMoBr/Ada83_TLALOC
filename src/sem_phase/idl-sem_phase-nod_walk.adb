@@ -446,9 +446,11 @@ package body NOD_WALK is
       end if;
     end loop;
   end REPROCESS_USE_CLAUSES;
-     --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-      --|       PROCEDURE WALK
-  procedure WALK (NODE : TREE; H : H_TYPE) is
+
+
+				----
+  procedure			WALK		( NODE :TREE; H :H_TYPE )
+  is				----
 
   begin
     if NODE = TREE_VOID then
@@ -474,12 +476,12 @@ package body NOD_WALK is
           TYPE_SPEC : TREE;
           TYPESET   : TYPESET_TYPE;
         begin
-          WALK_SOURCE_NAME_S (SOURCE_NAME_S, H);                      --| INSÉRER LES NOMS DANS L'ENVIRONNEMENT
+          WALK_SOURCE_NAME_S (SOURCE_NAME_S, H);								--| INSÉRER LES NOMS DANS L'ENVIRONNEMENT
 
-          if TYPE_DEF.TY = DN_CONSTRAINED_ARRAY_DEF then                --| DÉCLARATION DE TABLEAU CONTRAINT
-            TYPE_SPEC := EVAL_TYPE_DEF (TYPE_DEF, HEAD (LIST (SOURCE_NAME_S)), H);       --| EVALUER LA DÉFINITION DE TYPE
+          if TYPE_DEF.TY = DN_CONSTRAINED_ARRAY_DEF then							--| DÉCLARATION DE TABLEAU CONTRAINT
+            TYPE_SPEC := EVAL_TYPE_DEF (TYPE_DEF, HEAD (LIST (SOURCE_NAME_S)), H);				--| EVALUER LA DÉFINITION DE TYPE
 
-          else  --| LA DÉCLARATION CONTIENT UNE SUBTYPE INDICATION
+          else											--| LA DÉCLARATION CONTIENT UNE SUBTYPE INDICATION
             TYPE_SPEC := EVAL_SUBTYPE_INDICATION (TYPE_DEF);
             RESOLVE_SUBTYPE_INDICATION (TYPE_DEF, TYPE_SPEC);
             D (AS_TYPE_DEF, NODE, TYPE_DEF);
@@ -497,6 +499,7 @@ package body NOD_WALK is
             FIXUP_CONSTRAINED_ARRAY_OBJECTS (SOURCE_NAME_S, H);              --| COPIER LES ARRAY TYPE SPECS ET GÉNÉRER LES OPÉRATEURS PRÉDÉFINIS
           end if;
         end;
+
          --| DECLARATION DE VARIABLE
       when DN_VARIABLE_DECL =>
         declare
@@ -507,14 +510,14 @@ package body NOD_WALK is
           TYPE_SPEC : TREE;
           TYPESET   : TYPESET_TYPE;
         begin
-          WALK_SOURCE_NAME_S (SOURCE_NAME_S, H);                      --| INSÉRER LES NOMS DANS L'ENVIRONNEMENT
+          WALK_SOURCE_NAME_S (SOURCE_NAME_S, H);								--| INSÉRER LES NOMS DANS L'ENVIRONNEMENT
 
-          if TYPE_DEF.TY = DN_CONSTRAINED_ARRAY_DEF then                --| CONTIENT UNE DÉFINITION DE TABLEAU CONTRAINT
-            TYPE_SPEC := EVAL_TYPE_DEF (TYPE_DEF, HEAD (LIST (SOURCE_NAME_S)), H);       --| EVALUER LA DÉFINITION DE TYPE
+          if TYPE_DEF.TY = DN_CONSTRAINED_ARRAY_DEF then							--| CONTIENT UNE DÉFINITION DE TABLEAU CONTRAINT
+            TYPE_SPEC := EVAL_TYPE_DEF (TYPE_DEF, HEAD (LIST (SOURCE_NAME_S)), H);				--| EVALUER LA DÉFINITION DE TYPE
 
-          else                          --| INDICATION DE SOUS TYPE
-            TYPE_SPEC := EVAL_SUBTYPE_INDICATION (TYPE_DEF);         --| EVALUER LA SUBTYPE INDICATION
-            RESOLVE_SUBTYPE_INDICATION (TYPE_DEF, TYPE_SPEC);                --| LA RÉSOUDRE
+          else											--| INDICATION DE SOUS TYPE
+            TYPE_SPEC := EVAL_SUBTYPE_INDICATION( TYPE_DEF );						--| EVALUER LA SUBTYPE INDICATION
+            RESOLVE_SUBTYPE_INDICATION( TYPE_DEF, TYPE_SPEC );						--| LA RÉSOUDRE
             D (AS_TYPE_DEF, NODE, TYPE_DEF);
           end if;
 
@@ -695,17 +698,23 @@ package body NOD_WALK is
 
       when DN_SUBTYPE_DECL =>
         declare
-          SOURCE_NAME        : TREE := D (AS_SOURCE_NAME, NODE);
-          SUBTYPE_INDICATION : TREE := D (AS_SUBTYPE_INDICATION, NODE);
-          SOURCE_DEF         : TREE := MAKE_DEF_FOR_ID (SOURCE_NAME, H);
+          SOURCE_NAME        : TREE	:= D (AS_SOURCE_NAME, NODE);
+          SUBTYPE_INDICATION : TREE	:= D (AS_SUBTYPE_INDICATION, NODE);
+          SOURCE_DEF         : TREE	:= MAKE_DEF_FOR_ID( SOURCE_NAME, H );
           TYPE_SPEC          : TREE;
         begin
-          TYPE_SPEC := EVAL_TYPE_DEF (SUBTYPE_INDICATION, SOURCE_NAME, H);
-          D (SM_TYPE_SPEC, SOURCE_NAME, TYPE_SPEC);
-          if TYPE_SPEC /= TREE_VOID then
-            MAKE_DEF_VISIBLE (SOURCE_DEF);
+          TYPE_SPEC := EVAL_TYPE_DEF( SUBTYPE_INDICATION, SOURCE_NAME, H );
+          D( SM_TYPE_SPEC, SOURCE_NAME, TYPE_SPEC );
+
+-- MODIF V.MORIN 18/6/2025 le xd_source_name d'un type_spec de subtype_decl pointait sur le type_id de base
+-- semble incorrect pour cet attribut non Diana
+--
+	D( XD_SOURCE_NAME, TYPE_SPEC, SOURCE_NAME );
+--
+          if  TYPE_SPEC /= TREE_VOID  then
+            MAKE_DEF_VISIBLE( SOURCE_DEF );
           else
-            MAKE_DEF_IN_ERROR (SOURCE_DEF);
+            MAKE_DEF_IN_ERROR( SOURCE_DEF );
           end if;
         end;
 
@@ -1431,17 +1440,24 @@ package body NOD_WALK is
     end loop;
     LIST (CHOICE_S, NEW_CHOICE_LIST);
   end WALK_DISCRETE_CHOICE_S;
-      --||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-      --|       PROCEDURE WALK_ITEM_S
-  procedure WALK_ITEM_S (ITEM_S : TREE; H : H_TYPE) is
-    ITEM_LIST : SEQ_TYPE := LIST (ITEM_S);
-    ITEM      : TREE;
-  begin
-    while not IS_EMPTY (ITEM_LIST) loop
-      POP (ITEM_LIST, ITEM);
-      WALK (ITEM, H);
-    end loop;
-  end WALK_ITEM_S;
 
-   --|----------------------------------------------------------------------------------------------
-end NOD_WALK;
+
+			-----------
+  procedure		WALK_ITEM_S		( ITEM_S :TREE; H :H_TYPE )
+  is			-----------
+
+    ITEM_LIST	: SEQ_TYPE	:= LIST (ITEM_S);
+    ITEM		: TREE;
+
+  begin
+    while  not IS_EMPTY( ITEM_LIST )  loop
+      POP( ITEM_LIST, ITEM );
+      WALK( ITEM, H );
+    end loop;
+
+  end	WALK_ITEM_S;
+	-----------
+
+
+end	NOD_WALK;
+	--------

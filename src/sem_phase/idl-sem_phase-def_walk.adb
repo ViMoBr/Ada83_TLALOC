@@ -45,7 +45,10 @@ package body DEF_WALK is
     return TYPE_SPEC;
   end GET_SUBSTRUCT;
 
-  function EVAL_TYPE_DEF (TYPE_DEF : TREE; ID : TREE; H : H_TYPE; DSCRMT_DECL_S : TREE := TREE_VOID) return TREE is
+		-------------
+  function	EVAL_TYPE_DEF		( TYPE_DEF :TREE; ID :TREE; H :H_TYPE;
+					  DSCRMT_DECL_S :TREE := TREE_VOID)	return TREE
+  is		-------------
 
     TYPE_SPEC         : TREE := TREE_VOID;
     BASE_TYPE         : TREE := TREE_VOID;
@@ -56,8 +59,11 @@ package body DEF_WALK is
       return TREE_VOID;
     end if;
 
+-- put_line( "; def_walk.EVAL_TYPE_DEF ligne 62 ID.TY= " & NODE_NAME'IMAGE( ID.TY ) & "  ID= " & PRINT_NAME( D(LX_SYMREP, ID ) ) );
+
+
                 -- GET BASE TYPE IN CASE IT IS PRIVATE, L_PRIVATE OR INCOMPLETE
-    if ID.TY = DN_TYPE_ID and then D (SM_FIRST, ID) /= ID then
+    if ID.TY = DN_TYPE_ID and then D( SM_FIRST, ID ) /= ID then
       BASE_TYPE := D (SM_TYPE_SPEC, D (SM_FIRST, ID));
     end if;
 
@@ -139,12 +145,11 @@ package body DEF_WALK is
                         -- FOR A SUBTYPE INDICATION
       when DN_SUBTYPE_INDICATION =>
         declare
-          SUBTYPE_INDICATION : TREE := TYPE_DEF;
-          BASE_TYPE          : TREE := EVAL_SUBTYPE_INDICATION (SUBTYPE_INDICATION);
+          SUBTYPE_INDICATION	: TREE	:= TYPE_DEF;
+          BASE_TYPE		: TREE	:= EVAL_SUBTYPE_INDICATION( SUBTYPE_INDICATION );
         begin
-
                                         -- RESOLVE SUBTYPE INDICATION AND GET ITS SUBTYPE
-          RESOLVE_SUBTYPE_INDICATION (SUBTYPE_INDICATION, TYPE_SPEC);
+          RESOLVE_SUBTYPE_INDICATION( SUBTYPE_INDICATION, TYPE_SPEC );
 
                                         -- RETURN WITHOUT MODIFYING BASE TYPE, ETC.
           return TYPE_SPEC;
@@ -583,11 +588,13 @@ package body DEF_WALK is
 
           TYPE_SPEC := MAKE_CONSTRAINED_ARRAY (SM_INDEX_SUBTYPE_S => MAKE_SCALAR_S (LIST => SCALAR_LIST), SM_BASE_TYPE => BASE_TYPE);
 
-                                        -- IF THIS DEF WAS PART OF A VARIABLE DECLARATION
-          if ID.TY = DN_VARIABLE_ID then
+--  MODIF V.MORIN 18/6/2025 pour DN_COMPONENT_ID
+--
 
-                                                -- MARK TYPE_SPEC ANONYMOUS
-            DB (SM_IS_ANONYMOUS, TYPE_SPEC, True);
+put_line( "; def_walk ligne 591 ID.TY= " & NODE_NAME'IMAGE( ID.TY ) );
+
+          if  ID.TY = DN_VARIABLE_ID or ID.TY = DN_COMPONENT_ID  then						-- IF THIS DEF WAS PART OF A VARIABLE DECLARATION
+            DB( SM_IS_ANONYMOUS, TYPE_SPEC, TRUE );							-- MARK TYPE_SPEC ANONYMOUS
           end if;
         end;
 
@@ -608,7 +615,7 @@ package body DEF_WALK is
 
                                         -- EVALUATE COMPONENT TYPE
           COMP_TYPE := EVAL_SUBTYPE_INDICATION (SUBTYPE_INDICATION);
-          RESOLVE_SUBTYPE_INDICATION (SUBTYPE_INDICATION, COMP_TYPE);
+          RESOLVE_SUBTYPE_INDICATION( SUBTYPE_INDICATION, COMP_TYPE );
 
                                         -- REMEMBER IF IN ERROR
           if COMP_TYPE = TREE_VOID then

@@ -869,13 +869,15 @@ macro			CST	name_cst:_nil_, sizChar:b, val&	; Definition d'une constante
 end macro
 
 ;			--------------
-macro			USEINFO	name				; Reference __u a un __i info
+macro			USEINFO	lvl, field_name, load_instruc& 				; Reference __u a un __i info
 ;			--------------
   virtual VARzone
     align_q							; aligner en fonction de l'unite de reservation
-    name#__u = $							; lieu ptr use info
+    field_name#__u = $							; lieu ptr use info
     rq 1								; reservation
   end virtual
+  load_instruc
+  Sa lvl, field_name#__u
 end macro
 ;			-------------------
 macro			STATOFS	name, siz				; Definition de l'offset statique (pour un record statique, dans une virtual at 0)
