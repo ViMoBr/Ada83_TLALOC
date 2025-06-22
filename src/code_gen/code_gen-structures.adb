@@ -212,9 +212,11 @@ null;
     PACK_ID	: TREE		:= D( AS_SOURCE_NAME, PACKAGE_BODY );
     PACK_NAME	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, PACK_ID ) );
     PACK_DEF	: TREE		:= D( SM_FIRST, PACK_ID );
+    CAS_NORMAL	: BOOLEAN		:= PACK_NAME /= "STANDARD" and PACK_NAME /= "_STANDRD";
   begin
     if PACK_DEF.TY = DN_GENERIC_ID then
       IN_GENERIC_BODY := TRUE;
+      PUT_LINE( PACK_NAME & " = " & "'" & PACK_NAME & "'" );
       PUT( "namespace " & PACK_NAME );
       if CODI.DEBUG then PUT( tab50 & ";---------- GENERIC PACKAGE" ); end if;
       NEW_LINE;
@@ -261,9 +263,13 @@ null;
       IN_GENERIC_BODY := FALSE;
 
     else
-      PUT( "namespace " & PACK_NAME );
-      if CODI.DEBUG then PUT( tab50 & ";---------- PACKAGE" ); end if;
-      NEW_LINE;
+
+      if  CAS_NORMAL  then
+        PUT_LINE( PACK_NAME & " = " & "'" & PACK_NAME & "'" );
+        PUT( "namespace " & PACK_NAME );
+        if CODI.DEBUG then PUT( tab50 & ";---------- PACKAGE" ); end if;
+        NEW_LINE;
+      end if;
 
       PUT( "elab_spec:" );
       if CODI.DEBUG then PUT_LINE( tab50 & ";    SPEC ELAB" ); end if;
@@ -273,9 +279,11 @@ null;
       ENCLOSING_BODY := PACKAGE_BODY;
       CODE_BODY( D( AS_BODY, PACKAGE_BODY ) );
 
-      PUT( "end namespace " );
-      if CODI.DEBUG then
-        PUT_LINE( tab50 & ";---------- end package BDY " & PACK_NAME );
+      if  CAS_NORMAL  then
+        PUT( "end namespace " );
+        if CODI.DEBUG then
+	PUT_LINE( tab50 & ";---------- end package BDY " & PACK_NAME );
+        end if;
       end if;
       NEW_LINE;
 

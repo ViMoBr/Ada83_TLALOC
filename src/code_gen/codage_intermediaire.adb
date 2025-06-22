@@ -364,7 +364,7 @@ is
 	--=--
 
 			--========--
-  procedure		REGIONS_PATH	( ID : TREE )
+  procedure		REGIONS_PATH	( ID : TREE; WITH_DOT :BOOLEAN := TRUE )
   is			------------
     REGION	: TREE		:= D( XD_REGION, ID );
     RGN_NAME	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, REGION ) );
@@ -377,7 +377,7 @@ is
       if  REGION.TY = DN_PROCEDURE_ID  then
         PUT( '_' & LABEL_STR( LABEL_TYPE( DI( CD_LABEL, REGION ) ) ) );
       end if;
-      PUT( '.' );
+      if  WITH_DOT  then PUT( '.' ); end if;
     end if;
 
   end	REGIONS_PATH;

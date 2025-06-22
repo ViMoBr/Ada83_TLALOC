@@ -519,6 +519,7 @@ package body NOD_WALK is
             TYPE_SPEC := EVAL_SUBTYPE_INDICATION( TYPE_DEF );						--| EVALUER LA SUBTYPE INDICATION
             RESOLVE_SUBTYPE_INDICATION( TYPE_DEF, TYPE_SPEC );						--| LA RÉSOUDRE
             D (AS_TYPE_DEF, NODE, TYPE_DEF);
+
           end if;
 
           if EXP /= TREE_VOID then                      --| UNE EXPRESSION EST DONNÉE
@@ -697,6 +698,7 @@ package body NOD_WALK is
         end;
 
       when DN_SUBTYPE_DECL =>
+--put_line( "; NOD_WALK 709 dn_subtype_decl" );
         declare
           SOURCE_NAME        : TREE	:= D (AS_SOURCE_NAME, NODE);
           SUBTYPE_INDICATION : TREE	:= D (AS_SUBTYPE_INDICATION, NODE);
@@ -710,6 +712,7 @@ package body NOD_WALK is
 -- semble incorrect pour cet attribut non Diana
 --
 	D( XD_SOURCE_NAME, TYPE_SPEC, SOURCE_NAME );
+--put_line( "; NOD_WALK 722 subtype_decl source_name : " & PRINT_NAME( D( LX_SYMREP, SOURCE_NAME ) ) );
 --
           if  TYPE_SPEC /= TREE_VOID  then
             MAKE_DEF_VISIBLE( SOURCE_DEF );

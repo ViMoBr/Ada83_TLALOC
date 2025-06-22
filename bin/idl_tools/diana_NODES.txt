@@ -1187,6 +1187,8 @@ record	=>
 	=> cd_comp_unit	:Integer
 	=> cd_level	:Integer
 	=> cd_compiled	:BOOLEAN
+	=> cd_impl_size	:Integer
+	=> cd_alignment	:Integer
 	;
 access	=>
 	=> sm_derived	:TYPE_SPEC

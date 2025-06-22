@@ -83,7 +83,7 @@ is
 
   function  IMAGE			( I : NATURAL )			return STRING;
 
-  procedure REGIONS_PATH		( ID : TREE );
+  procedure REGIONS_PATH		( ID : TREE; WITH_DOT :BOOLEAN := TRUE );
 
   OPERAND_OVERFLOW	 		: exception;
 

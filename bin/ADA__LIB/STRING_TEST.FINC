@@ -3,6 +3,7 @@ PRO	STRING_TEST_L1				;---------- PRO STRING_TEST
 ELB 1					;    BODY ELAB
 VAR L_disp, d				; variable entiere
 
+NAT_IO = 'NAT_IO'
 namespace NAT_IO				;---------- GENERIC PACKAGE INSTANTIATION
 elab_spec:				;    SPEC ELAB
 

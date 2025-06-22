@@ -375,6 +375,8 @@ record	PATH TYPE_SPEC > DERIVABLE_SPEC > FULL_TYPE_SPEC > NON_TASK > UNCONSTRAIN
 	=> sm_discriminant_s	: dscrmt_decl_s
 	=> sm_comp_list	: comp_list
 	=> sm_representation	: REP
+	=> cd_impl_size	: Integer
+	=> cd_alignment	: Integer
 
 constrained_record	PATH TYPE_SPEC > DERIVABLE_SPEC > FULL_TYPE_SPEC > NON_TASK > CONSTRAINED > constrained_record
 	=> sm_normalized_dscrmt_s	: exp_s

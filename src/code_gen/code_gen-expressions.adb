@@ -368,7 +368,7 @@ null;--        declare
 
     if  NAME.TY = DN_SELECTED  then
       CODE_SELECTED( NAME );
-      NAME := D( AS_NAME, NAME );
+      NAME := D( AS_DESIGNATOR, NAME );
     end if;
 
     declare
@@ -376,23 +376,27 @@ null;--        declare
     EXP_TYPE		: TREE			:= D( SM_EXP_TYPE, NAME );
     EXP_TYPE_NAME		: TREE			:= D( XD_SOURCE_NAME, EXP_TYPE );
     TYPE_NAME_STR		:constant STRING		:= PRINT_NAME( D( LX_SYMREP, EXP_TYPE_NAME ) );
-    ARRAY_LVL		: INTEGER			:= DI( CD_LEVEL, D( SM_DEFN, NAME ) );
+    ARRAY_LVL		: INTEGER			:= 0;
     INDEX_NUM		: INTEGER			:= 1;
 		-----
       procedure	INDEX	( EXP :TREE )
       is		-----
 
-        CHN		:constant STRING	:= tab & "LId" & INTEGER'IMAGE( ARRAY_LVL )
+        LID_CHN		:constant STRING	:= tab & "LId" & tab & INTEGER'IMAGE( ARRAY_LVL )
 					   & ", " & ARRAY_NAME & "__u";
         INDEX_NUM_IMG	:constant STRING	:= IMAGE( INDEX_NUM );
 
       begin
         CODE_EXP( EXP );
-        PUT( CHN & ", " &  TYPE_NAME_STR & "__i.FST_" & INDEX_NUM_IMG );
+        PUT( LID_CHN & ", " );
+        REGIONS_PATH( EXP_TYPE_NAME );
+        PUT( TYPE_NAME_STR & ".FST_" & INDEX_NUM_IMG );
         if  CODI.DEBUG  then PUT( tab50 & "; (index - FST_" & INDEX_NUM_IMG & ") * SIZ_" & INDEX_NUM_IMG ); end if;
         NEW_LINE;
         PUT_LINE( tab & "SUB" );
-        PUT_LINE( CHN & ", " & TYPE_NAME_STR & "__i.COMP_SIZ" );
+        PUT( LID_CHN & ", " );
+        REGIONS_PATH( EXP_TYPE_NAME );
+        PUT_LINE( TYPE_NAME_STR & ".COMP_SIZ" );
         PUT_LINE( tab & "MUL" );
         PUT( tab & "ADD" );
         if  CODI.DEBUG  then PUT( tab50 & "; add offset to start address" ); end if;
@@ -402,10 +406,16 @@ null;--        declare
       	-----
 
     begin
-      PUT(  tab & "La" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & ARRAY_NAME & "_disp" );				-- EMPILE L ADRESSE DE BASE DU CONTENU DE TABLEAU
-      if  CODI.DEBUG  then PUT( tab50 & "; array data start address on stack" ); end if;
-      NEW_LINE;
+      if D( SM_DEFN, NAME ).TY /= DN_COMPONENT_ID  then
+        ARRAY_LVL := DI( CD_LEVEL, D( SM_DEFN, NAME ) );
+        PUT(  tab & "La" & tab & INTEGER'IMAGE( ARRAY_LVL ) & ", " & ARRAY_NAME & "_disp" );			-- EMPILE L ADRESSE DE BASE DU CONTENU DE TABLEAU
+        if  CODI.DEBUG  then PUT( tab50 & "; array data start address on stack" ); end if;
+        NEW_LINE;
 
+      else
+put_line( "; adresse component id" );
+
+      end if;
       declare
         EXP_SEQ	: SEQ_TYPE	:= LIST( D( AS_EXP_S, INDEXED ) );
         EXP	: TREE;
@@ -434,63 +444,123 @@ null;--        declare
 				-------------
   procedure			CODE_SELECTED		( SELECTED :TREE; IS_SOURCE :BOOLEAN := TRUE )
   is				-------------
+
     EXP_TYPE	: TREE	:= D( SM_EXP_TYPE, SELECTED );
     DEFN		: TREE	:= D( SM_DEFN, D( AS_DESIGNATOR, SELECTED ) );
     VAR_ID	: TREE;
-		----------------
-    function	RECURSE_SELECTED	( SELECTED :TREE )	return STRING
-    is
+
+			----------------
+    procedure		RECURSE_SELECTED	( SELECTED :TREE )
+    is			----------------
+
       NAME		: TREE		:= D( AS_NAME, SELECTED );
-      DESIGNATOR		: TREE		:= D( AS_DESIGNATOR, SELECTED );
-      DESIGNATOR_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, DESIGNATOR ) );
-      DESIGNATOR_DEFN	: TREE		:= D( SM_DEFN, DESIGNATOR );
-      PARENT_TYPE		: TREE		:= D( XD_REGION, DESIGNATOR_DEFN );
-      PARENT_TYPE_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, PARENT_TYPE ) );
+		------------------
+      procedure	PROCESS_DESIGNATOR
+      is		------------------
+
+        DESIGNATOR		: TREE		:= D( AS_DESIGNATOR, SELECTED );
+        DESIGNATOR_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, DESIGNATOR ) );
+        DESIGNATOR_DEFN	: TREE		:= D( SM_DEFN, DESIGNATOR );
+        DESIGNATOR_LEVEL	: INTEGER;
+
+      begin
+	if  DESIGNATOR_DEFN.TY = DN_VARIABLE_ID  then
+	  if  D( SM_EXP_TYPE, DESIGNATOR ).TY in CLASS_SCALAR  then
+	    DESIGNATOR_LEVEL := DI( CD_LEVEL, DESIGNATOR_DEFN );
+	    PUT_LINE( tab & "L" & OPER_SIZ_CHAR( DESIGNATOR_DEFN ) & tab & IMAGE( DESIGNATOR_LEVEL ) & ", " & DESIGNATOR_STR  );
+
+--	  else
+--	    PUT_LINE( tab & "LVA " & tab & IMAGE( DESIGNATOR_LEVEL ) & ", " & DESIGNATOR_STR   );
+
+	  end if;
+
+	elsif  DESIGNATOR_DEFN.TY = DN_COMPONENT_ID  then
+	  if  NAME.TY = DN_USED_OBJECT_ID  then
+	    PUT( tab & "LIVa " & tab & INTEGER'IMAGE( DI( CD_LEVEL, D( SM_DEFN, NAME ) ) ) & ", "
+	       & PRINT_NAME( D(LX_SYMREP, NAME ) ) & "_disp, " );
+	    REGIONS_PATH( DESIGNATOR_DEFN );
+	    PUT_LINE( DESIGNATOR_STR );
+
+	  else
+	    PUT( tab & "LVa " & tab & ", " );
+	    REGIONS_PATH( DESIGNATOR_DEFN );
+	    PUT_LINE( DESIGNATOR_STR );
+
+	  end if;
+
+	elsif  DESIGNATOR_DEFN.TY = DN_CONSTANT_ID  then
+	  PUT_LINE( tab & "LI" & tab & PRINT_NUM( D( SM_VALUE, DESIGNATOR ) ) );
+
+	else
+	  PUT_LINE( "; CODE_SELECTED.RECURSE_SELECTED DESIGNATOR.TY PAS FAIT: " & NODE_NAME'IMAGE( DESIGNATOR_DEFN.TY ) );
+	end if;
+
+      end	PROCESS_DESIGNATOR;
+	------------------
     begin
       if  NAME.TY = DN_SELECTED  then
-        return RECURSE_SELECTED( NAME ) & " + " & PARENT_TYPE_STR & '.' & DESIGNATOR_STR;
-      else
-        VAR_ID := D( SM_DEFN, NAME );
-        return PARENT_TYPE_STR & '.' & DESIGNATOR_STR;
+        RECURSE_SELECTED( NAME ) ;
+        PROCESS_DESIGNATOR;
+
+      elsif  NAME.TY = DN_USED_OBJECT_ID  then
+        declare
+	DEFN		: TREE		:= D( SM_DEFN, NAME );
+	OBJ_TYPE		: TREE		:= D( SM_OBJ_TYPE, DEFN );
+	OBJ_LEVEL		: INTEGER		:= DI( CD_LEVEL, DEFN );
+	OBJ_NAME_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, DEFN ) );
+        begin
+	if  D( SM_EXP_TYPE, NAME ).TY in CLASS_SCALAR  then
+	  PUT_LINE( tab & "L" & OPER_SIZ_CHAR( DEFN ) & tab & IMAGE( OBJ_LEVEL ) & ", " & OBJ_NAME_STR  );
+          end if;
+        end;
+
+        PROCESS_DESIGNATOR;
+
+      elsif  NAME.TY = DN_USED_NAME_ID  then
+        PROCESS_DESIGNATOR;
+
       end if;
     end	RECURSE_SELECTED;
     	----------------
 
   begin
-    if  EXP_TYPE.TY = DN_INTEGER  then
-      if  DEFN.TY = DN_COMPONENT_ID  then
-        declare
-	OFFSET_STR	:constant STRING	:= RECURSE_SELECTED( SELECTED );
-	VAR_STR		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, VAR_ID ) );
-	VAR_LVL_STR	:constant STRING	:= INTEGER'IMAGE( DI( CD_LEVEL, VAR_ID ) );
-	SIZ_CHAR		: CHARACTER	:= OPER_SIZ_CHAR( EXP_TYPE );
-        begin
-	PUT( tab );
-	if  IS_SOURCE  then
-	  PUT( 'L' );
-	else
-	  PUT( 'S' );
-	end if;
-	PUT( 'I' & SIZ_CHAR & VAR_LVL_STR & ',' & tab );
-	if  VAR_ID.TY = DN_IN_OUT_ID  or VAR_ID.TY = DN_OUT_ID  then
-	  PUT( '-' & VAR_STR & "_ofs, " );
-	else
-	  PUT( VAR_STR & "_disp, " );
-	end if;
-	PUT_LINE( OFFSET_STR );
-        end;
 
-      else
-        PUT_LINE( tab & 'L' &  OPER_SIZ_CHAR( EXP_TYPE )  & tab & RECURSE_SELECTED( SELECTED ) );
-      end if;
+    RECURSE_SELECTED( SELECTED );
 
-    elsif  EXP_TYPE.TY = DN_ENUMERATION  then
-      PUT_LINE( tab & "LI" & tab & PRINT_NUM( D( SM_VALUE, SELECTED ) ) );
+ --   if  EXP_TYPE.TY = DN_INTEGER  then
+ --     if  DEFN.TY = DN_COMPONENT_ID  then
+ --       declare
+--	OFFSET_STR	:constant STRING	:= RECURSE_SELECTED( SELECTED );
+--	VAR_STR		:constant STRING	:= PRINT_NAME( D( LX_SYMREP, VAR_ID ) );
+--	VAR_LVL_STR	:constant STRING	:= INTEGER'IMAGE( DI( CD_LEVEL, VAR_ID ) );
+--	SIZ_CHAR		: CHARACTER	:= OPER_SIZ_CHAR( EXP_TYPE );
+--        begin
+--	PUT( tab );
+--	if  IS_SOURCE  then
+--	  PUT( 'L' );
+--	else
+--	  PUT( 'S' );
+--	end if;
+--	PUT( 'I' & SIZ_CHAR & VAR_LVL_STR & ',' & tab );
+--	if  VAR_ID.TY = DN_IN_OUT_ID  or VAR_ID.TY = DN_OUT_ID  then
+--	  PUT( '-' & VAR_STR & "_ofs, " );
+--	else
+--	  PUT( VAR_STR & "_disp, " );
+--	end if;
+--	PUT_LINE( OFFSET_STR );
+--        end;
 
-    else
-      PUT_LINE( "; EXPRESSIONS.CODE_SELECTED TYPE PAS FAIT " & NODE_NAME'IMAGE( EXP_TYPE.TY ) );
+--      else
+--        PUT_LINE( tab & 'L' &  OPER_SIZ_CHAR( EXP_TYPE )  & tab & RECURSE_SELECTED( SELECTED ) );
+--      end if;
 
-    end if;
+--    elsif  EXP_TYPE.TY = DN_ENUMERATION  then
+--      PUT_LINE( tab & "LI" & tab & PRINT_NUM( D( SM_VALUE, SELECTED ) ) );
+
+--    else
+--      PUT_LINE( "; EXPRESSIONS.CODE_SELECTED TYPE PAS FAIT " & NODE_NAME'IMAGE( EXP_TYPE.TY ) );
+
+--    end if;
   end	CODE_SELECTED;
 	-------------
 
@@ -521,7 +591,7 @@ null;--        declare
 	  if DIM_EXP /= TREE_VOID then
 	    NUM_DIM := DI( SM_VALUE, DIM_EXP );
 	  end if;
-	  PUT( tab & "LId" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & CHN_PREFIX & "__u" & ", " & CHN_PREFIX & "__i" );
+	  PUT( tab & "LId" & INTEGER'IMAGE( ARRAY_LVL ) & ',' & tab & CHN_PREFIX & "__u" & ", " & CHN_PREFIX );
 	  if  IS_LAST  then
 	    PUT( ".LST_"  );
 	  else
@@ -845,10 +915,17 @@ null;--        declare
   begin
 
     case CST_TYPE.TY is
-    when DN_ARRAY => null;
+
     when DN_INTEGER | DN_ACCESS | DN_ENUMERATION | DN_FLOAT
     =>
       LOAD_MEM( CONSTANT_ID );
+
+    when DN_RECORD =>
+      PUT_LINE( "; CODE_VC_ID : RECORD LOAD ADDRESS" );
+
+    when DN_ARRAY =>
+      PUT_LINE( "; CODE_VC_ID : ARRAY LOAD ADDRESS" );
+
     when others
     =>
       PUT_LINE( ';' & tab & "CODE_VC_ID ERROR " & NODE_NAME'IMAGE( CST_TYPE.TY ) );

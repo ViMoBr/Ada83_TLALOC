@@ -1164,8 +1164,6 @@ A     35   xd_source_name
 A     27   cd_comp_unit
 A     28   cd_level
 B     30   cd_compiled
-A     40   cd_impl_size
-A     46   cd_alignment
 E UNCONSTRAINED_COMPOSITE
 N 208 access
 A     36   sm_derived

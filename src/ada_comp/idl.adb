@@ -579,6 +579,8 @@ is					---
   end	GET_LIB_PREFIX;
 	--------------
 
+		----------
+  procedure	DEBUG_STOP is begin null; end;
 
 		---------
   procedure	PAR_PHASE		( PATH_TEXTE, NOM_TEXTE, LIB_PATH :STRING ) is separate;

@@ -3,6 +3,7 @@ use  TEXT_IO;
 			----------
 procedure			ARRAY_TEST
 is			----------
+
   S	:constant STRING := "Camille";
   C	: CHARACTER;
 begin

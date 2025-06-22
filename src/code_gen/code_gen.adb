@@ -1276,17 +1276,16 @@ null;--      GEN_PUSH_DATA ( A, 0, LEVEL_NUM(DI( CD_LEVEL, ADRESSE )), DI( CD_VA
 				---------------
   procedure			CODE_DESIGNATOR		( DESIGNATOR :TREE )
   is
-  begin
---     if DESIGNATOR.TY in CLASS_USED_OBJECT
---     then
---       return CODE_USED_OBJECT( DESIGNATOR );
+  begin null;
+--    if  DESIGNATOR.TY in CLASS_USED_OBJECT
+--    then
+--      CODE_USED_OBJECT( DESIGNATOR );
 -- 
 --     elsif DESIGNATOR.TY in CLASS_USED_NAME
 --     then
 --       return CODE_USED_NAME( DESIGNATOR );
 -- 
---     end if;
-    null;
+--    end if;
   end	CODE_DESIGNATOR;
 	---------------
 

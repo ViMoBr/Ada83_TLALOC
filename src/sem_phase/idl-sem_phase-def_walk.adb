@@ -591,13 +591,13 @@ package body DEF_WALK is
 --  MODIF V.MORIN 18/6/2025 pour DN_COMPONENT_ID
 --
 
-put_line( "; def_walk ligne 591 ID.TY= " & NODE_NAME'IMAGE( ID.TY ) );
+put_line( "; def_walk ligne 594 ID.TY= " & NODE_NAME'IMAGE( ID.TY ) );
 
           if  ID.TY = DN_VARIABLE_ID or ID.TY = DN_COMPONENT_ID  then						-- IF THIS DEF WAS PART OF A VARIABLE DECLARATION
             DB( SM_IS_ANONYMOUS, TYPE_SPEC, TRUE );							-- MARK TYPE_SPEC ANONYMOUS
           end if;
         end;
-
+--
                         -- FOR AN UNCONSTRAINED ARRAY DEFINITION
       when DN_UNCONSTRAINED_ARRAY_DEF =>
         declare
@@ -933,13 +933,16 @@ put_line( "; def_walk ligne 591 ID.TY= " & NODE_NAME'IMAGE( ID.TY ) );
     D (XD_SOURCE_NAME, TYPE_SPEC, ID);
 
 
---put_line( "DEF_WALK 921 TYPE_SPEC" );
+--put_line( "DEF_WALK.EVAL_TYPE_DEF 936 TYPE_SPEC" );
 --print_nod.print_node( TYPE_SPEC );
 
 
                 -- RETURN THE CONSTRUCTED TYPE_SPEC
     return TYPE_SPEC;
-  end EVAL_TYPE_DEF;
+
+  end	EVAL_TYPE_DEF;
+	-------------
+
 
   function COPY_COMP_LIST_IDS (COMP_LIST : TREE; H : H_TYPE) return TREE is
     DECL_S           : TREE     := D (AS_DECL_S, COMP_LIST);

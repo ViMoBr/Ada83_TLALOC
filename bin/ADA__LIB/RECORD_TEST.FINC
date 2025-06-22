@@ -1,6 +1,7 @@
 PRO	RECORD_TEST_L1				;---------- PRO RECORD_TEST
 ELB 1					;    BODY ELAB
-namespace VARTEST__i			; array var constrained array type info
+SBT = 'SBT'
+namespace SBT				; SBT CONSTRAINED ARRAY SUBTYPE INFO
 VAR SIZ, d
   namespace info
 VAR COMP_SIZ, d
@@ -11,7 +12,7 @@ VAR LST_1, d
 	Ld 1, COMP_SIZ
 	LI	1
 	Sd 1, FST_1
-	LI	32
+	LI	10
 	Sd 1, LST_1
 	Ld 1, LST_1
 	INC
@@ -30,50 +31,14 @@ LST_1 = $
   end virtual
 end namespace
 
-VAR VARTEST_disp, q				; variable array : pointeur aux data
-VAR VARTEST__u, q				; variable array : useinfo pointeur au rec info
-	Ld 1, VARTEST__i.SIZ
-	CO_VAR
-	Sa 1, VARTEST_disp				; array data ptr at _disp
-	LVA 1, VARTEST__i.SIZ
-	Sa 1, VARTEST__u				; array info ptr at __u
-
-namespace ENREGISTREMENT__i			; ENREGISTREMENT RECORD TYPE INFO
+DEFINITIONS = 'DEFINITIONS'
+namespace DEFINITIONS			;---------- PACKAGE DECLARATION
+ENREGISTREMENT = 'ENREGISTREMENT'
+namespace ENREGISTREMENT			; ENREGISTREMENT RECORD TYPE INFO
 VAR SIZ, d
-USEINFO 1, SH, 	LVA 0, STANDARD.INTEGER__i.SIZ
- namespace ANON_9_12__i
-VAR SIZ, d
-  namespace info
-VAR COMP_SIZ, d
-VAR FST_1, d
-VAR LST_1, d
-	LI	1
-	Sd 1, COMP_SIZ
-	Ld 1, COMP_SIZ
-	LI	1
-	Sd 1, FST_1
-	LI	32
-	Sd 1, LST_1
-	Ld 1, LST_1
-	INC
-	Ld 1, FST_1
-	SUB
-	MUL
-	Sd 1, SIZ
-  end namespace
-  virtual at 4
-COMP_SIZ = $
-	rd 1 
-FST_1 = $
-	rd 1 
-LST_1 = $
-	rd 1 
-  end virtual
-end namespace
-
-USEINFO 1, T1, 	LVA 1, ANON_9_12__i.SIZ
-USEINFO 1, T2, 	LVA 1, ANON_9_12__i.SIZ
- namespace ANON_10_9__i
+USEINFO 1, SH, 	LVA 0, STANDARD.INTEGER.SIZ
+T3 = 'T3'
+ namespace STRING
 VAR SIZ, d
   namespace info
 VAR COMP_SIZ, d
@@ -103,36 +68,25 @@ LST_1 = $
   end virtual
 end namespace
 
-USEINFO 1, T3, 	LVA 1, ANON_10_9__i.SIZ
-
+USEINFO 1, T3, 	LVA 1, STANDARD.STRING.SIZ
 virtual at 0
-size = $
+STATOFS SH, 4
+STATOFS T3, 64
 end virtual
-; OFFSET NON STATIQUE A FAIRE
-; OFFSET NON STATIQUE A FAIRE
-; OFFSET NON STATIQUE A FAIRE
-; OFFSET NON STATIQUE A FAIRE
 end namespace
 
-VAR ENREG_disp, q				; variable record : pointeur aux data record
-VAR ENREG__u, q
-VAR ENREG__dat, STANDARD.RECORD_TEST_L1.ENREGISTREMENT__i.size
-	LVA 1, ENREG__dat
-	Sa 1, ENREG_disp				; record fin
-	LVA 1, ENREGISTREMENT__i.SIZ
-	Sa 1, ENREG__u
+; EXC_LBL	L2
+end namespace
+
+VAR ENREG1_disp, q				; variable record : pointeur aux data record
+VAR ENREG1__u, q				; variable record : pointeur aux useinfo
+VAR ENREG1__dat, STANDARD.RECORD_TEST_L1.DEFINITIONS.ENREGISTREMENT.size
+	LVA 1, ENREG1__dat
+	Sa 1, ENREG1_disp				; record fin
+	LVA 1, STANDARD.RECORD_TEST_L1.DEFINITIONS.ENREGISTREMENT.SIZ
+	Sa 1, ENREG1__u
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-; EXPRESSIONS.CODE_SELECTED TYPE PAS FAIT DN_CONSTRAINED_ARRAY
-	La 1,	ENREG_disp				; array data start address on stack
-	LI	1
-	LId 1, ENREG__u, ENREGISTREMENT__i.ANON_9_12__i.FST_1	; (index - FST_1) * SIZ_1
-	SUB
-	LId 1, ENREG__u, ENREGISTREMENT__i.ANON_9_12__i.COMP_SIZ
-	MUL
-	ADD					; add offset to start address
-	LI	65
-	Sb
 ret_lbl:
 	UNLINK 1
 	RTD

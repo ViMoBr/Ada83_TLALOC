@@ -810,15 +810,18 @@ null;
 
 				-----------
   procedure			CODE_ASSIGN		( ASSIGN :TREE )
-  is
+  is				-----------
+
     DST_NAME	: TREE	:= D( AS_NAME, ASSIGN );							-- DESTINATION DONT ON VEUT L ADRESSE POUR Y METTRE LA SOURCE
     SRC_EXP	: TREE	:= D( AS_EXP, ASSIGN );							-- EXPRESSION SOURCE A AFFECTER
+
   begin
     declare
 
 		---------
       procedure	STORE_VAL		( TYPE_SPEC :TREE )
-      is
+      is		---------
+
       begin
         case TYPE_SPEC.TY is
         when DN_ACCESS =>
@@ -838,7 +841,8 @@ null;--          EMIT ( STO, A );
           end;
 
         when DN_INTEGER =>
-null;--          EMIT ( STO, I );
+	PUT_LINE( tab & 'S' & OPER_SIZ_CHAR( TYPE_SPEC ) );
+
         when DN_UNIVERSAL_INTEGER =>
 null;--          LOAD_ADR( TYPE_SPEC );
 --          EMIT( CVB );
@@ -858,23 +862,23 @@ null;--          LOAD_ADR( TYPE_SPEC );
         STORE_VAL( D( SM_EXP_TYPE, DST_NAME ) );
 
       elsif  DST_NAME.TY = DN_INDEXED  then								-- AFFECTATION A UN ELEMENT DE TABLEAU
+
         EXPRESSIONS.CODE_INDEXED( DST_NAME );								-- CALCULER L ADRESSE DESTINATION
         EXPRESSIONS.CODE_EXP( SRC_EXP );								-- EVALUER L EXPRESSION A AFFECTER
         STORE_VAL( D( SM_EXP_TYPE, DST_NAME ) );
 
-
       elsif  DST_NAME.TY = DN_USED_OBJECT_ID  then							-- AFFECTATION A UN OBJET
 
         declare
-	NAMEXP	: TREE		:= D( SM_EXP_TYPE, DST_NAME );
+	NAME_TYPE	: TREE		:= D( SM_EXP_TYPE, DST_NAME );
 	DEFN	: TREE		:= D( SM_DEFN, DST_NAME );
         begin
 
-          if  NAMEXP.TY = DN_ACCESS  then								-- OBJET ASSIGNE DE TYPE ACCES
+          if  NAME_TYPE.TY = DN_ACCESS  then								-- OBJET ASSIGNE DE TYPE ACCES
 	  EXPRESSIONS.CODE_EXP( SRC_EXP );
 	  CODI.STORE( DEFN );
 
-	elsif  NAMEXP.TY = DN_ARRAY  then								-- OBJET ASSIGNE TABLEAU
+	elsif  NAME_TYPE.TY = DN_ARRAY  then								-- OBJET ASSIGNE TABLEAU
 	  CODE_OBJECT( DEFN );
 	  if  SRC_EXP.TY = DN_USED_OBJECT_ID  then
 	    CODE_OBJECT( D( SM_DEFN, SRC_EXP ) );
@@ -883,11 +887,11 @@ null;--          LOAD_ADR( TYPE_SPEC );
 	    EXPRESSIONS.CODE_EXP( SRC_EXP );
             end if;
 
-	elsif  NAMEXP.TY = DN_ENUMERATION  then								-- OBJET ASSIGNE ENUMERATION (DONT BOOLEAN, CHARACTER)
+	elsif  NAME_TYPE.TY = DN_ENUMERATION  then							-- OBJET ASSIGNE ENUMERATION (DONT BOOLEAN, CHARACTER)
 	  EXPRESSIONS.CODE_EXP( SRC_EXP );
 	  STORE( DEFN );
 
-	elsif  NAMEXP.TY = DN_INTEGER  then								-- OBJET ASSIGNE ENTIER
+	elsif  NAME_TYPE.TY = DN_INTEGER  then								-- OBJET ASSIGNE ENTIER
 	  EXPRESSIONS.CODE_EXP( SRC_EXP );
             CODI.STORE( DEFN );
           end if;
@@ -895,8 +899,9 @@ null;--          LOAD_ADR( TYPE_SPEC );
         end;
 
       elsif  DST_NAME.TY = DN_SELECTED  then								-- AFFECTATION A UN SELECTED (COMPOSANTE DE RECORD PAR EX.)
-        EXPRESSIONS.CODE_EXP( SRC_EXP );
         EXPRESSIONS.CODE_SELECTED( DST_NAME, IS_SOURCE=> FALSE );
+        EXPRESSIONS.CODE_EXP( SRC_EXP );
+        STORE_VAL( D( SM_EXP_TYPE, DST_NAME ) );
 
       end if;
     end;

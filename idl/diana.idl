@@ -1335,6 +1335,8 @@ record_type_definition ::=
 //	sm_discriminant_s	: dscrmt_decl_s,
 //	sm_comp_list	: comp_list,
 //	sm_representation	: REP;			-- REP or void
+//	cd_impl_size		: Integer,
+//	cd_alignment		: Integer;
 --|.................................................................................................
 //  constrained_record	=>
 //	sm_normalized_dscrmt_s	: exp_s;

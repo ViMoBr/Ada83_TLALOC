@@ -1,0 +1,11 @@
+namespace WHATEVER
+
+macro VAR
+end macro
+
+namespace STRING
+VAR
+end namespace
+
+end namespace
+

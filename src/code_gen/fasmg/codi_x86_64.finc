@@ -838,7 +838,8 @@ macro			STR	name, bytes			; Definition d'une constante chaine au format d'un tab
     dq	data							; offset 0 : adresse des caracteres (juste apres dans le cas present)
   info_ptr = $							;
     dq	info						; offset 8 : adresse des infos TOT_SIZ, COMP_SIZ, FST_1, LST_1
-
+;end namespace
+;namespace name#__i
   info = $							; use info
     dd	str_byte_size, 1, 1, str_byte_size				; offset 16 : TOT_SIZ=str_byte_size ; offset 20 : COMP_SIZ=1 ; offset 24 : FST=1 ; offset 28 : LST=str_byte_size
     virtual at 0							; definition des offsets sur le useinfo
@@ -868,9 +869,9 @@ macro			CST	name_cst:_nil_, sizChar:b, val&	; Definition d'une constante
   end postpone
 end macro
 
-;			--------------
+;			----------------------------------------
 macro			USEINFO	lvl, field_name, load_instruc& 				; Reference __u a un __i info
-;			--------------
+;			----------------------------------------
   virtual VARzone
     align_q							; aligner en fonction de l'unite de reservation
     field_name#__u = $							; lieu ptr use info
@@ -882,7 +883,7 @@ end macro
 ;			-------------------
 macro			STATOFS	name, siz				; Definition de l'offset statique (pour un record statique, dans une virtual at 0)
 ;			-------------------
-    name#__o = $							; nom offset du champ
+    name = $							; nom offset du champ
     rb siz							; reservation
 size = $
 end macro

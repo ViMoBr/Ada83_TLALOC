@@ -112,7 +112,7 @@ is
 
   function  GET_LIB_PREFIX							return STRING;		--| UTILISEE PAR LIB_PHASE ET WRITE_LIB
 
-	   	
+  procedure DEBUG_STOP;
 			---------
 	package		PRINT_NOD									--| AFFICHAGE DE TOUT OU PARTIE DE L'ARBRE
   is
