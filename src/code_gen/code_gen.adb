@@ -127,6 +127,7 @@ is
     procedure CODE_INDEXED		( INDEXED		:TREE );
     procedure CODE_STRING_LITERAL	( STRING_LITERAL	:TREE; STR_NAME :STRING );
     procedure CODE_SELECTED		( SELECTED	:TREE; IS_SOURCE :BOOLEAN := TRUE );
+    procedure CODE_SLICE		( SLICE		:TREE );
 
 
   private
@@ -139,7 +140,6 @@ is
     procedure CODE_USED_OBJECT_ID	( USED_OBJECT_ID	:TREE );
     procedure CODE_ALL		( ADA_ALL		:TREE );
 
-    procedure CODE_SLICE		( SLICE		:TREE );
     procedure CODE_ATTRIBUTE		( ATTRIBUTE	:TREE );
     procedure CODE_FUNCTION_CALL	( FUNCTION_CALL	:TREE );
     procedure CODE_QUALIFIED_ALLOCATOR	( QUALIFIED_ALLOCATOR:TREE );

@@ -862,18 +862,16 @@ null;--          LOAD_ADR( TYPE_SPEC );
         STORE_VAL( D( SM_EXP_TYPE, DST_NAME ) );
 
       elsif  DST_NAME.TY = DN_INDEXED  then								-- AFFECTATION A UN ELEMENT DE TABLEAU
-
         EXPRESSIONS.CODE_INDEXED( DST_NAME );								-- CALCULER L ADRESSE DESTINATION
         EXPRESSIONS.CODE_EXP( SRC_EXP );								-- EVALUER L EXPRESSION A AFFECTER
         STORE_VAL( D( SM_EXP_TYPE, DST_NAME ) );
 
       elsif  DST_NAME.TY = DN_USED_OBJECT_ID  then							-- AFFECTATION A UN OBJET
-
         declare
 	NAME_TYPE	: TREE		:= D( SM_EXP_TYPE, DST_NAME );
 	DEFN	: TREE		:= D( SM_DEFN, DST_NAME );
-        begin
 
+        begin
           if  NAME_TYPE.TY = DN_ACCESS  then								-- OBJET ASSIGNE DE TYPE ACCES
 	  EXPRESSIONS.CODE_EXP( SRC_EXP );
 	  CODI.STORE( DEFN );
@@ -903,6 +901,10 @@ null;--          LOAD_ADR( TYPE_SPEC );
         EXPRESSIONS.CODE_EXP( SRC_EXP );
         STORE_VAL( D( SM_EXP_TYPE, DST_NAME ) );
 
+      elsif  DST_NAME.TY = DN_SLICE  then								-- AFFECTATION A UNE TRANCHE
+        EXPRESSIONS.CODE_SLICE( DST_NAME );
+        EXPRESSIONS.CODE_EXP( SRC_EXP );
+        PUT_LINE( tab & "BLKMOV" );									-- COPY_BLOCK;	- @DST @SRC LEN
       end if;
     end;
   end	CODE_ASSIGN;

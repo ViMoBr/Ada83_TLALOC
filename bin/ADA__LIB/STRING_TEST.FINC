@@ -8,11 +8,11 @@ namespace NAT_IO				;---------- GENERIC PACKAGE INSTANTIATION
 elab_spec:				;    SPEC ELAB
 
 VAR NATURAL_last_ofs, q
-LI 2147483647
-Sd 1, NATURAL_last_ofs
+LI	2147483647
+Sd	 1, NATURAL_last_ofs
 VAR NATURAL_first_ofs, q
-LI 0
-Sd 1, NATURAL_first_ofs
+LI	0
+Sd	 1, NATURAL_first_ofs
 VAR GFP_disp, q
 VAR DEFAULT_WIDTH_disp, d			; variable entiere
 	Sd  1,	DEFAULT_WIDTH_disp
@@ -30,12 +30,12 @@ PRMS					;    debut parametrage
 endPRMS					;    fin parametrage
 ELB 2
 begin:
-	LVA 2,	GFP_disp
-	Lq 2,	-WIDTH_ofs
-	Lq 2,	-ITEM_ofs
-	Lq 2,	-FILE_ofs
+	LVA	 2, GFP_disp
+	Lq	 2, -WIDTH_ofs
+	Lq	 2, -ITEM_ofs
+	Lq	 2, -FILE_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L61
-	UNLINK 2
+	UNLINK	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO GET
 end if
@@ -47,11 +47,11 @@ PRMS					;    debut parametrage
 endPRMS					;    fin parametrage
 ELB 2
 begin:
-	LVA 2,	GFP_disp
-	Lq 2,	-WIDTH_ofs
-	Lq 2,	-ITEM_ofs
+	LVA	 2, GFP_disp
+	Lq	 2, -WIDTH_ofs
+	Lq	 2, -ITEM_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L62
-	UNLINK 2
+	UNLINK	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO GET
 end if
@@ -65,13 +65,13 @@ PRMS					;    debut parametrage
 endPRMS					;    fin parametrage
 ELB 2
 begin:
-	LVA 2,	GFP_disp
-	Lq 2,	-BASE_ofs
-	Lq 2,	-WIDTH_ofs
-	Lq 2,	-ITEM_ofs
-	Lq 2,	-FILE_ofs
+	LVA	 2, GFP_disp
+	Lq	 2, -BASE_ofs
+	Lq	 2, -WIDTH_ofs
+	Lq	 2, -ITEM_ofs
+	Lq	 2, -FILE_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L63
-	UNLINK 2
+	UNLINK	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO PUT
 end if
@@ -84,12 +84,12 @@ PRMS					;    debut parametrage
 endPRMS					;    fin parametrage
 ELB 2
 begin:
-	LVA 2,	GFP_disp
-	Lq 2,	-BASE_ofs
-	Lq 2,	-WIDTH_ofs
-	Lq 2,	-ITEM_ofs
+	LVA	 2, GFP_disp
+	Lq	 2, -BASE_ofs
+	Lq	 2, -WIDTH_ofs
+	Lq	 2, -ITEM_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L64
-	UNLINK 2
+	UNLINK	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO PUT
 end if
@@ -102,12 +102,12 @@ PRMS					;    debut parametrage
 endPRMS					;    fin parametrage
 ELB 2
 begin:
-	LVA 2,	GFP_disp
-	Lq 2,	-LAST_ofs
-	Lq 2,	-ITEM_ofs
-	Lq 2,	-FROM_ofs
+	LVA	 2, GFP_disp
+	Lq	 2, -LAST_ofs
+	Lq	 2, -ITEM_ofs
+	Lq	 2, -FROM_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L65
-	UNLINK 2
+	UNLINK	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO GET
 end if
@@ -120,12 +120,12 @@ PRMS					;    debut parametrage
 endPRMS					;    fin parametrage
 ELB 2
 begin:
-	LVA 2,	GFP_disp
-	Lq 2,	-BASE_ofs
-	Lq 2,	-ITEM_ofs
-	Lq 2,	-TO_ofs
+	LVA	 2, GFP_disp
+	Lq	 2, -BASE_ofs
+	Lq	 2, -ITEM_ofs
+	Lq	 2, -TO_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L66
-	UNLINK 2
+	UNLINK	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO PUT
 end if

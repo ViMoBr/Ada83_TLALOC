@@ -30,9 +30,9 @@ is					-------
     end	CREATE_SYSTEM_CALL;
 	------------------
   begin
-    FILE.NAME( 1 .. NAME'LENGTH )  := NAME;
     FILE.ID := CREATE_SYSTEM_CALL( NAME );
-
+    FILE.NAME( 1 .. NAME'LENGTH ) := NAME;
+--    PUT_LINE( FILE.NAME( 1 .. NAME'LENGTH ) );
   end	CREATE;
 	------
 
@@ -55,7 +55,7 @@ is					-------
 	----------------
   begin
     FILE.ID := OPEN_SYSTEM_CALL( NAME );
-
+    FILE.NAME( 1 .. NAME'LENGTH ) := NAME;
   end	OPEN;
 	----
 

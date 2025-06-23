@@ -12,21 +12,21 @@ namespace SHORT_INTEGER			; SHORT_INTEGER TYPE RANGE INFO
 VAR SIZ, d
 VAR FST, w
 VAR LST, w
-	LI 16
-	Sb 0, SIZ
+	LI	16
+	Sb	0, SIZ
 	LI	2
 	LI	15
 	DEC
 	SHL
 	NEG
-	Sw 0, FST
+	Sw	0, FST
 	LI	2
 	LI	15
 	DEC
 	SHL
 	LI	1
 	SUB
-	Sw 0, LST
+	Sw	0, LST
 end namespace
 
 INTEGER = 'INTEGER'
@@ -34,21 +34,21 @@ namespace INTEGER				; INTEGER TYPE RANGE INFO
 VAR SIZ, d
 VAR FST, d
 VAR LST, d
-	LI 32
-	Sb 0, SIZ
+	LI	32
+	Sb	0, SIZ
 	LI	2
 	LI	31
 	DEC
 	SHL
 	NEG
-	Sd 0, FST
+	Sd	0, FST
 	LI	2
 	LI	31
 	DEC
 	SHL
 	LI	1
 	SUB
-	Sd 0, LST
+	Sd	0, LST
 end namespace
 
 LONG_INTEGER = 'LONG_INTEGER'
@@ -56,21 +56,21 @@ namespace LONG_INTEGER			; LONG_INTEGER TYPE RANGE INFO
 VAR SIZ, d
 VAR FST, q
 VAR LST, q
-	LI 64
-	Sb 0, SIZ
+	LI	64
+	Sb	0, SIZ
 	LI	2
 	LI	63
 	DEC
 	SHL
 	NEG
-	Sq 0, FST
+	Sq	0, FST
 	LI	2
 	LI	63
 	DEC
 	SHL
 	LI	1
 	SUB
-	Sq 0, LST
+	Sq	0, LST
 end namespace
 
 ; CODE_GEN.DECLARATIONS.CODE_TYPE_DECL : TYPE_SPEC.TY (DN_FLOAT NON FAIT POUR ) FLOAT
@@ -563,21 +563,21 @@ namespace _ADDRESS				; _ADDRESS TYPE RANGE INFO
 VAR SIZ, d
 VAR FST, q
 VAR LST, q
-	LI 64
-	Sb 0, SIZ
+	LI	64
+	Sb	0, SIZ
 	LI	2
 	LI	63
 	DEC
 	SHL
 	NEG
-	Sq 0, FST
+	Sq	0, FST
 	LI	2
 	LI	63
 	DEC
 	SHL
 	LI	1
 	SUB
-	Sq 0, LST
+	Sq	0, LST
 end namespace
 
 ; EXC_LBL	L7

@@ -883,8 +883,15 @@ end macro
 ;			-------------------
 macro			STATOFS	name, siz				; Definition de l'offset statique (pour un record statique, dans une virtual at 0)
 ;			-------------------
-    name = $							; nom offset du champ
-    rb siz							; reservation
+  if siz > 4
+    align_q
+  else if siz > 2
+    align_d
+  else if siz > 1
+    align_w
+  end if
+name = $								; nom offset du champ
+  rb siz								; reservation
 size = $
 end macro
 
@@ -923,6 +930,20 @@ post:
     loc_siz = $							; Ce n'est que la que l'on calcule la taille des locales qui sera retropropagee au LINK du ELAB
   end virtual
   end namespace
+end macro
+
+;			------
+macro			BLKMOV					; Copie de bloc sans recouvrement
+;			------
+  POP_RSI								; adresse source
+  POP_RCX								; nombre octets
+  POP_RDI								; adresse destination
+  db 0xFC								; cld			(direction flag montant)
+; transfer:
+  db 0xAC								; lods al, BYTE PTR ds:[rsi]
+  db 0xAA								; stos BYTE PTR es:[rdi], al
+  db 0xE2, 0xFC							; loop transfer		(transfere ecx octets
+
 end macro
 
 

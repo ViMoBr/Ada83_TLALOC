@@ -1,37 +1,30 @@
 include 'TEXT_IO.FINC'
 PRO	FILE_TEST_L1				;---------- PRO FILE_TEST
 ELB 1					;    BODY ELAB
-VAR F_disp, q				; variable record : pointeur au record
-VAR F_rec, STANDARD.TEXT_IO.FILE_TYPE.size
-	LVA	1,	F_rec
-	Sa	1,	F_disp				; record fin
-
-VAR NOM_disp, q				; variable array : pointeur au tableau
+VAR F_disp, q				; variable record : pointeur aux data record
+VAR F__u, q				; variable record : pointeur aux useinfo
+VAR F__dat, STANDARD.TEXT_IO.FILE_TYPE.size
+	LVA	1, F__dat
+	Sa	1, F_disp				; record fin
+	LVA	1, STANDARD.TEXT_IO.FILE_TYPE.SIZ
+	Sa	1, F__u
+VAR NOM_disp, q				; variable array : pointeur aux data
+VAR NOM__u, q				; variable array : useinfo pointeur au rec info
 STR NOM, './essai.txt'			; constante string='./essai.txt'
-	LCA	NOM_ptr
-	Sa	1,	NOM_disp				; array fin
-
-VAR C_disp, b				; variable bool char
-
-VAR PROMPT_disp, q				; variable array : pointeur au tableau
-STR PROMPT, 'Taper un caractere '		; constante string='Taper un caractere '
-	LCA	PROMPT_ptr
-	Sa	1,	PROMPT_disp				; array fin
-
+	LCA	NOM.data_ptr
+	La
+	Sa	1, NOM_disp				; array data ptr at _disp
+	LCA	NOM.info_ptr
+	La
+	Sa	1, NOM__u				; array info ptr at __u
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 STR STR_L1, ''				; constante string=''
-	LCA	STR_L1_ptr
-	La  1,	NOM_disp
+	LCA	STR_L1.data_ptr
+	LVA  1,	NOM_disp				; array actual
 	LI  1
-	La  1,	F_disp
-	CALL	STANDARD.TEXT_IO. ,OPEN_L2
-	La  1,	PROMPT_disp
-	CALL	STANDARD.TEXT_IO. ,PUT_L56
-	LVA  1,	C_disp
-	CALL	STANDARD.TEXT_IO. ,GET_L50
-	La  1,	F_disp
-	CALL	STANDARD.TEXT_IO. ,DELETE_L4
+	LVA  1,	F_disp
+	CALL	STANDARD.TEXT_IO. ,CREATE_L1
 ret_lbl:
 	UNLINK 1
 	RTD

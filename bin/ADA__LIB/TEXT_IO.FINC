@@ -16,12 +16,12 @@ namespace COUNT				; COUNT TYPE RANGE INFO
 VAR SIZ, d
 VAR FST, d
 VAR LST, d
-	LI 32
-	Sb 0, SIZ
+	LI	32
+	Sb	0, SIZ
 	LI	0
-	Sd 0, FST
-	LI 2147483647
-	Sd 0, LST
+	Sd	0, FST
+	LI	2147483647
+	Sd	0, LST
 end namespace
 
 POSITIVE_COUNT = 'POSITIVE_COUNT'
@@ -58,18 +58,18 @@ VAR COMP_SIZ, d
 VAR FST_1, d
 VAR LST_1, d
 	LI	1
-	Sd 0, COMP_SIZ
-	Ld 0, COMP_SIZ
+	Sd	0, COMP_SIZ
+	Ld	0, COMP_SIZ
 	LI	1
-	Sd 0, FST_1
+	Sd	0, FST_1
 	LI	256
-	Sd 0, LST_1
-	Ld 0, LST_1
+	Sd	0, LST_1
+	Ld	0, LST_1
 	INC
-	Ld 0, FST_1
+	Ld	0, FST_1
 	SUB
 	MUL
-	Sd 0, SIZ
+	Sd	0, SIZ
   end namespace
   virtual at 4
 COMP_SIZ = $
@@ -84,14 +84,14 @@ end namespace
 FILE_TYPE = 'FILE_TYPE'
 namespace FILE_TYPE				; FILE_TYPE RECORD TYPE INFO
 VAR SIZ, d
-USEINFO 0, ID, 	LVA 0, STANDARD.INTEGER.SIZ
-USEINFO 0, NAME, 	LVA 0, STANDARD.TEXT_IO.FILE_NAME_BUFFER.SIZ
-USEINFO 0, MODE, 	LCA STANDARD.TEXT_IO.FILE_MODE.SIZ
-USEINFO 0, PAGE_LENGTH, 	LVA 0, STANDARD.TEXT_IO.POSITIVE_COUNT.SIZ
-USEINFO 0, LINE_LENGTH, 	LVA 0, STANDARD.TEXT_IO.POSITIVE_COUNT.SIZ
-USEINFO 0, PAGE, 	LVA 0, STANDARD.TEXT_IO.POSITIVE_COUNT.SIZ
-USEINFO 0, LINE, 	LVA 0, STANDARD.TEXT_IO.POSITIVE_COUNT.SIZ
-USEINFO 0, COL, 	LVA 0, STANDARD.TEXT_IO.POSITIVE_COUNT.SIZ
+USEINFO 0, ID, 	LVA	0, STANDARD.INTEGER.SIZ
+USEINFO 0, NAME, 	LVA	0, STANDARD.TEXT_IO.FILE_NAME_BUFFER.SIZ
+USEINFO 0, MODE, 	LCA	STANDARD.TEXT_IO.FILE_MODE.SIZ
+USEINFO 0, PAGE_LENGTH, 	LVA	0, STANDARD.TEXT_IO.POSITIVE_COUNT.SIZ
+USEINFO 0, LINE_LENGTH, 	LVA	0, STANDARD.TEXT_IO.POSITIVE_COUNT.SIZ
+USEINFO 0, PAGE, 	LVA	0, STANDARD.TEXT_IO.POSITIVE_COUNT.SIZ
+USEINFO 0, LINE, 	LVA	0, STANDARD.TEXT_IO.POSITIVE_COUNT.SIZ
+USEINFO 0, COL, 	LVA	0, STANDARD.TEXT_IO.POSITIVE_COUNT.SIZ
 virtual at 0
 STATOFS ID, 4
 STATOFS NAME, 256
@@ -156,11 +156,27 @@ endPRO					;---------- end PRO CREATE_SYSTEM_CALL
 end if
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-	LIVa 	 1, FILE_disp, STANDARD.TEXT_IO.FILE_TYPE.ID
+	LIVa 	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.ID
 	LI	0					; lieu resultat sur pile
 	La  1,	-NAME_ofs
 	CALL	STANDARD.TEXT_IO.CREATE_L1. ,CREATE_SYSTEM_CALL_L1
 	Sd
+	LIVa 	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.NAME
+	LVA	1, -NAME_ofs
+	LIa	, , 8
+	Ld	, STRING.LST_1
+	INC
+	LVA	1, -NAME_ofs
+	LIa	, , 8
+	Ld	, STRING.FST_1
+	SUB
+	INC
+	LI	1
+	SUB
+	LI	1
+	MUL
+	La  1,	-NAME_ofs
+	BLKMOV
 ret_lbl:
 	UNLINK 1
 	RTD	(prm_siz)
@@ -198,11 +214,27 @@ endPRO					;---------- end PRO OPEN_SYSTEM_CALL
 end if
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-	LIVa 	 1, FILE_disp, STANDARD.TEXT_IO.FILE_TYPE.ID
+	LIVa 	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.ID
 	LI	0					; lieu resultat sur pile
 	La  1,	-NAME_ofs
 	CALL	STANDARD.TEXT_IO.OPEN_L2. ,OPEN_SYSTEM_CALL_L2
 	Sd
+	LIVa 	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.NAME
+	LVA	1, -NAME_ofs
+	LIa	, , 8
+	Ld	, STRING.LST_1
+	INC
+	LVA	1, -NAME_ofs
+	LIa	, , 8
+	Ld	, STRING.FST_1
+	SUB
+	INC
+	LI	1
+	SUB
+	LI	1
+	MUL
+	La  1,	-NAME_ofs
+	BLKMOV
 ret_lbl:
 	UNLINK 1
 	RTD	(prm_siz)
@@ -235,7 +267,7 @@ endPRO					;---------- end PRO CLOSE_SYSTEM_CALL
 end if
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-	LIVa 	 1, FILE_disp, STANDARD.TEXT_IO.FILE_TYPE.ID
+	LIVa 	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.ID
 	CALL	STANDARD.TEXT_IO.CLOSE_L3. ,CLOSE_SYSTEM_CALL_L3
 ret_lbl:
 	UNLINK 1
@@ -269,7 +301,7 @@ endPRO					;---------- end PRO DELETE_SYSTEM_CALL
 end if
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-	LIVa 	 1, FILE_disp, STANDARD.TEXT_IO.FILE_TYPE.ID
+	LIVa 	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.ID
 	CALL	STANDARD.TEXT_IO.DELETE_L4. ,DELETE_SYSTEM_CALL_L4
 ret_lbl:
 	UNLINK 1
@@ -1218,18 +1250,18 @@ VAR COMP_SIZ, d
 VAR FST_1, d
 VAR LST_1, d
 	LI	1
-	Sd 1, COMP_SIZ
-	Ld 1, COMP_SIZ
+	Sd	1, COMP_SIZ
+	Ld	1, COMP_SIZ
 	LI	1
-	Sd 1, FST_1
+	Sd	1, FST_1
 	LI	40
-	Sd 1, LST_1
-	Ld 1, LST_1
+	Sd	1, LST_1
+	Ld	1, LST_1
 	INC
-	Ld 1, FST_1
+	Ld	1, FST_1
 	SUB
 	MUL
-	Sd 1, SIZ
+	Sd	1, SIZ
   end namespace
   virtual at 4
 COMP_SIZ = $
@@ -1243,11 +1275,11 @@ end namespace
 
 VAR CHN_disp, q				; variable array : pointeur aux data
 VAR CHN__u, q				; variable array : useinfo pointeur au rec info
-	Ld 1, STRING.SIZ
+	Ld	1, STRING.SIZ
 	CO_VAR
-	Sa 1, CHN_disp				; array data ptr at _disp
+	Sa	1, CHN_disp				; array data ptr at _disp
 	LVA 1, STRING.SIZ
-	Sa 1, CHN__u				; array info ptr at __u
+	Sa	1, CHN__u				; array info ptr at __u
 
 VAR LEN_disp, d				; variable entiere
 	LI	40
@@ -1277,10 +1309,10 @@ LOOP__2:					; corps boucle LOOP__2
 	Ld  1,	VAL_disp
 	MUL
 	La	 1, CHN_disp				; array data start address on stack
-	Ld  1,	IL10_disp
-	LId	 1, CHN__u, STANDARD.STRING.FST_1		; (index - FST_1) * SIZ_1
+	Ld	1, IL10_disp
+	LId	1, CHN__u, STANDARD.STRING.FST_1		; (index - FST_1) * SIZ_1
 	SUB
-	LId	 1, CHN__u, STANDARD.STRING.COMP_SIZ
+	LId	1, CHN__u, STANDARD.STRING.COMP_SIZ
 	MUL
 	ADD					; add offset to start address
 	Lb					; charge depuis adresse empilee 
@@ -1348,18 +1380,18 @@ VAR COMP_SIZ, d
 VAR FST_1, d
 VAR LST_1, d
 	LI	1
-	Sd 1, COMP_SIZ
-	Ld 1, COMP_SIZ
+	Sd	1, COMP_SIZ
+	Ld	1, COMP_SIZ
 	LI	1
-	Sd 1, FST_1
+	Sd	1, FST_1
 	LI	68
-	Sd 1, LST_1
-	Ld 1, LST_1
+	Sd	1, LST_1
+	Ld	1, LST_1
 	INC
-	Ld 1, FST_1
+	Ld	1, FST_1
 	SUB
 	MUL
-	Sd 1, SIZ
+	Sd	1, SIZ
   end namespace
   virtual at 4
 COMP_SIZ = $
@@ -1373,14 +1405,14 @@ end namespace
 
 VAR STR_disp, q				; variable array : pointeur aux data
 VAR STR__u, q				; variable array : useinfo pointeur au rec info
-	Ld 1, STRING.SIZ
+	Ld	1, STRING.SIZ
 	CO_VAR
-	Sa 1, STR_disp				; array data ptr at _disp
+	Sa	1, STR_disp				; array data ptr at _disp
 	LVA 1, STRING.SIZ
-	Sa 1, STR__u				; array info ptr at __u
+	Sa	1, STR__u				; array info ptr at __u
 
 VAR INDEX_disp, d				; variable entiere
-	LId 1,	STR__u, STR.LST_1
+	LId	1, STR__u, STR.LST_1
 	Sd  1,	INDEX_disp
 
 VAR MIN_WIDTH_disp, d			; variable entiere

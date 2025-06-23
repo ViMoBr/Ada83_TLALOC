@@ -6,10 +6,10 @@ VAR S__u, q				; variable array : useinfo pointeur au rec info
 STR S, 'Camille'				; constante string='Camille'
 	LCA	S.data_ptr
 	La
-	Sa 1, S_disp				; array data ptr at _disp
+	Sa	1, S_disp				; array data ptr at _disp
 	LCA	S.info_ptr
 	La
-	Sa 1, S__u				; array info ptr at __u
+	Sa	1, S__u				; array info ptr at __u
 
 VAR C_disp, b				; variable bool char
 
@@ -18,10 +18,10 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA  1,	S_disp				; array actual
 	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
 VAR	IL2_disp, d				; compteur boucle LOOP__1
-	LId 1,	S__u, S.FST_1
+	LId	1, S__u, S.FST_1
 	Sd  1,	IL2_disp
 VAR	LMT_IL2_disp, d				; limite boucle LOOP__1
-	LId 1,	S__u, S.LST_1
+	LId	1, S__u, S.LST_1
 	Sd  1,	LMT_IL2_disp
 	Ld  1,	IL2_disp				; test null range LOOP__1
 	Ld  1,	LMT_IL2_disp
@@ -29,10 +29,10 @@ VAR	LMT_IL2_disp, d				; limite boucle LOOP__1
 	BT	L1
 LOOP__1:					; corps boucle LOOP__1
 	La	 1, S_disp				; array data start address on stack
-	Ld  1,	IL2_disp
-	LId	 1, S__u, STANDARD.STRING.FST_1		; (index - FST_1) * SIZ_1
+	Ld	1, IL2_disp
+	LId	1, S__u, STANDARD.STRING.FST_1		; (index - FST_1) * SIZ_1
 	SUB
-	LId	 1, S__u, STANDARD.STRING.COMP_SIZ
+	LId	1, S__u, STANDARD.STRING.COMP_SIZ
 	MUL
 	ADD					; add offset to start address
 	Lb					; charge depuis adresse empilee 

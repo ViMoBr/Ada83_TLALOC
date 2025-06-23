@@ -128,14 +128,14 @@ is
     PUT_LINE( "VAR FST, " & SIZE_CHAR );
     PUT_LINE( "VAR LST, " & SIZE_CHAR );
 
-    PUT_LINE( tab & "LI" & INTEGER'IMAGE( DI( CD_IMPL_SIZE, INTEGER_SPEC ) ) );
-    PUT_LINE( tab & "Sb " & LVL_STR & ", SIZ" );
+    PUT_LINE( tab & "LI" & tab & IMAGE( DI( CD_IMPL_SIZE, INTEGER_SPEC ) ) );
+    PUT_LINE( tab & "Sb" & tab & LVL_STR & ", SIZ" );
 
     EXPRESSIONS.CODE_EXP( EXP_FST );
-    PUT_LINE( tab & 'S' & SIZE_CHAR & ' ' & LVL_STR & ", FST" );
+    PUT_LINE( tab & 'S' & SIZE_CHAR & tab & LVL_STR & ", FST" );
 
     EXPRESSIONS.CODE_EXP( EXP_LST );
-    PUT_LINE( tab & 'S' & SIZE_CHAR & ' ' & LVL_STR & ", LST" );
+    PUT_LINE( tab & 'S' & SIZE_CHAR & tab & LVL_STR & ", LST" );
 
     PUT_LINE( "end namespace" );
     if  CODI.DEBUG  then  NEW_LINE; end if;
@@ -211,8 +211,8 @@ is
 	PUT_LINE( tab & "rd 1 " );
 
 --	PUT_LINE( "VAR NDIMS, b" );
---	PUT_LINE( tab & "LI" & NATURAL'IMAGE( TOTAL_DIMS ) );
---	PUT_LINE( tab & "Sb " & LVL_STR & ", NDIMS" );
+--	PUT_LINE( tab & "LI" & tab & IMAGE( TOTAL_DIMS ) );
+--	PUT_LINE( tab & "Sb" & tab & LVL_STR & ", NDIMS" );
 
 --	PUT_LINE( "USEINFO COMP" );
 
@@ -224,14 +224,14 @@ is
 --        PUT( "USEINFO " & LVL_STR & ", DIM_" & DIM_NBR_STR & ", " );
 
 --        if  IDX_TYPE_SPEC.TY = DN_ENUMERATION  then							-- LES ENUM INFOS SONT EN CONSTANTES
---	PUT( tab & "LCA " );
+--	PUT( tab & "LCA" & tab );
 --        else
---	PUT( tab & "LVA " & IMAGE( DI( CD_LEVEL, IDX_TYPE_SPEC ) ) & ", " );
+--	PUT( tab & "LVA" & tab & IMAGE( DI( CD_LEVEL, IDX_TYPE_SPEC ) ) & ", " );
 --        end if;
 --        REGIONS_PATH( IDX_TYPE_DEFN );
 --        PUT_LINE( PRINT_NAME( D( LX_SYMREP, IDX_TYPE_NAME ) )  & ".SIZ" );
 
---        PUT_LINE( tab & "Sa " & LVL_STR & ", DIM_" & DIM_NBR_STR & "__u" );
+--        PUT_LINE( tab & "Sa" & tab & LVL_STR & ", DIM_" & DIM_NBR_STR & "__u" );
       end;
     end	USEINFO_OFFSETS;
 	---------------------
@@ -292,8 +292,8 @@ is
 	PUT_LINE( "VAR LST_" & DIM_NBR_STR & ", d" );
 
 	PUT_LINE( tab & "LI" & tab & ELEMENT_SIZ_STR );							-- TAILLE D'UN ELEMENT DU TABLEAU
-	PUT_LINE( tab & "Sd " & LVL_STR & ", COMP_SIZ" );							-- DWORD COMP_SIZ
-	PUT_LINE( tab & "Ld " & LVL_STR & ", COMP_SIZ" );							-- recharge pour MUL suivant
+	PUT_LINE( tab & "Sd" & tab & LVL_STR & ", COMP_SIZ" );							-- DWORD COMP_SIZ
+	PUT_LINE( tab & "Ld" & tab & LVL_STR & ", COMP_SIZ" );							-- recharge pour MUL suivant
         end;
 
       else
@@ -304,8 +304,8 @@ is
         PUT_LINE( "VAR LST_" & DIM_NBR_STR & ", d" );
 
         PUT_LINE( tab & "MUL" );
-        PUT_LINE( tab & "Sd " & LVL_STR & ", SIZ_" & DIM_NBR_STR );						-- METTRE LA TAILLE TRANCHE A CELLE LAISSEE PAR LE CALCUL SUR LA DIM PRECEDENTE
-        PUT_LINE( tab & "Ld " & LVL_STR & ", SIZ_" & DIM_NBR_STR );						-- recharge pour MUL suivant
+        PUT_LINE( tab & "Sd" & tab & LVL_STR & ", SIZ_" & DIM_NBR_STR );						-- METTRE LA TAILLE TRANCHE A CELLE LAISSEE PAR LE CALCUL SUR LA DIM PRECEDENTE
+        PUT_LINE( tab & "Ld" & tab & LVL_STR & ", SIZ_" & DIM_NBR_STR );						-- recharge pour MUL suivant
       end if;
 
       if  IDX_TYPE.TY = DN_INTEGER  then
@@ -321,13 +321,13 @@ is
 	end if;
 
 	EXPRESSIONS.CODE_EXP( RANGE_FIRST );
-	PUT_LINE( tab & "Sd " & LVL_STR & ", FST_" & DIM_NBR_STR );
+	PUT_LINE( tab & "Sd" & tab & LVL_STR & ", FST_" & DIM_NBR_STR );
 	EXPRESSIONS.CODE_EXP( RANGE_LAST );
-	PUT_LINE( tab & "Sd " & LVL_STR & ", LST_" & DIM_NBR_STR );
+	PUT_LINE( tab & "Sd" & tab & LVL_STR & ", LST_" & DIM_NBR_STR );
 
-	PUT_LINE( tab & "Ld " & LVL_STR & ", LST_" & DIM_NBR_STR );
+	PUT_LINE( tab & "Ld" & tab & LVL_STR & ", LST_" & DIM_NBR_STR );
 	PUT_LINE( tab & "INC" );
-	PUT_LINE( tab & "Ld " & LVL_STR & ", FST_" & DIM_NBR_STR );
+	PUT_LINE( tab & "Ld" & tab & LVL_STR & ", FST_" & DIM_NBR_STR );
 	PUT_LINE( tab & "SUB" );
 
 	if  IS_STATIC  then
@@ -384,7 +384,7 @@ is
         COMPILE_ARRAY_TYPE_DIMENSION( IDX_TYPE_LIST );
       end;
       PUT_LINE( tab & "MUL" );
-      PUT_LINE( tab & "Sd " & LVL_STR & ", SIZ" );
+      PUT_LINE( tab & "Sd" & tab & LVL_STR & ", SIZ" );
 
       if  IS_STATIC  then
         DI( CD_IMPL_SIZE, TYPE_SPEC,  ARRAY_STATIC_SIZE );
@@ -506,7 +506,7 @@ is
 	      end if;
 
 	      PUT( "USEINFO " & LVL_STR & ", " & COMP_ID_STR & ", " );
-	      PUT( tab & "LVA " & LVL_STR & ", " );
+	      PUT( tab & "LVA" & tab & LVL_STR & ", " );
 	      REGIONS_PATH( D( XD_SOURCE_NAME, D( SM_TYPE_SPEC, COMP_TYPE_NAME ) ) );
 
 	      PUT_LINE(  COMP_TYPE_STR & ".SIZ" );
@@ -514,9 +514,9 @@ is
 	    else
 	      PUT( "USEINFO " & LVL_STR & ", " & COMP_ID_STR & ", " );
 	      if  COMP_TYPE.TY = DN_ENUMERATION  then							-- LES ENUM INFOS SONT EN CONSTANTES
-	        PUT( tab & "LCA " );
+	        PUT( tab & "LCA" & tab );
 	      else
-	        PUT( tab & "LVA" & INTEGER'IMAGE( DI( CD_LEVEL, COMP_TYPE ) ) & ", " );
+	        PUT( tab & "LVA" & tab & IMAGE( DI( CD_LEVEL, COMP_TYPE ) ) & ", " );
 	      end if;
 	      REGIONS_PATH( COMP_TYPE_NAME );
 	      PUT_LINE( PRINT_NAME( D( LX_SYMREP, COMP_TYPE_NAME ) )  & ".SIZ" );
@@ -561,13 +561,13 @@ is
 	while  not IS_EMPTY( DISCRIMINANT_ID_S )  loop
 	  POP( DISCRIMINANT_ID_S, DISCRIMINANT_ID );
 
-	  PUT( tab & "LVA" & INTEGER'IMAGE( DI( CD_LEVEL, DISCR_TYPE_SPEC ) ) & ", " );
+	  PUT( tab & "LVA" & tab & IMAGE( DI( CD_LEVEL, DISCR_TYPE_SPEC ) ) & ", " );
 	  REGIONS_PATH( DISCR_TYPE_DEFN );
 	  PUT_LINE( PRINT_NAME( D( LX_SYMREP, D( XD_SOURCE_NAME, DISCR_TYPE_SPEC ) ) )  & ".SIZ" );
-	  PUT_LINE( tab & "Sa " & LVL_STR & ", " & PRINT_NAME( D( LX_SYMREP, DISCRIMINANT_ID ) ) & "__u" );
+	  PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & PRINT_NAME( D( LX_SYMREP, DISCRIMINANT_ID ) ) & "__u" );
 
 	  PUT_LINE( tab & "LI 0" & tab & " ; offset a faire" );
-	  PUT_LINE( tab & "Sd " & LVL_STR & ", " & PRINT_NAME( D( LX_SYMREP, DISCRIMINANT_ID ) ) & "__o" );
+	  PUT_LINE( tab & "Sd" & tab & LVL_STR & ", " & PRINT_NAME( D( LX_SYMREP, DISCRIMINANT_ID ) ) & "__o" );
 
 	end loop;
         end;
@@ -692,7 +692,7 @@ is
 	PUT_LINE( "ELB" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );
 	PUT_LINE( "begin:" );
 
-	PUT_LINE( tab & "LVA" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & ',' & tab & "GFP_disp" );
+	PUT_LINE( tab & "LVA" & tab & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & ", GFP_disp" );
 
 	declare
 	  PRM_SECTIONS_S	: SEQ_TYPE	:= LIST( D( AS_PARAM_S, D( SM_SPEC, SOURCE_NAME ) ) );
@@ -715,7 +715,8 @@ is
 	        if  IS_EMPTY( NAMES )  then return; end if;
 	        POP( NAMES, NAME );
 	        INVERSE_RECURSE_NAMES( NAMES );
-	        PUT_LINE( tab & "Lq" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & ',' & tab & '-' & PRINT_NAME( D( LX_SYMREP, NAME ) ) & "_ofs" );
+	        PUT_LINE( tab & "Lq" & tab & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL )
+		        & ", -" & PRINT_NAME( D( LX_SYMREP, NAME ) ) & "_ofs" );
 	      end	INVERSE_RECURSE_NAMES;
 
 	    begin
@@ -748,7 +749,7 @@ is
 	  end loop;
  	end;
 
-	PUT_LINE( tab & "UNLINK" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );
+	PUT_LINE( tab & "UNLINK" & tab & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );
 	PUT_LINE( tab & "RTD" & tab & "prm_siz" );
 
 	PUT( "endPRO" );
@@ -1287,18 +1288,18 @@ null;--     LOAD_TYPE_SIZE( TYPE_SPEC  );
 
 	  PUT_LINE( tab & "LCA" & tab & VC_STR & ".data_ptr" );
 	  PUT_LINE( tab & "La" );
-	  PUT( tab & "Sa " & LVL_STR & ", " & VC_STR & "_disp" );
+	  PUT( tab & "Sa" & tab & LVL_STR & ", " & VC_STR & "_disp" );
 	  if  CODI.DEBUG  then PUT( tab50 & "; array data ptr at _disp" ); end if;
 	  NEW_LINE;
 
 	  PUT_LINE( tab & "LCA" & tab & VC_STR & ".info_ptr" );						-- LOAD CONSTANT ADDRESS FOR INFO
 	  PUT_LINE( tab & "La" );
-	  PUT( tab & "Sa " & LVL_STR & ", " & VC_STR & "__u" );
+	  PUT( tab & "Sa" & tab & LVL_STR & ", " & VC_STR & "__u" );
 	  if  CODI.DEBUG  then PUT( tab50 & "; array info ptr at __u" ); end if;
 	  NEW_LINE;
 
 	else
-	  PUT( tab & "Ld " & IMAGE( TYPE_LEVEL ) & ", " );						-- LOAD SIZ FOR ALLOCATION
+	  PUT( tab & "Ld" & tab & IMAGE( TYPE_LEVEL ) & ", " );						-- LOAD SIZ FOR ALLOCATION
 --	  if  ANONYMOUS_SUBTYPE  then
 --	    PUT_LINE( VC_STR & ".SIZ" );
 --	  else
@@ -1306,7 +1307,7 @@ null;--     LOAD_TYPE_SIZE( TYPE_SPEC  );
 --	  end if;
 
 	  PUT_LINE( tab & "CO_VAR" );
-	  PUT( tab & "Sa " & LVL_STR & ", " & VC_STR & "_disp" );
+	  PUT( tab & "Sa" & tab & LVL_STR & ", " & VC_STR & "_disp" );
 	  if  CODI.DEBUG  then PUT( tab50 & "; array data ptr at _disp" ); end if;
 	  NEW_LINE;
 
@@ -1317,7 +1318,7 @@ null;--     LOAD_TYPE_SIZE( TYPE_SPEC  );
 	    PUT_LINE( TYPE_NAME_STR & ".SIZ" );
 --	  end if;
 
-	  PUT( tab & "Sa " & LVL_STR & ", " & VC_STR & "__u" );
+	  PUT( tab & "Sa" & tab & LVL_STR & ", " & VC_STR & "__u" );
 	  if  CODI.DEBUG  then PUT( tab50 & "; array info ptr at __u" ); end if;
 	  NEW_LINE;
 
@@ -1352,24 +1353,24 @@ null;--     LOAD_TYPE_SIZE( TYPE_SPEC  );
         NEW_LINE;
 
         if  VC_ADDRESS /= TREE_VOID  then								-- Clause adressage présente
-	PUT_LINE( tab & "LI " & PRINT_NUM( D( SM_VALUE, VC_ADDRESS ) ) );
-	PUT_LINE( tab & "Sa "  & LVL_STR & ", " & VC_STR & "_disp" );					-- Stocker l'adresse du rec dans le ptr
+	PUT_LINE( tab & "LI" & tab & PRINT_NUM( D( SM_VALUE, VC_ADDRESS ) ) );
+	PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & VC_STR & "_disp" );					-- Stocker l'adresse du rec dans le ptr
 
         else
 	PUT( "VAR " & VC_STR & "__dat, " );								-- Espace data
 	REGIONS_PATH( TYPE_NAME );
 	PUT_LINE( TYPE_NAME_STR & ".size" );
 
-	PUT_LINE( tab & "LVA " & LVL_STR & ", " & VC_STR & "__dat" );
-	PUT( tab & "Sa " & LVL_STR & ", " & VC_STR & "_disp" );						-- Stocker l'adresse du rec dans le ptr
+	PUT_LINE( tab & "LVA" & tab & LVL_STR & ", " & VC_STR & "__dat" );
+	PUT( tab & "Sa" & tab & LVL_STR & ", " & VC_STR & "_disp" );					-- Stocker l'adresse du rec dans le ptr
 	if  CODI.DEBUG   then  PUT( tab50 & "; record fin" ); end if;
 	NEW_LINE;
         end if;
 
-        PUT( tab & "LVA " & LVL_STR & ", " );
+        PUT( tab & "LVA" & tab & LVL_STR & ", " );
         REGIONS_PATH( TYPE_NAME );
         PUT_LINE( TYPE_NAME_STR & ".SIZ" );
-        PUT( tab & "Sa " & LVL_STR & ", " & VC_STR & "__u" );
+        PUT( tab & "Sa" & tab & LVL_STR & ", " & VC_STR & "__u" );
 
         DI( CD_LEVEL,     VC_NAME, INTEGER( LVL ) );
         DB( CD_COMPILED,  VC_NAME, TRUE );
@@ -1640,17 +1641,19 @@ null;--     LOAD_TYPE_SIZE( TYPE_SPEC  );
         while  not IS_EMPTY( GNAME_SEQ )  loop
 	POP( GNAME_SEQ, GNAME );
 	declare
-  	  DEFN		: TREE		:= D( SM_DEFN, GNAME );
+	  DEFN		: TREE		:= D( SM_DEFN, GNAME );
+	  DEFN_TYPE_RANGE	: TREE		:= D( SM_RANGE, D( SM_TYPE_SPEC, DEFN ) );
+	  GNAME_STR	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, GNAME ) );
 	begin
 	  if  DEFN.TY = DN_SUBTYPE_ID  then
 	    if  D( SM_TYPE_SPEC, DEFN ).TY = DN_INTEGER  then
-	      PUT_LINE( "VAR " & PRINT_NAME( D( LX_SYMREP, GNAME ) ) & "_last_ofs, q" );
-	      PUT_LINE( "LI " & PRINT_NAME( D( LX_NUMREP, D( AS_EXP2, D( SM_RANGE, D( SM_TYPE_SPEC, DEFN ) ) ) ) ) );
-	      PUT_LINE( "Sd" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & ", " & PRINT_NAME( D( LX_SYMREP, GNAME ) ) & "_last_ofs" );
+	      PUT_LINE( "VAR " & GNAME_STR & "_last_ofs, q" );
+	      PUT_LINE( "LI" & tab & PRINT_NAME( D( LX_NUMREP, D( AS_EXP2, DEFN_TYPE_RANGE ) ) ) );
+	      PUT_LINE( "Sd" & tab & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & ", " & GNAME_STR & "_last_ofs" );
 
-	      PUT_LINE( "VAR " & PRINT_NAME( D( LX_SYMREP, GNAME ) ) & "_first_ofs, q" );
-	      PUT_LINE( "LI " & PRINT_NAME( D( LX_NUMREP, D( AS_EXP1, D( SM_RANGE, D( SM_TYPE_SPEC, DEFN ) ) ) ) ) );
-	      PUT_LINE( "Sd" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & ", " & PRINT_NAME( D( LX_SYMREP, GNAME ) ) & "_first_ofs" );
+	      PUT_LINE( "VAR " & GNAME_STR & "_first_ofs, q" );
+	      PUT_LINE( "LI" & tab & PRINT_NAME( D( LX_NUMREP, D( AS_EXP1, DEFN_TYPE_RANGE ) ) ) );
+	      PUT_LINE( "Sd" & tab & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & ", " & GNAME_STR & "_first_ofs" );
 	    end if;
 	  end if;
 	end;
