@@ -1,0 +1,2 @@
+with TEXT_IO;¶use  TEXT_IO;¶¬¬¬-----------¶procedure¬¬¬DIS_BONJOUR¶is¬¬¬-----------¶¶begin¶  PUT( " Bonjour " );¶¶end¬DI
+S_BONJOUR;¶¬-----------¶

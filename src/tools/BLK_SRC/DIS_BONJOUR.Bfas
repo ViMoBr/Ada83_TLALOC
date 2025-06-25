@@ -1,0 +1,4 @@
+include '../../src/code_gen/fasmg/codi_x86_64.finc'¶STANDARD = 'STANDARD'¶namespace STANDARD¶  virtual at 8¶    VARzone:
+:¶    VARzone.DISP = $¶  end virtual¶include '../../bin/ADA__LIB/_STANDRD.FINC'¶¶¬LINK¬0, loc_siz¶¶ include 'DIS_BONJOUR
+.FINC'¶¬CALL¬STANDARD., DIS_BONJOUR_L1¶¬SYS_EXIT¶¶  virtual VARzone¶    loc_siz = $¬¬¬¬¬¬; Ce n'est que l que l'on calcu
+le la taille des globales qui sera retropropagee au LINK 0¶  end virtual¶end namespace¶

@@ -1,0 +1,34 @@
+//--LALRIDL.IDL 24-Mar-88¶¶--Standard initial IDL items¶¶//  root¬=>¬¬¬¬--| Pointeur  la racine systme¶//¬¬xd_high_page¬
+: num_val,¬¬--| Dernier bloc du fichier arbre¶//¬¬xd_user_root¬: user_root,¬¬--| Pointeur  la racine de l'arbre¶//¬¬xd_s
+ource_list¬: Seq Of sourceline,¬--| Pointeur  la liste des lignes sources¶//¬¬xd_err_count¬: num_val,¬¬--| Nombre d'erre
+urs¶//¬¬spare_1 ¬: void;¬¬--| Libre¶//  txtrep¬=> ;¬¬¬¬--| Representation du texte¶//  num_val¬=> ;¬¬¬¬--| Representatio
+n d'entier 16 bits¶//¶//  BOOLEAN¬::= false | true ;¶¶//  false¬=> ;¶//  true¬=> ;¶//  nil¬=> ;¬¬¬¬--| Pointeur vide¶// 
+ list¬=>¬¬¬¬--| Elment lien de liste¶//¬¬xd_head ¬: void,¬¬--| Tte (pointeur  l'lment)¶//¬¬xd_tail ¬: void;¬¬--| Suite (
+pointeur  un lment de liste en gnral, ou vide)¶//  sourceline¬=>¬¬¬¬--| Ligne de source¶//¬¬xd_number¬: num_val,¬¬--| Nu
+mro de ligne¶//¬¬xd_error_list¬: Seq Of error;¬¬--| Pointeur  la liste d'erreurs¶//  error¬=>¶//¬¬xd_srcpos¬: Source_Pos
+ition,¬¬--| Position de l'erreur (ligne colonne)¶//¬¬xd_text ¬: txtrep;¬¬--| Texte de l'erreur¶//  symbol_rep¬=>¬¬¬¬--| 
+Symbole (identificateur unique rpertori)¶//¬¬xd_text ¬: txtrep,¬¬--| Pointeur de texte symbole¶//¬¬xd_deflist¬: Seq Of D
+EF_NAME;¬¬--| Liste des apparitions du symbole¶//  hash¬=>¬¬¬¬--| Seau de hachage¶//¬¬xd_list ¬: Seq Of symbol_rep;¬--| 
+Liste de symboles du seau¶//¶//  NON_DIANA¬::=¬root | txtrep | num_val | BOOLEAN | nil | list¬¬--| Classe des noeuds hor
+s syntaxe propre¶//¬¬| sourceline | error | symbol_rep | hash;¶¶//  void¬=> ;¶¶--¬IDL pour le traitement de grammaire¶¶/
+/  user_root¬=>¬¬¬¬--| Racine d'arbre syntaxique¶//¬¬xd_sourcename¬: txtrep,¬¬--| Nom du fichier source¶//¬¬xd_grammar¬:
+ rule_s,¬¬--| Liste des rgles¶//¬¬xd_statelist¬: state_s,¬¬--| Liste des tats¶//¬¬xd_structure¬: compilation,¶//¬¬xd_tim
+estamp¬: Integer,¶//¬¬spare_3¬: void;¶//¶//  RULE_S¬::=¬rule_s;¶//¶//  rule_s¬=>¬¬¬¬--| Liste de rgles¶//¬¬xd_list¬: Seq
+ Of rule;¬¬--| Pointeur aux lments de liste¶//  rule =>¶//¬¬xd_name¬: symbol_rep,¬¬--| Nom de la rgle¶//¬¬xd_list¬: Seq 
+Of alt,¬¬--| Liste des alternatives¶//¬¬xd_is_nullable¬: BOOLEAN,¬¬--| Si gnre une chine vide¶//¬¬xd_ruleinfo¬: ruleinfo
+;¶//  rule =>¬¬¬¬¬--| Rgle¶//¬¬lx_srcpos¬: Source_Position;¬¬--| Position dans le source¶//¶//  alt¬=>¶//¬¬xd_list¬: Seq
+ Of SYLLABLE,¶//¬¬xd_alt_nbr¬: Integer,¶//¬¬xd_rule¬: rule,¶//¬¬xd_state_s¬: state_s,¬¬--| Liste des tats ayant une prem
+ire alternative donne¶//¬¬xd_semantics¬: sem_s;¶//  alt¬=>¶//¬¬lx_srcpos¬: Source_Position;¶//¶//  SYLLABLE¬::=¬terminal
+ | nonterminal;¶//¶//  terminal¬=>¶//¬¬xd_symrep¬: symbol_rep,¶//¬¬xd_ter_nbr¬: Integer;¶//  terminal¬=>¶//¬¬lx_srcpos¬:
+ Source_Position;¶//  nonterminal¬=>¶//¬¬xd_symrep¬: symbol_rep,¶//¬¬xd_rule¬: rule;¶//  nonterminal¬=>¶//¬¬lx_srcpos¬: 
+Source_Position;¶//¶//  ruleinfo¬=>¬xd_list¬: Seq Of terminal,¬¬--| initial terminals¶//¬¬xd_is_reachable¬: BOOLEAN,¬¬--
+ reachable from start symbol¶//¬¬xd_gens_ter_str¬: BOOLEAN,¬¬-- generates terminal string¶//¬¬xd_timechecked¬: Integer,¬
+¬-- used in initial symbol algorithm;¶//¬¬xd_timechanged¬: Integer,¬¬-- used in initial symbol algorithm;¶//¬¬xd_rule_nb
+r¬: Integer,¬¬-- (temp) only in stat & later¶//¬¬xd_init_nonter_s¬: rule_s;¶//¶//  state_s¬=>¶//¬¬xd_list¬: Seq Of state
+;¶//¶//  state¬=>¶//¬¬xd_list¬: Seq Of item,¶//¬¬xd_state_nbr¬: Integer;¶//¶//  STATE_VOID ::= state | void ;¶//  item¬=
+>¶//¬¬xd_alternative¬: alt,¶//¬¬xd_alt_tail¬: Seq Of SYLLABLE,¶//¬¬xd_syl_nbr¬: Integer,¬¬--| which syl; 0 at start of r
+ule¶//¬¬xd_goto¬: STATE_VOID,¶//¬¬xd_follow¬: terminal_s;¬¬--| follow terminals¶//  terminal_s¬=>¶//¬¬xd_list¬: Seq Of t
+erminal;¶//  sem_s¬=>¶//¬¬xd_list¬: Seq Of SEMANTICS,¶//¬¬xd_sem_index¬: Integer;¬¬--| assigned location¶//¶//  SEMANTIC
+S¬::=¬sem_node | sem_op ;¶//¶//  sem_node¬=>¶//¬¬xd_sem_op¬: Integer,¶//¬¬xd_kind¬: Integer;¶//  sem_op¬=>¶//¬¬xd_sem_op
+¬: Integer;¶//¶//  NON_DIANA¬::=¬user_root | RULE_S | rule | alt¶//¬¬| SYLLABLE | ruleinfo | state_s | STATE_VOID¶//¬¬| 
+item | terminal_s | sem_s | SEMANTICS;¶¶// end¬--| Fin de spcification¶

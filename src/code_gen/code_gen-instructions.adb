@@ -542,7 +542,6 @@ null;
 
         INVERSE_RECURSE_ON_PARAMETERS;
 
---        if  ACT_PRM.TY = DN_SELECTED  then ACT_PRM := D( AS_DESIGNATOR, ACT_PRM ); end if;
         if  ACT_PRM.TY = DN_SELECTED
         then
 	EXPRESSIONS.CODE_SELECTED( ACT_PRM );
@@ -599,9 +598,11 @@ null;
 	  NOM_ANONYME	:constant STRING	:= "STR_" & NEW_LABEL;
 	begin
 	  EXPRESSIONS.CODE_STRING_LITERAL( ACT_PRM, NOM_ANONYME );
-	  PUT_LINE( tab & "LCA" & tab & NOM_ANONYME & ".data_ptr" );						-- LOAD CONSTANT ADDRESS
+	  PUT_LINE( tab & "LCA" & tab & NOM_ANONYME & ".data_ptr" );					-- LOAD CONSTANT ADDRESS
 	end;
 
+        elsif  ACT_PRM.TY = DN_SLICE  then								-- SLICE PARAMETER
+	EXPRESSIONS.CODE_SLICE( ACT_PRM, IS_DESTINATION=> FALSE );
         else
 	EXPRESSIONS.CODE_EXP( ACT_PRM );
         end if;
@@ -825,32 +826,21 @@ null;
       begin
         case TYPE_SPEC.TY is
         when DN_ACCESS =>
-null;--          EMIT ( STO, A );
+          PUT_LINE( tab & "Sa" );
 
-        when DN_ENUMERATION =>
-          declare
-            TYPE_SOURCE_NAME : TREE            := D( XD_SOURCE_NAME, TYPE_SPEC );
-            TYPE_SYMREP      : TREE            := D( LX_SYMREP, TYPE_SOURCE_NAME );
-            NAME             : constant STRING := PRINT_NAME( TYPE_SYMREP );
-          begin
-            if NAME = "BOOLEAN" then null;--EMIT ( STO, B );
-	  elsif NAME = "CHARACTER" then
-	    PUT_LINE( tab & "Sb" );
-            else null; --EMIT ( STO, I );
-            end if;
-          end;
+        when DN_ENUMERATION | DN_INTEGER =>
+          PUT_LINE( tab & "S" & CODI.OPER_SIZ_CHAR( TYPE_SPEC ) );
 
-        when DN_INTEGER =>
-	PUT_LINE( tab & 'S' & OPER_SIZ_CHAR( TYPE_SPEC ) );
-
-        when DN_UNIVERSAL_INTEGER =>
-null;--          LOAD_ADR( TYPE_SPEC );
+--        when DN_UNIVERSAL_INTEGER =>
+--          LOAD_ADR( TYPE_SPEC );
 --          EMIT( CVB );
 --          EMIT( STO, I );
+
         when others =>
           PUT_LINE ( "!!! STORE_VAL TYPE_SPEC.TY ILLICITE " & NODE_NAME'IMAGE ( TYPE_SPEC.TY ) );
           raise PROGRAM_ERROR;
         end case;
+
       end	STORE_VAL;
 	---------
 

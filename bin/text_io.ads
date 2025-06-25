@@ -307,6 +307,7 @@ private
   type FILE_TYPE		is record
 			  ID		: INTEGER;
 			  NAME		: FILE_NAME_BUFFER;
+			  NAME_LEN	: POSITIVE;
 			  MODE		: FILE_MODE;
 			  PAGE_LENGTH,
 			  LINE_LENGTH,

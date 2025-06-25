@@ -1,0 +1,100 @@
+V "GNAT Lib v13"
+M P W=b
+A -gnat83
+P SS ZX
+
+RN
+RV NO_EXCEPTION_HANDLERS
+RV NO_EXCEPTIONS
+RV NO_IO
+RV NO_LOCAL_ALLOCATORS
+RV NO_SECONDARY_STACK
+RV NO_STANDARD_STORAGE_POOLS
+RV NO_DEFAULT_INITIALIZATION
+RV NO_DYNAMIC_SIZED_OBJECTS
+RV NO_OBSOLESCENT_FEATURES
+
+U block_save%b		block_save.adb		57a00142 NE OO SU IU
+Z ada.strings.text_buffers%s  a-sttebu.adb	a-sttebu.ali
+Z system.concat_2%s	s-conca2.adb		s-conca2.ali
+Z system.concat_4%s	s-conca4.adb		s-conca4.ali
+Z system.secondary_stack%s  s-secsta.adb	s-secsta.ali
+W text_io%s		text_io.ads		text_io.ali
+
+D ada.ads		20240521074738 76789da1 ada%s
+D a-except.ads		20240521074738 2a7d8d70 ada.exceptions%s
+D a-ioexce.ads		20240521074738 40018c65 ada.io_exceptions%s
+D a-stream.ads		20240521074738 119b8fb3 ada.streams%s
+D a-string.ads		20240521074738 90ac6797 ada.strings%s
+D a-sttebu.ads		20240521074738 f1ad67a2 ada.strings.text_buffers%s
+D a-stuten.ads		20240521074738 c6ced0ae ada.strings.utf_encoding%s
+D a-tags.ads		20240521074738 9eaa38c6 ada.tags%s
+D a-textio.ads		20240521074738 5c2c6153 ada.text_io%s
+D a-unccon.ads		20240521074738 0e9b276f ada.unchecked_conversion%s
+D block_save.adb	20250624140805 7612c9da block_save%b
+D interfac.ads		20240521074738 15f799c2 interfaces%s
+D i-cstrea.ads		20240521074738 e53d8b8e interfaces.c_streams%s
+D system.ads		20240521074738 426dafb8 system%s
+D s-conca2.ads		20240521074738 b5fb73f7 system.concat_2%s
+D s-conca4.ads		20240521074738 33f85f3e system.concat_4%s
+D s-crtl.ads		20240521074738 8a0692f8 system.crtl%s
+D s-exctab.ads		20240521074738 91bef6ef system.exception_table%s
+D s-ficobl.ads		20240521074738 dc5161d4 system.file_control_block%s
+D s-parame.ads		20240904144414 1f39ba92 system.parameters%s
+D s-putima.ads		20240521074738 17291fe4 system.put_images%s
+D s-secsta.ads		20240521074738 578279f5 system.secondary_stack%s
+D s-soflin.ads		20240521074738 df77073e system.soft_links%s
+D s-stache.ads		20240521074738 0b81c1fe system.stack_checking%s
+D s-stalib.ads		20240521074738 1c9580f6 system.standard_library%s
+D s-stoele.ads		20240521074738 ab5468e4 system.storage_elements%s
+D s-stoele.adb		20240521074738 8f5a9db6 system.storage_elements%b
+D s-traent.ads		20240521074738 c81cbf8c system.traceback_entries%s
+D s-unstyp.ads		20240521074738 fa2a7f59 system.unsigned_types%s
+D s-wchcon.ads		20240521074738 d9032363 system.wch_con%s
+D text_io.ads		20240521074738 21b2c898 text_io%s
+G a e
+G c Z b b [block_save standard 4 33 none]
+X 9 a-textio.ads
+66P9*File_Type 11|9r27 31r54 93r35 94r43
+68n23*In_File{68E9} 11|85r20 97r31
+68n32*Out_File{68E9} 11|111r31
+98U14*Create 11|111s9
+114U14*Open 11|85s3 97s9
+130U14*Close 11|122s9 123s9 133s3
+341V13*End_Of_File{boolean} 11|41s16 87s14
+519U14*Put 11|83s3
+526U14*Get_Line 11|42s7 88s5
+537U14*Get_Line 11|84s3
+555U14*Put_Line 11|60s9 69s9 76s7
+566U14*Put_Line 11|100s11 112s9 115s11 117s11 127s9 137s5
+601X4*Status_Error 11|116r16
+603X4*Name_Error 11|99r14 114r14 126r14 136r8
+X 11 block_save.adb
+4U33*BLOCK_SAVE 4b33 138l9 138t19
+7a3 LIST_FILE_STR{string} 84m13 85r29 137r46
+8i3 LIST_FILE_LEN{natural} 84m28 85r49 137r66
+9p3 LIST_FILE{9|66P9} 85m9 85r9 87r27 88r15 133m10 133r10
+11a3 PROCESSED_FILE_STR{string} 88m26 89r46 97r40 100r53 105r47 127r51
+12i3 PROCESSED_FILE_STR_LEN{natural} 88m46 89r9 97r65 100r78 105r72 127r76
+16V17 FILE_NAME_NO_PATH{string} 16b17 16>43 26l9 26t26 105s28
+16a43 PATHED_FILE_NAME{string} 19r24 19r50 20r11 21r16 21r42 24r12
+19i10 ID{integer} 20r29 21r34
+31U17 BLOCK_FILE 31b17 31>35 31>44 79l9 79t19 120s9
+31p35 FILE_IN{9|66P9} 41r29 42r17
+31p44 FILE_OUT{9|66P9} 60r19 69r19 76r17
+33a5 PROCESS_IN_BUFFER{string} 42m26 48r13 51r31 52r39
+34i5 LINE_LEN{natural} 42m45 45r25
+35a5 PROCESS_OUT_BUFFER{string} 49m9 52m9 59r20 60r29 67m7 68r18 69r29 76r27
+36i5 OCAR{natural} 46m9 46r17 49r29 52r29 55m9 55r17 59r13 61m9 66m7 66r15
+. 67r27 68r11 70m9 75r9 76r52
+40l25 PROCESS_ALL_LINES 73l17 73e34
+44l17 PROCESS_ONE_LINE 64l17 64e33
+45i12 ICAR{integer} 48r32 51r50 52r58
+91q17 PROCESS_ONE_FILE 128l17 128e33
+93p9 PROCESSED_FILE{9|66P9} 97m15 97r15 120r21 123m16 123r16
+94p9 BLOCKED_FILE{9|66P9} 111m17 111r17 120r37 122m16 122r16
+104a9 PATH_STRIPPED{string} 107r35 107r50 107r73 109r35 109r50 109r74 112r37
+106a9 OUT_FILE_STR=109:33{string} 111r41 115r52 117r54
+X 31 text_io.ads
+24K9*Text_IO=24:29 11|1w6 2r6
+

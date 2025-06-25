@@ -127,7 +127,7 @@ is
     procedure CODE_INDEXED		( INDEXED		:TREE );
     procedure CODE_STRING_LITERAL	( STRING_LITERAL	:TREE; STR_NAME :STRING );
     procedure CODE_SELECTED		( SELECTED	:TREE; IS_SOURCE :BOOLEAN := TRUE );
-    procedure CODE_SLICE		( SLICE		:TREE );
+    procedure CODE_SLICE		( SLICE		:TREE; IS_DESTINATION :BOOLEAN := TRUE );
 
 
   private

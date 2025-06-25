@@ -17,6 +17,19 @@ STR NOM, './essai.txt'			; constante string='./essai.txt'
 	LCA	NOM.info_ptr
 	La
 	Sa	1, NOM__u				; array info ptr at __u
+
+VAR C_disp, b				; variable bool char
+
+VAR PROMPT_disp, q				; variable array : pointeur aux data
+VAR PROMPT__u, q				; variable array : useinfo pointeur au rec info
+STR PROMPT, 'Taper un caractere '		; constante string='Taper un caractere '
+	LCA	PROMPT.data_ptr
+	La
+	Sa	1, PROMPT_disp				; array data ptr at _disp
+	LCA	PROMPT.info_ptr
+	La
+	Sa	1, PROMPT__u				; array info ptr at __u
+
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 STR STR_L1, ''				; constante string=''
@@ -25,6 +38,12 @@ STR STR_L1, ''				; constante string=''
 	LI  1
 	LVA  1,	F_disp
 	CALL	STANDARD.TEXT_IO. ,CREATE_L1
+	LVA  1,	PROMPT_disp			; array actual
+	CALL	STANDARD.TEXT_IO. ,PUT_L56
+	LVA  1,	C_disp
+	CALL	STANDARD.TEXT_IO. ,GET_L50
+	LVA  1,	F_disp
+	CALL	STANDARD.TEXT_IO. ,CLOSE_L3
 ret_lbl:
 	UNLINK 1
 	RTD

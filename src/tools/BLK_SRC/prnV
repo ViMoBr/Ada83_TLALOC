@@ -1,0 +1,2 @@
+enscript --margins=12:12:8:8 --header='-- le: $F a: $* |----- $n -----|page $% / $=' -T 10 -fSometypeMono-Bold@8 -FSometypeMono-Bold@8 --slice=1 -O $1 -P EPSON_ET_2810_series
+# -p $1.ps

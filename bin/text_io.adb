@@ -4,14 +4,14 @@ use  MACHINE_CODE;
 	package body			TEXT_IO
 is					-------
 
-  STDOUT_MAX_PAGE_LEN	: COUNT	:= 72;
-  STDOUT_MAX_LINE_LEN	: COUNT	:= 256;
+  STDOUT_MAX_PAGE_LEN	: COUNT		:= 72;
+  STDOUT_MAX_LINE_LEN	: COUNT		:= 256;
   STDOUT_PAGE		: POSITIVE_COUNT	:= 1;
   STDOUT_LINE		: POSITIVE_COUNT	:= 1;
   STDOUT_COL		: POSITIVE_COUNT	:= 1;
 
 
-           --   F I L E   M A N A G E M E N T
+			--   F I L E   M A N A G E M E N T
 
 			------
   procedure		CREATE		( FILE :in out FILE_TYPE;
@@ -19,20 +19,29 @@ is					-------
 					  NAME :in STRING := "";
 					  FORM :in STRING := ""
 					)
-  is
+  is			------
+
 		------------------
     function	CREATE_SYSTEM_CALL	( NAME :in STRING )	return INTEGER
-    is
+    is		-----------------
     begin
       ASM_OP_2'( OPCODE => LA, LVL => 2, OFS => -8 );
       ASM_OP_0'( OPCODE => SYS_FILE_CREATE );
       ASM_OP_2'( OPCODE => SD, LVL => 2, OFS => -16 );
+
     end	CREATE_SYSTEM_CALL;
 	------------------
   begin
     FILE.ID := CREATE_SYSTEM_CALL( NAME );
     FILE.NAME( 1 .. NAME'LENGTH ) := NAME;
---    PUT_LINE( FILE.NAME( 1 .. NAME'LENGTH ) );
+    FILE.NAME_LEN := NAME'LENGTH;
+    FILE.MODE := MODE;
+    FILE.PAGE_LENGTH := STDOUT_MAX_PAGE_LEN;
+    FILE.LINE_LENGTH := STDOUT_MAX_LINE_LEN;
+    FILE.PAGE := 1;
+    FILE.LINE := 1;
+    FILE.COL  := 1;
+
   end	CREATE;
 	------
 
@@ -43,34 +52,47 @@ is					-------
 					  NAME :in STRING;
 					  FORM :in STRING := ""
 					)
-  is
+  is			----
+
 		----------------
     function	OPEN_SYSTEM_CALL	( NAME :in STRING )	return INTEGER
-    is
+    is		----------------
+
     begin
       ASM_OP_2'( OPCODE => LA, LVL => 2, OFS => -8 );
       ASM_OP_0'( OPCODE => SYS_FILE_OPEN );
       ASM_OP_2'( OPCODE => SD, LVL => 2, OFS => -16 );							-- Retour du File ID
+
     end	OPEN_SYSTEM_CALL;
 	----------------
   begin
     FILE.ID := OPEN_SYSTEM_CALL( NAME );
     FILE.NAME( 1 .. NAME'LENGTH ) := NAME;
+    FILE.NAME_LEN := NAME'LENGTH;
+    FILE.MODE := MODE;
+    FILE.PAGE_LENGTH := STDOUT_MAX_PAGE_LEN;
+    FILE.LINE_LENGTH := STDOUT_MAX_LINE_LEN;
+    FILE.PAGE := 1;
+    FILE.LINE := 1;
+    FILE.COL  := 1;
+
   end	OPEN;
 	----
 
 
 			-----
-  procedure		CLOSE		( FILE :in out FILE_TYPE )	is
-			-----
- 		------------------
+  procedure		CLOSE		( FILE :in out FILE_TYPE )
+  is			-----
+
+ 		-----------------
     procedure	CLOSE_SYSTEM_CALL	( FILE_ID :in INTEGER )
-    is
+    is		-----------------
     begin
       ASM_OP_2'( OPCODE => Ld, LVL => 2, OFS => -8 );
       ASM_OP_0'( OPCODE => SYS_FILE_CLOSE );
+
     end	CLOSE_SYSTEM_CALL;
-	------------------
+	-----------------
   begin
     CLOSE_SYSTEM_CALL( FILE.ID );
 
@@ -79,18 +101,21 @@ is					-------
 
 
 			------
-  procedure		DELETE		( FILE :in out FILE_TYPE )	is
-			------
+  procedure		DELETE		( FILE :in out FILE_TYPE )
+  is			------
+
 		------------------
-    procedure	DELETE_SYSTEM_CALL	( FILE_ID :in INTEGER )
-    is
+    procedure	DELETE_SYSTEM_CALL	( NAME : STRING )
+    is		------------------
+
     begin
-      ASM_OP_2'( OPCODE => Ld, LVL => 2, OFS => -8 );
+      ASM_OP_2'( OPCODE => La, LVL => 2, OFS => -8 );
       ASM_OP_0'( OPCODE => SYS_FILE_DELETE );
+
     end	DELETE_SYSTEM_CALL;
 	------------------
   begin
-    DELETE_SYSTEM_CALL( FILE.ID );
+    DELETE_SYSTEM_CALL( FILE.NAME( 1 .. FILE.NAME_LEN ) );
 
   end	DELETE;
 	------
@@ -98,7 +123,7 @@ is					-------
 
 			-----
   procedure		RESET		( FILE :in out FILE_TYPE; MODE :in FILE_MODE )
-  is
+  is			-----
   begin null;
 
   end	RESET;
@@ -106,7 +131,7 @@ is					-------
 
 			-----
   procedure		RESET		( FILE :in out FILE_TYPE )
-  is
+  is			-----
   begin null;
 
   end	RESET;
@@ -114,7 +139,7 @@ is					-------
 
 			----
   function		MODE		( FILE :in FILE_TYPE )		return FILE_MODE
-  is
+  is			----
   begin null;
 
   end	MODE;
@@ -122,7 +147,7 @@ is					-------
 
 			----
   function		NAME		( FILE :in FILE_TYPE )		return STRING
-  is
+  is			----
   begin null;
 
   end	NAME;
@@ -130,7 +155,7 @@ is					-------
 
 			----
   function		FORM		( FILE :in FILE_TYPE )		return STRING
-  is
+  is			----
   begin null;
 
   end	FORM;
@@ -138,7 +163,7 @@ is					-------
 
 			-------
   function		IS_OPEN		( FILE :in FILE_TYPE )		return BOOLEAN
-  is
+  is			-------
   begin null;
 
   end	IS_OPEN;
@@ -148,7 +173,7 @@ is					-------
 
 			---------
   procedure		SET_INPUT		( FILE :in FILE_TYPE )
-  is
+  is			---------
   begin null;
 
   end	SET_INPUT;
@@ -156,7 +181,7 @@ is					-------
 
 			----------
   procedure		SET_OUTPUT	( FILE :in FILE_TYPE )
-  is
+  is			----------
   begin null;
 
   end	SET_OUTPUT;
@@ -164,7 +189,7 @@ is					-------
 
 			--------------
   function		STANDARD_INPUT					return FILE_TYPE
-  is
+  is			--------------
   begin null;
 
   end	STANDARD_INPUT;
@@ -172,7 +197,7 @@ is					-------
 
 			---------------
   function		STANDARD_OUTPUT					return FILE_TYPE
-  is
+  is			---------------
   begin null;
 
   end	STANDARD_OUTPUT;
@@ -180,7 +205,7 @@ is					-------
 
 			-------------
   function		CURRENT_INPUT					return FILE_TYPE
-  is
+  is			-------------
   begin null;
 
   end	CURRENT_INPUT;
@@ -188,7 +213,7 @@ is					-------
 
 			--------------
   function		CURRENT_OUTPUT					return FILE_TYPE
-  is
+  is			--------------
   begin null;
 
   end	CURRENT_OUTPUT;
@@ -198,7 +223,7 @@ is					-------
 
 			---------------
   procedure		SET_LINE_LENGTH	( FILE :in FILE_TYPE; TO :in COUNT )
-  is
+  is			---------------
   begin null;
 
   end	SET_LINE_LENGTH;
@@ -206,7 +231,7 @@ is					-------
 
 			---------------
   procedure		SET_LINE_LENGTH	( TO   :in COUNT)
-  is
+  is			---------------
   begin
     STDOUT_MAX_LINE_LEN := TO;
 
@@ -215,7 +240,7 @@ is					-------
 
 			---------------
   procedure		SET_PAGE_LENGTH	( FILE :in FILE_TYPE; TO :in COUNT )
-  is
+  is			---------------
   begin null;
 
   end	SET_PAGE_LENGTH;
@@ -223,7 +248,7 @@ is					-------
 
 			---------------
   procedure		SET_PAGE_LENGTH	( TO   :in COUNT)
-  is
+  is			---------------
   begin
     STDOUT_MAX_PAGE_LEN := TO;
 
@@ -232,7 +257,7 @@ is					-------
 
 			-----------
   function		LINE_LENGTH	( FILE :in FILE_TYPE )		return COUNT
-  is
+  is			-----------
   begin null;
 
   end	LINE_LENGTH;
@@ -240,7 +265,7 @@ is					-------
 
 			-----------
   function		LINE_LENGTH					return COUNT
-  is
+  is			-----------
   begin null;
 
   end	LINE_LENGTH;
@@ -248,7 +273,7 @@ is					-------
 
 			-----------
   function		PAGE_LENGTH	( FILE :in FILE_TYPE )		return COUNT
-  is
+  is			-----------
   begin null;
 
   end	PAGE_LENGTH;
@@ -256,7 +281,7 @@ is					-------
 
 			-----------
   function		PAGE_LENGTH					return COUNT
-  is
+  is			-----------
   begin null;
 
   end	PAGE_LENGTH;
@@ -267,7 +292,7 @@ is					-------
 			--------
   procedure		NEW_LINE		( FILE    :in FILE_TYPE;
 					  SPACING :in POSITIVE_COUNT := 1 )
-  is
+  is			--------
   begin null;
 
   end	NEW_LINE;
@@ -275,7 +300,7 @@ is					-------
 
 			--------
   procedure		NEW_LINE		( SPACING :in POSITIVE_COUNT := 1 )
-  is
+  is			--------
   begin
     PUT( ASCII.CR );
     STDOUT_COL := 1;										-- LRM 14.3.4(3) col := 1
@@ -295,7 +320,7 @@ is					-------
 			---------
   procedure		SKIP_LINE		( FILE    :in FILE_TYPE;
 					  SPACING :in POSITIVE_COUNT := 1 )
-  is
+  is			---------
   begin
     null;
 
@@ -304,7 +329,7 @@ is					-------
 
 			---------
   procedure		SKIP_LINE		( SPACING :in POSITIVE_COUNT := 1 )
-  is
+  is			---------
   begin
     STDOUT_LINE := STDOUT_LINE + SPACING;
 
@@ -313,7 +338,7 @@ is					-------
 
 			-----------
   function		END_OF_LINE	( FILE :in FILE_TYPE)		return BOOLEAN
-  is
+  is			-----------
   begin null;
 
   end	END_OF_LINE;
@@ -321,7 +346,7 @@ is					-------
 
 			-----------
   function		END_OF_LINE					return BOOLEAN
-  is
+  is			-----------
   begin null;
 
   end	END_OF_LINE;
@@ -329,14 +354,14 @@ is					-------
 
 			--------
   procedure		NEW_PAGE		( FILE :in FILE_TYPE )
-  is
+  is			--------
   begin null;
 
   end	NEW_PAGE;
 	--------
 			--------
   procedure		NEW_PAGE
-  is
+  is			--------
   begin null;
 
   end	NEW_PAGE;
@@ -344,7 +369,7 @@ is					-------
 
 			---------
   procedure		SKIP_PAGE		( FILE :in FILE_TYPE )
-  is
+  is			---------
   begin null;
 
   end	SKIP_PAGE;
@@ -352,7 +377,7 @@ is					-------
 
 			---------
   procedure		SKIP_PAGE
-  is
+  is			---------
   begin null;
 
   end	SKIP_PAGE;
@@ -360,7 +385,7 @@ is					-------
 
 			-----------
   function		END_OF_PAGE	( FILE :in FILE_TYPE ) 		return BOOLEAN
-  is
+  is			-----------
   begin null;
 
   end	END_OF_PAGE;
@@ -368,7 +393,7 @@ is					-------
 
 			-----------
   function		END_OF_PAGE 					return BOOLEAN
-  is
+  is			-----------
   begin null;
 
   end	END_OF_PAGE;
@@ -376,7 +401,7 @@ is					-------
 
 			-----------
   function		END_OF_FILE	(FILE :in FILE_TYPE )		return BOOLEAN
-  is
+  is			-----------
   begin null;
 
   end	END_OF_FILE;
@@ -384,15 +409,15 @@ is					-------
 
 			-----------
   function		END_OF_FILE					return BOOLEAN
-  is
+  is			-----------
   begin null;
 
   end	END_OF_FILE;
 	-----------
 
-
+			-------
   procedure		SET_COL		(FILE :in FILE_TYPE; TO :in POSITIVE_COUNT )
-  is
+  is			-------
   begin null;
 
   end	SET_COL;
@@ -400,7 +425,7 @@ is					-------
 
 			-------
   procedure		SET_COL		(TO   :in POSITIVE_COUNT )
-  is
+  is			-------
   begin null;
 
   end	SET_COL;
@@ -408,7 +433,7 @@ is					-------
 
 			--------
   procedure 		SET_LINE		(FILE :in FILE_TYPE; TO :in POSITIVE_COUNT )
-  is
+  is			--------
   begin null;
 
   end	SET_LINE;
@@ -416,7 +441,7 @@ is					-------
 
 			--------
   procedure		SET_LINE		(TO   :in POSITIVE_COUNT )
-  is
+  is			--------
   begin null;
 
   end	SET_LINE;
@@ -424,7 +449,7 @@ is					-------
 
 			---
   function		COL		(FILE :in FILE_TYPE )		return POSITIVE_COUNT
-  is
+  is			---
   begin null;
 
   end	COL;
@@ -432,7 +457,7 @@ is					-------
 
 			---
   function		COL						return POSITIVE_COUNT
-  is
+  is			---
   begin null;
 
   end	COL;
@@ -440,7 +465,7 @@ is					-------
 
 			----
   function		LINE		( FILE :in FILE_TYPE )		return POSITIVE_COUNT
-  is
+  is			----
   begin null;
 
   end	LINE;
@@ -448,7 +473,7 @@ is					-------
 
 			----
   function		LINE						return POSITIVE_COUNT
-  is
+  is			----
   begin null;
 
   end	LINE;
@@ -456,7 +481,7 @@ is					-------
 
 			----
   function		PAGE		(FILE :in FILE_TYPE )		return POSITIVE_COUNT
-  is
+  is			----
   begin null;
 
   end	PAGE;
@@ -464,7 +489,7 @@ is					-------
 
 			----
   function		PAGE 						return POSITIVE_COUNT
-  is
+  is			----
   begin null;
 
   end	PAGE;
@@ -472,16 +497,17 @@ is					-------
 
            -- Character Input-Output
 
+			---
   procedure		GET		( FILE :in FILE_TYPE; ITEM :out CHARACTER )
-  is
+  is			---
   begin null;
 
   end	GET;
 	----
 
-
+			---
   procedure		GET		( ITEM :out CHARACTER )
-  is
+  is			---
   begin
     ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -8 );
     ASM_OP_0'( OPCODE => SYS_GET_CHAR );
@@ -489,17 +515,17 @@ is					-------
   end	GET;
 	----
 
-
+			---
   procedure		PUT		( FILE :in FILE_TYPE; ITEM :in CHARACTER )
-  is
+  is			---
   begin null;
 
   end	PUT;
 	----
 
-
+			---
   procedure		PUT		( ITEM :in CHARACTER )
-  is
+  is			---
   begin
     ASM_OP_2'( OPCODE => LB, LVL => 1, OFS => -8 );
     ASM_OP_0'( OPCODE => SYS_PUT_CHAR );
@@ -510,32 +536,33 @@ is					-------
 
            -- String Input-Output
 
+			---
   procedure		GET		( FILE :in FILE_TYPE; ITEM :out STRING )
-  is
+  is			--
   begin null;
 
   end	GET;
 	----
 
-
+			---
   procedure		GET		( ITEM :out STRING )
-  is
+  is			---
   begin null;
 
   end	GET;
 	----
 
-
+			---
   procedure		PUT		( FILE :in FILE_TYPE; ITEM :in STRING )
-  is
+  is			---
   begin null;
 
   end	PUT;
 	----
 
-
+			---
   procedure		PUT		( ITEM :in STRING )
-  is
+  is			---
   begin
     ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -8 );
     ASM_OP_0'( OPCODE => SYS_PUT_STR );
@@ -548,7 +575,7 @@ is					-------
 					  ITEM :out STRING;
 					  LAST :out NATURAL
 					)
-  is
+  is			--------
   begin null;
 
   end	GET_LINE;
@@ -556,7 +583,7 @@ is					-------
 
 			--------
   procedure		GET_LINE		( ITEM :out STRING;   LAST :out NATURAL )
-  is
+  is			--------
   begin
     ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -16 );		-- adresse de LAST
     ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -8 );		-- adresse du descripteur de la chaine ITEM
@@ -567,7 +594,7 @@ is					-------
 
 			--------
   procedure		PUT_LINE		( FILE :in FILE_TYPE; ITEM :in STRING )
-  is
+  is			--------
   begin null;
 
   end	PUT_LINE;
@@ -575,7 +602,7 @@ is					-------
 
 			--------
   procedure		PUT_LINE		( ITEM :in STRING )
-  is
+  is			--------
   begin
     PUT( ITEM );
     NEW_LINE;
@@ -583,36 +610,40 @@ is					-------
   end	PUT_LINE;
 	--------
 
-           -- Generic package for Input-Output of Integer Types
 
-  package	body		INTEGER_IO
-  is			----------
+          	 -- Generic package for Input-Output of Integer Types
+
+  				----------
+  package	body			INTEGER_IO
+  is				----------
 
 			---
     procedure		GET		( FILE  :in FILE_TYPE;
 					  ITEM  :out NUM;
 					  WIDTH :in FIELD := 0
 					)
-  is
-  begin null;
+    is			---
+    begin null;
 
-  end	GET;
+    end	GET;
 	----
 
 			---
-  procedure		GET		( ITEM  :out NUM; WIDTH : in FIELD := 0)
-  is
-    CHN	: STRING( 1 .. 40 );
-    LEN	: NATURAL	:= 40;
-    VAL	: NUM	:= 0;
-  begin
-    GET_LINE( CHN, LEN );
-    for  I in 1 .. LEN  loop
-      VAL := 10 * VAL + CHARACTER'POS( CHN( I ) ) - CHARACTER'POS( '0' );
-    end loop;
-    ITEM := VAL;
-    PUT( CHN );
-  end	GET;
+    procedure		GET		( ITEM  :out NUM; WIDTH : in FIELD := 0)
+    is			---
+
+      CHN	: STRING( 1 .. 40 );
+      LEN	: NATURAL		:= 40;
+      VAL	: NUM		:= 0;
+
+    begin
+      GET_LINE( CHN, LEN );
+      for  I in 1 .. LEN  loop
+        VAL := 10 * VAL + CHARACTER'POS( CHN( I ) ) - CHARACTER'POS( '0' );
+      end loop;
+      ITEM := VAL;
+      PUT( CHN );
+    end	GET;
 	----
 
 			---
@@ -621,10 +652,10 @@ is					-------
 					  WIDTH :in FIELD		:= DEFAULT_WIDTH;
 					  BASE  :in NUMBER_BASE	:= DEFAULT_BASE
 					)
-  is
-  begin null;
+    is			---
+    begin null;
 
-  end	PUT;
+    end	PUT;
 	----
 
 			---
@@ -632,14 +663,15 @@ is					-------
 					  WIDTH :in FIELD		:= DEFAULT_WIDTH;
 					  BASE  :in NUMBER_BASE	:= DEFAULT_BASE
 					)
-  is
-    QUOTIENT, RESTE	: NUM;
-    STR		: STRING( 1 .. 68 );
-    INDEX		: POSITIVE		:= STR'LAST;
-    MIN_WIDTH	: POSITIVE;
+    is			---
 
-  begin
-null;
+      QUOTIENT, RESTE	: NUM;
+      STR			: STRING( 1 .. 68 );
+      INDEX		: POSITIVE		:= STR'LAST;
+      MIN_WIDTH		: POSITIVE;
+
+    begin
+      null;
 --    if BASE /= 10 then STR( STR'LAST ) := '#'; INDEX := INDEX - 1; end if;
 
 --    loop
@@ -665,7 +697,7 @@ null;
 
 --    if WIDTH > MIN_WIDTH then null; end if;
 
-  end	PUT;
+    end	PUT;
 	----
 
 			---
@@ -673,10 +705,10 @@ null;
 					  ITEM :out NUM;
 					  LAST :out POSITIVE
 					)
-  is
-  begin null;
+    is			---
+    begin null;
 
-  end	GET;
+    end	GET;
 	----
 
 			---
@@ -684,57 +716,64 @@ null;
 					  ITEM :in NUM;
 					  BASE :in NUMBER_BASE	:= DEFAULT_BASE
 					)
-  is
-  begin null;
+    is			---
+    begin null;
 
-  end	PUT;
+    end	PUT;
 	----
 
   end	INTEGER_IO;
 	----------
 
-           -- Generic package for Input-Output of Real Types
 
-			--------
-  package	body		FLOAT_IO
-  is			--------
+		-- Generic package for Input-Output of Real Types
 
-    procedure GET		( FILE  :in FILE_TYPE;
-			  ITEM  :out NUM;
-			  WIDTH :in FIELD		:= 0
-			)
-  is
-  begin null;
+				--------
+  package	body			FLOAT_IO
+  is				--------
 
-  end	GET;
-	----
-    procedure GET		( ITEM  :out NUM; WIDTH :in FIELD := 0)
-  is
-  begin null;
+    			---
+    procedure		GET		( FILE  :in FILE_TYPE;
+					  ITEM  :out NUM;
+					  WIDTH :in FIELD		:= 0
+					)
+    is			---
+    begin null;
 
-  end	GET;
+    end	GET;
 	----
 
-    procedure PUT		( FILE :in FILE_TYPE;
-			  ITEM :in NUM;
-			  FORE :in FIELD		:= DEFAULT_FORE;
-			  AFT  :in FIELD		:= DEFAULT_AFT;
-			  EXP  :in FIELD		:= DEFAULT_EXP
-			)
-  is
-  begin null;
+			---
+    procedure		GET		( ITEM  :out NUM; WIDTH :in FIELD := 0)
+    is			---
+    begin null;
 
-  end	PUT;
+    end	GET;
 	----
-    procedure PUT		( ITEM :in NUM;
-			  FORE :in FIELD		:= DEFAULT_FORE;
-			  AFT  :in FIELD		:= DEFAULT_AFT;
-			  EXP  :in FIELD		:= DEFAULT_EXP
-			)
-  is
-  begin null;
 
-  end	PUT;
+    			---
+    procedure		PUT		( FILE :in FILE_TYPE;
+					  ITEM :in NUM;
+					  FORE :in FIELD		:= DEFAULT_FORE;
+					  AFT  :in FIELD		:= DEFAULT_AFT;
+					  EXP  :in FIELD		:= DEFAULT_EXP
+					)
+    is			---
+    begin null;
+
+    end	PUT;
+    ----
+
+    			---
+    procedure		PUT		( ITEM :in NUM;
+					  FORE :in FIELD		:= DEFAULT_FORE;
+					  AFT  :in FIELD		:= DEFAULT_AFT;
+					  EXP  :in FIELD		:= DEFAULT_EXP
+					)
+    is			---
+    begin null;
+
+    end	PUT;
 	----
 
 
@@ -742,22 +781,22 @@ null;
 					  ITEM :out NUM;
 					  LAST :out POSITIVE
 					)
-  is
-  begin null;
+    is
+    begin null;
 
-  end	GET;
+    end	GET;
 	----
 
-
+			---
     procedure		PUT		( TO   :out STRING;
 					  ITEM :in NUM;
 					  AFT  :in FIELD		:= DEFAULT_AFT;
 					  EXP  :in INTEGER		:= DEFAULT_EXP
 					)
-  is
-  begin null;
+    is			---
+    begin null;
 
-  end	PUT;
+    end	PUT;
 	----
 
 	--------
@@ -765,27 +804,27 @@ null;
 	--------
 
 
-			--------
-  package	body		FIXED_IO
-  is			--------
+				--------
+  package	body			FIXED_IO
+  is				--------
 
 			---
     procedure		GET		( FILE  :in FILE_TYPE;
 					  ITEM  :out NUM;
 					  WIDTH :in FIELD		:= 0
 					)
-  is
-  begin null;
+    is			---
+    begin null;
 
-  end	GET;
+    end	GET;
 	----
 
 			---
     procedure		GET		( ITEM  :out NUM; WIDTH :in FIELD := 0 )
-  is
-  begin null;
+    is			---
+    begin null;
 
-  end	GET;
+    end	GET;
 	----
 
 			---
@@ -795,10 +834,10 @@ null;
 					  AFT  :in FIELD		:= DEFAULT_AFT;
 					  EXP  :in FIELD		:= DEFAULT_EXP
 					)
-  is
-  begin null;
+    is			---
+    begin null;
 
-  end	PUT;
+    end	PUT;
 	----
 
 			---
@@ -807,7 +846,7 @@ null;
 					  AFT  :in FIELD		:= DEFAULT_AFT;
 					  EXP  :in FIELD		:= DEFAULT_EXP
 					)
-  is
+    is			---
   begin null;
 
   end	PUT;
@@ -818,7 +857,7 @@ null;
 					  ITEM :out NUM;
 					  LAST :out POSITIVE
 					)
-  is
+    is			---
   begin null;
 
   end	GET;
@@ -826,17 +865,20 @@ null;
 
 			---
     procedure		PUT		( TO   :out STRING;
-			  ITEM :in NUM;
-			  AFT  :in FIELD		:= DEFAULT_AFT;
-			  EXP  :in INTEGER		:= DEFAULT_EXP
-			)  is
-  begin null;
+					  ITEM :in NUM;
+					  AFT  :in FIELD		:= DEFAULT_AFT;
+					  EXP  :in INTEGER		:= DEFAULT_EXP
+					)
+    is			---
+    begin null;
 
-  end	PUT;
+    end	PUT;
 	----
+
 	--------
   end	FIXED_IO;
 	--------
+
 
            -- Generic package for Input-Output of Enumeration types
 
@@ -845,18 +887,20 @@ null;
   package	body		ENUMERATION_IO
   is			--------------
 
+    			---
     procedure		GET		( FILE :in FILE_TYPE; ITEM :out ENUM)
-  is
-  begin null;
+    is			---
+    begin null;
 
-  end	GET;
+    end	GET;
 	---
 
 			---
-    procedure		GET		( ITEM :out ENUM)  is
-  begin null;
+    procedure		GET		( ITEM :out ENUM)
+    is			---
+    begin null;
 
-  end	GET;
+    end	GET;
 	---
 
 			---
@@ -865,10 +909,10 @@ null;
 					  WIDTH :in FIELD		:= DEFAULT_WIDTH;
 					  SET   :in TYPE_SET	:= DEFAULT_SETTING
 					)
-  is
-  begin null;
+    is			---
+    begin null;
 
-  end	PUT;
+    end	PUT;
 	---
 
 			---
@@ -876,10 +920,10 @@ null;
 					  WIDTH :in FIELD		:= DEFAULT_WIDTH;
 					  SET   :in TYPE_SET	:= DEFAULT_SETTING
 					)
-  is
-  begin null;
+    is			---
+    begin null;
 
-  end	PUT;
+    end	PUT;
 	----
 
 			---
@@ -887,10 +931,10 @@ null;
 					  ITEM :out ENUM;
 					  LAST :out POSITIVE
 					)
-  is
-  begin null;
+    is			---
+    begin null;
 
-  end	GET;
+    end	GET;
 	---
 
 			---
@@ -898,10 +942,10 @@ null;
 					  ITEM :in ENUM;
 					  SET  :in TYPE_SET		:= DEFAULT_SETTING
 					)
-  is
-  begin null;
+    is			---
+    begin null;
 
-  end	PUT;
+    end	PUT;
 	----
 
   end	ENUMERATION_IO;

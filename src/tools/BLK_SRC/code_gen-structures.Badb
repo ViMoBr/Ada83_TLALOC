@@ -1,0 +1,96 @@
+------------------------------------------------------------------------------------------------------------------------
+-¶-- CC BY SA¬CODE_GEN-SRUCTURES.ADB¬VINCENT MORIN¬9/1/2025¬UNIVERSITE DE BRETAGNE OCCIDENTALE¶-------------------------
+------------------------------------------------------------------------------------------------¶--¬1¬2¬3¬4¬5¬6¬7¬8¬9¬0¬
+1¬2¶¶¶separate ( CODE_GEN )¶¬¬¬¬----------¶ ¬package body¬¬STRUCTURES¶¬¬¬¬----------¶is¶¶¶  package CODI renames CODAGE_
+INTERMEDIAIRE;¶¶¶¬¬¬¬--=================--¶  procedure¬¬¬CODE_COMPILATION_UNIT¬( COMPILATION_UNIT :TREE )¶  is¶  begin¶ 
+   CODI.CUR_LEVEL      := 0;¶--    CODI.GENERATE_CODE  := FALSE;¶    CODI.ENCLOSING_BODY := TREE_VOID;¶¶    CODE_WITH_CO
+NTEXT( D( AS_CONTEXT_ELEM_S, COMPILATION_UNIT ) );¶¶--    CODI.GENERATE_CODE  := TRUE;¶¶    declare¶      UNIT_ALL_DECL¬
+¬: TREE¬:= D( AS_ALL_DECL, COMPILATION_UNIT );¶    begin¶      case UNIT_ALL_DECL.TY is¶      when DN_SUBPROG_ENTRY_DECL
+¬=>¶¬CODI.IN_SPEC_UNIT := TRUE;¶¬DECLARATIONS.CODE_SUBPROG_ENTRY_DECL( UNIT_ALL_DECL );¬¬¬-- les instanciations gnriques
+ sont comprises  (unit_kind instantiation)¶¶      when DN_PACKAGE_DECL¬¬=>¶¬CODI.IN_SPEC_UNIT := TRUE;¶¬DECLARATIONS.COD
+E_PACKAGE_DECL( UNIT_ALL_DECL );¬¬¬-- les instanciations gnriques sont comprises  (unit_kind instantiation)¶¶      when 
+DN_GENERIC_DECL¬¬=>¶¬DECLARATIONS.CODE_GENERIC_DECL( UNIT_ALL_DECL );¶¶      when DN_SUBPROGRAM_BODY¬¬=>¶¬CODE_SUBPROGRA
+M_BODY( UNIT_ALL_DECL );¶¶      when DN_PACKAGE_BODY¬¬=>¶¬CODI.IN_SPEC_UNIT := FALSE;¶¬CODE_PACKAGE_BODY( UNIT_ALL_DECL 
+);¶      when others¬¬¬=> raise PROGRAM_ERROR;¶      end case;¶    end;¶¶  end¬CODE_COMPILATION_UNIT;¶¬--===============
+==--¶¶¶¶¬¬¬¬-----------------¶  procedure¬¬¬CODE_WITH_CONTEXT¬¬( CONTEXT_ELEM_S :TREE )¶  is¶¶    procedure¬CODE_WITHED_
+PKG¬( DEFN :TREE )¶    is¶    begin¶      PUT_LINE( "include '" & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & ".FINC'" );¶--   
+   EMIT( RFP, CUR_COMP_UNIT, S=> PRINT_NAME( D( LX_SYMREP, DEFN ) ) );¶      DB( CD_COMPILED, DEFN, TRUE );¶--      CODI
+.GENERATE_CODE := FALSE;¶--      declare¶--        SPEC¬: TREE¬¬:= D( SM_SPEC, DEFN );¶--        DECL_SEQ¬: SEQ_TYPE¬:= 
+LIST( D( AS_DECL_S1, SPEC ) );¶--        DECL¬: TREE;¶--      begin¶--        while not IS_EMPTY( DECL_SEQ ) loop¶--¬POP
+( DECL_SEQ, DECL );¶--¬DECLARATIONS.CODE_DECL( DECL );¶--        end loop;¶--      end;¶    end¬CODE_WITHED_PKG;¶¶  begi
+n¶¶--    CUR_COMP_UNIT := 1;¶-- CODE_WITHED_PKG( STANDARD_DEF );¶¶    declare¶      CONTEXT_ELEM_SEQ¬: SEQ_TYPE¬:= LIST(
+ CONTEXT_ELEM_S );¶      CONTEXT_ELEM¬¬: TREE;¶    begin¶      while not IS_EMPTY( CONTEXT_ELEM_SEQ ) loop¶        POP( 
+CONTEXT_ELEM_SEQ, CONTEXT_ELEM );¶¶        if CONTEXT_ELEM.TY = DN_WITH then¶¬declare¶¬  NAME_S¬¬:constant TREE¬:= D( AS
+_NAME_S, CONTEXT_ELEM );¶¬  NAME_SEQ¬: SEQ_TYPE¬:= LIST( NAME_S );¶¬  NAME¬¬: TREE;¶¬begin¶¬  while not IS_EMPTY( NAME_S
+EQ ) loop¶¬    POP( NAME_SEQ, NAME );¶¶¬    declare¶¬      DEFN¬: TREE¬:= D( SM_DEFN, NAME );¶--¬      COMPILED¬: BOOLEA
+N¬:= DB( CD_COMPILED, DEFN );¶¬    begin¶--¬      CODI.GENERATE_CODE := TRUE;¶¬      if DEFN.TY = DN_PACKAGE_ID then¶nul
+l;¶¬        CODE_WITHED_PKG( DEFN );¶--¬        CUR_COMP_UNIT := CUR_COMP_UNIT + 1;¶¶¬      elsif DEFN.TY = DN_PROCEDURE
+_ID then¶¬        if not DB( CD_COMPILED, DEFN ) then¶--      PUT_LINE( "include '" & PRINT_NAME( D( LX_SYMREP, DEFN ) )
+ & ".fas'" );¶¬          declare¶¬¬  SUBP_LBL¬:constant STRING¬:= NEW_LABEL;¶¬          begin¶--¬¬  DI( CD_LABEL,      D
+EFN,  INTEGER( SUBP_LBL ) );¶¬¬  DI( CD_LEVEL,      DEFN,  1 );¶¬¬  DI( CD_PARAM_SIZE, DEFN,  0 );¶¬¬  DB( CD_COMPILED, 
+  DEFN,  TRUE );¶--¬¬  CODI.GENERATE_CODE := FALSE;¶¬          end;¶¬        end if;¶¬      end if;¶¬    end;¶¶¬  end lo
+op;¶¬end;¶        end if;¶      end loop;¶    end;¶¶  end¬CODE_WITH_CONTEXT;¶¬-----------------¶¶¶¶¬¬¬¬-----------------
+---¶  procedure¬¬¬CODE_SUBPROGRAM_BODY¬( SUBPROGRAM_BODY :TREE )¶  is¶    LBL¬¬¬: LABEL_TYPE;¶    SOURCE_NAME¬¬: TREE¬¬:
+= D( AS_SOURCE_NAME, SUBPROGRAM_BODY );¶    SUB_NAME¬¬:constant STRING¬:= PRINT_NAME( D( LX_SYMREP, SOURCE_NAME ) );¶   
+ DECL_ID¬¬: TREE¬¬:= D( SM_FIRST, SOURCE_NAME );¶    SAVE_ENCLOSING¬¬: TREE¬¬:= ENCLOSING_BODY;¶    SAVE_NO_SUB_PARAM¬: 
+BOOLEAN¬¬:= CODI.NO_SUBP_PARAMS;¶  begin¶¶    INC_LEVEL;¶¶    if DECL_ID = SOURCE_NAME then¬¬¬¬¬¬¬¬¬-- PREMIERE DEFINITI
+ON PAS DE SPEC DEJA ETIQUETEE¶      LBL := NEW_LABEL;¶      DI( CD_LEVEL, SOURCE_NAME, INTEGER( CODI.CUR_LEVEL ) );¶    
+  DI( CD_LABEL, SOURCE_NAME, INTEGER( LBL ) );¶¶    else¶      LBL := LABEL_TYPE( DI( CD_LABEL, DECL_ID ) );¶      DI( C
+D_LEVEL, SOURCE_NAME, DI( CD_LEVEL, DECL_ID ) );¶      DI( CD_LABEL, SOURCE_NAME, INTEGER( LBL ) );¶¶   end if;¶¶    if 
+ENCLOSING_BODY /= TREE_VOID then¶      NEW_LINE;¶      PUT_LINE( "if defined " & SUB_NAME & '_' & LABEL_STR( LBL ) & '_'
+ );¶    end if;¶¶    PUT( "PRO" & tab & SUB_NAME & '_' & LABEL_STR( LBL ) );¶    if CODI.DEBUG then PUT( tab50 & ";-----
+----- PRO " & SUB_NAME ); end if;¶    NEW_LINE;¶¶    DECLARATIONS.CODE_HEADER( D( SM_SPEC, SOURCE_NAME ) );¶¶    ENCLOSI
+NG_BODY := SUBPROGRAM_BODY;¶¶    CODE_BODY( D( AS_BODY, SUBPROGRAM_BODY ) );¶¶    PUT_LINE( "ret_lbl:" );¶    PUT_LINE( 
+tab & "UNLINK" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );¶¶    PUT( tab & "RTD" );¶    if  CODI.NO_SUBP_PARAMS = FALSE  then
+  PUT( tab & "(prm_siz" );¶      if  SOURCE_NAME.TY = DN_FUNCTION_ID  then¶        PUT( INTEGER'IMAGE( - STACK_ELEMENT_S
+IZE ) );¬¬¬¬¬¬¬-- POUR UNE FONCTION NE PAS LIBERER LE RESULTAT¶      end if;¶      PUT( ')' );¶    end if;¶    CODI.NO_S
+UBP_PARAMS := SAVE_NO_SUB_PARAM;¶    NEW_LINE;¶    PUT_LINE( "excep:" );¶¶    PUT( "endPRO" );¶    if CODI.DEBUG then PU
+T( tab50 & ";---------- end PRO " & SUB_NAME); end if;¶    NEW_LINE;¶¶    DEC_LEVEL;¶    ENCLOSING_BODY := SAVE_ENCLOSIN
+G;¶    if ENCLOSING_BODY /= TREE_VOID then¶      PUT_LINE( "end if" );¶    end if;¶¶  end¬CODE_SUBPROGRAM_BODY;¶¬-------
+-------------¶¶¶¶¬¬¬¬-----------------¶  procedure¬¬¬CODE_PACKAGE_BODY¬¬( PACKAGE_BODY :TREE )¶  is¶    PACK_ID¬: TREE¬¬
+:= D( AS_SOURCE_NAME, PACKAGE_BODY );¶    PACK_NAME¬:constant STRING¬:= PRINT_NAME( D( LX_SYMREP, PACK_ID ) );¶    PACK_
+DEF¬: TREE¬¬:= D( SM_FIRST, PACK_ID );¶    CAS_NORMAL¬: BOOLEAN¬¬:= PACK_NAME /= "STANDARD" and PACK_NAME /= "_STANDRD";
+¶  begin¶    if PACK_DEF.TY = DN_GENERIC_ID then¶      IN_GENERIC_BODY := TRUE;¶      PUT_LINE( PACK_NAME & " = " & "'" 
+& PACK_NAME & "'" );¶      PUT( "namespace " & PACK_NAME );¶      if CODI.DEBUG then PUT( tab50 & ";---------- GENERIC P
+ACKAGE" ); end if;¶      NEW_LINE;¶¶      PUT_LINE( "PRMS" );¶¶      declare¶        GPRM_SEQ¬: SEQ_TYPE¬:= LIST( D( SM_
+GENERIC_PARAM_S, PACK_DEF ) );¶        GPRM¬: TREE;¶      begin¶        while not IS_EMPTY( GPRM_SEQ ) loop¶¬POP( GPRM_S
+EQ, GPRM );¶¬if  GPRM.TY = DN_TYPE_DECL  then¶¬  declare¶¬    GTYPE_ID¬: TREE¬¬:= D( AS_SOURCE_NAME, GPRM );¶¬    GPRM_N
+AME¬:constant STRING¬:= PRINT_NAME( D( LX_SYMREP, GTYPE_ID ) );¶¬    GTYPE_DEF¬: TREE¬¬:= D( AS_TYPE_DEF, GPRM );¶¬  beg
+in¶¬    if  GTYPE_DEF.TY = DN_FORMAL_INTEGER_DEF  then¶¬      PUT_LINE( tab & "PRM " & GPRM_NAME & "_first_ofs" );¶¬    
+  PUT_LINE( tab & "PRM " & GPRM_NAME & "_last_ofs" );¶¬    end if;¶¬  end;¶¬end if;¶        end loop;¶      end;¶¶      
+PUT_LINE( "endPRMS" );¶¶¶ --     PUT( "elab_spec:" );¶ --     if CODI.DEBUG then PUT( tab50 & ";    SPEC ELAB" ); end if
+;¶ --     NEW_LINE;¶¶      DECLARATIONS.CODE_PACKAGE_SPEC( D( SM_SPEC, PACK_ID ) );¬¬¬¬¬¬-- POUR LES EMPLACEMENTS DES VA
+RS DE SPEC DE GENERIQUE¶      ENCLOSING_BODY := PACKAGE_BODY;¶      CODE_BODY( D( AS_BODY, PACKAGE_BODY ) );¬¬¬¬¬¬¬¬-- P
+OUR LES VARS ET LES SUBS DU CORPS DE GENERIQUE¶¶      PUT( "end namespace " );¶      if CODI.DEBUG then¶        PUT( tab
+50 & ";---------- end generic package BDY " & PACK_NAME );¶      end if;¶      NEW_LINE;¶      IN_GENERIC_BODY := FALSE;
+¶¶    else¶¶      if  CAS_NORMAL  then¶        PUT_LINE( PACK_NAME & " = " & "'" & PACK_NAME & "'" );¶        PUT( "name
+space " & PACK_NAME );¶        if CODI.DEBUG then PUT( tab50 & ";---------- PACKAGE" ); end if;¶        NEW_LINE;¶      
+end if;¶¶      PUT( "elab_spec:" );¶      if CODI.DEBUG then PUT_LINE( tab50 & ";    SPEC ELAB" ); end if;¶      NEW_LIN
+E;¶¶      DECLARATIONS.CODE_PACKAGE_SPEC( D( SM_SPEC, PACK_ID ) );¶      ENCLOSING_BODY := PACKAGE_BODY;¶      CODE_BODY
+( D( AS_BODY, PACKAGE_BODY ) );¶¶      if  CAS_NORMAL  then¶        PUT( "end namespace " );¶        if CODI.DEBUG then¶
+¬PUT_LINE( tab50 & ";---------- end package BDY " & PACK_NAME );¶        end if;¶      end if;¶      NEW_LINE;¶¶    end 
+if;¶¶  end¬CODE_PACKAGE_BODY;¶¬-----------------¶¶¶¶¬¬¬¬---------¶  procedure¬¬¬CODE_BODY¬¬( ADA_BODY :TREE )¶  is¶  beg
+in¶¶    if ADA_BODY.TY = DN_BLOCK_BODY¶    then¶      CODE_BLOCK_BODY( ADA_BODY );¶    elsif ADA_BODY.TY = DN_STUB¶    t
+hen¶      CODE_STUB( ADA_BODY );¶    end if;¶¶  end¬CODE_BODY;¶¬---------¶¶¶¬¬¬¬--===========--¶  procedure¬¬¬CODE_BLOCK
+_BODY¬( BLOCK_BODY :TREE )¶  is¶  begin¶    DI( CD_LEVEL, BLOCK_BODY, INTEGER( CODI.CUR_LEVEL ) );¶¶    if CODI.CUR_LEVE
+L /= 0 then¶      PUT( "ELB" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );¶    end if;¶¶    if CODI.DEBUG then PUT( tab50 & "; 
+   BODY ELAB" ); end if;¶    NEW_LINE;¶¶--     if FUNCTION_RESULT /= TREE_VOID then¶--       if FUNCTION_RESULT.TY = DN_
+ARRAY then¶--         LOAD_ADR( FUNCTION_RESULT );¶--         EMIT( DPL, A );¶--         EMIT( SLD, A, 0, FUN_RESULT_OFF
+SET - CODI.ADDR_SIZE );¶--         EMIT( IND, I, 0 );¶--         EMIT( ALO, INTEGER( -1 ) );¶--         EMIT( SLD, A, 0,
+ FUN_RESULT_OFFSET );¶--       end if;¶--     end if;¶¶¶    declare¶      SAVE_ENCLOSING¬: TREE¬:= ENCLOSING_BODY;¶    b
+egin¶      CODE_ITEM_S( D( AS_ITEM_S, BLOCK_BODY ) );¶      ENCLOSING_BODY := SAVE_ENCLOSING;¶    end;¶¶    if ENCLOSING
+_BODY.TY = DN_SUBPROGRAM_BODY then¶¶      if CODI.DEBUG then PUT( tab50 & ";    end elab" ); end if;¶      NEW_LINE;¶¶  
+  end if;¶¶    PUT( "begin:" );¶    if CODI.DEBUG then¶      PUT( tab50 & ";---------- " );¶      if ENCLOSING_BODY.TY =
+ DN_SUBPROGRAM_BODY then PUT( "BDY INSTRUCTIONS" );¶      elsif ENCLOSING_BODY.TY = DN_PACKAGE_BODY then PUT( "package B
+DY INSTRUCTIONS" );¶      end if;¶    end if;¶    NEW_LINE;¶¶    INSTRUCTIONS.CODE_STM_S( D( AS_STM_S, BLOCK_BODY ) );¶¶
+    if not IS_EMPTY( LIST( D( AS_ALTERNATIVE_S, BLOCK_BODY ) ) )¶    then¶      CODE_ALTERNATIVE_S( D( AS_ALTERNATIVE_S,
+ BLOCK_BODY ) );¶    end if;¶¶  end¬CODE_BLOCK_BODY;¶¬--===========--¶¶¶¬¬¬¬-----------¶  procedure¬¬¬CODE_ITEM_S¬¬( ITE
+M_S :TREE )¶  is¶  begin¶    declare¶      ITEM_SEQ¬: SEQ_TYPE¬:= LIST ( ITEM_S );¶      ITEM¬: TREE;¶    begin¶      wh
+ile not IS_EMPTY( ITEM_SEQ ) loop¶        POP( ITEM_SEQ, ITEM );¶¶        if ITEM.TY in CLASS_DECL¶        then¶¬DECLARA
+TIONS.CODE_DECL( ITEM );¶¶        elsif ITEM.TY in CLASS_SUBUNIT_BODY¶        then¶¬CODE_SUBUNIT_BODY( ITEM );¶¶        
+end if;¶¶      end loop;¶    end;¶¶  end¬CODE_ITEM_S;¶¬-----------¶¶¶¬¬¬-----------------¶  procedure¬¬CODE_SUBUNIT_BODY
+¬¬( SUBUNIT_BODY :TREE )¶  is¶  begin¶¶    if SUBUNIT_BODY.TY = DN_SUBPROGRAM_BODY then¶      CODE_SUBPROGRAM_BODY ( SUB
+UNIT_BODY );¶¶    elsif SUBUNIT_BODY.TY = DN_PACKAGE_BODY then¶      CODE_PACKAGE_BODY ( SUBUNIT_BODY );¶¶    elsif SUBU
+NIT_BODY.TY = DN_TASK_BODY then¶      CODE_TASK_BODY ( SUBUNIT_BODY );¶¶    end if;¶¶  end¬CODE_SUBUNIT_BODY;¶¬---------
+--------¶¶¶¬¬¬------------¶  procedure¬¬CODE_SUBUNIT¬¬( SUBUNIT :TREE )¶  is¶  begin¶      CODE_SUBUNIT_BODY ( D ( AS_SU
+BUNIT_BODY, SUBUNIT ) );¶¶  end¬CODE_SUBUNIT;¶¬------------¶¶¶¬----------¶end¬STRUCTURES;¶¬----------¶

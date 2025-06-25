@@ -433,7 +433,7 @@ put_line( "; adresse component id" );
 
 
 				----------
-  procedure			CODE_SLICE		( SLICE :TREE )
+  procedure			CODE_SLICE		( SLICE :TREE; IS_DESTINATION :BOOLEAN := TRUE )
   is				----------
     NAME			: TREE	:= D( AS_NAME, SLICE );
     DISCRETE_RANGE		: TREE	:= D( AS_DISCRETE_RANGE, SLICE );
@@ -446,13 +446,17 @@ put_line( "; adresse component id" );
     else
       PUT_LINE( "; CODE_SLICE : NAME.TY A FAIRE : " & NODE_NAME'IMAGE( NAME.TY ) );
     end if;
-    CODE_EXP( D( AS_EXP2, DISCRETE_RANGE ) );
-    PUT_LINE( tab & "INC" );
-    CODE_EXP( D( AS_EXP1, DISCRETE_RANGE ) );
-    PUT_LINE( tab & "SUB" );
-    PUT_LINE( tab & "LI" & tab & IMAGE( COMP_SIZE / CODI.STORAGE_UNIT ) );
-    PUT_LINE( tab & "MUL" );
 
+    if  IS_DESTINATION  then										-- Taille pour un BLKMOV
+      CODE_EXP( D( AS_EXP2, DISCRETE_RANGE ) );
+      PUT_LINE( tab & "INC" );
+      CODE_EXP( D( AS_EXP1, DISCRETE_RANGE ) );
+      PUT_LINE( tab & "SUB" );
+      PUT_LINE( tab & "LI" & tab & IMAGE( COMP_SIZE / CODI.STORAGE_UNIT ) );
+      PUT_LINE( tab & "MUL" );
+    else
+      PUT_LINE( ";  FAIRE UN USEINFO SIZ COMP_SIZ FST_1 LST_1 ET UN DOUBLET data/info DONT ON REND L'ADRESSE" );
+    end if;
   end	CODE_SLICE;
 	----------
 
@@ -491,9 +495,20 @@ put_line( "; adresse component id" );
 	  end if;
 
 	elsif  DESIGNATOR_DEFN.TY = DN_COMPONENT_ID  then
+
 	  if  NAME.TY = DN_USED_OBJECT_ID  then
-	    PUT( tab & "LIVa " & tab & IMAGE( DI( CD_LEVEL, D( SM_DEFN, NAME ) ) ) & ", " );
-	    if  D( SM_DEFN, NAME ).TY = DN_IN_OUT_ID  then
+
+	    if  D( SM_EXP_TYPE, DESIGNATOR ).TY in CLASS_SCALAR  and  IS_SOURCE  then
+	      PUT( tab & "LI" & OPER_SIZ_CHAR( D( SM_EXP_TYPE, DESIGNATOR ) ) );
+
+	    else
+	      PUT( tab & "LIVa " );
+
+	    end if;
+
+	    PUT( tab & IMAGE( DI( CD_LEVEL, D( SM_DEFN, NAME ) ) ) & ", " );
+
+	    if  D( SM_DEFN, NAME ).TY in  CLASS_PARAM_NAME  then
 	      PUT( '-' & PRINT_NAME( D(LX_SYMREP, NAME ) ) & "_ofs, " );
 
 	    else

@@ -3,6 +3,20 @@
 -------------------------------------------------------------------------------------------------------------------------
 --	1	2	3	4	5	6	7	8	9	0	1	2
 
+
+--				          |
+--				       \\ | //
+--				     \\ u ^ u //		/-------_______------\
+--				   \ )Y|Y|Y|Y|Y( /	  	|  T  h e            |
+--				     / /o o o\ \	     	|  L  o n e s o m e  |
+--				    \|H|H|H|H|H|/		|  A  d a            |
+--				   G))  Q   Q  ((G	   	|  L  o v i n g      |
+--				    / \   "   / \ 	   	|  O  l't i m e r    |
+--				   /_/  \V¨V/  \_\	   	|  C  o m p i l e r  |
+--				       \vvvvv/	     	\-------______-------/
+--				     \ooooooooo/
+
+
 with TEXT_IO, CALENDAR;
 use  TEXT_IO, CALENDAR;
 with IDL, CODE_GEN;
@@ -12,6 +26,7 @@ with IDL, CODE_GEN;
 
 
 is
+
   CMD_FROM_STDIN		: STRING( 1..512 );
   CMD_LENGTH		: NATURAL;
 
@@ -22,15 +37,15 @@ is
   OPTION			: CHARACTER;
 
   START_TIME, END_TIME	: CALENDAR.TIME;
-begin
 
+begin
   GET_LINE( CMD_FROM_STDIN, CMD_LENGTH );
 
   declare
     CHN_START		: NATURAL	:= CMD_FROM_STDIN'FIRST;
     POST_CHN		: NATURAL	:= 0;
-  begin
-				----------------------
+
+  begin				----------------------
 				ISOLE_PROJECT_DIR_PATH:
     begin
 FIND_START_1:
@@ -114,6 +129,7 @@ FIND_START_3:
 
   declare
     POSITION_SEPARATEUR	: NATURAL	:= ACCES_TEXTE_LENGTH;
+
   begin
 
 DEBUT_NOM_TEXTE:
@@ -127,6 +143,7 @@ DEBUT_NOM_TEXTE:
       CHEMIN_TEXTE	:constant STRING	:= IDL.PROJECT_PATH( 1 .. IDL.PROJECT_PATH_LENGTH )
 				      & ACCES_TEXTE( 1 .. POSITION_SEPARATEUR );
       NOM_TEXTE	:constant STRING	:= ACCES_TEXTE( POSITION_SEPARATEUR+1 .. ACCES_TEXTE_LENGTH );
+
     begin
       IDL.PAR_PHASE( CHEMIN_TEXTE, NOM_TEXTE, IDL.LIB_PATH );
 				if  OPTION = 'S'  or  OPTION = 's'  then goto FIN; end if;
