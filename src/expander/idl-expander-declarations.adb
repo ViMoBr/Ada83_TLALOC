@@ -1,18 +1,18 @@
 ------------------------------------------------------------------------------------------------------------------------
--- CC BY SA	CODE_GEN.DECLARATIONS.ADB	VINCENT MORIN	6/5/2025	UNIVERSITE DE BRETAGNE OCCIDENTALE
+-- CC BY SA	IDL-EXPANDER.DECLARATIONS.ADB	VINCENT MORIN	6/5/2025	UNIVERSITE DE BRETAGNE OCCIDENTALE
 ------------------------------------------------------------------------------------------------------------------------
---	1	2	3	4	5	6	7	8	9	0	1	2
+--	1	2	3	4	5	6	7	8	9	0	1
 
 
-separate ( CODE_GEN )
+separate ( IDL.EXPANDER )
 				------------
  	package body		DECLARATIONS
 				------------
 is
 
 
-  package CODI	renames CODAGE_INTERMEDIAIRE;
-
+  package CODI	renames EXPANDER.UTILS;
+  use CODI;
 
   				--------------
   procedure			CODE_TYPE_DECL		( TYPE_DECL :TREE )

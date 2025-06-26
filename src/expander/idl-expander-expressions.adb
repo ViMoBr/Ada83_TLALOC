@@ -1,17 +1,19 @@
 -------------------------------------------------------------------------------------------------------------------------
--- CC BY SA	EXPRESSIONS.ADB	VINCENT MORIN	21/6/2024		UNIVERSITE DE BRETAGNE OCCIDENTALE
+-- CC BY SA	IDL-EXPANDER.EXPRESSIONS.ADB	VINCENT MORIN	21/6/2024	UNIVERSITE DE BRETAGNE OCCIDENTALE
 -------------------------------------------------------------------------------------------------------------------------
 --	1	2	3	4	5	6	7	8	9	0	1	2
 
 
-separate ( CODE_GEN )
+separate ( IDL.EXPANDER )
+
 				-----------
  	package body		EXPRESSIONS
 				-----------
 is
 
 
-  package CODI	renames CODAGE_INTERMEDIAIRE;
+  package CODI	renames IDL.EXPANDER.UTILS;
+  use CODI;
 
   				--====--
   procedure			CODE_EXP			( EXP :TREE )

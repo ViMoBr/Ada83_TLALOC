@@ -70,6 +70,6 @@ OR;¶           NAME_ERROR     : exception renames IO_EXCEPTIONS.NAME_ERROR;¶    
 s IO_EXCEPTIONS.USE_ERROR;¶           DEVICE_ERROR   : exception renames IO_EXCEPTIONS.DEVICE_ERROR;¶           END_ERRO
 R      : exception renames IO_EXCEPTIONS.END_ERROR;¶           DATA_ERROR     : exception renames IO_EXCEPTIONS.DATA_ERR
 OR;¶           LAYOUT_ERROR   : exception renames IO_EXCEPTIONS.LAYOUT_ERROR;¶¶private¶¶  subtype FILE_NAME_BUFFER¬is ST
-RING( 1 .. 256 );¶¶  type FILE_TYPE¬¬is record¶¬¬¬  ID¬¬: INTEGER;¶¬¬¬  NAME¬¬: FILE_NAME_BUFFER;¶¬¬¬  MODE¬¬: FILE_MODE
-;¶¬¬¬  PAGE_LENGTH,¶¬¬¬  LINE_LENGTH,¶¬¬¬  PAGE,¶¬¬¬  LINE,¶¬¬¬  COL¬¬: POSITIVE_COUNT;¶¬¬¬end record;¶¶¬-------¶ end¬TE
-XT_IO;¶¬-------¶
+RING( 1 .. 256 );¶¶  type FILE_TYPE¬¬is record¶¬¬¬  ID¬¬: INTEGER;¶¬¬¬  NAME¬¬: FILE_NAME_BUFFER;¶¬¬¬  NAME_LEN¬: POSITI
+VE;¶¬¬¬  MODE¬¬: FILE_MODE;¶¬¬¬  PAGE_LENGTH,¶¬¬¬  LINE_LENGTH,¶¬¬¬  PAGE,¶¬¬¬  LINE,¶¬¬¬  COL¬¬: POSITIVE_COUNT;¶¬¬¬end
+ record;¶¶¬-------¶ end¬TEXT_IO;¶¬-------¶

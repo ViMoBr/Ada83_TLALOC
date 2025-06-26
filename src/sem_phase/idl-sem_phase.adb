@@ -733,63 +733,32 @@ is					---------
   --|------------------------------------------------------------------------------------------------
   package MAKE_NOD is
       
-          function MAKE_VARIABLE_ID
-                ( LX_SRCPOS: TREE := TREE_VOID;
-                LX_SYMREP: TREE := TREE_VOID;
-                SM_OBJ_TYPE: TREE := TREE_VOID;
-                SM_INIT_EXP: TREE := TREE_VOID;
-                SM_RENAMES_OBJ: BOOLEAN := FALSE;
-                SM_ADDRESS: TREE := TREE_VOID;
-                SM_IS_SHARED: BOOLEAN := FALSE;
-                XD_REGION: TREE := TREE_VOID)
-                return TREE;
+    function  MAKE_VARIABLE_ID	( LX_SRCPOS, LX_SYMREP, SM_OBJ_TYPE, SM_INIT_EXP: TREE := TREE_VOID;
+				  SM_RENAMES_OBJ: BOOLEAN := FALSE;
+				  SM_ADDRESS: TREE := TREE_VOID;
+				  SM_IS_SHARED: BOOLEAN := FALSE;
+				  XD_REGION: TREE := TREE_VOID )
+				return TREE;
       
-          function MAKE_CONSTANT_ID
-                ( LX_SRCPOS: TREE := TREE_VOID;
-                LX_SYMREP: TREE := TREE_VOID;
-                SM_OBJ_TYPE: TREE := TREE_VOID;
-                SM_INIT_EXP: TREE := TREE_VOID;
-                SM_RENAMES_OBJ: BOOLEAN := FALSE;
-                SM_ADDRESS: TREE := TREE_VOID;
-                SM_FIRST: TREE := TREE_VOID;
-                XD_REGION: TREE := TREE_VOID)
-                return TREE;
+    function  MAKE_CONSTANT_ID	( LX_SRCPOS, LX_SYMREP, SM_OBJ_TYPE, SM_INIT_EXP: TREE := TREE_VOID;
+				  SM_RENAMES_OBJ: BOOLEAN := FALSE;
+				  SM_ADDRESS, SM_FIRST, XD_REGION: TREE := TREE_VOID )
+				return TREE;
       
-          function MAKE_NUMBER_ID
-                ( LX_SRCPOS: TREE := TREE_VOID;
-                LX_SYMREP: TREE := TREE_VOID;
-                SM_OBJ_TYPE: TREE := TREE_VOID;
-                SM_INIT_EXP: TREE := TREE_VOID;
-                XD_REGION: TREE := TREE_VOID)
-                return TREE;
+    function  MAKE_NUMBER_ID		( LX_SRCPOS, LX_SYMREP, SM_OBJ_TYPE, SM_INIT_EXP, XD_REGION: TREE := TREE_VOID )
+				return TREE;
       
-          function MAKE_COMPONENT_ID
-                ( LX_SRCPOS: TREE := TREE_VOID;
-                LX_SYMREP: TREE := TREE_VOID;
-                SM_OBJ_TYPE: TREE := TREE_VOID;
-                SM_INIT_EXP: TREE := TREE_VOID;
-                SM_COMP_REP: TREE := TREE_VOID;
-                XD_REGION: TREE := TREE_VOID)
-                return TREE;
+    function  MAKE_COMPONENT_ID	( LX_SRCPOS, LX_SYMREP, SM_OBJ_TYPE, SM_INIT_EXP, SM_COMP_REP,
+				  XD_REGION: TREE := TREE_VOID)
+				return TREE;
       
-          function MAKE_DISCRIMINANT_ID
-                ( LX_SRCPOS: TREE := TREE_VOID;
-                LX_SYMREP: TREE := TREE_VOID;
-                SM_OBJ_TYPE: TREE := TREE_VOID;
-                SM_INIT_EXP: TREE := TREE_VOID;
-                SM_COMP_REP: TREE := TREE_VOID;
-                SM_FIRST: TREE := TREE_VOID;
-                XD_REGION: TREE := TREE_VOID)
-                return TREE;
+    function MAKE_DISCRIMINANT_ID	( LX_SRCPOS, LX_SYMREP, SM_OBJ_TYPE, SM_INIT_EXP, SM_COMP_REP, SM_FIRST,
+				  XD_REGION: TREE := TREE_VOID)
+				return TREE;
       
-          function MAKE_IN_ID
-                ( LX_SRCPOS: TREE := TREE_VOID;
-                LX_SYMREP: TREE := TREE_VOID;
-                SM_OBJ_TYPE: TREE := TREE_VOID;
-                SM_INIT_EXP: TREE := TREE_VOID;
-                SM_FIRST: TREE := TREE_VOID;
-                XD_REGION: TREE := TREE_VOID)
-                return TREE;
+    function  MAKE_IN_ID		( LX_SRCPOS, LX_SYMREP, SM_OBJ_TYPE, SM_INIT_EXP, SM_FIRST,
+				XD_REGION: TREE := TREE_VOID )
+				return TREE;
       
           function MAKE_IN_OUT_ID
                 ( LX_SRCPOS: TREE := TREE_VOID;

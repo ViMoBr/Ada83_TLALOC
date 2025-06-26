@@ -239,591 +239,581 @@ PESET_TYPE );¶    procedure EVAL_NON_UNIVERSAL_DISCRETE_RANGE¬( EXP :TREE; TYPES
 ANTIATION¬( UNIT_ID :TREE; INSTANTIATION :TREE; H :H_TYPE );¶          ¶  --|-------------------------------------------
 -----------------------------------------------------¶  end INSTANT;¶¶¶¶¶¶  --|-----------------------------------------
 -------------------------------------------------------¶¶  --¬¬MAKE_NOD¶¶  --|------------------------------------------
-------------------------------------------------------¶  package MAKE_NOD is¶      ¶          function MAKE_VARIABLE_ID¶
-                ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_OBJ_TYP
-E: TREE := TREE_VOID;¶                SM_INIT_EXP: TREE := TREE_VOID;¶                SM_RENAMES_OBJ: BOOLEAN := FALSE;¶
-                SM_ADDRESS: TREE := TREE_VOID;¶                SM_IS_SHARED: BOOLEAN := FALSE;¶                XD_REGION
-: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_CONSTANT_ID¶                ( LX_SRCPOS
-: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_OBJ_TYPE: TREE := TREE_VOID;¶     
-           SM_INIT_EXP: TREE := TREE_VOID;¶                SM_RENAMES_OBJ: BOOLEAN := FALSE;¶                SM_ADDRESS:
- TREE := TREE_VOID;¶                SM_FIRST: TREE := TREE_VOID;¶                XD_REGION: TREE := TREE_VOID)¶         
-       return TREE;¶      ¶          function MAKE_NUMBER_ID¶                ( LX_SRCPOS: TREE := TREE_VOID;¶           
-     LX_SYMREP: TREE := TREE_VOID;¶                SM_OBJ_TYPE: TREE := TREE_VOID;¶                SM_INIT_EXP: TREE := 
-TREE_VOID;¶                XD_REGION: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_COM
-PONENT_ID¶                ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                
-SM_OBJ_TYPE: TREE := TREE_VOID;¶                SM_INIT_EXP: TREE := TREE_VOID;¶                SM_COMP_REP: TREE := TRE
-E_VOID;¶                XD_REGION: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_DISCRI
-MINANT_ID¶                ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                
-SM_OBJ_TYPE: TREE := TREE_VOID;¶                SM_INIT_EXP: TREE := TREE_VOID;¶                SM_COMP_REP: TREE := TRE
-E_VOID;¶                SM_FIRST: TREE := TREE_VOID;¶                XD_REGION: TREE := TREE_VOID)¶                retur
-n TREE;¶      ¶          function MAKE_IN_ID¶                ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: 
-TREE := TREE_VOID;¶                SM_OBJ_TYPE: TREE := TREE_VOID;¶                SM_INIT_EXP: TREE := TREE_VOID;¶     
-           SM_FIRST: TREE := TREE_VOID;¶                XD_REGION: TREE := TREE_VOID)¶                return TREE;¶     
- ¶          function MAKE_IN_OUT_ID¶                ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := T
-REE_VOID;¶                SM_OBJ_TYPE: TREE := TREE_VOID;¶                SM_INIT_EXP: TREE := TREE_VOID;¶              
-  SM_FIRST: TREE := TREE_VOID;¶                XD_REGION: TREE := TREE_VOID)¶                return TREE;¶      ¶       
-   function MAKE_OUT_ID¶                ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶  
-              SM_OBJ_TYPE: TREE := TREE_VOID;¶                SM_INIT_EXP: TREE := TREE_VOID;¶                SM_FIRST: 
-TREE := TREE_VOID;¶                XD_REGION: TREE := TREE_VOID)¶                return TREE;¶      ¶          function 
-MAKE_ENUMERATION_ID¶                ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶      
-          SM_OBJ_TYPE: TREE := TREE_VOID;¶                SM_POS: INTEGER := 0;¶                SM_REP: INTEGER := 0;¶  
-              XD_REGION: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_CHARACTER_ID¶   
-             ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_OBJ_TYPE: 
-TREE := TREE_VOID;¶                SM_POS: INTEGER := 0;¶                SM_REP: INTEGER := 0;¶                XD_REGION
-: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_ITERATION_ID¶                ( LX_SRCPO
-S: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_OBJ_TYPE: TREE := TREE_VOID;¶    
-            XD_REGION: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_TYPE_ID¶          
-      ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_TYPE_SPEC: TREE :
-= TREE_VOID;¶                SM_FIRST: TREE := TREE_VOID;¶                XD_REGION: TREE := TREE_VOID)¶                
-return TREE;¶      ¶          function MAKE_SUBTYPE_ID¶                ( LX_SRCPOS: TREE := TREE_VOID;¶                L
-X_SYMREP: TREE := TREE_VOID;¶                SM_TYPE_SPEC: TREE := TREE_VOID;¶                XD_REGION: TREE := TREE_VO
-ID)¶                return TREE;¶      ¶          function MAKE_PRIVATE_TYPE_ID¶                ( LX_SRCPOS: TREE := TRE
-E_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_TYPE_SPEC: TREE := TREE_VOID;¶                X
-D_REGION: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_L_PRIVATE_TYPE_ID¶             
-   ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_TYPE_SPEC: TREE := T
-REE_VOID;¶                XD_REGION: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_PROC
-EDURE_ID¶                ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                S
-M_FIRST: TREE := TREE_VOID;¶                SM_SPEC: TREE := TREE_VOID;¶                SM_UNIT_DESC: TREE := TREE_VOID;
-¶                SM_ADDRESS: TREE := TREE_VOID;¶                SM_IS_INLINE: BOOLEAN := FALSE;¶                SM_INTER
-FACE: TREE := TREE_VOID;¶                XD_REGION: TREE := TREE_VOID;¶                XD_STUB: TREE := TREE_VOID;¶     
-           XD_BODY: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_FUNCTION_ID¶         
-       ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_FIRST: TREE := T
-REE_VOID;¶                SM_SPEC: TREE := TREE_VOID;¶                SM_UNIT_DESC: TREE := TREE_VOID;¶                S
-M_ADDRESS: TREE := TREE_VOID;¶                SM_IS_INLINE: BOOLEAN := FALSE;¶                SM_INTERFACE: TREE := TREE
-_VOID;¶                XD_REGION: TREE := TREE_VOID;¶                XD_STUB: TREE := TREE_VOID;¶                XD_BODY
-: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_OPERATOR_ID¶                ( LX_SRCPOS
-: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_FIRST: TREE := TREE_VOID;¶        
-        SM_SPEC: TREE := TREE_VOID;¶                SM_UNIT_DESC: TREE := TREE_VOID;¶                SM_ADDRESS: TREE :=
- TREE_VOID;¶                SM_IS_INLINE: BOOLEAN := FALSE;¶                SM_INTERFACE: TREE := TREE_VOID;¶           
-     XD_REGION: TREE := TREE_VOID;¶                XD_STUB: TREE := TREE_VOID;¶                XD_BODY: TREE := TREE_VOI
-D;¶                XD_NOT_EQUAL: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_PACKAGE_
-ID¶                ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_FIRS
-T: TREE := TREE_VOID;¶                SM_SPEC: TREE := TREE_VOID;¶                SM_UNIT_DESC: TREE := TREE_VOID;¶     
-           SM_ADDRESS: TREE := TREE_VOID;¶                XD_REGION: TREE := TREE_VOID;¶                XD_STUB: TREE :=
- TREE_VOID;¶                XD_BODY: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_GENE
-RIC_ID¶                ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_
-FIRST: TREE := TREE_VOID;¶                SM_SPEC: TREE := TREE_VOID;¶                SM_GENERIC_PARAM_S: TREE := TREE_V
-OID;¶                SM_BODY: TREE := TREE_VOID;¶                SM_IS_INLINE: BOOLEAN := FALSE;¶                XD_REGI
-ON: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_TASK_BODY_ID¶                ( LX_SRC
-POS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_FIRST: TREE := TREE_VOID;¶     
-           SM_TYPE_SPEC: TREE := TREE_VOID;¶                SM_BODY: TREE := TREE_VOID;¶                XD_REGION: TREE 
-:= TREE_VOID)¶                return TREE;¶      ¶          function MAKE_LABEL_ID¶                ( LX_SRCPOS: TREE := 
+------------------------------------------------------¶  package MAKE_NOD is¶      ¶    function  MAKE_VARIABLE_ID¬( LX_
+SRCPOS, LX_SYMREP, SM_OBJ_TYPE, SM_INIT_EXP: TREE := TREE_VOID;¶¬¬¬¬  SM_RENAMES_OBJ: BOOLEAN := FALSE;¶¬¬¬¬  SM_ADDRESS
+: TREE := TREE_VOID;¶¬¬¬¬  SM_IS_SHARED: BOOLEAN := FALSE;¶¬¬¬¬  XD_REGION: TREE := TREE_VOID )¶¬¬¬¬return TREE;¶      ¶
+    function  MAKE_CONSTANT_ID¬( LX_SRCPOS, LX_SYMREP, SM_OBJ_TYPE, SM_INIT_EXP: TREE := TREE_VOID;¶¬¬¬¬  SM_RENAMES_OBJ
+: BOOLEAN := FALSE;¶¬¬¬¬  SM_ADDRESS, SM_FIRST, XD_REGION: TREE := TREE_VOID )¶¬¬¬¬return TREE;¶      ¶    function  MAK
+E_NUMBER_ID¬¬( LX_SRCPOS, LX_SYMREP, SM_OBJ_TYPE, SM_INIT_EXP, XD_REGION: TREE := TREE_VOID )¶¬¬¬¬return TREE;¶      ¶  
+  function  MAKE_COMPONENT_ID¬( LX_SRCPOS, LX_SYMREP, SM_OBJ_TYPE, SM_INIT_EXP, SM_COMP_REP,¶¬¬¬¬  XD_REGION: TREE := TR
+EE_VOID)¶¬¬¬¬return TREE;¶      ¶    function MAKE_DISCRIMINANT_ID¬( LX_SRCPOS, LX_SYMREP, SM_OBJ_TYPE, SM_INIT_EXP, SM_
+COMP_REP, SM_FIRST,¶¬¬¬¬  XD_REGION: TREE := TREE_VOID)¶¬¬¬¬return TREE;¶      ¶    function  MAKE_IN_ID¬¬( LX_SRCPOS, L
+X_SYMREP, SM_OBJ_TYPE, SM_INIT_EXP, SM_FIRST,¶¬¬¬¬XD_REGION: TREE := TREE_VOID )¶¬¬¬¬return TREE;¶      ¶          funct
+ion MAKE_IN_OUT_ID¶                ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶       
+         SM_OBJ_TYPE: TREE := TREE_VOID;¶                SM_INIT_EXP: TREE := TREE_VOID;¶                SM_FIRST: TREE 
+:= TREE_VOID;¶                XD_REGION: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_
+OUT_ID¶                ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_
+OBJ_TYPE: TREE := TREE_VOID;¶                SM_INIT_EXP: TREE := TREE_VOID;¶                SM_FIRST: TREE := TREE_VOID
+;¶                XD_REGION: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_ENUMERATION_
+ID¶                ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_OBJ_
+TYPE: TREE := TREE_VOID;¶                SM_POS: INTEGER := 0;¶                SM_REP: INTEGER := 0;¶                XD_
+REGION: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_CHARACTER_ID¶                ( LX
+_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_OBJ_TYPE: TREE := TREE_VOID
+;¶                SM_POS: INTEGER := 0;¶                SM_REP: INTEGER := 0;¶                XD_REGION: TREE := TREE_VO
+ID)¶                return TREE;¶      ¶          function MAKE_ITERATION_ID¶                ( LX_SRCPOS: TREE := TREE_V
+OID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_OBJ_TYPE: TREE := TREE_VOID;¶                XD_RE
+GION: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_TYPE_ID¶                ( LX_SRCPOS
+: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_TYPE_SPEC: TREE := TREE_VOID;¶    
+            SM_FIRST: TREE := TREE_VOID;¶                XD_REGION: TREE := TREE_VOID)¶                return TREE;¶    
+  ¶          function MAKE_SUBTYPE_ID¶                ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE :=
+ TREE_VOID;¶                SM_TYPE_SPEC: TREE := TREE_VOID;¶                XD_REGION: TREE := TREE_VOID)¶             
+   return TREE;¶      ¶          function MAKE_PRIVATE_TYPE_ID¶                ( LX_SRCPOS: TREE := TREE_VOID;¶         
+       LX_SYMREP: TREE := TREE_VOID;¶                SM_TYPE_SPEC: TREE := TREE_VOID;¶                XD_REGION: TREE :=
+ TREE_VOID)¶                return TREE;¶      ¶          function MAKE_L_PRIVATE_TYPE_ID¶                ( LX_SRCPOS: T
+REE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_TYPE_SPEC: TREE := TREE_VOID;¶       
+         XD_REGION: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_PROCEDURE_ID¶        
+        ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_FIRST: TREE := 
+TREE_VOID;¶                SM_SPEC: TREE := TREE_VOID;¶                SM_UNIT_DESC: TREE := TREE_VOID;¶                
+SM_ADDRESS: TREE := TREE_VOID;¶                SM_IS_INLINE: BOOLEAN := FALSE;¶                SM_INTERFACE: TREE := TRE
+E_VOID;¶                XD_REGION: TREE := TREE_VOID;¶                XD_STUB: TREE := TREE_VOID;¶                XD_BOD
+Y: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_FUNCTION_ID¶                ( LX_SRCPO
+S: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_FIRST: TREE := TREE_VOID;¶       
+         SM_SPEC: TREE := TREE_VOID;¶                SM_UNIT_DESC: TREE := TREE_VOID;¶                SM_ADDRESS: TREE :
+= TREE_VOID;¶                SM_IS_INLINE: BOOLEAN := FALSE;¶                SM_INTERFACE: TREE := TREE_VOID;¶          
+      XD_REGION: TREE := TREE_VOID;¶                XD_STUB: TREE := TREE_VOID;¶                XD_BODY: TREE := TREE_VO
+ID)¶                return TREE;¶      ¶          function MAKE_OPERATOR_ID¶                ( LX_SRCPOS: TREE := TREE_VO
+ID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_FIRST: TREE := TREE_VOID;¶                SM_SPEC: 
+TREE := TREE_VOID;¶                SM_UNIT_DESC: TREE := TREE_VOID;¶                SM_ADDRESS: TREE := TREE_VOID;¶     
+           SM_IS_INLINE: BOOLEAN := FALSE;¶                SM_INTERFACE: TREE := TREE_VOID;¶                XD_REGION: T
+REE := TREE_VOID;¶                XD_STUB: TREE := TREE_VOID;¶                XD_BODY: TREE := TREE_VOID;¶              
+  XD_NOT_EQUAL: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_PACKAGE_ID¶              
+  ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_FIRST: TREE := TREE_V
+OID;¶                SM_SPEC: TREE := TREE_VOID;¶                SM_UNIT_DESC: TREE := TREE_VOID;¶                SM_ADD
+RESS: TREE := TREE_VOID;¶                XD_REGION: TREE := TREE_VOID;¶                XD_STUB: TREE := TREE_VOID;¶     
+           XD_BODY: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_GENERIC_ID¶          
+      ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_FIRST: TREE := TR
+EE_VOID;¶                SM_SPEC: TREE := TREE_VOID;¶                SM_GENERIC_PARAM_S: TREE := TREE_VOID;¶            
+    SM_BODY: TREE := TREE_VOID;¶                SM_IS_INLINE: BOOLEAN := FALSE;¶                XD_REGION: TREE := TREE_
+VOID)¶                return TREE;¶      ¶          function MAKE_TASK_BODY_ID¶                ( LX_SRCPOS: TREE := TREE
+_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_FIRST: TREE := TREE_VOID;¶                SM_TYP
+E_SPEC: TREE := TREE_VOID;¶                SM_BODY: TREE := TREE_VOID;¶                XD_REGION: TREE := TREE_VOID)¶   
+             return TREE;¶      ¶          function MAKE_LABEL_ID¶                ( LX_SRCPOS: TREE := TREE_VOID;¶      
+          LX_SYMREP: TREE := TREE_VOID;¶                SM_STM: TREE := TREE_VOID;¶                XD_REGION: TREE := TR
+EE_VOID)¶                return TREE;¶      ¶          function MAKE_BLOCK_LOOP_ID¶                ( LX_SRCPOS: TREE := 
 TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_STM: TREE := TREE_VOID;¶                XD_R
-EGION: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_BLOCK_LOOP_ID¶                ( LX
-_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_STM: TREE := TREE_VOID;¶   
-             XD_REGION: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_ENTRY_ID¶        
-        ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_SPEC: TREE := T
-REE_VOID;¶                SM_ADDRESS: TREE := TREE_VOID;¶                XD_REGION: TREE := TREE_VOID)¶                r
-eturn TREE;¶      ¶          function MAKE_EXCEPTION_ID¬( LX_SRCPOS, LX_SYMREP, SM_RENAMES_EXC, XD_REGION: TREE := TREE_
-VOID )¬return TREE;¶          function MAKE_ATTRIBUTE_ID¬( LX_SRCPOS, LX_SYMREP: TREE := TREE_VOID; XD_POS: INTEGER )¬re
-turn TREE;¶          function MAKE_PRAGMA_ID¬( LX_SRCPOS, LX_SYMREP, SM_ARGUMENT_ID_S :TREE := TREE_VOID; XD_POS :INTEGE
-R )¬return TREE;¶          function MAKE_ARGUMENT_ID¬( LX_SRCPOS, LX_SYMREP :TREE := TREE_VOID; XD_POS :INTEGER )¬return
- TREE;¶          function MAKE_BLTN_OPERATOR_ID( LX_SRCPOS, LX_SYMREP: TREE := TREE_VOID; SM_OPERATOR: INTEGER )¬return 
-TREE;¶      ¶          function MAKE_BLOCK_MASTER¶                ( LX_SRCPOS: TREE := TREE_VOID;¶                SM_STM
-: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_DSCRMT_DECL¶                ( AS_SOURCE
-_NAME_S: TREE := TREE_VOID;¶                AS_NAME: TREE := TREE_VOID;¶                AS_EXP: TREE := TREE_VOID;¶     
-           LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_IN¶                
-( AS_SOURCE_NAME_S: TREE := TREE_VOID;¶                AS_NAME: TREE := TREE_VOID;¶                AS_EXP: TREE := TREE_
-VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶                LX_DEFAULT: BOOLEAN := FALSE)¶                return
- TREE;¶      ¶          function MAKE_OUT¶                ( AS_SOURCE_NAME_S: TREE := TREE_VOID;¶                AS_NAME
-: TREE := TREE_VOID;¶                AS_EXP: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶          
-      return TREE;¶      ¶          function MAKE_IN_OUT¶                ( AS_SOURCE_NAME_S: TREE := TREE_VOID;¶        
-        AS_NAME: TREE := TREE_VOID;¶                AS_EXP: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_V
-OID)¶                return TREE;¶      ¶          function MAKE_CONSTANT_DECL¶                ( AS_SOURCE_NAME_S: TREE 
-:= TREE_VOID;¶                AS_EXP: TREE := TREE_VOID;¶                AS_TYPE_DEF: TREE := TREE_VOID;¶               
- LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_VARIABLE_DECL¶               
- ( AS_SOURCE_NAME_S: TREE := TREE_VOID;¶                AS_EXP: TREE := TREE_VOID;¶                AS_TYPE_DEF: TREE := 
-TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_NUM
-BER_DECL¶                ( AS_SOURCE_NAME_S: TREE := TREE_VOID;¶                AS_EXP: TREE := TREE_VOID;¶             
-   LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_EXCEPTION_DECL¶            
-    ( AS_SOURCE_NAME_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶  
-    ¶          function MAKE_DEFERRED_CONSTANT_DECL¶                ( AS_SOURCE_NAME_S: TREE := TREE_VOID;¶             
-   AS_NAME: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶       
-   function MAKE_TYPE_DECL¶                ( AS_SOURCE_NAME: TREE := TREE_VOID;¶                AS_DSCRMT_DECL_S: TREE :
-= TREE_VOID;¶                AS_TYPE_DEF: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶             
-   return TREE;¶      ¶          function MAKE_SUBTYPE_DECL¶                ( AS_SOURCE_NAME: TREE := TREE_VOID;¶       
-         AS_SUBTYPE_INDICATION: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return 
-TREE;¶      ¶          function MAKE_TASK_DECL¶                ( AS_SOURCE_NAME: TREE := TREE_VOID;¶                AS_D
-ECL_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          fu
-nction MAKE_GENERIC_DECL¶                ( AS_SOURCE_NAME: TREE := TREE_VOID;¶                AS_HEADER: TREE := TREE_VO
-ID;¶                AS_ITEM_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return T
-REE;¶      ¶          function MAKE_SUBPROG_ENTRY_DECL¶                ( AS_SOURCE_NAME: TREE := TREE_VOID;¶            
-    AS_HEADER: TREE := TREE_VOID;¶                AS_UNIT_KIND: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TR
-EE_VOID)¶                return TREE;¶      ¶          function MAKE_PACKAGE_DECL¶                ( AS_SOURCE_NAME: TREE
- := TREE_VOID;¶                AS_HEADER: TREE := TREE_VOID;¶                AS_UNIT_KIND: TREE := TREE_VOID;¶          
-      LX_SRCPOS: TREE := TREE_VOID )¶                return TREE;¶      ¶          function MAKE_RENAMES_OBJ_DECL¶      
-          ( AS_SOURCE_NAME: TREE := TREE_VOID;¶                AS_NAME: TREE := TREE_VOID;¶                AS_TYPE_MARK_
-NAME: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          fun
-ction MAKE_RENAMES_EXC_DECL¶                ( AS_SOURCE_NAME: TREE := TREE_VOID;¶                AS_NAME: TREE := TREE_V
-OID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_NULL_COMP
-_DECL¶                ( LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_LENGTH
-_ENUM_REP¶                ( AS_NAME: TREE := TREE_VOID;¶                AS_EXP: TREE := TREE_VOID;¶                LX_SR
-CPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_ADDRESS¶                ( AS_NAME: 
+EGION: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_ENTRY_ID¶                ( LX_SRCP
+OS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_SPEC: TREE := TREE_VOID;¶       
+         SM_ADDRESS: TREE := TREE_VOID;¶                XD_REGION: TREE := TREE_VOID)¶                return TREE;¶     
+ ¶          function MAKE_EXCEPTION_ID¬( LX_SRCPOS, LX_SYMREP, SM_RENAMES_EXC, XD_REGION: TREE := TREE_VOID )¬return TRE
+E;¶          function MAKE_ATTRIBUTE_ID¬( LX_SRCPOS, LX_SYMREP: TREE := TREE_VOID; XD_POS: INTEGER )¬return TREE;¶      
+    function MAKE_PRAGMA_ID¬( LX_SRCPOS, LX_SYMREP, SM_ARGUMENT_ID_S :TREE := TREE_VOID; XD_POS :INTEGER )¬return TREE;¶
+          function MAKE_ARGUMENT_ID¬( LX_SRCPOS, LX_SYMREP :TREE := TREE_VOID; XD_POS :INTEGER )¬return TREE;¶          
+function MAKE_BLTN_OPERATOR_ID( LX_SRCPOS, LX_SYMREP: TREE := TREE_VOID; SM_OPERATOR: INTEGER )¬return TREE;¶      ¶    
+      function MAKE_BLOCK_MASTER¶                ( LX_SRCPOS: TREE := TREE_VOID;¶                SM_STM: TREE := TREE_VO
+ID)¶                return TREE;¶      ¶          function MAKE_DSCRMT_DECL¶                ( AS_SOURCE_NAME_S: TREE := 
+TREE_VOID;¶                AS_NAME: TREE := TREE_VOID;¶                AS_EXP: TREE := TREE_VOID;¶                LX_SRC
+POS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_IN¶                ( AS_SOURCE_NAME_
+S: TREE := TREE_VOID;¶                AS_NAME: TREE := TREE_VOID;¶                AS_EXP: TREE := TREE_VOID;¶           
+     LX_SRCPOS: TREE := TREE_VOID;¶                LX_DEFAULT: BOOLEAN := FALSE)¶                return TREE;¶      ¶   
+       function MAKE_OUT¶                ( AS_SOURCE_NAME_S: TREE := TREE_VOID;¶                AS_NAME: TREE := TREE_VO
+ID;¶                AS_EXP: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE
+;¶      ¶          function MAKE_IN_OUT¶                ( AS_SOURCE_NAME_S: TREE := TREE_VOID;¶                AS_NAME: 
 TREE := TREE_VOID;¶                AS_EXP: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶            
-    return TREE;¶      ¶          function MAKE_RECORD_REP¶                ( AS_NAME: TREE := TREE_VOID;¶               
- AS_ALIGNMENT_CLAUSE: TREE := TREE_VOID;¶                AS_COMP_REP_S: TREE := TREE_VOID;¶                LX_SRCPOS: TR
-EE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_USE¶                ( AS_NAME_S: TREE := TR
-EE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_PRAGM
-A¶                ( AS_USED_NAME_ID: TREE := TREE_VOID;¶                AS_GENERAL_ASSOC_S: TREE := TREE_VOID;¶         
-       LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_SUBPROGRAM_BODY¶       
-         ( AS_SOURCE_NAME: TREE := TREE_VOID;¶                AS_BODY: TREE := TREE_VOID;¶                AS_HEADER: TRE
-E := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAK
-E_PACKAGE_BODY¶                ( AS_SOURCE_NAME: TREE := TREE_VOID;¶                AS_BODY: TREE := TREE_VOID;¶        
-        LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_TASK_BODY¶            
-    ( AS_SOURCE_NAME: TREE := TREE_VOID;¶                AS_BODY: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := 
-TREE_VOID)¶                return TREE;¶      ¶          function MAKE_SUBUNIT¶                ( AS_NAME: TREE := TREE_V
-OID;¶                AS_SUBUNIT_BODY: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                r
-eturn TREE;¶      ¶          function MAKE_ENUMERATION_DEF¶                ( AS_ENUM_LITERAL_S: TREE := TREE_VOID;¶     
-           LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_SUBTYPE_INDICATION¶
-                ( AS_CONSTRAINT: TREE := TREE_VOID;¶                AS_NAME: TREE := TREE_VOID;¶                LX_SRCPO
-S: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_INTEGER_DEF¶                ( AS_CONST
-RAINT: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          fu
-nction MAKE_FLOAT_DEF¶                ( AS_CONSTRAINT: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶
-                return TREE;¶      ¶          function MAKE_FIXED_DEF¶                ( AS_CONSTRAINT: TREE := TREE_VOID
-;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_CONSTRAINED_
-ARRAY_DEF¶                ( AS_SUBTYPE_INDICATION: TREE := TREE_VOID;¶                AS_CONSTRAINT: TREE := TREE_VOID;¶
-                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_UNCONSTRAINED_
-ARRAY_DEF¶                ( AS_SUBTYPE_INDICATION: TREE := TREE_VOID;¶                AS_INDEX_S: TREE := TREE_VOID;¶   
-             LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_ACCESS_DEF¶      
-          ( AS_SUBTYPE_INDICATION: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                retu
-rn TREE;¶      ¶          function MAKE_DERIVED_DEF¶                ( AS_SUBTYPE_INDICATION: TREE := TREE_VOID;¶        
-        LX_SRCPOS: TREE := TREE_VOID;¶                LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL) )¶                return TRE
-E;¶      ¶          function MAKE_RECORD_DEF¶                ( AS_COMP_LIST: TREE := TREE_VOID;¶                LX_SRCPO
-S: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_PRIVATE_DEF¶                ( LX_SRCPO
-S: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_L_PRIVATE_DEF¶                ( LX_SRC
-POS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_FORMAL_DSCRT_DEF¶                ( L
-X_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_FORMAL_INTEGER_DEF¶            
-    ( LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_FORMAL_FIXED_DEF¶       
-         ( LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_FORMAL_FLOAT_DEF¶  
-              ( LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_ALTERNATIVE_S¶
-                ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TREE_VOID)¶                r
-eturn TREE;¶      ¶          function MAKE_ARGUMENT_ID_S¶                ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶      
-          LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_CHOICE_S¶           
-     ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;
-¶      ¶          function MAKE_COMP_REP_S¶                ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX_S
-RCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_COMPLTN_UNIT_S¶                ( L
-IST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶
-          function MAKE_CONTEXT_ELEM_S¶                ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX_SRCPO
-S: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_DECL_S¶                ( LIST: SEQ_TYP
-E := (TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          fu
-nction MAKE_DSCRMT_DECL_S¶                ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TR
-EE_VOID)¶                return TREE;¶      ¶          function MAKE_GENERAL_ASSOC_S¶                ( LIST: SEQ_TYPE :=
- (TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          functi
-on MAKE_DISCRETE_RANGE_S¶                ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TRE
-E_VOID)¶                return TREE;¶      ¶          function MAKE_ENUM_LITERAL_S¶                ( LIST: SEQ_TYPE := (
-TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function
- MAKE_EXP_S¶                ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TREE_VOID)¶     
-           return TREE;¶      ¶          function MAKE_ITEM_S¶                ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶ 
-               LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_INDEX_S¶       
-         ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TREE_VOID)¶                return T
-REE;¶      ¶          function MAKE_NAME_S¶                ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX_S
-RCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_PARAM_S¶                ( LIST: SE
-Q_TYPE := (TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶       
-   function MAKE_PRAGMA_S¶                ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TR
-EE_VOID)¶                return TREE;¶      ¶          function MAKE_SCALAR_S¶                ( LIST: SEQ_TYPE := (TREE_
-NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE
-_SOURCE_NAME_S¶                ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TREE_VOID)¶  
-              return TREE;¶      ¶          function MAKE_STM_S¶                ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);
-¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_TEST_CLAUSE_E
-LEM_S¶                ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TREE_VOID)¶           
-     return TREE;¶      ¶          function MAKE_USE_PRAGMA_S¶                ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶ 
-               LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_VARIANT_S¶     
+    return TREE;¶      ¶          function MAKE_CONSTANT_DECL¶                ( AS_SOURCE_NAME_S: TREE := TREE_VOID;¶   
+             AS_EXP: TREE := TREE_VOID;¶                AS_TYPE_DEF: TREE := TREE_VOID;¶                LX_SRCPOS: TREE 
+:= TREE_VOID)¶                return TREE;¶      ¶          function MAKE_VARIABLE_DECL¶                ( AS_SOURCE_NAME
+_S: TREE := TREE_VOID;¶                AS_EXP: TREE := TREE_VOID;¶                AS_TYPE_DEF: TREE := TREE_VOID;¶      
+          LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_NUMBER_DECL¶        
+        ( AS_SOURCE_NAME_S: TREE := TREE_VOID;¶                AS_EXP: TREE := TREE_VOID;¶                LX_SRCPOS: TRE
+E := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_EXCEPTION_DECL¶                ( AS_SOURCE_N
+AME_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          fu
+nction MAKE_DEFERRED_CONSTANT_DECL¶                ( AS_SOURCE_NAME_S: TREE := TREE_VOID;¶                AS_NAME: TREE 
+:= TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_
+TYPE_DECL¶                ( AS_SOURCE_NAME: TREE := TREE_VOID;¶                AS_DSCRMT_DECL_S: TREE := TREE_VOID;¶    
+            AS_TYPE_DEF: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶ 
+     ¶          function MAKE_SUBTYPE_DECL¶                ( AS_SOURCE_NAME: TREE := TREE_VOID;¶                AS_SUBTY
+PE_INDICATION: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶    
+      function MAKE_TASK_DECL¶                ( AS_SOURCE_NAME: TREE := TREE_VOID;¶                AS_DECL_S: TREE := TR
+EE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_GENER
+IC_DECL¶                ( AS_SOURCE_NAME: TREE := TREE_VOID;¶                AS_HEADER: TREE := TREE_VOID;¶             
+   AS_ITEM_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶     
+     function MAKE_SUBPROG_ENTRY_DECL¶                ( AS_SOURCE_NAME: TREE := TREE_VOID;¶                AS_HEADER: TR
+EE := TREE_VOID;¶                AS_UNIT_KIND: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶        
+        return TREE;¶      ¶          function MAKE_PACKAGE_DECL¶                ( AS_SOURCE_NAME: TREE := TREE_VOID;¶  
+              AS_HEADER: TREE := TREE_VOID;¶                AS_UNIT_KIND: TREE := TREE_VOID;¶                LX_SRCPOS: 
+TREE := TREE_VOID )¶                return TREE;¶      ¶          function MAKE_RENAMES_OBJ_DECL¶                ( AS_SO
+URCE_NAME: TREE := TREE_VOID;¶                AS_NAME: TREE := TREE_VOID;¶                AS_TYPE_MARK_NAME: TREE := TRE
+E_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_RENAME
+S_EXC_DECL¶                ( AS_SOURCE_NAME: TREE := TREE_VOID;¶                AS_NAME: TREE := TREE_VOID;¶            
+    LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_NULL_COMP_DECL¶           
+     ( LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_LENGTH_ENUM_REP¶       
+         ( AS_NAME: TREE := TREE_VOID;¶                AS_EXP: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TRE
+E_VOID)¶                return TREE;¶      ¶          function MAKE_ADDRESS¶                ( AS_NAME: TREE := TREE_VOID
+;¶                AS_EXP: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶
+      ¶          function MAKE_RECORD_REP¶                ( AS_NAME: TREE := TREE_VOID;¶                AS_ALIGNMENT_CLA
+USE: TREE := TREE_VOID;¶                AS_COMP_REP_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶
+                return TREE;¶      ¶          function MAKE_USE¶                ( AS_NAME_S: TREE := TREE_VOID;¶        
+        LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_PRAGMA¶               
+ ( AS_USED_NAME_ID: TREE := TREE_VOID;¶                AS_GENERAL_ASSOC_S: TREE := TREE_VOID;¶                LX_SRCPOS:
+ TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_SUBPROGRAM_BODY¶                ( AS_SOU
+RCE_NAME: TREE := TREE_VOID;¶                AS_BODY: TREE := TREE_VOID;¶                AS_HEADER: TREE := TREE_VOID;¶ 
+               LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_PACKAGE_BODY¶  
+              ( AS_SOURCE_NAME: TREE := TREE_VOID;¶                AS_BODY: TREE := TREE_VOID;¶                LX_SRCPOS
+: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_TASK_BODY¶                ( AS_SOURCE_N
+AME: TREE := TREE_VOID;¶                AS_BODY: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶      
+          return TREE;¶      ¶          function MAKE_SUBUNIT¶                ( AS_NAME: TREE := TREE_VOID;¶            
+    AS_SUBUNIT_BODY: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶     
+ ¶          function MAKE_ENUMERATION_DEF¶                ( AS_ENUM_LITERAL_S: TREE := TREE_VOID;¶                LX_SRC
+POS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_SUBTYPE_INDICATION¶                (
+ AS_CONSTRAINT: TREE := TREE_VOID;¶                AS_NAME: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_V
+OID)¶                return TREE;¶      ¶          function MAKE_INTEGER_DEF¶                ( AS_CONSTRAINT: TREE := TR
+EE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_FLOAT
+_DEF¶                ( AS_CONSTRAINT: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                r
+eturn TREE;¶      ¶          function MAKE_FIXED_DEF¶                ( AS_CONSTRAINT: TREE := TREE_VOID;¶               
+ LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_CONSTRAINED_ARRAY_DEF¶       
+         ( AS_SUBTYPE_INDICATION: TREE := TREE_VOID;¶                AS_CONSTRAINT: TREE := TREE_VOID;¶                L
+X_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_UNCONSTRAINED_ARRAY_DEF¶       
+         ( AS_SUBTYPE_INDICATION: TREE := TREE_VOID;¶                AS_INDEX_S: TREE := TREE_VOID;¶                LX_S
+RCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_ACCESS_DEF¶                ( AS_SU
+BTYPE_INDICATION: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶ 
+         function MAKE_DERIVED_DEF¶                ( AS_SUBTYPE_INDICATION: TREE := TREE_VOID;¶                LX_SRCPOS
+: TREE := TREE_VOID;¶                LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL) )¶                return TREE;¶      ¶       
+   function MAKE_RECORD_DEF¶                ( AS_COMP_LIST: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_V
+OID)¶                return TREE;¶      ¶          function MAKE_PRIVATE_DEF¶                ( LX_SRCPOS: TREE := TREE_V
+OID)¶                return TREE;¶      ¶          function MAKE_L_PRIVATE_DEF¶                ( LX_SRCPOS: TREE := TREE
+_VOID)¶                return TREE;¶      ¶          function MAKE_FORMAL_DSCRT_DEF¶                ( LX_SRCPOS: TREE :=
+ TREE_VOID)¶                return TREE;¶      ¶          function MAKE_FORMAL_INTEGER_DEF¶                ( LX_SRCPOS: 
+TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_FORMAL_FIXED_DEF¶                ( LX_SRC
+POS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_FORMAL_FLOAT_DEF¶                ( L
+X_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_ALTERNATIVE_S¶                (
+ LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶     
+ ¶          function MAKE_ARGUMENT_ID_S¶                ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX_SRCP
+OS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_CHOICE_S¶                ( LIST: SEQ_
+TYPE := (TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶         
+ function MAKE_COMP_REP_S¶                ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TR
+EE_VOID)¶                return TREE;¶      ¶          function MAKE_COMPLTN_UNIT_S¶                ( LIST: SEQ_TYPE := 
+(TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          functio
+n MAKE_CONTEXT_ELEM_S¶                ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TREE_V
+OID)¶                return TREE;¶      ¶          function MAKE_DECL_S¶                ( LIST: SEQ_TYPE := (TREE_NIL,TR
+EE_NIL);¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_DSCRM
+T_DECL_S¶                ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TREE_VOID)¶        
+        return TREE;¶      ¶          function MAKE_GENERAL_ASSOC_S¶                ( LIST: SEQ_TYPE := (TREE_NIL,TREE_N
+IL);¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_DISCRETE_
+RANGE_S¶                ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TREE_VOID)¶         
+       return TREE;¶      ¶          function MAKE_ENUM_LITERAL_S¶                ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL
+);¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_EXP_S¶     
            ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TREE_VOID)¶                return
- TREE;¶      ¶          function MAKE_LABELED¶                ( AS_SOURCE_NAME_S: TREE := TREE_VOID;¶                AS_
-PRAGMA_S: TREE := TREE_VOID;¶                AS_STM: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶  
-              return TREE;¶      ¶          function MAKE_NULL_STM¶                ( LX_SRCPOS: TREE := TREE_VOID)¶     
-           return TREE;¶      ¶          function MAKE_ABORT¶                ( AS_NAME_S: TREE := TREE_VOID;¶           
-     LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_RETURN¶                ( 
-AS_EXP: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          f
-unction MAKE_DELAY¶                ( AS_EXP: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶          
-      return TREE;¶      ¶          function MAKE_ASSIGN¶                ( AS_EXP: TREE := TREE_VOID;¶                AS
-_NAME: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          fu
-nction MAKE_EXIT¶                ( AS_EXP: TREE := TREE_VOID;¶                AS_NAME: TREE := TREE_VOID;¶              
-  LX_SRCPOS: TREE := TREE_VOID;¶                SM_STM: TREE := TREE_VOID)¶                return TREE;¶      ¶         
- function MAKE_CODE¶                ( AS_EXP: TREE := TREE_VOID;¶                AS_NAME: TREE := TREE_VOID;¶           
-     LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_CASE¶                ( AS
-_EXP: TREE := TREE_VOID;¶                AS_ALTERNATIVE_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VO
-ID)¶                return TREE;¶      ¶          function MAKE_GOTO¶                ( AS_NAME: TREE := TREE_VOID;¶     
-           LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_RAISE¶             
-   ( AS_NAME: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶     
-     function MAKE_ENTRY_CALL¶                ( AS_NAME: TREE := TREE_VOID;¶                AS_GENERAL_ASSOC_S: TREE := 
-TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶                SM_NORMALIZED_PARAM_S: TREE := TREE_VOID)¶     
-           return TREE;¶      ¶          function MAKE_PROCEDURE_CALL¶                ( AS_NAME: TREE := TREE_VOID;¶    
-            AS_GENERAL_ASSOC_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶                SM_NORM
-ALIZED_PARAM_S: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_ACCEPT¶                ( 
-AS_NAME: TREE := TREE_VOID;¶                AS_PARAM_S: TREE := TREE_VOID;¶                AS_STM_S: TREE := TREE_VOID;¶
-                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_LOOP¶         
-       ( AS_SOURCE_NAME: TREE := TREE_VOID;¶                AS_ITERATION: TREE := TREE_VOID;¶                AS_STM_S: T
-REE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function M
-AKE_BLOCK¶                ( AS_SOURCE_NAME: TREE := TREE_VOID;¶                AS_BLOCK_BODY: TREE := TREE_VOID;¶       
-         LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_COND_ENTRY¶          
-      ( AS_STM_S1: TREE := TREE_VOID;¶                AS_STM_S2: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := T
-REE_VOID)¶                return TREE;¶      ¶          function MAKE_TIMED_ENTRY¶                ( AS_STM_S1: TREE := T
-REE_VOID;¶                AS_STM_S2: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                re
-turn TREE;¶      ¶          function MAKE_IF¶                ( AS_TEST_CLAUSE_ELEM_S: TREE := TREE_VOID;¶               
- AS_STM_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶        
-  function MAKE_SELECTIVE_WAIT¶                ( AS_TEST_CLAUSE_ELEM_S: TREE := TREE_VOID;¶                AS_STM_S: TRE
+ TREE;¶      ¶          function MAKE_ITEM_S¶                ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX
+_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_INDEX_S¶                ( LIST: 
+SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶     
+     function MAKE_NAME_S¶                ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TR
+EE_VOID)¶                return TREE;¶      ¶          function MAKE_PARAM_S¶                ( LIST: SEQ_TYPE := (TREE_N
+IL,TREE_NIL);¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_
+PRAGMA_S¶                ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TREE_VOID)¶        
+        return TREE;¶      ¶          function MAKE_SCALAR_S¶                ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶  
+              LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_SOURCE_NAME_S¶  
+              ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TREE_VOID)¶                ret
+urn TREE;¶      ¶          function MAKE_STM_S¶                ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                
+LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_TEST_CLAUSE_ELEM_S¶           
+     ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;
+¶      ¶          function MAKE_USE_PRAGMA_S¶                ( LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX
+_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_VARIANT_S¶                ( LIST
+: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶   
+       function MAKE_LABELED¶                ( AS_SOURCE_NAME_S: TREE := TREE_VOID;¶                AS_PRAGMA_S: TREE :=
+ TREE_VOID;¶                AS_STM: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                ret
+urn TREE;¶      ¶          function MAKE_NULL_STM¶                ( LX_SRCPOS: TREE := TREE_VOID)¶                return
+ TREE;¶      ¶          function MAKE_ABORT¶                ( AS_NAME_S: TREE := TREE_VOID;¶                LX_SRCPOS: T
+REE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_RETURN¶                ( AS_EXP: TREE := T
+REE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_DELA
+Y¶                ( AS_EXP: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE
+;¶      ¶          function MAKE_ASSIGN¶                ( AS_EXP: TREE := TREE_VOID;¶                AS_NAME: TREE := TR
+EE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_EXIT¶
+                ( AS_EXP: TREE := TREE_VOID;¶                AS_NAME: TREE := TREE_VOID;¶                LX_SRCPOS: TREE
+ := TREE_VOID;¶                SM_STM: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_CO
+DE¶                ( AS_EXP: TREE := TREE_VOID;¶                AS_NAME: TREE := TREE_VOID;¶                LX_SRCPOS: T
+REE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_CASE¶                ( AS_EXP: TREE := TRE
+E_VOID;¶                AS_ALTERNATIVE_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶             
+   return TREE;¶      ¶          function MAKE_GOTO¶                ( AS_NAME: TREE := TREE_VOID;¶                LX_SRC
+POS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_RAISE¶                ( AS_NAME: TRE
 E := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAK
-E_TERMINATE¶                ( LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_
-STM_PRAGMA¶                ( AS_PRAGMA: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶               
- return TREE;¶      ¶          function MAKE_NAMED¶                ( AS_EXP: TREE := TREE_VOID;¶                AS_CHOIC
-E_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          func
-tion MAKE_ASSOC¶                ( AS_EXP: TREE := TREE_VOID;¶                AS_USED_NAME: TREE := TREE_VOID;¶          
-      LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_USED_CHAR¶              
-  ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_DEFN: TREE := TREE_VO
-ID;¶                SM_EXP_TYPE: TREE := TREE_VOID;¶                SM_VALUE: TREE := TREE_VOID)¶                return 
-TREE;¶      ¶          function MAKE_USED_OBJECT_ID¶                ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_S
-YMREP: TREE := TREE_VOID;¶                SM_DEFN: TREE := TREE_VOID;¶                SM_EXP_TYPE: TREE := TREE_VOID;¶  
-              SM_VALUE: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_USED_OP¶         
-       ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_DEFN: TREE := TR
-EE_VOID)¶                return TREE;¶      ¶          function MAKE_USED_NAME_ID¶                ( LX_SRCPOS: TREE := T
-REE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_DEFN: TREE := TREE_VOID)¶                retu
-rn TREE;¶      ¶          function MAKE_ATTRIBUTE¶                ( AS_NAME: TREE := TREE_VOID;¶                AS_USED_
-NAME_ID: TREE := TREE_VOID;¶                AS_EXP: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶   
-             SM_EXP_TYPE: TREE := TREE_VOID;¶                SM_VALUE: TREE := TREE_VOID)¶                return TREE;¶ 
-     ¶          function MAKE_SELECTED¶                ( AS_NAME: TREE := TREE_VOID;¶                AS_DESIGNATOR: TREE
- := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶                SM_EXP_TYPE: TREE := TREE_VOID;¶           
-     SM_VALUE: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_FUNCTION_CALL¶            
-    ( AS_NAME: TREE := TREE_VOID;¶                AS_GENERAL_ASSOC_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE
- := TREE_VOID;¶                LX_PREFIX: BOOLEAN := FALSE;¶                SM_EXP_TYPE: TREE := TREE_VOID;¶            
-    SM_VALUE: TREE := TREE_VOID;¶                SM_NORMALIZED_PARAM_S: TREE := TREE_VOID)¶                return TREE;¶
-      ¶          function MAKE_INDEXED¶                ( AS_NAME: TREE := TREE_VOID;¶                AS_EXP_S: TREE := T
-REE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶                SM_EXP_TYPE: TREE := TREE_VOID)¶                
-return TREE;¶      ¶          function MAKE_SLICE¶                ( AS_NAME: TREE := TREE_VOID;¶                AS_DISCR
-ETE_RANGE: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶                SM_EXP_TYPE: TREE := TREE_VO
-ID)¶                return TREE;¶      ¶          function MAKE_ALL¶                ( AS_NAME: TREE := TREE_VOID;¶      
-          LX_SRCPOS: TREE := TREE_VOID;¶                SM_EXP_TYPE: TREE := TREE_VOID)¶                return TREE;¶   
-   ¶          function MAKE_SHORT_CIRCUIT¶                ( AS_EXP1: TREE := TREE_VOID;¶                AS_SHORT_CIRCUIT
-_OP: TREE := TREE_VOID;¶                AS_EXP2: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶      
-          SM_EXP_TYPE: TREE := TREE_VOID;¶                SM_VALUE: TREE := TREE_VOID)¶                return TREE;¶    
-  ¶          function MAKE_NUMERIC_LITERAL¶                ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_NUMREP: TR
-EE := TREE_VOID;¶                SM_EXP_TYPE: TREE := TREE_VOID;¶                SM_VALUE: TREE := TREE_VOID)¶          
-      return TREE;¶      ¶          function MAKE_NULL_ACCESS¶                ( LX_SRCPOS: TREE := TREE_VOID;¶          
-      SM_EXP_TYPE: TREE := TREE_VOID;¶                SM_VALUE: TREE := TREE_VOID)¶                return TREE;¶      ¶ 
-         function MAKE_RANGE_MEMBERSHIP¶                ( AS_EXP: TREE := TREE_VOID;¶                AS_MEMBERSHIP_OP: T
-REE := TREE_VOID;¶                AS_RANGE: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶           
-     SM_EXP_TYPE: TREE := TREE_VOID;¶                SM_VALUE: TREE := TREE_VOID)¶                return TREE;¶      ¶  
-        function MAKE_TYPE_MEMBERSHIP¶                ( AS_EXP: TREE := TREE_VOID;¶                AS_MEMBERSHIP_OP: TRE
-E := TREE_VOID;¶                AS_NAME: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶              
-  SM_EXP_TYPE: TREE := TREE_VOID;¶                SM_VALUE: TREE := TREE_VOID)¶                return TREE;¶      ¶     
-     function MAKE_CONVERSION¶                ( AS_EXP: TREE := TREE_VOID;¶                AS_NAME: TREE := TREE_VOID;¶ 
-               LX_SRCPOS: TREE := TREE_VOID;¶                SM_EXP_TYPE: TREE := TREE_VOID;¶                SM_VALUE: T
-REE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_QUALIFIED¶                ( AS_EXP: TREE :
-= TREE_VOID;¶                AS_NAME: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶                S
-M_EXP_TYPE: TREE := TREE_VOID;¶                SM_VALUE: TREE := TREE_VOID)¶                return TREE;¶      ¶        
-  function MAKE_PARENTHESIZED¶                ( AS_EXP: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;
-¶                SM_EXP_TYPE: TREE := TREE_VOID;¶                SM_VALUE: TREE := TREE_VOID)¶                return TRE
-E;¶      ¶          function MAKE_AGGREGATE¶                ( AS_GENERAL_ASSOC_S: TREE := TREE_VOID;¶                LX_
-SRCPOS: TREE := TREE_VOID;¶                SM_EXP_TYPE: TREE := TREE_VOID;¶                SM_DISCRETE_RANGE: TREE := TR
-EE_VOID;¶                SM_NORMALIZED_COMP_S: TREE := TREE_VOID)¶                return TREE;¶      ¶          function
- MAKE_STRING_LITERAL¶                ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶     
-           SM_EXP_TYPE: TREE := TREE_VOID;¶                SM_DISCRETE_RANGE: TREE := TREE_VOID)¶                return 
-TREE;¶      ¶          function MAKE_QUALIFIED_ALLOCATOR¶                ( AS_QUALIFIED: TREE := TREE_VOID;¶            
-    LX_SRCPOS: TREE := TREE_VOID;¶                SM_EXP_TYPE: TREE := TREE_VOID)¶                return TREE;¶      ¶  
-        function MAKE_SUBTYPE_ALLOCATOR¶                ( AS_SUBTYPE_INDICATION: TREE := TREE_VOID;¶                LX_S
-RCPOS: TREE := TREE_VOID;¶                SM_EXP_TYPE: TREE := TREE_VOID;¶                SM_DESIG_TYPE: TREE := TREE_VO
-ID)¶                return TREE;¶      ¶          function MAKE_RANGE¶                ( AS_EXP1: TREE := TREE_VOID;¶    
-            AS_EXP2: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶                SM_TYPE_SPEC: TREE
- := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_RANGE_ATTRIBUTE¶                ( AS_NAME: TR
-EE := TREE_VOID;¶                AS_USED_NAME_ID: TREE := TREE_VOID;¶                AS_EXP: TREE := TREE_VOID;¶        
-        LX_SRCPOS: TREE := TREE_VOID;¶                SM_TYPE_SPEC: TREE := TREE_VOID)¶                return TREE;¶    
-  ¶          function MAKE_DISCRETE_SUBTYPE¶                ( AS_SUBTYPE_INDICATION: TREE := TREE_VOID;¶                
-LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_FLOAT_CONSTRAINT¶             
-   ( AS_EXP: TREE := TREE_VOID;¶                AS_RANGE: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOI
-D;¶                SM_TYPE_SPEC: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_FIXED_CO
-NSTRAINT¶                ( AS_EXP: TREE := TREE_VOID;¶                AS_RANGE: TREE := TREE_VOID;¶                LX_SR
-CPOS: TREE := TREE_VOID;¶                SM_TYPE_SPEC: TREE := TREE_VOID)¶                return TREE;¶      ¶          
-function MAKE_INDEX_CONSTRAINT¶                ( AS_DISCRETE_RANGE_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE
- := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_DSCRMT_CONSTRAINT¶                ( AS_GENERA
-L_ASSOC_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶        
-  function MAKE_CHOICE_EXP¶                ( AS_EXP: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶  
-              return TREE;¶      ¶          function MAKE_CHOICE_RANGE¶                ( AS_DISCRETE_RANGE: TREE := TREE
-_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_CHOICE_
-OTHERS¶                ( LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_PROCE
-DURE_SPEC¶                ( AS_PARAM_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶               
- return TREE;¶      ¶          function MAKE_FUNCTION_SPEC¶                ( AS_PARAM_S: TREE := TREE_VOID;¶            
-    AS_NAME: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶      
-    function MAKE_ENTRY¶                ( AS_PARAM_S: TREE := TREE_VOID;¶                AS_DISCRETE_RANGE: TREE := TREE
-_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_PACKAGE
-_SPEC¶                ( AS_DECL_S1: TREE := TREE_VOID;¶                AS_DECL_S2: TREE := TREE_VOID;¶                LX
-_SRCPOS: TREE := TREE_VOID;¶                XD_BODY_IS_REQUIRED: BOOLEAN := FALSE)¶                return TREE;¶      ¶ 
-         function MAKE_RENAMES_UNIT¶                ( AS_NAME: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TRE
-E_VOID)¶                return TREE;¶      ¶          function MAKE_INSTANTIATION¶                ( AS_NAME: TREE := TRE
-E_VOID;¶                AS_GENERAL_ASSOC_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶           
-     SM_DECL_S: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_NAME_DEFAULT¶            
-    ( AS_NAME: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶    
-      function MAKE_BOX_DEFAULT¶                ( LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶    
-      function MAKE_NO_DEFAULT¶                ( LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶     
-     function MAKE_BLOCK_BODY¶                ( AS_ITEM_S: TREE := TREE_VOID;¶                AS_STM_S: TREE := TREE_VOI
-D;¶                AS_ALTERNATIVE_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                re
-turn TREE;¶      ¶          function MAKE_STUB¶                ( LX_SRCPOS: TREE := TREE_VOID)¶                return TR
-EE;¶      ¶          function MAKE_IMPLICIT_NOT_EQ¶                ( LX_SRCPOS: TREE := TREE_VOID;¶                SM_EQ
-UAL: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_DERIVED_SUBPROG¶                ( LX
-_SRCPOS: TREE := TREE_VOID;¶                SM_DERIVABLE: TREE := TREE_VOID)¶                return TREE;¶      ¶       
-   function MAKE_COND_CLAUSE¶                ( AS_EXP: TREE := TREE_VOID;¶                AS_STM_S: TREE := TREE_VOID;¶ 
-               LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_SELECT_ALTERNAT
-IVE¶                ( AS_EXP: TREE := TREE_VOID;¶                AS_STM_S: TREE := TREE_VOID;¶                LX_SRCPOS:
- TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_SELECT_ALT_PRAGMA¶                ( AS_P
-RAGMA: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          fu
-nction MAKE_IN_OP¶                ( LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function
- MAKE_NOT_IN¶                ( LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE
-_AND_THEN¶                ( LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_OR
-_ELSE¶                ( LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_FOR¶  
-              ( AS_SOURCE_NAME: TREE := TREE_VOID;¶                AS_DISCRETE_RANGE: TREE := TREE_VOID;¶               
- LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_REVERSE¶                ( AS_
-SOURCE_NAME: TREE := TREE_VOID;¶                AS_DISCRETE_RANGE: TREE := TREE_VOID;¶                LX_SRCPOS: TREE :=
- TREE_VOID)¶                return TREE;¶      ¶          function MAKE_WHILE¶                ( AS_EXP: TREE := TREE_VOI
-D;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_ALTERNATIVE
-¶                ( AS_CHOICE_S: TREE := TREE_VOID;¶                AS_STM_S: TREE := TREE_VOID;¶                LX_SRCPO
-S: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_ALTERNATIVE_PRAGMA¶                ( A
-S_PRAGMA: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶         
- function MAKE_COMP_REP¶                ( AS_NAME: TREE := TREE_VOID;¶                AS_EXP: TREE := TREE_VOID;¶       
-         AS_RANGE: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶
-          function MAKE_COMP_REP_PRAGMA¶                ( AS_PRAGMA: TREE := TREE_VOID;¶                LX_SRCPOS: TREE 
-:= TREE_VOID)¶                return TREE;¶      ¶          function MAKE_CONTEXT_PRAGMA¶                ( AS_PRAGMA: TR
+E_ENTRY_CALL¶                ( AS_NAME: TREE := TREE_VOID;¶                AS_GENERAL_ASSOC_S: TREE := TREE_VOID;¶      
+          LX_SRCPOS: TREE := TREE_VOID;¶                SM_NORMALIZED_PARAM_S: TREE := TREE_VOID)¶                return
+ TREE;¶      ¶          function MAKE_PROCEDURE_CALL¶                ( AS_NAME: TREE := TREE_VOID;¶                AS_GE
+NERAL_ASSOC_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶                SM_NORMALIZED_PARAM_S: T
+REE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_ACCEPT¶                ( AS_NAME: TREE := 
+TREE_VOID;¶                AS_PARAM_S: TREE := TREE_VOID;¶                AS_STM_S: TREE := TREE_VOID;¶                L
+X_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_LOOP¶                ( AS_SOURC
+E_NAME: TREE := TREE_VOID;¶                AS_ITERATION: TREE := TREE_VOID;¶                AS_STM_S: TREE := TREE_VOID;
+¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_BLOCK¶       
+         ( AS_SOURCE_NAME: TREE := TREE_VOID;¶                AS_BLOCK_BODY: TREE := TREE_VOID;¶                LX_SRCPO
+S: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_COND_ENTRY¶                ( AS_STM_S1
+: TREE := TREE_VOID;¶                AS_STM_S2: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶       
+         return TREE;¶      ¶          function MAKE_TIMED_ENTRY¶                ( AS_STM_S1: TREE := TREE_VOID;¶       
+         AS_STM_S2: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      
+¶          function MAKE_IF¶                ( AS_TEST_CLAUSE_ELEM_S: TREE := TREE_VOID;¶                AS_STM_S: TREE :
+= TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_S
+ELECTIVE_WAIT¶                ( AS_TEST_CLAUSE_ELEM_S: TREE := TREE_VOID;¶                AS_STM_S: TREE := TREE_VOID;¶ 
+               LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_TERMINATE¶     
+           ( LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_STM_PRAGMA¶      
+          ( AS_PRAGMA: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶   
+   ¶          function MAKE_NAMED¶                ( AS_EXP: TREE := TREE_VOID;¶                AS_CHOICE_S: TREE := TREE
+_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_ASSOC¶ 
+               ( AS_EXP: TREE := TREE_VOID;¶                AS_USED_NAME: TREE := TREE_VOID;¶                LX_SRCPOS: 
+TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_USED_CHAR¶                ( LX_SRCPOS: TR
+EE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_DEFN: TREE := TREE_VOID;¶             
+   SM_EXP_TYPE: TREE := TREE_VOID;¶                SM_VALUE: TREE := TREE_VOID)¶                return TREE;¶      ¶    
+      function MAKE_USED_OBJECT_ID¶                ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TR
+EE_VOID;¶                SM_DEFN: TREE := TREE_VOID;¶                SM_EXP_TYPE: TREE := TREE_VOID;¶                SM_
+VALUE: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_USED_OP¶                ( LX_SRCPO
+S: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_DEFN: TREE := TREE_VOID)¶        
+        return TREE;¶      ¶          function MAKE_USED_NAME_ID¶                ( LX_SRCPOS: TREE := TREE_VOID;¶       
+         LX_SYMREP: TREE := TREE_VOID;¶                SM_DEFN: TREE := TREE_VOID)¶                return TREE;¶      ¶ 
+         function MAKE_ATTRIBUTE¶                ( AS_NAME: TREE := TREE_VOID;¶                AS_USED_NAME_ID: TREE := 
+TREE_VOID;¶                AS_EXP: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶                SM_E
+XP_TYPE: TREE := TREE_VOID;¶                SM_VALUE: TREE := TREE_VOID)¶                return TREE;¶      ¶          f
+unction MAKE_SELECTED¶                ( AS_NAME: TREE := TREE_VOID;¶                AS_DESIGNATOR: TREE := TREE_VOID;¶  
+              LX_SRCPOS: TREE := TREE_VOID;¶                SM_EXP_TYPE: TREE := TREE_VOID;¶                SM_VALUE: TR
+EE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_FUNCTION_CALL¶                ( AS_NAME: TR
+EE := TREE_VOID;¶                AS_GENERAL_ASSOC_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶  
+              LX_PREFIX: BOOLEAN := FALSE;¶                SM_EXP_TYPE: TREE := TREE_VOID;¶                SM_VALUE: TRE
+E := TREE_VOID;¶                SM_NORMALIZED_PARAM_S: TREE := TREE_VOID)¶                return TREE;¶      ¶          
+function MAKE_INDEXED¶                ( AS_NAME: TREE := TREE_VOID;¶                AS_EXP_S: TREE := TREE_VOID;¶       
+         LX_SRCPOS: TREE := TREE_VOID;¶                SM_EXP_TYPE: TREE := TREE_VOID)¶                return TREE;¶    
+  ¶          function MAKE_SLICE¶                ( AS_NAME: TREE := TREE_VOID;¶                AS_DISCRETE_RANGE: TREE :
+= TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶                SM_EXP_TYPE: TREE := TREE_VOID)¶             
+   return TREE;¶      ¶          function MAKE_ALL¶                ( AS_NAME: TREE := TREE_VOID;¶                LX_SRCP
+OS: TREE := TREE_VOID;¶                SM_EXP_TYPE: TREE := TREE_VOID)¶                return TREE;¶      ¶          fun
+ction MAKE_SHORT_CIRCUIT¶                ( AS_EXP1: TREE := TREE_VOID;¶                AS_SHORT_CIRCUIT_OP: TREE := TREE
+_VOID;¶                AS_EXP2: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶                SM_EXP_
+TYPE: TREE := TREE_VOID;¶                SM_VALUE: TREE := TREE_VOID)¶                return TREE;¶      ¶          func
+tion MAKE_NUMERIC_LITERAL¶                ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_NUMREP: TREE := TREE_VOID;¶
+                SM_EXP_TYPE: TREE := TREE_VOID;¶                SM_VALUE: TREE := TREE_VOID)¶                return TREE
+;¶      ¶          function MAKE_NULL_ACCESS¶                ( LX_SRCPOS: TREE := TREE_VOID;¶                SM_EXP_TYPE
+: TREE := TREE_VOID;¶                SM_VALUE: TREE := TREE_VOID)¶                return TREE;¶      ¶          function
+ MAKE_RANGE_MEMBERSHIP¶                ( AS_EXP: TREE := TREE_VOID;¶                AS_MEMBERSHIP_OP: TREE := TREE_VOID;
+¶                AS_RANGE: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶                SM_EXP_TYPE:
+ TREE := TREE_VOID;¶                SM_VALUE: TREE := TREE_VOID)¶                return TREE;¶      ¶          function 
+MAKE_TYPE_MEMBERSHIP¶                ( AS_EXP: TREE := TREE_VOID;¶                AS_MEMBERSHIP_OP: TREE := TREE_VOID;¶ 
+               AS_NAME: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶                SM_EXP_TYPE: TR
+EE := TREE_VOID;¶                SM_VALUE: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAK
+E_CONVERSION¶                ( AS_EXP: TREE := TREE_VOID;¶                AS_NAME: TREE := TREE_VOID;¶                LX
+_SRCPOS: TREE := TREE_VOID;¶                SM_EXP_TYPE: TREE := TREE_VOID;¶                SM_VALUE: TREE := TREE_VOID)
+¶                return TREE;¶      ¶          function MAKE_QUALIFIED¶                ( AS_EXP: TREE := TREE_VOID;¶    
+            AS_NAME: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶                SM_EXP_TYPE: TREE 
+:= TREE_VOID;¶                SM_VALUE: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_P
+ARENTHESIZED¶                ( AS_EXP: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶                
+SM_EXP_TYPE: TREE := TREE_VOID;¶                SM_VALUE: TREE := TREE_VOID)¶                return TREE;¶      ¶       
+   function MAKE_AGGREGATE¶                ( AS_GENERAL_ASSOC_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := T
+REE_VOID;¶                SM_EXP_TYPE: TREE := TREE_VOID;¶                SM_DISCRETE_RANGE: TREE := TREE_VOID;¶        
+        SM_NORMALIZED_COMP_S: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_STRING_LITE
+RAL¶                ( LX_SRCPOS: TREE := TREE_VOID;¶                LX_SYMREP: TREE := TREE_VOID;¶                SM_EXP
+_TYPE: TREE := TREE_VOID;¶                SM_DISCRETE_RANGE: TREE := TREE_VOID)¶                return TREE;¶      ¶    
+      function MAKE_QUALIFIED_ALLOCATOR¶                ( AS_QUALIFIED: TREE := TREE_VOID;¶                LX_SRCPOS: TR
+EE := TREE_VOID;¶                SM_EXP_TYPE: TREE := TREE_VOID)¶                return TREE;¶      ¶          function 
+MAKE_SUBTYPE_ALLOCATOR¶                ( AS_SUBTYPE_INDICATION: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TR
+EE_VOID;¶                SM_EXP_TYPE: TREE := TREE_VOID;¶                SM_DESIG_TYPE: TREE := TREE_VOID)¶             
+   return TREE;¶      ¶          function MAKE_RANGE¶                ( AS_EXP1: TREE := TREE_VOID;¶                AS_EX
+P2: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶                SM_TYPE_SPEC: TREE := TREE_VOID)¶  
+              return TREE;¶      ¶          function MAKE_RANGE_ATTRIBUTE¶                ( AS_NAME: TREE := TREE_VOID;¶
+                AS_USED_NAME_ID: TREE := TREE_VOID;¶                AS_EXP: TREE := TREE_VOID;¶                LX_SRCPOS
+: TREE := TREE_VOID;¶                SM_TYPE_SPEC: TREE := TREE_VOID)¶                return TREE;¶      ¶          func
+tion MAKE_DISCRETE_SUBTYPE¶                ( AS_SUBTYPE_INDICATION: TREE := TREE_VOID;¶                LX_SRCPOS: TREE :
+= TREE_VOID)¶                return TREE;¶      ¶          function MAKE_FLOAT_CONSTRAINT¶                ( AS_EXP: TREE
+ := TREE_VOID;¶                AS_RANGE: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶              
+  SM_TYPE_SPEC: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_FIXED_CONSTRAINT¶        
+        ( AS_EXP: TREE := TREE_VOID;¶                AS_RANGE: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TRE
+E_VOID;¶                SM_TYPE_SPEC: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_IND
+EX_CONSTRAINT¶                ( AS_DISCRETE_RANGE_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶  
+              return TREE;¶      ¶          function MAKE_DSCRMT_CONSTRAINT¶                ( AS_GENERAL_ASSOC_S: TREE :
+= TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_C
+HOICE_EXP¶                ( AS_EXP: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                ret
+urn TREE;¶      ¶          function MAKE_CHOICE_RANGE¶                ( AS_DISCRETE_RANGE: TREE := TREE_VOID;¶          
+      LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_CHOICE_OTHERS¶          
+      ( LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_PROCEDURE_SPEC¶       
+         ( AS_PARAM_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶   
+   ¶          function MAKE_FUNCTION_SPEC¶                ( AS_PARAM_S: TREE := TREE_VOID;¶                AS_NAME: TREE
+ := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE
+_ENTRY¶                ( AS_PARAM_S: TREE := TREE_VOID;¶                AS_DISCRETE_RANGE: TREE := TREE_VOID;¶          
+      LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_PACKAGE_SPEC¶           
+     ( AS_DECL_S1: TREE := TREE_VOID;¶                AS_DECL_S2: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := 
+TREE_VOID;¶                XD_BODY_IS_REQUIRED: BOOLEAN := FALSE)¶                return TREE;¶      ¶          function
+ MAKE_RENAMES_UNIT¶                ( AS_NAME: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶         
+       return TREE;¶      ¶          function MAKE_INSTANTIATION¶                ( AS_NAME: TREE := TREE_VOID;¶         
+       AS_GENERAL_ASSOC_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶                SM_DECL_S: T
+REE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_NAME_DEFAULT¶                ( AS_NAME: TR
 EE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MA
-KE_WITH¶                ( AS_NAME_S: TREE := TREE_VOID;¶                AS_USE_PRAGMA_S: TREE := TREE_VOID;¶            
-    LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_VARIANT¶                ( 
-AS_CHOICE_S: TREE := TREE_VOID;¶                AS_COMP_LIST: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE
-_VOID)¶                return TREE;¶      ¶          function MAKE_VARIANT_PRAGMA¶                ( AS_PRAGMA: TREE := T
-REE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_ALIG
-NMENT¶                ( AS_PRAGMA_S: TREE := TREE_VOID;¶                AS_EXP: TREE := TREE_VOID;¶                LX_SR
-CPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_VARIANT_PART¶                ( AS_N
-AME: TREE := TREE_VOID;¶                AS_VARIANT_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶ 
-               return TREE;¶      ¶          function MAKE_COMP_LIST¶                ( AS_DECL_S: TREE := TREE_VOID;¶   
-             AS_VARIANT_PART: TREE := TREE_VOID;¶                AS_PRAGMA_S: TREE := TREE_VOID;¶                LX_SRCP
-OS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_COMPILATION¶                ( AS_COMP
-LTN_UNIT_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶       
-   function MAKE_COMPILATION_UNIT¶                ( AS_CONTEXT_ELEM_S: TREE := TREE_VOID;¶                AS_ALL_DECL: T
-REE := TREE_VOID;¶                AS_PRAGMA_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶        
-        XD_TIMESTAMP: INTEGER := 0;¶                LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                XD_NBR_PAGES:
- INTEGER := 0;¶                XD_LIB_NAME: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MA
-KE_INDEX¶                ( AS_NAME: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶                SM_
-TYPE_SPEC: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_TASK_SPEC¶                ( SM
-_DERIVED: TREE := TREE_VOID;¶                SM_IS_ANONYMOUS: BOOLEAN := FALSE;¶                SM_DECL_S: TREE := TREE_
-VOID;¶                SM_BODY: TREE := TREE_VOID;¶                SM_ADDRESS: TREE := TREE_VOID;¶                SM_SIZE
-: TREE := TREE_VOID;¶                SM_STORAGE_SIZE: TREE := TREE_VOID;¶                XD_SOURCE_NAME: TREE := TREE_VO
-ID;¶                XD_STUB: TREE := TREE_VOID;¶                XD_BODY: TREE := TREE_VOID)¶                return TREE;
-¶      ¶          function MAKE_ENUMERATION¶                ( SM_DERIVED: TREE := TREE_VOID;¶                SM_IS_ANONY
-MOUS: BOOLEAN := FALSE;¶                SM_BASE_TYPE: TREE := TREE_VOID;¶                SM_RANGE: TREE := TREE_VOID;¶  
-              SM_LITERAL_S: TREE := TREE_VOID;¶                XD_SOURCE_NAME: TREE := TREE_VOID;¶                CD_IMP
-L_SIZE: INTEGER := 0)¶                return TREE;¶      ¶          function MAKE_INTEGER (¬SM_DERIVED, SM_BASE_TYPE, SM
-_RANGE, XD_SOURCE_NAME :TREE := TREE_VOID;¶          ¬¬CD_IMPL_SIZE: INTEGER := 0; SM_IS_ANONYMOUS :BOOLEAN := FALSE¶   
-             ¬) return TREE;¶      ¶          function MAKE_FLOAT¶                ( SM_DERIVED: TREE := TREE_VOID;¶     
-           SM_IS_ANONYMOUS: BOOLEAN := FALSE;¶                SM_BASE_TYPE: TREE := TREE_VOID;¶                SM_RANGE:
- TREE := TREE_VOID;¶                SM_ACCURACY: TREE := TREE_VOID;¶                XD_SOURCE_NAME: TREE := TREE_VOID;¶ 
-               CD_IMPL_SIZE: INTEGER := 0)¶                return TREE;¶      ¶          function MAKE_FIXED¶           
-     ( SM_DERIVED: TREE := TREE_VOID;¶                SM_IS_ANONYMOUS: BOOLEAN := FALSE;¶                SM_BASE_TYPE: T
-REE := TREE_VOID;¶                SM_RANGE: TREE := TREE_VOID;¶                SM_ACCURACY: TREE := TREE_VOID;¶         
-       XD_SOURCE_NAME: TREE := TREE_VOID;¶                CD_IMPL_SIZE: INTEGER := 0;¶                CD_IMPL_SMALL: TRE
-E := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_ARRAY¶                ( SM_DERIVED: TREE := 
-TREE_VOID;¶                SM_IS_ANONYMOUS: BOOLEAN := FALSE;¶                SM_BASE_TYPE: TREE := TREE_VOID;¶         
-       SM_SIZE: TREE := TREE_VOID;¶                SM_IS_LIMITED: BOOLEAN := FALSE;¶                SM_IS_PACKED: BOOLEA
-N := FALSE;¶                SM_INDEX_S: TREE := TREE_VOID;¶                SM_COMP_TYPE: TREE := TREE_VOID;¶            
-    XD_SOURCE_NAME: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_RECORD¶              
-  ( SM_DERIVED: TREE := TREE_VOID;¶                SM_IS_ANONYMOUS: BOOLEAN := FALSE;¶                SM_BASE_TYPE: TREE
- := TREE_VOID;¶                SM_SIZE: TREE := TREE_VOID;¶                SM_IS_LIMITED: BOOLEAN := FALSE;¶            
-    SM_IS_PACKED: BOOLEAN := FALSE;¶                SM_DISCRIMINANT_S: TREE := TREE_VOID;¶                SM_COMP_LIST: 
-TREE := TREE_VOID;¶                SM_REPRESENTATION: TREE := TREE_VOID;¶                XD_SOURCE_NAME: TREE := TREE_VO
-ID)¶                return TREE;¶      ¶          function MAKE_ACCESS¶                ( SM_DERIVED: TREE := TREE_VOID;¶
-                SM_IS_ANONYMOUS: BOOLEAN := FALSE;¶                SM_BASE_TYPE: TREE := TREE_VOID;¶                SM_S
-IZE: TREE := TREE_VOID;¶                SM_STORAGE_SIZE: TREE := TREE_VOID;¶                SM_IS_CONTROLLED: BOOLEAN :=
- FALSE;¶                SM_DESIG_TYPE: TREE := TREE_VOID;¶                SM_MASTER: TREE := TREE_VOID;¶                
-XD_SOURCE_NAME: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_CONSTRAINED_ARRAY¶       
-         ( SM_DERIVED: TREE := TREE_VOID;¶                SM_IS_ANONYMOUS: BOOLEAN := FALSE;¶                SM_BASE_TYP
-E: TREE := TREE_VOID;¶                SM_DEPENDS_ON_DSCRMT: BOOLEAN := FALSE;¶                SM_INDEX_SUBTYPE_S: TREE :
-= TREE_VOID;¶                XD_SOURCE_NAME: TREE := TREE_VOID)¶                return TREE;¶      ¶          function M
-AKE_CONSTRAINED_RECORD¶                ( SM_DERIVED: TREE := TREE_VOID;¶                SM_IS_ANONYMOUS: BOOLEAN := FALS
-E;¶                SM_BASE_TYPE: TREE := TREE_VOID;¶                SM_DEPENDS_ON_DSCRMT: BOOLEAN := FALSE;¶            
-    SM_NORMALIZED_DSCRMT_S: TREE := TREE_VOID;¶                XD_SOURCE_NAME: TREE := TREE_VOID)¶                return
- TREE;¶      ¶          function MAKE_CONSTRAINED_ACCESS¶                ( SM_DERIVED: TREE := TREE_VOID;¶              
-  SM_IS_ANONYMOUS: BOOLEAN := FALSE;¶                SM_BASE_TYPE: TREE := TREE_VOID;¶                SM_DEPENDS_ON_DSCR
-MT: BOOLEAN := FALSE;¶                SM_DESIG_TYPE: TREE := TREE_VOID;¶                XD_SOURCE_NAME: TREE := TREE_VOI
-D)¶                return TREE;¶      ¶          function MAKE_PRIVATE¶                ( SM_DERIVED: TREE := TREE_VOID;¶
-                SM_IS_ANONYMOUS: BOOLEAN := FALSE;¶                SM_DISCRIMINANT_S: TREE := TREE_VOID;¶               
- SM_TYPE_SPEC: TREE := TREE_VOID;¶                XD_SOURCE_NAME: TREE := TREE_VOID)¶                return TREE;¶      
-¶          function MAKE_L_PRIVATE¶                ( SM_DERIVED: TREE := TREE_VOID;¶                SM_IS_ANONYMOUS: BOO
-LEAN := FALSE;¶                SM_DISCRIMINANT_S: TREE := TREE_VOID;¶                SM_TYPE_SPEC: TREE := TREE_VOID;¶  
-              XD_SOURCE_NAME: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_INCOMPLETE¶
-                ( SM_DISCRIMINANT_S: TREE := TREE_VOID;¶                XD_SOURCE_NAME: TREE := TREE_VOID;¶             
-   XD_FULL_TYPE_SPEC: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_UNIVERSAL_INTEGER¶ 
-               ( XD_SOURCE_NAME: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_UNIVERSA
-L_FIXED¶                ( XD_SOURCE_NAME: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE
-_UNIVERSAL_REAL¶                ( XD_SOURCE_NAME: TREE := TREE_VOID)¶                return TREE;¶      ¶  --|----------
---------------------------------------------------------------------------------------¶  end MAKE_NOD;¶¶¶¶¶¶  --|-------
------------------------------------------------------------------------------------------¶¶  --¬¬GEN_SUBS¶¶  --|--------
-----------------------------------------------------------------------------------------¶  package GEN_SUBS is¶      ¶  
-  NODE_HASH_SIZE¬¬: constant¬:= 131;¶    type NODE_ARRAY_TYPE¬is array( 0 .. INTEGER( NODE_HASH_SIZE - 1 ) ) of TREE;¶  
-  type NODE_HASH_TYPE¬is record¶¬¬¬  LIMIT¬: NATURAL¬¬:= 32000;¶¬¬¬  A¬: NODE_ARRAY_TYPE¬:= (others => TREE_VOID);¶¬¬¬en
-d record;¶      ¶    procedure INSERT_NODE_HASH¬( NODE_HASH :in out NODE_HASH_TYPE; NEW_NODE :TREE;¶¬¬¬¬  OLD_NODE :TREE
- );¶    procedure REPLACE_NODE¬¬( NODE :in out TREE; NODE_HASH :in out NODE_HASH_TYPE );¶    procedure SUBSTITUTE_ATTRIB
-UTES¬( NODE :in out TREE; NODE_HASH :in out NODE_HASH_TYPE;¶¬¬¬¬  H_IN :H_TYPE );¶    procedure SUBSTITUTE¬¬( NODE :in o
-ut TREE; NODE_HASH :in out NODE_HASH_TYPE;¶¬¬¬¬  H_IN :H_TYPE );¶      ¶  --|-------------------------------------------
------------------------------------------------------¶  end GEN_SUBS;¶¶¶¶¶¶  --|----------------------------------------
---------------------------------------------------------¶¶  --¬¬NEWSNAM¶¶  --|------------------------------------------
-------------------------------------------------------¶  package NEWSNAM is¶    use GEN_SUBS;¶      ¶    procedure REPLA
-CE_SOURCE_NAME¬( SOURCE_NAME :in out TREE; NODE_HASH :in out NODE_HASH_TYPE;¶¬¬¬¬  H_IN :H_TYPE; DECL :TREE := TREE_VOID
- );¶          ¶  --|------------------------------------------------------------------------------------------------¶  e
-nd NEWSNAM;¶¶¶¶¶¶  --|------------------------------------------------------------------------------------------------¶¶
-  --¬¬PRE_FCNS¶¶  --|------------------------------------------------------------------------------------------------¶  
-package PRE_FCNS is¶      ¶    procedure GEN_PREDEFINED_OPERATORS¬( TYPE_SPEC :TREE; H_IN :H_TYPE );¶       ¶  --|------
-------------------------------------------------------------------------------------------¶  end PRE_FCNS;¶¶¶¶¶¶  --|---
----------------------------------------------------------------------------------------------¶¶  --¬¬PRENAME¶¶  --|-----
--------------------------------------------------------------------------------------------¶  package PRENAME is¶      ¶
-    type DEFINED_PRAGMAS¬is (¶¬¬¬CONTROLLED,¬ELABORATE,¬INLINE,¬INTERFACE,¶¬¬¬LIST,¬¬MEMORY_SIZE,¬OPTIMIZE,¬PACK,¶¬¬¬PAG
-E,¬¬PRIORITY,¬SHARED,¬STORAGE_UNIT,¶¬¬¬SUPPRESS,¬¬SYSTEM_NAME,¶¬¬¬DEBUG¬¬¬¬¬¬¬--| PRAGMA DEBUG ( ON|OFF ) -- ENABLES/DIS
-ABLES TRACE IN COMPILER¶¬¬¬);¶      ¶    type LIST_ARGUMENTS¬is ( OFF, ON );¶      ¶    type OPTIMIZE_ARGUMENTS¬is ( TIM
-E, SPACE );¶      ¶    type SUPPRESS_ARGUMENTS¬is (¶¬¬¬ON,¶¬¬¬ACCESS_CHECK,¬INDEX_CHECK,¬DISCRIMINANT_CHECK,¶¬¬¬LENGTH_C
-HECK,¬RANGE_CHECK,¬ELABORATION_CHECK,¶¬¬¬DIVISION_CHECK,¬OVERFLOW_CHECK,¬STORAGE_CHECK¶¬¬¬);¶      ¶    type INTERFACE_A
-RGUMENTS¬is ( ADA, ASM );¶      ¶    type DEFINED_ATTRIBUTES¬is (¶¬¬¬ADDRESS,¬¬AFT,¬¬BASE,¶¬¬¬CALLABLE,¬¬CONSTRAINED,¬CO
-UNT,¶¬¬¬DELTA_X,¬¬DIGITS_X,¬¬EMAX,¶¬¬¬EPSILON,¬¬FIRST,¬¬FIRST_BIT,¶¬¬¬FORE,¬¬IMAGE,¬¬LARGE,¶¬¬¬LAST,¬¬LAST_BIT,¬¬LENGTH,
-¶¬¬¬MACHINE_EMAX,¬MACHINE_EMIN,¶¬¬¬MACHINE_MANTISSA,¬MACHINE_OVERFLOWS,¶¬¬¬MACHINE_RADIX, ¬MACHINE_ROUNDS,¶¬¬¬MANTISSA,¬
-¬POS,¬¬POSITION,¶¬¬¬PRED,¬¬RANGE_X,¬¬SAFE_EMAX,¶¬¬¬SAFE_LARGE,¬SAFE_SMALL,¬SIZE,¶¬¬¬SMALL, ¬¬STORAGE_SIZE,¬SUCC,¶¬¬¬TERM
-INATED,¬VAL,¬¬VALUE,¶¬¬¬WIDTH¶¬¬¬);¶      ¶    type OP_CLASS¬¬is (¶¬¬¬OP_AND,¬¬OP_OR,¬¬OP_XOR,¬OP_NOT,¶¬¬¬OP_UNARY_PLUS,
-¬OP_UNARY_MINUS,¬OP_ABS,¬OP_EQ,¶¬¬¬OP_NE,¬¬OP_LT,¬¬OP_LE,¬OP_GT,¶¬¬¬OP_GE,¬¬OP_PLUS,¬¬OP_MINUS,¬OP_MULT,¶¬¬¬OP_DIV,¬¬OP_
-MOD,¬¬OP_REM,¬OP_CAT,¶¬¬¬OP_EXP¶¬¬¬);¶      ¶    subtype CLASS_BOOLEAN_OP¬¬is OP_CLASS range OP_AND .. OP_XOR;¶    subty
-pe CLASS_EQUALITY_OP¬¬is OP_CLASS range OP_EQ  .. OP_NE;¶    subtype CLASS_RELATIONAL_OP¬is OP_CLASS range OP_LT  .. OP_
-GE;¶    subtype CLASS_EQ_RELATIONAL_OP¬is OP_CLASS range OP_EQ  .. OP_GE;¶      ¶    subtype CLASS_UNARY_OP¬¬is OP_CLASS
- range OP_NOT        .. OP_ABS;¶    subtype CLASS_UNARY_NUMERIC_OP¬is OP_CLASS range OP_UNARY_PLUS .. OP_ABS;¶    subtyp
-e CLASS_FIXED_OP¬¬is OP_CLASS range OP_PLUS       .. OP_MINUS;¶    subtype CLASS_FLOAT_OP¬¬is OP_CLASS range OP_PLUS    
-   .. OP_DIV;¶    subtype CLASS_INTEGER_OP¬¬is OP_CLASS range OP_PLUS       .. OP_REM;¶      ¶    subtype STRING_3¬is ST
-RING(1..3);¶      ¶    BLTN_TEXT_ARRAY¬: constant array (OP_CLASS) of STRING_3 := (¶¬OP_AND => "AND",¬OP_OR => "OR!",¬OP
-_XOR => "XOR",¬OP_EQ => "=!!",¶¬OP_NE => "/=!",¬OP_LT => "<!!",¬OP_LE => "<=!",¬OP_GT => ">!!",¶¬OP_GE => ">=!",¬OP_PLUS
- => "+!!",¬OP_MINUS => "-!!",¬OP_CAT => "&!!",¶¬OP_UNARY_PLUS => "+!!",¬OP_UNARY_MINUS => "-!!",¶¬OP_ABS => "ABS",¬OP_NO
-T => "NOT",¬OP_MULT => "*!!",¬OP_DIV => "/!!",¶¬OP_MOD => "MOD",¬OP_REM => "REM",¬OP_EXP => "**!"¶¬);¶      ¶    BLTN_ID
-_ARRAY¬: array (OP_CLASS) of TREE¬:= (others => TREE_VOID);¶¶  --|------------------------------------------------------
------------------------------------------¶  end PRENAME;¶   ¶   ¶   ¶   ¶  --|------------------------------------------
-------------------------------------------------------¶¶  --¬¬RED_SUBP¶¶  --|-------------------------------------------
------------------------------------------------------¶  package RED_SUBP is¶    use SET_UTIL;¶¶    procedure EVAL_SUBP_C
-ALL¬¬¬( EXP :TREE; TYPESET :out TYPESET_TYPE );¶    function  RESOLVE_FUNCTION_CALL¬¬( EXP :TREE; TYPE_SPEC :TREE )¬retu
-rn TREE;¶    procedure REDUCE_APPLY_NAMES¬¬( NAME :TREE; NAME_DEFSET :in out DEFSET_TYPE;¶¬¬¬¬¬  GEN_ASSOC_S :TREE; INDE
-X :TREE := TREE_VOID );¶    function  RESOLVE_SUBP_PARAMETERS¬¬( DEF :TREE; GEN_ASSOC_S :TREE )¬return TREE;¶    procedu
-re RESOLVE_ERRONEOUS_PARAM_S¬¬( GENERAL_ASSOC_S :TREE);¶    procedure CHECK_ACTUAL_TYPE¬¬( FORMAL_TYPE :TREE; ACTUAL_TYP
-ESET :TYPESET_TYPE;¶¬¬¬¬¬  ACTUALS_OK :out BOOLEAN;¶¬¬¬¬¬  EXTRAINFO :out EXTRAINFO_TYPE );¶    function  GET_TYPE_OF_DI
-SCRETE_RANGE¬( DISCRETE_RANGE :TREE )¬¬return TREE;¶      ¶  --|--------------------------------------------------------
-----------------------------------------¶  end RED_SUBP;¶¶¶¶¶¶  --|-----------------------------------------------------
--------------------------------------------¶¶  --¬¬REP_CLAU¶¶  --|------------------------------------------------------
-------------------------------------------¶  package REP_CLAU is¶      ¶    procedure RESOLVE_LENGTH_REP¬( ATTRIBUTE :TR
-EE; EXP :in out TREE; H :H_TYPE );¶    procedure RESOLVE_ENUM_REP¬( SIMPLE_NAME :in out TREE; EXP :TREE; H :H_TYPE );¶  
-  procedure RESOLVE_ADDRESS_REP¬( SIMPLE_NAME :in out TREE; EXP :in out TREE; H :H_TYPE );¶    procedure RESOLVE_RECORD_
-REP¬( SIMPLE_NAME :in out TREE; ALIGNMENT :TREE;¶¬¬¬¬  COMP_REP_S :TREE; H :H_TYPE );¶      ¶  --|----------------------
---------------------------------------------------------------------------¶  end REP_CLAU;¶¶¶¶¶¶  USED_PACKAGE_LIST¬: SE
-Q_TYPE¬renames FIX_WITH.USED_PACKAGE_LIST;¶         ¶         ¶  package body SEM_GLOB¬is separate;¶  package body UNIV_
-OPS¬is separate;¶  function  EVAL_NUM¬( TXT :STRING )¬return TREE¬is separate;¶  package body UARITH¬is separate;¶  pack
-age body FIX_WITH¬is separate;¶  package body DEF_UTIL¬is separate;¶  package body SET_UTIL¬is separate;¶  package body 
-REQ_UTIL¬is separate;¶  package body AGGRESO¬is separate;¶  package body EXPRESO¬is separate;¶  package body VIS_UTIL¬is
- separate;¶  package body DEF_WALK¬is separate;¶  package body NOD_WALK¬is separate;¶  package body ATT_WALK¬is separate
-;¶  package body STM_WALK¬is separate;¶  package body PRA_WALK¬is separate;¶  package body CHK_STAT¬is separate;¶  packa
-ge body DERIVED¬is separate;¶  package body EXP_TYPE¬is separate;¶  package body HOM_UNIT¬is separate;¶  package body IN
-STANT¬is separate;¶  package body MAKE_NOD¬is separate;¶  package body GEN_SUBS¬is separate;¶  package body NEWSNAM¬is s
-eparate;¶  package body PRE_FCNS¬is separate;¶  package body RED_SUBP¬is separate;¶  package body REP_CLAU¬is separate;¶
-¶¶¶¬¬¬--------------------------------¶¬procedure¬¬INITIALIZE_PRAGMA_ATTRIBUTE_DEFS¶¶  is¶    STD_PACK_SYM¬¬: TREE¬¬:= S
-TORE_SYM( "_STANDRD.DCL" );¶    STD_PACK_ID¬¬: TREE¬¬:= HEAD( LIST( STD_PACK_SYM ) );¶    ALL_DECL¬¬: TREE¬¬:= D( AS_ALL
-_DECL, STD_PACK_ID );¶    STD_PACK_HEADER¬¬: TREE¬¬:= D( AS_HEADER, ALL_DECL );¶    DECL_PRIV¬¬: TREE¬¬:= D( AS_DECL_S2,
- STD_PACK_HEADER );¶    ID_LIST¬¬: SEQ_TYPE¬:= LIST( DECL_PRIV );¬¬¬--| LA LISTE DES DECLARATIONS PRIVEES DE _STANDRD¶  
-  ID¬¬¬: TREE;¶    DEF¬¬¬: TREE;¶  begin¶    while not IS_EMPTY( ID_LIST ) loop¬¬¬¬¬¬¬--| TANT QU'IL Y A DES ELEMENTS PR
-IVES¶      POP( ID_LIST, ID );¬¬¬¬¬¬¬¬--| EN EXTRAIRE UN¶      if ID.TY in DN_ATTRIBUTE_ID .. DN_PRAGMA_ID¬¬¬¬¬¬--| SI C
-'EST UN ID D'ATTRIBUT OU DE PRAGMA¶         and then D( LX_SYMREP, ID ).TY = DN_SYMBOL_REP¶      then¶        DEF := DEF
-_UTIL.MAKE_DEF_FOR_ID( ID, SEM_GLOB.INITIAL_H );¶        D( XD_REGION_DEF, DEF, TREE_VOID );¶        DB( XD_IS_IN_SPEC, 
-DEF, FALSE );¶      end if;¶    end loop;¶¶  end¬INITIALIZE_PRAGMA_ATTRIBUTE_DEFS;¶¬--------------------------------¶¶¶¶
-¬¬¬¬------------------------¶  procedure¬¬¬COMPILE_COMPILATION_UNIT¬( COMPILATION_UNIT :TREE;¶¬¬¬¬¬¬¬  H¬         :H_TYP
-E )¶¬¬¬¬------------------------¶  is¶¶    CONTEXT_ELEM_S¬¬: constant TREE¬:= D( AS_CONTEXT_ELEM_S, COMPILATION_UNIT );¶
-    ALL_DECL¬¬: constant TREE¬:= D( AS_ALL_DECL,       COMPILATION_UNIT );¶    PRAGMA_S¬¬: constant TREE¬:= D( AS_PRAGMA
-_S,       COMPILATION_UNIT );¶    WITH_LIST¬¬: constant SEQ_TYPE¬:= LIST( COMPILATION_UNIT );¶¶¶¬¬¬-------------------¶ 
-   procedure¬¬PROCESS_WITH_NAME_S¬¬( NAME_S :TREE )¶    is¶      NAME_LIST¬¬: SEQ_TYPE¬:= LIST( NAME_S );¶      NAME¬¬: 
-TREE;¶      NEW_NAME_LIST¬¬: SEQ_TYPE¬:= (TREE_NIL, TREE_NIL);¶    begin¶         ¶      while not IS_EMPTY( NAME_LIST )
- loop¶        POP( NAME_LIST, NAME );¶        declare        ¶          NAME_DEFN¬¬:constant TREE¬:= D( SM_DEFN, NAME );
-¶          NAME_DEF¬¬:constant TREE¬:= DEF_UTIL.GET_DEF_FOR_ID( NAME_DEFN );¶¬NEW_NAME¬¬: TREE;¶        begin¶          
-D( XD_REGION_DEF, NAME_DEF, DEF_UTIL.GET_DEF_FOR_ID( D( XD_REGION, NAME_DEFN ) ) );¶          NEW_NAME := VIS_UTIL.MAKE_
-USED_NAME_ID_FROM_OBJECT( NAME );¶          NEW_NAME_LIST := APPEND( NEW_NAME_LIST, NEW_NAME );¶        end;¶      end l
-oop;¶         ¶      LIST( NAME_S, NEW_NAME_LIST );¶¶    end¬PROCESS_WITH_NAME_S;¶¬-------------------¶¶¶¬¬¬------------
--------------¶    procedure¬¬PROCESS_WITH_USE_PRAGMA_S¬( USE_PRAGMA_S :TREE )¶¬¬¬-------------------------¶    is¶      
-USE_PRAGMA_LIST¬: SEQ_TYPE¬:= LIST( USE_PRAGMA_S );¶      USE_PRAGMA¬¬: TREE;¶    begin¶¶      while not IS_EMPTY( USE_P
-RAGMA_LIST ) loop¶        POP( USE_PRAGMA_LIST, USE_PRAGMA );¶            ¶        if USE_PRAGMA.TY = DN_PRAGMA¶        
-then NOD_WALK.WALK( USE_PRAGMA, INITIAL_H );¶        else¶¬¬¬CONVERT_USE_NAMES_TO_IDS:¶¬declare¶            NAME_LIST¬: 
-SEQ_TYPE¬¬:= LIST( D( AS_NAME_S, USE_PRAGMA ) );¶¬  NAME¬¬: TREE;¶            NEW_NAME_LIST¬: SEQ_TYPE¬¬:= (TREE_NIL,TRE
-E_NIL);¶            NAME_DEFN¬: TREE;¶ ¬begin¶            while not IS_EMPTY( NAME_LIST) loop¶              POP( NAME_LI
-ST, NAME );¶¬    if  NAME.TY = DN_SELECTED¶¬    then NAME_DEFN := D( AS_DESIGNATOR, NAME );¶¬    else NAME_DEFN := D( SM
-_DEFN, NAME );¶¬    end if;¶¬    declare¶                NAME_DEF¬:constant TREE¬¬:= DEF_UTIL.GET_DEF_FOR_ID( NAME_DEFN 
-);¶¬      NEW_NAME¬: TREE;¶¬    begin¶                DB( XD_IS_USED, NAME_DEF, TRUE );¶                NEW_NAME      :=
- VIS_UTIL.MAKE_USED_NAME_ID_FROM_OBJECT( NAME );¶                NEW_NAME_LIST := APPEND( NEW_NAME_LIST, NEW_NAME );¶¬  
-  end;¶            end loop;¶               ¶            LIST( D( AS_NAME_S, USE_PRAGMA), NEW_NAME_LIST );¶¬end¬¬CONVERT
-_USE_NAMES_TO_IDS;¶        end if;¶              ¶      end loop;¶¶    end¬PROCESS_WITH_USE_PRAGMA_S;¶¬-----------------
---------¶¶¶¶¬¬¬-----------------------¶    procedure¬¬PROCESS_CONTEXT_CLAUSES¬¬( COMPILATION_UNIT :TREE )¶¬¬¬-----------
-------------¶    is¶      CONTEXT_ELEM_S¬: constant TREE¬:= D( AS_CONTEXT_ELEM_S, COMPILATION_UNIT );¶      CONTEXT_ELEM
-_LIST¬: SEQ_TYPE¬:= LIST( CONTEXT_ELEM_S );¶      CONTEXT_ELEM¬¬: TREE;¶      TRANS_WITH_LIST¬: SEQ_TYPE¬:= LIST( COMPIL
-ATION_UNIT );¶      TRANS_WITH¬¬: TREE;¶¶¬¬¬------------------------¶      procedure¬¬PROCESS_ANCESTOR_CONTEXT¬( ANCESTO
-R_UNIT, COMPILATION_UNIT :TREE )¶¬¬¬------------------------¶      is¶¶¶¬¬¬-----------¶        function¬¬IS_ANCESTOR¬ ( 
-ANC_ALL_DECL, COMP_ALL_DECL :TREE ) return BOOLEAN¶¬¬¬-----------¶        is¶        begin¶          if COMP_ALL_DECL.TY
- in CLASS_SUBUNIT_BODY then¶            return (    ANC_ALL_DECL.TY in CLASS_UNIT_DECL¶                        and then 
-D( SM_FIRST, D( AS_SOURCE_NAME, COMP_ALL_DECL ) ) = D ( AS_SOURCE_NAME, ANC_ALL_DECL)¶                        );¶       
-   elsif COMP_ALL_DECL.TY = DN_SUBUNIT then¶            declare¶              COMP_NAME¬: TREE¬:= D( AS_NAME, COMP_ALL_D
-ECL );¶              ANC_ID¬: TREE¬:= TREE_VOID;¶            begin¶              if ANC_ALL_DECL.TY = DN_SUBUNIT then¶  
-              ANC_ID := D( SM_FIRST, D(  AS_SOURCE_NAME, D( AS_SUBUNIT_BODY, ANC_ALL_DECL ) ) );¶                return 
-FIX_WITH.IS_ANCESTOR( ANC_ID, COMP_ALL_DECL );¶              elsif ANC_ALL_DECL /= TREE_VOID then¶                ANC_ID
- := D( SM_FIRST, D(  AS_SOURCE_NAME, ANC_ALL_DECL ) );¶                while COMP_NAME.TY = DN_SELECTED loop¶           
-       COMP_NAME := D( AS_NAME, COMP_NAME );¶                end loop;¶                return D( LX_SYMREP, ANC_ID ) = D
-( LX_SYMREP, COMP_NAME );¶              end if;¶            end;¶          end if;¶          return FALSE;¶        end¬I
-S_ANCESTOR;¶¬¬-----------¶¶¬¬¬-----------------¶        procedure¬¬REPROCESS_CONTEXT¬¬ ( CONTEXT_ELEM_S :TREE )¶¬¬¬-----
-------------¶        is¶              -- GIVEN CONTEXT_ELEM_S FOR AN ANCESTOR UNIT,¶                -- ... REPROCESS WIT
-H'S AND USE'S IN FOR USE IN CURRENT UNIT¶          CONTEXT_ELEM_LIST¬: SEQ_TYPE¬:= LIST( CONTEXT_ELEM_S );¶          CON
-TEXT_ELEM¬: TREE;¶          USE_PRAGMA_LIST¬: SEQ_TYPE;¶          USE_PRAGMA¬: TREE;¶          ITEM_LIST¬¬: SEQ_TYPE;¶  
-        ITEM¬¬: TREE;¶        begin¶          while not IS_EMPTY( CONTEXT_ELEM_LIST ) loop¶            POP( CONTEXT_ELEM
-_LIST, CONTEXT_ELEM);¶            if CONTEXT_ELEM.TY = DN_WITH then¶              ITEM_LIST := LIST( D( AS_NAME_S, CONTE
-XT_ELEM ) );¶              while not IS_EMPTY( ITEM_LIST) loop¶                POP( ITEM_LIST, ITEM);¶                if
- D( SM_DEFN, ITEM ) /= TREE_VOID then¶                  D( XD_REGION_DEF, DEF_UTIL.GET_DEF_FOR_ID( D( SM_DEFN,ITEM ) ), 
-PREDEFINED_STANDARD_DEF );¶                end if;¶              end loop;¶              USE_PRAGMA_LIST := LIST( D( AS_
-USE_PRAGMA_S, CONTEXT_ELEM ) );¶              while not IS_EMPTY( USE_PRAGMA_LIST) loop¶                POP( USE_PRAGMA_
-LIST, USE_PRAGMA);¶                if USE_PRAGMA.TY = DN_USE then¶                  ITEM_LIST := LIST( D( AS_NAME_S, USE
-_PRAGMA ) );¶                  while not IS_EMPTY( ITEM_LIST ) loop¶                    POP( ITEM_LIST, ITEM );¶        
-            if D( SM_DEFN, ITEM ) /= TREE_VOID then¶                      DB( XD_IS_USED, DEF_UTIL.GET_DEF_FOR_ID( D( SM
-_DEFN, ITEM ) ), TRUE );¶                    end if;¶                  end loop;¶                end if;¶              e
-nd loop;¶            end if;¶          end loop;¶¶        end¬REPROCESS_CONTEXT;¶¬¬-----------------¶            ¶      
-begin¶        if IS_ANCESTOR( D( AS_ALL_DECL, ANCESTOR_UNIT ), D( AS_ALL_DECL, COMPILATION_UNIT ) ) then¶          REPRO
-CESS_CONTEXT( D( AS_CONTEXT_ELEM_S, ANCESTOR_UNIT ) );¶        end if;¶¶      end¬PROCESS_ANCESTOR_CONTEXT;¶¬-----------
--------------¶¶    begin¶¶      while  not IS_EMPTY( CONTEXT_ELEM_LIST )  loop¶        POP( CONTEXT_ELEM_LIST, CONTEXT_E
-LEM );¶            ¶        if  CONTEXT_ELEM.TY = DN_WITH  then¶¶          PROCESS_WITH_NAME_S( D( AS_NAME_S, CONTEXT_EL
-EM ) );¶          PROCESS_WITH_USE_PRAGMA_S( D( AS_USE_PRAGMA_S, CONTEXT_ELEM ) );¶               ¶        else¶        
-  PUT_LINE( "SEM_PHASE.PROCESS_CONTEXT_CLAUSES!! $$$$ CONTEXT PRAGMA." );¶          raise PROGRAM_ERROR;¶        end if;
-¶      end loop;¶         ¶      while  not IS_EMPTY( TRANS_WITH_LIST )  loop¶        POP( TRANS_WITH_LIST, TRANS_WITH);
-¶        PROCESS_ANCESTOR_CONTEXT( D( TW_COMP_UNIT, TRANS_WITH ), COMPILATION_UNIT );¶      end loop;¶         ¶    end¬
-PROCESS_CONTEXT_CLAUSES;¶¬-----------------------¶¶¶¬¬¬---------------------¶    procedure¬¬ENTER_ANCESTOR_REGION¬¬( NAM
-E :TREE; H :in out H_TYPE )¶¬¬¬---------------------¶    is¶      S¬¬¬: NOD_WALK.S_TYPE;¶      DESIGNATOR¬¬: TREE;¶     
- DEFN¬¬: TREE;¶      DES_DEF¬¬: TREE;¶      DEFLIST¬¬: SEQ_TYPE;¶      DEF¬¬¬: TREE;¶    begin¶      if NAME.TY = DN_SEL
-ECTED then¶        ENTER_ANCESTOR_REGION( D( AS_NAME, NAME ), H );¶        DESIGNATOR := D( AS_DESIGNATOR, NAME );¶     
- else¶        DESIGNATOR := NAME;¶      end if;¶¶      D( SM_DEFN, DESIGNATOR, TREE_VOID );¶      DEFLIST := LIST( D( LX
-_SYMREP, DESIGNATOR ) );¶ ¶      while not IS_EMPTY( DEFLIST ) loop¶        POP( DEFLIST, DEF );¶¶        if D( XD_REGIO
-N, D( XD_SOURCE_NAME, DEF ) ) = D( XD_SOURCE_NAME, H.REGION_DEF ) then¶          DEFN := D( XD_SOURCE_NAME, DEF);¶      
-    if DEFN.TY = DN_TYPE_ID or else DEFN.TY in CLASS_UNIT_NAME then¶            DEFN := D( SM_FIRST, DEFN );¶          e
-nd if;¶          D( SM_DEFN, DESIGNATOR, DEFN );¶          exit;¶        end if;¶¶      end loop;¶¶      DEFN := D( SM_D
-EFN, DESIGNATOR );¶      if DEFN = TREE_VOID then¶        PUT_LINE( "!! DEFN NOT FOUND FOR ANCESTOR" );¶        raise PR
-OGRAM_ERROR;¶      end if;¶      DES_DEF := DEF_UTIL.GET_DEF_FOR_ID( DEFN );¶      D( XD_REGION_DEF, DES_DEF, H.REGION_D
-EF );¶      NOD_WALK.ENTER_BODY( DES_DEF, H, S );¶¶    end¬ENTER_ANCESTOR_REGION;¶¬---------------------¶¶¶¶¬¬¬---------
-¶¬procedure¬¬WALK_ITEM¬¬( ITEM :TREE; H_IN :H_TYPE )¶    is¶      H¬: H_TYPE¬:= H_IN;¶    begin¶      NOD_WALK.WALK( ITE
-M, H );¶    end¬WALK_ITEM;¶¬---------¶¶¶      ¶  begin¶    if  ALL_DECL.TY = DN_VOID  then¶      ERROR( D( LX_SRCPOS, CO
-MPILATION_UNIT ), "$$$ EMPTY UNIT NOT IMPLEMENTED YET" );¶      return;¶    end if;¶¶    USED_PACKAGE_LIST := (TREE_NIL,
- TREE_NIL);¶    FIX_WITH.FIX_WITH_CLAUSES( COMPILATION_UNIT );¶    INITIALIZE_PREDEFINED_TYPES;¶¶    PROCESS_CONTEXT_CLA
-USES( COMPILATION_UNIT );¶¶    declare¶      H¬¬: H_TYPE¬¬:= INITIAL_H;¶    begin¶      H.REGION_DEF := PREDEFINED_STAND
-ARD_DEF;¶      H.LEX_LEVEL  := 2;¶      H.IS_IN_SPEC := TRUE;¶      H.IS_IN_BODY := FALSE;¶¶      if  ALL_DECL.TY = DN_S
-UBUNIT  then¶        ENTER_ANCESTOR_REGION( D( AS_NAME, ALL_DECL ), H );¶        WALK_ITEM( D( AS_SUBUNIT_BODY, ALL_DECL
- ), H );¶      else¶        WALK_ITEM( ALL_DECL, H);¶      end if;¶¶      NOD_WALK.WALK_ITEM_S( PRAGMA_S, H );¶¶      wh
-ile  not IS_EMPTY( USED_PACKAGE_LIST )  loop¶        DB( XD_IS_USED, HEAD( USED_PACKAGE_LIST ), FALSE );¶        USED_PA
-CKAGE_LIST := TAIL( USED_PACKAGE_LIST );¶      end loop;¶    end;¶¶  end¬COMPILE_COMPILATION_UNIT;¶¬--------------------
-----¶¶¶¶¬¬¬------------------¶  procedure¬¬CANCEL_TRANS_WITHS¬¬( COMPILATION_UNIT :TREE )¶¬¬¬------------------¶  is¶   
- use DEF_UTIL;¶    TRANS_WITH_LIST¬¬: SEQ_TYPE ¬:= LIST( COMPILATION_UNIT );¶    TRANS_WITH¬¬: TREE;¶    ALL_DECL¬¬: TRE
-E;¶    UNIT_ID¬¬: TREE;¶  begin¶    while not IS_EMPTY( TRANS_WITH_LIST ) loop¶      POP( TRANS_WITH_LIST, TRANS_WITH );
-¶¶      ALL_DECL := D( AS_ALL_DECL, D( TW_COMP_UNIT, TRANS_WITH ) );¶      if ALL_DECL.TY /= DN_SUBUNIT then¶        UNI
-T_ID := D( AS_SOURCE_NAME, ALL_DECL );¶        if UNIT_ID.TY in CLASS_UNIT_NAME and then D( SM_FIRST, UNIT_ID ) = UNIT_I
-D then¶          DEF_UTIL.REMOVE_DEF_FROM_ENVIRONMENT( GET_DEF_FOR_ID( UNIT_ID ) );¶        end if;¶      else¶        U
-NIT_ID := D( SM_FIRST, D( AS_SOURCE_NAME, D( AS_SUBUNIT_BODY, ALL_DECL ) ) );¶        REMOVE_DEF_FROM_ENVIRONMENT( GET_D
-EF_FOR_ID( UNIT_ID ) );¶      end if;¶¶    end loop;¶    REMOVE_DEF_FROM_ENVIRONMENT( PREDEFINED_STANDARD_DEF );¶¶  end¬
-CANCEL_TRANS_WITHS;¶¬------------------¶¶¶¬¬¬-------¶  procedure¬¬FIX_PRE¬¬is separate;¶¬¬¬-------¶¶¶begin¶  OPEN_IDL_TR
-EE_FILE( IDL.LIB_PATH( 1..LIB_PATH_LENGTH ) & "$$$.TMP" );¶      ¶  if  DI( XD_ERR_COUNT, TREE_ROOT ) = 0  then¶    decl
-are¶      USER_ROOT¬¬: TREE¬¬:= D( XD_USER_ROOT, TREE_ROOT );¶      COMPILATION¬¬: TREE¬¬:= D( XD_STRUCTURE, USER_ROOT )
-;¶      COMPLTN_UNIT_LIST¬: SEQ_TYPE¬:= LIST( D( AS_COMPLTN_UNIT_S, COMPILATION ) );¶      COMPILATION_UNIT¬: TREE;¶    
-  SRC_NAME¬¬:constant STRING¬:= PRINT_NAME( D( XD_SOURCENAME, USER_ROOT ) );¶    begin¶        ¶      if  SRC_NAME = "_s
-tandrd.ads"  then¶¶        FIX_PRE;¶               ¶      else¶        SEM_GLOB.INITIALIZE_GLOBAL_DATA;¶        INITIALI
-ZE_PRAGMA_ATTRIBUTE_DEFS;¶            ¶        while  not IS_EMPTY( COMPLTN_UNIT_LIST )  loop¶          POP( COMPLTN_UNI
-T_LIST, COMPILATION_UNIT );¶¶          COMPILE_COMPILATION_UNIT( COMPILATION_UNIT, INITIAL_H );¶¶          if  not IS_EM
-PTY( COMPLTN_UNIT_LIST )  then¶            CANCEL_TRANS_WITHS( COMPILATION_UNIT );¶          end if;¶        end loop;¶ 
-     end if;¶    end;¶  end if;¶      ¶  CLOSE_PAGE_MANAGER;¶¶end¬SEM_PHASE;¶¬---------¶
+KE_BOX_DEFAULT¶                ( LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MA
+KE_NO_DEFAULT¶                ( LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAK
+E_BLOCK_BODY¶                ( AS_ITEM_S: TREE := TREE_VOID;¶                AS_STM_S: TREE := TREE_VOID;¶              
+  AS_ALTERNATIVE_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      
+¶          function MAKE_STUB¶                ( LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶      
+    function MAKE_IMPLICIT_NOT_EQ¶                ( LX_SRCPOS: TREE := TREE_VOID;¶                SM_EQUAL: TREE := TREE
+_VOID)¶                return TREE;¶      ¶          function MAKE_DERIVED_SUBPROG¶                ( LX_SRCPOS: TREE := 
+TREE_VOID;¶                SM_DERIVABLE: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_
+COND_CLAUSE¶                ( AS_EXP: TREE := TREE_VOID;¶                AS_STM_S: TREE := TREE_VOID;¶                LX
+_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_SELECT_ALTERNATIVE¶             
+   ( AS_EXP: TREE := TREE_VOID;¶                AS_STM_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOI
+D)¶                return TREE;¶      ¶          function MAKE_SELECT_ALT_PRAGMA¶                ( AS_PRAGMA: TREE := TR
+EE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_IN_OP
+¶                ( LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_NOT_IN¶    
+            ( LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_AND_THEN¶       
+         ( LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_OR_ELSE¶           
+     ( LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_FOR¶                ( A
+S_SOURCE_NAME: TREE := TREE_VOID;¶                AS_DISCRETE_RANGE: TREE := TREE_VOID;¶                LX_SRCPOS: TREE 
+:= TREE_VOID)¶                return TREE;¶      ¶          function MAKE_REVERSE¶                ( AS_SOURCE_NAME: TREE
+ := TREE_VOID;¶                AS_DISCRETE_RANGE: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶     
+           return TREE;¶      ¶          function MAKE_WHILE¶                ( AS_EXP: TREE := TREE_VOID;¶              
+  LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_ALTERNATIVE¶                
+( AS_CHOICE_S: TREE := TREE_VOID;¶                AS_STM_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_V
+OID)¶                return TREE;¶      ¶          function MAKE_ALTERNATIVE_PRAGMA¶                ( AS_PRAGMA: TREE :=
+ TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_CO
+MP_REP¶                ( AS_NAME: TREE := TREE_VOID;¶                AS_EXP: TREE := TREE_VOID;¶                AS_RANGE
+: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          functio
+n MAKE_COMP_REP_PRAGMA¶                ( AS_PRAGMA: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶   
+             return TREE;¶      ¶          function MAKE_CONTEXT_PRAGMA¶                ( AS_PRAGMA: TREE := TREE_VOID;¶
+                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_WITH¶         
+       ( AS_NAME_S: TREE := TREE_VOID;¶                AS_USE_PRAGMA_S: TREE := TREE_VOID;¶                LX_SRCPOS: TR
+EE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_VARIANT¶                ( AS_CHOICE_S: TREE
+ := TREE_VOID;¶                AS_COMP_LIST: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶          
+      return TREE;¶      ¶          function MAKE_VARIANT_PRAGMA¶                ( AS_PRAGMA: TREE := TREE_VOID;¶       
+         LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_ALIGNMENT¶           
+     ( AS_PRAGMA_S: TREE := TREE_VOID;¶                AS_EXP: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TRE
+E_VOID)¶                return TREE;¶      ¶          function MAKE_VARIANT_PART¶                ( AS_NAME: TREE := TREE
+_VOID;¶                AS_VARIANT_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                re
+turn TREE;¶      ¶          function MAKE_COMP_LIST¶                ( AS_DECL_S: TREE := TREE_VOID;¶                AS_V
+ARIANT_PART: TREE := TREE_VOID;¶                AS_PRAGMA_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_
+VOID)¶                return TREE;¶      ¶          function MAKE_COMPILATION¶                ( AS_COMPLTN_UNIT_S: TREE 
+:= TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_
+COMPILATION_UNIT¶                ( AS_CONTEXT_ELEM_S: TREE := TREE_VOID;¶                AS_ALL_DECL: TREE := TREE_VOID;
+¶                AS_PRAGMA_S: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶                XD_TIMEST
+AMP: INTEGER := 0;¶                LIST: SEQ_TYPE := (TREE_NIL,TREE_NIL);¶                XD_NBR_PAGES: INTEGER := 0;¶  
+              XD_LIB_NAME: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_INDEX¶        
+        ( AS_NAME: TREE := TREE_VOID;¶                LX_SRCPOS: TREE := TREE_VOID;¶                SM_TYPE_SPEC: TREE :
+= TREE_VOID)¶                return TREE;¶      ¶          function MAKE_TASK_SPEC¶                ( SM_DERIVED: TREE :=
+ TREE_VOID;¶                SM_IS_ANONYMOUS: BOOLEAN := FALSE;¶                SM_DECL_S: TREE := TREE_VOID;¶           
+     SM_BODY: TREE := TREE_VOID;¶                SM_ADDRESS: TREE := TREE_VOID;¶                SM_SIZE: TREE := TREE_VO
+ID;¶                SM_STORAGE_SIZE: TREE := TREE_VOID;¶                XD_SOURCE_NAME: TREE := TREE_VOID;¶             
+   XD_STUB: TREE := TREE_VOID;¶                XD_BODY: TREE := TREE_VOID)¶                return TREE;¶      ¶         
+ function MAKE_ENUMERATION¶                ( SM_DERIVED: TREE := TREE_VOID;¶                SM_IS_ANONYMOUS: BOOLEAN := 
+FALSE;¶                SM_BASE_TYPE: TREE := TREE_VOID;¶                SM_RANGE: TREE := TREE_VOID;¶                SM_
+LITERAL_S: TREE := TREE_VOID;¶                XD_SOURCE_NAME: TREE := TREE_VOID;¶                CD_IMPL_SIZE: INTEGER :
+= 0)¶                return TREE;¶      ¶          function MAKE_INTEGER (¬SM_DERIVED, SM_BASE_TYPE, SM_RANGE, XD_SOURCE
+_NAME :TREE := TREE_VOID;¶          ¬¬CD_IMPL_SIZE: INTEGER := 0; SM_IS_ANONYMOUS :BOOLEAN := FALSE¶                ¬) r
+eturn TREE;¶      ¶          function MAKE_FLOAT¶                ( SM_DERIVED: TREE := TREE_VOID;¶                SM_IS_
+ANONYMOUS: BOOLEAN := FALSE;¶                SM_BASE_TYPE: TREE := TREE_VOID;¶                SM_RANGE: TREE := TREE_VOI
+D;¶                SM_ACCURACY: TREE := TREE_VOID;¶                XD_SOURCE_NAME: TREE := TREE_VOID;¶                CD
+_IMPL_SIZE: INTEGER := 0)¶                return TREE;¶      ¶          function MAKE_FIXED¶                ( SM_DERIVED
+: TREE := TREE_VOID;¶                SM_IS_ANONYMOUS: BOOLEAN := FALSE;¶                SM_BASE_TYPE: TREE := TREE_VOID;
+¶                SM_RANGE: TREE := TREE_VOID;¶                SM_ACCURACY: TREE := TREE_VOID;¶                XD_SOURCE_
+NAME: TREE := TREE_VOID;¶                CD_IMPL_SIZE: INTEGER := 0;¶                CD_IMPL_SMALL: TREE := TREE_VOID)¶ 
+               return TREE;¶      ¶          function MAKE_ARRAY¶                ( SM_DERIVED: TREE := TREE_VOID;¶      
+          SM_IS_ANONYMOUS: BOOLEAN := FALSE;¶                SM_BASE_TYPE: TREE := TREE_VOID;¶                SM_SIZE: T
+REE := TREE_VOID;¶                SM_IS_LIMITED: BOOLEAN := FALSE;¶                SM_IS_PACKED: BOOLEAN := FALSE;¶     
+           SM_INDEX_S: TREE := TREE_VOID;¶                SM_COMP_TYPE: TREE := TREE_VOID;¶                XD_SOURCE_NAM
+E: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_RECORD¶                ( SM_DERIVED: T
+REE := TREE_VOID;¶                SM_IS_ANONYMOUS: BOOLEAN := FALSE;¶                SM_BASE_TYPE: TREE := TREE_VOID;¶  
+              SM_SIZE: TREE := TREE_VOID;¶                SM_IS_LIMITED: BOOLEAN := FALSE;¶                SM_IS_PACKED:
+ BOOLEAN := FALSE;¶                SM_DISCRIMINANT_S: TREE := TREE_VOID;¶                SM_COMP_LIST: TREE := TREE_VOID
+;¶                SM_REPRESENTATION: TREE := TREE_VOID;¶                XD_SOURCE_NAME: TREE := TREE_VOID)¶             
+   return TREE;¶      ¶          function MAKE_ACCESS¶                ( SM_DERIVED: TREE := TREE_VOID;¶                S
+M_IS_ANONYMOUS: BOOLEAN := FALSE;¶                SM_BASE_TYPE: TREE := TREE_VOID;¶                SM_SIZE: TREE := TREE
+_VOID;¶                SM_STORAGE_SIZE: TREE := TREE_VOID;¶                SM_IS_CONTROLLED: BOOLEAN := FALSE;¶         
+       SM_DESIG_TYPE: TREE := TREE_VOID;¶                SM_MASTER: TREE := TREE_VOID;¶                XD_SOURCE_NAME: T
+REE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_CONSTRAINED_ARRAY¶                ( SM_DER
+IVED: TREE := TREE_VOID;¶                SM_IS_ANONYMOUS: BOOLEAN := FALSE;¶                SM_BASE_TYPE: TREE := TREE_V
+OID;¶                SM_DEPENDS_ON_DSCRMT: BOOLEAN := FALSE;¶                SM_INDEX_SUBTYPE_S: TREE := TREE_VOID;¶    
+            XD_SOURCE_NAME: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_CONSTRAINED_R
+ECORD¶                ( SM_DERIVED: TREE := TREE_VOID;¶                SM_IS_ANONYMOUS: BOOLEAN := FALSE;¶              
+  SM_BASE_TYPE: TREE := TREE_VOID;¶                SM_DEPENDS_ON_DSCRMT: BOOLEAN := FALSE;¶                SM_NORMALIZED
+_DSCRMT_S: TREE := TREE_VOID;¶                XD_SOURCE_NAME: TREE := TREE_VOID)¶                return TREE;¶      ¶   
+       function MAKE_CONSTRAINED_ACCESS¶                ( SM_DERIVED: TREE := TREE_VOID;¶                SM_IS_ANONYMOUS
+: BOOLEAN := FALSE;¶                SM_BASE_TYPE: TREE := TREE_VOID;¶                SM_DEPENDS_ON_DSCRMT: BOOLEAN := FA
+LSE;¶                SM_DESIG_TYPE: TREE := TREE_VOID;¶                XD_SOURCE_NAME: TREE := TREE_VOID)¶              
+  return TREE;¶      ¶          function MAKE_PRIVATE¶                ( SM_DERIVED: TREE := TREE_VOID;¶                S
+M_IS_ANONYMOUS: BOOLEAN := FALSE;¶                SM_DISCRIMINANT_S: TREE := TREE_VOID;¶                SM_TYPE_SPEC: TR
+EE := TREE_VOID;¶                XD_SOURCE_NAME: TREE := TREE_VOID)¶                return TREE;¶      ¶          functi
+on MAKE_L_PRIVATE¶                ( SM_DERIVED: TREE := TREE_VOID;¶                SM_IS_ANONYMOUS: BOOLEAN := FALSE;¶  
+              SM_DISCRIMINANT_S: TREE := TREE_VOID;¶                SM_TYPE_SPEC: TREE := TREE_VOID;¶                XD_
+SOURCE_NAME: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_INCOMPLETE¶                (
+ SM_DISCRIMINANT_S: TREE := TREE_VOID;¶                XD_SOURCE_NAME: TREE := TREE_VOID;¶                XD_FULL_TYPE_S
+PEC: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_UNIVERSAL_INTEGER¶                ( 
+XD_SOURCE_NAME: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_UNIVERSAL_FIXED¶         
+       ( XD_SOURCE_NAME: TREE := TREE_VOID)¶                return TREE;¶      ¶          function MAKE_UNIVERSAL_REAL¶ 
+               ( XD_SOURCE_NAME: TREE := TREE_VOID)¶                return TREE;¶      ¶  --|---------------------------
+---------------------------------------------------------------------¶  end MAKE_NOD;¶¶¶¶¶¶  --|------------------------
+------------------------------------------------------------------------¶¶  --¬¬GEN_SUBS¶¶  --|-------------------------
+-----------------------------------------------------------------------¶  package GEN_SUBS is¶      ¶    NODE_HASH_SIZE¬
+¬: constant¬:= 131;¶    type NODE_ARRAY_TYPE¬is array( 0 .. INTEGER( NODE_HASH_SIZE - 1 ) ) of TREE;¶    type NODE_HASH_
+TYPE¬is record¶¬¬¬  LIMIT¬: NATURAL¬¬:= 32000;¶¬¬¬  A¬: NODE_ARRAY_TYPE¬:= (others => TREE_VOID);¶¬¬¬end record;¶      ¶
+    procedure INSERT_NODE_HASH¬( NODE_HASH :in out NODE_HASH_TYPE; NEW_NODE :TREE;¶¬¬¬¬  OLD_NODE :TREE );¶    procedure
+ REPLACE_NODE¬¬( NODE :in out TREE; NODE_HASH :in out NODE_HASH_TYPE );¶    procedure SUBSTITUTE_ATTRIBUTES¬( NODE :in o
+ut TREE; NODE_HASH :in out NODE_HASH_TYPE;¶¬¬¬¬  H_IN :H_TYPE );¶    procedure SUBSTITUTE¬¬( NODE :in out TREE; NODE_HAS
+H :in out NODE_HASH_TYPE;¶¬¬¬¬  H_IN :H_TYPE );¶      ¶  --|------------------------------------------------------------
+------------------------------------¶  end GEN_SUBS;¶¶¶¶¶¶  --|---------------------------------------------------------
+---------------------------------------¶¶  --¬¬NEWSNAM¶¶  --|-----------------------------------------------------------
+-------------------------------------¶  package NEWSNAM is¶    use GEN_SUBS;¶      ¶    procedure REPLACE_SOURCE_NAME¬( 
+SOURCE_NAME :in out TREE; NODE_HASH :in out NODE_HASH_TYPE;¶¬¬¬¬  H_IN :H_TYPE; DECL :TREE := TREE_VOID );¶          ¶  
+--|------------------------------------------------------------------------------------------------¶  end NEWSNAM;¶¶¶¶¶¶
+  --|------------------------------------------------------------------------------------------------¶¶  --¬¬PRE_FCNS¶¶ 
+ --|------------------------------------------------------------------------------------------------¶  package PRE_FCNS 
+is¶      ¶    procedure GEN_PREDEFINED_OPERATORS¬( TYPE_SPEC :TREE; H_IN :H_TYPE );¶       ¶  --|-----------------------
+-------------------------------------------------------------------------¶  end PRE_FCNS;¶¶¶¶¶¶  --|--------------------
+----------------------------------------------------------------------------¶¶  --¬¬PRENAME¶¶  --|----------------------
+--------------------------------------------------------------------------¶  package PRENAME is¶      ¶    type DEFINED_
+PRAGMAS¬is (¶¬¬¬CONTROLLED,¬ELABORATE,¬INLINE,¬INTERFACE,¶¬¬¬LIST,¬¬MEMORY_SIZE,¬OPTIMIZE,¬PACK,¶¬¬¬PAGE,¬¬PRIORITY,¬SHA
+RED,¬STORAGE_UNIT,¶¬¬¬SUPPRESS,¬¬SYSTEM_NAME,¶¬¬¬DEBUG¬¬¬¬¬¬¬--| PRAGMA DEBUG ( ON|OFF ) -- ENABLES/DISABLES TRACE IN CO
+MPILER¶¬¬¬);¶      ¶    type LIST_ARGUMENTS¬is ( OFF, ON );¶      ¶    type OPTIMIZE_ARGUMENTS¬is ( TIME, SPACE );¶     
+ ¶    type SUPPRESS_ARGUMENTS¬is (¶¬¬¬ON,¶¬¬¬ACCESS_CHECK,¬INDEX_CHECK,¬DISCRIMINANT_CHECK,¶¬¬¬LENGTH_CHECK,¬RANGE_CHECK
+,¬ELABORATION_CHECK,¶¬¬¬DIVISION_CHECK,¬OVERFLOW_CHECK,¬STORAGE_CHECK¶¬¬¬);¶      ¶    type INTERFACE_ARGUMENTS¬is ( ADA
+, ASM );¶      ¶    type DEFINED_ATTRIBUTES¬is (¶¬¬¬ADDRESS,¬¬AFT,¬¬BASE,¶¬¬¬CALLABLE,¬¬CONSTRAINED,¬COUNT,¶¬¬¬DELTA_X,¬
+¬DIGITS_X,¬¬EMAX,¶¬¬¬EPSILON,¬¬FIRST,¬¬FIRST_BIT,¶¬¬¬FORE,¬¬IMAGE,¬¬LARGE,¶¬¬¬LAST,¬¬LAST_BIT,¬¬LENGTH,¶¬¬¬MACHINE_EMAX,
+¬MACHINE_EMIN,¶¬¬¬MACHINE_MANTISSA,¬MACHINE_OVERFLOWS,¶¬¬¬MACHINE_RADIX, ¬MACHINE_ROUNDS,¶¬¬¬MANTISSA,¬¬POS,¬¬POSITION,¶
+¬¬¬PRED,¬¬RANGE_X,¬¬SAFE_EMAX,¶¬¬¬SAFE_LARGE,¬SAFE_SMALL,¬SIZE,¶¬¬¬SMALL, ¬¬STORAGE_SIZE,¬SUCC,¶¬¬¬TERMINATED,¬VAL,¬¬VAL
+UE,¶¬¬¬WIDTH¶¬¬¬);¶      ¶    type OP_CLASS¬¬is (¶¬¬¬OP_AND,¬¬OP_OR,¬¬OP_XOR,¬OP_NOT,¶¬¬¬OP_UNARY_PLUS,¬OP_UNARY_MINUS,¬
+OP_ABS,¬OP_EQ,¶¬¬¬OP_NE,¬¬OP_LT,¬¬OP_LE,¬OP_GT,¶¬¬¬OP_GE,¬¬OP_PLUS,¬¬OP_MINUS,¬OP_MULT,¶¬¬¬OP_DIV,¬¬OP_MOD,¬¬OP_REM,¬OP_
+CAT,¶¬¬¬OP_EXP¶¬¬¬);¶      ¶    subtype CLASS_BOOLEAN_OP¬¬is OP_CLASS range OP_AND .. OP_XOR;¶    subtype CLASS_EQUALITY
+_OP¬¬is OP_CLASS range OP_EQ  .. OP_NE;¶    subtype CLASS_RELATIONAL_OP¬is OP_CLASS range OP_LT  .. OP_GE;¶    subtype C
+LASS_EQ_RELATIONAL_OP¬is OP_CLASS range OP_EQ  .. OP_GE;¶      ¶    subtype CLASS_UNARY_OP¬¬is OP_CLASS range OP_NOT    
+    .. OP_ABS;¶    subtype CLASS_UNARY_NUMERIC_OP¬is OP_CLASS range OP_UNARY_PLUS .. OP_ABS;¶    subtype CLASS_FIXED_OP¬
+¬is OP_CLASS range OP_PLUS       .. OP_MINUS;¶    subtype CLASS_FLOAT_OP¬¬is OP_CLASS range OP_PLUS       .. OP_DIV;¶   
+ subtype CLASS_INTEGER_OP¬¬is OP_CLASS range OP_PLUS       .. OP_REM;¶      ¶    subtype STRING_3¬is STRING(1..3);¶     
+ ¶    BLTN_TEXT_ARRAY¬: constant array (OP_CLASS) of STRING_3 := (¶¬OP_AND => "AND",¬OP_OR => "OR!",¬OP_XOR => "XOR",¬OP
+_EQ => "=!!",¶¬OP_NE => "/=!",¬OP_LT => "<!!",¬OP_LE => "<=!",¬OP_GT => ">!!",¶¬OP_GE => ">=!",¬OP_PLUS => "+!!",¬OP_MIN
+US => "-!!",¬OP_CAT => "&!!",¶¬OP_UNARY_PLUS => "+!!",¬OP_UNARY_MINUS => "-!!",¶¬OP_ABS => "ABS",¬OP_NOT => "NOT",¬OP_MU
+LT => "*!!",¬OP_DIV => "/!!",¶¬OP_MOD => "MOD",¬OP_REM => "REM",¬OP_EXP => "**!"¶¬);¶      ¶    BLTN_ID_ARRAY¬: array (O
+P_CLASS) of TREE¬:= (others => TREE_VOID);¶¶  --|-----------------------------------------------------------------------
+------------------------¶  end PRENAME;¶   ¶   ¶   ¶   ¶  --|-----------------------------------------------------------
+-------------------------------------¶¶  --¬¬RED_SUBP¶¶  --|------------------------------------------------------------
+------------------------------------¶  package RED_SUBP is¶    use SET_UTIL;¶¶    procedure EVAL_SUBP_CALL¬¬¬( EXP :TREE
+; TYPESET :out TYPESET_TYPE );¶    function  RESOLVE_FUNCTION_CALL¬¬( EXP :TREE; TYPE_SPEC :TREE )¬return TREE;¶    proc
+edure REDUCE_APPLY_NAMES¬¬( NAME :TREE; NAME_DEFSET :in out DEFSET_TYPE;¶¬¬¬¬¬  GEN_ASSOC_S :TREE; INDEX :TREE := TREE_V
+OID );¶    function  RESOLVE_SUBP_PARAMETERS¬¬( DEF :TREE; GEN_ASSOC_S :TREE )¬return TREE;¶    procedure RESOLVE_ERRONE
+OUS_PARAM_S¬¬( GENERAL_ASSOC_S :TREE);¶    procedure CHECK_ACTUAL_TYPE¬¬( FORMAL_TYPE :TREE; ACTUAL_TYPESET :TYPESET_TYP
+E;¶¬¬¬¬¬  ACTUALS_OK :out BOOLEAN;¶¬¬¬¬¬  EXTRAINFO :out EXTRAINFO_TYPE );¶    function  GET_TYPE_OF_DISCRETE_RANGE¬( DI
+SCRETE_RANGE :TREE )¬¬return TREE;¶      ¶  --|-------------------------------------------------------------------------
+-----------------------¶  end RED_SUBP;¶¶¶¶¶¶  --|----------------------------------------------------------------------
+--------------------------¶¶  --¬¬REP_CLAU¶¶  --|-----------------------------------------------------------------------
+-------------------------¶  package REP_CLAU is¶      ¶    procedure RESOLVE_LENGTH_REP¬( ATTRIBUTE :TREE; EXP :in out T
+REE; H :H_TYPE );¶    procedure RESOLVE_ENUM_REP¬( SIMPLE_NAME :in out TREE; EXP :TREE; H :H_TYPE );¶    procedure RESOL
+VE_ADDRESS_REP¬( SIMPLE_NAME :in out TREE; EXP :in out TREE; H :H_TYPE );¶    procedure RESOLVE_RECORD_REP¬( SIMPLE_NAME
+ :in out TREE; ALIGNMENT :TREE;¶¬¬¬¬  COMP_REP_S :TREE; H :H_TYPE );¶      ¶  --|---------------------------------------
+---------------------------------------------------------¶  end REP_CLAU;¶¶¶¶¶¶  USED_PACKAGE_LIST¬: SEQ_TYPE¬renames FI
+X_WITH.USED_PACKAGE_LIST;¶         ¶         ¶  package body SEM_GLOB¬is separate;¶  package body UNIV_OPS¬is separate;¶
+  function  EVAL_NUM¬( TXT :STRING )¬return TREE¬is separate;¶  package body UARITH¬is separate;¶  package body FIX_WITH
+¬is separate;¶  package body DEF_UTIL¬is separate;¶  package body SET_UTIL¬is separate;¶  package body REQ_UTIL¬is separ
+ate;¶  package body AGGRESO¬is separate;¶  package body EXPRESO¬is separate;¶  package body VIS_UTIL¬is separate;¶  pack
+age body DEF_WALK¬is separate;¶  package body NOD_WALK¬is separate;¶  package body ATT_WALK¬is separate;¶  package body 
+STM_WALK¬is separate;¶  package body PRA_WALK¬is separate;¶  package body CHK_STAT¬is separate;¶  package body DERIVED¬i
+s separate;¶  package body EXP_TYPE¬is separate;¶  package body HOM_UNIT¬is separate;¶  package body INSTANT¬is separate
+;¶  package body MAKE_NOD¬is separate;¶  package body GEN_SUBS¬is separate;¶  package body NEWSNAM¬is separate;¶  packag
+e body PRE_FCNS¬is separate;¶  package body RED_SUBP¬is separate;¶  package body REP_CLAU¬is separate;¶¶¶¶¬¬¬-----------
+---------------------¶¬procedure¬¬INITIALIZE_PRAGMA_ATTRIBUTE_DEFS¶¶  is¶    STD_PACK_SYM¬¬: TREE¬¬:= STORE_SYM( "_STAND
+RD.DCL" );¶    STD_PACK_ID¬¬: TREE¬¬:= HEAD( LIST( STD_PACK_SYM ) );¶    ALL_DECL¬¬: TREE¬¬:= D( AS_ALL_DECL, STD_PACK_I
+D );¶    STD_PACK_HEADER¬¬: TREE¬¬:= D( AS_HEADER, ALL_DECL );¶    DECL_PRIV¬¬: TREE¬¬:= D( AS_DECL_S2, STD_PACK_HEADER 
+);¶    ID_LIST¬¬: SEQ_TYPE¬:= LIST( DECL_PRIV );¬¬¬--| LA LISTE DES DECLARATIONS PRIVEES DE _STANDRD¶    ID¬¬¬: TREE;¶  
+  DEF¬¬¬: TREE;¶  begin¶    while not IS_EMPTY( ID_LIST ) loop¬¬¬¬¬¬¬--| TANT QU'IL Y A DES ELEMENTS PRIVES¶      POP( I
+D_LIST, ID );¬¬¬¬¬¬¬¬--| EN EXTRAIRE UN¶      if ID.TY in DN_ATTRIBUTE_ID .. DN_PRAGMA_ID¬¬¬¬¬¬--| SI C'EST UN ID D'ATTR
+IBUT OU DE PRAGMA¶         and then D( LX_SYMREP, ID ).TY = DN_SYMBOL_REP¶      then¶        DEF := DEF_UTIL.MAKE_DEF_FO
+R_ID( ID, SEM_GLOB.INITIAL_H );¶        D( XD_REGION_DEF, DEF, TREE_VOID );¶        DB( XD_IS_IN_SPEC, DEF, FALSE );¶   
+   end if;¶    end loop;¶¶  end¬INITIALIZE_PRAGMA_ATTRIBUTE_DEFS;¶¬--------------------------------¶¶¶¶¬¬¬¬-------------
+-----------¶  procedure¬¬¬COMPILE_COMPILATION_UNIT¬( COMPILATION_UNIT :TREE;¶¬¬¬¬¬¬¬  H¬         :H_TYPE )¶¬¬¬¬---------
+---------------¶  is¶¶    CONTEXT_ELEM_S¬¬: constant TREE¬:= D( AS_CONTEXT_ELEM_S, COMPILATION_UNIT );¶    ALL_DECL¬¬: c
+onstant TREE¬:= D( AS_ALL_DECL,       COMPILATION_UNIT );¶    PRAGMA_S¬¬: constant TREE¬:= D( AS_PRAGMA_S,       COMPILA
+TION_UNIT );¶    WITH_LIST¬¬: constant SEQ_TYPE¬:= LIST( COMPILATION_UNIT );¶¶¶¬¬¬-------------------¶    procedure¬¬PRO
+CESS_WITH_NAME_S¬¬( NAME_S :TREE )¶    is¶      NAME_LIST¬¬: SEQ_TYPE¬:= LIST( NAME_S );¶      NAME¬¬: TREE;¶      NEW_N
+AME_LIST¬¬: SEQ_TYPE¬:= (TREE_NIL, TREE_NIL);¶    begin¶         ¶      while not IS_EMPTY( NAME_LIST ) loop¶        POP
+( NAME_LIST, NAME );¶        declare        ¶          NAME_DEFN¬¬:constant TREE¬:= D( SM_DEFN, NAME );¶          NAME_D
+EF¬¬:constant TREE¬:= DEF_UTIL.GET_DEF_FOR_ID( NAME_DEFN );¶¬NEW_NAME¬¬: TREE;¶        begin¶          D( XD_REGION_DEF,
+ NAME_DEF, DEF_UTIL.GET_DEF_FOR_ID( D( XD_REGION, NAME_DEFN ) ) );¶          NEW_NAME := VIS_UTIL.MAKE_USED_NAME_ID_FROM
+_OBJECT( NAME );¶          NEW_NAME_LIST := APPEND( NEW_NAME_LIST, NEW_NAME );¶        end;¶      end loop;¶         ¶  
+    LIST( NAME_S, NEW_NAME_LIST );¶¶    end¬PROCESS_WITH_NAME_S;¶¬-------------------¶¶¶¬¬¬-------------------------¶   
+ procedure¬¬PROCESS_WITH_USE_PRAGMA_S¬( USE_PRAGMA_S :TREE )¶¬¬¬-------------------------¶    is¶      USE_PRAGMA_LIST¬:
+ SEQ_TYPE¬:= LIST( USE_PRAGMA_S );¶      USE_PRAGMA¬¬: TREE;¶    begin¶¶      while not IS_EMPTY( USE_PRAGMA_LIST ) loop
+¶        POP( USE_PRAGMA_LIST, USE_PRAGMA );¶            ¶        if USE_PRAGMA.TY = DN_PRAGMA¶        then NOD_WALK.WAL
+K( USE_PRAGMA, INITIAL_H );¶        else¶¬¬¬CONVERT_USE_NAMES_TO_IDS:¶¬declare¶            NAME_LIST¬: SEQ_TYPE¬¬:= LIST
+( D( AS_NAME_S, USE_PRAGMA ) );¶¬  NAME¬¬: TREE;¶            NEW_NAME_LIST¬: SEQ_TYPE¬¬:= (TREE_NIL,TREE_NIL);¶         
+   NAME_DEFN¬: TREE;¶ ¬begin¶            while not IS_EMPTY( NAME_LIST) loop¶              POP( NAME_LIST, NAME );¶¬    
+if  NAME.TY = DN_SELECTED¶¬    then NAME_DEFN := D( AS_DESIGNATOR, NAME );¶¬    else NAME_DEFN := D( SM_DEFN, NAME );¶¬ 
+   end if;¶¬    declare¶                NAME_DEF¬:constant TREE¬¬:= DEF_UTIL.GET_DEF_FOR_ID( NAME_DEFN );¶¬      NEW_NAM
+E¬: TREE;¶¬    begin¶                DB( XD_IS_USED, NAME_DEF, TRUE );¶                NEW_NAME      := VIS_UTIL.MAKE_US
+ED_NAME_ID_FROM_OBJECT( NAME );¶                NEW_NAME_LIST := APPEND( NEW_NAME_LIST, NEW_NAME );¶¬    end;¶          
+  end loop;¶               ¶            LIST( D( AS_NAME_S, USE_PRAGMA), NEW_NAME_LIST );¶¬end¬¬CONVERT_USE_NAMES_TO_IDS
+;¶        end if;¶              ¶      end loop;¶¶    end¬PROCESS_WITH_USE_PRAGMA_S;¶¬-------------------------¶¶¶¶¬¬¬--
+---------------------¶    procedure¬¬PROCESS_CONTEXT_CLAUSES¬¬( COMPILATION_UNIT :TREE )¶¬¬¬-----------------------¶    
+is¶      CONTEXT_ELEM_S¬: constant TREE¬:= D( AS_CONTEXT_ELEM_S, COMPILATION_UNIT );¶      CONTEXT_ELEM_LIST¬: SEQ_TYPE¬
+:= LIST( CONTEXT_ELEM_S );¶      CONTEXT_ELEM¬¬: TREE;¶      TRANS_WITH_LIST¬: SEQ_TYPE¬:= LIST( COMPILATION_UNIT );¶   
+   TRANS_WITH¬¬: TREE;¶¶¬¬¬------------------------¶      procedure¬¬PROCESS_ANCESTOR_CONTEXT¬( ANCESTOR_UNIT, COMPILATI
+ON_UNIT :TREE )¶¬¬¬------------------------¶      is¶¶¶¬¬¬-----------¶        function¬¬IS_ANCESTOR¬ ( ANC_ALL_DECL, COM
+P_ALL_DECL :TREE ) return BOOLEAN¶¬¬¬-----------¶        is¶        begin¶          if COMP_ALL_DECL.TY in CLASS_SUBUNIT
+_BODY then¶            return (    ANC_ALL_DECL.TY in CLASS_UNIT_DECL¶                        and then D( SM_FIRST, D( A
+S_SOURCE_NAME, COMP_ALL_DECL ) ) = D ( AS_SOURCE_NAME, ANC_ALL_DECL)¶                        );¶          elsif COMP_ALL
+_DECL.TY = DN_SUBUNIT then¶            declare¶              COMP_NAME¬: TREE¬:= D( AS_NAME, COMP_ALL_DECL );¶          
+    ANC_ID¬: TREE¬:= TREE_VOID;¶            begin¶              if ANC_ALL_DECL.TY = DN_SUBUNIT then¶                ANC
+_ID := D( SM_FIRST, D(  AS_SOURCE_NAME, D( AS_SUBUNIT_BODY, ANC_ALL_DECL ) ) );¶                return FIX_WITH.IS_ANCES
+TOR( ANC_ID, COMP_ALL_DECL );¶              elsif ANC_ALL_DECL /= TREE_VOID then¶                ANC_ID := D( SM_FIRST, 
+D(  AS_SOURCE_NAME, ANC_ALL_DECL ) );¶                while COMP_NAME.TY = DN_SELECTED loop¶                  COMP_NAME 
+:= D( AS_NAME, COMP_NAME );¶                end loop;¶                return D( LX_SYMREP, ANC_ID ) = D( LX_SYMREP, COMP
+_NAME );¶              end if;¶            end;¶          end if;¶          return FALSE;¶        end¬IS_ANCESTOR;¶¬¬---
+--------¶¶¬¬¬-----------------¶        procedure¬¬REPROCESS_CONTEXT¬¬ ( CONTEXT_ELEM_S :TREE )¶¬¬¬-----------------¶    
+    is¶              -- GIVEN CONTEXT_ELEM_S FOR AN ANCESTOR UNIT,¶                -- ... REPROCESS WITH'S AND USE'S IN 
+FOR USE IN CURRENT UNIT¶          CONTEXT_ELEM_LIST¬: SEQ_TYPE¬:= LIST( CONTEXT_ELEM_S );¶          CONTEXT_ELEM¬: TREE;
+¶          USE_PRAGMA_LIST¬: SEQ_TYPE;¶          USE_PRAGMA¬: TREE;¶          ITEM_LIST¬¬: SEQ_TYPE;¶          ITEM¬¬: T
+REE;¶        begin¶          while not IS_EMPTY( CONTEXT_ELEM_LIST ) loop¶            POP( CONTEXT_ELEM_LIST, CONTEXT_EL
+EM);¶            if CONTEXT_ELEM.TY = DN_WITH then¶              ITEM_LIST := LIST( D( AS_NAME_S, CONTEXT_ELEM ) );¶    
+          while not IS_EMPTY( ITEM_LIST) loop¶                POP( ITEM_LIST, ITEM);¶                if D( SM_DEFN, ITEM
+ ) /= TREE_VOID then¶                  D( XD_REGION_DEF, DEF_UTIL.GET_DEF_FOR_ID( D( SM_DEFN,ITEM ) ), PREDEFINED_STANDA
+RD_DEF );¶                end if;¶              end loop;¶              USE_PRAGMA_LIST := LIST( D( AS_USE_PRAGMA_S, CON
+TEXT_ELEM ) );¶              while not IS_EMPTY( USE_PRAGMA_LIST) loop¶                POP( USE_PRAGMA_LIST, USE_PRAGMA)
+;¶                if USE_PRAGMA.TY = DN_USE then¶                  ITEM_LIST := LIST( D( AS_NAME_S, USE_PRAGMA ) );¶    
+              while not IS_EMPTY( ITEM_LIST ) loop¶                    POP( ITEM_LIST, ITEM );¶                    if D(
+ SM_DEFN, ITEM ) /= TREE_VOID then¶                      DB( XD_IS_USED, DEF_UTIL.GET_DEF_FOR_ID( D( SM_DEFN, ITEM ) ), 
+TRUE );¶                    end if;¶                  end loop;¶                end if;¶              end loop;¶        
+    end if;¶          end loop;¶¶        end¬REPROCESS_CONTEXT;¶¬¬-----------------¶            ¶      begin¶        if 
+IS_ANCESTOR( D( AS_ALL_DECL, ANCESTOR_UNIT ), D( AS_ALL_DECL, COMPILATION_UNIT ) ) then¶          REPROCESS_CONTEXT( D( 
+AS_CONTEXT_ELEM_S, ANCESTOR_UNIT ) );¶        end if;¶¶      end¬PROCESS_ANCESTOR_CONTEXT;¶¬------------------------¶¶  
+  begin¶¶      while  not IS_EMPTY( CONTEXT_ELEM_LIST )  loop¶        POP( CONTEXT_ELEM_LIST, CONTEXT_ELEM );¶          
+  ¶        if  CONTEXT_ELEM.TY = DN_WITH  then¶¶          PROCESS_WITH_NAME_S( D( AS_NAME_S, CONTEXT_ELEM ) );¶         
+ PROCESS_WITH_USE_PRAGMA_S( D( AS_USE_PRAGMA_S, CONTEXT_ELEM ) );¶               ¶        else¶          PUT_LINE( "SEM_
+PHASE.PROCESS_CONTEXT_CLAUSES!! $$$$ CONTEXT PRAGMA." );¶          raise PROGRAM_ERROR;¶        end if;¶      end loop;¶
+         ¶      while  not IS_EMPTY( TRANS_WITH_LIST )  loop¶        POP( TRANS_WITH_LIST, TRANS_WITH);¶        PROCESS_
+ANCESTOR_CONTEXT( D( TW_COMP_UNIT, TRANS_WITH ), COMPILATION_UNIT );¶      end loop;¶         ¶    end¬PROCESS_CONTEXT_C
+LAUSES;¶¬-----------------------¶¶¶¬¬¬---------------------¶    procedure¬¬ENTER_ANCESTOR_REGION¬¬( NAME :TREE; H :in ou
+t H_TYPE )¶¬¬¬---------------------¶    is¶      S¬¬¬: NOD_WALK.S_TYPE;¶      DESIGNATOR¬¬: TREE;¶      DEFN¬¬: TREE;¶  
+    DES_DEF¬¬: TREE;¶      DEFLIST¬¬: SEQ_TYPE;¶      DEF¬¬¬: TREE;¶    begin¶      if NAME.TY = DN_SELECTED then¶      
+  ENTER_ANCESTOR_REGION( D( AS_NAME, NAME ), H );¶        DESIGNATOR := D( AS_DESIGNATOR, NAME );¶      else¶        DES
+IGNATOR := NAME;¶      end if;¶¶      D( SM_DEFN, DESIGNATOR, TREE_VOID );¶      DEFLIST := LIST( D( LX_SYMREP, DESIGNAT
+OR ) );¶ ¶      while not IS_EMPTY( DEFLIST ) loop¶        POP( DEFLIST, DEF );¶¶        if D( XD_REGION, D( XD_SOURCE_N
+AME, DEF ) ) = D( XD_SOURCE_NAME, H.REGION_DEF ) then¶          DEFN := D( XD_SOURCE_NAME, DEF);¶          if DEFN.TY = 
+DN_TYPE_ID or else DEFN.TY in CLASS_UNIT_NAME then¶            DEFN := D( SM_FIRST, DEFN );¶          end if;¶          
+D( SM_DEFN, DESIGNATOR, DEFN );¶          exit;¶        end if;¶¶      end loop;¶¶      DEFN := D( SM_DEFN, DESIGNATOR )
+;¶      if DEFN = TREE_VOID then¶        PUT_LINE( "!! DEFN NOT FOUND FOR ANCESTOR" );¶        raise PROGRAM_ERROR;¶    
+  end if;¶      DES_DEF := DEF_UTIL.GET_DEF_FOR_ID( DEFN );¶      D( XD_REGION_DEF, DES_DEF, H.REGION_DEF );¶      NOD_W
+ALK.ENTER_BODY( DES_DEF, H, S );¶¶    end¬ENTER_ANCESTOR_REGION;¶¬---------------------¶¶¶¶¬¬¬---------¶¬procedure¬¬WALK
+_ITEM¬¬( ITEM :TREE; H_IN :H_TYPE )¶    is¶      H¬: H_TYPE¬:= H_IN;¶    begin¶      NOD_WALK.WALK( ITEM, H );¶    end¬W
+ALK_ITEM;¶¬---------¶¶¶      ¶  begin¶    if  ALL_DECL.TY = DN_VOID  then¶      ERROR( D( LX_SRCPOS, COMPILATION_UNIT ),
+ "$$$ EMPTY UNIT NOT IMPLEMENTED YET" );¶      return;¶    end if;¶¶    USED_PACKAGE_LIST := (TREE_NIL, TREE_NIL);¶    F
+IX_WITH.FIX_WITH_CLAUSES( COMPILATION_UNIT );¶    INITIALIZE_PREDEFINED_TYPES;¶¶    PROCESS_CONTEXT_CLAUSES( COMPILATION
+_UNIT );¶¶    declare¶      H¬¬: H_TYPE¬¬:= INITIAL_H;¶    begin¶      H.REGION_DEF := PREDEFINED_STANDARD_DEF;¶      H.
+LEX_LEVEL  := 2;¶      H.IS_IN_SPEC := TRUE;¶      H.IS_IN_BODY := FALSE;¶¶      if  ALL_DECL.TY = DN_SUBUNIT  then¶    
+    ENTER_ANCESTOR_REGION( D( AS_NAME, ALL_DECL ), H );¶        WALK_ITEM( D( AS_SUBUNIT_BODY, ALL_DECL ), H );¶      el
+se¶        WALK_ITEM( ALL_DECL, H);¶      end if;¶¶      NOD_WALK.WALK_ITEM_S( PRAGMA_S, H );¶¶      while  not IS_EMPTY
+( USED_PACKAGE_LIST )  loop¶        DB( XD_IS_USED, HEAD( USED_PACKAGE_LIST ), FALSE );¶        USED_PACKAGE_LIST := TAI
+L( USED_PACKAGE_LIST );¶      end loop;¶    end;¶¶  end¬COMPILE_COMPILATION_UNIT;¶¬------------------------¶¶¶¶¬¬¬------
+------------¶  procedure¬¬CANCEL_TRANS_WITHS¬¬( COMPILATION_UNIT :TREE )¶¬¬¬------------------¶  is¶    use DEF_UTIL;¶  
+  TRANS_WITH_LIST¬¬: SEQ_TYPE ¬:= LIST( COMPILATION_UNIT );¶    TRANS_WITH¬¬: TREE;¶    ALL_DECL¬¬: TREE;¶    UNIT_ID¬¬:
+ TREE;¶  begin¶    while not IS_EMPTY( TRANS_WITH_LIST ) loop¶      POP( TRANS_WITH_LIST, TRANS_WITH );¶¶      ALL_DECL 
+:= D( AS_ALL_DECL, D( TW_COMP_UNIT, TRANS_WITH ) );¶      if ALL_DECL.TY /= DN_SUBUNIT then¶        UNIT_ID := D( AS_SOU
+RCE_NAME, ALL_DECL );¶        if UNIT_ID.TY in CLASS_UNIT_NAME and then D( SM_FIRST, UNIT_ID ) = UNIT_ID then¶          
+DEF_UTIL.REMOVE_DEF_FROM_ENVIRONMENT( GET_DEF_FOR_ID( UNIT_ID ) );¶        end if;¶      else¶        UNIT_ID := D( SM_F
+IRST, D( AS_SOURCE_NAME, D( AS_SUBUNIT_BODY, ALL_DECL ) ) );¶        REMOVE_DEF_FROM_ENVIRONMENT( GET_DEF_FOR_ID( UNIT_I
+D ) );¶      end if;¶¶    end loop;¶    REMOVE_DEF_FROM_ENVIRONMENT( PREDEFINED_STANDARD_DEF );¶¶  end¬CANCEL_TRANS_WITH
+S;¶¬------------------¶¶¶¬¬¬-------¶  procedure¬¬FIX_PRE¬¬is separate;¶¬¬¬-------¶¶¶begin¶  OPEN_IDL_TREE_FILE( IDL.LIB_
+PATH( 1..LIB_PATH_LENGTH ) & "$$$.TMP" );¶      ¶  if  DI( XD_ERR_COUNT, TREE_ROOT ) = 0  then¶    declare¶      USER_RO
+OT¬¬: TREE¬¬:= D( XD_USER_ROOT, TREE_ROOT );¶      COMPILATION¬¬: TREE¬¬:= D( XD_STRUCTURE, USER_ROOT );¶      COMPLTN_U
+NIT_LIST¬: SEQ_TYPE¬:= LIST( D( AS_COMPLTN_UNIT_S, COMPILATION ) );¶      COMPILATION_UNIT¬: TREE;¶      SRC_NAME¬¬:cons
+tant STRING¬:= PRINT_NAME( D( XD_SOURCENAME, USER_ROOT ) );¶    begin¶        ¶      if  SRC_NAME = "_standrd.ads"  then
+¶¶        FIX_PRE;¶               ¶      else¶        SEM_GLOB.INITIALIZE_GLOBAL_DATA;¶        INITIALIZE_PRAGMA_ATTRIBU
+TE_DEFS;¶            ¶        while  not IS_EMPTY( COMPLTN_UNIT_LIST )  loop¶          POP( COMPLTN_UNIT_LIST, COMPILATI
+ON_UNIT );¶¶          COMPILE_COMPILATION_UNIT( COMPILATION_UNIT, INITIAL_H );¶¶          if  not IS_EMPTY( COMPLTN_UNIT
+_LIST )  then¶            CANCEL_TRANS_WITHS( COMPILATION_UNIT );¶          end if;¶        end loop;¶      end if;¶    
+end;¶  end if;¶      ¶  CLOSE_PAGE_MANAGER;¶¶end¬SEM_PHASE;¶¬---------¶

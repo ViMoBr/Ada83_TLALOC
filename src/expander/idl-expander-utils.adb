@@ -1,100 +1,96 @@
 ------------------------------------------------------------------------------------------------------------------------
--- CC BY SA	CODAGE_INTERMEDIAIRE.ADB	VINCENT MORIN	6/5/2025	UNIVERSITE DE BRETAGNE OCCIDENTALE
+-- CC BY SA	IDL-EXPANDER-UTILS.ADB	VINCENT MORIN	6/5/2025	UNIVERSITE DE BRETAGNE OCCIDENTALE
 ------------------------------------------------------------------------------------------------------------------------
 --	1	2	3	4	5	6	7	8	9	0	1	2
 
+separate ( IDL.EXPANDER )
+--with DIANA_NODE_ATTR_CLASS_NAMES;
+--use  DIANA_NODE_ATTR_CLASS_NAMES;
 
-with DIANA_NODE_ATTR_CLASS_NAMES;
-use  DIANA_NODE_ATTR_CLASS_NAMES;
+				-----
+package body			UTILS
+is				-----
 
-			--------------------
-	package body	CODAGE_INTERMEDIAIRE
-			--------------------
-is
-
-
---  use OP_CODE_IO;
---  use CODE_DATA_TYPE_IO;
  
-  INACTIVE : BOOLEAN renames TRUE;
+  INACTIVE	: BOOLEAN renames TRUE;
 
   INT_LABEL	: LABEL_TYPE	:= 1;
   FS		: FILE_TYPE;
 
---  LAST_LBL			: TARGET_LBL_REF;
---  LAST_BRANCH			: NUM_BRANCH;
---  DERNIERE_REPRISE_CALL		: TARGET_LBL_REF	:= 0;
 
+			--^^^^^^^^^^^^--
+  procedure		OPEN_OUTPUT_FILE		( FILE_NAME :STRING )
+  is			----------------
 
-
-
-				--============--
-  procedure			OPEN_OUTPUT_FILE		( FILE_NAME :STRING )
-  is
   begin
     CREATE ( FS, OUT_FILE, FILE_NAME( FILE_NAME'FIRST .. FILE_NAME'LAST-4 ) & ".FINC" );				-- FASM INCLUDE
-    SET_OUTPUT ( FS );										--| CODAGE SUR SORTIE STANDARD
+    SET_OUTPUT ( FS );										-- CODAGE SUR SORTIE STANDARD
     INT_LABEL := 1;
 
   end	OPEN_OUTPUT_FILE;
-	--============--
+	----------------
 
 
+			--^^^^^^^^^^^^^--
+  procedure		CLOSE_OUTPUT_FILE
+  is			-----------------
 
-				--=============--
-  procedure			CLOSE_OUTPUT_FILE
-  is
   begin
     SET_OUTPUT ( STANDARD_OUTPUT );
     CLOSE ( FS );
 
   end	CLOSE_OUTPUT_FILE;
-	--=============--
-
+	-----------------
 
 
   package INT_IO	is new INTEGER_IO ( INTEGER ); use INT_IO;
   package LBL_IO	is new INTEGER_IO ( LABEL_TYPE ); use LBL_IO;
 
-				--====--
-  function			NEW_LABEL			return LABEL_TYPE
-  is
+
+			--^^^^^--
+  function		NEW_LABEL						return LABEL_TYPE
+  is			---------
+
     LBL	: LABEL_TYPE	:= INT_LABEL;
+
   begin
     INT_LABEL := INT_LABEL + 1;
     return LBL;
 
   end	NEW_LABEL;
-	--====--
+	---------
 
 
-				--====--
-  function			NEW_LABEL			return STRING
-  is
+				--^^^^^--
+  function			NEW_LABEL					return STRING
+  is				---------
+
     LSTR	:constant STRING	:= LABEL_TYPE'IMAGE( INT_LABEL );
+
   begin
     INT_LABEL := INT_LABEL + 1;
     return 'L' & LSTR( LSTR'FIRST+1 .. LSTR'LAST );
 
   end	NEW_LABEL;
-	--====--
+	---------
 
 
-				--=====--
-  function			LABEL_STR		( LBL : LABEL_TYPE )	return STRING
-  is
+			--^^^^^--
+  function		LABEL_STR			( LBL : LABEL_TYPE )	return STRING
+  is			---------
+
     LSTR	:constant STRING	:= LABEL_TYPE'IMAGE( LBL );
+
   begin
     return 'L' & LSTR( LSTR'FIRST+1 .. LSTR'LAST );
 
   end	LABEL_STR;
-	--=====--
+	---------
 
 
-
-				--=====--
-  procedure			INC_LEVEL
-  is
+			--^^^^^--
+  procedure		INC_LEVEL
+  is			---------
   begin
     CUR_LEVEL := CUR_LEVEL + 1;
 
@@ -107,10 +103,10 @@ is
 	--=====--
 
 
+			--^^^^^--
+  procedure		DEC_LEVEL
+  is			---------
 
-				--=====--
-  procedure			DEC_LEVEL
-  is
   begin
     CUR_LEVEL := CUR_LEVEL - 1;
 
@@ -120,12 +116,13 @@ is
 --     when CONSTRAINT_ERROR => raise STATIC_LEVEL_UNDERFLOW;
 -- 
   end	DEC_LEVEL;
-	--=====--
+	---------
 
-				--=====--
-  function			TYPE_SIZE			( TYPE_SPEC :TREE )
-							return NATURAL
-  is
+
+			--^^^^^--
+  function		TYPE_SIZE			( TYPE_SPEC :TREE )		return NATURAL
+  is			---------
+
   begin
     case TYPE_SPEC.TY is
     when DN_ACCESS			=> return ADDR_SIZE;
@@ -137,19 +134,21 @@ is
 --      raise PROGRAM_ERROR;
     end case;
     return 0;
+
   end	TYPE_SIZE;
-	--=====--
+	---------
 
 
 
-				--=============--
-  function			CODE_DATA_TYPE_OF		( EXP_OR_TYPE_SPEC :TREE )
-							return CHARACTER
-  is
+			--^^^^^^^^^^^^^--
+  function		CODE_DATA_TYPE_OF		( EXP_OR_TYPE_SPEC :TREE )	return CHARACTER
+  is			-----------------
+
   begin
-    if EXP_OR_TYPE_SPEC.TY in CLASS_EXP then
+    if  EXP_OR_TYPE_SPEC.TY in CLASS_EXP  then
       declare
         EXP	: TREE	renames EXP_OR_TYPE_SPEC;
+
       begin
         case EXP.TY is
         when DN_FUNCTION_CALL | DN_PARENTHESIZED | DN_USED_OBJECT_ID =>
@@ -159,11 +158,13 @@ is
           PUT_LINE( "ERREUR CODE_DATA_TYPE_OF : EXP.TY ILLICITE " & NODE_NAME'IMAGE( EXP.TY ) );
           raise PROGRAM_ERROR;
         end case;
+
       end;
             
-    elsif EXP_OR_TYPE_SPEC.TY in CLASS_TYPE_SPEC then
+    elsif  EXP_OR_TYPE_SPEC.TY in CLASS_TYPE_SPEC  then
       declare
         TYPE_SPEC	: TREE	renames EXP_OR_TYPE_SPEC;
+
       begin
         case TYPE_SPEC.TY is
         when DN_ACCESS =>
@@ -174,7 +175,8 @@ is
             TYPE_SOURCE_NAME	: TREE		:= D( XD_SOURCE_NAME, TYPE_SPEC );
             TYPE_SYMREP	: TREE		:= D( LX_SYMREP, TYPE_SOURCE_NAME );
             NAME		: constant STRING	:= PRINT_NAME( TYPE_SYMREP );
-          begin
+
+	begin
             if NAME = "BOOLEAN" then
               return 'B';
             elsif NAME = "CHARACTER" then
@@ -199,20 +201,21 @@ is
     end if;
 
   end	CODE_DATA_TYPE_OF;
-   	--=============--
+   	-----------------
 
-				--================--
-  function			NUMBER_OF_DIMENSIONS	( EXP :TREE )
-							return NATURAL
-  is
+
+			--^^^^^^^^^^^^^^^^--
+  function		NUMBER_OF_DIMENSIONS	( EXP :TREE )	return NATURAL
+  is			--------------------
+
   begin
-    if EXP.TY in CLASS_CONSTRAINED then
+    if  EXP.TY in CLASS_CONSTRAINED  then
       return NUMBER_OF_DIMENSIONS( D( SM_BASE_TYPE, EXP ) );
             
-    elsif EXP.TY = DN_FUNCTION_CALL or EXP.TY = DN_USED_OBJECT_ID then
+    elsif  EXP.TY = DN_FUNCTION_CALL or EXP.TY = DN_USED_OBJECT_ID  then
       return NUMBER_OF_DIMENSIONS( D( SM_EXP_TYPE, EXP ) );
             
-    elsif EXP.TY = DN_ARRAY then
+    elsif  EXP.TY = DN_ARRAY  then
       return DI( CD_DIMENSIONS, EXP );
             
     else
@@ -221,13 +224,13 @@ is
     end if;
 
   end	NUMBER_OF_DIMENSIONS;
-	--================--
+	--------------------
 
 
-				--=======--
-  function			CONSTRAINED		( TYPE_SPEC :TREE )
-							return BOOLEAN
-  is
+			--^^^^^^^--
+  function		CONSTRAINED		( TYPE_SPEC :TREE )		return BOOLEAN
+  is			-----------
+
   begin
     return not ( TYPE_SPEC.TY in CLASS_UNCONSTRAINED );
 
@@ -236,46 +239,53 @@ is
 
 
 
-				--==========--
-  procedure			LOAD_TYPE_SIZE		( TYPE_SPEC :TREE )
-  is
+			--^^^^^^^^^^--
+  procedure		LOAD_TYPE_SIZE		( TYPE_SPEC :TREE )
+  is			--------------
+
   begin
-    if CONSTRAINED( TYPE_SPEC ) then
+    if  CONSTRAINED( TYPE_SPEC )  then
       PUT_LINE( ASCII.HT & "LI" & ASCII.HT &  INTEGER'IMAGE( TYPE_SIZE( TYPE_SPEC ) ) );
 
     else
       PUT_LINE( "ERREUR LOAD_TYPE_SIZE : TYPE_SPEC NON CONTRAINT" );
       raise PROGRAM_ERROR;
+
     end if;
 
   end	LOAD_TYPE_SIZE;
-	--==========--
+	--------------
 
-			-------------
-  function		OPER_SIZ_CHAR	( DEFN :TREE ) return CHARACTER
+
+			--^^^^^^^^^--
+  function		OPER_SIZ_CHAR		( DEFN :TREE )		return CHARACTER
   is			-------------
 
     SIZ		: NATURAL		:= DI( CD_IMPL_SIZE, DEFN );
+
   begin
-   if SIZ <= 8	then return 'b';
-    elsif SIZ <= 16	then return 'w';
-    elsif SIZ <= 32	then return 'd';
-    elsif SIZ <= 64	then return 'q';
+    if     SIZ <= 8		then return 'b';
+    elsif  SIZ <= 16	then return 'w';
+    elsif  SIZ <= 32	then return 'd';
+    elsif  SIZ <= 64	then return 'q';
     else return 'v';
     end if;
 
   end	OPER_SIZ_CHAR;
 	-------------
 
-			-------------
-  function		EXP_TYPE_CHAR	( EXP :TREE ) return CHARACTER
-  is
+
+			--^^^^^^^^^--
+  function		EXP_TYPE_CHAR		( EXP :TREE )	return CHARACTER
+  is			-------------
+
     SIZ		: NATURAL		:= DI( CD_IMPL_SIZE, D( SM_EXP_TYPE, EXP ) );
+
   begin
-   if SIZ <= 8	then return 'b';
-    elsif SIZ <= 16	then return 'w';
-    elsif SIZ <= 32	then return 'd';
-    elsif SIZ <= 64	then return 'q';
+    if     SIZ <= 8		then return 'b';
+    elsif  SIZ <= 16	then return 'w';
+    elsif  SIZ <= 32	then return 'd';
+    elsif  SIZ <= 64	then return 'q';
     else return 'v';
     end if;
 
@@ -283,16 +293,17 @@ is
 	-------------
 
 
-				--====--
-  procedure			LOAD_MEM			( DEFN :TREE )
-  is
-  begin
+			--^^^^--
+  procedure		LOAD_MEM			( DEFN :TREE )
+  is			--------
 
+  begin
     if  DEFN.TY in CLASS_PARAM_NAME  then								-- in_id in_out_id out_id
       if  (DEFN.TY = DN_IN_ID) and (D( SM_OBJ_TYPE, DEFN ).TY in CLASS_SCALAR)  then
 
         declare
 	SIZ_CHAR	: CHARACTER	:= OPER_SIZ_CHAR( D( SM_OBJ_TYPE, DEFN ) );
+
         begin
 	PUT( tab & "L" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab );
 	PUT( '-' & PRINT_NAME( D( LX_SYMREP, DEFN ) ) );							-- ATTENTION signe offset de params opposé aux vars
@@ -303,12 +314,14 @@ is
         PUT( tab & "La " & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab );
         PUT( '-' & PRINT_NAME( D( LX_SYMREP, DEFN ) ) );							-- ATTENTION signe offset de params opposé aux vars
         PUT_LINE( "_ofs" );										-- offset de parametre adresse
+
       end if;
 
     else
       if  D( SM_OBJ_TYPE, DEFN ).TY in CLASS_SCALAR  then
         declare
 	SIZ_CHAR	: CHARACTER	:= OPER_SIZ_CHAR( D( SM_OBJ_TYPE, DEFN ) );
+
         begin
 	PUT( tab & "L" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab );
 	PUT_LINE( PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_disp" );						-- deplacement de variable locale
@@ -323,54 +336,69 @@ is
     end if;
 
   end	LOAD_MEM;
-	--====--
+	--------
 
 
-				--=--
-  procedure			STORE			( DEST_DEFN	:TREE )
-  is
+			--^--
+  procedure		STORE			( DEST_DEFN	:TREE )
+  is			-----
+
     SIZ_CHAR	: CHARACTER	:= OPER_SIZ_CHAR( D( SM_OBJ_TYPE, DEST_DEFN ) );
+
   begin
-    if DEST_DEFN.TY = DN_OUT_ID or DEST_DEFN.TY = DN_IN_OUT_ID then
+    if  DEST_DEFN.TY = DN_OUT_ID  or  DEST_DEFN.TY = DN_IN_OUT_ID  then
       PUT_LINE( tab & "SI" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEST_DEFN ) ) & ',' & tab & '-' & PRINT_NAME( D( LX_SYMREP, DEST_DEFN ) ) & "_ofs" );
     else
       PUT_LINE( tab & "S" & SIZ_CHAR & ' ' & INTEGER'IMAGE( DI( CD_LEVEL, DEST_DEFN ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, DEST_DEFN ) ) & "_disp" );
     end if;
-  end	STORE; 
-	--=--
 
-				--=--
-  function			TAB50		return STRING
-  is
+  end	STORE; 
+	-----
+
+
+			--^--
+  function		TAB50			return STRING
+  is			-----
+
     NTABS		: INTEGER		:= (50 - NATURAL(TEXT_IO.COL) ) / 10;
+
   begin
-    if NTABS < 0 then NTABS := 1; else NTABS := NTABS + 1; end if;
+    if  NTABS < 0  then  NTABS := 1;  else  NTABS := NTABS + 1;  end if;
     declare
       ESPACEMENT	: STRING( 1.. NATURAL(NTABS) )	:= (others => tab );
+
     begin
       return ESPACEMENT;
     end;
-  end	TAB50;
-	--=--
 
-				--=--
-  function			IMAGE		( I : NATURAL )	return STRING
-  is
+  end	TAB50;
+	-----
+
+
+			--^--
+  function		IMAGE			( I : NATURAL )	return STRING
+  is			-----
+
     STR	:constant STRING	:= NATURAL'IMAGE( I );
+
   begin
     return STR( STR'FIRST+1 .. STR'LAST );
 
   end	IMAGE;
-	--=--
+	-----
 
-			--========--
-  procedure		REGIONS_PATH	( ID : TREE; WITH_DOT :BOOLEAN := TRUE )
+
+			--^^^^^^^^--
+  procedure		REGIONS_PATH		( ID : TREE; WITH_DOT :BOOLEAN := TRUE )
   is			------------
+
     REGION	: TREE		:= D( XD_REGION, ID );
     RGN_NAME	:constant STRING	:= PRINT_NAME( D( LX_SYMREP, REGION ) );
+
   begin
     if  RGN_NAME = "STANDARD"  then
       PUT( "STANDARD." );
+
     else
       REGIONS_PATH( REGION );
       PUT( RGN_NAME );
@@ -378,13 +406,30 @@ is
         PUT( '_' & LABEL_STR( LABEL_TYPE( DI( CD_LABEL, REGION ) ) ) );
       end if;
       if  WITH_DOT  then PUT( '.' ); end if;
+
     end if;
 
   end	REGIONS_PATH;
 	------------
 
-end	CODAGE_INTERMEDIAIRE;
-	--------------------
+
+			--^^^^^^^^^^^^^--
+  function		ANONYMOUS_NAME_AT	( T :TREE )		return STRING
+  is			-----------------
+
+    SPOS		: TREE		:= D( LX_SRCPOS, T );
+    IML		:constant STRING	:= INTEGER'IMAGE( DI( XD_NUMBER, GET_SOURCE_LINE( SPOS ) ) );
+    IMC		:constant STRING	:= SRCCOL_IDX'IMAGE( GET_SOURCE_COL( SPOS ) );
+
+  begin
+    return  "ANON_" & IML( 2 .. IML'LENGTH ) & '_' & IMC( 2 .. IMC'LENGTH );
+
+  end	ANONYMOUS_NAME_AT;
+	-----------------
+
+
+end	UTILS;
+	-----
 
 -------------------------------------------------------------------------------------------------------------------------
 --	1	2	3	4	5	6	7	8	9	0	1	2

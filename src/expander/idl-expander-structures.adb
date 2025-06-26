@@ -1,17 +1,18 @@
--------------------------------------------------------------------------------------------------------------------------
--- CC BY SA	CODE_GEN-SRUCTURES.ADB	VINCENT MORIN	9/1/2025	UNIVERSITE DE BRETAGNE OCCIDENTALE
--------------------------------------------------------------------------------------------------------------------------
---	1	2	3	4	5	6	7	8	9	0	1	2
+------------------------------------------------------------------------------------------------------------------------
+-- CC BY SA	IDL-EXPANDER-SRUCTURES.ADB	VINCENT MORIN	9/1/2025	UNIVERSITE DE BRETAGNE OCCIDENTALE
+------------------------------------------------------------------------------------------------------------------------
+--	1	2	3	4	5	6	7	8	9	0	1
 
 
-separate ( CODE_GEN )
+separate ( IDL.EXPANDER )
 				----------
  	package body		STRUCTURES
 				----------
 is
 
 
-  package CODI renames CODAGE_INTERMEDIAIRE;
+  package CODI	renames IDL.EXPANDER.UTILS;
+  use CODI;
 
 
 				--=================--
@@ -32,11 +33,11 @@ is
       case UNIT_ALL_DECL.TY is
       when DN_SUBPROG_ENTRY_DECL	=>
 	CODI.IN_SPEC_UNIT := TRUE;
-	DECLARATIONS.CODE_SUBPROG_ENTRY_DECL( UNIT_ALL_DECL );			-- les instanciations génériques sont comprises  (unit_kind instantiation)
+	DECLARATIONS.CODE_SUBPROG_ENTRY_DECL( UNIT_ALL_DECL );						-- les instanciations génériques sont comprises  (unit_kind instantiation)
 
       when DN_PACKAGE_DECL		=>
 	CODI.IN_SPEC_UNIT := TRUE;
-	DECLARATIONS.CODE_PACKAGE_DECL( UNIT_ALL_DECL );			-- les instanciations génériques sont comprises  (unit_kind instantiation)
+	DECLARATIONS.CODE_PACKAGE_DECL( UNIT_ALL_DECL );							-- les instanciations génériques sont comprises  (unit_kind instantiation)
 
       when DN_GENERIC_DECL		=>
 	DECLARATIONS.CODE_GENERIC_DECL( UNIT_ALL_DECL );
