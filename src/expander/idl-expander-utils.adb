@@ -61,9 +61,9 @@ is				-----
 	---------
 
 
-				--^^^^^--
-  function			NEW_LABEL					return STRING
-  is				---------
+			--^^^^^--
+  function		NEW_LABEL						return STRING
+  is			---------
 
     LSTR	:constant STRING	:= LABEL_TYPE'IMAGE( INT_LABEL );
 

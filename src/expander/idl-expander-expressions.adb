@@ -116,7 +116,7 @@ is
 	COMP_SIZE		: CHARACTER	:= OPER_SIZ_CHAR( ARRAY_COMP_TYPE );
         begin
 	PUT( tab & 'L' & COMP_SIZE );
-	if CODI.DEBUG then PUT( tab50 & "; charge depuis adresse empilee " ); end if;
+	if  CODI.DEBUG  then PUT( tab50 & "; charge depuis adresse empilee " ); end if;
 	NEW_LINE;
         end;
 
@@ -456,8 +456,46 @@ put_line( "; adresse component id" );
       PUT_LINE( tab & "SUB" );
       PUT_LINE( tab & "LI" & tab & IMAGE( COMP_SIZE / CODI.STORAGE_UNIT ) );
       PUT_LINE( tab & "MUL" );
+
     else
-      PUT_LINE( ";  FAIRE UN USEINFO SIZ COMP_SIZ FST_1 LST_1 ET UN DOUBLET data/info DONT ON REND L'ADRESSE" );
+      declare
+        ANON_NAME	:constant STRING		:= ANONYMOUS_NAME_AT( SLICE );
+        LEVEL	: LEVEL_NUM		:= CODI.CUR_LEVEL;
+      begin
+        PUT( "namespace " & ANON_NAME );
+        if  CODI.DEBUG  then PUT( tab50 & "; ensemble doublet @data/@info pour slice anonyme source" ); end if;
+        NEW_LINE;
+        PUT_LINE( "VAR " & ANON_NAME & "_disp, q" );
+        PUT_LINE( "VAR " & ANON_NAME & "__u, q" );
+
+        PUT_LINE( "VAR " & "SIZ, d" );
+        PUT_LINE( "VAR " & "COMP_SIZ, d" );
+        PUT_LINE( "VAR " & "FST_1, d" );
+        PUT_LINE( "VAR " & "LST_1, d" );
+
+        PUT_LINE( tab & "Sa" & tab & IMAGE( CODI.CUR_LEVEL )  & ", " & ANON_NAME & "_disp" );
+        PUT_LINE( tab & "LVA" &  tab & IMAGE( CODI.CUR_LEVEL )  & ", SIZ" );
+        PUT_LINE( tab & "Sa" & tab & IMAGE( CODI.CUR_LEVEL )  & ", " & ANON_NAME & "__u" );
+        PUT_LINE( tab & "LI" & tab & IMAGE( COMP_SIZE / CODI.STORAGE_UNIT ) );
+        PUT_LINE( tab & "Sd" & tab & IMAGE( CODI.CUR_LEVEL )  & ", COMP_SIZ" );
+        CODE_EXP( D( AS_EXP1, DISCRETE_RANGE ) );
+        PUT_LINE( tab & "Sd" & tab & IMAGE( CODI.CUR_LEVEL )  & ", FST_1" );
+        CODE_EXP( D( AS_EXP2, DISCRETE_RANGE ) );
+        PUT_LINE( tab & "Sd" & tab & IMAGE( CODI.CUR_LEVEL )  & ", LST_1" );
+
+        PUT_LINE( tab & "Ld" & tab & IMAGE( CODI.CUR_LEVEL )  & ", LST_1" );
+        PUT_LINE( tab & "INC" );
+        PUT_LINE( tab & "Ld" & tab & IMAGE( CODI.CUR_LEVEL )  & ", FST_1" );
+        PUT_LINE( tab & "SUB" );
+        PUT_LINE( tab & "LI" & tab & IMAGE( COMP_SIZE / CODI.STORAGE_UNIT ) );
+        PUT_LINE( tab & "MUL" );
+        PUT_LINE( tab & "Sd" & tab & IMAGE( CODI.CUR_LEVEL )  & ", SIZ" );
+
+        PUT_LINE( tab & "LVA" &  tab & IMAGE( CODI.CUR_LEVEL )  & ", " & ANON_NAME & "_disp" );
+
+        PUT_LINE( "end namespace");
+      end;
+
     end if;
   end	CODE_SLICE;
 	----------

@@ -1,4 +1,4 @@
-include '../../src/code_gen/fasmg/codi_x86_64.finc'
+include '../../src/expander/fasmg/codi_x86_64.finc'
 STANDARD = 'STANDARD'
 namespace STANDARD
   virtual at 8

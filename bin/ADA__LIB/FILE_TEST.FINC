@@ -44,6 +44,8 @@ STR STR_L1, ''				; constante string=''
 	CALL	STANDARD.TEXT_IO. ,GET_L50
 	LVA  1,	F_disp
 	CALL	STANDARD.TEXT_IO. ,CLOSE_L3
+	LVA  1,	F_disp
+	CALL	STANDARD.TEXT_IO. ,DELETE_L4
 ret_lbl:
 	UNLINK 1
 	RTD

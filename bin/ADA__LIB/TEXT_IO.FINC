@@ -178,6 +178,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LI	1
 	MUL
 	La  1,	-NAME_ofs
+	La
 	BLKMOV
 	LIVa 	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.NAME_LEN
 	LVA	1, -NAME_ofs
@@ -264,6 +265,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LI	1
 	MUL
 	La  1,	-NAME_ofs
+	La
 	BLKMOV
 	LIVa 	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.NAME_LEN
 	LVA	1, -NAME_ofs
@@ -360,7 +362,31 @@ end if
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	LIVa 	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.NAME
-;  FAIRE UN USEINFO SIZ COMP_SIZ FST_1 LST_1 ET UN DOUBLET data/info DONT ON REND L'ADRESSE
+namespace ANON_118_25			; ensemble doublet @data/@info pour slice anonyme source
+VAR ANON_118_25_disp, q
+VAR ANON_118_25__u, q
+VAR SIZ, d
+VAR COMP_SIZ, d
+VAR FST_1, d
+VAR LST_1, d
+	Sa	1, ANON_118_25_disp
+	LVA	1, SIZ
+	Sa	1, ANON_118_25__u
+	LI	1
+	Sd	1, COMP_SIZ
+	LI	1
+	Sd	1, FST_1
+	LId	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.NAME_LEN
+	Sd	1, LST_1
+	Ld	1, LST_1
+	INC
+	Ld	1, FST_1
+	SUB
+	LI	1
+	MUL
+	Sd	1, SIZ
+	LVA	1, ANON_118_25_disp
+end namespace
 	CALL	STANDARD.TEXT_IO.DELETE_L4. ,DELETE_SYSTEM_CALL_L4
 ret_lbl:
 	UNLINK 1

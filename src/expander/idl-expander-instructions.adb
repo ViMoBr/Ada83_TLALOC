@@ -895,6 +895,7 @@ null;
       elsif  DST_NAME.TY = DN_SLICE  then								-- AFFECTATION A UNE TRANCHE
         EXPRESSIONS.CODE_SLICE( DST_NAME );
         EXPRESSIONS.CODE_EXP( SRC_EXP );
+        PUT_LINE( tab & "La" );
         PUT_LINE( tab & "BLKMOV" );									-- COPY_BLOCK;	- @DST @SRC LEN
       end if;
     end;

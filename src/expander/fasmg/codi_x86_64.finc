@@ -1142,9 +1142,10 @@ end macro
 ;			----------------
 macro			SYS_FILE_DELETE?		; destruction d'un fichier
 ;			----------------
-  POP_RSI						; ptr au nom (chaine nul terminated)
+  POP_RSI						; ptr au doublet @data/@info
   COPY_STRING_APPEND_NUL				; faire une copie sur pile avec NUL en fin pointee par RDI
-  db 0xB8, 0x43, 0x00, 0x00, 0x00			; mov eax, 67			(rax=87=sys_unlink )
+  db 0x48, 0x31, 0xD2				; xor rdx, rdx
+  db 0xB8, 0x57, 0x00, 0x00, 0x00			; mov eax, 87			(rax=87=sys_unlink )
   db 0x0F, 0x05					; syscall
 end macro
 
