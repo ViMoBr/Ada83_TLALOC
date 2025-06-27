@@ -4,8 +4,8 @@ use  MACHINE_CODE;
 	package body			TEXT_IO
 is					-------
 
-  STDOUT_MAX_PAGE_LEN	: COUNT		:= 72;
-  STDOUT_MAX_LINE_LEN	: COUNT		:= 256;
+  STDOUT_PAGE_LENGTH	: COUNT		:= 72;
+  STDOUT_LINE_LENGTH	: COUNT		:= 256;
   STDOUT_PAGE		: POSITIVE_COUNT	:= 1;
   STDOUT_LINE		: POSITIVE_COUNT	:= 1;
   STDOUT_COL		: POSITIVE_COUNT	:= 1;
@@ -36,8 +36,8 @@ is					-------
     FILE.NAME( 1 .. NAME'LENGTH ) := NAME;
     FILE.NAME_LEN := NAME'LENGTH;
     FILE.MODE := MODE;
-    FILE.PAGE_LENGTH := STDOUT_MAX_PAGE_LEN;
-    FILE.LINE_LENGTH := STDOUT_MAX_LINE_LEN;
+    FILE.PAGE_LENGTH := STDOUT_PAGE_LENGTH;
+    FILE.LINE_LENGTH := STDOUT_LINE_LENGTH;
     FILE.PAGE := 1;
     FILE.LINE := 1;
     FILE.COL  := 1;
@@ -70,8 +70,8 @@ is					-------
     FILE.NAME( 1 .. NAME'LENGTH ) := NAME;
     FILE.NAME_LEN := NAME'LENGTH;
     FILE.MODE := MODE;
-    FILE.PAGE_LENGTH := STDOUT_MAX_PAGE_LEN;
-    FILE.LINE_LENGTH := STDOUT_MAX_LINE_LEN;
+    FILE.PAGE_LENGTH := STDOUT_PAGE_LENGTH;
+    FILE.LINE_LENGTH := STDOUT_LINE_LENGTH;
     FILE.PAGE := 1;
     FILE.LINE := 1;
     FILE.COL  := 1;
@@ -95,7 +95,7 @@ is					-------
 	-----------------
   begin
     CLOSE_SYSTEM_CALL( FILE.ID );
-
+    FILE.ID := -1;
   end	CLOSE;
 	-----
 
@@ -140,24 +140,24 @@ is					-------
 			----
   function		MODE		( FILE :in FILE_TYPE )		return FILE_MODE
   is			----
-  begin null;
-
+  begin
+    return FILE.MODE;
   end	MODE;
 	----
 
 			----
   function		NAME		( FILE :in FILE_TYPE )		return STRING
   is			----
-  begin null;
-
+  begin
+    return FILE.NAME( 1 .. FILE.NAME_LEN );
   end	NAME;
 	----
 
 			----
   function		FORM		( FILE :in FILE_TYPE )		return STRING
   is			----
-  begin null;
-
+  begin
+    return "";
   end	FORM;
 	----
 
@@ -165,7 +165,7 @@ is					-------
   function		IS_OPEN		( FILE :in FILE_TYPE )		return BOOLEAN
   is			-------
   begin null;
-
+    return FILE.ID = -1;
   end	IS_OPEN;
 	-------
 
@@ -224,8 +224,8 @@ is					-------
 			---------------
   procedure		SET_LINE_LENGTH	( FILE :in FILE_TYPE; TO :in COUNT )
   is			---------------
-  begin null;
-
+  begin
+    FILE.LINE_LENGTH := TO;
   end	SET_LINE_LENGTH;
 	---------------
 
@@ -233,16 +233,15 @@ is					-------
   procedure		SET_LINE_LENGTH	( TO   :in COUNT)
   is			---------------
   begin
-    STDOUT_MAX_LINE_LEN := TO;
-
+    STDOUT_LINE_LENGTH := TO;
   end	SET_LINE_LENGTH;
 	---------------
 
 			---------------
   procedure		SET_PAGE_LENGTH	( FILE :in FILE_TYPE; TO :in COUNT )
   is			---------------
-  begin null;
-
+  begin
+    FILE.PAGE_LENGTH := TO;
   end	SET_PAGE_LENGTH;
 	---------------
 
@@ -250,40 +249,39 @@ is					-------
   procedure		SET_PAGE_LENGTH	( TO   :in COUNT)
   is			---------------
   begin
-    STDOUT_MAX_PAGE_LEN := TO;
-
+    STDOUT_PAGE_LENGTH := TO;
   end	SET_PAGE_LENGTH;
 	---------------
 
 			-----------
   function		LINE_LENGTH	( FILE :in FILE_TYPE )		return COUNT
   is			-----------
-  begin null;
-
+  begin
+    return FILE.LINE_LENGTH;
   end	LINE_LENGTH;
 	-----------
 
 			-----------
   function		LINE_LENGTH					return COUNT
   is			-----------
-  begin null;
-
+  begin
+    return STDOUT_LINE_LENGTH;
   end	LINE_LENGTH;
 	-----------
 
 			-----------
   function		PAGE_LENGTH	( FILE :in FILE_TYPE )		return COUNT
   is			-----------
-  begin null;
-
+  begin
+    return FILE.PAGE_LENGTH;
   end	PAGE_LENGTH;
 	-----------
 
 			-----------
   function		PAGE_LENGTH					return COUNT
   is			-----------
-  begin null;
-
+  begin
+    return STDOUT_PAGE_LENGTH;
   end	PAGE_LENGTH;
 	-----------
 
@@ -308,7 +306,7 @@ is					-------
       PUT( ASCII.LF );
     end loop;
     STDOUT_LINE := STDOUT_LINE + SPACING;
-    if  STDOUT_LINE > STDOUT_MAX_PAGE_LEN  then
+    if  STDOUT_LINE > STDOUT_PAGE_LENGTH  then
       PUT( ASCII.FF );
       STDOUT_PAGE := STDOUT_PAGE + 1;
       STDOUT_LINE := 1;
@@ -400,7 +398,7 @@ is					-------
 	-----------
 
 			-----------
-  function		END_OF_FILE	(FILE :in FILE_TYPE )		return BOOLEAN
+  function		END_OF_FILE	( FILE :in FILE_TYPE )		return BOOLEAN
   is			-----------
   begin null;
 
@@ -416,58 +414,58 @@ is					-------
 	-----------
 
 			-------
-  procedure		SET_COL		(FILE :in FILE_TYPE; TO :in POSITIVE_COUNT )
+  procedure		SET_COL		( FILE :in FILE_TYPE; TO :in POSITIVE_COUNT )
   is			-------
-  begin null;
-
+  begin
+    FILE.COL := TO;
   end	SET_COL;
 	-------
 
 			-------
-  procedure		SET_COL		(TO   :in POSITIVE_COUNT )
+  procedure		SET_COL		( TO   :in POSITIVE_COUNT )
   is			-------
-  begin null;
-
+  begin
+    STDOUT_COL := TO;
   end	SET_COL;
 	-------
 
 			--------
   procedure 		SET_LINE		(FILE :in FILE_TYPE; TO :in POSITIVE_COUNT )
   is			--------
-  begin null;
-
+  begin
+    FILE.LINE := TO;
   end	SET_LINE;
 	--------
 
 			--------
   procedure		SET_LINE		(TO   :in POSITIVE_COUNT )
   is			--------
-  begin null;
-
+  begin
+    STDOUT_LINE := TO;
   end	SET_LINE;
 	--------
 
 			---
   function		COL		(FILE :in FILE_TYPE )		return POSITIVE_COUNT
   is			---
-  begin null;
-
+  begin
+    return FILE.COL;
   end	COL;
 	---
 
 			---
   function		COL						return POSITIVE_COUNT
   is			---
-  begin null;
-
+  begin
+    return STDOUT_COL;
   end	COL;
 	---
 
 			----
   function		LINE		( FILE :in FILE_TYPE )		return POSITIVE_COUNT
   is			----
-  begin null;
-
+  begin
+    return FILE.LINE;
   end	LINE;
 	----
 
@@ -475,7 +473,7 @@ is					-------
   function		LINE						return POSITIVE_COUNT
   is			----
   begin null;
-
+    return STDOUT_LINE;
   end	LINE;
 	----
 
@@ -483,7 +481,7 @@ is					-------
   function		PAGE		(FILE :in FILE_TYPE )		return POSITIVE_COUNT
   is			----
   begin null;
-
+    return FILE.PAGE;
   end	PAGE;
 	----
 
@@ -491,7 +489,7 @@ is					-------
   function		PAGE 						return POSITIVE_COUNT
   is			----
   begin null;
-
+    return STDOUT_PAGE;
   end	PAGE;
 	----
 

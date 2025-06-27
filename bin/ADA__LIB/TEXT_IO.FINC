@@ -107,13 +107,13 @@ end virtual
 end namespace
 
 					;    BODY ELAB
-VAR STDOUT_MAX_PAGE_LEN_disp, d		; variable entiere
+VAR STDOUT_PAGE_LENGTH_disp, d		; variable entiere
 	LI	72
-	Sd  0,	STDOUT_MAX_PAGE_LEN_disp
+	Sd  0,	STDOUT_PAGE_LENGTH_disp
 
-VAR STDOUT_MAX_LINE_LEN_disp, d		; variable entiere
+VAR STDOUT_LINE_LENGTH_disp, d		; variable entiere
 	LI	256
-	Sd  0,	STDOUT_MAX_LINE_LEN_disp
+	Sd  0,	STDOUT_LINE_LENGTH_disp
 
 VAR STDOUT_PAGE_disp, d			; variable entiere
 	LI	1
@@ -194,10 +194,10 @@ begin:					;---------- BDY INSTRUCTIONS
 	Lb  1,	-MODE_ofs
 	Sb
 	LIVa 	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.PAGE_LENGTH
-	Ld  0,	STDOUT_MAX_PAGE_LEN_disp
+	Ld  0,	STDOUT_PAGE_LENGTH_disp
 	Sd
 	LIVa 	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.LINE_LENGTH
-	Ld  0,	STDOUT_MAX_LINE_LEN_disp
+	Ld  0,	STDOUT_LINE_LENGTH_disp
 	Sd
 	LIVa 	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.PAGE
 	LI	1
@@ -281,10 +281,10 @@ begin:					;---------- BDY INSTRUCTIONS
 	Lb  1,	-MODE_ofs
 	Sb
 	LIVa 	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.PAGE_LENGTH
-	Ld  0,	STDOUT_MAX_PAGE_LEN_disp
+	Ld  0,	STDOUT_PAGE_LENGTH_disp
 	Sd
 	LIVa 	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.LINE_LENGTH
-	Ld  0,	STDOUT_MAX_LINE_LEN_disp
+	Ld  0,	STDOUT_LINE_LENGTH_disp
 	Sd
 	LIVa 	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.PAGE
 	LI	1
@@ -329,6 +329,10 @@ end if
 begin:					;---------- BDY INSTRUCTIONS
 	LId	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.ID
 	CALL	STANDARD.TEXT_IO.CLOSE_L3. ,CLOSE_SYSTEM_CALL_L3
+	LIVa 	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.ID
+	LI	1
+	NEG
+	Sd
 ret_lbl:
 	UNLINK 1
 	RTD	(prm_siz)
@@ -435,6 +439,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	BRA ret_lbl
 ret_lbl:
 	UNLINK 1
 	RTD	(prm_siz-8)
@@ -451,6 +456,14 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	LIVa 	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.NAME
+	LId	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.NAME_LEN
+	INC
+	LI	1
+	SUB
+	LI	1
+	MUL
+	BRA ret_lbl
 ret_lbl:
 	UNLINK 1
 	RTD	(prm_siz-8)
@@ -467,6 +480,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	BRA ret_lbl
 ret_lbl:
 	UNLINK 1
 	RTD	(prm_siz-8)
@@ -483,6 +497,7 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	BRA ret_lbl
 ret_lbl:
 	UNLINK 1
 	RTD	(prm_siz-8)
@@ -577,6 +592,9 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	LIVa 	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.LINE_LENGTH
+	Ld  1,	-TO_ofs
+	Sd
 ret_lbl:
 	UNLINK 1
 	RTD	(prm_siz)
@@ -593,7 +611,7 @@ ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	Ld  1,	-TO_ofs
-	Sd  0,	STDOUT_MAX_LINE_LEN_disp
+	Sd  0,	STDOUT_LINE_LENGTH_disp
 ret_lbl:
 	UNLINK 1
 	RTD	(prm_siz)
@@ -610,6 +628,9 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	LIVa 	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.PAGE_LENGTH
+	Ld  1,	-TO_ofs
+	Sd
 ret_lbl:
 	UNLINK 1
 	RTD	(prm_siz)
@@ -626,7 +647,7 @@ ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	Ld  1,	-TO_ofs
-	Sd  0,	STDOUT_MAX_PAGE_LEN_disp
+	Sd  0,	STDOUT_PAGE_LENGTH_disp
 ret_lbl:
 	UNLINK 1
 	RTD	(prm_siz)
@@ -643,6 +664,9 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	LId	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.LINE_LENGTH
+	Sd  1,	-result__ofs
+	BRA ret_lbl
 ret_lbl:
 	UNLINK 1
 	RTD	(prm_siz-8)
@@ -655,6 +679,9 @@ PRO	LINE_LENGTH_L22				;---------- PRO LINE_LENGTH
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	Ld  0,	STDOUT_LINE_LENGTH_disp
+	Sd  1,	-result__ofs
+	BRA ret_lbl
 ret_lbl:
 	UNLINK 1
 	RTD
@@ -671,6 +698,9 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	LId	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.PAGE_LENGTH
+	Sd  1,	-result__ofs
+	BRA ret_lbl
 ret_lbl:
 	UNLINK 1
 	RTD	(prm_siz-8)
@@ -683,6 +713,9 @@ PRO	PAGE_LENGTH_L24				;---------- PRO PAGE_LENGTH
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	Ld  0,	STDOUT_PAGE_LENGTH_disp
+	Sd  1,	-result__ofs
+	BRA ret_lbl
 ret_lbl:
 	UNLINK 1
 	RTD
@@ -746,7 +779,7 @@ L5:					; post loop LOOP__1
 	Sd  0,	STDOUT_LINE_disp
 					; debut if
 	Ld  0,	STDOUT_LINE_disp
-	Ld  0,	STDOUT_MAX_PAGE_LEN_disp
+	Ld  0,	STDOUT_PAGE_LENGTH_disp
 	CGT
 	BF	L8
 	LI	 12
@@ -949,6 +982,9 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	LIVa 	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.COL
+	Ld  1,	-TO_ofs
+	Sd
 ret_lbl:
 	UNLINK 1
 	RTD	(prm_siz)
@@ -964,6 +1000,8 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	Ld  1,	-TO_ofs
+	Sd  0,	STDOUT_COL_disp
 ret_lbl:
 	UNLINK 1
 	RTD	(prm_siz)
@@ -980,6 +1018,9 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	LIVa 	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.LINE
+	Ld  1,	-TO_ofs
+	Sd
 ret_lbl:
 	UNLINK 1
 	RTD	(prm_siz)
@@ -995,6 +1036,8 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	Ld  1,	-TO_ofs
+	Sd  0,	STDOUT_LINE_disp
 ret_lbl:
 	UNLINK 1
 	RTD	(prm_siz)
@@ -1011,6 +1054,9 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	LId	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.COL
+	Sd  1,	-result__ofs
+	BRA ret_lbl
 ret_lbl:
 	UNLINK 1
 	RTD	(prm_siz-8)
@@ -1023,6 +1069,9 @@ PRO	COL_L44				;---------- PRO COL
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	Ld  0,	STDOUT_COL_disp
+	Sd  1,	-result__ofs
+	BRA ret_lbl
 ret_lbl:
 	UNLINK 1
 	RTD
@@ -1039,6 +1088,9 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	LId	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.LINE
+	Sd  1,	-result__ofs
+	BRA ret_lbl
 ret_lbl:
 	UNLINK 1
 	RTD	(prm_siz-8)
@@ -1051,6 +1103,9 @@ PRO	LINE_L46				;---------- PRO LINE
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	Ld  0,	STDOUT_LINE_disp
+	Sd  1,	-result__ofs
+	BRA ret_lbl
 ret_lbl:
 	UNLINK 1
 	RTD
@@ -1067,6 +1122,9 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	LId	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.PAGE
+	Sd  1,	-result__ofs
+	BRA ret_lbl
 ret_lbl:
 	UNLINK 1
 	RTD	(prm_siz-8)
@@ -1079,6 +1137,9 @@ PRO	PAGE_L48				;---------- PRO PAGE
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	Ld  0,	STDOUT_PAGE_disp
+	Sd  1,	-result__ofs
+	BRA ret_lbl
 ret_lbl:
 	UNLINK 1
 	RTD

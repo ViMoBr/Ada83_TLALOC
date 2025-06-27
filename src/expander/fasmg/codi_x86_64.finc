@@ -863,7 +863,7 @@ macro			STR	name, bytes			; Definition d'une constante chaine au format d'un tab
   data_ptr = $							; adresse de la constante STRING (en fait double pointeur)
     dq	data							; offset 0 : adresse des caracteres (juste apres dans le cas present)
   info_ptr = $							;
-    dq	info						; offset 8 : adresse des infos TOT_SIZ, COMP_SIZ, FST_1, LST_1
+    dq	info							; offset 8 : adresse des infos TOT_SIZ, COMP_SIZ, FST_1, LST_1
   info = $							; use info
     dd	str_byte_size, 1, 1, str_byte_size				; offset 16 : TOT_SIZ=str_byte_size ; offset 20 : COMP_SIZ=1 ; offset 24 : FST=1 ; offset 28 : LST=str_byte_size
     virtual at 0							; definition des offsets sur le useinfo
@@ -979,174 +979,174 @@ end macro
 
 
 ;			-------------
-macro			SYS_PUT_CHAR?			; affiche un seul caractere sur stdout
+macro			SYS_PUT_CHAR?				; affiche un seul caractere sur stdout
 ;			-------------
 
-  db 0x48, 0x89, 0xEE				; mov rsi, rbp	(ADRESSE du caractere empile sur la pile)
-  db 0x6A, 0x01					; push 1
-  db 0x58						; pop rax		(rax=1=sys_write )
-  db 0x48, 0x89, 0xC2				; mov rdx, rax	(rdx=length=1)
-  db 0x48, 0x89, 0xC7				; mov rdi, rax	(rdi=stdout=1)
-  db 0x0F, 0x05					; syscall
-  DROP						; caractere consomme
+  db 0x48, 0x89, 0xEE						; mov rsi, rbp	(ADRESSE du caractere empile sur la pile)
+  db 0x6A, 0x01							; push 1
+  db 0x58								; pop rax		(rax=1=sys_write )
+  db 0x48, 0x89, 0xC2						; mov rdx, rax	(rdx=length=1)
+  db 0x48, 0x89, 0xC7						; mov rdi, rax	(rdi=stdout=1)
+  db 0x0F, 0x05							; syscall
+  DROP								; caractere consomme
 end macro
 
 ;			------------
-macro			SYS_PUT_STR?			; affiche tout une chaine sur stdout
+macro			SYS_PUT_STR?				; affiche tout une chaine sur stdout
 ;			------------
-  POP_RSI						;			(l'adresse du doublet @DATA | @USEINFO a ete empilee)
-  db 0x48, 0x8B, 0x46, 0x08				; mov rax, [rsi+8]		(rax contient l'adresse du USEINFO
-  db 0x8B, 0x50, 0x0C				; mov edx, dword ptr[rax+12]	(edx=last)
-  db 0xFF, 0xC2					; inc edx			(last+1)
-  db 0x2B, 0x50, 0x08				; sub edx, dword ptr[rax+8]   edx=length (=last+1 - first)
-  db 0x6A, 0x01					; push 1
-  db 0x58						; pop rax			(rax=1=sys_write )
-  db 0x48, 0x89, 0xC7				; mov rdi, rax		(rdi=stdout=1)
-  db 0x48, 0x8B, 0x36				; mov rsi, [rsi]		(rsi est maintenant l'adresse des caracteres)
-  db 0x0F, 0x05					; syscall
+  POP_RSI								;			(l'adresse du doublet @DATA | @USEINFO a ete empilee)
+  db 0x48, 0x8B, 0x46, 0x08						; mov rax, [rsi+8]		(rax contient l'adresse du USEINFO
+  db 0x8B, 0x50, 0x0C						; mov edx, dword ptr[rax+12]	(edx=last)
+  db 0xFF, 0xC2							; inc edx			(last+1)
+  db 0x2B, 0x50, 0x08						; sub edx, dword ptr[rax+8]   edx=length (=last+1 - first)
+  db 0x6A, 0x01							; push 1
+  db 0x58								; pop rax			(rax=1=sys_write )
+  db 0x48, 0x89, 0xC7						; mov rdi, rax		(rdi=stdout=1)
+  db 0x48, 0x8B, 0x36						; mov rsi, [rsi]		(rsi est maintenant l'adresse des caracteres)
+  db 0x0F, 0x05							; syscall
 end macro
 
 
 ; - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;	Pour le GET de caractere on veut obtenir chaque caractere tape immediatement, il faut modifier le comportement du terminal
 ;struc termios{
-;        .c_iflag	rd 1				; 0 input mode flags
-;        .c_oflag	rd 1				; 4 output mode flags
-;        .c_cflag	rd 1				; 8 control mode flags
-;        .c_lflag	rd 1				; 12 local mode flags
-;        .c_line	rb 1				; line discipline
-;        .c_cc	rb 32				; control characters
-;        .c_ispeed	rd 1				; input speed
-;        .c_ospeed	rd 1				; output speed
+;        .c_iflag	rd 1						; 0 input mode flags
+;        .c_oflag	rd 1						; 4 output mode flags
+;        .c_cflag	rd 1						; 8 control mode flags
+;        .c_lflag	rd 1						; 12 local mode flags
+;        .c_line	rb 1						; line discipline
+;        .c_cc	rb 32						; control characters
+;        .c_ispeed	rd 1						; input speed
+;        .c_ospeed	rd 1						; output speed
 ;}
 ;			-------------
-macro			SYS_GET_CHAR?			; lit un seul caractere sur stdin en mode non canonique
+macro			SYS_GET_CHAR?				; lit un seul caractere sur stdin en mode non canonique
 ;			-------------
 			; reserver le termios sur la micro-pile du rsp
-  db 0x48, 0x83, 0xEC, 0x40				; sub rsp, 64 (espace large pour le termios)
+  db 0x48, 0x83, 0xEC, 0x40						; sub rsp, 64 (espace large pour le termios)
 			; amener le termios
-  db 0x6A, 0x10					; push 16
-  db 0x58						; pop rax		(rax=16=sys_ioctl)
-  db 0x48, 0x31, 0xFF				; xor rdi, rdi	(rdi=stdout=0)
-  db 0x48, 0xC7, 0xC6, 0x01, 0x54, 0x00, 0x00		; mov rsi, 0x5401	(TCGETS)
-  db 0x48, 0x89, 0xE2				; mov rdx, rsp	(adresse du termios temporaire)
-  db 0x0F, 0x05					; syscall		(copier le termios)
+  db 0x6A, 0x10							; push 16
+  db 0x58								; pop rax		(rax=16=sys_ioctl)
+  db 0x48, 0x31, 0xFF						; xor rdi, rdi	(rdi=stdout=0)
+  db 0x48, 0xC7, 0xC6, 0x01, 0x54, 0x00, 0x00				; mov rsi, 0x5401	(TCGETS)
+  db 0x48, 0x89, 0xE2						; mov rdx, rsp	(adresse du termios temporaire)
+  db 0x0F, 0x05							; syscall		(copier le termios)
 			; modifier le termios
-  db 0x83, 0x64, 0x24, 0x0C, 0xF5			; and dword ptr [rsp+12], 0xFFFFFFF5	(ICANON bit 1 de c_lflag mis a 0 et bit 3 ECHO a 0)
+  db 0x83, 0x64, 0x24, 0x0C, 0xF5					; and dword ptr [rsp+12], 0xFFFFFFF5	(ICANON bit 1 de c_lflag mis a 0 et bit 3 ECHO a 0)
 			; renvoyer le termios modifie
-  db 0x6A, 0x10					; push 16
-  db 0x58						; pop rax		(rax=16=sys_ioctl)
-  db 0x48, 0x31, 0xFF				; xor rdi, rdi	(rdi=stdout=0)
-  db 0x48, 0xC7, 0xC6, 0x02, 0x54, 0x00, 0x00		; mov rsi, 0x5402	(TCSETS)
-  db 0x48, 0x89, 0xE2				; mov rdx, rsp	(adresse du termios temporaire)
-  db 0x0F, 0x05					; syscall		(envoyer le termios modifie)
+  db 0x6A, 0x10							; push 16
+  db 0x58								; pop rax		(rax=16=sys_ioctl)
+  db 0x48, 0x31, 0xFF						; xor rdi, rdi	(rdi=stdout=0)
+  db 0x48, 0xC7, 0xC6, 0x02, 0x54, 0x00, 0x00				; mov rsi, 0x5402	(TCSETS)
+  db 0x48, 0x89, 0xE2						; mov rdx, rsp	(adresse du termios temporaire)
+  db 0x0F, 0x05							; syscall		(envoyer le termios modifie)
 			; lire le caractere en mode non canonique
-  POP_RSI						;		(l'adresse destination a ete empilee sur la pile croissante)
-  db 0x6A, 0x00					; push 0
-  db 0x58						; pop rax		(rax=0=sys_read)
-  db 0x48, 0x89, 0xC7				; mov rdi, rax	(rdi=stdout=0)
-  db 0x6A, 0x01					; push 1
-  db 0x5A						; pop rdx		(rdx=length=1 caractere)
-  db 0x0F, 0x05					; syscall
+  POP_RSI								;		(l'adresse destination a ete empilee sur la pile croissante)
+  db 0x6A, 0x00							; push 0
+  db 0x58								; pop rax		(rax=0=sys_read)
+  db 0x48, 0x89, 0xC7						; mov rdi, rax	(rdi=stdout=0)
+  db 0x6A, 0x01							; push 1
+  db 0x5A								; pop rdx		(rdx=length=1 caractere)
+  db 0x0F, 0x05							; syscall
 
-  db 0x83, 0x4C, 0x24, 0x0C, 0x0A			; or dword ptr [rsp+12], 0xA	(ICANON bit 1 de c_lflag remis a 1 et ECHO bit 3)
+  db 0x83, 0x4C, 0x24, 0x0C, 0x0A					; or dword ptr [rsp+12], 0xA	(ICANON bit 1 de c_lflag remis a 1 et ECHO bit 3)
 			; renvoyer le termios modifie
-  db 0x6A, 0x10					; push 16
-  db 0x58						; pop rax		(rax=16=sys_ioctl)
-  db 0x48, 0x31, 0xFF				; xor rdi, rdi	(rdi=stdout=0)
-  db 0x48, 0xC7, 0xC6, 0x02, 0x54, 0x00, 0x00		; mov rsi, 0x5402	(TCSETS)
-  db 0x48, 0x89, 0xE2				; mov rdx, rsp	(adresse du termios temporaire)
-  db 0x0F, 0x05					; syscall		(envoyer le termios modifie)
+  db 0x6A, 0x10							; push 16
+  db 0x58								; pop rax		(rax=16=sys_ioctl)
+  db 0x48, 0x31, 0xFF						; xor rdi, rdi	(rdi=stdout=0)
+  db 0x48, 0xC7, 0xC6, 0x02, 0x54, 0x00, 0x00				; mov rsi, 0x5402	(TCSETS)
+  db 0x48, 0x89, 0xE2						; mov rdx, rsp	(adresse du termios temporaire)
+  db 0x0F, 0x05							; syscall		(envoyer le termios modifie)
 			; remettre le pointeur de micro-pile a sa place initiale
-  db 0x48, 0x83, 0xC4, 0x40				; add rsp, 64
+  db 0x48, 0x83, 0xC4, 0x40						; add rsp, 64
 end macro
 
 
 ;			------------
-macro			SYS_GET_STR?			; lit une ligne sur stdin
+macro			SYS_GET_STR?				; lit une ligne sur stdin
 ;			------------
-  POP_RSI						;			(l'adresse du doublet @DATA | @USEINFO a ete empilee)
-  db 0x48, 0x8B, 0x46, 0x08				; mov rax, [rsi+8]		(rax contient l'adresse du USEINFO
-  db 0x8B, 0x50, 0x0C				; mov edx, dword ptr[rax+12]	(edx=last)
-  db 0xFF, 0xC2					; inc edx			(last+1)
-  db 0x2B, 0x50, 0x08				; sub edx, dword ptr[rax+8]   edx=length (=last+1 - first)
-  db 0x31, 0xC0					; xor eax, eax		(rax=0=sys_read )
-  db 0x31, 0xFF					; xor edi, edi		(rdi=stdin=0)
-  db 0x48, 0x8B, 0x36				; mov rsi, [rsi]		(rsi est maintenant l'adresse des caracteres)
-  db 0x0F, 0x05					; syscall
-  POP_RSI						;			(sur la pile croissante, adresse de la longueur effectivement lue qui peut etre inferieure a la longueur de string)
-  db 0xFF, 0xC8					; dec eax			(diminuer la longueur rendue = retirer le caractere de fin)
-  db 0x89, 0x06					; mov dword ptr[rsi], eax	(reporter la longueur effectivement lue retournee par syscall dans eax)
+  POP_RSI								;			(l'adresse du doublet @DATA | @USEINFO a ete empilee)
+  db 0x48, 0x8B, 0x46, 0x08						; mov rax, [rsi+8]		(rax contient l'adresse du USEINFO
+  db 0x8B, 0x50, 0x0C						; mov edx, dword ptr[rax+12]	(edx=last)
+  db 0xFF, 0xC2							; inc edx			(last+1)
+  db 0x2B, 0x50, 0x08						; sub edx, dword ptr[rax+8]   edx=length (=last+1 - first)
+  db 0x31, 0xC0							; xor eax, eax		(rax=0=sys_read )
+  db 0x31, 0xFF							; xor edi, edi		(rdi=stdin=0)
+  db 0x48, 0x8B, 0x36						; mov rsi, [rsi]		(rsi est maintenant l'adresse des caracteres)
+  db 0x0F, 0x05							; syscall
+  POP_RSI								;			(sur la pile croissante, adresse de la longueur effectivement lue qui peut etre inferieure a la longueur de string)
+  db 0xFF, 0xC8							; dec eax			(diminuer la longueur rendue = retirer le caractere de fin)
+  db 0x89, 0x06							; mov dword ptr[rsi], eax	(reporter la longueur effectivement lue retournee par syscall dans eax)
 end macro
 
 
 
 ;			----------------------
-macro			COPY_STRING_APPEND_NUL	; donne le descripteur pointe par RSI, copie la chaine sur la pile montante et ajoute un NUL de fin
+macro			COPY_STRING_APPEND_NUL			; donne le descripteur pointe par RSI, copie la chaine sur la pile montante et ajoute un NUL de fin
 ;			----------------------
-  db 0x48, 0x8B, 0x46, 0x08				; mov rax, [rsi+8]		(rax contient l'adresse du USEINFO
+  db 0x48, 0x8B, 0x46, 0x08						; mov rax, [rsi+8]		(rax contient l'adresse du USEINFO
 
-  db 0x8B, 0x48, 0x0C				; mov ecx, dword ptr[rax+12]	(ecx=last)
-  db 0xFF, 0xC1					; inc ecx			(last+1)
-  db 0x2B, 0x48, 0x08				; sub ecx, dword ptr[rax+8]	(ecx= nombre de caracteres =last+1 - first)
-  db 0x48, 0x8B, 0x36				; mov rsi, qword ptr[rsi]	(rsi= adresse des caracteres)
-  db 0x48, 0x8D, 0x7D, 0x08				; lea rdi, [rbp+0x8]	(on va empiler la chaine sur la pile)
-  db 0xFC						; cld			(direction flag montant)
+  db 0x8B, 0x48, 0x0C						; mov ecx, dword ptr[rax+12]	(ecx=last)
+  db 0xFF, 0xC1							; inc ecx			(last+1)
+  db 0x2B, 0x48, 0x08						; sub ecx, dword ptr[rax+8]	(ecx= nombre de caracteres =last+1 - first)
+  db 0x48, 0x8B, 0x36						; mov rsi, qword ptr[rsi]	(rsi= adresse des caracteres)
+  db 0x48, 0x8D, 0x7D, 0x08						; lea rdi, [rbp+0x8]	(on va empiler la chaine sur la pile)
+  db 0xFC								; cld			(direction flag montant)
 ; transfer:
-  db 0xAC						; lods al, BYTE PTR ds:[rsi]
-  db 0xAA						; stos BYTE PTR es:[rdi], al
-  db 0xE2, 0xFC					; loop transfer		(transfere ecx octets
-  db 0xC6, 0x07, 0x00				; mov BYTE PTR[rdi], 0	(caractere NUL de fin chaine C)
-  db 0x48, 0x8D, 0x7D, 0x08				; lea rdi, [rbp+0x8]	(remettre RDI sur le debut de chaine)
+  db 0xAC								; lods al, BYTE PTR ds:[rsi]
+  db 0xAA								; stos BYTE PTR es:[rdi], al
+  db 0xE2, 0xFC							; loop transfer		(transfere ecx octets
+  db 0xC6, 0x07, 0x00						; mov BYTE PTR[rdi], 0	(caractere NUL de fin chaine C)
+  db 0x48, 0x8D, 0x7D, 0x08						; lea rdi, [rbp+0x8]	(remettre RDI sur le debut de chaine)
 end macro
 
 
 ;			----------------
-macro			SYS_FILE_CREATE?		; FONCTION creation d'un fichier	rax=2 rdi=ptr_name rsi=flags(O_CREAT) rdx=mode(S_IRWXU) retour rax=ID
+macro			SYS_FILE_CREATE?				; FONCTION creation d'un fichier	rax=2 rdi=ptr_name rsi=flags(O_CREAT) rdx=mode(S_IRWXU) retour rax=ID
 ;			----------------
-  POP_RSI						; adresse du descripteur de chaine Ada
-  COPY_STRING_APPEND_NUL				; faire une copie sur pile avec NUL en fin pointee par RDI
-  db 0x6A, 0x02					; push 2
-  db 0x58						; pop rax			(rax=2=sys_open )
-  db 0xBE, 0x40, 0x00, 0x00, 0x00			; mov esi, 0x40		(rsi=0x40=O_CREAT)
-  db 0xBA, 0x00, 0x07, 0x00, 0x00			; mov edx, 0x700		(rdx=0x700=S_IRWXU)
-  db 0x0F, 0x05					; syscall
-  db 0x48, 0x89, 0x45, 0x00				; mov QWORD PTR [rbp], rax	(ATTENTION PAS PUSH ! ID de fichier rendu sur le lieu result de la fonction)
+  POP_RSI								; adresse du descripteur de chaine Ada
+  COPY_STRING_APPEND_NUL						; faire une copie sur pile avec NUL en fin pointee par RDI
+  db 0x6A, 0x02							; push 2
+  db 0x58								; pop rax			(rax=2=sys_open )
+  db 0xBE, 0x40, 0x00, 0x00, 0x00					; mov esi, 0x40		(rsi=0x40=O_CREAT)
+  db 0xBA, 0x00, 0x07, 0x00, 0x00					; mov edx, 0x700		(rdx=0x700=S_IRWXU)
+  db 0x0F, 0x05							; syscall
+  db 0x48, 0x89, 0x45, 0x00						; mov QWORD PTR [rbp], rax	(ATTENTION PAS PUSH ! ID de fichier rendu sur le lieu result de la fonction)
 end macro
 
 
 ;			--------------
-macro			SYS_FILE_OPEN?		; FONCTION ouverture d'un fichier
+macro			SYS_FILE_OPEN?				; FONCTION ouverture d'un fichier
 ;			--------------
-  POP_RSI						; adresse du descripteur de chaine Ada
-  COPY_STRING_APPEND_NUL				; faire une copie sur pile avec NUL en fin pointee par RDI
-  db 0x6A, 0x02					; push 2
-  db 0x58						; pop rax			(rax=2=sys_open )
-  db 0x6A, 0x02					; push 2
-  db 0x5E						; pop rsi			(rsi=2=flags=RDWR)
-  db 0x48, 0x31, 0xD2				; xor rdx,rdx		(mode= 0 sans importance)
-  db 0x0F, 0x05					; syscall
-  db 0x48, 0x89, 0x45, 0x00				; mov QWORD PTR [rbp], rax	(ATTENTION PAS PUSH ! ID de fichier rendu sur le lieu result de la fonction)
+  POP_RSI								; adresse du descripteur de chaine Ada
+  COPY_STRING_APPEND_NUL						; faire une copie sur pile avec NUL en fin pointee par RDI
+  db 0x6A, 0x02							; push 2
+  db 0x58								; pop rax			(rax=2=sys_open )
+  db 0x6A, 0x02							; push 2
+  db 0x5E								; pop rsi			(rsi=2=flags=RDWR)
+  db 0x48, 0x31, 0xD2						; xor rdx,rdx		(mode= 0 sans importance)
+  db 0x0F, 0x05							; syscall
+  db 0x48, 0x89, 0x45, 0x00						; mov QWORD PTR [rbp], rax	(ATTENTION PAS PUSH ! ID de fichier rendu sur le lieu result de la fonction)
 end macro
 
 
 ;			---------------
-macro			SYS_FILE_CLOSE?		; fermeture d'un fichier
+macro			SYS_FILE_CLOSE?				; fermeture d'un fichier
 ;			---------------
-  POP_RDI						; ID fichier empile
-  db 0x6A, 0x03					; push 3
-  db 0x58						; pop rax			(rax=3=sys_close )
+  POP_RDI								; ID fichier empile
+  db 0x6A, 0x03							; push 3
+  db 0x58								; pop rax			(rax=3=sys_close )
 end macro
 
 
 ;			----------------
-macro			SYS_FILE_DELETE?		; destruction d'un fichier
+macro			SYS_FILE_DELETE?				; destruction d'un fichier
 ;			----------------
-  POP_RSI						; ptr au doublet @data/@info
-  COPY_STRING_APPEND_NUL				; faire une copie sur pile avec NUL en fin pointee par RDI
-  db 0x48, 0x31, 0xD2				; xor rdx, rdx
-  db 0xB8, 0x57, 0x00, 0x00, 0x00			; mov eax, 87			(rax=87=sys_unlink )
-  db 0x0F, 0x05					; syscall
+  POP_RSI								; ptr au doublet @data/@info
+  COPY_STRING_APPEND_NUL						; faire une copie sur pile avec NUL en fin pointee par RDI
+;  db 0x48, 0x31, 0xD2						; xor rdx, rdx
+  db 0xB8, 0x57, 0x00, 0x00, 0x00					; mov eax, 87			(rax=87=sys_unlink )
+  db 0x0F, 0x05							; syscall
 end macro
 
 
@@ -1156,6 +1156,30 @@ macro			SYS_EXIT?					; retour au systeme
   db 0x6A, 0x3C							; push x3C  (sys_exit rax=60)
   db 0x58								; pop rax
   db 0x31, 0xFF							; xor edi, edi (err_code=0)
+  db 0x0F, 0x05							; syscall
+end macro
+
+
+;			---------------
+macro			SYS_FILE_WRITE?				; ecriture sur un fichier
+;			---------------
+  POP_RDI								; 		(rdi = FILE_ID)
+  POP_RSI								;		(rsi = ADRESSE du tampon source)
+  POP_RDX								;		(rdx = LONGUEUR du transfert)
+  db 0x6A, 0x01							; push 1
+  db 0x58								; pop rax		(rax = 1= sys_write)
+  db 0x0F, 0x05							; syscall
+end macro
+
+
+;			--------------
+macro			SYS_FILE_READ?				; lecture sur un fichier
+;			--------------
+  POP_RDI								; 		(rdi = FILE_ID)
+  POP_RSI								;		(rsi = ADRESSE du tampon source)
+  POP_RDX								;		(rdx = LONGUEUR du transfert)
+  db 0x6A, 0x00							; push 0
+  db 0x58								; pop rax		(rax = 0 = sys_read)
   db 0x0F, 0x05							; syscall
 end macro
 

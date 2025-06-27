@@ -305,7 +305,7 @@ private
   subtype FILE_NAME_BUFFER	is STRING( 1 .. 256 );
 
   type FILE_TYPE		is record
-			  ID		: INTEGER;
+			  ID		: INTEGER		:= -1;
 			  NAME		: FILE_NAME_BUFFER;
 			  NAME_LEN	: POSITIVE;
 			  MODE		: FILE_MODE;
