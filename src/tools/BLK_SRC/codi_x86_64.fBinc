@@ -232,119 +232,127 @@ ytes¬¬¬; Definition d'une constante chaine au format d'un tableau de caracteres 
 hes du descripteur. Ici, cas de constante, les caracteres sont juste apres le descripteur.¶;¶  postpone¶    local data¶ 
    local info¶    local str_byte_size¶    align_q¬¬¬¬¬¬¬; aligner le descripteur sur un quadword¶¶  namespace name¶¶  da
 ta_ptr = $¬¬¬¬¬¬¬; adresse de la constante STRING (en fait double pointeur)¶    dq¬data¬¬¬¬¬¬¬; offset 0 : adresse des c
-aracteres (juste apres dans le cas present)¶  info_ptr = $¬¬¬¬¬¬¬;¶    dq¬info¬¬¬¬¬¬; offset 8 : adresse des infos TOT_S
-IZ, COMP_SIZ, FST_1, LST_1¶  info = $¬¬¬¬¬¬¬; use info¶    dd¬str_byte_size, 1, 1, str_byte_size¬¬¬¬; offset 16 : TOT_SI
-Z=str_byte_size ; offset 20 : COMP_SIZ=1 ; offset 24 : FST=1 ; offset 28 : LST=str_byte_size¶    virtual at 0¬¬¬¬¬¬¬; de
-finition des offsets sur le useinfo¶    SIZ = $¶    rd 1¶    COMP_SIZ = $¶    rd 1¶    FST_1 = $¶    rd 1¶    LST_1 = $¶
-    end virtual¶  data = $¬¬¬¬¬¬¬; pour une constante les caracteres suivent (pour une chaine variable ce n'est pas le c
-as, les octets sont dans la co-pile)¶    db¬bytes¶    str_byte_size = $ - data¬¬¬¬¬¬; Calculer la longueur effective pou
-r mettre dans LAST¶  end namespace¶¶  end postpone¶end macro¶¶;¬¬¬-----------------------------------------¶macro¬¬¬CST¬
-name_cst:_nil_, sizChar:b, val&¬; Definition d'une constante¶;¬¬¬-----------------------------------------¶  postpone¶  
-  align_#sizChar¬¬¬¬¬¬¬; aligner en fonction de l'unite de reservation¶    name_cst = $¬¬¬¬¬¬¬;¶    d#sizChar val¬¬¬¬¬¬¬
-; reservation¶  end postpone¶end macro¶¶;¬¬¬----------------------------------------¶macro¬¬¬USEINFO¬lvl, field_name, lo
-ad_instruc& ¬; Reference __u a un __i info¶;¬¬¬----------------------------------------¶  virtual VARzone¶    align_q¬¬¬
-¬¬¬¬; aligner en fonction de l'unite de reservation¶    field_name#__u = $¬¬¬¬¬¬¬; lieu ptr use info¶    rq 1¬¬¬¬¬¬¬¬; r
-eservation¶  end virtual¶  load_instruc¶  Sa lvl, field_name#__u¶end macro¶;¬¬¬-------------------¶macro¬¬¬STATOFS¬name,
- siz¬¬¬¬; Definition de l'offset statique (pour un record statique, dans une virtual at 0)¶;¬¬¬-------------------¶  if 
-siz > 4¶    align_q¶  else if siz > 2¶    align_d¶  else if siz > 1¶    align_w¶  end if¶name = $¬¬¬¬¬¬¬¬; nom offset du
- champ¶  rb siz¬¬¬¬¬¬¬¬; reservation¶size = $¶end macro¶¶;¬¬¬-----------------------------------¶macro¬¬¬VAR¬name_disp, 
-sizChar, siz:1¬¬; Definition d'un lieu de variable¶;¬¬¬-----------------------------------¶  virtual VARzone¶    if `siz
-Char = 'b'  |  `sizChar = 'w'  |  `sizChar = 'd'  |  `sizChar = 'q'¶      align_#sizChar¶      name_disp = $¬¬¬¬¬¬¬; dis
-placement des data de variable¶      r#sizChar siz¬¬¬¬¬¬¬; reservation¶    else¶      align_q¬¬¬¬¬¬¬; assurer l'aligneme
-nt de pile dans tous les cas possibles¶      name_disp = $¬¬¬¬¬¬¬; displacement des data de variable¶      rb sizChar¶  
-  end if¶  end virtual¶¶end macro¶¶;¬¬¬------¶macro¬¬¬CO_VAR¬¬¬¬¬; Allocation d'un bloc sur la co-pile taille en octets 
-sur la pile standard, laisse l'adresse de debut de bloc sur la pile¶;¬¬¬------¶  POP_RAX¬¬¬¬¬¬¬¬; la taille d'allocation
- a ete empilee, la mettre dans rax¶  db 0x4C, 0x89, 0x75, 0x08¬¬¬¬¬¬; mov QWORD PTR [rbp+8], r14¬¬(empiler le haut de co
--pile R14 sur la pile standard)¶  db 0x48, 0x8D, 0x6D, 0x08¬¬¬¬¬¬; lea rbp, [rbp+0x8]¬¬(puis MONTER le rbp sur la valeur
- ecrite car pile croissante vers adresses hautes)¶  db 0x48, 0x83, 0xC0, 0x07¬¬¬¬¬¬; add rax, 7¶  db 0x48, 0xC1, 0xF8, 0
-x03¬¬¬¬¬¬; sar rax, 3¬¬¬(diviser par 8, rax est positif normalement)¶  db 0x4D, 0x8D, 0x34, 0xC6¬¬¬¬¬¬; lea r14, [r14 + 
-8*rax]¬¬(mettre le sommet de co-pile aligne sur qword)¶end macro¶¶;¬¬¬------¶macro¬¬¬endPRO¬¬¬¬¬; Fin de procedure¶;¬¬¬-
------¶post:¶  virtual VARzone¶    loc_siz = $¬¬¬¬¬¬¬; Ce n'est que la que l'on calcule la taille des locales qui sera re
-tropropagee au LINK du ELAB¶  end virtual¶  end namespace¶end macro¶¶;¬¬¬------¶macro¬¬¬BLKMOV¬¬¬¬¬; Copie de bloc sans 
-recouvrement¶;¬¬¬------¶  POP_RSI¬¬¬¬¬¬¬¬; adresse source¶  POP_RCX¬¬¬¬¬¬¬¬; nombre octets¶  POP_RDI¬¬¬¬¬¬¬¬; adresse de
-stination¶  db 0xFC¬¬¬¬¬¬¬¬; cld¬¬¬(direction flag montant)¶; transfer:¶  db 0xAC¬¬¬¬¬¬¬¬; lods al, BYTE PTR ds:[rsi]¶  
-db 0xAA¬¬¬¬¬¬¬¬; stos BYTE PTR es:[rdi], al¶  db 0xE2, 0xFC¬¬¬¬¬¬¬; loop transfer¬¬(transfere ecx octets¶¶end macro¶¶¶¶;
-¬¬¬¬------------------------------¶;¬¬¬¬SPECIFIQUE  L I N U X   X86-64¶;¬¬¬¬------------------------------¶¶¶;¬¬¬-------
-------¶macro¬¬¬SYS_PUT_CHAR?¬¬¬; affiche un seul caractere sur stdout¶;¬¬¬-------------¶¶  db 0x48, 0x89, 0xEE¬¬¬¬; mov 
-rsi, rbp¬(ADRESSE du caractere empile sur la pile)¶  db 0x6A, 0x01¬¬¬¬¬; push 1¶  db 0x58¬¬¬¬¬¬; pop rax¬¬(rax=1=sys_wri
-te )¶  db 0x48, 0x89, 0xC2¬¬¬¬; mov rdx, rax¬(rdx=length=1)¶  db 0x48, 0x89, 0xC7¬¬¬¬; mov rdi, rax¬(rdi=stdout=1)¶  db 
-0x0F, 0x05¬¬¬¬¬; syscall¶  DROP¬¬¬¬¬¬; caractere consomme¶end macro¶¶;¬¬¬------------¶macro¬¬¬SYS_PUT_STR?¬¬¬; affiche t
-out une chaine sur stdout¶;¬¬¬------------¶  POP_RSI¬¬¬¬¬¬;¬¬¬(l'adresse du doublet @DATA | @USEINFO a ete empilee)¶  db
- 0x48, 0x8B, 0x46, 0x08¬¬¬¬; mov rax, [rsi+8]¬¬(rax contient l'adresse du USEINFO¶  db 0x8B, 0x50, 0x0C¬¬¬¬; mov edx, dw
-ord ptr[rax+12]¬(edx=last)¶  db 0xFF, 0xC2¬¬¬¬¬; inc edx¬¬¬(last+1)¶  db 0x2B, 0x50, 0x08¬¬¬¬; sub edx, dword ptr[rax+8]
-   edx=length (=last+1 - first)¶  db 0x6A, 0x01¬¬¬¬¬; push 1¶  db 0x58¬¬¬¬¬¬; pop rax¬¬¬(rax=1=sys_write )¶  db 0x48, 0x
-89, 0xC7¬¬¬¬; mov rdi, rax¬¬(rdi=stdout=1)¶  db 0x48, 0x8B, 0x36¬¬¬¬; mov rsi, [rsi]¬¬(rsi est maintenant l'adresse des 
-caracteres)¶  db 0x0F, 0x05¬¬¬¬¬; syscall¶end macro¶¶¶; - - - - - - - - - - - - - - - - - - - - - - - - - - - - -¶;¬Pour
- le GET de caractere on veut obtenir chaque caractere tape immediatement, il faut modifier le comportement du terminal¶;
-struc termios{¶;        .c_iflag¬rd 1¬¬¬¬; 0 input mode flags¶;        .c_oflag¬rd 1¬¬¬¬; 4 output mode flags¶;        .
-c_cflag¬rd 1¬¬¬¬; 8 control mode flags¶;        .c_lflag¬rd 1¬¬¬¬; 12 local mode flags¶;        .c_line¬rb 1¬¬¬¬; line d
-iscipline¶;        .c_cc¬rb 32¬¬¬¬; control characters¶;        .c_ispeed¬rd 1¬¬¬¬; input speed¶;        .c_ospeed¬rd 1¬
-¬¬¬; output speed¶;}¶;¬¬¬-------------¶macro¬¬¬SYS_GET_CHAR?¬¬¬; lit un seul caractere sur stdin en mode non canonique¶;
-¬¬¬-------------¶¬¬¬; reserver le termios sur la micro-pile du rsp¶  db 0x48, 0x83, 0xEC, 0x40¬¬¬¬; sub rsp, 64 (espace 
-large pour le termios)¶¬¬¬; amener le termios¶  db 0x6A, 0x10¬¬¬¬¬; push 16¶  db 0x58¬¬¬¬¬¬; pop rax¬¬(rax=16=sys_ioctl)
-¶  db 0x48, 0x31, 0xFF¬¬¬¬; xor rdi, rdi¬(rdi=stdout=0)¶  db 0x48, 0xC7, 0xC6, 0x01, 0x54, 0x00, 0x00¬¬; mov rsi, 0x5401
-¬(TCGETS)¶  db 0x48, 0x89, 0xE2¬¬¬¬; mov rdx, rsp¬(adresse du termios temporaire)¶  db 0x0F, 0x05¬¬¬¬¬; syscall¬¬(copier
- le termios)¶¬¬¬; modifier le termios¶  db 0x83, 0x64, 0x24, 0x0C, 0xF5¬¬¬; and dword ptr [rsp+12], 0xFFFFFFF5¬(ICANON b
-it 1 de c_lflag mis a 0 et bit 3 ECHO a 0)¶¬¬¬; renvoyer le termios modifie¶  db 0x6A, 0x10¬¬¬¬¬; push 16¶  db 0x58¬¬¬¬¬
-¬; pop rax¬¬(rax=16=sys_ioctl)¶  db 0x48, 0x31, 0xFF¬¬¬¬; xor rdi, rdi¬(rdi=stdout=0)¶  db 0x48, 0xC7, 0xC6, 0x02, 0x54,
- 0x00, 0x00¬¬; mov rsi, 0x5402¬(TCSETS)¶  db 0x48, 0x89, 0xE2¬¬¬¬; mov rdx, rsp¬(adresse du termios temporaire)¶  db 0x0
-F, 0x05¬¬¬¬¬; syscall¬¬(envoyer le termios modifie)¶¬¬¬; lire le caractere en mode non canonique¶  POP_RSI¬¬¬¬¬¬;¬¬(l'ad
-resse destination a ete empilee sur la pile croissante)¶  db 0x6A, 0x00¬¬¬¬¬; push 0¶  db 0x58¬¬¬¬¬¬; pop rax¬¬(rax=0=sy
-s_read)¶  db 0x48, 0x89, 0xC7¬¬¬¬; mov rdi, rax¬(rdi=stdout=0)¶  db 0x6A, 0x01¬¬¬¬¬; push 1¶  db 0x5A¬¬¬¬¬¬; pop rdx¬¬(r
-dx=length=1 caractere)¶  db 0x0F, 0x05¬¬¬¬¬; syscall¶¶  db 0x83, 0x4C, 0x24, 0x0C, 0x0A¬¬¬; or dword ptr [rsp+12], 0xA¬(
-ICANON bit 1 de c_lflag remis a 1 et ECHO bit 3)¶¬¬¬; renvoyer le termios modifie¶  db 0x6A, 0x10¬¬¬¬¬; push 16¶  db 0x5
-8¬¬¬¬¬¬; pop rax¬¬(rax=16=sys_ioctl)¶  db 0x48, 0x31, 0xFF¬¬¬¬; xor rdi, rdi¬(rdi=stdout=0)¶  db 0x48, 0xC7, 0xC6, 0x02,
- 0x54, 0x00, 0x00¬¬; mov rsi, 0x5402¬(TCSETS)¶  db 0x48, 0x89, 0xE2¬¬¬¬; mov rdx, rsp¬(adresse du termios temporaire)¶  
-db 0x0F, 0x05¬¬¬¬¬; syscall¬¬(envoyer le termios modifie)¶¬¬¬; remettre le pointeur de micro-pile a sa place initiale¶  
-db 0x48, 0x83, 0xC4, 0x40¬¬¬¬; add rsp, 64¶end macro¶¶¶;¬¬¬------------¶macro¬¬¬SYS_GET_STR?¬¬¬; lit une ligne sur stdin
-¶;¬¬¬------------¶  POP_RSI¬¬¬¬¬¬;¬¬¬(l'adresse du doublet @DATA | @USEINFO a ete empilee)¶  db 0x48, 0x8B, 0x46, 0x08¬¬
-¬¬; mov rax, [rsi+8]¬¬(rax contient l'adresse du USEINFO¶  db 0x8B, 0x50, 0x0C¬¬¬¬; mov edx, dword ptr[rax+12]¬(edx=last
-)¶  db 0xFF, 0xC2¬¬¬¬¬; inc edx¬¬¬(last+1)¶  db 0x2B, 0x50, 0x08¬¬¬¬; sub edx, dword ptr[rax+8]   edx=length (=last+1 - 
-first)¶  db 0x31, 0xC0¬¬¬¬¬; xor eax, eax¬¬(rax=0=sys_read )¶  db 0x31, 0xFF¬¬¬¬¬; xor edi, edi¬¬(rdi=stdin=0)¶  db 0x48
-, 0x8B, 0x36¬¬¬¬; mov rsi, [rsi]¬¬(rsi est maintenant l'adresse des caracteres)¶  db 0x0F, 0x05¬¬¬¬¬; syscall¶  POP_RSI¬
-¬¬¬¬¬;¬¬¬(sur la pile croissante, adresse de la longueur effectivement lue qui peut etre inferieure a la longueur de str
-ing)¶  db 0xFF, 0xC8¬¬¬¬¬; dec eax¬¬¬(diminuer la longueur rendue = retirer le caractere de fin)¶  db 0x89, 0x06¬¬¬¬¬; m
-ov dword ptr[rsi], eax¬(reporter la longueur effectivement lue retournee par syscall dans eax)¶end macro¶¶¶¶;¬¬¬--------
---------------¶macro¬¬¬COPY_STRING_APPEND_NUL¬; donne le descripteur pointe par RSI, copie la chaine sur la pile montant
-e et ajoute un NUL de fin¶;¬¬¬----------------------¶  db 0x48, 0x8B, 0x46, 0x08¬¬¬¬; mov rax, [rsi+8]¬¬(rax contient l'
-adresse du USEINFO¶¶  db 0x8B, 0x48, 0x0C¬¬¬¬; mov ecx, dword ptr[rax+12]¬(ecx=last)¶  db 0xFF, 0xC1¬¬¬¬¬; inc ecx¬¬¬(la
-st+1)¶  db 0x2B, 0x48, 0x08¬¬¬¬; sub ecx, dword ptr[rax+8]¬(ecx= nombre de caracteres =last+1 - first)¶  db 0x48, 0x8B, 
-0x36¬¬¬¬; mov rsi, qword ptr[rsi]¬(rsi= adresse des caracteres)¶  db 0x48, 0x8D, 0x7D, 0x08¬¬¬¬; lea rdi, [rbp+0x8]¬(on 
-va empiler la chaine sur la pile)¶  db 0xFC¬¬¬¬¬¬; cld¬¬¬(direction flag montant)¶; transfer:¶  db 0xAC¬¬¬¬¬¬; lods al, 
-BYTE PTR ds:[rsi]¶  db 0xAA¬¬¬¬¬¬; stos BYTE PTR es:[rdi], al¶  db 0xE2, 0xFC¬¬¬¬¬; loop transfer¬¬(transfere ecx octets
-¶  db 0xC6, 0x07, 0x00¬¬¬¬; mov BYTE PTR[rdi], 0¬(caractere NUL de fin chaine C)¶  db 0x48, 0x8D, 0x7D, 0x08¬¬¬¬; lea rd
-i, [rbp+0x8]¬(remettre RDI sur le debut de chaine)¶end macro¶¶¶;¬¬¬----------------¶macro¬¬¬SYS_FILE_CREATE?¬¬; FONCTION
- creation d'un fichier¬rax=2 rdi=ptr_name rsi=flags(O_CREAT) rdx=mode(S_IRWXU) retour rax=ID¶;¬¬¬----------------¶  POP_
-RSI¬¬¬¬¬¬; adresse du descripteur de chaine Ada¶  COPY_STRING_APPEND_NUL¬¬¬¬; faire une copie sur pile avec NUL en fin p
-ointee par RDI¶  db 0x6A, 0x02¬¬¬¬¬; push 2¶  db 0x58¬¬¬¬¬¬; pop rax¬¬¬(rax=2=sys_open )¶  db 0xBE, 0x40, 0x00, 0x00, 0x
-00¬¬¬; mov esi, 0x40¬¬(rsi=0x40=O_CREAT)¶  db 0xBA, 0x00, 0x07, 0x00, 0x00¬¬¬; mov edx, 0x700¬¬(rdx=0x700=S_IRWXU)¶  db 
-0x0F, 0x05¬¬¬¬¬; syscall¶  db 0x48, 0x89, 0x45, 0x00¬¬¬¬; mov QWORD PTR [rbp], rax¬(ATTENTION PAS PUSH ! ID de fichier r
-endu sur le lieu result de la fonction)¶end macro¶¶¶;¬¬¬--------------¶macro¬¬¬SYS_FILE_OPEN?¬¬; FONCTION ouverture d'un
- fichier¶;¬¬¬--------------¶  POP_RSI¬¬¬¬¬¬; adresse du descripteur de chaine Ada¶  COPY_STRING_APPEND_NUL¬¬¬¬; faire un
-e copie sur pile avec NUL en fin pointee par RDI¶  db 0x6A, 0x02¬¬¬¬¬; push 2¶  db 0x58¬¬¬¬¬¬; pop rax¬¬¬(rax=2=sys_open
- )¶  db 0x6A, 0x02¬¬¬¬¬; push 2¶  db 0x5E¬¬¬¬¬¬; pop rsi¬¬¬(rsi=2=flags=RDWR)¶  db 0x48, 0x31, 0xD2¬¬¬¬; xor rdx,rdx¬¬(m
-ode= 0 sans importance)¶  db 0x0F, 0x05¬¬¬¬¬; syscall¶  db 0x48, 0x89, 0x45, 0x00¬¬¬¬; mov QWORD PTR [rbp], rax¬(ATTENTI
-ON PAS PUSH ! ID de fichier rendu sur le lieu result de la fonction)¶end macro¶¶¶;¬¬¬---------------¶macro¬¬¬SYS_FILE_CL
-OSE?¬¬; fermeture d'un fichier¶;¬¬¬---------------¶  POP_RDI¬¬¬¬¬¬; ID fichier empile¶  db 0x6A, 0x03¬¬¬¬¬; push 3¶  db 
-0x58¬¬¬¬¬¬; pop rax¬¬¬(rax=3=sys_close )¶end macro¶¶¶;¬¬¬----------------¶macro¬¬¬SYS_FILE_DELETE?¬¬; destruction d'un f
-ichier¶;¬¬¬----------------¶  POP_RSI¬¬¬¬¬¬; ptr au nom (chaine nul terminated)¶  COPY_STRING_APPEND_NUL¬¬¬¬; faire une 
-copie sur pile avec NUL en fin pointee par RDI¶  db 0xB8, 0x43, 0x00, 0x00, 0x00¬¬¬; mov eax, 67¬¬¬(rax=87=sys_unlink )¶
-  db 0x0F, 0x05¬¬¬¬¬; syscall¶end macro¶¶¶;¬¬¬---------¶macro¬¬¬SYS_EXIT?¬¬¬¬¬; retour au systeme¶;¬¬¬---------¶  db 0x6
-A, 0x3C¬¬¬¬¬¬¬; push x3C  (sys_exit rax=60)¶  db 0x58¬¬¬¬¬¬¬¬; pop rax¶  db 0x31, 0xFF¬¬¬¬¬¬¬; xor edi, edi (err_code=0)
-¶  db 0x0F, 0x05¬¬¬¬¬¬¬; syscall¶end macro¶¶¶;¬¬¬¬---------------------------------------------¶;¬¬¬¬MISE EN PLACE ENTET
-E ELF 64 POUR LINUX X86-64¶;¬¬¬¬---------------------------------------------¶¶ELFCLASS64¬= 2¶ELFDATA2LSB¬= 1¶EV_CURRENT
-¬= 1¶ET_EXEC¬¬= 2¶SYSTEM_V¬¬= 0¶EM_X86_64¬¬= 62¶¶org 0x400000¬¬¬¬¬¬¬; adresse entree programme linux¶¶Elf64_Header:¶¬e_i
-dent¬¬db 0x7F,'ELF', ELFCLASS64, ELFDATA2LSB, EV_CURRENT, SYSTEM_V, (0x400010-$) dup 0¶¬e_type¬¬dw ET_EXEC¶¬e_machine¬¬d
-w EM_X86_64¶¬e_version¬¬dd EV_CURRENT¶¬e_entry¬¬dq 0x00400078¶¬e_phoff¬¬dq 64¶¬e_shoff¬¬dq 0¶¬e_flags¬¬dd 0¶¬e_ehsize¬¬d
-w 64¶¬e_phentsize¬dw 56¶¬e_phnum¬¬dw 1¶¬e_shentsize¬dw 0¶¬e_shnum¬¬dw 0¶¬e_shstrndx¬dw 0¶Elf64_Phdr:¶¬p_type¬¬dd 1¬¬¬¬¬;
- PT_LOAD¶¬p_flags¬¬dd 7¬¬¬¬¬; RWX¶¬p_offset¬¬dq 0x78¶¬p_vaddr¬¬dq 0x00400078¶¬p_paddr¬¬dq 0¶¬p_filesz¬¬dq ASM_SIZE¬¬¬¬; 
-juste le necessaire code/constantes dans le fichier¶¬p_memsz¬¬dq ASM_SIZE + 1024*1024¬¬¬; 1Mo au dessus du code et des c
-onstantes (pour la co-pile)¶¬p_align¬¬dq 4096¶¶¶;¬¬METTRE EN PLACE LA PILE CROISSANTE ET LE DISPLAY¶¶  db 0x48, 0x31, 0x
-C0¬¬¬¬¬¬; pour point d'arret debogage¶  db 0x48, 0x8D, 0xA4, 0x24, 0x00, 0x00, 0xF0, 0xFF¬¬¬; lea rsp, [rsp - 1024*1024]
-¬¬(caler rsp a 1 Mo sous le depart)¶  db 0x49, 0x89, 0xE7¬¬¬¬¬¬; mov r15, rsp¬¬¬(debut du display de 32 frame pointers)¶
-  db 0x48, 0x8D, 0xAC, 0x24, 0x00, 0x01, 0x00, 0x00¬¬¬; lea rbp, [rsp + 8*32]¬¬(bas de pile croissante au dessus du disp
-lay)¶  db 0x49, 0x89, 0x2F¬¬¬¬¬¬; mov [r15], rbp¬¬¬(frame pointer level 0)¶¶;¬¬METTRE EN PLACE LA CO-PILE¶¶  db 0x4C, 0x
-8D, 0x34, 0x25¬¬¬¬¬¬; lea r14, [0x00400078 + 8*((ASM_SIZE+7)/8)]¬(bas de la co-pile, ou pile-tas au dessus du code et de
-s constantes)¶  dd 0x00400078 + 8*((ASM_SIZE+7)/8)¶  db 0x4D, 0x89, 0x36¬¬¬¬¬¬; mov [r14], r14¬¬¬(empiler le premier "fr
-ame" de co-pile)¶  db 0x4D, 0x89, 0xF5¬¬¬¬¬¬; mov r13, r14¬¬¬(R13 est le "frame pointer" de co-pile)¶  db 0x4D, 0x8D, 0x
-76, 0x08¬¬¬¬¬¬; lea r14, [r14 + 8]¬¬(monter le haut de co-pile sur le premier lieu libre)¶
+aracteres (juste apres dans le cas present)¶  info_ptr = $¬¬¬¬¬¬¬;¶    dq¬info¬¬¬¬¬¬¬; offset 8 : adresse des infos TOT_
+SIZ, COMP_SIZ, FST_1, LST_1¶  info = $¬¬¬¬¬¬¬; use info¶    dd¬str_byte_size, 1, 1, str_byte_size¬¬¬¬; offset 16 : TOT_S
+IZ=str_byte_size ; offset 20 : COMP_SIZ=1 ; offset 24 : FST=1 ; offset 28 : LST=str_byte_size¶    virtual at 0¬¬¬¬¬¬¬; d
+efinition des offsets sur le useinfo¶    SIZ = $¶    rd 1¶    COMP_SIZ = $¶    rd 1¶    FST_1 = $¶    rd 1¶    LST_1 = $
+¶    end virtual¶  data = $¬¬¬¬¬¬¬; pour une constante les caracteres suivent (pour une chaine variable ce n'est pas le 
+cas, les octets sont dans la co-pile)¶    db¬bytes¶    str_byte_size = $ - data¬¬¬¬¬¬; Calculer la longueur effective po
+ur mettre dans LAST¶  end namespace¶¶  end postpone¶end macro¶¶;¬¬¬-----------------------------------------¶macro¬¬¬CST
+¬name_cst:_nil_, sizChar:b, val&¬; Definition d'une constante¶;¬¬¬-----------------------------------------¶  postpone¶ 
+   align_#sizChar¬¬¬¬¬¬¬; aligner en fonction de l'unite de reservation¶    name_cst = $¬¬¬¬¬¬¬;¶    d#sizChar val¬¬¬¬¬¬
+¬; reservation¶  end postpone¶end macro¶¶;¬¬¬----------------------------------------¶macro¬¬¬USEINFO¬lvl, field_name, l
+oad_instruc& ¬; Reference __u a un __i info¶;¬¬¬----------------------------------------¶  virtual VARzone¶    align_q¬¬
+¬¬¬¬¬; aligner en fonction de l'unite de reservation¶    field_name#__u = $¬¬¬¬¬¬¬; lieu ptr use info¶    rq 1¬¬¬¬¬¬¬¬; 
+reservation¶  end virtual¶  load_instruc¶  Sa lvl, field_name#__u¶end macro¶;¬¬¬-------------------¶macro¬¬¬STATOFS¬name
+, siz¬¬¬¬; Definition de l'offset statique (pour un record statique, dans une virtual at 0)¶;¬¬¬-------------------¶  if
+ siz > 4¶    align_q¶  else if siz > 2¶    align_d¶  else if siz > 1¶    align_w¶  end if¶name = $¬¬¬¬¬¬¬¬; nom offset d
+u champ¶  rb siz¬¬¬¬¬¬¬¬; reservation¶size = $¶end macro¶¶;¬¬¬-----------------------------------¶macro¬¬¬VAR¬name_disp,
+ sizChar, siz:1¬¬; Definition d'un lieu de variable¶;¬¬¬-----------------------------------¶  virtual VARzone¶    if `si
+zChar = 'b'  |  `sizChar = 'w'  |  `sizChar = 'd'  |  `sizChar = 'q'¶      align_#sizChar¶      name_disp = $¬¬¬¬¬¬¬; di
+splacement des data de variable¶      r#sizChar siz¬¬¬¬¬¬¬; reservation¶    else¶      align_q¬¬¬¬¬¬¬; assurer l'alignem
+ent de pile dans tous les cas possibles¶      name_disp = $¬¬¬¬¬¬¬; displacement des data de variable¶      rb sizChar¶ 
+   end if¶  end virtual¶¶end macro¶¶;¬¬¬------¶macro¬¬¬CO_VAR¬¬¬¬¬; Allocation d'un bloc sur la co-pile taille en octets
+ sur la pile standard, laisse l'adresse de debut de bloc sur la pile¶;¬¬¬------¶  POP_RAX¬¬¬¬¬¬¬¬; la taille d'allocatio
+n a ete empilee, la mettre dans rax¶  db 0x4C, 0x89, 0x75, 0x08¬¬¬¬¬¬; mov QWORD PTR [rbp+8], r14¬¬(empiler le haut de c
+o-pile R14 sur la pile standard)¶  db 0x48, 0x8D, 0x6D, 0x08¬¬¬¬¬¬; lea rbp, [rbp+0x8]¬¬(puis MONTER le rbp sur la valeu
+r ecrite car pile croissante vers adresses hautes)¶  db 0x48, 0x83, 0xC0, 0x07¬¬¬¬¬¬; add rax, 7¶  db 0x48, 0xC1, 0xF8, 
+0x03¬¬¬¬¬¬; sar rax, 3¬¬¬(diviser par 8, rax est positif normalement)¶  db 0x4D, 0x8D, 0x34, 0xC6¬¬¬¬¬¬; lea r14, [r14 +
+ 8*rax]¬¬(mettre le sommet de co-pile aligne sur qword)¶end macro¶¶;¬¬¬------¶macro¬¬¬endPRO¬¬¬¬¬; Fin de procedure¶;¬¬¬
+------¶post:¶  virtual VARzone¶    loc_siz = $¬¬¬¬¬¬¬; Ce n'est que la que l'on calcule la taille des locales qui sera r
+etropropagee au LINK du ELAB¶  end virtual¶  end namespace¶end macro¶¶;¬¬¬------¶macro¬¬¬BLKMOV¬¬¬¬¬; Copie de bloc sans
+ recouvrement¶;¬¬¬------¶  POP_RSI¬¬¬¬¬¬¬¬; adresse source¶  POP_RCX¬¬¬¬¬¬¬¬; nombre octets¶  POP_RDI¬¬¬¬¬¬¬¬; adresse d
+estination¶  db 0xFC¬¬¬¬¬¬¬¬; cld¬¬¬(direction flag montant)¶; transfer:¶  db 0xAC¬¬¬¬¬¬¬¬; lods al, BYTE PTR ds:[rsi]¶ 
+ db 0xAA¬¬¬¬¬¬¬¬; stos BYTE PTR es:[rdi], al¶  db 0xE2, 0xFC¬¬¬¬¬¬¬; loop transfer¬¬(transfere ecx octets¶¶end macro¶¶¶¶
+;¬¬¬¬------------------------------¶;¬¬¬¬SPECIFIQUE  L I N U X   X86-64¶;¬¬¬¬------------------------------¶¶¶;¬¬¬------
+-------¶macro¬¬¬SYS_PUT_CHAR?¬¬¬¬; affiche un seul caractere sur stdout¶;¬¬¬-------------¶¶  db 0x48, 0x89, 0xEE¬¬¬¬¬¬; 
+mov rsi, rbp¬(ADRESSE du caractere empile sur la pile)¶  db 0x6A, 0x01¬¬¬¬¬¬¬; push 1¶  db 0x58¬¬¬¬¬¬¬¬; pop rax¬¬(rax=1
+=sys_write )¶  db 0x48, 0x89, 0xC2¬¬¬¬¬¬; mov rdx, rax¬(rdx=length=1)¶  db 0x48, 0x89, 0xC7¬¬¬¬¬¬; mov rdi, rax¬(rdi=std
+out=1)¶  db 0x0F, 0x05¬¬¬¬¬¬¬; syscall¶  DROP¬¬¬¬¬¬¬¬; caractere consomme¶end macro¶¶;¬¬¬------------¶macro¬¬¬SYS_PUT_ST
+R?¬¬¬¬; affiche tout une chaine sur stdout¶;¬¬¬------------¶  POP_RSI¬¬¬¬¬¬¬¬;¬¬¬(l'adresse du doublet @DATA | @USEINFO 
+a ete empilee)¶  db 0x48, 0x8B, 0x46, 0x08¬¬¬¬¬¬; mov rax, [rsi+8]¬¬(rax contient l'adresse du USEINFO¶  db 0x8B, 0x50, 
+0x0C¬¬¬¬¬¬; mov edx, dword ptr[rax+12]¬(edx=last)¶  db 0xFF, 0xC2¬¬¬¬¬¬¬; inc edx¬¬¬(last+1)¶  db 0x2B, 0x50, 0x08¬¬¬¬¬¬
+; sub edx, dword ptr[rax+8]   edx=length (=last+1 - first)¶  db 0x6A, 0x01¬¬¬¬¬¬¬; push 1¶  db 0x58¬¬¬¬¬¬¬¬; pop rax¬¬¬(
+rax=1=sys_write )¶  db 0x48, 0x89, 0xC7¬¬¬¬¬¬; mov rdi, rax¬¬(rdi=stdout=1)¶  db 0x48, 0x8B, 0x36¬¬¬¬¬¬; mov rsi, [rsi]¬
+¬(rsi est maintenant l'adresse des caracteres)¶  db 0x0F, 0x05¬¬¬¬¬¬¬; syscall¶end macro¶¶¶; - - - - - - - - - - - - - -
+ - - - - - - - - - - - - - - -¶;¬Pour le GET de caractere on veut obtenir chaque caractere tape immediatement, il faut m
+odifier le comportement du terminal¶;struc termios{¶;        .c_iflag¬rd 1¬¬¬¬¬¬; 0 input mode flags¶;        .c_oflag¬r
+d 1¬¬¬¬¬¬; 4 output mode flags¶;        .c_cflag¬rd 1¬¬¬¬¬¬; 8 control mode flags¶;        .c_lflag¬rd 1¬¬¬¬¬¬; 12 local
+ mode flags¶;        .c_line¬rb 1¬¬¬¬¬¬; line discipline¶;        .c_cc¬rb 32¬¬¬¬¬¬; control characters¶;        .c_ispe
+ed¬rd 1¬¬¬¬¬¬; input speed¶;        .c_ospeed¬rd 1¬¬¬¬¬¬; output speed¶;}¶;¬¬¬-------------¶macro¬¬¬SYS_GET_CHAR?¬¬¬¬; l
+it un seul caractere sur stdin en mode non canonique¶;¬¬¬-------------¶¬¬¬; reserver le termios sur la micro-pile du rsp
+¶  db 0x48, 0x83, 0xEC, 0x40¬¬¬¬¬¬; sub rsp, 64 (espace large pour le termios)¶¬¬¬; amener le termios¶  db 0x6A, 0x10¬¬¬
+¬¬¬¬; push 16¶  db 0x58¬¬¬¬¬¬¬¬; pop rax¬¬(rax=16=sys_ioctl)¶  db 0x48, 0x31, 0xFF¬¬¬¬¬¬; xor rdi, rdi¬(rdi=stdout=0)¶  
+db 0x48, 0xC7, 0xC6, 0x01, 0x54, 0x00, 0x00¬¬¬¬; mov rsi, 0x5401¬(TCGETS)¶  db 0x48, 0x89, 0xE2¬¬¬¬¬¬; mov rdx, rsp¬(adr
+esse du termios temporaire)¶  db 0x0F, 0x05¬¬¬¬¬¬¬; syscall¬¬(copier le termios)¶¬¬¬; modifier le termios¶  db 0x83, 0x6
+4, 0x24, 0x0C, 0xF5¬¬¬¬¬; and dword ptr [rsp+12], 0xFFFFFFF5¬(ICANON bit 1 de c_lflag mis a 0 et bit 3 ECHO a 0)¶¬¬¬; re
+nvoyer le termios modifie¶  db 0x6A, 0x10¬¬¬¬¬¬¬; push 16¶  db 0x58¬¬¬¬¬¬¬¬; pop rax¬¬(rax=16=sys_ioctl)¶  db 0x48, 0x31
+, 0xFF¬¬¬¬¬¬; xor rdi, rdi¬(rdi=stdout=0)¶  db 0x48, 0xC7, 0xC6, 0x02, 0x54, 0x00, 0x00¬¬¬¬; mov rsi, 0x5402¬(TCSETS)¶  
+db 0x48, 0x89, 0xE2¬¬¬¬¬¬; mov rdx, rsp¬(adresse du termios temporaire)¶  db 0x0F, 0x05¬¬¬¬¬¬¬; syscall¬¬(envoyer le ter
+mios modifie)¶¬¬¬; lire le caractere en mode non canonique¶  POP_RSI¬¬¬¬¬¬¬¬;¬¬(l'adresse destination a ete empilee sur 
+la pile croissante)¶  db 0x6A, 0x00¬¬¬¬¬¬¬; push 0¶  db 0x58¬¬¬¬¬¬¬¬; pop rax¬¬(rax=0=sys_read)¶  db 0x48, 0x89, 0xC7¬¬¬
+¬¬¬; mov rdi, rax¬(rdi=stdout=0)¶  db 0x6A, 0x01¬¬¬¬¬¬¬; push 1¶  db 0x5A¬¬¬¬¬¬¬¬; pop rdx¬¬(rdx=length=1 caractere)¶  d
+b 0x0F, 0x05¬¬¬¬¬¬¬; syscall¶¶  db 0x83, 0x4C, 0x24, 0x0C, 0x0A¬¬¬¬¬; or dword ptr [rsp+12], 0xA¬(ICANON bit 1 de c_lfla
+g remis a 1 et ECHO bit 3)¶¬¬¬; renvoyer le termios modifie¶  db 0x6A, 0x10¬¬¬¬¬¬¬; push 16¶  db 0x58¬¬¬¬¬¬¬¬; pop rax¬¬
+(rax=16=sys_ioctl)¶  db 0x48, 0x31, 0xFF¬¬¬¬¬¬; xor rdi, rdi¬(rdi=stdout=0)¶  db 0x48, 0xC7, 0xC6, 0x02, 0x54, 0x00, 0x0
+0¬¬¬¬; mov rsi, 0x5402¬(TCSETS)¶  db 0x48, 0x89, 0xE2¬¬¬¬¬¬; mov rdx, rsp¬(adresse du termios temporaire)¶  db 0x0F, 0x0
+5¬¬¬¬¬¬¬; syscall¬¬(envoyer le termios modifie)¶¬¬¬; remettre le pointeur de micro-pile a sa place initiale¶  db 0x48, 0
+x83, 0xC4, 0x40¬¬¬¬¬¬; add rsp, 64¶end macro¶¶¶;¬¬¬------------¶macro¬¬¬SYS_GET_STR?¬¬¬¬; lit une ligne sur stdin¶;¬¬¬--
+----------¶  POP_RSI¬¬¬¬¬¬¬¬;¬¬¬(l'adresse du doublet @DATA | @USEINFO a ete empilee)¶  db 0x48, 0x8B, 0x46, 0x08¬¬¬¬¬¬;
+ mov rax, [rsi+8]¬¬(rax contient l'adresse du USEINFO¶  db 0x8B, 0x50, 0x0C¬¬¬¬¬¬; mov edx, dword ptr[rax+12]¬(edx=last)
+¶  db 0xFF, 0xC2¬¬¬¬¬¬¬; inc edx¬¬¬(last+1)¶  db 0x2B, 0x50, 0x08¬¬¬¬¬¬; sub edx, dword ptr[rax+8]   edx=length (=last+1
+ - first)¶  db 0x31, 0xC0¬¬¬¬¬¬¬; xor eax, eax¬¬(rax=0=sys_read )¶  db 0x31, 0xFF¬¬¬¬¬¬¬; xor edi, edi¬¬(rdi=stdin=0)¶  
+db 0x48, 0x8B, 0x36¬¬¬¬¬¬; mov rsi, [rsi]¬¬(rsi est maintenant l'adresse des caracteres)¶  db 0x0F, 0x05¬¬¬¬¬¬¬; syscall
+¶  POP_RSI¬¬¬¬¬¬¬¬;¬¬¬(sur la pile croissante, adresse de la longueur effectivement lue qui peut etre inferieure a la lo
+ngueur de string)¶  db 0xFF, 0xC8¬¬¬¬¬¬¬; dec eax¬¬¬(diminuer la longueur rendue = retirer le caractere de fin)¶  db 0x8
+9, 0x06¬¬¬¬¬¬¬; mov dword ptr[rsi], eax¬(reporter la longueur effectivement lue retournee par syscall dans eax)¶end macr
+o¶¶¶¶;¬¬¬----------------------¶macro¬¬¬COPY_STRING_APPEND_NUL¬¬¬; donne le descripteur pointe par RSI, copie la chaine 
+sur la pile montante et ajoute un NUL de fin¶;¬¬¬----------------------¶  db 0x48, 0x8B, 0x46, 0x08¬¬¬¬¬¬; mov rax, [rsi
++8]¬¬(rax contient l'adresse du USEINFO¶¶  db 0x8B, 0x48, 0x0C¬¬¬¬¬¬; mov ecx, dword ptr[rax+12]¬(ecx=last)¶  db 0xFF, 0
+xC1¬¬¬¬¬¬¬; inc ecx¬¬¬(last+1)¶  db 0x2B, 0x48, 0x08¬¬¬¬¬¬; sub ecx, dword ptr[rax+8]¬(ecx= nombre de caracteres =last+1
+ - first)¶  db 0x48, 0x8B, 0x36¬¬¬¬¬¬; mov rsi, qword ptr[rsi]¬(rsi= adresse des caracteres)¶  db 0x48, 0x8D, 0x7D, 0x08
+¬¬¬¬¬¬; lea rdi, [rbp+0x8]¬(on va empiler la chaine sur la pile)¶  db 0xFC¬¬¬¬¬¬¬¬; cld¬¬¬(direction flag montant)¶; tra
+nsfer:¶  db 0xAC¬¬¬¬¬¬¬¬; lods al, BYTE PTR ds:[rsi]¶  db 0xAA¬¬¬¬¬¬¬¬; stos BYTE PTR es:[rdi], al¶  db 0xE2, 0xFC¬¬¬¬¬¬
+¬; loop transfer¬¬(transfere ecx octets¶  db 0xC6, 0x07, 0x00¬¬¬¬¬¬; mov BYTE PTR[rdi], 0¬(caractere NUL de fin chaine C
+)¶  db 0x48, 0x8D, 0x7D, 0x08¬¬¬¬¬¬; lea rdi, [rbp+0x8]¬(remettre RDI sur le debut de chaine)¶end macro¶¶¶;¬¬¬----------
+------¶macro¬¬¬SYS_FILE_CREATE?¬¬¬¬; FONCTION creation d'un fichier¬rax=2 rdi=ptr_name rsi=flags(O_CREAT) rdx=mode(S_IRW
+XU) retour rax=ID¶;¬¬¬----------------¶  POP_RSI¬¬¬¬¬¬¬¬; adresse du descripteur de chaine Ada¶  COPY_STRING_APPEND_NUL¬
+¬¬¬¬¬; faire une copie sur pile avec NUL en fin pointee par RDI¶  db 0x6A, 0x02¬¬¬¬¬¬¬; push 2¶  db 0x58¬¬¬¬¬¬¬¬; pop ra
+x¬¬¬(rax=2=sys_open )¶  db 0xBE, 0x40, 0x00, 0x00, 0x00¬¬¬¬¬; mov esi, 0x40¬¬(rsi=0x40=O_CREAT)¶  db 0xBA, 0x00, 0x07, 0
+x00, 0x00¬¬¬¬¬; mov edx, 0x700¬¬(rdx=0x700=S_IRWXU)¶  db 0x0F, 0x05¬¬¬¬¬¬¬; syscall¶  db 0x48, 0x89, 0x45, 0x00¬¬¬¬¬¬; m
+ov QWORD PTR [rbp], rax¬(ATTENTION PAS PUSH ! ID de fichier rendu sur le lieu result de la fonction)¶end macro¶¶¶;¬¬¬---
+-----------¶macro¬¬¬SYS_FILE_OPEN?¬¬¬¬; FONCTION ouverture d'un fichier¶;¬¬¬--------------¶  POP_RSI¬¬¬¬¬¬¬¬; adresse du
+ descripteur de chaine Ada¶  COPY_STRING_APPEND_NUL¬¬¬¬¬¬; faire une copie sur pile avec NUL en fin pointee par RDI¶  db
+ 0x6A, 0x02¬¬¬¬¬¬¬; push 2¶  db 0x58¬¬¬¬¬¬¬¬; pop rax¬¬¬(rax=2=sys_open )¶  db 0x6A, 0x02¬¬¬¬¬¬¬; push 2¶  db 0x5E¬¬¬¬¬¬
+¬¬; pop rsi¬¬¬(rsi=2=flags=RDWR)¶  db 0x48, 0x31, 0xD2¬¬¬¬¬¬; xor rdx,rdx¬¬(mode= 0 sans importance)¶  db 0x0F, 0x05¬¬¬¬
+¬¬¬; syscall¶  db 0x48, 0x89, 0x45, 0x00¬¬¬¬¬¬; mov QWORD PTR [rbp], rax¬(ATTENTION PAS PUSH ! ID de fichier rendu sur l
+e lieu result de la fonction)¶end macro¶¶¶;¬¬¬---------------¶macro¬¬¬SYS_FILE_CLOSE?¬¬¬¬; fermeture d'un fichier¶;¬¬¬--
+-------------¶  POP_RDI¬¬¬¬¬¬¬¬; ID fichier empile¶  db 0x6A, 0x03¬¬¬¬¬¬¬; push 3¶  db 0x58¬¬¬¬¬¬¬¬; pop rax¬¬¬(rax=3=sy
+s_close )¶end macro¶¶¶;¬¬¬----------------¶macro¬¬¬SYS_FILE_DELETE?¬¬¬¬; destruction d'un fichier¶;¬¬¬----------------¶ 
+ POP_RSI¬¬¬¬¬¬¬¬; ptr au doublet @data/@info¶  COPY_STRING_APPEND_NUL¬¬¬¬¬¬; faire une copie sur pile avec NUL en fin po
+intee par RDI¶;  db 0x48, 0x31, 0xD2¬¬¬¬¬¬; xor rdx, rdx¶  db 0xB8, 0x57, 0x00, 0x00, 0x00¬¬¬¬¬; mov eax, 87¬¬¬(rax=87=s
+ys_unlink )¶  db 0x0F, 0x05¬¬¬¬¬¬¬; syscall¶end macro¶¶¶;¬¬¬---------¶macro¬¬¬SYS_EXIT?¬¬¬¬¬; retour au systeme¶;¬¬¬----
+-----¶  db 0x6A, 0x3C¬¬¬¬¬¬¬; push x3C  (sys_exit rax=60)¶  db 0x58¬¬¬¬¬¬¬¬; pop rax¶  db 0x31, 0xFF¬¬¬¬¬¬¬; xor edi, ed
+i (err_code=0)¶  db 0x0F, 0x05¬¬¬¬¬¬¬; syscall¶end macro¶¶¶;¬¬¬---------------¶macro¬¬¬SYS_FILE_WRITE?¬¬¬¬; ecriture sur
+ un fichier¶;¬¬¬---------------¶  POP_RDI¬¬¬¬¬¬¬¬; ¬¬(rdi = FILE_ID)¶  POP_RSI¬¬¬¬¬¬¬¬;¬¬(rsi = ADRESSE du tampon source
+)¶  POP_RDX¬¬¬¬¬¬¬¬;¬¬(rdx = LONGUEUR du transfert)¶  db 0x6A, 0x01¬¬¬¬¬¬¬; push 1¶  db 0x58¬¬¬¬¬¬¬¬; pop rax¬¬(rax = 1=
+ sys_write)¶  db 0x0F, 0x05¬¬¬¬¬¬¬; syscall¶end macro¶¶¶;¬¬¬--------------¶macro¬¬¬SYS_FILE_READ?¬¬¬¬; lecture sur un fi
+chier¶;¬¬¬--------------¶  POP_RDI¬¬¬¬¬¬¬¬; ¬¬(rdi = FILE_ID)¶  POP_RSI¬¬¬¬¬¬¬¬;¬¬(rsi = ADRESSE du tampon source)¶  POP
+_RDX¬¬¬¬¬¬¬¬;¬¬(rdx = LONGUEUR du transfert)¶  db 0x6A, 0x00¬¬¬¬¬¬¬; push 0¶  db 0x58¬¬¬¬¬¬¬¬; pop rax¬¬(rax = 0 = sys_r
+ead)¶  db 0x0F, 0x05¬¬¬¬¬¬¬; syscall¶end macro¶¶¶;¬¬¬¬---------------------------------------------¶;¬¬¬¬MISE EN PLACE E
+NTETE ELF 64 POUR LINUX X86-64¶;¬¬¬¬---------------------------------------------¶¶ELFCLASS64¬= 2¶ELFDATA2LSB¬= 1¶EV_CUR
+RENT¬= 1¶ET_EXEC¬¬= 2¶SYSTEM_V¬¬= 0¶EM_X86_64¬¬= 62¶¶org 0x400000¬¬¬¬¬¬¬; adresse entree programme linux¶¶Elf64_Header:¶
+¬e_ident¬¬db 0x7F,'ELF', ELFCLASS64, ELFDATA2LSB, EV_CURRENT, SYSTEM_V, (0x400010-$) dup 0¶¬e_type¬¬dw ET_EXEC¶¬e_machin
+e¬¬dw EM_X86_64¶¬e_version¬¬dd EV_CURRENT¶¬e_entry¬¬dq 0x00400078¶¬e_phoff¬¬dq 64¶¬e_shoff¬¬dq 0¶¬e_flags¬¬dd 0¶¬e_ehsiz
+e¬¬dw 64¶¬e_phentsize¬dw 56¶¬e_phnum¬¬dw 1¶¬e_shentsize¬dw 0¶¬e_shnum¬¬dw 0¶¬e_shstrndx¬dw 0¶Elf64_Phdr:¶¬p_type¬¬dd 1¬¬
+¬¬¬; PT_LOAD¶¬p_flags¬¬dd 7¬¬¬¬¬; RWX¶¬p_offset¬¬dq 0x78¶¬p_vaddr¬¬dq 0x00400078¶¬p_paddr¬¬dq 0¶¬p_filesz¬¬dq ASM_SIZE¬¬
+¬¬; juste le necessaire code/constantes dans le fichier¶¬p_memsz¬¬dq ASM_SIZE + 1024*1024¬¬¬; 1Mo au dessus du code et d
+es constantes (pour la co-pile)¶¬p_align¬¬dq 4096¶¶¶;¬¬METTRE EN PLACE LA PILE CROISSANTE ET LE DISPLAY¶¶  db 0x48, 0x31
+, 0xC0¬¬¬¬¬¬; pour point d'arret debogage¶  db 0x48, 0x8D, 0xA4, 0x24, 0x00, 0x00, 0xF0, 0xFF¬¬¬; lea rsp, [rsp - 1024*1
+024]¬¬(caler rsp a 1 Mo sous le depart)¶  db 0x49, 0x89, 0xE7¬¬¬¬¬¬; mov r15, rsp¬¬¬(debut du display de 32 frame pointe
+rs)¶  db 0x48, 0x8D, 0xAC, 0x24, 0x00, 0x01, 0x00, 0x00¬¬¬; lea rbp, [rsp + 8*32]¬¬(bas de pile croissante au dessus du 
+display)¶  db 0x49, 0x89, 0x2F¬¬¬¬¬¬; mov [r15], rbp¬¬¬(frame pointer level 0)¶¶;¬¬METTRE EN PLACE LA CO-PILE¶¶  db 0x4C
+, 0x8D, 0x34, 0x25¬¬¬¬¬¬; lea r14, [0x00400078 + 8*((ASM_SIZE+7)/8)]¬(bas de la co-pile, ou pile-tas au dessus du code e
+t des constantes)¶  dd 0x00400078 + 8*((ASM_SIZE+7)/8)¶  db 0x4D, 0x89, 0x36¬¬¬¬¬¬; mov [r14], r14¬¬¬(empiler le premier
+ "frame" de co-pile)¶  db 0x4D, 0x89, 0xF5¬¬¬¬¬¬; mov r13, r14¬¬¬(R13 est le "frame pointer" de co-pile)¶  db 0x4D, 0x8D
+, 0x76, 0x08¬¬¬¬¬¬; lea r14, [r14 + 8]¬¬(monter le haut de co-pile sur le premier lieu libre)¶

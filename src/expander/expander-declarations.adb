@@ -1,10 +1,10 @@
 ------------------------------------------------------------------------------------------------------------------------
--- CC BY SA	IDL-EXPANDER.DECLARATIONS.ADB	VINCENT MORIN	6/5/2025	UNIVERSITE DE BRETAGNE OCCIDENTALE
+-- CC BY SA	EXPANDER.DECLARATIONS.ADB	VINCENT MORIN	6/5/2025	UNIVERSITE DE BRETAGNE OCCIDENTALE
 ------------------------------------------------------------------------------------------------------------------------
 --	1	2	3	4	5	6	7	8	9	0	1
 
 
-separate ( IDL.EXPANDER )
+separate ( EXPANDER )
 				------------
  	package body		DECLARATIONS
 				------------

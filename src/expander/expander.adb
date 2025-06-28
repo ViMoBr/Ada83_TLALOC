@@ -4,12 +4,8 @@
 --	1	2	3	4	5	6	7	8	9	0	1
 
 
---with DIANA_NODE_ATTR_CLASS_NAMES, IDL, TEXT_IO;
---use  DIANA_NODE_ATTR_CLASS_NAMES, IDL, TEXT_IO;
---with CODAGE_INTERMEDIAIRE;
---use  CODAGE_INTERMEDIAIRE;
-
-separate ( IDL )
+with DIANA_NODE_ATTR_CLASS_NAMES, IDL, TEXT_IO;
+use  DIANA_NODE_ATTR_CLASS_NAMES, IDL, TEXT_IO;
 					--------
 			procedure		EXPANDER
 					--------
@@ -92,8 +88,6 @@ is
   function  IMAGE			( I : NATURAL )			return STRING;
 
   procedure REGIONS_PATH		( ID : TREE; WITH_DOT :BOOLEAN := TRUE );
-
-  function  ANONYMOUS_NAME_AT		( T :TREE )			return STRING;
 
 
   OPERAND_OVERFLOW	 		: exception;

@@ -1,10 +1,10 @@
 -------------------------------------------------------------------------------------------------------------------------
--- CC BY SA	IDL-EXPANDER.EXPRESSIONS.ADB	VINCENT MORIN	21/6/2024	UNIVERSITE DE BRETAGNE OCCIDENTALE
+-- CC BY SA	EXPANDER.EXPRESSIONS.ADB	VINCENT MORIN	21/6/2024	UNIVERSITE DE BRETAGNE OCCIDENTALE
 -------------------------------------------------------------------------------------------------------------------------
 --	1	2	3	4	5	6	7	8	9	0	1	2
 
 
-separate ( IDL.EXPANDER )
+separate ( EXPANDER )
 
 				-----------
  	package body		EXPRESSIONS
@@ -12,7 +12,7 @@ separate ( IDL.EXPANDER )
 is
 
 
-  package CODI	renames IDL.EXPANDER.UTILS;
+  package CODI	renames EXPANDER.UTILS;
   use CODI;
 
   				--====--

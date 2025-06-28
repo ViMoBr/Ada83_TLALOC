@@ -1,141 +1,145 @@
-with MACHINE_CODE;¶use  MACHINE_CODE;¶¬¬¬¬¬-------¶¬package body¬¬¬TEXT_IO¶is¬¬¬¬¬-------¶¶  STDOUT_MAX_PAGE_LEN¬: COUNT
-¬¬:= 72;¶  STDOUT_MAX_LINE_LEN¬: COUNT¬¬:= 256;¶  STDOUT_PAGE¬¬: POSITIVE_COUNT¬:= 1;¶  STDOUT_LINE¬¬: POSITIVE_COUNT¬:=
- 1;¶  STDOUT_COL¬¬: POSITIVE_COUNT¬:= 1;¶¶¶¬¬¬--   F I L E   M A N A G E M E N T¶¶¬¬¬------¶  procedure¬¬CREATE¬¬( FILE 
-:in out FILE_TYPE;¶¬¬¬¬¬  MODE :in FILE_MODE := OUT_FILE;¶¬¬¬¬¬  NAME :in STRING := "";¶¬¬¬¬¬  FORM :in STRING := ""¶¬¬¬
-¬¬)¶  is¬¬¬------¶¶¬¬------------------¶    function¬CREATE_SYSTEM_CALL¬( NAME :in STRING )¬return INTEGER¶    is¬¬-----
-------------¶    begin¶      ASM_OP_2'( OPCODE => LA, LVL => 2, OFS => -8 );¶      ASM_OP_0'( OPCODE => SYS_FILE_CREATE 
-);¶      ASM_OP_2'( OPCODE => SD, LVL => 2, OFS => -16 );¶¶    end¬CREATE_SYSTEM_CALL;¶¬------------------¶  begin¶    F
-ILE.ID := CREATE_SYSTEM_CALL( NAME );¶    FILE.NAME( 1 .. NAME'LENGTH ) := NAME;¶    FILE.NAME_LEN := NAME'LENGTH;¶    F
-ILE.MODE := MODE;¶    FILE.PAGE_LENGTH := STDOUT_MAX_PAGE_LEN;¶    FILE.LINE_LENGTH := STDOUT_MAX_LINE_LEN;¶    FILE.PAG
-E := 1;¶    FILE.LINE := 1;¶    FILE.COL  := 1;¶¶  end¬CREATE;¶¬------¶¶¶¬¬¬----¶  procedure¬¬OPEN¬¬( FILE :in out FILE_
-TYPE;¶¬¬¬¬¬  MODE :in FILE_MODE;¶¬¬¬¬¬  NAME :in STRING;¶¬¬¬¬¬  FORM :in STRING := ""¶¬¬¬¬¬)¶  is¬¬¬----¶¶¬¬------------
-----¶    function¬OPEN_SYSTEM_CALL¬( NAME :in STRING )¬return INTEGER¶    is¬¬----------------¶¶    begin¶      ASM_OP_2
-'( OPCODE => LA, LVL => 2, OFS => -8 );¶      ASM_OP_0'( OPCODE => SYS_FILE_OPEN );¶      ASM_OP_2'( OPCODE => SD, LVL =
-> 2, OFS => -16 );¬¬¬¬¬¬¬-- Retour du File ID¶¶    end¬OPEN_SYSTEM_CALL;¶¬----------------¶  begin¶    FILE.ID := OPEN_S
-YSTEM_CALL( NAME );¶    FILE.NAME( 1 .. NAME'LENGTH ) := NAME;¶    FILE.NAME_LEN := NAME'LENGTH;¶    FILE.MODE := MODE;¶
-    FILE.PAGE_LENGTH := STDOUT_MAX_PAGE_LEN;¶    FILE.LINE_LENGTH := STDOUT_MAX_LINE_LEN;¶    FILE.PAGE := 1;¶    FILE.L
-INE := 1;¶    FILE.COL  := 1;¶¶  end¬OPEN;¶¬----¶¶¶¬¬¬-----¶  procedure¬¬CLOSE¬¬( FILE :in out FILE_TYPE )¶  is¬¬¬-----¶
-¶ ¬¬-----------------¶    procedure¬CLOSE_SYSTEM_CALL¬( FILE_ID :in INTEGER )¶    is¬¬-----------------¶    begin¶      
-ASM_OP_2'( OPCODE => Ld, LVL => 2, OFS => -8 );¶      ASM_OP_0'( OPCODE => SYS_FILE_CLOSE );¶¶    end¬CLOSE_SYSTEM_CALL;
-¶¬-----------------¶  begin¶    CLOSE_SYSTEM_CALL( FILE.ID );¶¶  end¬CLOSE;¶¬-----¶¶¶¬¬¬------¶  procedure¬¬DELETE¬¬( FI
-LE :in out FILE_TYPE )¶  is¬¬¬------¶¶¬¬------------------¶    procedure¬DELETE_SYSTEM_CALL¬( NAME : STRING )¶    is¬¬--
-----------------¶¶    begin¶      ASM_OP_2'( OPCODE => La, LVL => 2, OFS => -8 );¶      ASM_OP_0'( OPCODE => SYS_FILE_DE
-LETE );¶¶    end¬DELETE_SYSTEM_CALL;¶¬------------------¶  begin¶    DELETE_SYSTEM_CALL( FILE.NAME( 1 .. FILE.NAME_LEN )
- );¶¶  end¬DELETE;¶¬------¶¶¶¬¬¬-----¶  procedure¬¬RESET¬¬( FILE :in out FILE_TYPE; MODE :in FILE_MODE )¶  is¬¬¬-----¶  
-begin null;¶¶  end¬RESET;¶¬-----¶¶¬¬¬-----¶  procedure¬¬RESET¬¬( FILE :in out FILE_TYPE )¶  is¬¬¬-----¶  begin null;¶¶  
-end¬RESET;¶¬-----¶¶¬¬¬----¶  function¬¬MODE¬¬( FILE :in FILE_TYPE )¬¬return FILE_MODE¶  is¬¬¬----¶  begin null;¶¶  end¬M
-ODE;¶¬----¶¶¬¬¬----¶  function¬¬NAME¬¬( FILE :in FILE_TYPE )¬¬return STRING¶  is¬¬¬----¶  begin null;¶¶  end¬NAME;¶¬----
-¶¶¬¬¬----¶  function¬¬FORM¬¬( FILE :in FILE_TYPE )¬¬return STRING¶  is¬¬¬----¶  begin null;¶¶  end¬FORM;¶¬----¶¶¬¬¬-----
---¶  function¬¬IS_OPEN¬¬( FILE :in FILE_TYPE )¬¬return BOOLEAN¶  is¬¬¬-------¶  begin null;¶¶  end¬IS_OPEN;¶¬-------¶¶  
-         -- Control of default input and output files¶¶¬¬¬---------¶  procedure¬¬SET_INPUT¬¬( FILE :in FILE_TYPE )¶  is¬
-¬¬---------¶  begin null;¶¶  end¬SET_INPUT;¶¬---------¶¶¬¬¬----------¶  procedure¬¬SET_OUTPUT¬( FILE :in FILE_TYPE )¶  i
-s¬¬¬----------¶  begin null;¶¶  end¬SET_OUTPUT;¶¬----------¶¶¬¬¬--------------¶  function¬¬STANDARD_INPUT¬¬¬¬¬return FIL
-E_TYPE¶  is¬¬¬--------------¶  begin null;¶¶  end¬STANDARD_INPUT;¶¬--------------¶¶¬¬¬---------------¶  function¬¬STANDA
-RD_OUTPUT¬¬¬¬¬return FILE_TYPE¶  is¬¬¬---------------¶  begin null;¶¶  end¬STANDARD_OUTPUT;¶¬---------------¶¶¬¬¬-------
-------¶  function¬¬CURRENT_INPUT¬¬¬¬¬return FILE_TYPE¶  is¬¬¬-------------¶  begin null;¶¶  end¬CURRENT_INPUT;¶¬--------
------¶¶¬¬¬--------------¶  function¬¬CURRENT_OUTPUT¬¬¬¬¬return FILE_TYPE¶  is¬¬¬--------------¶  begin null;¶¶  end¬CURR
-ENT_OUTPUT;¶¬--------------¶¶           -- Specification of line and page lengths¶¶¬¬¬---------------¶  procedure¬¬SET_L
-INE_LENGTH¬( FILE :in FILE_TYPE; TO :in COUNT )¶  is¬¬¬---------------¶  begin null;¶¶  end¬SET_LINE_LENGTH;¶¬----------
------¶¶¬¬¬---------------¶  procedure¬¬SET_LINE_LENGTH¬( TO   :in COUNT)¶  is¬¬¬---------------¶  begin¶    STDOUT_MAX_L
-INE_LEN := TO;¶¶  end¬SET_LINE_LENGTH;¶¬---------------¶¶¬¬¬---------------¶  procedure¬¬SET_PAGE_LENGTH¬( FILE :in FILE
-_TYPE; TO :in COUNT )¶  is¬¬¬---------------¶  begin null;¶¶  end¬SET_PAGE_LENGTH;¶¬---------------¶¶¬¬¬---------------¶
-  procedure¬¬SET_PAGE_LENGTH¬( TO   :in COUNT)¶  is¬¬¬---------------¶  begin¶    STDOUT_MAX_PAGE_LEN := TO;¶¶  end¬SET_
-PAGE_LENGTH;¶¬---------------¶¶¬¬¬-----------¶  function¬¬LINE_LENGTH¬( FILE :in FILE_TYPE )¬¬return COUNT¶  is¬¬¬------
------¶  begin null;¶¶  end¬LINE_LENGTH;¶¬-----------¶¶¬¬¬-----------¶  function¬¬LINE_LENGTH¬¬¬¬¬return COUNT¶  is¬¬¬---
---------¶  begin null;¶¶  end¬LINE_LENGTH;¶¬-----------¶¶¬¬¬-----------¶  function¬¬PAGE_LENGTH¬( FILE :in FILE_TYPE )¬¬
-return COUNT¶  is¬¬¬-----------¶  begin null;¶¶  end¬PAGE_LENGTH;¶¬-----------¶¶¬¬¬-----------¶  function¬¬PAGE_LENGTH¬¬
-¬¬¬return COUNT¶  is¬¬¬-----------¶  begin null;¶¶  end¬PAGE_LENGTH;¶¬-----------¶¶           -- Column, Line, and Page 
-Control¶¶¬¬¬--------¶  procedure¬¬NEW_LINE¬¬( FILE    :in FILE_TYPE;¶¬¬¬¬¬  SPACING :in POSITIVE_COUNT := 1 )¶  is¬¬¬---
------¶  begin null;¶¶  end¬NEW_LINE;¶¬--------¶¶¬¬¬--------¶  procedure¬¬NEW_LINE¬¬( SPACING :in POSITIVE_COUNT := 1 )¶ 
- is¬¬¬--------¶  begin¶    PUT( ASCII.CR );¶    STDOUT_COL := 1;¬¬¬¬¬¬¬¬¬¬-- LRM 14.3.4(3) col := 1¶    for  N in 1 .. S
-PACING  loop¶      PUT( ASCII.LF );¶    end loop;¶    STDOUT_LINE := STDOUT_LINE + SPACING;¶    if  STDOUT_LINE > STDOUT
-_MAX_PAGE_LEN  then¶      PUT( ASCII.FF );¶      STDOUT_PAGE := STDOUT_PAGE + 1;¶      STDOUT_LINE := 1;¶    end if;¶¶  
-end¬NEW_LINE;¶¬--------¶¶¬¬¬---------¶  procedure¬¬SKIP_LINE¬¬( FILE    :in FILE_TYPE;¶¬¬¬¬¬  SPACING :in POSITIVE_COUNT
- := 1 )¶  is¬¬¬---------¶  begin¶    null;¶¶  end¬SKIP_LINE;¶¬---------¶¶¬¬¬---------¶  procedure¬¬SKIP_LINE¬¬( SPACING 
-:in POSITIVE_COUNT := 1 )¶  is¬¬¬---------¶  begin¶    STDOUT_LINE := STDOUT_LINE + SPACING;¶¶  end¬SKIP_LINE;¶¬--------
--¶¶¬¬¬-----------¶  function¬¬END_OF_LINE¬( FILE :in FILE_TYPE)¬¬return BOOLEAN¶  is¬¬¬-----------¶  begin null;¶¶  end¬
-END_OF_LINE;¶¬-----------¶¶¬¬¬-----------¶  function¬¬END_OF_LINE¬¬¬¬¬return BOOLEAN¶  is¬¬¬-----------¶  begin null;¶¶ 
- end¬END_OF_LINE;¶¬-----------¶¶¬¬¬--------¶  procedure¬¬NEW_PAGE¬¬( FILE :in FILE_TYPE )¶  is¬¬¬--------¶  begin null;¶
-¶  end¬NEW_PAGE;¶¬--------¶¬¬¬--------¶  procedure¬¬NEW_PAGE¶  is¬¬¬--------¶  begin null;¶¶  end¬NEW_PAGE;¶¬----¶¶¬¬¬--
--------¶  procedure¬¬SKIP_PAGE¬¬( FILE :in FILE_TYPE )¶  is¬¬¬---------¶  begin null;¶¶  end¬SKIP_PAGE;¶¬---------¶¶¬¬¬-
---------¶  procedure¬¬SKIP_PAGE¶  is¬¬¬---------¶  begin null;¶¶  end¬SKIP_PAGE;¶¬---------¶¶¬¬¬-----------¶  function¬¬
-END_OF_PAGE¬( FILE :in FILE_TYPE ) ¬¬return BOOLEAN¶  is¬¬¬-----------¶  begin null;¶¶  end¬END_OF_PAGE;¶¬-----------¶¶¬
-¬¬-----------¶  function¬¬END_OF_PAGE ¬¬¬¬¬return BOOLEAN¶  is¬¬¬-----------¶  begin null;¶¶  end¬END_OF_PAGE;¶¬--------
----¶¶¬¬¬-----------¶  function¬¬END_OF_FILE¬(FILE :in FILE_TYPE )¬¬return BOOLEAN¶  is¬¬¬-----------¶  begin null;¶¶  en
-d¬END_OF_FILE;¶¬-----------¶¶¬¬¬-----------¶  function¬¬END_OF_FILE¬¬¬¬¬return BOOLEAN¶  is¬¬¬-----------¶  begin null;¶
-¶  end¬END_OF_FILE;¶¬-----------¶¶¬¬¬-------¶  procedure¬¬SET_COL¬¬(FILE :in FILE_TYPE; TO :in POSITIVE_COUNT )¶  is¬¬¬-
-------¶  begin null;¶¶  end¬SET_COL;¶¬-------¶¶¬¬¬-------¶  procedure¬¬SET_COL¬¬(TO   :in POSITIVE_COUNT )¶  is¬¬¬------
--¶  begin null;¶¶  end¬SET_COL;¶¬-------¶¶¬¬¬--------¶  procedure ¬¬SET_LINE¬¬(FILE :in FILE_TYPE; TO :in POSITIVE_COUNT
- )¶  is¬¬¬--------¶  begin null;¶¶  end¬SET_LINE;¶¬--------¶¶¬¬¬--------¶  procedure¬¬SET_LINE¬¬(TO   :in POSITIVE_COUNT
- )¶  is¬¬¬--------¶  begin null;¶¶  end¬SET_LINE;¶¬--------¶¶¬¬¬---¶  function¬¬COL¬¬(FILE :in FILE_TYPE )¬¬return POSIT
-IVE_COUNT¶  is¬¬¬---¶  begin null;¶¶  end¬COL;¶¬---¶¶¬¬¬---¶  function¬¬COL¬¬¬¬¬¬return POSITIVE_COUNT¶  is¬¬¬---¶  begi
-n null;¶¶  end¬COL;¶¬---¶¶¬¬¬----¶  function¬¬LINE¬¬( FILE :in FILE_TYPE )¬¬return POSITIVE_COUNT¶  is¬¬¬----¶  begin nu
-ll;¶¶  end¬LINE;¶¬----¶¶¬¬¬----¶  function¬¬LINE¬¬¬¬¬¬return POSITIVE_COUNT¶  is¬¬¬----¶  begin null;¶¶  end¬LINE;¶¬----
-¶¶¬¬¬----¶  function¬¬PAGE¬¬(FILE :in FILE_TYPE )¬¬return POSITIVE_COUNT¶  is¬¬¬----¶  begin null;¶¶  end¬PAGE;¶¬----¶¶¬
-¬¬----¶  function¬¬PAGE ¬¬¬¬¬¬return POSITIVE_COUNT¶  is¬¬¬----¶  begin null;¶¶  end¬PAGE;¶¬----¶¶           -- Characte
-r Input-Output¶¶¬¬¬---¶  procedure¬¬GET¬¬( FILE :in FILE_TYPE; ITEM :out CHARACTER )¶  is¬¬¬---¶  begin null;¶¶  end¬GET
-;¶¬----¶¶¬¬¬---¶  procedure¬¬GET¬¬( ITEM :out CHARACTER )¶  is¬¬¬---¶  begin¶    ASM_OP_2'( OPCODE => LA, LVL => 1, OFS 
-=> -8 );¶    ASM_OP_0'( OPCODE => SYS_GET_CHAR );¶¶  end¬GET;¶¬----¶¶¬¬¬---¶  procedure¬¬PUT¬¬( FILE :in FILE_TYPE; ITEM
- :in CHARACTER )¶  is¬¬¬---¶  begin null;¶¶  end¬PUT;¶¬----¶¶¬¬¬---¶  procedure¬¬PUT¬¬( ITEM :in CHARACTER )¶  is¬¬¬---¶
-  begin¶    ASM_OP_2'( OPCODE => LB, LVL => 1, OFS => -8 );¶    ASM_OP_0'( OPCODE => SYS_PUT_CHAR );¶¶  end¬PUT;¶¬----¶¶
-¶           -- String Input-Output¶¶¬¬¬---¶  procedure¬¬GET¬¬( FILE :in FILE_TYPE; ITEM :out STRING )¶  is¬¬¬--¶  begin 
-null;¶¶  end¬GET;¶¬----¶¶¬¬¬---¶  procedure¬¬GET¬¬( ITEM :out STRING )¶  is¬¬¬---¶  begin null;¶¶  end¬GET;¶¬----¶¶¬¬¬--
--¶  procedure¬¬PUT¬¬( FILE :in FILE_TYPE; ITEM :in STRING )¶  is¬¬¬---¶  begin null;¶¶  end¬PUT;¶¬----¶¶¬¬¬---¶  procedu
-re¬¬PUT¬¬( ITEM :in STRING )¶  is¬¬¬---¶  begin¶    ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -8 );¶    ASM_OP_0'( OPCOD
-E => SYS_PUT_STR );¶¶  end¬PUT;¶¬----¶¶¬¬¬--------¶  procedure¬¬GET_LINE¬¬( FILE :in FILE_TYPE;¶¬¬¬¬¬  ITEM :out STRING;
-¶¬¬¬¬¬  LAST :out NATURAL¶¬¬¬¬¬)¶  is¬¬¬--------¶  begin null;¶¶  end¬GET_LINE;¶¬--------¶¶¬¬¬--------¶  procedure¬¬GET_
-LINE¬¬( ITEM :out STRING;   LAST :out NATURAL )¶  is¬¬¬--------¶  begin¶    ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -1
-6 );¬¬-- adresse de LAST¶    ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -8 );¬¬-- adresse du descripteur de la chaine ITE
-M¶    ASM_OP_0'( OPCODE => SYS_GET_STR );¶¶  end¬GET_LINE;¶¬--------¶¶¬¬¬--------¶  procedure¬¬PUT_LINE¬¬( FILE :in FILE
-_TYPE; ITEM :in STRING )¶  is¬¬¬--------¶  begin null;¶¶  end¬PUT_LINE;¶¬--------¶¶¬¬¬--------¶  procedure¬¬PUT_LINE¬¬( 
-ITEM :in STRING )¶  is¬¬¬--------¶  begin¶    PUT( ITEM );¶    NEW_LINE;¶¶  end¬PUT_LINE;¶¬--------¶¶¶          ¬ -- Gen
-eric package for Input-Output of Integer Types¶¶  ¬¬¬¬----------¶  package¬body¬¬¬INTEGER_IO¶  is¬¬¬¬----------¶¶¬¬¬---¶
-    procedure¬¬GET¬¬( FILE  :in FILE_TYPE;¶¬¬¬¬¬  ITEM  :out NUM;¶¬¬¬¬¬  WIDTH :in FIELD := 0¶¬¬¬¬¬)¶    is¬¬¬---¶    be
-gin null;¶¶    end¬GET;¶¬----¶¶¬¬¬---¶    procedure¬¬GET¬¬( ITEM  :out NUM; WIDTH : in FIELD := 0)¶    is¬¬¬---¶¶      C
-HN¬: STRING( 1 .. 40 );¶      LEN¬: NATURAL¬¬:= 40;¶      VAL¬: NUM¬¬:= 0;¶¶    begin¶      GET_LINE( CHN, LEN );¶      
-for  I in 1 .. LEN  loop¶        VAL := 10 * VAL + CHARACTER'POS( CHN( I ) ) - CHARACTER'POS( '0' );¶      end loop;¶   
-   ITEM := VAL;¶      PUT( CHN );¶    end¬GET;¶¬----¶¶¬¬¬---¶    procedure¬¬PUT¬¬( FILE  :in FILE_TYPE;¶¬¬¬¬¬  ITEM  :in
- NUM;¶¬¬¬¬¬  WIDTH :in FIELD¬¬:= DEFAULT_WIDTH;¶¬¬¬¬¬  BASE  :in NUMBER_BASE¬:= DEFAULT_BASE¶¬¬¬¬¬)¶    is¬¬¬---¶    beg
-in null;¶¶    end¬PUT;¶¬----¶¶¬¬¬---¶    procedure¬¬PUT¬¬( ITEM  :in NUM;¶¬¬¬¬¬  WIDTH :in FIELD¬¬:= DEFAULT_WIDTH;¶¬¬¬¬
-¬  BASE  :in NUMBER_BASE¬:= DEFAULT_BASE¶¬¬¬¬¬)¶    is¬¬¬---¶¶      QUOTIENT, RESTE¬: NUM;¶      STR¬¬¬: STRING( 1 .. 68
- );¶      INDEX¬¬: POSITIVE¬¬:= STR'LAST;¶      MIN_WIDTH¬¬: POSITIVE;¶¶    begin¶      null;¶--    if BASE /= 10 then S
-TR( STR'LAST ) := '#'; INDEX := INDEX - 1; end if;¶¶--    loop¶--      RESTE := ITEM mod NUM( BASE );¶--      if RESTE <
- 10 then¶--        STR( INDEX ) := CHARACTER'VAL( CHARACTER'POS( '0' ) + RESTE );¶--      else ¶--        STR( INDEX ) :
-= CHARACTER'VAL( CHARACTER'POS( 'A' ) + RESTE - 10 );¶--      end if;¶--      QUOTIENT := ITEM / NUM( BASE );¶--      ex
-it when QUOTIENT = 0;¶--      INDEX := INDEX - 1;¶--    end loop;¶¶--    if BASE /= 10 then¶--      STR( INDEX ) := '#';
- INDEX := INDEX - 1;¶--      STR( INDEX ) := CHARACTER'VAL( CHARACTER'POS( '0' ) + BASE mod 10 ); INDEX := INDEX - 1;¶--
-      if BASE >= 10 then STR( INDEX ) := '1'; INDEX := INDEX - 1; end if;¶--    end if;¶¶--    if ITEM < 0 then STR( IND
-EX ) := '-'; end if;¶--    MIN_WIDTH := STR'LAST - INDEX - 1;¶¶--    if WIDTH > MIN_WIDTH then null; end if;¶¶    end¬PU
-T;¶¬----¶¶¬¬¬---¶    procedure¬¬GET¬¬( FROM :in STRING;¶¬¬¬¬¬  ITEM :out NUM;¶¬¬¬¬¬  LAST :out POSITIVE¶¬¬¬¬¬)¶    is¬¬¬
----¶    begin null;¶¶    end¬GET;¶¬----¶¶¬¬¬---¶    procedure¬¬PUT¬¬( TO   :out STRING;¶¬¬¬¬¬  ITEM :in NUM;¶¬¬¬¬¬  BASE
- :in NUMBER_BASE¬:= DEFAULT_BASE¶¬¬¬¬¬)¶    is¬¬¬---¶    begin null;¶¶    end¬PUT;¶¬----¶¶  end¬INTEGER_IO;¶¬----------¶
-¶¶¬¬-- Generic package for Input-Output of Real Types¶¶¬¬¬¬--------¶  package¬body¬¬¬FLOAT_IO¶  is¬¬¬¬--------¶¶    ¬¬¬-
---¶    procedure¬¬GET¬¬( FILE  :in FILE_TYPE;¶¬¬¬¬¬  ITEM  :out NUM;¶¬¬¬¬¬  WIDTH :in FIELD¬¬:= 0¶¬¬¬¬¬)¶    is¬¬¬---¶  
-  begin null;¶¶    end¬GET;¶¬----¶¶¬¬¬---¶    procedure¬¬GET¬¬( ITEM  :out NUM; WIDTH :in FIELD := 0)¶    is¬¬¬---¶    b
-egin null;¶¶    end¬GET;¶¬----¶¶    ¬¬¬---¶    procedure¬¬PUT¬¬( FILE :in FILE_TYPE;¶¬¬¬¬¬  ITEM :in NUM;¶¬¬¬¬¬  FORE :i
-n FIELD¬¬:= DEFAULT_FORE;¶¬¬¬¬¬  AFT  :in FIELD¬¬:= DEFAULT_AFT;¶¬¬¬¬¬  EXP  :in FIELD¬¬:= DEFAULT_EXP¶¬¬¬¬¬)¶    is¬¬¬-
---¶    begin null;¶¶    end¬PUT;¶    ----¶¶    ¬¬¬---¶    procedure¬¬PUT¬¬( ITEM :in NUM;¶¬¬¬¬¬  FORE :in FIELD¬¬:= DEFA
-ULT_FORE;¶¬¬¬¬¬  AFT  :in FIELD¬¬:= DEFAULT_AFT;¶¬¬¬¬¬  EXP  :in FIELD¬¬:= DEFAULT_EXP¶¬¬¬¬¬)¶    is¬¬¬---¶    begin nul
-l;¶¶    end¬PUT;¶¬----¶¶¶    procedure¬¬GET¬¬( FROM :in STRING;¶¬¬¬¬¬  ITEM :out NUM;¶¬¬¬¬¬  LAST :out POSITIVE¶¬¬¬¬¬)¶ 
-   is¶    begin null;¶¶    end¬GET;¶¬----¶¶¬¬¬---¶    procedure¬¬PUT¬¬( TO   :out STRING;¶¬¬¬¬¬  ITEM :in NUM;¶¬¬¬¬¬  AF
-T  :in FIELD¬¬:= DEFAULT_AFT;¶¬¬¬¬¬  EXP  :in INTEGER¬¬:= DEFAULT_EXP¶¬¬¬¬¬)¶    is¬¬¬---¶    begin null;¶¶    end¬PUT;¶
-¬----¶¶¬--------¶  end¬FLOAT_IO;¶¬--------¶¶¶¬¬¬¬--------¶  package¬body¬¬¬FIXED_IO¶  is¬¬¬¬--------¶¶¬¬¬---¶    procedu
-re¬¬GET¬¬( FILE  :in FILE_TYPE;¶¬¬¬¬¬  ITEM  :out NUM;¶¬¬¬¬¬  WIDTH :in FIELD¬¬:= 0¶¬¬¬¬¬)¶    is¬¬¬---¶    begin null;¶
-¶    end¬GET;¶¬----¶¶¬¬¬---¶    procedure¬¬GET¬¬( ITEM  :out NUM; WIDTH :in FIELD := 0 )¶    is¬¬¬---¶    begin null;¶¶ 
-   end¬GET;¶¬----¶¶¬¬¬---¶    procedure¬¬PUT¬¬( FILE :in FILE_TYPE;¶¬¬¬¬¬  ITEM :in NUM;¶¬¬¬¬¬  FORE :in FIELD ¬¬:= DEFA
-ULT_FORE;¶¬¬¬¬¬  AFT  :in FIELD¬¬:= DEFAULT_AFT;¶¬¬¬¬¬  EXP  :in FIELD¬¬:= DEFAULT_EXP¶¬¬¬¬¬)¶    is¬¬¬---¶    begin nul
-l;¶¶    end¬PUT;¶¬----¶¶¬¬¬---¶    procedure¬¬PUT¬¬( ITEM :in NUM;¶¬¬¬¬¬  FORE :in FIELD¬¬:= DEFAULT_FORE;¶¬¬¬¬¬  AFT  :
-in FIELD¬¬:= DEFAULT_AFT;¶¬¬¬¬¬  EXP  :in FIELD¬¬:= DEFAULT_EXP¶¬¬¬¬¬)¶    is¬¬¬---¶  begin null;¶¶  end¬PUT;¶¬----¶¶¬¬¬
----¶    procedure¬¬GET¬¬( FROM :in STRING;¶¬¬¬¬¬  ITEM :out NUM;¶¬¬¬¬¬  LAST :out POSITIVE¶¬¬¬¬¬)¶    is¬¬¬---¶  begin n
-ull;¶¶  end¬GET;¶¬----¶¶¬¬¬---¶    procedure¬¬PUT¬¬( TO   :out STRING;¶¬¬¬¬¬  ITEM :in NUM;¶¬¬¬¬¬  AFT  :in FIELD¬¬:= DE
-FAULT_AFT;¶¬¬¬¬¬  EXP  :in INTEGER¬¬:= DEFAULT_EXP¶¬¬¬¬¬)¶    is¬¬¬---¶    begin null;¶¶    end¬PUT;¶¬----¶¶¬--------¶  
-end¬FIXED_IO;¶¬--------¶¶¶           -- Generic package for Input-Output of Enumeration types¶¶¶¬¬¬--------------¶  pack
-age¬body¬¬ENUMERATION_IO¶  is¬¬¬--------------¶¶    ¬¬¬---¶    procedure¬¬GET¬¬( FILE :in FILE_TYPE; ITEM :out ENUM)¶   
- is¬¬¬---¶    begin null;¶¶    end¬GET;¶¬---¶¶¬¬¬---¶    procedure¬¬GET¬¬( ITEM :out ENUM)¶    is¬¬¬---¶    begin null;¶
-¶    end¬GET;¶¬---¶¶¬¬¬---¶    procedure¬¬PUT¬¬( FILE  :in FILE_TYPE;¶¬¬¬¬¬  ITEM  :in ENUM;¶¬¬¬¬¬  WIDTH :in FIELD¬¬:= 
-DEFAULT_WIDTH;¶¬¬¬¬¬  SET   :in TYPE_SET¬:= DEFAULT_SETTING¶¬¬¬¬¬)¶    is¬¬¬---¶    begin null;¶¶    end¬PUT;¶¬---¶¶¬¬¬-
---¶    procedure¬¬PUT¬¬( ITEM  :in ENUM;¶¬¬¬¬¬  WIDTH :in FIELD¬¬:= DEFAULT_WIDTH;¶¬¬¬¬¬  SET   :in TYPE_SET¬:= DEFAULT_
-SETTING¶¬¬¬¬¬)¶    is¬¬¬---¶    begin null;¶¶    end¬PUT;¶¬----¶¶¬¬¬---¶    procedure¬¬GET¬¬( FROM :in STRING;¶¬¬¬¬¬  IT
-EM :out ENUM;¶¬¬¬¬¬  LAST :out POSITIVE¶¬¬¬¬¬)¶    is¬¬¬---¶    begin null;¶¶    end¬GET;¶¬---¶¶¬¬¬---¶    procedure¬¬PU
-T¬¬( TO   :out STRING;¶¬¬¬¬¬  ITEM :in ENUM;¶¬¬¬¬¬  SET  :in TYPE_SET¬¬:= DEFAULT_SETTING¶¬¬¬¬¬)¶    is¬¬¬---¶    begin 
-null;¶¶    end¬PUT;¶¬----¶¶  end¬ENUMERATION_IO;¶¬--------------¶¶¶ end¬TEXT_IO;¶¬-------¶
+with MACHINE_CODE;¶use  MACHINE_CODE;¶¬¬¬¬¬-------¶¬package body¬¬¬TEXT_IO¶is¬¬¬¬¬-------¶¶  STDOUT_PAGE_LENGTH¬: COUNT¬
+¬:= 72;¶  STDOUT_LINE_LENGTH¬: COUNT¬¬:= 256;¶  STDOUT_PAGE¬¬: POSITIVE_COUNT¬:= 1;¶  STDOUT_LINE¬¬: POSITIVE_COUNT¬:= 1
+;¶  STDOUT_COL¬¬: POSITIVE_COUNT¬:= 1;¶¶¶¬¬¬--   F I L E   M A N A G E M E N T¶¶¬¬¬------¶  procedure¬¬CREATE¬¬( FILE :i
+n out FILE_TYPE;¶¬¬¬¬¬  MODE :in FILE_MODE := OUT_FILE;¶¬¬¬¬¬  NAME :in STRING := "";¶¬¬¬¬¬  FORM :in STRING := ""¶¬¬¬¬¬
+)¶  is¬¬¬------¶¶¬¬------------------¶    function¬CREATE_SYSTEM_CALL¬( NAME :in STRING )¬return INTEGER¶    is¬¬-------
+----------¶    begin¶      ASM_OP_2'( OPCODE => LA, LVL => 2, OFS => -8 );¶      ASM_OP_0'( OPCODE => SYS_FILE_CREATE );
+¶      ASM_OP_2'( OPCODE => SD, LVL => 2, OFS => -16 );¶¶    end¬CREATE_SYSTEM_CALL;¶¬------------------¶  begin¶    FIL
+E.ID := CREATE_SYSTEM_CALL( NAME );¶    FILE.NAME( 1 .. NAME'LENGTH ) := NAME;¶    FILE.NAME_LEN := NAME'LENGTH;¶    FIL
+E.MODE := MODE;¶    FILE.PAGE_LENGTH := STDOUT_PAGE_LENGTH;¶    FILE.LINE_LENGTH := STDOUT_LINE_LENGTH;¶    FILE.PAGE :=
+ 1;¶    FILE.LINE := 1;¶    FILE.COL  := 1;¶¶  end¬CREATE;¶¬------¶¶¶¬¬¬----¶  procedure¬¬OPEN¬¬( FILE :in out FILE_TYPE
+;¶¬¬¬¬¬  MODE :in FILE_MODE;¶¬¬¬¬¬  NAME :in STRING;¶¬¬¬¬¬  FORM :in STRING := ""¶¬¬¬¬¬)¶  is¬¬¬----¶¶¬¬----------------
+¶    function¬OPEN_SYSTEM_CALL¬( NAME :in STRING )¬return INTEGER¶    is¬¬----------------¶¶    begin¶      ASM_OP_2'( O
+PCODE => LA, LVL => 2, OFS => -8 );¶      ASM_OP_0'( OPCODE => SYS_FILE_OPEN );¶      ASM_OP_2'( OPCODE => SD, LVL => 2,
+ OFS => -16 );¬¬¬¬¬¬¬-- Retour du File ID¶¶    end¬OPEN_SYSTEM_CALL;¶¬----------------¶  begin¶    FILE.ID := OPEN_SYSTE
+M_CALL( NAME );¶    FILE.NAME( 1 .. NAME'LENGTH ) := NAME;¶    FILE.NAME_LEN := NAME'LENGTH;¶    FILE.MODE := MODE;¶    
+FILE.PAGE_LENGTH := STDOUT_PAGE_LENGTH;¶    FILE.LINE_LENGTH := STDOUT_LINE_LENGTH;¶    FILE.PAGE := 1;¶    FILE.LINE :=
+ 1;¶    FILE.COL  := 1;¶¶  end¬OPEN;¶¬----¶¶¶¬¬¬-----¶  procedure¬¬CLOSE¬¬( FILE :in out FILE_TYPE )¶  is¬¬¬-----¶¶ ¬¬--
+---------------¶    procedure¬CLOSE_SYSTEM_CALL¬( FILE_ID :in INTEGER )¶    is¬¬-----------------¶    begin¶      ASM_OP
+_2'( OPCODE => Ld, LVL => 2, OFS => -8 );¶      ASM_OP_0'( OPCODE => SYS_FILE_CLOSE );¶¶    end¬CLOSE_SYSTEM_CALL;¶¬----
+-------------¶  begin¶    CLOSE_SYSTEM_CALL( FILE.ID );¶    FILE.ID := -1;¶  end¬CLOSE;¶¬-----¶¶¶¬¬¬------¶  procedure¬¬
+DELETE¬¬( FILE :in out FILE_TYPE )¶  is¬¬¬------¶¶¬¬------------------¶    procedure¬DELETE_SYSTEM_CALL¬( NAME : STRING 
+)¶    is¬¬------------------¶¶    begin¶      ASM_OP_2'( OPCODE => La, LVL => 2, OFS => -8 );¶      ASM_OP_0'( OPCODE =>
+ SYS_FILE_DELETE );¶¶    end¬DELETE_SYSTEM_CALL;¶¬------------------¶  begin¶    DELETE_SYSTEM_CALL( FILE.NAME( 1 .. FIL
+E.NAME_LEN ) );¶¶  end¬DELETE;¶¬------¶¶¶¬¬¬-----¶  procedure¬¬RESET¬¬( FILE :in out FILE_TYPE; MODE :in FILE_MODE )¶  i
+s¬¬¬-----¶  begin null;¶¶  end¬RESET;¶¬-----¶¶¬¬¬-----¶  procedure¬¬RESET¬¬( FILE :in out FILE_TYPE )¶  is¬¬¬-----¶  beg
+in null;¶¶  end¬RESET;¶¬-----¶¶¬¬¬----¶  function¬¬MODE¬¬( FILE :in FILE_TYPE )¬¬return FILE_MODE¶  is¬¬¬----¶  begin¶  
+  return FILE.MODE;¶  end¬MODE;¶¬----¶¶¬¬¬----¶  function¬¬NAME¬¬( FILE :in FILE_TYPE )¬¬return STRING¶  is¬¬¬----¶  beg
+in¶    return FILE.NAME( 1 .. FILE.NAME_LEN );¶  end¬NAME;¶¬----¶¶¬¬¬----¶  function¬¬FORM¬¬( FILE :in FILE_TYPE )¬¬retu
+rn STRING¶  is¬¬¬----¶  begin¶    return "";¶  end¬FORM;¶¬----¶¶¬¬¬-------¶  function¬¬IS_OPEN¬¬( FILE :in FILE_TYPE )¬¬
+return BOOLEAN¶  is¬¬¬-------¶  begin null;¶    return FILE.ID = -1;¶  end¬IS_OPEN;¶¬-------¶¶           -- Control of d
+efault input and output files¶¶¬¬¬---------¶  procedure¬¬SET_INPUT¬¬( FILE :in FILE_TYPE )¶  is¬¬¬---------¶  begin null
+;¶¶  end¬SET_INPUT;¶¬---------¶¶¬¬¬----------¶  procedure¬¬SET_OUTPUT¬( FILE :in FILE_TYPE )¶  is¬¬¬----------¶  begin n
+ull;¶¶  end¬SET_OUTPUT;¶¬----------¶¶¬¬¬--------------¶  function¬¬STANDARD_INPUT¬¬¬¬¬return FILE_TYPE¶  is¬¬¬----------
+----¶  begin null;¶¶  end¬STANDARD_INPUT;¶¬--------------¶¶¬¬¬---------------¶  function¬¬STANDARD_OUTPUT¬¬¬¬¬return FIL
+E_TYPE¶  is¬¬¬---------------¶  begin null;¶¶  end¬STANDARD_OUTPUT;¶¬---------------¶¶¬¬¬-------------¶  function¬¬CURRE
+NT_INPUT¬¬¬¬¬return FILE_TYPE¶  is¬¬¬-------------¶  begin null;¶¶  end¬CURRENT_INPUT;¶¬-------------¶¶¬¬¬--------------
+¶  function¬¬CURRENT_OUTPUT¬¬¬¬¬return FILE_TYPE¶  is¬¬¬--------------¶  begin null;¶¶  end¬CURRENT_OUTPUT;¶¬-----------
+---¶¶           -- Specification of line and page lengths¶¶¬¬¬---------------¶  procedure¬¬SET_LINE_LENGTH¬( FILE :in FI
+LE_TYPE; TO :in COUNT )¶  is¬¬¬---------------¶  begin¶    FILE.LINE_LENGTH := TO;¶  end¬SET_LINE_LENGTH;¶¬-------------
+--¶¶¬¬¬---------------¶  procedure¬¬SET_LINE_LENGTH¬( TO   :in COUNT)¶  is¬¬¬---------------¶  begin¶    STDOUT_LINE_LEN
+GTH := TO;¶  end¬SET_LINE_LENGTH;¶¬---------------¶¶¬¬¬---------------¶  procedure¬¬SET_PAGE_LENGTH¬( FILE :in FILE_TYPE
+; TO :in COUNT )¶  is¬¬¬---------------¶  begin¶    FILE.PAGE_LENGTH := TO;¶  end¬SET_PAGE_LENGTH;¶¬---------------¶¶¬¬¬
+---------------¶  procedure¬¬SET_PAGE_LENGTH¬( TO   :in COUNT)¶  is¬¬¬---------------¶  begin¶    STDOUT_PAGE_LENGTH := 
+TO;¶  end¬SET_PAGE_LENGTH;¶¬---------------¶¶¬¬¬-----------¶  function¬¬LINE_LENGTH¬( FILE :in FILE_TYPE )¬¬return COUNT
+¶  is¬¬¬-----------¶  begin¶    return FILE.LINE_LENGTH;¶  end¬LINE_LENGTH;¶¬-----------¶¶¬¬¬-----------¶  function¬¬LIN
+E_LENGTH¬¬¬¬¬return COUNT¶  is¬¬¬-----------¶  begin¶    return STDOUT_LINE_LENGTH;¶  end¬LINE_LENGTH;¶¬-----------¶¶¬¬¬
+-----------¶  function¬¬PAGE_LENGTH¬( FILE :in FILE_TYPE )¬¬return COUNT¶  is¬¬¬-----------¶  begin¶    return FILE.PAGE
+_LENGTH;¶  end¬PAGE_LENGTH;¶¬-----------¶¶¬¬¬-----------¶  function¬¬PAGE_LENGTH¬¬¬¬¬return COUNT¶  is¬¬¬-----------¶  b
+egin¶    return STDOUT_PAGE_LENGTH;¶  end¬PAGE_LENGTH;¶¬-----------¶¶           -- Column, Line, and Page Control¶¶¬¬¬--
+------¶  procedure¬¬NEW_LINE¬¬( FILE    :in FILE_TYPE;¶¬¬¬¬¬  SPACING :in POSITIVE_COUNT := 1 )¶  is¬¬¬--------¶  begin 
+null;¶¶  end¬NEW_LINE;¶¬--------¶¶¬¬¬--------¶  procedure¬¬NEW_LINE¬¬( SPACING :in POSITIVE_COUNT := 1 )¶  is¬¬¬--------
+¶  begin¶    PUT( ASCII.CR );¶    STDOUT_COL := 1;¬¬¬¬¬¬¬¬¬¬-- LRM 14.3.4(3) col := 1¶    for  N in 1 .. SPACING  loop¶ 
+     PUT( ASCII.LF );¶    end loop;¶    STDOUT_LINE := STDOUT_LINE + SPACING;¶    if  STDOUT_LINE > STDOUT_PAGE_LENGTH  
+then¶      PUT( ASCII.FF );¶      STDOUT_PAGE := STDOUT_PAGE + 1;¶      STDOUT_LINE := 1;¶    end if;¶¶  end¬NEW_LINE;¶¬
+--------¶¶¬¬¬---------¶  procedure¬¬SKIP_LINE¬¬( FILE    :in FILE_TYPE;¶¬¬¬¬¬  SPACING :in POSITIVE_COUNT := 1 )¶  is¬¬¬
+---------¶  begin¶    null;¶¶  end¬SKIP_LINE;¶¬---------¶¶¬¬¬---------¶  procedure¬¬SKIP_LINE¬¬( SPACING :in POSITIVE_CO
+UNT := 1 )¶  is¬¬¬---------¶  begin¶    STDOUT_LINE := STDOUT_LINE + SPACING;¶¶  end¬SKIP_LINE;¶¬---------¶¶¬¬¬---------
+--¶  function¬¬END_OF_LINE¬( FILE :in FILE_TYPE)¬¬return BOOLEAN¶  is¬¬¬-----------¶  begin null;¶¶  end¬END_OF_LINE;¶¬-
+----------¶¶¬¬¬-----------¶  function¬¬END_OF_LINE¬¬¬¬¬return BOOLEAN¶  is¬¬¬-----------¶  begin null;¶¶  end¬END_OF_LIN
+E;¶¬-----------¶¶¬¬¬--------¶  procedure¬¬NEW_PAGE¬¬( FILE :in FILE_TYPE )¶  is¬¬¬--------¶  begin null;¶¶  end¬NEW_PAGE
+;¶¬--------¶¬¬¬--------¶  procedure¬¬NEW_PAGE¶  is¬¬¬--------¶  begin null;¶¶  end¬NEW_PAGE;¶¬----¶¶¬¬¬---------¶  proce
+dure¬¬SKIP_PAGE¬¬( FILE :in FILE_TYPE )¶  is¬¬¬---------¶  begin null;¶¶  end¬SKIP_PAGE;¶¬---------¶¶¬¬¬---------¶  proc
+edure¬¬SKIP_PAGE¶  is¬¬¬---------¶  begin null;¶¶  end¬SKIP_PAGE;¶¬---------¶¶¬¬¬-----------¶  function¬¬END_OF_PAGE¬( F
+ILE :in FILE_TYPE ) ¬¬return BOOLEAN¶  is¬¬¬-----------¶  begin null;¶¶  end¬END_OF_PAGE;¶¬-----------¶¶¬¬¬-----------¶ 
+ function¬¬END_OF_PAGE ¬¬¬¬¬return BOOLEAN¶  is¬¬¬-----------¶  begin null;¶¶  end¬END_OF_PAGE;¶¬-----------¶¶¬¬¬-------
+----¶  function¬¬END_OF_FILE¬( FILE :in FILE_TYPE )¬¬return BOOLEAN¶  is¬¬¬-----------¶  begin null;¶¶  end¬END_OF_FILE;
+¶¬-----------¶¶¬¬¬-----------¶  function¬¬END_OF_FILE¬¬¬¬¬return BOOLEAN¶  is¬¬¬-----------¶  begin null;¶¶  end¬END_OF_
+FILE;¶¬-----------¶¶¬¬¬-------¶  procedure¬¬SET_COL¬¬( FILE :in FILE_TYPE; TO :in POSITIVE_COUNT )¶  is¬¬¬-------¶  begi
+n¶    FILE.COL := TO;¶  end¬SET_COL;¶¬-------¶¶¬¬¬-------¶  procedure¬¬SET_COL¬¬( TO   :in POSITIVE_COUNT )¶  is¬¬¬-----
+--¶  begin¶    STDOUT_COL := TO;¶  end¬SET_COL;¶¬-------¶¶¬¬¬--------¶  procedure ¬¬SET_LINE¬¬(FILE :in FILE_TYPE; TO :i
+n POSITIVE_COUNT )¶  is¬¬¬--------¶  begin¶    FILE.LINE := TO;¶  end¬SET_LINE;¶¬--------¶¶¬¬¬--------¶  procedure¬¬SET_
+LINE¬¬(TO   :in POSITIVE_COUNT )¶  is¬¬¬--------¶  begin¶    STDOUT_LINE := TO;¶  end¬SET_LINE;¶¬--------¶¶¬¬¬---¶  func
+tion¬¬COL¬¬(FILE :in FILE_TYPE )¬¬return POSITIVE_COUNT¶  is¬¬¬---¶  begin¶    return FILE.COL;¶  end¬COL;¶¬---¶¶¬¬¬---¶
+  function¬¬COL¬¬¬¬¬¬return POSITIVE_COUNT¶  is¬¬¬---¶  begin¶    return STDOUT_COL;¶  end¬COL;¶¬---¶¶¬¬¬----¶  function
+¬¬LINE¬¬( FILE :in FILE_TYPE )¬¬return POSITIVE_COUNT¶  is¬¬¬----¶  begin¶    return FILE.LINE;¶  end¬LINE;¶¬----¶¶¬¬¬--
+--¶  function¬¬LINE¬¬¬¬¬¬return POSITIVE_COUNT¶  is¬¬¬----¶  begin null;¶    return STDOUT_LINE;¶  end¬LINE;¶¬----¶¶¬¬¬-
+---¶  function¬¬PAGE¬¬(FILE :in FILE_TYPE )¬¬return POSITIVE_COUNT¶  is¬¬¬----¶  begin null;¶    return FILE.PAGE;¶  end
+¬PAGE;¶¬----¶¶¬¬¬----¶  function¬¬PAGE ¬¬¬¬¬¬return POSITIVE_COUNT¶  is¬¬¬----¶  begin null;¶    return STDOUT_PAGE;¶  e
+nd¬PAGE;¶¬----¶¶           -- Character Input-Output¶¶¬¬¬---¶  procedure¬¬GET¬¬( FILE :in FILE_TYPE; ITEM :out CHARACTER
+ )¶  is¬¬¬---¶  begin null;¶¶  end¬GET;¶¬----¶¶¬¬¬---¶  procedure¬¬GET¬¬( ITEM :out CHARACTER )¶  is¬¬¬---¶  begin¶    A
+SM_OP_2'( OPCODE => LA, LVL => 1, OFS => -8 );¶    ASM_OP_0'( OPCODE => SYS_GET_CHAR );¶¶  end¬GET;¶¬----¶¶¬¬¬---¶  proc
+edure¬¬PUT¬¬( FILE :in FILE_TYPE; ITEM :in CHARACTER )¶  is¬¬¬---¶  begin null;¶¶  end¬PUT;¶¬----¶¶¬¬¬---¶  procedure¬¬P
+UT¬¬( ITEM :in CHARACTER )¶  is¬¬¬---¶  begin¶    ASM_OP_2'( OPCODE => LB, LVL => 1, OFS => -8 );¶    ASM_OP_0'( OPCODE 
+=> SYS_PUT_CHAR );¶¶  end¬PUT;¶¬----¶¶¶           -- String Input-Output¶¶¬¬¬---¶  procedure¬¬GET¬¬( FILE :in FILE_TYPE;
+ ITEM :out STRING )¶  is¬¬¬--¶  begin null;¶¶  end¬GET;¶¬----¶¶¬¬¬---¶  procedure¬¬GET¬¬( ITEM :out STRING )¶  is¬¬¬---¶
+  begin null;¶¶  end¬GET;¶¬----¶¶¬¬¬---¶  procedure¬¬PUT¬¬( FILE :in FILE_TYPE; ITEM :in STRING )¶  is¬¬¬---¶  begin nul
+l;¶¶  end¬PUT;¶¬----¶¶¬¬¬---¶  procedure¬¬PUT¬¬( ITEM :in STRING )¶  is¬¬¬---¶  begin¶    ASM_OP_2'( OPCODE => LA, LVL =
+> 1, OFS => -8 );¶    ASM_OP_0'( OPCODE => SYS_PUT_STR );¶¶  end¬PUT;¶¬----¶¶¬¬¬--------¶  procedure¬¬GET_LINE¬¬( FILE :
+in FILE_TYPE;¶¬¬¬¬¬  ITEM :out STRING;¶¬¬¬¬¬  LAST :out NATURAL¶¬¬¬¬¬)¶  is¬¬¬--------¶  begin null;¶¶  end¬GET_LINE;¶¬-
+-------¶¶¬¬¬--------¶  procedure¬¬GET_LINE¬¬( ITEM :out STRING;   LAST :out NATURAL )¶  is¬¬¬--------¶  begin¶    ASM_OP
+_2'( OPCODE => LA, LVL => 1, OFS => -16 );¬¬-- adresse de LAST¶    ASM_OP_2'( OPCODE => LA, LVL => 1, OFS => -8 );¬¬-- a
+dresse du descripteur de la chaine ITEM¶    ASM_OP_0'( OPCODE => SYS_GET_STR );¶¶  end¬GET_LINE;¶¬--------¶¶¬¬¬--------¶
+  procedure¬¬PUT_LINE¬¬( FILE :in FILE_TYPE; ITEM :in STRING )¶  is¬¬¬--------¶  begin null;¶¶  end¬PUT_LINE;¶¬--------¶
+¶¬¬¬--------¶  procedure¬¬PUT_LINE¬¬( ITEM :in STRING )¶  is¬¬¬--------¶  begin¶    PUT( ITEM );¶    NEW_LINE;¶¶  end¬PU
+T_LINE;¶¬--------¶¶¶          ¬ -- Generic package for Input-Output of Integer Types¶¶  ¬¬¬¬----------¶  package¬body¬¬¬
+INTEGER_IO¶  is¬¬¬¬----------¶¶¬¬¬---¶    procedure¬¬GET¬¬( FILE  :in FILE_TYPE;¶¬¬¬¬¬  ITEM  :out NUM;¶¬¬¬¬¬  WIDTH :in
+ FIELD := 0¶¬¬¬¬¬)¶    is¬¬¬---¶    begin null;¶¶    end¬GET;¶¬----¶¶¬¬¬---¶    procedure¬¬GET¬¬( ITEM  :out NUM; WIDTH 
+: in FIELD := 0)¶    is¬¬¬---¶¶      CHN¬: STRING( 1 .. 40 );¶      LEN¬: NATURAL¬¬:= 40;¶      VAL¬: NUM¬¬:= 0;¶¶    be
+gin¶      GET_LINE( CHN, LEN );¶      for  I in 1 .. LEN  loop¶        VAL := 10 * VAL + CHARACTER'POS( CHN( I ) ) - CHA
+RACTER'POS( '0' );¶      end loop;¶      ITEM := VAL;¶      PUT( CHN );¶    end¬GET;¶¬----¶¶¬¬¬---¶    procedure¬¬PUT¬¬(
+ FILE  :in FILE_TYPE;¶¬¬¬¬¬  ITEM  :in NUM;¶¬¬¬¬¬  WIDTH :in FIELD¬¬:= DEFAULT_WIDTH;¶¬¬¬¬¬  BASE  :in NUMBER_BASE¬:= DE
+FAULT_BASE¶¬¬¬¬¬)¶    is¬¬¬---¶    begin null;¶¶    end¬PUT;¶¬----¶¶¬¬¬---¶    procedure¬¬PUT¬¬( ITEM  :in NUM;¶¬¬¬¬¬  W
+IDTH :in FIELD¬¬:= DEFAULT_WIDTH;¶¬¬¬¬¬  BASE  :in NUMBER_BASE¬:= DEFAULT_BASE¶¬¬¬¬¬)¶    is¬¬¬---¶¶      QUOTIENT, REST
+E¬: NUM;¶      STR¬¬¬: STRING( 1 .. 68 );¶      INDEX¬¬: POSITIVE¬¬:= STR'LAST;¶      MIN_WIDTH¬¬: POSITIVE;¶¶    begin¶
+      null;¶--    if BASE /= 10 then STR( STR'LAST ) := '#'; INDEX := INDEX - 1; end if;¶¶--    loop¶--      RESTE := IT
+EM mod NUM( BASE );¶--      if RESTE < 10 then¶--        STR( INDEX ) := CHARACTER'VAL( CHARACTER'POS( '0' ) + RESTE );¶
+--      else ¶--        STR( INDEX ) := CHARACTER'VAL( CHARACTER'POS( 'A' ) + RESTE - 10 );¶--      end if;¶--      QUOT
+IENT := ITEM / NUM( BASE );¶--      exit when QUOTIENT = 0;¶--      INDEX := INDEX - 1;¶--    end loop;¶¶--    if BASE /
+= 10 then¶--      STR( INDEX ) := '#'; INDEX := INDEX - 1;¶--      STR( INDEX ) := CHARACTER'VAL( CHARACTER'POS( '0' ) +
+ BASE mod 10 ); INDEX := INDEX - 1;¶--      if BASE >= 10 then STR( INDEX ) := '1'; INDEX := INDEX - 1; end if;¶--    en
+d if;¶¶--    if ITEM < 0 then STR( INDEX ) := '-'; end if;¶--    MIN_WIDTH := STR'LAST - INDEX - 1;¶¶--    if WIDTH > MI
+N_WIDTH then null; end if;¶¶    end¬PUT;¶¬----¶¶¬¬¬---¶    procedure¬¬GET¬¬( FROM :in STRING;¶¬¬¬¬¬  ITEM :out NUM;¶¬¬¬¬
+¬  LAST :out POSITIVE¶¬¬¬¬¬)¶    is¬¬¬---¶    begin null;¶¶    end¬GET;¶¬----¶¶¬¬¬---¶    procedure¬¬PUT¬¬( TO   :out ST
+RING;¶¬¬¬¬¬  ITEM :in NUM;¶¬¬¬¬¬  BASE :in NUMBER_BASE¬:= DEFAULT_BASE¶¬¬¬¬¬)¶    is¬¬¬---¶    begin null;¶¶    end¬PUT;
+¶¬----¶¶  end¬INTEGER_IO;¶¬----------¶¶¶¬¬-- Generic package for Input-Output of Real Types¶¶¬¬¬¬--------¶  package¬body
+¬¬¬FLOAT_IO¶  is¬¬¬¬--------¶¶    ¬¬¬---¶    procedure¬¬GET¬¬( FILE  :in FILE_TYPE;¶¬¬¬¬¬  ITEM  :out NUM;¶¬¬¬¬¬  WIDTH 
+:in FIELD¬¬:= 0¶¬¬¬¬¬)¶    is¬¬¬---¶    begin null;¶¶    end¬GET;¶¬----¶¶¬¬¬---¶    procedure¬¬GET¬¬( ITEM  :out NUM; WI
+DTH :in FIELD := 0)¶    is¬¬¬---¶    begin null;¶¶    end¬GET;¶¬----¶¶    ¬¬¬---¶    procedure¬¬PUT¬¬( FILE :in FILE_TYP
+E;¶¬¬¬¬¬  ITEM :in NUM;¶¬¬¬¬¬  FORE :in FIELD¬¬:= DEFAULT_FORE;¶¬¬¬¬¬  AFT  :in FIELD¬¬:= DEFAULT_AFT;¶¬¬¬¬¬  EXP  :in F
+IELD¬¬:= DEFAULT_EXP¶¬¬¬¬¬)¶    is¬¬¬---¶    begin null;¶¶    end¬PUT;¶    ----¶¶    ¬¬¬---¶    procedure¬¬PUT¬¬( ITEM :
+in NUM;¶¬¬¬¬¬  FORE :in FIELD¬¬:= DEFAULT_FORE;¶¬¬¬¬¬  AFT  :in FIELD¬¬:= DEFAULT_AFT;¶¬¬¬¬¬  EXP  :in FIELD¬¬:= DEFAULT
+_EXP¶¬¬¬¬¬)¶    is¬¬¬---¶    begin null;¶¶    end¬PUT;¶¬----¶¶¶    procedure¬¬GET¬¬( FROM :in STRING;¶¬¬¬¬¬  ITEM :out N
+UM;¶¬¬¬¬¬  LAST :out POSITIVE¶¬¬¬¬¬)¶    is¶    begin null;¶¶    end¬GET;¶¬----¶¶¬¬¬---¶    procedure¬¬PUT¬¬( TO   :out 
+STRING;¶¬¬¬¬¬  ITEM :in NUM;¶¬¬¬¬¬  AFT  :in FIELD¬¬:= DEFAULT_AFT;¶¬¬¬¬¬  EXP  :in INTEGER¬¬:= DEFAULT_EXP¶¬¬¬¬¬)¶    i
+s¬¬¬---¶    begin null;¶¶    end¬PUT;¶¬----¶¶¬--------¶  end¬FLOAT_IO;¶¬--------¶¶¶¬¬¬¬--------¶  package¬body¬¬¬FIXED_I
+O¶  is¬¬¬¬--------¶¶¬¬¬---¶    procedure¬¬GET¬¬( FILE  :in FILE_TYPE;¶¬¬¬¬¬  ITEM  :out NUM;¶¬¬¬¬¬  WIDTH :in FIELD¬¬:= 
+0¶¬¬¬¬¬)¶    is¬¬¬---¶    begin null;¶¶    end¬GET;¶¬----¶¶¬¬¬---¶    procedure¬¬GET¬¬( ITEM  :out NUM; WIDTH :in FIELD 
+:= 0 )¶    is¬¬¬---¶    begin null;¶¶    end¬GET;¶¬----¶¶¬¬¬---¶    procedure¬¬PUT¬¬( FILE :in FILE_TYPE;¶¬¬¬¬¬  ITEM :i
+n NUM;¶¬¬¬¬¬  FORE :in FIELD ¬¬:= DEFAULT_FORE;¶¬¬¬¬¬  AFT  :in FIELD¬¬:= DEFAULT_AFT;¶¬¬¬¬¬  EXP  :in FIELD¬¬:= DEFAULT
+_EXP¶¬¬¬¬¬)¶    is¬¬¬---¶    begin null;¶¶    end¬PUT;¶¬----¶¶¬¬¬---¶    procedure¬¬PUT¬¬( ITEM :in NUM;¶¬¬¬¬¬  FORE :in
+ FIELD¬¬:= DEFAULT_FORE;¶¬¬¬¬¬  AFT  :in FIELD¬¬:= DEFAULT_AFT;¶¬¬¬¬¬  EXP  :in FIELD¬¬:= DEFAULT_EXP¶¬¬¬¬¬)¶    is¬¬¬--
+-¶  begin null;¶¶  end¬PUT;¶¬----¶¶¬¬¬---¶    procedure¬¬GET¬¬( FROM :in STRING;¶¬¬¬¬¬  ITEM :out NUM;¶¬¬¬¬¬  LAST :out 
+POSITIVE¶¬¬¬¬¬)¶    is¬¬¬---¶  begin null;¶¶  end¬GET;¶¬----¶¶¬¬¬---¶    procedure¬¬PUT¬¬( TO   :out STRING;¶¬¬¬¬¬  ITEM
+ :in NUM;¶¬¬¬¬¬  AFT  :in FIELD¬¬:= DEFAULT_AFT;¶¬¬¬¬¬  EXP  :in INTEGER¬¬:= DEFAULT_EXP¶¬¬¬¬¬)¶    is¬¬¬---¶    begin n
+ull;¶¶    end¬PUT;¶¬----¶¶¬--------¶  end¬FIXED_IO;¶¬--------¶¶¶           -- Generic package for Input-Output of Enumer
+ation types¶¶¶¬¬¬--------------¶  package¬body¬¬ENUMERATION_IO¶  is¬¬¬--------------¶¶    ¬¬¬---¶    procedure¬¬GET¬¬( F
+ILE :in FILE_TYPE; ITEM :out ENUM)¶    is¬¬¬---¶    begin null;¶¶    end¬GET;¶¬---¶¶¬¬¬---¶    procedure¬¬GET¬¬( ITEM :o
+ut ENUM)¶    is¬¬¬---¶    begin null;¶¶    end¬GET;¶¬---¶¶¬¬¬---¶    procedure¬¬PUT¬¬( FILE  :in FILE_TYPE;¶¬¬¬¬¬  ITEM 
+ :in ENUM;¶¬¬¬¬¬  WIDTH :in FIELD¬¬:= DEFAULT_WIDTH;¶¬¬¬¬¬  SET   :in TYPE_SET¬:= DEFAULT_SETTING¶¬¬¬¬¬)¶    is¬¬¬---¶  
+  begin null;¶¶    end¬PUT;¶¬---¶¶¬¬¬---¶    procedure¬¬PUT¬¬( ITEM  :in ENUM;¶¬¬¬¬¬  WIDTH :in FIELD¬¬:= DEFAULT_WIDTH;
+¶¬¬¬¬¬  SET   :in TYPE_SET¬:= DEFAULT_SETTING¶¬¬¬¬¬)¶    is¬¬¬---¶    begin null;¶¶    end¬PUT;¶¬----¶¶¬¬¬---¶    proced
+ure¬¬GET¬¬( FROM :in STRING;¶¬¬¬¬¬  ITEM :out ENUM;¶¬¬¬¬¬  LAST :out POSITIVE¶¬¬¬¬¬)¶    is¬¬¬---¶    begin null;¶¶    e
+nd¬GET;¶¬---¶¶¬¬¬---¶    procedure¬¬PUT¬¬( TO   :out STRING;¶¬¬¬¬¬  ITEM :in ENUM;¶¬¬¬¬¬  SET  :in TYPE_SET¬¬:= DEFAULT_
+SETTING¶¬¬¬¬¬)¶    is¬¬¬---¶    begin null;¶¶    end¬PUT;¶¬----¶¶  end¬ENUMERATION_IO;¶¬--------------¶¶¶ end¬TEXT_IO;¶¬
+-------¶

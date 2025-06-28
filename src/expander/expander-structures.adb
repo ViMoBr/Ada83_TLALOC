@@ -1,17 +1,17 @@
 ------------------------------------------------------------------------------------------------------------------------
--- CC BY SA	IDL-EXPANDER-SRUCTURES.ADB	VINCENT MORIN	9/1/2025	UNIVERSITE DE BRETAGNE OCCIDENTALE
+-- CC BY SA	EXPANDER-SRUCTURES.ADB	VINCENT MORIN	9/1/2025	UNIVERSITE DE BRETAGNE OCCIDENTALE
 ------------------------------------------------------------------------------------------------------------------------
 --	1	2	3	4	5	6	7	8	9	0	1
 
 
-separate ( IDL.EXPANDER )
+separate ( EXPANDER )
 				----------
  	package body		STRUCTURES
 				----------
 is
 
 
-  package CODI	renames IDL.EXPANDER.UTILS;
+  package CODI	renames EXPANDER.UTILS;
   use CODI;
 
 

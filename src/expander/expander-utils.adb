@@ -1,9 +1,9 @@
 ------------------------------------------------------------------------------------------------------------------------
--- CC BY SA	IDL-EXPANDER-UTILS.ADB	VINCENT MORIN	6/5/2025	UNIVERSITE DE BRETAGNE OCCIDENTALE
+-- CC BY SA	EXPANDER-UTILS.ADB		VINCENT MORIN	6/5/2025	UNIVERSITE DE BRETAGNE OCCIDENTALE
 ------------------------------------------------------------------------------------------------------------------------
---	1	2	3	4	5	6	7	8	9	0	1	2
+--	1	2	3	4	5	6	7	8	9	0	1
 
-separate ( IDL.EXPANDER )
+separate ( EXPANDER )
 --with DIANA_NODE_ATTR_CLASS_NAMES;
 --use  DIANA_NODE_ATTR_CLASS_NAMES;
 
@@ -411,21 +411,6 @@ is				-----
 
   end	REGIONS_PATH;
 	------------
-
-
-			--^^^^^^^^^^^^^--
-  function		ANONYMOUS_NAME_AT	( T :TREE )		return STRING
-  is			-----------------
-
-    SPOS		: TREE		:= D( LX_SRCPOS, T );
-    IML		:constant STRING	:= INTEGER'IMAGE( DI( XD_NUMBER, GET_SOURCE_LINE( SPOS ) ) );
-    IMC		:constant STRING	:= SRCCOL_IDX'IMAGE( GET_SOURCE_COL( SPOS ) );
-
-  begin
-    return  "ANON_" & IML( 2 .. IML'LENGTH ) & '_' & IMC( 2 .. IMC'LENGTH );
-
-  end	ANONYMOUS_NAME_AT;
-	-----------------
 
 
 end	UTILS;

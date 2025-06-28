@@ -579,6 +579,22 @@ is					---
   end	GET_LIB_PREFIX;
 	--------------
 
+
+			--^^^^^^^^^^^^^--
+  function		ANONYMOUS_NAME_AT	( T :TREE )		return STRING
+  is			-----------------
+
+    SPOS		: TREE		:= D( LX_SRCPOS, T );
+    IML		:constant STRING	:= INTEGER'IMAGE( DI( XD_NUMBER, GET_SOURCE_LINE( SPOS ) ) );
+    IMC		:constant STRING	:= SRCCOL_IDX'IMAGE( GET_SOURCE_COL( SPOS ) );
+
+  begin
+    return  "ANON_" & IML( 2 .. IML'LENGTH ) & '_' & IMC( 2 .. IMC'LENGTH );
+
+  end	ANONYMOUS_NAME_AT;
+	-----------------
+
+
 		----------
   procedure	DEBUG_STOP is begin null; end;
 
@@ -596,9 +612,6 @@ is					---
 
 		---------
   procedure	WRITE_LIB		is separate;
-
-		--------
-  procedure	EXPANDER		is separate;
 
 		------------
   procedure	PRETTY_DIANA	( OPTION :CHARACTER := 'U' ) is separate;

@@ -19,7 +19,7 @@
 
 with TEXT_IO, CALENDAR;
 use  TEXT_IO, CALENDAR;
-with IDL;
+with IDL, EXPANDER;
 
 					--====--
 		procedure			ADA_COMP
@@ -151,7 +151,7 @@ DEBUT_NOM_TEXTE:
       IDL.SEM_PHASE;		if  OPTION = 'M'  or  OPTION = 'm'  then goto FIN; end if;
 
       if  OPTION = 'C'  or  OPTION = 'W'  then
-        IDL.EXPANDER;
+        EXPANDER;
       end if;
 
 <<FIN>>
