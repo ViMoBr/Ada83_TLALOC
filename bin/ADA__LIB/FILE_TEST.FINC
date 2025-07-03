@@ -38,14 +38,66 @@ STR STR_L1, ''				; constante string=''
 	LI  1
 	LVA  1,	F_disp
 	CALL	STANDARD.TEXT_IO. ,CREATE_L1
+STR STR_L2, 'FICHIER CREE !'			; constante string='FICHIER CREE !'
+	LCA	STR_L2.data_ptr
+	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
 	LVA  1,	PROMPT_disp			; array actual
 	CALL	STANDARD.TEXT_IO. ,PUT_L56
 	LVA  1,	C_disp
 	CALL	STANDARD.TEXT_IO. ,GET_L50
 	LVA  1,	F_disp
 	CALL	STANDARD.TEXT_IO. ,CLOSE_L3
+STR STR_L3, 'FICHIER FERME !'			; constante string='FICHIER FERME !'
+	LCA	STR_L3.data_ptr
+	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
+	LVA  1,	PROMPT_disp			; array actual
+	CALL	STANDARD.TEXT_IO. ,PUT_L56
+	LVA  1,	C_disp
+	CALL	STANDARD.TEXT_IO. ,GET_L50
+STR STR_L4, ''				; constante string=''
+	LCA	STR_L4.data_ptr
+	LVA  1,	NOM_disp				; array actual
+	LI  1
+	LVA  1,	F_disp
+	CALL	STANDARD.TEXT_IO. ,OPEN_L2
+STR STR_L5, 'FICHIER OUVERT !'		; constante string='FICHIER OUVERT !'
+	LCA	STR_L5.data_ptr
+	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
+	LVA  1,	PROMPT_disp			; array actual
+	CALL	STANDARD.TEXT_IO. ,PUT_L56
+	LVA  1,	C_disp
+	CALL	STANDARD.TEXT_IO. ,GET_L50
+STR STR_L6, 'ECRITURES...'			; constante string='ECRITURES...'
+	LCA	STR_L6.data_ptr
+	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
+	LI	90
+	LVa  1,	F_disp
+	CALL	STANDARD.TEXT_IO. ,PUT_L51
+STR STR_L7, 'CONTENT !'			; constante string='CONTENT !'
+	LCA	STR_L7.data_ptr
+	LVa  1,	F_disp
+	CALL	STANDARD.TEXT_IO. ,PUT_L55
+	LI	1
+	LVa  1,	F_disp
+	CALL	STANDARD.TEXT_IO. ,NEW_LINE_L25
+STR STR_L8, 'SUPER CONTENT !'			; constante string='SUPER CONTENT !'
+	LCA	STR_L8.data_ptr
+	LVa  1,	F_disp
+	CALL	STANDARD.TEXT_IO. ,PUT_L55
+	LVA  1,	PROMPT_disp			; array actual
+	CALL	STANDARD.TEXT_IO. ,PUT_L56
+	LVA  1,	C_disp
+	CALL	STANDARD.TEXT_IO. ,GET_L50
+	LVA  1,	F_disp
+	CALL	STANDARD.TEXT_IO. ,CLOSE_L3
+STR STR_L9, 'FICHIER FERME !'			; constante string='FICHIER FERME !'
+	LCA	STR_L9.data_ptr
+	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
 	LVA  1,	F_disp
 	CALL	STANDARD.TEXT_IO. ,DELETE_L4
+STR STR_L10, 'FICHIER DETRUIT !'		; constante string='FICHIER DETRUIT !'
+	LCA	STR_L10.data_ptr
+	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
 ret_lbl:
 	UNLINK 1
 	RTD

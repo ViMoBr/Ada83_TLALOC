@@ -291,7 +291,18 @@ is					-------
   procedure		NEW_LINE		( FILE    :in FILE_TYPE;
 					  SPACING :in POSITIVE_COUNT := 1 )
   is			--------
-  begin null;
+  begin
+    PUT( FILE, ASCII.CR );
+    FILE.COL := 1;											-- LRM 14.3.4(3) col := 1
+    for  N in 1 .. SPACING  loop
+      PUT( FILE, ASCII.LF );
+    end loop;
+    FILE.LINE := FILE.LINE + SPACING;
+    if  FILE.LINE > FILE.PAGE_LENGTH  then
+      PUT( FILE,ASCII.FF );
+      FILE.PAGE := FILE.PAGE + 1;
+      FILE.LINE := 1;
+    end if;
 
   end	NEW_LINE;
 	--------
@@ -516,7 +527,22 @@ is					-------
 			---
   procedure		PUT		( FILE :in FILE_TYPE; ITEM :in CHARACTER )
   is			---
-  begin null;
+
+    ERR_CODE	: INTEGER;
+
+  		-----------------
+    function	WRITE_SYSTEM_CALL		( ID : INTEGER )		return INTEGER
+    is		-----------------
+    begin
+      ASM_OP_1'( OPCODE => LI, VAL => 1 );					-- LENGTH en -24
+      ASM_OP_2'( OPCODE => LVa, LVL => 1, OFS => -16 );				-- @CHAR sur parametre de PUT
+      ASM_OP_2'( OPCODE => Ld, LVL => 2, OFS => -8 );				-- ID
+      ASM_OP_0'( OPCODE => SYS_FILE_WRITE );
+
+    end	WRITE_SYSTEM_CALL;
+	-----------------
+  begin
+    ERR_CODE := WRITE_SYSTEM_CALL( FILE.ID );
 
   end	PUT;
 	----
@@ -553,7 +579,22 @@ is					-------
 			---
   procedure		PUT		( FILE :in FILE_TYPE; ITEM :in STRING )
   is			---
-  begin null;
+
+    ERR_CODE	: INTEGER;
+
+  		-----------------
+    function	WRITE_SYSTEM_CALL		( FILE_ID :INTEGER; LENGTH :POSITIVE )		return INTEGER
+    is		-----------------
+    begin
+      ASM_OP_2'( OPCODE => Ld, LVL => 2, OFS => -16 );				-- LENGTH en -16
+      ASM_OP_2'( OPCODE => LIa, LVL => 1, OFS => -16 );				-- @CHARS sur parametre ITEM de PUT
+      ASM_OP_2'( OPCODE => Ld, LVL => 2, OFS => -8 );				-- ID
+      ASM_OP_0'( OPCODE => SYS_FILE_WRITE );
+
+    end	WRITE_SYSTEM_CALL;
+	-----------------
+  begin
+    ERR_CODE := WRITE_SYSTEM_CALL( FILE.ID, ITEM'LENGTH );
 
   end	PUT;
 	----
@@ -593,7 +634,9 @@ is					-------
 			--------
   procedure		PUT_LINE		( FILE :in FILE_TYPE; ITEM :in STRING )
   is			--------
-  begin null;
+  begin
+    PUT( FILE, ITEM );
+    NEW_LINE( FILE );
 
   end	PUT_LINE;
 	--------

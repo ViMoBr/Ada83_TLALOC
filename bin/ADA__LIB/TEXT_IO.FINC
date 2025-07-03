@@ -732,6 +732,59 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	LI	 13
+	La  1,	-FILE_ofs
+	CALL	STANDARD.TEXT_IO. ,PUT_L51
+	LIVa 	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.COL
+	LI	1
+	Sd
+VAR	NL6_disp, d				; compteur boucle LOOP__1
+	LI	1
+	Sd  1,	NL6_disp
+VAR	LMT_NL6_disp, d				; limite boucle LOOP__1
+	Ld  1,	-SPACING_ofs
+	Sd  1,	LMT_NL6_disp
+	Ld  1,	NL6_disp				; test null range LOOP__1
+	Ld  1,	LMT_NL6_disp
+	CGT
+	BT	L5
+LOOP__1:					; corps boucle LOOP__1
+	LI	 10
+	La  1,	-FILE_ofs
+	CALL	STANDARD.TEXT_IO. ,PUT_L51
+	Ld  1,	NL6_disp				; test de sortie LOOP__1
+	Ld  1,	LMT_NL6_disp
+	CEQ
+	BT	L5
+	Ld  1,	NL6_disp				; mise a jour compteur LOOP__1
+	INC
+	Sd  1,	NL6_disp
+	BRA	LOOP__1				; iteration suivante LOOP__1
+L5:					; post loop LOOP__1
+	LIVa 	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.LINE
+	LId	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.LINE
+	Ld  1,	-SPACING_ofs
+	ADD
+	Sd
+					; debut if
+	LId	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.LINE
+	LId	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.PAGE_LENGTH
+	CGT
+	BF	L8
+	LI	 12
+	La  1,	-FILE_ofs
+	CALL	STANDARD.TEXT_IO. ,PUT_L51
+	LIVa 	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.PAGE
+	LId	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.PAGE
+	LI	1
+	ADD
+	Sd
+	LIVa 	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.LINE
+	LI	1
+	Sd
+	BRA	L7
+L8:
+L7:					; post if
 ret_lbl:
 	UNLINK 1
 	RTD	(prm_siz)
@@ -751,28 +804,28 @@ begin:					;---------- BDY INSTRUCTIONS
 	CALL	STANDARD.TEXT_IO. ,PUT_L52
 	LI	1
 	Sd  0,	STDOUT_COL_disp
-VAR	NL6_disp, d				; compteur boucle LOOP__1
+VAR	NL10_disp, d				; compteur boucle LOOP__2
 	LI	1
-	Sd  1,	NL6_disp
-VAR	LMT_NL6_disp, d				; limite boucle LOOP__1
+	Sd  1,	NL10_disp
+VAR	LMT_NL10_disp, d			; limite boucle LOOP__2
 	Ld  1,	-SPACING_ofs
-	Sd  1,	LMT_NL6_disp
-	Ld  1,	NL6_disp				; test null range LOOP__1
-	Ld  1,	LMT_NL6_disp
+	Sd  1,	LMT_NL10_disp
+	Ld  1,	NL10_disp				; test null range LOOP__2
+	Ld  1,	LMT_NL10_disp
 	CGT
-	BT	L5
-LOOP__1:					; corps boucle LOOP__1
+	BT	L9
+LOOP__2:					; corps boucle LOOP__2
 	LI	 10
 	CALL	STANDARD.TEXT_IO. ,PUT_L52
-	Ld  1,	NL6_disp				; test de sortie LOOP__1
-	Ld  1,	LMT_NL6_disp
+	Ld  1,	NL10_disp				; test de sortie LOOP__2
+	Ld  1,	LMT_NL10_disp
 	CEQ
-	BT	L5
-	Ld  1,	NL6_disp				; mise a jour compteur LOOP__1
+	BT	L9
+	Ld  1,	NL10_disp				; mise a jour compteur LOOP__2
 	INC
-	Sd  1,	NL6_disp
-	BRA	LOOP__1				; iteration suivante LOOP__1
-L5:					; post loop LOOP__1
+	Sd  1,	NL10_disp
+	BRA	LOOP__2				; iteration suivante LOOP__2
+L9:					; post loop LOOP__2
 	Ld  0,	STDOUT_LINE_disp
 	Ld  1,	-SPACING_ofs
 	ADD
@@ -781,7 +834,7 @@ L5:					; post loop LOOP__1
 	Ld  0,	STDOUT_LINE_disp
 	Ld  0,	STDOUT_PAGE_LENGTH_disp
 	CGT
-	BF	L8
+	BF	L12
 	LI	 12
 	CALL	STANDARD.TEXT_IO. ,PUT_L52
 	Ld  0,	STDOUT_PAGE_disp
@@ -790,9 +843,9 @@ L5:					; post loop LOOP__1
 	Sd  0,	STDOUT_PAGE_disp
 	LI	1
 	Sd  0,	STDOUT_LINE_disp
-	BRA	L7
-L8:
-L7:					; post if
+	BRA	L11
+L12:
+L11:					; post if
 ret_lbl:
 	UNLINK 1
 	RTD	(prm_siz)
@@ -1187,8 +1240,34 @@ PRMS					;    debut parametrage
 	PRM ITEM_ofs				; in
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
+VAR ERR_CODE_disp, d			; variable entiere
+
+
+if defined WRITE_SYSTEM_CALL_L13_
+PRO	WRITE_SYSTEM_CALL_L13			;---------- PRO WRITE_SYSTEM_CALL
+PRMS					;    debut parametrage
+	PRM result__ofs				; resutat de fonction
+	PRM ID_ofs				; in
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	LI	1
+	LVA 1,	-16
+	LD 2,	-8
+	SYS_FILE_WRITE
+ret_lbl:
+	UNLINK 2
+	RTD	(prm_siz-8)
+excep:
+endPRO					;---------- end PRO WRITE_SYSTEM_CALL
+end if
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	LI	0					; lieu resultat sur pile
+	LId	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.ID
+	CALL	STANDARD.TEXT_IO.PUT_L51. ,WRITE_SYSTEM_CALL_L13
+	Sd  1,	ERR_CODE_disp
 ret_lbl:
 	UNLINK 1
 	RTD	(prm_siz)
@@ -1251,8 +1330,43 @@ PRMS					;    debut parametrage
 	PRM ITEM_ofs				; in
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
+VAR ERR_CODE_disp, d			; variable entiere
+
+
+if defined WRITE_SYSTEM_CALL_L14_
+PRO	WRITE_SYSTEM_CALL_L14			;---------- PRO WRITE_SYSTEM_CALL
+PRMS					;    debut parametrage
+	PRM result__ofs				; resutat de fonction
+	PRM FILE_ID_ofs				; in
+	PRM LENGTH_ofs				; in
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	LD 2,	-16
+	LIA 1,	-16
+	LD 2,	-8
+	SYS_FILE_WRITE
+ret_lbl:
+	UNLINK 2
+	RTD	(prm_siz-8)
+excep:
+endPRO					;---------- end PRO WRITE_SYSTEM_CALL
+end if
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	LI	0					; lieu resultat sur pile
+	LVA	1, -ITEM_ofs
+	LIa	, , 8
+	Ld	, STRING.LST_1
+	INC
+	LVA	1, -ITEM_ofs
+	LIa	, , 8
+	Ld	, STRING.FST_1
+	SUB
+	LId	1, -FILE_ofs, STANDARD.TEXT_IO.FILE_TYPE.ID
+	CALL	STANDARD.TEXT_IO.PUT_L55. ,WRITE_SYSTEM_CALL_L14
+	Sd  1,	ERR_CODE_disp
 ret_lbl:
 	UNLINK 1
 	RTD	(prm_siz)
@@ -1322,6 +1436,12 @@ endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
+	La  1,	-ITEM_ofs
+	La  1,	-FILE_ofs
+	CALL	STANDARD.TEXT_IO. ,PUT_L55
+	LI	1
+	La  1,	-FILE_ofs
+	CALL	STANDARD.TEXT_IO. ,NEW_LINE_L25
 ret_lbl:
 	UNLINK 1
 	RTD	(prm_siz)
@@ -1440,22 +1560,22 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA  1,	LEN_disp
 	LVA  1,	CHN_disp
 	CALL	STANDARD.TEXT_IO. ,GET_LINE_L58
-VAR	IL10_disp, d				; compteur boucle LOOP__2
+VAR	IL16_disp, d				; compteur boucle LOOP__3
 	LI	1
-	Sd  1,	IL10_disp
-VAR	LMT_IL10_disp, d			; limite boucle LOOP__2
+	Sd  1,	IL16_disp
+VAR	LMT_IL16_disp, d			; limite boucle LOOP__3
 	Ld  1,	LEN_disp
-	Sd  1,	LMT_IL10_disp
-	Ld  1,	IL10_disp				; test null range LOOP__2
-	Ld  1,	LMT_IL10_disp
+	Sd  1,	LMT_IL16_disp
+	Ld  1,	IL16_disp				; test null range LOOP__3
+	Ld  1,	LMT_IL16_disp
 	CGT
-	BT	L9
-LOOP__2:					; corps boucle LOOP__2
+	BT	L15
+LOOP__3:					; corps boucle LOOP__3
 	LI	10
 	Ld  1,	VAL_disp
 	MUL
 	La	 1, CHN_disp				; array data start address on stack
-	Ld	1, IL10_disp
+	Ld	1, IL16_disp
 	LId	1, CHN__u, STANDARD.STRING.FST_1		; (index - FST_1) * SIZ_1
 	SUB
 	LId	1, CHN__u, STANDARD.STRING.COMP_SIZ
@@ -1466,15 +1586,15 @@ LOOP__2:					; corps boucle LOOP__2
 	LI	48
 	SUB
 	Sd  1,	VAL_disp
-	Ld  1,	IL10_disp				; test de sortie LOOP__2
-	Ld  1,	LMT_IL10_disp
+	Ld  1,	IL16_disp				; test de sortie LOOP__3
+	Ld  1,	LMT_IL16_disp
 	CEQ
-	BT	L9
-	Ld  1,	IL10_disp				; mise a jour compteur LOOP__2
+	BT	L15
+	Ld  1,	IL16_disp				; mise a jour compteur LOOP__3
 	INC
-	Sd  1,	IL10_disp
-	BRA	LOOP__2				; iteration suivante LOOP__2
-L9:					; post loop LOOP__2
+	Sd  1,	IL16_disp
+	BRA	LOOP__3				; iteration suivante LOOP__3
+L15:					; post loop LOOP__3
 	Ld  1,	VAL_disp
 	SId  1,	-ITEM_ofs
 	LVa  1,	CHN_disp

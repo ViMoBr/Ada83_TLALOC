@@ -94,6 +94,13 @@ macro			POP_RCX
 end macro
 
 ;			.......
+macro			POP_RDX
+;			.......
+  db 0x48, 0x8B, 0x55, 0x00				; mov rdx, QWORD PTR [rbp]		(lire dans RDX la valeur top sur le rbp)
+  db 0x48, 0x8D, 0x6D, 0xF8				; lea rbp, [rbp-0x8]		(puis DESCENDRE le rbp car pile croissante vers adresses hautes)
+end macro
+
+;			.......
 macro			POP_RSI
 ;			.......
   db 0x48, 0x8B, 0x75, 0x00				; mov rsi, QWORD PTR [rbp]		(lire dans RSI la valeur top sur le rbp)
@@ -1108,8 +1115,8 @@ macro			SYS_FILE_CREATE?				; FONCTION creation d'un fichier	rax=2 rdi=ptr_name 
   COPY_STRING_APPEND_NUL						; faire une copie sur pile avec NUL en fin pointee par RDI
   db 0x6A, 0x02							; push 2
   db 0x58								; pop rax			(rax=2=sys_open )
-  db 0xBE, 0x40, 0x00, 0x00, 0x00					; mov esi, 0x40		(rsi=0x40=O_CREAT)
-  db 0xBA, 0x00, 0x07, 0x00, 0x00					; mov edx, 0x700		(rdx=0x700=S_IRWXU)
+  db 0xBE, 0x42, 0x00, 0x00, 0x00					; mov esi, 0x42		(rsi=0x42=O_CREAT+O_RDWR)
+  db 0xBA, 0xC0, 0x01, 0x00, 0x00					; mov edx, 0x1C0		(rdx=b111_000_000=u+rwx)
   db 0x0F, 0x05							; syscall
   db 0x48, 0x89, 0x45, 0x00						; mov QWORD PTR [rbp], rax	(ATTENTION PAS PUSH ! ID de fichier rendu sur le lieu result de la fonction)
 end macro
@@ -1127,6 +1134,31 @@ macro			SYS_FILE_OPEN?				; FONCTION ouverture d'un fichier
   db 0x48, 0x31, 0xD2						; xor rdx,rdx		(mode= 0 sans importance)
   db 0x0F, 0x05							; syscall
   db 0x48, 0x89, 0x45, 0x00						; mov QWORD PTR [rbp], rax	(ATTENTION PAS PUSH ! ID de fichier rendu sur le lieu result de la fonction)
+end macro
+
+
+;			---------------
+macro			SYS_FILE_WRITE?				; ecriture sur un fichier
+;			---------------
+  POP_RDI								; 		(rdi = FILE_ID)
+  POP_RSI								;		(rsi = ADRESSE du tampon source)
+  POP_RDX								;		(rdx = LONGUEUR du transfert)
+  db 0x6A, 0x01							; push 1
+  db 0x58								; pop rax		(rax = 1= sys_write)
+  db 0x0F, 0x05							; syscall
+  db 0x48, 0x89, 0x45, 0x00						; mov QWORD PTR [rbp], rax	(ATTENTION PAS PUSH ! ID de fichier rendu sur le lieu result de la fonction)
+end macro
+
+
+;			--------------
+macro			SYS_FILE_READ?				; lecture sur un fichier
+;			--------------
+  POP_RDI								; 		(rdi = FILE_ID)
+  POP_RSI								;		(rsi = ADRESSE du tampon source)
+  POP_RDX								;		(rdx = LONGUEUR du transfert)
+  db 0x6A, 0x00							; push 0
+  db 0x58								; pop rax		(rax = 0 = sys_read)
+  db 0x0F, 0x05							; syscall
 end macro
 
 
@@ -1156,30 +1188,6 @@ macro			SYS_EXIT?					; retour au systeme
   db 0x6A, 0x3C							; push x3C  (sys_exit rax=60)
   db 0x58								; pop rax
   db 0x31, 0xFF							; xor edi, edi (err_code=0)
-  db 0x0F, 0x05							; syscall
-end macro
-
-
-;			---------------
-macro			SYS_FILE_WRITE?				; ecriture sur un fichier
-;			---------------
-  POP_RDI								; 		(rdi = FILE_ID)
-  POP_RSI								;		(rsi = ADRESSE du tampon source)
-  POP_RDX								;		(rdx = LONGUEUR du transfert)
-  db 0x6A, 0x01							; push 1
-  db 0x58								; pop rax		(rax = 1= sys_write)
-  db 0x0F, 0x05							; syscall
-end macro
-
-
-;			--------------
-macro			SYS_FILE_READ?				; lecture sur un fichier
-;			--------------
-  POP_RDI								; 		(rdi = FILE_ID)
-  POP_RSI								;		(rsi = ADRESSE du tampon source)
-  POP_RDX								;		(rdx = LONGUEUR du transfert)
-  db 0x6A, 0x00							; push 0
-  db 0x58								; pop rax		(rax = 0 = sys_read)
   db 0x0F, 0x05							; syscall
 end macro
 
