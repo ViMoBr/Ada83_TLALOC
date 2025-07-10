@@ -21,6 +21,8 @@ is					-------
 					)
   is			------
 
+    ERR_OR_ID	: INTEGER;
+
 		------------------
     function	CREATE_SYSTEM_CALL	( NAME :in STRING )	return INTEGER
     is		-----------------
@@ -31,16 +33,20 @@ is					-------
 
     end	CREATE_SYSTEM_CALL;
 	------------------
+
   begin
-    FILE.ID := CREATE_SYSTEM_CALL( NAME );
-    FILE.NAME( 1 .. NAME'LENGTH ) := NAME;
-    FILE.NAME_LEN := NAME'LENGTH;
-    FILE.MODE := MODE;
-    FILE.PAGE_LENGTH := STDOUT_PAGE_LENGTH;
-    FILE.LINE_LENGTH := STDOUT_LINE_LENGTH;
-    FILE.PAGE := 1;
-    FILE.LINE := 1;
-    FILE.COL  := 1;
+    ERR_OR_ID := CREATE_SYSTEM_CALL( NAME );
+    if  ERR_OR_ID >= 0  then
+      FILE.ID := ERR_OR_ID;
+      FILE.NAME( 1 .. NAME'LENGTH ) := NAME;
+      FILE.NAME_LEN := NAME'LENGTH;
+      FILE.MODE := MODE;
+      FILE.PAGE_LENGTH := STDOUT_PAGE_LENGTH;
+      FILE.LINE_LENGTH := STDOUT_LINE_LENGTH;
+      FILE.PAGE := 1;
+      FILE.LINE := 1;
+      FILE.COL  := 1;
+    end if;
 
   end	CREATE;
 	------
@@ -54,10 +60,11 @@ is					-------
 					)
   is			----
 
+    ERR_OR_ID	: INTEGER;
+
 		----------------
     function	OPEN_SYSTEM_CALL	( NAME :in STRING )	return INTEGER
     is		----------------
-
     begin
       ASM_OP_2'( OPCODE => LA, LVL => 2, OFS => -8 );
       ASM_OP_0'( OPCODE => SYS_FILE_OPEN );
@@ -65,16 +72,20 @@ is					-------
 
     end	OPEN_SYSTEM_CALL;
 	----------------
+
   begin
-    FILE.ID := OPEN_SYSTEM_CALL( NAME );
-    FILE.NAME( 1 .. NAME'LENGTH ) := NAME;
-    FILE.NAME_LEN := NAME'LENGTH;
-    FILE.MODE := MODE;
-    FILE.PAGE_LENGTH := STDOUT_PAGE_LENGTH;
-    FILE.LINE_LENGTH := STDOUT_LINE_LENGTH;
-    FILE.PAGE := 1;
-    FILE.LINE := 1;
-    FILE.COL  := 1;
+    ERR_OR_ID := OPEN_SYSTEM_CALL( NAME );
+    if  ERR_OR_ID >= 0  then
+      FILE.ID := OPEN_SYSTEM_CALL( NAME );
+      FILE.NAME( 1 .. NAME'LENGTH ) := NAME;
+      FILE.NAME_LEN := NAME'LENGTH;
+      FILE.MODE := MODE;
+      FILE.PAGE_LENGTH := STDOUT_PAGE_LENGTH;
+      FILE.LINE_LENGTH := STDOUT_LINE_LENGTH;
+      FILE.PAGE := 1;
+      FILE.LINE := 1;
+      FILE.COL  := 1;
+    end if;
 
   end	OPEN;
 	----
@@ -84,18 +95,22 @@ is					-------
   procedure		CLOSE		( FILE :in out FILE_TYPE )
   is			-----
 
+    ERR_CODE	: INTEGER;
+
  		-----------------
-    procedure	CLOSE_SYSTEM_CALL	( FILE_ID :in INTEGER )
+    function	CLOSE_SYSTEM_CALL	( FILE_ID :in INTEGER )	return INTEGER
     is		-----------------
     begin
       ASM_OP_2'( OPCODE => Ld, LVL => 2, OFS => -8 );
       ASM_OP_0'( OPCODE => SYS_FILE_CLOSE );
 
     end	CLOSE_SYSTEM_CALL;
-	-----------------
+    -----------------
+
   begin
-    CLOSE_SYSTEM_CALL( FILE.ID );
+    ERR_CODE := CLOSE_SYSTEM_CALL( FILE.ID );
     FILE.ID := -1;
+
   end	CLOSE;
 	-----
 
@@ -104,8 +119,10 @@ is					-------
   procedure		DELETE		( FILE :in out FILE_TYPE )
   is			------
 
+    ERR_CODE	: INTEGER;
+
 		------------------
-    procedure	DELETE_SYSTEM_CALL	( NAME : STRING )
+    function	DELETE_SYSTEM_CALL	( NAME : STRING )	return INTEGER
     is		------------------
 
     begin
@@ -114,8 +131,9 @@ is					-------
 
     end	DELETE_SYSTEM_CALL;
 	------------------
+
   begin
-    DELETE_SYSTEM_CALL( FILE.NAME( 1 .. FILE.NAME_LEN ) );
+    ERR_CODE := DELETE_SYSTEM_CALL( FILE.NAME( 1 .. FILE.NAME_LEN ) );
 
   end	DELETE;
 	------

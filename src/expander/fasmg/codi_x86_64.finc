@@ -675,6 +675,13 @@ macro			CGT?					; A > B A empile puis B (note pour avoir "A less than B" interv
   db 0x0F, 0x9F, 0x45, 0x00						; setg [rbp]
 end macro
 ;			----
+macro			CGE?					; A >= B A empile puis B (note pour avoir "A less or equal than B" intervertir A et B)
+;			----
+  POP_RBX								; depiler le B dans RBX
+  db 0x48, 0x39, 0x5D, 0x00						; cmp [rbp], rbx   (comparer avec A, calcule B-A)
+  db 0x0F, 0x9D, 0x45, 0x00						; setge [rbp]
+end macro
+;			----
 macro			CEQ?
 ;			----
   POP_RBX
@@ -1137,6 +1144,19 @@ macro			SYS_FILE_OPEN?				; FONCTION ouverture d'un fichier
 end macro
 
 
+;			-----------------
+macro			SYS_FILE_SET_POS?				; positionnement sur un fichier
+;			-----------------
+  POP_RDI								; 		(rdi = FILE_ID)
+  POP_RSI								;		(rsi = offset du début)
+  db 0x48, 0x31, 0xD2						; xor rdx, rdx	(rdx = 0 = SEEK_SET = position du début
+  db 0x6A, 0x08							; push 8
+  db 0x58								; pop rax		(rax = 8= lseek)
+  db 0x0F, 0x05							; syscall
+  db 0x48, 0x89, 0x45, 0x00						; mov QWORD PTR [rbp], rax	(ATTENTION PAS PUSH ! ID de fichier rendu sur le lieu result de la fonction)
+end macro
+
+
 ;			---------------
 macro			SYS_FILE_WRITE?				; ecriture sur un fichier
 ;			---------------
@@ -1159,6 +1179,7 @@ macro			SYS_FILE_READ?				; lecture sur un fichier
   db 0x6A, 0x00							; push 0
   db 0x58								; pop rax		(rax = 0 = sys_read)
   db 0x0F, 0x05							; syscall
+  db 0x48, 0x89, 0x45, 0x00						; mov QWORD PTR [rbp], rax	(ATTENTION PAS PUSH ! ID de fichier rendu sur le lieu result de la fonction)
 end macro
 
 
@@ -1168,6 +1189,8 @@ macro			SYS_FILE_CLOSE?				; fermeture d'un fichier
   POP_RDI								; ID fichier empile
   db 0x6A, 0x03							; push 3
   db 0x58								; pop rax			(rax=3=sys_close )
+  db 0x0F, 0x05							; syscall
+  db 0x48, 0x89, 0x45, 0x00						; mov QWORD PTR [rbp], rax	(ATTENTION PAS PUSH ! ID de fichier rendu sur le lieu result de la fonction)
 end macro
 
 
@@ -1176,9 +1199,9 @@ macro			SYS_FILE_DELETE?				; destruction d'un fichier
 ;			----------------
   POP_RSI								; ptr au doublet @data/@info
   COPY_STRING_APPEND_NUL						; faire une copie sur pile avec NUL en fin pointee par RDI
-;  db 0x48, 0x31, 0xD2						; xor rdx, rdx
   db 0xB8, 0x57, 0x00, 0x00, 0x00					; mov eax, 87			(rax=87=sys_unlink )
   db 0x0F, 0x05							; syscall
+  db 0x48, 0x89, 0x45, 0x00						; mov QWORD PTR [rbp], rax	(ATTENTION PAS PUSH ! ID de fichier rendu sur le lieu result de la fonction)
 end macro
 
 
