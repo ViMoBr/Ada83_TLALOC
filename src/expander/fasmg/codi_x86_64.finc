@@ -37,14 +37,14 @@ end macro
 	; sur processeur x86 64 les mouvements de pile se font en 64 bits (qword)
 	; mais on a choisi de faire les operations arithmetiques en 32 bits pour rester comme sur une architecture 32 bits
 
-	; QUANQ A LA PILE : ON A DECIDE DE LA FAIRE CROITRE VERS LES ADRESSES HAUTES CAR LE SENS HABITUEL DESCENDANT EST INGERABLE POUR CERTAINES VARIABLES LOCALES STRUCTUREES
+	; QUANT A LA PILE : ON A DECIDE DE LA FAIRE CROITRE VERS LES ADRESSES HAUTES CAR LE SENS HABITUEL DESCENDANT EST INGERABLE POUR CERTAINES VARIABLES LOCALES STRUCTUREES
 	; Donc pas possible d'utiliser les push et pop du processeur, on utilise le RBP comme pointeur de pile avec des LEA pour le mettre a jour en essayant de recouvrir les operations
 	; d'acces memoire et de mise a jour du pointeur de pile RBP.
 	; Le ESP reste tout en bas de pile pour gerer une micro-pile descendante des adresses de CALL/RET uniquement.
 	; Attention : le EBP pointe sur la derniere valeur empilee comme qword
 	; AUTRE PROBLEME DE PILE : Les variables dont on connaît la taille a la compilation s'accomodent bien a la pile usuelle, les offsets sont determine a la compilation
 	; MAIS, si l'on a comme en Ada des variables (tableau par exemple) dont la taille n'est connue qu'a l'execution (indices eux-memes variables)
-	; on ne peut pas mettre ces variables sur la pile normale. Mettre ces varaibles dans le tas n'est pas tres satisfaisant car la gestion de la desallocation va poser probleme.
+	; on ne peut pas mettre ces variables sur la pile normale. Mettre ces variables dans le tas n'est pas tres satisfaisant car la gestion de la desallocation va poser probleme.
 	; On invente donc la Co-Pile qui est une suite de blocs alloues dynamiquement pour un niveau d'execution et qui est desallouee a la maniere de la pile usuelle.
 	; De la sorte, il n'y a pas de melange avec les allocations de taille statique.
 	; r14 est le pointeur de sommet de Co-Pile (l'analogue de RBP pour la pile standard, ou de RSP pour la micro-pile des retours/bricolages locaux en assembleur.
@@ -52,6 +52,9 @@ end macro
 	; R15 pointeur de base display des frame pointers
 	; R14 pointeur de haut de co-pile (lieu d'allocation)
 	; R13 pointeur de debut de chaine de frame de co-pile (pour desallocation)
+	; R12 pointeur post haut de tas (zone de tas allouée sur la pile en début d'exécution expansion vers le bas)
+	; R11 pointeur de bloc tas libre (pointe un doublet de quadwords : taille/adresse bloc suivant.
+	:     gestion simple du tas : taille positive = bloc libre ; taille négative = bloc réservé data pointée après le quadword de taille.
 
 
 ;.......................................................................................................................
@@ -912,7 +915,7 @@ macro			USEINFO	lvl, field_name, load_instruc& 	; Reference __u a un __i info
 ;			----------------------------------------
   virtual VARzone
     align_q							; aligner en fonction de l'unite de reservation
-    field_name#__u = $							; lieu ptr use info
+    field_name#__u = $						; lieu ptr use info
     rq 1								; reservation
   end virtual
   load_instruc
@@ -930,7 +933,7 @@ macro			STATOFS	name, siz				; Definition de l'offset statique (pour un record s
   end if
 name = $								; nom offset du champ
   rb siz								; reservation
-size = $
+size = $								; Taille de la structure (sert à l'allocation)
 end macro
 
 ;			-----------------------------------
@@ -1256,7 +1259,8 @@ Elf64_Phdr:
 
 ;		METTRE EN PLACE LA PILE CROISSANTE ET LE DISPLAY
 
-  db 0x48, 0x31, 0xC0						; pour point d'arret debogage
+  db 0x48, 0x31, 0xC0						; xor rax,rax			pour point d'arret debogage
+  db 0x49, 0x89, 0xE4						; mov r12, rsp			post haut du tas
   db 0x48, 0x8D, 0xA4, 0x24, 0x00, 0x00, 0xF0, 0xFF			; lea rsp, [rsp - 1024*1024]		(caler rsp a 1 Mo sous le depart)
   db 0x49, 0x89, 0xE7						; mov r15, rsp			(debut du display de 32 frame pointers)
   db 0x48, 0x8D, 0xAC, 0x24, 0x00, 0x01, 0x00, 0x00			; lea rbp, [rsp + 8*32]		(bas de pile croissante au dessus du display)

@@ -1,0 +1,182 @@
+═══════════════════════════════════════════════════════════════════════════════
+  DOCUMENTATION DU COMPILATEUR TLALOC - INDEX DES FICHIERS
+═══════════════════════════════════════════════════════════════════════════════
+
+Date de génération: 19 novembre 2025
+Projet: Compilateur Ada 83 expérimental TLALOC
+Statistiques: 34,344 lignes de code / 82 fichiers
+
+───────────────────────────────────────────────────────────────────────────────
+📋 FICHIERS DE DOCUMENTATION (5 fichiers)
+───────────────────────────────────────────────────────────────────────────────
+
+1. INDEX.txt (ce fichier)
+   • Liste des fichiers de documentation
+   • Description de chaque fichier
+   • Guide d'utilisation rapide
+
+2. RESUME_ANALYSE_TLALOC.txt (278 lignes, 16 KB)
+   • Vue d'ensemble complète avec tableaux ASCII
+   • Statistiques globales et détaillées
+   • Architecture modulaire illustrée
+   • Workflow de compilation
+   • Répartition du code par module
+   • Insights architecturaux
+   • Recommandations d'analyse
+   
+   📌 COMMENCER ICI pour une vue d'ensemble rapide !
+
+3. README_analyse_TLALOC.md (243 lignes, 6.2 KB)
+   • Guide d'utilisation de la documentation
+   • Description de chaque fichier généré
+   • Instructions pour les diagrammes Mermaid
+   • Statistiques clés résumées
+   • Ordre d'étude recommandé du code
+   
+   📌 LIRE EN SECOND pour comprendre comment utiliser les documents
+
+4. TLALOC_analyse_complete.md (435 lignes, 12 KB)
+   • Analyse structurelle exhaustive
+   • Documentation détaillée de chaque phase
+   • Tous les modules et leurs rôles
+   • Dépendances et interactions
+   • Conformité Ada 83
+   • Glossaire complet
+   
+   📌 RÉFÉRENCE COMPLÈTE pour l'analyse approfondie
+
+5. tlaloc_structure.mermaid (57 lignes, 1.8 KB)
+   • Diagramme simplifié de la structure
+   • Vue d'ensemble des modules principaux
+   • Relations de base
+   
+   📌 DIAGRAMME SIMPLE pour visualisation rapide
+
+6. tlaloc_architecture_detaillee.mermaid (105 lignes, 3.9 KB)
+   • Diagramme complet avec dépendances
+   • Toutes les subunits
+   • Relations "with" et "separate"
+   • Flux de compilation numéroté
+   
+   📌 DIAGRAMME DÉTAILLÉ pour analyse architecturale
+
+───────────────────────────────────────────────────────────────────────────────
+📊 STATISTIQUES PRINCIPALES
+───────────────────────────────────────────────────────────────────────────────
+
+Total de lignes:           34,344
+Nombre de fichiers:        82
+Plus gros module:          SEM_PHASE (22,193 lignes - 64.6%)
+Plus gros fichier:         make_nod.adb (2,925 lignes)
+
+Répartition par phase:
+  • SEM_PHASE:             22,193 lignes (64.6%)
+  • EXPANDER:               5,971 lignes (17.4%)
+  • IDL:                    2,123 lignes (6.2%)
+  • PAR_PHASE:              1,924 lignes (5.6%)
+  • LIB_PHASE:              1,230 lignes (3.6%)
+  • Autres:                   903 lignes (2.6%)
+
+───────────────────────────────────────────────────────────────────────────────
+🎯 GUIDE D'UTILISATION RAPIDE
+───────────────────────────────────────────────────────────────────────────────
+
+Pour une DÉCOUVERTE RAPIDE:
+  1. Lire RESUME_ANALYSE_TLALOC.txt
+  2. Visualiser tlaloc_structure.mermaid
+
+Pour COMPRENDRE LE SYSTÈME:
+  1. Lire README_analyse_TLALOC.md
+  2. Parcourir TLALOC_analyse_complete.md
+  3. Étudier tlaloc_architecture_detaillee.mermaid
+
+Pour ANALYSER LE CODE:
+  1. Consulter TLALOC_analyse_complete.md (sections spécifiques)
+  2. Suivre l'ordre d'étude recommandé dans README
+  3. Utiliser les diagrammes comme référence visuelle
+
+───────────────────────────────────────────────────────────────────────────────
+📁 FICHIERS SOURCES (dans le projet)
+───────────────────────────────────────────────────────────────────────────────
+
+• doc_mise_en_place.md
+  → Document initial du projet
+  → Contexte et organisation
+
+• structure_TLALOC_compiler.md
+  → Structure détaillée du compilateur
+  → Tous les fichiers avec liens GitHub
+  → Nombres de lignes par fichier
+  → 82 fichiers documentés
+
+───────────────────────────────────────────────────────────────────────────────
+🔗 RESSOURCES EXTERNES
+───────────────────────────────────────────────────────────────────────────────
+
+Code source:
+  • GitHub:    https://github.com/ViMoBr/Ada83_TLALOC
+  • Framagit:  https://framagit.org/VMo/ada-83-compiler-tools
+
+Documentation:
+  • Wiki:      https://ada83.org/wiki/
+  • Standard:  MIL-STD-1815A-1983 (Ada 83)
+
+───────────────────────────────────────────────────────────────────────────────
+🛠️ OUTILS RECOMMANDÉS
+───────────────────────────────────────────────────────────────────────────────
+
+Visualisation des diagrammes Mermaid:
+  • En ligne:  https://mermaid.live/
+  • VSCode:    Extension "Markdown Preview Mermaid Support"
+  • GitHub:    Support natif dans les fichiers .md
+
+Analyse du code:
+  • GNAT Studio (IDE Ada)
+  • VSCode + extension Ada
+  • grep/ripgrep pour recherches
+
+───────────────────────────────────────────────────────────────────────────────
+✨ POINTS CLÉS À RETENIR
+───────────────────────────────────────────────────────────────────────────────
+
+Architecture:
+  ✓ 6 phases de compilation bien séparées
+  ✓ Package IDL central pour gestion DIANA
+  ✓ 82 fichiers organisés en modules cohérents
+  ✓ Strict Ada 83 (pas de child packages)
+
+Complexité:
+  ✓ SEM_PHASE = 64.6% du code (analyse sémantique complexe)
+  ✓ 28 subunits spécialisés dans SEM_PHASE
+  ✓ Ratio frontend/backend = 4.8:1
+  ✓ Excellente modularité
+
+Qualité:
+  ✓ Séparation claire des responsabilités
+  ✓ Cohésion élevée, couplage contrôlé
+  ✓ Architecture maintenable
+  ✓ Documentation inline présente
+
+Représentation intermédiaire:
+  ✓ DIANA (graphe de nœuds typés)
+  ✓ LLIR (machine à pile pour FASM)
+  ✓ Options de debug à chaque phase
+
+───────────────────────────────────────────────────────────────────────────────
+📝 NOTES DE VERSION
+───────────────────────────────────────────────────────────────────────────────
+
+Version 2.0 (19 novembre 2025):
+  • Statistiques complètes et exactes (34,344 lignes)
+  • Tous les SEM_PHASE subunits documentés (19,526 lignes)
+  • Document structure_TLALOC_compiler.md vérifié et corrigé
+  • verification_report.md supprimé (obsolète)
+  • Tous les documents mis à jour avec les chiffres exacts
+
+───────────────────────────────────────────────────────────────────────────────
+
+Généré par: Claude (Anthropic) en collaboration avec Vincent Morin
+Projet: TLALOC - Compilateur Ada 83 expérimental
+Université de Bretagne Occidentale
+
+═══════════════════════════════════════════════════════════════════════════════

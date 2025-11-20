@@ -1,0 +1,174 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    TLALOC EXPANDER - DOCUMENTATION PACKAGE                   ║
+║                         Session du 20 novembre 2025                          ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+📦 CONTENU DU PACKAGE (11 fichiers)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📖 DOCUMENTATION PRINCIPALE
+───────────────────────────────────────────────────────────────────────────────
+  1. README.md                           (8.5 KB)  ⭐ Commencer ici
+     → Guide d'utilisation du package
+     
+  2. SYNTHESE_SESSION_TLALOC.md         (11 KB)   📋 Vue d'ensemble
+     → Résumé complet de la session
+     → Architecture TLALOC
+     → Résultats de l'analyse
+     
+  3. DIANA_REFERENCE_EXPANDER.md        (18 KB)   📚 Référence
+     → Guide exhaustif des 231 nœuds DIANA
+     → Détails pour chaque nœud
+     → Patterns de génération
+     
+  4. PLAN_ACTION_EXPANDER.md            (9.3 KB)  🎯 Méthodologie
+     → Plan d'action détaillé
+     → Workflow de développement
+     → Priorisation (3 niveaux)
+
+🔧 OUTIL D'ANALYSE
+───────────────────────────────────────────────────────────────────────────────
+  5. diana_analyzer.py                   (8.4 KB)  🐍 Analyseur Python
+     → Parse la spécification DIANA
+     → Génère statistiques et squelettes
+     → Usage: python3 diana_analyzer.py
+
+📝 SQUELETTES DE CODE (7 fichiers)
+───────────────────────────────────────────────────────────────────────────────
+  6. skeleton_exp.txt                    (6.5 KB)  22 nœuds expressions
+  7. skeleton_stm.txt                    (4.7 KB)  21 nœuds statements
+  8. skeleton_decl.txt                   (4.8 KB)  19 nœuds déclarations
+  9. skeleton_type_def.txt               (3.3 KB)  16 nœuds définitions types
+ 10. skeleton_type_spec.txt              (8.1 KB)  17 nœuds types résolus
+ 11. skeleton_name.txt                   (3.1 KB)  10 nœuds noms
+ 12. skeleton_constraint.txt             (2.0 KB)   7 nœuds contraintes
+
+
+📊 STATISTIQUES DIANA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Total de nœuds DIANA analysés :  231
+
+  Répartition par catégorie :
+    • EXP (Expressions)          :   22 nœuds concrets
+    • STM (Statements)           :   21 nœuds concrets
+    • DECL (Déclarations)        :   19 nœuds concrets
+    • TYPE_DEF (Définitions)     :   16 nœuds concrets
+    • TYPE_SPEC (Types résolus)  :   17 nœuds concrets
+    • NAME (Noms)                :   10 nœuds concrets
+    • CONSTRAINT (Contraintes)   :    7 nœuds concrets
+    ─────────────────────────────────────────────
+    TOTAL NŒUDS CONCRETS À TRAITER : 112 nœuds
+
+
+🎯 PRIORISATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ⚠️  PRIORITÉ HAUTE (requis pour programmes de base)
+      • Littéraux : numeric_literal, string_literal
+      • Variables : used_object_id, variable_decl, constant_decl
+      • Contrôle : assign, if, loop, return
+      • Appels : procedure_call, function_call
+      
+  🔶 PRIORITÉ MOYENNE (programmes courants)
+      • Accès : indexed, selected
+      • Structures : aggregate, record_def, array_def
+      • Contrôle : case, exit
+      • Opérations : conversion, short_circuit
+      
+  🔹 PRIORITÉ BASSE (fonctionnalités avancées)
+      • Concurrence : accept, delay, entry_call
+      • Génériques : instantiation
+      • Pointeurs : access, allocators
+      • Exceptions avancées
+
+
+🚀 UTILISATION RAPIDE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  1. Lire README.md pour comprendre le package
+  2. Lire SYNTHESE_SESSION_TLALOC.md pour le contexte
+  3. Consulter DIANA_REFERENCE_EXPANDER.md comme référence
+  4. Suivre PLAN_ACTION_EXPANDER.md pour développer
+  5. Utiliser les skeleton_*.txt comme templates
+
+  Workflow pour chaque nœud manquant :
+    a) Consulter DIANA_REFERENCE_EXPANDER.md
+    b) Copier le case branch depuis skeleton_*.txt
+    c) Créer un programme Ada 83 test
+    d) Dumper DIANA avec option "P"
+    e) Spécifier le code FASM attendu
+    f) Implémenter le handler
+    g) Tester et valider
+
+
+📈 ESTIMATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Phase                          Durée estimée    Statut
+  ─────────────────────────────────────────────────────────
+  Analyse et préparation           8 heures      ✅ Terminé
+  Audit code existant              6 heures      ⏳ À faire
+  Implémentation nœuds           100 heures      ⏳ À faire
+  Tests et documentation          40 heures      ⏳ À faire
+  ─────────────────────────────────────────────────────────
+  TOTAL                          ~150 heures
+
+
+🔗 RESSOURCES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Code source TLALOC
+    • GitHub   : https://github.com/ViMoBr/Ada83_TLALOC
+    • Framagit : https://framagit.org/VMo/ada-83-compiler-tools
+    
+  Documentation Ada 83
+    • Wiki     : https://ada83.org/wiki/
+    • Standard : MIL-STD-1815A-1983
+
+
+💡 CONCEPTS CLÉS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Préfixes attributs DIANA
+    as_ → Abstract Syntax (arbre syntaxique)
+    lx_ → Lexical (position, symboles)
+    sm_ → Semantic (infos ajoutées)
+    cd_ → Code generation (pour EXPANDER)
+    xd_ → eXtended (liens externes)
+
+  Macros LLIR principales
+    PRO/endPRO    → Délimitation procédure
+    ELB           → Élaboration body
+    LINK/UNLINK   → Gestion frame
+    LCA/LCI/LCR   → Load constants
+    LVA/LVV       → Load variable
+    STV           → Store to variable
+    CALL/RTD      → Appel et retour
+
+
+📋 PROCHAINES ÉTAPES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ☐ Étape 2 : Analyser le code EXPANDER existant
+      → Lire expander*.adb
+      → Identifier nœuds déjà traités
+      → Créer matrice de couverture
+      
+  ☐ Étape 3 : Implémenter nœuds priorité HAUTE
+      → Suivre méthodologie du PLAN_ACTION
+      → Tester chaque nœud individuellement
+      → Validation continue
+      
+  ☐ Étape 4 : Tests de régression
+      → Vérifier que code existant fonctionne
+      → Suite de tests exhaustive
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+  Généré le : 20 novembre 2025
+  Auteur     : Claude (Anthropic) + Vincent Morin
+  Version    : 1.0
+
+═══════════════════════════════════════════════════════════════════════════════

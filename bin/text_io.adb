@@ -10,6 +10,18 @@ is					-------
   STDOUT_LINE		: POSITIVE_COUNT	:= 1;
   STDOUT_COL		: POSITIVE_COUNT	:= 1;
 
+  DEFAULT_INPUT		: FILE_TYPE;
+  DEFAULT_OUTPUT		: FILE_TYPE;
+  DEFAULT_OUTPUT_X		: FILE_TYPE_X	:= new FILE_TYPE_BLK;
+
+			----------
+  procedure		SET_OUTPUT_X	( FILE :in FILE_TYPE_X )
+  is			----------
+  begin
+    DEFAULT_OUTPUT_X.all := FILE.all;
+
+  end	SET_OUTPUT_X;
+	----------
 
 			--   F I L E   M A N A G E M E N T
 

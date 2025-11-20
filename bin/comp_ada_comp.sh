@@ -29,6 +29,7 @@
 ./a83.sh ./ ../src/par_phase/lex.ads w
 ./a83.sh ./ ../src/par_phase/lex.adb w
 ./a83.sh ./ ../src/par_phase/idl-par_phase.adb w
+./a83.sh ./ ../src/par_phase/idl-par_phase-set_dflt.adb w
 #--------------------------------------------------
 #	LIB_PHASE
 #--------------------------------------------------
@@ -74,16 +75,16 @@
 #--------------------------------------------------
 ./a83.sh ./ ../src/ada_comp/idl-write_lib.adb w
 #--------------------------------------------------
-#	CODE_GEN
+#	EXPANDER
 #--------------------------------------------------
-./a83.sh ./ ../src/code_gen/codage_intermediaire.ads w
-./a83.sh ./ ../src/code_gen/codage_intermediaire.adb w
-./a83.sh ./ ../src/code_gen/code_gen.ads w
-./a83.sh ./ ../src/code_gen/code_gen.adb w
-./a83.sh ./ ../src/code_gen/code_gen-structures.adb w
-./a83.sh ./ ../src/code_gen/code_gen-declarations.adb w
-./a83.sh ./ ../src/code_gen/code_gen-instructions.adb w
-./a83.sh ./ ../src/code_gen/code_gen-expressions.adb w
+./a83.sh ./ ../src/expander/codage_intermediaire.ads w
+./a83.sh ./ ../src/expander/codage_intermediaire.adb w
+./a83.sh ./ ../src/expander/code_gen.ads w
+./a83.sh ./ ../src/expander/code_gen.adb w
+./a83.sh ./ ../src/expander/code_gen-structures.adb w
+./a83.sh ./ ../src/expander/code_gen-declarations.adb w
+./a83.sh ./ ../src/expander/code_gen-instructions.adb w
+./a83.sh ./ ../src/expander/code_gen-expressions.adb w
 #--------------------------------------------------
 #	ADA_COMP
 #--------------------------------------------------

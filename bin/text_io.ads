@@ -314,6 +314,22 @@ private
 			  PAGE,
 			  LINE,
 			  COL		: POSITIVE_COUNT;
+			  IS_DEFAULT_IO	: BOOLEAN		:= FALSE;
+			end record;
+
+  type FILE_TYPE_BLK;
+  type FILE_TYPE_X		is access FILE_TYPE_BLK;
+  type FILE_TYPE_BLK	is record
+			  ID		: INTEGER		:= -1;
+			  NAME		: FILE_NAME_BUFFER;
+			  NAME_LEN	: POSITIVE;
+			  MODE		: FILE_MODE;
+			  PAGE_LENGTH,
+			  LINE_LENGTH,
+			  PAGE,
+			  LINE,
+			  COL		: POSITIVE_COUNT;
+			  IS_DEFAULT_IO	: BOOLEAN		:= FALSE;
 			end record;
 
 	-------

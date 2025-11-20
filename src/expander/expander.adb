@@ -264,6 +264,7 @@ end	UTILS;
 
 
   private
+			-- TYPE DECLARATION
 
     procedure CODE_ENUMERATION_DECL		( TYPE_DECL :TREE );
     procedure CODE_INTEGER_DECL		( TYPE_DECL :TREE );
@@ -275,6 +276,7 @@ end	UTILS;
 
     procedure CODE_RECORD_DECL		( TYPE_DECL :TREE );
 
+			-- SUBPROGRAM DECLARATION
 
     procedure CODE_SUBP_ENTRY_HEADER	( SUBP_ENTRY_HEADER :TREE );
     procedure CODE_PARAM_S		( PARAM_S :TREE; FOR_FUNCTION :BOOLEAN := FALSE );
@@ -282,6 +284,9 @@ end	UTILS;
     procedure CODE_IN		( ADA_IN :TREE );
     procedure CODE_IN_OUT		( ADA_IN_OUT :TREE );
     procedure CODE_OUT		( ADA_OUT :TREE );
+
+			-- VAR/CONST DECLARATION
+
     procedure CODE_VC_NAME		( VC_NAME :TREE );
     procedure CODE_ID_S_DECL		( ID_S_DECL :TREE );
     procedure CODE_EXCEPTION_DECL	( EXCEPTION_DECL :TREE );
@@ -369,6 +374,7 @@ end	UTILS;
     procedure CODE_WITH_CONTEXT	( CONTEXT_ELEM_S  :TREE );
     procedure CODE_SUBPROGRAM_BODY	( SUBPROGRAM_BODY :TREE );
     procedure CODE_PACKAGE_BODY	( PACKAGE_BODY :TREE );
+    procedure CODE_SUBUNIT		( SUBUNIT :TREE );
     procedure CODE_SUBUNIT_BODY	( SUBUNIT_BODY :TREE );
     procedure CODE_BODY		( ADA_BODY :TREE );
     procedure CODE_ITEM_S		( ITEM_S :TREE );
