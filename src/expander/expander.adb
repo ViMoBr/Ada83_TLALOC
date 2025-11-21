@@ -112,7 +112,6 @@ end	UTILS;
   procedure CODE_CONTEXT_PRAGMA ( CONTEXT_PRAGMA :TREE );
 --  procedure CODE_ALL_DECL ( ALL_DECL :TREE );
   procedure CODE_BLOCK_MASTER ( BLOCK_MASTER :TREE );
-  procedure CODE_TASK_BODY ( TASK_BODY :TREE );
   procedure CODE_USE_PRAGMA ( USE_PRAGMA :TREE );
   procedure CODE_USE ( ADA_USE :TREE );
   procedure CODE_PRAGMA ( ADA_PRAGMA :TREE );
@@ -254,27 +253,23 @@ end	UTILS;
 				------------
   is
 
-    procedure CODE_SUBPROG_ENTRY_DECL	( SUBPROG_ENTRY_DECL :TREE );
-    procedure CODE_HEADER		( HEADER :TREE );
-    procedure CODE_DECL_S		( DECL_S :TREE );
     procedure CODE_DECL		( DECL :TREE );
+    procedure CODE_DECL_S		( DECL_S :TREE );
+    procedure CODE_SUBPROG_ENTRY_DECL	( SUBPROG_ENTRY_DECL :TREE );
     procedure CODE_PACKAGE_DECL	( PACKAGE_DECL :TREE );
+    procedure CODE_HEADER		( HEADER :TREE );
     procedure CODE_PACKAGE_SPEC	( PACKAGE_SPEC :TREE );
     procedure CODE_GENERIC_DECL	( GENERIC_DECL :TREE );
 
 
   private
+    procedure CODE_NULL_COMP_DECL	( NULL_COMP_DECL :TREE );
+
 			-- TYPE DECLARATION
 
-    procedure CODE_ENUMERATION_DECL		( TYPE_DECL :TREE );
-    procedure CODE_INTEGER_DECL		( TYPE_DECL :TREE );
-    procedure CODE_FIXED_DECL			( TYPE_DECL :TREE );
-    procedure CODE_FLOAT_DECL			( TYPE_DECL :TREE );
-
-    procedure CODE_UNCONSTRAINED_ARRAY_DECL	( TYPE_DECL :TREE );
-    procedure CODE_CONSTRAINED_ARRAY_DECL	( TYPE_DECL :TREE );
-
-    procedure CODE_RECORD_DECL		( TYPE_DECL :TREE );
+    procedure CODE_TASK_DECL		( TASK_DECL :TREE );
+    procedure CODE_UNIT_DECL		( UNIT_DECL :TREE );
+    procedure CODE_SIMPLE_RENAME_DECL	( SIMPLE_RENAME_DECL :TREE );
 
 			-- SUBPROGRAM DECLARATION
 
@@ -296,6 +291,8 @@ end	UTILS;
     procedure CODE_OBJECT_DECL	( OBJECT_DECL :TREE );
     procedure CODE_INIT_OBJECT_NAME	( INIT_OBJECT_NAME :TREE );
     procedure CODE_OBJECT_NAME	( OBJECT_NAME :TREE );
+
+    procedure CODE_ID_DECL		( ID_DECL :TREE );
 
 	------------
   end	DECLARATIONS;
@@ -377,6 +374,7 @@ end	UTILS;
     procedure CODE_BODY		( ADA_BODY :TREE );
     procedure CODE_SUBUNIT		( SUBUNIT :TREE );
     procedure CODE_SUBUNIT_BODY	( SUBUNIT_BODY :TREE );
+    procedure CODE_TASK_BODY		( TASK_BODY :TREE );
     procedure CODE_ITEM_S		( ITEM_S :TREE );
 
 	----------
@@ -445,13 +443,6 @@ end	UTILS;
 
 
   procedure CODE_BLOCK_MASTER ( BLOCK_MASTER :TREE ) is
-  begin
-    null;
-  end;
-
- 
-
-  procedure CODE_TASK_BODY ( TASK_BODY :TREE ) is
   begin
     null;
   end;

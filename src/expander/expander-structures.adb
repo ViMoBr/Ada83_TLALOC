@@ -371,6 +371,15 @@ is
 	-----------------
 
 
+				--------------
+  procedure			CODE_TASK_BODY ( TASK_BODY :TREE )
+  is
+  begin
+    null;
+  end	CODE_TASK_BODY;
+	--------------
+
+
 
 				-----------
   procedure			CODE_ITEM_S		( ITEM_S :TREE )
