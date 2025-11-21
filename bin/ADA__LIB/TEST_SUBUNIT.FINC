@@ -1,0 +1,17 @@
+TEST_SUBUNIT = 'TEST_SUBUNIT'
+namespace TEST_SUBUNIT			;---------- PACKAGE
+elab_spec:				;    SPEC ELAB
+
+					;    BODY ELAB
+
+if defined THE_SUBUNIT_L1_
+PRO	THE_SUBUNIT_L1				;---------- PRO THE_SUBUNIT
+ret_lbl:
+	UNLINK 1
+	RTD
+excep:
+endPRO					;---------- end PRO THE_SUBUNIT
+end if
+begin:					;---------- package BDY INSTRUCTIONS
+end namespace 				;---------- end package BDY TEST_SUBUNIT
+

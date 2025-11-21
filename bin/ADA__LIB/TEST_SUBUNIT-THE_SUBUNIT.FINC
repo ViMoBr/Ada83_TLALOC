@@ -1,0 +1,10 @@
+subunit vue !
+PRO	THE_SUBUNIT_L1				;---------- PRO THE_SUBUNIT
+ELB 1					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+ret_lbl:
+	UNLINK 1
+	RTD
+excep:
+endPRO					;---------- end PRO THE_SUBUNIT

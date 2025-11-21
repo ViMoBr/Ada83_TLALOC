@@ -340,27 +340,14 @@ is
 
 
 
-				-----------
-  procedure			CODE_ITEM_S		( ITEM_S :TREE )
+		------------
+  procedure	CODE_SUBUNIT		( SUBUNIT :TREE )
   is
-    ITEM_SEQ	: SEQ_TYPE	:= LIST ( ITEM_S );
-    ITEM		: TREE;
   begin
-    while  not IS_EMPTY( ITEM_SEQ )  loop
-      POP( ITEM_SEQ, ITEM );
+    CODE_SUBUNIT_BODY( D( AS_SUBUNIT_BODY, SUBUNIT ) );
 
-      if  ITEM.TY in CLASS_DECL
-      then  DECLARATIONS.CODE_DECL( ITEM );
-
-      elsif  ITEM.TY in CLASS_SUBUNIT_BODY
-      then  CODE_SUBUNIT_BODY( ITEM );
-
-      end if;
-
-    end loop;
-
-  end	CODE_ITEM_S;
-	-----------
+  end	CODE_SUBUNIT;
+	------------
 
 
 
@@ -385,14 +372,27 @@ is
 
 
 
-			------------
-  procedure		CODE_SUBUNIT		( SUBUNIT :TREE )
+				-----------
+  procedure			CODE_ITEM_S		( ITEM_S :TREE )
   is
+    ITEM_SEQ	: SEQ_TYPE	:= LIST ( ITEM_S );
+    ITEM		: TREE;
   begin
-    CODE_SUBUNIT_BODY( D( AS_SUBUNIT_BODY, SUBUNIT ) );
+    while  not IS_EMPTY( ITEM_SEQ )  loop
+      POP( ITEM_SEQ, ITEM );
 
-  end	CODE_SUBUNIT;
-	------------
+      if  ITEM.TY in CLASS_DECL
+      then  DECLARATIONS.CODE_DECL( ITEM );
+
+      elsif  ITEM.TY in CLASS_SUBUNIT_BODY
+      then  CODE_SUBUNIT_BODY( ITEM );
+
+      end if;
+
+    end loop;
+
+  end	CODE_ITEM_S;
+	-----------
 
 
 

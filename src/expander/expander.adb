@@ -374,9 +374,9 @@ end	UTILS;
     procedure CODE_WITH_CONTEXT	( CONTEXT_ELEM_S  :TREE );
     procedure CODE_SUBPROGRAM_BODY	( SUBPROGRAM_BODY :TREE );
     procedure CODE_PACKAGE_BODY	( PACKAGE_BODY :TREE );
+    procedure CODE_BODY		( ADA_BODY :TREE );
     procedure CODE_SUBUNIT		( SUBUNIT :TREE );
     procedure CODE_SUBUNIT_BODY	( SUBUNIT_BODY :TREE );
-    procedure CODE_BODY		( ADA_BODY :TREE );
     procedure CODE_ITEM_S		( ITEM_S :TREE );
 
 	----------
