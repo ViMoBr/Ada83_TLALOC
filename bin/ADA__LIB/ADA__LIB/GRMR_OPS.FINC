@@ -1,0 +1,1256 @@
+GRMR_OPS = 'GRMR_OPS'
+namespace GRMR_OPS				;---------- PACKAGE (BDY)
+elab_spec:				;    SPEC ELAB
+
+					; CODE_PACKAGE_SPEC
+ hexa_show ' spec ', $
+
+					; _GRMR_OP ENUMERATION TYPE INFO
+_GRMR_OP = '_GRMR_OP'
+namespace _GRMR_OP
+VAR use__info, Q
+BEGIN_BLOC_DEF
+db 0, 7, "G_ERROR"
+db 1, 3, "N_0"
+db 2, 5, "N_DEF"
+db 3, 3, "N_1"
+db 4, 3, "N_2"
+db 5, 4, "N_N2"
+db 6, 4, "N_V2"
+db 7, 3, "N_3"
+db 8, 4, "N_N3"
+db 9, 4, "N_V3"
+db 10, 3, "N_L"
+db 11, 7, "G_INFIX"
+db 12, 7, "G_UNARY"
+db 13, 11, "G_LX_SYMREP"
+db 14, 11, "G_LX_NUMREP"
+db 15, 12, "G_LX_DEFAULT"
+db 16, 16, "G_NOT_LX_DEFAULT"
+db 17, 5, "G_NIL"
+db 18, 8, "G_INSERT"
+db 19, 8, "G_APPEND"
+db 20, 5, "G_CAT"
+db 21, 6, "G_VOID"
+db 22, 6, "G_LIST"
+db 23, 8, "G_EXCH_1"
+db 24, 8, "G_EXCH_2"
+db 25, 12, "G_CHECK_NAME"
+db 26, 17, "G_CHECK_SUBP_NAME"
+db 27, 19, "G_CHECK_ACCEPT_NAME"
+END_BLOC_DEF 8, 0, 27
+	; SIZ en bits !
+	LCA	SIZ
+	SA	0, use__info
+end namespace
+
+					; _GRMR_OP_NODE ENUMERATION SUBTYPE INFO
+_GRMR_OP_NODE = '_GRMR_OP_NODE'
+namespace _GRMR_OP_NODE
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
+	LI	8
+	SD	0, SIZ__
+	LI	1
+	SB	0, FST
+	LI	10
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.GRMR_OPS._GRMR_OP.use__info
+	SA	0, PARENT__u
+end namespace
+
+					; _GRMR_OP_NULLARY ENUMERATION SUBTYPE INFO
+_GRMR_OP_NULLARY = '_GRMR_OP_NULLARY'
+namespace _GRMR_OP_NULLARY
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
+	LI	8
+	SD	0, SIZ__
+	LI	1
+	SB	0, FST
+	LI	2
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.GRMR_OPS._GRMR_OP.use__info
+	SA	0, PARENT__u
+end namespace
+
+					; _GRMR_OP_UNARY ENUMERATION SUBTYPE INFO
+_GRMR_OP_UNARY = '_GRMR_OP_UNARY'
+namespace _GRMR_OP_UNARY
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
+	LI	8
+	SD	0, SIZ__
+	LI	3
+	SB	0, FST
+	LI	3
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.GRMR_OPS._GRMR_OP.use__info
+	SA	0, PARENT__u
+end namespace
+
+					; _GRMR_OP_BINARY ENUMERATION SUBTYPE INFO
+_GRMR_OP_BINARY = '_GRMR_OP_BINARY'
+namespace _GRMR_OP_BINARY
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
+	LI	8
+	SD	0, SIZ__
+	LI	4
+	SB	0, FST
+	LI	6
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.GRMR_OPS._GRMR_OP.use__info
+	SA	0, PARENT__u
+end namespace
+
+					; _GRMR_OP_TERNARY ENUMERATION SUBTYPE INFO
+_GRMR_OP_TERNARY = '_GRMR_OP_TERNARY'
+namespace _GRMR_OP_TERNARY
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
+	LI	8
+	SD	0, SIZ__
+	LI	7
+	SB	0, FST
+	LI	9
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.GRMR_OPS._GRMR_OP.use__info
+	SA	0, PARENT__u
+end namespace
+
+					; _GRMR_OP_ARBITRARY ENUMERATION SUBTYPE INFO
+_GRMR_OP_ARBITRARY = '_GRMR_OP_ARBITRARY'
+namespace _GRMR_OP_ARBITRARY
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
+	LI	8
+	SD	0, SIZ__
+	LI	10
+	SB	0, FST
+	LI	10
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.GRMR_OPS._GRMR_OP.use__info
+	SA	0, PARENT__u
+end namespace
+
+					; _GRMR_OP_QUOTE ENUMERATION SUBTYPE INFO
+_GRMR_OP_QUOTE = '_GRMR_OP_QUOTE'
+namespace _GRMR_OP_QUOTE
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
+	LI	8
+	SD	0, SIZ__
+	LI	11
+	SB	0, FST
+	LI	12
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.GRMR_OPS._GRMR_OP.use__info
+	SA	0, PARENT__u
+end namespace
+
+					; _GRMR_OP_NOARG ENUMERATION SUBTYPE INFO
+_GRMR_OP_NOARG = '_GRMR_OP_NOARG'
+namespace _GRMR_OP_NOARG
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
+	LI	8
+	SD	0, SIZ__
+	LI	13
+	SB	0, FST
+	LI	 27
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.GRMR_OPS._GRMR_OP.use__info
+	SA	0, PARENT__u
+end namespace
+					; sub program entry decl (in instantiation FALSE )
+					; sub program entry decl (in instantiation FALSE )
+					;    BODY ELAB
+
+					; _HASH_BYTE TYPE RANGE INFO
+_HASH_BYTE = '_HASH_BYTE'
+namespace _HASH_BYTE
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
+	LI	8
+	SD	0, SIZ__
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	0
+	SB	0, FST
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	255
+	SB	0, LST
+end namespace
+ hexa_show 'var elab HCODE ', $
+VAR HCODE_disp, D				; variable entiere
+
+ hexa_show ' disp ', HCODE_disp
+
+					; _HTABLE_TYPE RECORD TYPE INFO
+_HTABLE_TYPE = '_HTABLE_TYPE'
+namespace _HTABLE_TYPE
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+_HN__type = '_HN__type'
+ namespace _HN__type
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
+	LI	8
+	SD	0, _COMP_SIZ
+	LD	0, _COMP_SIZ
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SD	0, _FST_1
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	17
+	SD	0, _LST_1
+	LD	0, _LST_1
+	LD	0, _FST_1
+	SUB
+	INC
+	CLAMP0
+	MUL
+	SD	0, SIZ__
+  virtual at 4
+COMP_SIZ = $
+	rd 1 
+FST_1 = $
+	rd 1 
+LST_1 = $
+	rd 1 
+  end virtual
+end namespace
+USEINFO 0, HN, 	LA 0, _HN__type.use__info
+USEINFO 0, HP, 	LA 0, STANDARD.GRMR_OPS._GRMR_OP.use__info
+virtual at 0				; calcul des offsets statiques
+STATOFS HN, 17, 1
+STATOFS HP, 1, 1
+size = $
+end virtual
+	LI	 size*8
+	SD	0, SIZ__
+end namespace
+ hexa_show 'var elab HTABLE ', $
+_HTABLE__type = '_HTABLE__type'
+namespace _HTABLE__type			; array var constrained array type info
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
+	LI	144
+	SD	0, _COMP_SIZ
+	LD	0, _COMP_SIZ
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	SD	0, _FST_1
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	37
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	1
+	SUB
+; CODE CONVERSION SOURCE DN_UNIVERSAL_INTEGER TARGET DN_INTEGER
+	SD	0, _LST_1
+	LD	0, _LST_1
+	LD	0, _FST_1
+	SUB
+	INC
+	CLAMP0
+	MUL
+	SD	0, SIZ__
+  virtual at 4
+COMP_SIZ = $
+	rd 1 
+FST_1 = $
+	rd 1 
+LST_1 = $
+	rd 1 
+  end virtual
+end namespace
+VAR HTABLE_disp, Q				; variable array : pointeur aux data
+VAR HTABLE__u, Q				; variable array : useinfo pointeur au rec info
+	LA 0, _HTABLE__type.use__info
+	SA	0, HTABLE__u				; array info ptr at __u
+	LD	0, _HTABLE__type.SIZ__
+	LI	8
+	DIV
+	CO_VAR
+	SA	0, HTABLE_disp				; array data ptr at _disp
+
+ hexa_show ' disp ', HTABLE_disp
+ hexa_show 'var elab ITABLE ', $
+_ITABLE__type = '_ITABLE__type'
+namespace _ITABLE__type			; array var constrained array type info
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
+	LI	8
+	SD	0, _COMP_SIZ
+	LD	0, _COMP_SIZ
+	LI	0
+	SD	0, _FST_1
+	LI	27
+	SD	0, _LST_1
+	LD	0, _LST_1
+	LD	0, _FST_1
+	SUB
+	INC
+	CLAMP0
+	MUL
+	SD	0, SIZ__
+  virtual at 4
+COMP_SIZ = $
+	rd 1 
+FST_1 = $
+	rd 1 
+LST_1 = $
+	rd 1 
+  end virtual
+end namespace
+VAR ITABLE_disp, Q				; variable array : pointeur aux data
+VAR ITABLE__u, Q				; variable array : useinfo pointeur au rec info
+	LA 0, _ITABLE__type.use__info
+	SA	0, ITABLE__u				; array info ptr at __u
+	LD	0, _ITABLE__type.SIZ__
+	LI	8
+	DIV
+	CO_VAR
+	SA	0, ITABLE_disp				; array data ptr at _disp
+
+ hexa_show ' disp ', ITABLE_disp
+
+if defined HASH_SEARCH_L1_
+PRO	HASH_SEARCH_L1				;---------- PRO HASH_SEARCH
+ hexa_show 'HASH_SEARCH_L1 ', $
+PRMS					;    debut parametrage
+	PRM S_ofs				; in
+endPRMS					;    fin parametrage
+ELB 1					;    BODY ELAB
+ hexa_show 'var elab A_17 ', $
+_A_17__type = '_A_17__type'
+namespace _A_17__type			; array var constrained array type info
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	1, SIZ__
+	SA	1, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
+	LI	8
+	SD	1, _COMP_SIZ
+	LD	1, _COMP_SIZ
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SD	1, _FST_1
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	17
+	SD	1, _LST_1
+	LD	1, _LST_1
+	LD	1, _FST_1
+	SUB
+	INC
+	CLAMP0
+	MUL
+	SD	1, SIZ__
+  virtual at 4
+COMP_SIZ = $
+	rd 1 
+FST_1 = $
+	rd 1 
+LST_1 = $
+	rd 1 
+  end virtual
+end namespace
+VAR A_17_disp, Q				; variable array : pointeur aux data
+VAR A_17__u, Q				; variable array : useinfo pointeur au rec info
+	LA 1, _A_17__type.use__info
+	SA	1, A_17__u				; array info ptr at __u
+	LD	1, _A_17__type.SIZ__
+	LI	8
+	DIV
+	CO_VAR
+	SA	1, A_17_disp				; array data ptr at _disp
+					; array data aggregate
+	LA	1, A_17_disp
+					; Assign_array_aggregate dynamic type DN_CONSTRAINED_ARRAY
+namespace ANON_32_34_aga
+  VAR _FST_1, D
+  VAR _LST_1, D
+  VAR _LEN_1, D
+  VAR _STR_1, D
+  VAR _PTR_1, Q
+  VAR _CNT_1, D
+  VAR _EMIS_1, D
+end namespace
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SD  1, ANON_32_34_aga._FST_1
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	17
+	SD  1, ANON_32_34_aga._LST_1
+	LD  1, ANON_32_34_aga._LST_1
+	LD  1, ANON_32_34_aga._FST_1
+	SUB
+	INC
+	CLAMP0
+	SD  1, ANON_32_34_aga._LEN_1
+	LI	1
+	SD  1, ANON_32_34_aga._STR_1
+	SA  1, ANON_32_34_aga._PTR_1
+	LI	0
+	SD  1, ANON_32_34_aga._EMIS_1
+	LD  1, ANON_32_34_aga._LEN_1
+	LD  1, ANON_32_34_aga._EMIS_1
+	SUB
+	SD  1, ANON_32_34_aga._CNT_1
+	LD  1, ANON_32_34_aga._CNT_1
+	LI	0
+	CLE
+	BT  L3
+L2:
+	LI	32
+	SIB  1, ANON_32_34_aga._PTR_1, 0
+	LA  1, ANON_32_34_aga._PTR_1
+	LD  1, ANON_32_34_aga._STR_1
+	ADD
+	SA  1, ANON_32_34_aga._PTR_1
+	LD  1, ANON_32_34_aga._EMIS_1
+	INC
+	SD  1, ANON_32_34_aga._EMIS_1
+	LD  1, ANON_32_34_aga._CNT_1
+	DEC
+	DUP
+	SD  1, ANON_32_34_aga._CNT_1
+	LI	0
+	CGT
+	BT  L2
+L3:
+
+ hexa_show ' disp ', A_17_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+					; debut if
+	LVA	1, -S_ofs
+	LIA	, , 8
+	LD	, _STRING.LST_1
+	LVA	1, -S_ofs
+	LIA	, , 8
+	LD	, _STRING.FST_1
+	SUB
+	INC
+	CLAMP0
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	17
+	CLE
+	BF	L7
+	LA 1, STANDARD.GRMR_OPS.HASH_SEARCH_L1.A_17_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	LID 1, STANDARD.GRMR_OPS.HASH_SEARCH_L1.A_17__u, STANDARD._STRING.FST_1
+	SUB
+	LI	1
+	MUL
+	ADD
+	LVA	1, -S_ofs
+	LIA	, , 8
+	LD	, _STRING.LST_1
+	LVA	1, -S_ofs
+	LIA	, , 8
+	LD	, _STRING.FST_1
+	SUB
+	INC
+	CLAMP0
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SUB
+	INC
+	CLAMP0
+	LI	1
+	MUL
+	LA  1,	-S_ofs
+	LA
+	BLKMOV
+	BRA	L6
+L7:
+L6:					; post if
+	LVA	1, -S_ofs
+	LIA	, , 8
+	LD	, _STRING.LST_1
+	LVA	1, -S_ofs
+	LIA	, , 8
+	LD	, _STRING.FST_1
+	SUB
+	INC
+	CLAMP0
+	LVA	1, -S_ofs
+	LIA	, , 0				; array data start address on stack
+	LVA	1, -S_ofs
+	LIA	, , 8
+	LD	, _STRING.LST_1
+	DUP
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.FST_1			; (index - FST_1) * SIZ_1
+	SUB
+	LVA	1, -S_ofs
+	LIA	, , 8
+	LD	, STANDARD._STRING.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	ULB
+	ADD
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	37
+	DUP
+	LI	0
+	CEQ
+	BT	STANDARD.ne_raise_
+	MODI
+	SD  0,	STANDARD.GRMR_OPS.HCODE_disp
+LOOP__1:
+; CODE composite "/=" _STRING
+VAR	ANON_39_12_L10_G_data, Q
+VAR	ANON_39_12_L10_G_info, Q
+VAR	ANON_39_12_L10_G_len,  Q
+	LVA 1,	A_17_disp
+	DUP
+	LA  ,  0
+	SA  1, ANON_39_12_L10_G_data
+	LA  ,  8
+	SA  1, ANON_39_12_L10_G_info
+	LID 1, ANON_39_12_L10_G_info, STANDARD._STRING.LST_1
+	LID 1, ANON_39_12_L10_G_info, STANDARD._STRING.FST_1
+	SUB
+	INC
+	CLAMP0
+	SA  1, ANON_39_12_L10_G_len
+VAR	ANON_39_20_L10_D_data, Q
+VAR	ANON_39_20_L10_D_info, Q
+VAR	ANON_39_20_L10_D_len,  Q
+VAR	ANON_39_20_L10_D_disp, Q
+VAR	ANON_39_20_L10_D__u,   Q
+namespace ANON_39_20_L10_D_info
+  VAR SIZ__, D
+  VAR _COMP_SIZ, D
+  VAR _FST_1, D
+  VAR _LST_1, D
+end namespace
+	LA	 0, STANDARD.GRMR_OPS.HTABLE_disp		; array data start address on stack
+	LD 0,	STANDARD.GRMR_OPS.HCODE_disp
+	DUP
+	LID	0, STANDARD.GRMR_OPS.HTABLE__u, STANDARD.GRMR_OPS._HTABLE__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	0, STANDARD.GRMR_OPS.HTABLE__u, STANDARD.GRMR_OPS._HTABLE__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	0, STANDARD.GRMR_OPS.HTABLE__u, STANDARD.GRMR_OPS._HTABLE__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	0, STANDARD.GRMR_OPS.HTABLE__u, STANDARD.GRMR_OPS._HTABLE__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LVA	, STANDARD.GRMR_OPS._HTABLE_TYPE.HN
+	SA  1, ANON_39_20_L10_D_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SD  1, ANON_39_20_L10_D_info._FST_1
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	17
+	SD  1, ANON_39_20_L10_D_info._LST_1
+	LI	8
+	SD  1, ANON_39_20_L10_D_info._COMP_SIZ
+	LD  1, ANON_39_20_L10_D_info._LST_1
+	LD  1, ANON_39_20_L10_D_info._FST_1
+	SUB
+	INC
+	CLAMP0
+	LI	8
+	MUL
+	SD  1, ANON_39_20_L10_D_info.SIZ__
+	LVA 1, ANON_39_20_L10_D_info.SIZ__
+	SA  1, ANON_39_20_L10_D__u
+	LVA 1, ANON_39_20_L10_D_disp
+	DUP
+	LA  ,  0
+	SA  1, ANON_39_20_L10_D_data
+	LA  ,  8
+	SA  1, ANON_39_20_L10_D_info
+	LID 1, ANON_39_20_L10_D_info, STANDARD._STRING.LST_1
+	LID 1, ANON_39_20_L10_D_info, STANDARD._STRING.FST_1
+	SUB
+	INC
+	CLAMP0
+	SA  1, ANON_39_20_L10_D_len
+	LA  1, ANON_39_12_L10_G_len
+	LA  1, ANON_39_20_L10_D_len
+	CEQ
+	DUP
+	BF	L11
+	DROP
+	LA  1, ANON_39_12_L10_G_data
+	LA  1, ANON_39_12_L10_G_len
+	LA  1, ANON_39_20_L10_D_data
+	BLKCMP
+L11:
+	LI	1
+	OUX
+	DUP
+	BF	L9
+	DROP
+	LA	 0, STANDARD.GRMR_OPS.HTABLE_disp		; array data start address on stack
+	LD 0,	STANDARD.GRMR_OPS.HCODE_disp
+	DUP
+	LID	0, STANDARD.GRMR_OPS.HTABLE__u, STANDARD.GRMR_OPS._HTABLE__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	0, STANDARD.GRMR_OPS.HTABLE__u, STANDARD.GRMR_OPS._HTABLE__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	0, STANDARD.GRMR_OPS.HTABLE__u, STANDARD.GRMR_OPS._HTABLE__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	0, STANDARD.GRMR_OPS.HTABLE__u, STANDARD.GRMR_OPS._HTABLE__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	ULB	, STANDARD.GRMR_OPS._HTABLE_TYPE.HP
+	LI	0
+	CNE
+L9:
+	BF	L8
+	LD 0,	STANDARD.GRMR_OPS.HCODE_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	ADD
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	37
+	DUP
+	LI	0
+	CEQ
+	BT	STANDARD.ne_raise_
+	MODI
+	SD  0,	STANDARD.GRMR_OPS.HCODE_disp
+	BRA	LOOP__1
+L8:					; post loop LOOP__1
+ret_lbl:
+	UNLINK 1
+	RTD	prm_siz
+excep:
+endPRO					;---------- end PRO HASH_SEARCH
+end if
+
+if defined GRMR_OP_VALUE_L1_
+PRO	GRMR_OP_VALUE_L1			;---------- PRO GRMR_OP_VALUE
+ hexa_show 'GRMR_OP_VALUE_L1 ', $
+PRMS					;    debut parametrage
+	PRM S_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	LA  1,	-S_ofs
+	CALL	STANDARD.GRMR_OPS. ,HASH_SEARCH_L1
+; CODE_RETURN : EXPR TYPE = DN_ENUMERATION  VUE COMPLETE = DN_ENUMERATION
+	LA	 0, STANDARD.GRMR_OPS.HTABLE_disp		; array data start address on stack
+	LD 0,	STANDARD.GRMR_OPS.HCODE_disp
+	DUP
+	LID	0, STANDARD.GRMR_OPS.HTABLE__u, STANDARD.GRMR_OPS._HTABLE__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	0, STANDARD.GRMR_OPS.HTABLE__u, STANDARD.GRMR_OPS._HTABLE__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	0, STANDARD.GRMR_OPS.HTABLE__u, STANDARD.GRMR_OPS._HTABLE__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	0, STANDARD.GRMR_OPS.HTABLE__u, STANDARD.GRMR_OPS._HTABLE__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	ULB	, STANDARD.GRMR_OPS._HTABLE_TYPE.HP
+	SQ  1,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINK 1
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO GRMR_OP_VALUE
+end if
+
+if defined GRMR_OP_IMAGE_L2_
+PRO	GRMR_OP_IMAGE_L2			;---------- PRO GRMR_OP_IMAGE
+ hexa_show 'GRMR_OP_IMAGE_L2 ', $
+PRMS					;    debut parametrage
+	PRM GO_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1					;    BODY ELAB
+ hexa_show 'var elab LL ', $
+VAR LL_disp, D				; variable entiere
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	17
+	SD  1,	LL_disp
+
+ hexa_show ' disp ', LL_disp
+ hexa_show 'var elab TXT ', $
+_TXT__type = '_TXT__type'
+namespace _TXT__type			; array var constrained array type info
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	1, SIZ__
+	SA	1, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
+	LI	8
+	SD	1, _COMP_SIZ
+	LD	1, _COMP_SIZ
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SD	1, _FST_1
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	17
+	SD	1, _LST_1
+	LD	1, _LST_1
+	LD	1, _FST_1
+	SUB
+	INC
+	CLAMP0
+	MUL
+	SD	1, SIZ__
+  virtual at 4
+COMP_SIZ = $
+	rd 1 
+FST_1 = $
+	rd 1 
+LST_1 = $
+	rd 1 
+  end virtual
+end namespace
+VAR TXT_disp, Q				; variable array : pointeur aux data
+VAR TXT__u, Q				; variable array : useinfo pointeur au rec info
+	LA 1, _TXT__type.use__info
+	SA	1, TXT__u				; array info ptr at __u
+	LD	1, _TXT__type.SIZ__
+	LI	8
+	DIV
+	CO_VAR
+	SA	1, TXT_disp				; array data ptr at _disp
+	LA	1, TXT_disp
+	LD	1, _TXT__type.SIZ__
+	LI	8
+	DIV
+	LA	 0, STANDARD.GRMR_OPS.HTABLE_disp		; array data start address on stack
+	LA	 0, STANDARD.GRMR_OPS.ITABLE_disp		; array data start address on stack
+	ULB  1,	-GO_ofs
+	DUP
+	LID	0, STANDARD.GRMR_OPS.ITABLE__u, STANDARD.GRMR_OPS._ITABLE__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	0, STANDARD.GRMR_OPS.ITABLE__u, STANDARD.GRMR_OPS._ITABLE__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	0, STANDARD.GRMR_OPS.ITABLE__u, STANDARD.GRMR_OPS._ITABLE__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	0, STANDARD.GRMR_OPS.ITABLE__u, STANDARD.GRMR_OPS._ITABLE__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	ULB
+; CODE CONVERSION SOURCE DN_INTEGER TARGET DN_INTEGER
+	DUP
+	LID	0, STANDARD.GRMR_OPS.HTABLE__u, STANDARD.GRMR_OPS._HTABLE__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	0, STANDARD.GRMR_OPS.HTABLE__u, STANDARD.GRMR_OPS._HTABLE__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	0, STANDARD.GRMR_OPS.HTABLE__u, STANDARD.GRMR_OPS._HTABLE__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	0, STANDARD.GRMR_OPS.HTABLE__u, STANDARD.GRMR_OPS._HTABLE__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LVA	, STANDARD.GRMR_OPS._HTABLE_TYPE.HN
+	BLKMOV
+
+ hexa_show ' disp ', TXT_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+LOOP__2:
+	LA	 1, STANDARD.GRMR_OPS.GRMR_OP_IMAGE_L2.TXT_disp	; array data start address on stack
+	LD 1,	LL_disp
+	DUP
+	LID	1, STANDARD.GRMR_OPS.GRMR_OP_IMAGE_L2.TXT__u, STANDARD._STRING.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	1, STANDARD.GRMR_OPS.GRMR_OP_IMAGE_L2.TXT__u, STANDARD._STRING.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	1, STANDARD.GRMR_OPS.GRMR_OP_IMAGE_L2.TXT__u, STANDARD._STRING.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	1, STANDARD.GRMR_OPS.GRMR_OP_IMAGE_L2.TXT__u, STANDARD._STRING.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	ULB
+	LI	32
+	CNE
+	BT	L16
+	LD 1,	LL_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SUB
+	SD  1,	LL_disp
+	BRA	LOOP__2
+L16:					; post loop LOOP__2
+; CODE_RETURN : EXPR TYPE = DN_ARRAY  VUE COMPLETE = DN_ARRAY
+	LA 1, STANDARD.GRMR_OPS.GRMR_OP_IMAGE_L2.TXT_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	LID 1, STANDARD.GRMR_OPS.GRMR_OP_IMAGE_L2.TXT__u, STANDARD._STRING.FST_1
+	SUB
+	LI	1
+	MUL
+	ADD
+namespace ANON_69_12			; ensemble doublet @data/@info pour slice anonyme source
+VAR ANON_69_12_disp, Q
+VAR ANON_69_12__u, Q
+VAR SIZ__, D
+VAR COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
+	SA	1, ANON_69_12_disp
+	LVA	1, SIZ__
+	SA	1, ANON_69_12__u
+	LI	8
+	SD	1, COMP_SIZ
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SD	1, _FST_1
+	LD 1,	LL_disp
+	SD	1, _LST_1
+	LD	1, _LST_1
+	LD	1, _FST_1
+	SUB
+	INC
+	CLAMP0
+	LI	8
+	MUL
+	SD	1, SIZ__
+	LVA	1, ANON_69_12_disp
+end namespace
+VAR	RET_INFO_L18, Q
+	DUP
+	LA  ,  0
+	SIQ   1, -result__ofs,  0
+	DUP
+	LA  ,  8
+	SA   1, RET_INFO_L18
+	DROP
+	LA   1, -result__ofs
+	LA  ,  8
+	LI	16
+	LA   1, RET_INFO_L18
+	BLKMOV
+	BRA ret_lbl
+ret_lbl:
+	UNLINK 1
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO GRMR_OP_IMAGE
+end if
+begin:					;---------- package BDY INSTRUCTIONS
+namespace	BLOCK__3
+ELB 1					;    BODY ELAB
+
+if defined STASH_L21_
+PRO	STASH_L21				;---------- PRO STASH
+ hexa_show 'STASH_L21 ', $
+PRMS					;    debut parametrage
+	PRM P_ofs				; in
+	PRM S_ofs				; in
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+ hexa_show 'var elab A_17 ', $
+_A_17__type = '_A_17__type'
+namespace _A_17__type			; array var constrained array type info
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	2, SIZ__
+	SA	2, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
+	LI	8
+	SD	2, _COMP_SIZ
+	LD	2, _COMP_SIZ
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SD	2, _FST_1
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	17
+	SD	2, _LST_1
+	LD	2, _LST_1
+	LD	2, _FST_1
+	SUB
+	INC
+	CLAMP0
+	MUL
+	SD	2, SIZ__
+  virtual at 4
+COMP_SIZ = $
+	rd 1 
+FST_1 = $
+	rd 1 
+LST_1 = $
+	rd 1 
+  end virtual
+end namespace
+VAR A_17_disp, Q				; variable array : pointeur aux data
+VAR A_17__u, Q				; variable array : useinfo pointeur au rec info
+	LA 2, _A_17__type.use__info
+	SA	2, A_17__u				; array info ptr at __u
+	LD	2, _A_17__type.SIZ__
+	LI	8
+	DIV
+	CO_VAR
+	SA	2, A_17_disp				; array data ptr at _disp
+					; array data aggregate
+	LA	2, A_17_disp
+					; Assign_array_aggregate dynamic type DN_CONSTRAINED_ARRAY
+namespace ANON_81_36_aga
+  VAR _FST_1, D
+  VAR _LST_1, D
+  VAR _LEN_1, D
+  VAR _STR_1, D
+  VAR _PTR_1, Q
+  VAR _CNT_1, D
+  VAR _EMIS_1, D
+end namespace
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SD  2, ANON_81_36_aga._FST_1
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	17
+	SD  2, ANON_81_36_aga._LST_1
+	LD  2, ANON_81_36_aga._LST_1
+	LD  2, ANON_81_36_aga._FST_1
+	SUB
+	INC
+	CLAMP0
+	SD  2, ANON_81_36_aga._LEN_1
+	LI	1
+	SD  2, ANON_81_36_aga._STR_1
+	SA  2, ANON_81_36_aga._PTR_1
+	LI	0
+	SD  2, ANON_81_36_aga._EMIS_1
+	LD  2, ANON_81_36_aga._LEN_1
+	LD  2, ANON_81_36_aga._EMIS_1
+	SUB
+	SD  2, ANON_81_36_aga._CNT_1
+	LD  2, ANON_81_36_aga._CNT_1
+	LI	0
+	CLE
+	BT  L23
+L22:
+	LI	32
+	SIB  2, ANON_81_36_aga._PTR_1, 0
+	LA  2, ANON_81_36_aga._PTR_1
+	LD  2, ANON_81_36_aga._STR_1
+	ADD
+	SA  2, ANON_81_36_aga._PTR_1
+	LD  2, ANON_81_36_aga._EMIS_1
+	INC
+	SD  2, ANON_81_36_aga._EMIS_1
+	LD  2, ANON_81_36_aga._CNT_1
+	DEC
+	DUP
+	SD  2, ANON_81_36_aga._CNT_1
+	LI	0
+	CGT
+	BT  L22
+L23:
+
+ hexa_show ' disp ', A_17_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	LA  2,	-S_ofs
+	CALL	STANDARD.GRMR_OPS. ,HASH_SEARCH_L1
+	LA 2, STANDARD.GRMR_OPS.BLOCK__3.STASH_L21.A_17_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	LID 2, STANDARD.GRMR_OPS.BLOCK__3.STASH_L21.A_17__u, STANDARD._STRING.FST_1
+	SUB
+	LI	1
+	MUL
+	ADD
+	LVA	2, -S_ofs
+	LIA	, , 8
+	LD	, _STRING.LST_1
+	LVA	2, -S_ofs
+	LIA	, , 8
+	LD	, _STRING.FST_1
+	SUB
+	INC
+	CLAMP0
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SUB
+	INC
+	CLAMP0
+	LI	1
+	MUL
+	LA  2,	-S_ofs
+	LA
+	BLKMOV
+	LA	 0, STANDARD.GRMR_OPS.HTABLE_disp		; array data start address on stack
+	LD 0,	STANDARD.GRMR_OPS.HCODE_disp
+	DUP
+	LID	0, STANDARD.GRMR_OPS.HTABLE__u, STANDARD.GRMR_OPS._HTABLE__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	0, STANDARD.GRMR_OPS.HTABLE__u, STANDARD.GRMR_OPS._HTABLE__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	0, STANDARD.GRMR_OPS.HTABLE__u, STANDARD.GRMR_OPS._HTABLE__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	0, STANDARD.GRMR_OPS.HTABLE__u, STANDARD.GRMR_OPS._HTABLE__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+					; Assign_record_aggregate type DN_RECORD
+	DUP
+	LVA	, STANDARD.GRMR_OPS._HTABLE_TYPE.HN
+	LI	17
+	LVA 2,	A_17_disp
+	LA  ,  0
+	BLKMOV
+	DUP
+	LVA	, STANDARD.GRMR_OPS._HTABLE_TYPE.HP
+	ULB  2,	-P_ofs
+	SB
+	DROP
+	LA	 0, STANDARD.GRMR_OPS.ITABLE_disp		; array data start address on stack
+	ULB  2,	-P_ofs
+	DUP
+	LID	0, STANDARD.GRMR_OPS.ITABLE__u, STANDARD.GRMR_OPS._ITABLE__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	0, STANDARD.GRMR_OPS.ITABLE__u, STANDARD.GRMR_OPS._ITABLE__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	0, STANDARD.GRMR_OPS.ITABLE__u, STANDARD.GRMR_OPS._ITABLE__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	0, STANDARD.GRMR_OPS.ITABLE__u, STANDARD.GRMR_OPS._ITABLE__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LD 0,	STANDARD.GRMR_OPS.HCODE_disp
+; CODE CONVERSION SOURCE DN_INTEGER TARGET DN_INTEGER
+	SB
+ret_lbl:
+	UNLINK 2
+	RTD	prm_siz
+excep:
+endPRO					;---------- end PRO STASH
+end if
+begin:					;---------- package BDY INSTRUCTIONS
+STR STR_L28, "$0"				; constante string="$0"
+	LCA	STR_L28.data_ptr
+	LI  1
+	CALL	STANDARD.GRMR_OPS.BLOCK__3. ,STASH_L21
+STR STR_L29, "$DEF"				; constante string="$DEF"
+	LCA	STR_L29.data_ptr
+	LI  2
+	CALL	STANDARD.GRMR_OPS.BLOCK__3. ,STASH_L21
+STR STR_L30, "$1"				; constante string="$1"
+	LCA	STR_L30.data_ptr
+	LI  3
+	CALL	STANDARD.GRMR_OPS.BLOCK__3. ,STASH_L21
+STR STR_L31, "$2"				; constante string="$2"
+	LCA	STR_L31.data_ptr
+	LI  4
+	CALL	STANDARD.GRMR_OPS.BLOCK__3. ,STASH_L21
+STR STR_L32, "$3"				; constante string="$3"
+	LCA	STR_L32.data_ptr
+	LI  7
+	CALL	STANDARD.GRMR_OPS.BLOCK__3. ,STASH_L21
+STR STR_L33, "$N2"				; constante string="$N2"
+	LCA	STR_L33.data_ptr
+	LI  5
+	CALL	STANDARD.GRMR_OPS.BLOCK__3. ,STASH_L21
+STR STR_L34, "$N3"				; constante string="$N3"
+	LCA	STR_L34.data_ptr
+	LI  8
+	CALL	STANDARD.GRMR_OPS.BLOCK__3. ,STASH_L21
+STR STR_L35, "$V2"				; constante string="$V2"
+	LCA	STR_L35.data_ptr
+	LI  6
+	CALL	STANDARD.GRMR_OPS.BLOCK__3. ,STASH_L21
+STR STR_L36, "$V3"				; constante string="$V3"
+	LCA	STR_L36.data_ptr
+	LI  9
+	CALL	STANDARD.GRMR_OPS.BLOCK__3. ,STASH_L21
+STR STR_L37, "$L"				; constante string="$L"
+	LCA	STR_L37.data_ptr
+	LI  10
+	CALL	STANDARD.GRMR_OPS.BLOCK__3. ,STASH_L21
+STR STR_L38, "infix"			; constante string="infix"
+	LCA	STR_L38.data_ptr
+	LI  11
+	CALL	STANDARD.GRMR_OPS.BLOCK__3. ,STASH_L21
+STR STR_L39, "unary"			; constante string="unary"
+	LCA	STR_L39.data_ptr
+	LI  12
+	CALL	STANDARD.GRMR_OPS.BLOCK__3. ,STASH_L21
+STR STR_L40, "lx_symrep"			; constante string="lx_symrep"
+	LCA	STR_L40.data_ptr
+	LI  13
+	CALL	STANDARD.GRMR_OPS.BLOCK__3. ,STASH_L21
+STR STR_L41, "lx_numrep"			; constante string="lx_numrep"
+	LCA	STR_L41.data_ptr
+	LI  14
+	CALL	STANDARD.GRMR_OPS.BLOCK__3. ,STASH_L21
+STR STR_L42, "lx_default"			; constante string="lx_default"
+	LCA	STR_L42.data_ptr
+	LI  15
+	CALL	STANDARD.GRMR_OPS.BLOCK__3. ,STASH_L21
+STR STR_L43, "not_lx_default"			; constante string="not_lx_default"
+	LCA	STR_L43.data_ptr
+	LI  16
+	CALL	STANDARD.GRMR_OPS.BLOCK__3. ,STASH_L21
+STR STR_L44, "nil"				; constante string="nil"
+	LCA	STR_L44.data_ptr
+	LI  17
+	CALL	STANDARD.GRMR_OPS.BLOCK__3. ,STASH_L21
+STR STR_L45, "insert"			; constante string="insert"
+	LCA	STR_L45.data_ptr
+	LI  18
+	CALL	STANDARD.GRMR_OPS.BLOCK__3. ,STASH_L21
+STR STR_L46, "append"			; constante string="append"
+	LCA	STR_L46.data_ptr
+	LI  19
+	CALL	STANDARD.GRMR_OPS.BLOCK__3. ,STASH_L21
+STR STR_L47, "cat"				; constante string="cat"
+	LCA	STR_L47.data_ptr
+	LI  20
+	CALL	STANDARD.GRMR_OPS.BLOCK__3. ,STASH_L21
+STR STR_L48, "void"				; constante string="void"
+	LCA	STR_L48.data_ptr
+	LI  21
+	CALL	STANDARD.GRMR_OPS.BLOCK__3. ,STASH_L21
+STR STR_L49, "list"				; constante string="list"
+	LCA	STR_L49.data_ptr
+	LI  22
+	CALL	STANDARD.GRMR_OPS.BLOCK__3. ,STASH_L21
+STR STR_L50, "exch_1"			; constante string="exch_1"
+	LCA	STR_L50.data_ptr
+	LI  23
+	CALL	STANDARD.GRMR_OPS.BLOCK__3. ,STASH_L21
+STR STR_L51, "exch_2"			; constante string="exch_2"
+	LCA	STR_L51.data_ptr
+	LI  24
+	CALL	STANDARD.GRMR_OPS.BLOCK__3. ,STASH_L21
+STR STR_L52, "check_name"			; constante string="check_name"
+	LCA	STR_L52.data_ptr
+	LI  25
+	CALL	STANDARD.GRMR_OPS.BLOCK__3. ,STASH_L21
+STR STR_L53, "check_subp_name"		; constante string="check_subp_name"
+	LCA	STR_L53.data_ptr
+	LI  26
+	CALL	STANDARD.GRMR_OPS.BLOCK__3. ,STASH_L21
+STR STR_L54, "check_accept_name"		; constante string="check_accept_name"
+	LCA	STR_L54.data_ptr
+	LI  27
+	CALL	STANDARD.GRMR_OPS.BLOCK__3. ,STASH_L21
+	UNLINK 1
+endPRO
+end namespace 				;---------- end package BDY GRMR_OPS
+

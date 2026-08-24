@@ -6,54 +6,54 @@ namespace SYSTEM				;---------- PACKAGE DECLARATION
 					; _NAME ENUMERATION TYPE INFO
 _NAME = '_NAME'
 namespace _NAME
-VAR use__info, q
+VAR use__info, Q
 BEGIN_BLOC_DEF
 db 0, 6, "X86_64"
 END_BLOC_DEF 8, 0, 0
 	; SIZ en bits !
 	LCA	SIZ
-	Sa	0, use__info
+	SA	0, use__info
 end namespace
  hexa_show 'var elab SYSTEM_NAME ', $
-VAR SYSTEM_NAME_disp, b			; variable entiere
+VAR SYSTEM_NAME_disp, B			; variable entiere
 	LI	0
-	Sb  0,	STANDARD.SYSTEM.SYSTEM_NAME_disp
+	SB  0,	STANDARD.SYSTEM.SYSTEM_NAME_disp
 
  hexa_show ' disp ', SYSTEM_NAME_disp
 
 					; _PRIORITY INTEGER SUBTYPE INFO
 _PRIORITY = '_PRIORITY'
 namespace _PRIORITY
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, d
-VAR LST, d
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, D
+VAR LST, D
 	LI	32
-	Sd	0, SIZ
+	SD	0, SIZ__
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	0
-	Sd	0, FST
+	SD	0, FST
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	10
-	Sd	0, LST
-VAR PARENT__u, q
-	La	0, STANDARD._INTEGER.use__info
-	Sa	0, PARENT__u
+	SD	0, LST
+VAR PARENT__u, Q
+	LA	0, STANDARD._INTEGER.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _ADDRESS INTEGER SUBTYPE INFO
 _ADDRESS = '_ADDRESS'
 namespace _ADDRESS
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, q
-VAR LST, q
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, Q
+VAR LST, Q
 	LI	64
-	Sd	0, SIZ
+	SD	0, SIZ__
 ; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
 	LI	2
 ; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
@@ -61,7 +61,7 @@ VAR LST, q
 	DEC
 	SHL
 	NEG
-	Sq	0, FST
+	SQ	0, FST
 ; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
 	LI	2
 ; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
@@ -71,16 +71,16 @@ VAR LST, q
 ; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
 	LI	1
 	SUB
-	Sq	0, LST
-VAR PARENT__u, q
-	La	0, STANDARD.SYSTEM._ADDRESS.use__info
-	Sa	0, PARENT__u
+	SQ	0, LST
+VAR PARENT__u, Q
+	LA	0, STANDARD.SYSTEM._ADDRESS.use__info
+	SA	0, PARENT__u
 end namespace
  hexa_show 'var elab NULL_ADDRESS ', $
-VAR NULL_ADDRESS_disp, q			; variable entiere
+VAR NULL_ADDRESS_disp, Q			; variable entiere
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	0
-	Sq  0,	STANDARD.SYSTEM.NULL_ADDRESS_disp
+	SQ  0,	STANDARD.SYSTEM.NULL_ADDRESS_disp
 
  hexa_show ' disp ', NULL_ADDRESS_disp
 ; EXC_LBL	L1

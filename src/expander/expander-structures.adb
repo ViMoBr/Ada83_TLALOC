@@ -357,6 +357,7 @@ is
     SAVE_IN_GENERIC_BODY	: BOOLEAN		:= CODI.IN_GENERIC_BODY;
     SAVE_ENCLOSING_GENERIC	: TREE		:= CODI.ENCLOSING_GENERIC;
     SAVE_GENERIC_BASE_LEVEL	: LEVEL_NUM	:= CODI.GENERIC_BASE_LEVEL;
+    SAVE_GFP_LEVEL		: LEVEL_NUM	:= CODI.GFP_LEVEL;
     SAVE_GOTO_BASE		: GOTO_LBL_IDX	:= CODI.GOTO_BODY_BASE;
     SAVE_GOTO_TOP		: GOTO_LBL_IDX	:= CODI.GOTO_LBL_TOP;
     SAVE_GOTO_PEND_BASE	: GOTO_LBL_IDX	:= CODI.GOTO_PEND_BASE;
@@ -364,6 +365,7 @@ is
 
   begin
     INC_LEVEL;
+    CODI.GFP_LEVEL := CODI.CUR_LEVEL;									-- ce PRO porte le PRM GFP_ofs vu par ses blocs
     CODI.GOTO_BODY_BASE := CODI.GOTO_LBL_TOP;								-- ouvrir le perimetre goto de CE corps
     CODI.GOTO_PEND_BASE := CODI.GOTO_PEND_TOP;
     if  DECL_ID.TY /= DN_GENERIC_ID  then
@@ -464,6 +466,7 @@ is
     CODI.IN_GENERIC_BODY    := SAVE_IN_GENERIC_BODY;
     CODI.ENCLOSING_GENERIC  := SAVE_ENCLOSING_GENERIC;
     CODI.GENERIC_BASE_LEVEL := SAVE_GENERIC_BASE_LEVEL;
+    CODI.GFP_LEVEL          := SAVE_GFP_LEVEL;
 
   end	CODE_SUBPROGRAM_BODY;
 	--------------------
@@ -483,8 +486,10 @@ is
     if  PACK_DEF.TY = DN_GENERIC_ID  then
       declare
         SAVE_GENERIC_LEVEL	:LEVEL_NUM	:= CODI.GENERIC_BASE_LEVEL;
+        SAVE_GFP_LEVEL	:LEVEL_NUM	:= CODI.GFP_LEVEL;
       begin
       CODI.GENERIC_BASE_LEVEL := CUR_LEVEL;
+      CODI.GFP_LEVEL := CUR_LEVEL;									-- code d'elaboration du corps : meme niveau qu'avant (CUR_LEVEL)
 
       CODI.IN_GENERIC_BODY := TRUE;
       CODI.ENCLOSING_GENERIC := PACK_DEF;
@@ -550,6 +555,7 @@ is
       NEW_LINE;
       CODI.IN_GENERIC_BODY := FALSE;
       CODI.GENERIC_BASE_LEVEL := SAVE_GENERIC_LEVEL;
+      CODI.GFP_LEVEL := SAVE_GFP_LEVEL;
       end;
     else
 
@@ -687,13 +693,13 @@ is
 			-- PILIER 11 : frame porteur -> contexte de reprise (push a begin:, apres
 			-- l'elaboration : LRM 11.4.2 gratuit).  Publication d'EXC_TOP en DERNIER.
 	PUT_LINE( "VAR" & tab & CTX_NAME & ", q," & INTEGER'IMAGE( 8 + CODI.CUR_LEVEL ) );			-- 7 en-tete + (lvl+1) display
-	PUT_LINE( tab & "La" & tab & "0, STANDARD.EXCEPTIONS_TOP_CTX_disp" );
-	PUT_LINE( tab & "Sa " & LVL_STR & ',' & tab & CTX_NAME );						-- PREV_CTX
+	PUT_LINE( tab & "LA" & tab & "0, STANDARD.EXCEPTIONS_TOP_CTX_disp" );
+	PUT_LINE( tab & "SA " & LVL_STR & ',' & tab & CTX_NAME );						-- PREV_CTX
 	PUT_LINE( tab & "LCA" & tab & DSP_LBL );
-	PUT_LINE( tab & "Sa " & LVL_STR & ',' & tab & CTX_NAME & " + STANDARD._EXCEPTION_CONTEXT.DISPATCH" );	-- offset symbolique : suit le record Ada
+	PUT_LINE( tab & "SA " & LVL_STR & ',' & tab & CTX_NAME & " + STANDARD._EXCEPTION_CONTEXT.DISPATCH" );	-- offset symbolique : suit le record Ada
 	PUT_LINE( tab & "EXC_MACH " & LVL_STR & ',' & tab & CTX_NAME );					-- RBP RSP R13 R14 NXT_LVL FP(0..lvl)
 	PUT_LINE( tab & "LVA " & LVL_STR & ',' & tab & CTX_NAME );
-	PUT_LINE( tab & "Sa" & tab & "0, STANDARD.EXCEPTIONS_TOP_CTX_disp" );
+	PUT_LINE( tab & "SA" & tab & "0, STANDARD.EXCEPTIONS_TOP_CTX_disp" );
 	CODI.HANDLER_CTX_AT( CODI.CUR_LEVEL ) := TRUE;							-- pour les pops de CODE_RETURN / CODE_EXIT
         end if;
       end if;
@@ -707,8 +713,8 @@ is
         PUT_LINE( tab & "BRA" & tab & POST_LBL );								-- sauter la section dispatch+handlers
 
         PUT_LINE( DSP_LBL & ':' );									-- LRM 11.3 : memoriser l'exception qui a cause le transfert, par ACTIVATION -- dans PREV_CTX (+0), mort depuis le pop.
-        PUT_LINE( tab & "La" & tab & "0, STANDARD.EXCEPTIONS_CURRENT_disp" );
-        PUT_LINE( tab & "Sa " & LVL_STR & ',' & tab & CTX_NAME );
+        PUT_LINE( tab & "LA" & tab & "0, STANDARD.EXCEPTIONS_CURRENT_disp" );
+        PUT_LINE( tab & "SA " & LVL_STR & ',' & tab & CTX_NAME );
 
         declare
 	OLD_LVL	:constant INTEGER		:= CODI.HANDLER_LVL;
@@ -797,7 +803,7 @@ is
 	declare
 	  EXCEPTION_ID	: TREE	:= CODI.EXCEPTION_ID_OF( D( AS_EXP, CHOICE ) );				-- resout selected + renames (LRM 8.5);
 	begin											-- when X =>  (choix multiple : une paire par choix)
-	  PUT_LINE( tab & "La" & tab & "0, STANDARD.EXCEPTIONS_CURRENT_disp" );
+	  PUT_LINE( tab & "LA" & tab & "0, STANDARD.EXCEPTIONS_CURRENT_disp" );
 	  PUT( tab & "LCA" & tab );
 	  CODI.REGIONS_PATH( EXCEPTION_ID );
 	  PUT_LINE( PRINT_NAME( D( LX_SYMREP, EXCEPTION_ID ) ) & "__exc.data_ptr" );

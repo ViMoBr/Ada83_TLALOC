@@ -1,0 +1,16 @@
+include '../../src/expander/fasmg/codi_x86_64.finc'
+namespace STANDARD
+main4:
+	LI	5
+	LI	7
+	ADD
+	DUP
+	DROP
+	LI	3
+	SUB
+	BRA	fin4
+	LI	99
+fin4:
+	DROP
+	SYS_EXIT	0
+end namespace

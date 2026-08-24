@@ -1,251 +1,98 @@
-flat assembler  version g.kd3c
- spec 0x00000000004000DB
- spec 0x00000000004000DB
- spec 0x00000000004007F4
-var elab NUL 0x00000000004007F4
- disp 0x00000000000000A0
-var elab SOH 0x0000000000400817
- disp 0x00000000000000A1
-var elab STX 0x000000000040083A
- disp 0x00000000000000A2
-var elab ETX 0x000000000040085D
- disp 0x00000000000000A3
-var elab EOT 0x0000000000400880
- disp 0x00000000000000A4
-var elab ENQ 0x00000000004008A3
- disp 0x00000000000000A5
-var elab ACK 0x00000000004008C6
- disp 0x00000000000000A6
-var elab BEL 0x00000000004008E9
- disp 0x00000000000000A7
-var elab BS 0x000000000040090C
- disp 0x00000000000000A8
-var elab HT 0x000000000040092F
- disp 0x00000000000000A9
-var elab LF 0x0000000000400952
- disp 0x00000000000000AA
-var elab VT 0x0000000000400975
- disp 0x00000000000000AB
-var elab FF 0x0000000000400998
- disp 0x00000000000000AC
-var elab CR 0x00000000004009BB
- disp 0x00000000000000AD
-var elab SO 0x00000000004009DE
- disp 0x00000000000000AE
-var elab SI 0x0000000000400A01
- disp 0x00000000000000AF
-var elab DLE 0x0000000000400A24
- disp 0x00000000000000B0
-var elab DC1 0x0000000000400A47
- disp 0x00000000000000B1
-var elab DC2 0x0000000000400A6A
- disp 0x00000000000000B2
-var elab DC3 0x0000000000400A8D
- disp 0x00000000000000B3
-var elab DC4 0x0000000000400AB0
- disp 0x00000000000000B4
-var elab NAK 0x0000000000400AD3
- disp 0x00000000000000B5
-var elab SYN 0x0000000000400AF6
- disp 0x00000000000000B6
-var elab ETB 0x0000000000400B19
- disp 0x00000000000000B7
-var elab CAN 0x0000000000400B3C
- disp 0x00000000000000B8
-var elab EM 0x0000000000400B5F
- disp 0x00000000000000B9
-var elab SUB 0x0000000000400B82
- disp 0x00000000000000BA
-var elab ESC 0x0000000000400BA5
- disp 0x00000000000000BB
-var elab FS 0x0000000000400BC8
- disp 0x00000000000000BC
-var elab GS 0x0000000000400BEB
- disp 0x00000000000000BD
-var elab RS 0x0000000000400C0E
- disp 0x00000000000000BE
-var elab US 0x0000000000400C31
- disp 0x00000000000000BF
-var elab DEL 0x0000000000400C54
- disp 0x00000000000000C0
-var elab EXCLAM 0x0000000000400C77
- disp 0x00000000000000C1
-var elab SHARP 0x0000000000400C9A
- disp 0x00000000000000C2
-var elab PERCENT 0x0000000000400CBD
- disp 0x00000000000000C3
-var elab COLON 0x0000000000400CE0
- disp 0x00000000000000C4
-var elab QUERY 0x0000000000400D03
- disp 0x00000000000000C5
-var elab L_BRACKET 0x0000000000400D26
- disp 0x00000000000000C6
-var elab R_BRACKET 0x0000000000400D49
- disp 0x00000000000000C7
-var elab UNDERLINE 0x0000000000400D6C
- disp 0x00000000000000C8
-var elab L_BRACE 0x0000000000400D8F
- disp 0x00000000000000C9
-var elab R_BRACE 0x0000000000400DB2
- disp 0x00000000000000CA
-var elab QUOTATION 0x0000000000400DD5
- disp 0x00000000000000CB
-var elab DOLLAR 0x0000000000400DF8
- disp 0x00000000000000CC
-var elab AMPERSAND 0x0000000000400E1B
- disp 0x00000000000000CD
-var elab SEMICOLON 0x0000000000400E3E
- disp 0x00000000000000CE
-var elab AT_SIGN 0x0000000000400E61
- disp 0x00000000000000CF
-var elab BACK_SLASH 0x0000000000400E84
- disp 0x00000000000000D0
-var elab CIRCUMFLEX 0x0000000000400EA7
- disp 0x00000000000000D1
-var elab GRAVE 0x0000000000400ECA
- disp 0x00000000000000D2
-var elab BAR 0x0000000000400EED
- disp 0x00000000000000D3
-var elab TILDE 0x0000000000400F10
- disp 0x00000000000000D4
-var elab LC_A 0x0000000000400F33
- disp 0x00000000000000D5
-var elab LC_B 0x0000000000400F56
- disp 0x00000000000000D6
-var elab LC_C 0x0000000000400F79
- disp 0x00000000000000D7
-var elab LC_D 0x0000000000400F9C
- disp 0x00000000000000D8
-var elab LC_E 0x0000000000400FBF
- disp 0x00000000000000D9
-var elab LC_F 0x0000000000400FE2
- disp 0x00000000000000DA
-var elab LC_G 0x0000000000401005
- disp 0x00000000000000DB
-var elab LC_H 0x0000000000401028
- disp 0x00000000000000DC
-var elab LC_I 0x000000000040104B
- disp 0x00000000000000DD
-var elab LC_J 0x000000000040106E
- disp 0x00000000000000DE
-var elab LC_K 0x0000000000401091
- disp 0x00000000000000DF
-var elab LC_L 0x00000000004010B4
- disp 0x00000000000000E0
-var elab LC_M 0x00000000004010D7
- disp 0x00000000000000E1
-var elab LC_N 0x00000000004010FA
- disp 0x00000000000000E2
-var elab LC_O 0x000000000040111D
- disp 0x00000000000000E3
-var elab LC_P 0x0000000000401140
- disp 0x00000000000000E4
-var elab LC_Q 0x0000000000401163
- disp 0x00000000000000E5
-var elab LC_R 0x0000000000401186
- disp 0x00000000000000E6
-var elab LC_S 0x00000000004011A9
- disp 0x00000000000000E7
-var elab LC_T 0x00000000004011CC
- disp 0x00000000000000E8
-var elab LC_U 0x00000000004011EF
- disp 0x00000000000000E9
-var elab LC_V 0x0000000000401212
- disp 0x00000000000000EA
-var elab LC_W 0x0000000000401235
- disp 0x00000000000000EB
-var elab LC_X 0x0000000000401258
- disp 0x00000000000000EC
-var elab LC_Y 0x000000000040127B
- disp 0x00000000000000ED
-var elab LC_Z 0x000000000040129E
- disp 0x00000000000000EE
-var elab EXCEPTIONS_TOP_CTX 0x000000000040185C
- disp 0x00000000000001F0
-var elab EXCEPTIONS_CURRENT 0x000000000040185C
- disp 0x00000000000001F8
-var elab EXC_CTX0 0x0000000000401AB9
- disp 0x0000000000000268
- spec 0x0000000000401B85
-including withed unit MACHINE_CODE.FINC
- spec 0x0000000000402298
-including trans withed unit IO_EXCEPTIONS.FINC
- spec 0x0000000000402298
-var elab UNBOUNDED 0x0000000000402442
- disp 0x00000000000004E8
-var elab STDOUT_PAGE_LENGTH 0x000000000040296F
- disp 0x00000000000005D0
-var elab STDOUT_LINE_LENGTH 0x0000000000402992
- disp 0x00000000000005D4
-var elab STDOUT_PAGE 0x00000000004029B5
- disp 0x00000000000005D8
-var elab STDOUT_LINE 0x0000000000402A52
- disp 0x00000000000005DC
-var elab STDOUT_COL 0x0000000000402AEF
- disp 0x00000000000005E0
-var elab DEFAULT_INPUT 0x0000000000402B8C
- disp 0x00000000000005E8
-var elab DEFAULT_OUTPUT 0x0000000000402E6E
- disp 0x0000000000000720
-var elab STD_INPUT 0x0000000000403150
- disp 0x0000000000000858
-var elab STD_OUTPUT 0x0000000000403432
- disp 0x0000000000000990
-PUT_RAW_L92 0x0000000000403719
-var elab ERR_CODE 0x0000000000403737
- disp 0x0000000000000008
-WRITE_SYSTEM_CALL_L93 0x000000000040373C
-PUT_RAW_L100 0x00000000004038C3
-var elab ERR_CODE 0x00000000004038E1
- disp 0x0000000000000008
-WRITE_SYSTEM_CALL_L101 0x00000000004038E6
-NEW_LINE_L25 0x0000000000403C5C
-NEW_LINE_L26 0x0000000000404186
-PUT_L51 0x0000000000404262
-PUT_L55 0x00000000004045E0
-PUT_L56 0x0000000000404BFB
-PUT_LINE_L60 0x0000000000404C5E
-INTEGER_IO body 0x0000000000404D5F
- spec 0x0000000000404D5F
-PUT_L63 0x0000000000404D64
-var elab LBASE 0x0000000000404D85
- disp 0x0000000000000008
-var elab AVAL 0x0000000000404DA5
- disp 0x0000000000000010
-var elab STR 0x0000000000404DA5
- disp 0x0000000000000030
-var elab POS 0x0000000000404F29
- disp 0x0000000000000040
-var elab IS_NEGATIVE 0x0000000000404FC8
- disp 0x0000000000000044
-var elab DIGIT 0x0000000000405065
- disp 0x0000000000000048
-var elab DLEN 0x0000000000405065
- disp 0x000000000000004C
-var elab TLEN 0x0000000000405065
- disp 0x0000000000000050
-PUT_L64 0x00000000004060A4
-FLOAT_IO body 0x0000000000406258
- spec 0x0000000000406258
-FIXED_IO body 0x0000000000406258
- spec 0x0000000000406258
-ENUMERATION_IO body 0x0000000000406258
- spec 0x0000000000406258
-including withed unit TEXT_IO.FINC
-CASE_ST1_L1 0x0000000000406985
-var elab OK_COUNT 0x00000000004069A6
- disp 0x0000000000000008
-var elab FAIL_COUNT 0x00000000004069C7
- disp 0x000000000000000C
- spec 0x0000000000406E09
-var elab DEFAULT_WIDTH 0x0000000000406E09
- disp 0x00000000000000B8
-var elab DEFAULT_BASE 0x0000000000406EA9
- disp 0x00000000000000BC
-PUT_L5 0x0000000000406F4E
-CHECK_L8 0x0000000000406FD2
-CLASSE_L15 0x00000000004073D1
-TEMP_L25 0x0000000000407656
-MIXTE_L33 0x0000000000407802
-
-7 passes, 0.7 seconds, 35384 bytes.
+ada83 compiling ./../_standrd.ads_STANDRD
+STANDARD
+BOOLEAN
+SHORT_INTEGER
+INTEGER
+LONG_INTEGER
+FLOAT
+LONG_FLOAT
+CHARACTER
+ASCII
+NATURAL
+POSITIVE
+STRING
+DURATION
+CONSTRAINT_ERROR
+NUMERIC_ERROR
+PROGRAM_ERROR
+STORAGE_ERROR
+TASKING_ERROR
+_ADDRESS
+_DURATION
+ ..... Ok 25 msec
+ada83 compiling ./../system.ads ..... Ok 13 msec
+ada83 compiling ./../machine_code.ads ..... Ok 11 msec
+ada83 compiling ./../calendar.ads ..... Ok 12 msec
+ada83 compiling ./../io_exceptions.ads ..... Ok 6 msec
+ada83 compiling ./../text_io.ads ..... Ok 44 msec
+ada83 compiling ./../direct_io.ads ..... Ok 17 msec
+ada83 compiling ./../sequential_io.ads ..... Ok 14 msec
+ada83 compiling ./../unchecked_conversion.ads ..... Ok 6 msec
+ada83 compiling ./../unchecked_deallocation.ads ..... Ok 6 msec
+ada83 compiling ./../_standrd.adb ..... Ok 75 msec
+ada83 compiling ./../calendar.adb ..... Ok 111 msec
+ada83 compiling ./../text_io.adb ..... Ok 1671 msec
+ada83 compiling ./../direct_io.adb ..... Ok 118 msec
+ada83 compiling ./../sequential_io.adb ..... Ok 81 msec
+ada83 compiling ./../idl_tools/diana_node_attr_class_names.ads ..... Ok 54 msec
+ada83 compiling ./../../src/ada_comp/idl.ads ..... Ok 29 msec
+ada83 compiling ./../../src/ada_comp/idl.adb ..... Ok 448 msec
+ada83 compiling ./../../src/communs/idl-page_man.adb ..... Ok 252 msec
+ada83 compiling ./../../src/communs/idl-idl_tbl.adb ..... Ok 186 msec
+ada83 compiling ./../../src/communs/idl-idl_man.adb ..... Ok 482 msec
+ada83 compiling ./../../src/communs/idl-print_nod.adb ..... Ok 378 msec
+ada83 compiling ./../../src/pretty/idl-pretty_diana.adb ..... Ok 669 msec
+ada83 compiling ./../../src/par_phase/grmr_tbl.ads ..... Ok 17 msec
+ada83 compiling ./../../src/par_phase/grmr_ops.ads ..... Ok 10 msec
+ada83 compiling ./../../src/par_phase/grmr_ops.adb ..... Ok 31 msec
+ada83 compiling ./../../src/par_phase/lex.ads ..... Ok 14 msec
+ada83 compiling ./../../src/par_phase/lex.adb ..... Ok 292 msec
+ada83 compiling ./../../src/par_phase/idl-par_phase.adb ..... Ok 1247 msec
+ada83 compiling ./../../src/par_phase/idl-par_phase-set_dflt.adb ..... Ok 58 msec
+ada83 compiling ./../../src/ada_comp/idl-lib_phase.adb ..... Ok 937 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase.adb ..... Ok 576 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-aggreso.adb ..... Ok 1011 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-att_walk.adb ..... Ok 1735 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-chk_stat.adb ..... Ok 162 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-def_util.adb ..... Ok 496 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-def_walk.adb ..... Ok 1335 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-derived.adb ..... Ok 329 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-eval_num.adb ..... Ok 320 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-exp_type.adb ..... Ok 550 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-expreso.adb ..... Ok 1051 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-fix_pre.adb ..... Ok 504 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-fix_with.adb ..... Ok 694 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-gen_subs.adb ..... Ok 283 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-hom_unit.adb ..... Ok 290 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-instant.adb ..... Ok 670 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-make_nod.adb ..... Ok 937 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-newsnam.adb ..... Ok 358 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-nod_walk.adb ..... Ok 1853 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-pra_walk.adb ..... Ok 633 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-pre_fcns.adb ..... Ok 496 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-red_subp.adb ..... Ok 1530 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-rep_clau.adb ..... Ok 608 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-req_util.adb ..... Ok 889 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-sem_glob.adb ..... Ok 122 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-set_util.adb ..... Ok 724 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-stm_walk.adb ..... Ok 825 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-uarith.adb ..... Ok 1116 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-univ_ops.adb ..... Ok 1110 msec
+ada83 compiling ./../../src/sem_phase/idl-sem_phase-vis_util.adb ..... Ok 1064 msec
+ada83 compiling ./../../src/ada_comp/idl-err_phase.adb ..... Ok 89 msec
+ada83 compiling ./../../src/ada_comp/idl-write_lib.adb ..... Ok 164 msec
+ada83 compiling ./../../src/expander/expander.ads ..... Ok 6 msec
+ada83 compiling ./../../src/expander/expander.adb ..... Ok 257 msec
+ada83 compiling ./../../src/expander/expander-utils.adb ..... Ok 1224 msec
+ada83 compiling ./../../src/expander/expander-expressions.adb ..... Ok 7880 msec
+ada83 compiling ./../../src/expander/expander-declarations.adb ..... Ok 2613 msec
+ada83 compiling ./../../src/expander/expander-declarations-types_decls.adb ..... Ok 2152 msec
+ada83 compiling ./../../src/expander/expander-represented_items.adb ..... Ok 652 msec
+ada83 compiling ./../../src/expander/expander-instructions.adb ..... Ok 2257 msec
+ada83 compiling ./../../src/expander/expander-structures.adb ..... Ok 692 msec
+ada83 compiling ./../../src/ada_comp/ada_comp.ads ..... Ok 6 msec
+ada83 compiling ./../../src/ada_comp/ada_comp.adb ..... Ok 80 msec
+Durée de compilation : 00h 00min 49sec
+NOM FICHIER .fas (sans extension, simple ret faire les tests) : TARGET_CODE.LEX : source introuvable : ADA_COMP.fas.fas
+EXCEPTION NON RATTRAPEE : LEX_FAULT
+Durée d assemblage : 00h 01min 50sec

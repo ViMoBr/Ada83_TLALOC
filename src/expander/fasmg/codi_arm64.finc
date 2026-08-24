@@ -42,12 +42,14 @@
 ;	  RDX -> x3   (auxiliaire)
 ;	  RSI -> x4   (param syscall - transfere vers x1 pour l'appel)
 ;	  RDI -> x5   (param syscall - transfere vers x0 pour l'appel)
-;	  LR  -> x30  (link register, pousse manuellement sur sp pour CALL/RET)
+;	  x30 n'est pas utilise par CALL/RTD : la LLIR maintient une micro-pile explicite sur sp
 ;	  scratch interne : x16, x17 (IP0/IP1 conventionnellement libres)
 
 postpone							; sera fait en toute toute fin car c'est le premier postpone
   ASM_SIZE = $-0x400078
 end postpone
+
+DEBUG_LLIR	= 0
 
 macro show description, value					; pour debogage
   repeat 1, d:value
@@ -55,6 +57,21 @@ macro show description, value					; pour debogage
   end repeat
 end macro
 
+
+macro hexa_show description, value			; adresse hexa pour la carto de debogage
+  local x, digit
+  x = value
+  display description, '0', 'x'
+  repeat 16, n:0
+    digit = (x shr ((15 - n) shl 2)) and 0Fh
+    if digit < 10
+      display '0' + digit
+    else
+      display 'A' + digit - 10
+    end if
+  end repeat
+  display 13, 10
+end macro
 ;			-------------------------------------------------------------------
 ;			S P E C I	F I Q U E	  P R O C	E S S E U	R   A R M   6 4
 ;			-------------------------------------------------------------------
@@ -363,6 +380,64 @@ end macro
 ;	Pour les offsets negatifs ou non alignes, on utilise LDUR (imm9 signe -256..255).
 
 ;			........................
+;			........................
+macro			FETCH_BYTE_U	disp
+;			........................
+; Charge un octet sans signe dans x0 (zero-extension).
+  local signed_disp
+  signed_disp = disp
+
+  if disp = 0
+    dd 0x39400000							; ldrb w0, [x0]
+  else if disp > 0  &  disp <= 4095
+    dd 0x39400000 or (disp shl 10)					; ldrb w0, [x0, #disp]
+  else if disp >= -256 & disp <= 255
+    dd 0x38400000 or ((signed_disp and 0x1FF) shl 12)			; ldurb w0, [x0, #disp]
+  else
+    QUAD_CONST	17, signed_disp
+    dd 0x38606800 or (17 shl 16)					; ldrb w0, [x0, x17]
+  end if
+end macro
+
+;			........................
+macro			FETCH_WORD_U	disp
+;			........................
+; Charge un mot 16 bits sans signe dans x0 (zero-extension).
+  local signed_disp
+  signed_disp = disp
+
+  if disp = 0
+    dd 0x79400000							; ldrh w0, [x0]
+  else if disp >= 0  &  disp <= 8190  &  (disp mod 2) = 0
+    dd 0x79400000 or ((disp shr 1) shl 10)				; ldrh w0, [x0, #disp]
+  else if disp >= -256 & disp <= 255
+    dd 0x78400000 or ((signed_disp and 0x1FF) shl 12)			; ldurh w0, [x0, #disp]
+  else
+    QUAD_CONST	17, signed_disp
+    dd 0x78606800 or (17 shl 16)					; ldrh w0, [x0, x17]
+  end if
+end macro
+
+;			........................
+macro			FETCH_DWORD_U	disp
+;			........................
+; Charge un dword 32 bits sans signe dans x0. Un ecriture dans w0 met implicitement
+; a zero les 32 bits hauts de x0, exactement comme mov eax,[...] sur x86-64.
+  local signed_disp
+  signed_disp = disp
+
+  if disp = 0
+    dd 0xB9400000							; ldr w0, [x0]
+  else if disp >= 0  &  disp <= 16380  &  (disp mod 4) = 0
+    dd 0xB9400000 or ((disp shr 2) shl 10)				; ldr w0, [x0, #disp]
+  else if disp >= -256 & disp <= 255
+    dd 0xB8400000 or ((signed_disp and 0x1FF) shl 12)			; ldur w0, [x0, #disp]
+  else
+    QUAD_CONST	17, signed_disp
+    dd 0xB8606800 or (17 shl 16)					; ldr w0, [x0, x17]
+  end if
+end macro
+
 macro			FETCH_BYTE	disp
 ;			........................
   local signed_disp
@@ -493,7 +568,7 @@ end macro
 ;-----------------------------------------------------------------------------------------------------------------------
 
 ;			-------------
-macro			LI?	val				; Load Integer (32 bits etendu signe vers 64)
+macro			LI	val				; Load Integer (32 bits etendu signe vers 64)
 ;			-------------
 ;	Sur x86-64 c'etait : mov rax, val (5 octets imm32 + sign-extend automatique).
 ;	Sur ARM64, on utilise jusqu'a 4 instructions movz/movk si necessaire ; 
@@ -510,7 +585,7 @@ macro			LI?	val				; Load Integer (32 bits etendu signe vers 64)
 end macro
 
 ;			-------------
-macro			LIF?	val				; Load Immediate Float (IEEE 754 double 64 bits sur la pile entiere)
+macro			LIF	val				; Load Immediate Float (IEEE 754 double 64 bits sur la pile entiere)
 ;			-------------
 ;	Sur x86-64 c'etait : movabs rax, imm64 ; PUSH_RAX (avec dq val pour la conversion).
 ;	Sur ARM64 il n'y a pas d'instruction de load 64 bits litteral en une fois ; 
@@ -534,7 +609,7 @@ end macro
 ;-----------------------------------------------------------------------------------------------------------------------
 
 ;			---------------------
-macro			LCA?	ptr, disp:0			; Load Constant Address
+macro			LCA	ptr, disp:0			; Load Constant Address
 ;			---------------------
 ;	Materialise une adresse 64 bits dans x0 et l'empile.
 ;	Sur ARM64 : 4 instructions movz/movk maximum, optimisable selon la valeur.
@@ -542,8 +617,21 @@ macro			LCA?	ptr, disp:0			; Load Constant Address
   PUSH_RAX
 end macro
 
+
+;			--------------------------
+macro			LSPA	prefix, subname			; Load SubProgram Address de .elab, en armant l'assemblage lazy
+;			--------------------------
+  postpone
+    if ~definite prefix#subname#_
+      prefix#subname#_ = prefix#subname#.elab				; le nom finissant en _ determine l'assemblage de la routine
+    end if
+  end postpone
+
+  QUAD_CONST	0, prefix#subname#_					; adresse absolue du sous-programme dans x0
+  PUSH_RAX
+end macro
 ;			------------------------
-macro			LVa?	lvl:-1, disp:0			; Load Variable Address pour lvl et disp
+macro			LVA	lvl:-1, disp:0			; Load Variable Address pour lvl et disp
 ;			------------------------
 ;	Empile l'adresse de la variable au deplacement disp du frame de niveau lvl.
 ;	x86 : lea rax, [base + disp] ; ARM64 : add x0, base, #disp (immediat 12 bits ; sinon
@@ -565,7 +653,7 @@ macro			LVa?	lvl:-1, disp:0			; Load Variable Address pour lvl et disp
 end macro
 
 ;			-------------------------------
-macro			LIVa?	lvl:-1, disp:0, ofs:0		; Load Indirect Variable Address
+macro			LIVA	lvl:-1, disp:0, ofs:0		; Load Indirect Variable Address
 ;			-------------------------------
 ;	Empile l'adresse de la variable pointee par l adresse au deplacement disp du frame de lvl,
 ;	a laquelle on ajoute ofs.
@@ -591,71 +679,114 @@ end macro
 ;-----------------------------------------------------------------------------------------------------------------------
 
 ;			------------------------
-macro			Lb?	lvl:-1, disp:0			; Load Byte 8 bits
+macro			ULB	lvl:-1, disp:0			; Unsigned Load Byte 8 bits (zero extension)
+;			------------------------
+  BASE_IN_RAX	lvl
+  FETCH_BYTE_U	disp
+  PUSH_RAX
+end macro
+;			------------------------
+macro			ULW	lvl:-1, disp:0			; Unsigned Load Word 16 bits
+;			------------------------
+  BASE_IN_RAX	lvl
+  FETCH_WORD_U	disp
+  PUSH_RAX
+end macro
+;			------------------------
+macro			ULD	lvl:-1, disp:0			; Unsigned Load doubleword 32 bits
+;			------------------------
+  BASE_IN_RAX	lvl
+  FETCH_DWORD_U	disp
+  PUSH_RAX
+end macro
+
+macro			LB	lvl:-1, disp:0			; Load Byte 8 bits
 ;			------------------------
   BASE_IN_RAX	lvl
   FETCH_BYTE	disp
   PUSH_RAX
 end macro
 ;			------------------------
-macro			Lw?	lvl:-1, disp:0			; Load Word 16 bits
+macro			LW	lvl:-1, disp:0			; Load Word 16 bits
 ;			------------------------
   BASE_IN_RAX	lvl
   FETCH_WORD	disp
   PUSH_RAX
 end macro
 ;			------------------------
-macro			Ld?	lvl:-1, disp:0			; Load doubleword 32 bits
+macro			LD	lvl:-1, disp:0			; Load doubleword 32 bits
 ;			------------------------
   BASE_IN_RAX	lvl
   FETCH_DWORD	disp
   PUSH_RAX
 end macro
 ;			------------------------
-macro			Lq?	lvl:-1, disp:0			; Load quadword 64 bits
+macro			LQ	lvl:-1, disp:0			; Load quadword 64 bits
 ;			------------------------
   BASE_IN_RAX	lvl
   FETCH_QWORD	disp
   PUSH_RAX
 end macro
 ;			------------------------
-macro			La?	lvl:-1, disp:0			; Load Address 64 bits
+macro			LA	lvl:-1, disp:0			; Load Address 64 bits
 ;			------------------------
-  Lq lvl, disp
+  LQ lvl, disp
 end macro
 
 ;			-------------------------------
-macro			LIb?	lvl:-1, disp:0, ofs:0		; Load Indirect byte
+;			-------------------------------
+macro			ULIB	lvl:-1, disp:0, ofs:0		; Unsigned Load Indirect byte
+;			-------------------------------
+  INDIRECT_BASE_IN_RAX	lvl, disp
+  FETCH_BYTE_U		ofs
+  PUSH_RAX
+end macro
+;			-------------------------------
+macro			ULIW	lvl:-1, disp:0, ofs:0		; Unsigned Load Indirect word
+;			-------------------------------
+  INDIRECT_BASE_IN_RAX	lvl, disp
+  FETCH_WORD_U		ofs
+  PUSH_RAX
+end macro
+;			-------------------------------
+macro			ULID	lvl:-1, disp:0, ofs:0		; Unsigned Load Indirect doubleword
+;			-------------------------------
+  INDIRECT_BASE_IN_RAX	lvl, disp
+  FETCH_DWORD_U		ofs
+  PUSH_RAX
+end macro
+
+macro			LIB	lvl:-1, disp:0, ofs:0		; Load Indirect byte
 ;			-------------------------------
   INDIRECT_BASE_IN_RAX	lvl, disp
   FETCH_BYTE		ofs
   PUSH_RAX
 end macro
 ;			-------------------------------
-macro			LIw?	lvl:-1, disp:0, ofs:0		; Load Indirect word
+macro			LIW	lvl:-1, disp:0, ofs:0		; Load Indirect word
 ;			-------------------------------
   INDIRECT_BASE_IN_RAX	lvl, disp
   FETCH_WORD		ofs
   PUSH_RAX
 end macro
 ;			-------------------------------
-macro			LId?	lvl:-1, disp:0, ofs:0		; Load Indirect doubleword
+macro			LID	lvl:-1, disp:0, ofs:0		; Load Indirect doubleword
 ;			-------------------------------
   INDIRECT_BASE_IN_RAX	lvl, disp
   FETCH_DWORD		ofs
   PUSH_RAX
 end macro
 ;			-------------------------------
-macro			LIq?	lvl:-1, disp:0, ofs:0		; Load Indirect quadword
+macro			LIQ	lvl:-1, disp:0, ofs:0		; Load Indirect quadword
 ;			-------------------------------
   INDIRECT_BASE_IN_RAX	lvl, disp
   FETCH_QWORD		ofs
   PUSH_RAX
 end macro
 ;			-------------------------------
-macro			LIa?	lvl:-1, disp:0, ofs:0		; Load Address 64 bits Indirect
+macro			LIA	lvl:-1, disp:0, ofs:0		; Load Address 64 bits Indirect
 ;			-------------------------------
-  LIq lvl, disp, ofs
+  LIQ lvl, disp, ofs
 end macro
 
 
@@ -664,72 +795,72 @@ end macro
 ;-----------------------------------------------------------------------------------------------------------------------
 
 ;			------------------------
-macro			Sb?	lvl:-1, disp:0			; Store byte 8 bits
+macro			SB	lvl:-1, disp:0			; Store byte 8 bits
 ;			------------------------
   POP_RBX							; (data dans x1)
   BASE_IN_RAX	lvl
   STORE_BYTE	disp
 end macro
 ;			------------------------
-macro			Sw?	lvl:-1, disp:0			; Store word 16 bits
+macro			SW	lvl:-1, disp:0			; Store word 16 bits
 ;			------------------------
   POP_RBX
   BASE_IN_RAX	lvl
   STORE_WORD	disp
 end macro
 ;			------------------------
-macro			Sd?	lvl:-1, disp:0			; Store doubleword 32 bits
+macro			SD	lvl:-1, disp:0			; Store doubleword 32 bits
 ;			------------------------
   POP_RBX
   BASE_IN_RAX	lvl
   STORE_DWORD	disp
 end macro
 ;			------------------------
-macro			Sq?	lvl:-1, disp:0			; Store Quadword 64 bits
+macro			SQ	lvl:-1, disp:0			; Store Quadword 64 bits
 ;			------------------------
   POP_RBX
   BASE_IN_RAX	lvl
   STORE_QWORD	disp
 end macro
 ;			------------------------
-macro			Sa?	lvl:-1, disp:0			; Store Address 64 bits
+macro			SA	lvl:-1, disp:0			; Store Address 64 bits
 ;			------------------------
-  Sq lvl, disp
+  SQ lvl, disp
 end macro
 
 
 ;			-------------------------------
-macro			SIb?	lvl:-1, disp:0, ofs:0		; Store Indirect byte
+macro			SIB	lvl:-1, disp:0, ofs:0		; Store Indirect byte
 ;			-------------------------------
   POP_RBX
   INDIRECT_BASE_IN_RAX	lvl, disp
   STORE_BYTE		ofs
 end macro
 ;			-------------------------------
-macro			SIw?	lvl:-1, disp:0, ofs:0		; Store Indirect word
+macro			SIW	lvl:-1, disp:0, ofs:0		; Store Indirect word
 ;			-------------------------------
   POP_RBX
   INDIRECT_BASE_IN_RAX	lvl, disp
   STORE_WORD		ofs
 end macro
 ;			-------------------------------
-macro			SId?	lvl:-1, disp:0, ofs:0		; Store Indirect doubleword
+macro			SID	lvl:-1, disp:0, ofs:0		; Store Indirect doubleword
 ;			-------------------------------
   POP_RBX
   INDIRECT_BASE_IN_RAX	lvl, disp
   STORE_DWORD		ofs
 end macro
 ;			-------------------------------
-macro			SIq?	lvl:-1, disp:0, ofs:0		; Store Indirect quadword
+macro			SIQ	lvl:-1, disp:0, ofs:0		; Store Indirect quadword
 ;			-------------------------------
   POP_RBX
   INDIRECT_BASE_IN_RAX	lvl, disp
   STORE_QWORD		ofs
 end macro
-;			-------------------
-macro			SIa?	lvl, disp, ofs			; Store Address 64 bits Indirect
-;			-------------------
-  SIq lvl, disp, ofs
+;			------------------------
+macro			SIA	lvl, disp, ofs			; Store Address 64 bits Indirect
+;			------------------------
+  SIQ lvl, disp, ofs
 end macro
 
 
@@ -740,49 +871,49 @@ end macro
 ; Sur ARM64 il n'y a pas d'operation read-modify-write memoire comme sur x86 ;
 ; chaque operation devient ldr / op / str.
 
-;			---
-macro			ET?
-;			---
+;			--
+macro			ET
+;			--
   POP_RAX								; x0 = B
   dd 0xF94003A1							; ldr x1, [x29]	x1 = A
   dd 0x8A000021							; and x1, x1, x0	x1 = A and B
   dd 0xF90003A1							; str x1, [x29]
 end macro
-;			---
-macro			OU?
-;			---
+;			--
+macro			OU
+;			--
   POP_RAX
   dd 0xF94003A1							; ldr x1, [x29]
   dd 0xAA000021							; orr x1, x1, x0
   dd 0xF90003A1							; str x1, [x29]
 end macro
-;			----
-macro			NON?
-;			----
+;			---
+macro			NON
+;			---
   dd 0xF94003A0							; ldr x0, [x29]
   dd 0xAA2003E0							; mvn x0, x0
   dd 0xF90003A0							; str x0, [x29]
 end macro
-;			----
-macro			OUX?
-;			----
+;			---
+macro			OUX
+;			---
   POP_RAX
   dd 0xF94003A1							; ldr x1, [x29]
   dd 0xCA000021							; eor x1, x1, x0
   dd 0xF90003A1							; str x1, [x29]
 end macro
-;			----
-macro			SHL?					; decalage gauche
-;			----
+;			---
+macro			SHL					; decalage gauche
+;			---
   POP_RCX								; nombre de positions de decalage dans x2
   dd 0xF94003A0							; ldr x0, [x29]
   dd 0x9AC22000							; lslv x0, x0, x2
   dd 0xF90003A0							; str x0, [x29]
 end macro
 
-;			----
-macro			SHR?					; decalage droit logique
-;			----
+;			---
+macro			SHR					; decalage droit logique
+;			---
   POP_RCX								; nombre de positions de decalage dans x2
   dd 0xF94003A0							; ldr x0, [x29]
   dd 0x9AC22400							; lsrv x0, x0, x2
@@ -794,9 +925,9 @@ end macro
 ;		O P E R A	T I O N S	  B I T   F I E L D S
 ;-----------------------------------------------------------------------------------------------------------------------
 
-;			-----
-macro			UBFX?					; unsigned bit field extract
-;			-----
+;			----
+macro			UBFX					; unsigned bit field extract
+;			----
   POP_RDX								; x3 = Width
   POP_RCX								; x2 = LSB
   dd 0xF94003A0							; ldr x0, [x29]	valeur source
@@ -807,9 +938,9 @@ macro			UBFX?					; unsigned bit field extract
   dd 0x8A010000							; and x0, x0, x1	x0 = field non signe
   dd 0xF90003A0							; str x0, [x29]
 end macro
-;			-----
-macro			SBFX?					; signed bit field extract
-;			-----
+;			----
+macro			SBFX					; signed bit field extract
+;			----
   POP_RDX								; x3 = Width
   POP_RCX								; x2 = LSB
   dd 0xF94003A0							; ldr x0, [x29]	valeur source
@@ -820,9 +951,9 @@ macro			SBFX?					; signed bit field extract
   dd 0x9AC22800							; asrv x0, x0, x2	extension de signe
   dd 0xF90003A0							; str x0, [x29]
 end macro
-;			----
-macro			BFI?					; bit field insert in stacked value
-;			----
+;			---
+macro			BFI					; bit field insert in stacked value
+;			---
   POP_RCX								; x2 = Width
   POP_RDX								; x3 = LSB
   POP_RAX								; x0 = valeur a inserer
@@ -848,30 +979,30 @@ end macro
 ;		O P E R A	T I O N S	  A R I T	H M E T I	Q U E   E	N T I E R	E
 ;-----------------------------------------------------------------------------------------------------------------------
 
-;			----
-macro			DEC?
-;			----
+;			---
+macro			DEC
+;			---
   dd 0xF94003A0							; ldr x0, [x29]
   dd 0xD1000400							; sub x0, x0, #1
   dd 0xF90003A0							; str x0, [x29]
 end macro
-;			----
-macro			INC?
-;			----
+;			---
+macro			INC
+;			---
   dd 0xF94003A0							; ldr x0, [x29]
   dd 0x91000400							; add x0, x0, #1
   dd 0xF90003A0							; str x0, [x29]
 end macro
-;			----
-macro			NEG?
-;			----
+;			---
+macro			NEG
+;			---
   dd 0xF94003A0							; ldr x0, [x29]
   dd 0xCB0003E0							; neg x0, x0  (alias de sub x0, xzr, x0)
   dd 0xF90003A0							; str x0, [x29]
 end macro
-;			----
-macro			ABS?
-;			----
+;			---
+macro			ABS
+;			---
 ;	Valeur absolue : si x0 < 0 alors x0 = -x0, sinon x0 inchange.
 ;	ARM64 dispose de CNEG : "conditional negate".
   dd 0xF94003A0							; ldr x0, [x29]
@@ -879,40 +1010,49 @@ macro			ABS?
   dd 0xDA805400							; cneg x0, x0, mi  (mi = N=1 = negatif)
   dd 0xF90003A0							; str x0, [x29]
 end macro
-;			----
-macro			ADD?
-;			----
+
+;			------
+macro			CLAMP0					; sommet := max( 0, sommet )
+;			------
+  dd 0xF94003A0							; ldr x0, [x29]
+  dd 0xF100001F							; cmp x0, #0
+  dd 0x9A9FA000							; csel x0, x0, xzr, ge
+  dd 0xF90003A0							; str x0, [x29]
+end macro
+;			---
+macro			ADD
+;			---
   POP_RAX								; x0 = B
   dd 0xF94003A1							; ldr x1, [x29]	x1 = A
   dd 0x8B000021							; add x1, x1, x0
   dd 0xF90003A1							; str x1, [x29]
 end macro
-;			----
-macro			SUB?
-;			----
+;			---
+macro			SUB
+;			---
   POP_RAX								; x0 = B
   dd 0xF94003A1							; ldr x1, [x29]	x1 = A
   dd 0xCB000021							; sub x1, x1, x0
   dd 0xF90003A1							; str x1, [x29]
 end macro
-;			----
-macro			MUL?
-;			----
+;			---
+macro			MUL
+;			---
   POP_RAX								; x0 = B
   dd 0xF94003A1							; ldr x1, [x29]	x1 = A
   dd 0x9B007C21							; mul x1, x1, x0    (alias de madd x1, x1, x0, xzr)
   dd 0xF90003A1							; str x1, [x29]
 end macro
-;			----
-macro			DIV?
-;			----
+;			---
+macro			DIV
+;			---
   POP_RBX								; x1 = B (diviseur)
   POP_RAX								; x0 = A (dividende)
   dd 0x9AC10C00							; sdiv x0, x0, x1
   PUSH_RAX
 end macro
 ;			----
-macro			REMI?					; A rem B (reste division tronquee, signe du dividende)
+macro			REMI					; A rem B (reste division tronquee, signe du dividende)
 ;			----
   POP_RBX								; x1 = B (diviseur)
   POP_RAX								; x0 = A (dividende)
@@ -921,7 +1061,7 @@ macro			REMI?					; A rem B (reste division tronquee, signe du dividende)
   PUSH_RAX
 end macro
 ;			----
-macro			MODI?					; A mod B (modulo mathematique, signe du diviseur)
+macro			MODI					; A mod B (modulo mathematique, signe du diviseur)
 ;			----
 ;	Calculer d'abord le reste tronque (comme REMI), puis ajuster :
 ;	si reste != 0 et si signes du reste et du diviseur different, ajouter le diviseur.
@@ -944,9 +1084,9 @@ macro			MODI?					; A mod B (modulo mathematique, signe du diviseur)
   PUSH_RAX
 end macro
 
-;			----
-macro			SAR?					; decalage arithmetique droit
-;			----
+;			---
+macro			SAR					; decalage arithmetique droit
+;			---
   POP_RCX								; nombre de positions de decalage dans x2
   dd 0xF94003A0							; ldr x0, [x29]
   dd 0x9AC22800							; asrv x0, x0, x2
@@ -962,62 +1102,62 @@ end macro
 ;  Sur ARM64, les operations flottantes utilisent les registres scalaires d0..d31 (vue 64 bits).
 ;  Transfers pile <-> Dn via 'ldr d0, [x29]' / 'str d0, [x29]' (encodage SIMD/FP load-store).
 
-;			-----
-macro			FADD?
-;			-----
+;			----
+macro			FADD
+;			----
   dd 0xFD4003A1							; ldr d1, [x29]	(B = TOS dans d1)
   DROP								; descendre pile (consommer B)
   dd 0xFD4003A0							; ldr d0, [x29]	(A = nouveau TOS dans d0)
   dd 0x1E612800							; fadd d0, d0, d1	(d0 = A + B)
   dd 0xFD0003A0							; str d0, [x29]	(ecraser A par le resultat)
 end macro
-;			-----
-macro			FSUB?
-;			-----
+;			----
+macro			FSUB
+;			----
   dd 0xFD4003A1							; ldr d1, [x29]
   DROP
   dd 0xFD4003A0							; ldr d0, [x29]
   dd 0x1E613800							; fsub d0, d0, d1	(d0 = A - B)
   dd 0xFD0003A0							; str d0, [x29]
 end macro
-;			-----
-macro			FMUL?
-;			-----
+;			----
+macro			FMUL
+;			----
   dd 0xFD4003A1							; ldr d1, [x29]
   DROP
   dd 0xFD4003A0							; ldr d0, [x29]
   dd 0x1E610800							; fmul d0, d0, d1	(d0 = A * B)
   dd 0xFD0003A0							; str d0, [x29]
 end macro
-;			-----
-macro			FDIV?
-;			-----
+;			----
+macro			FDIV
+;			----
   dd 0xFD4003A1							; ldr d1, [x29]	(B = diviseur)
   DROP
   dd 0xFD4003A0							; ldr d0, [x29]	(A = dividende)
   dd 0x1E611800							; fdiv d0, d0, d1	(d0 = A / B)
   dd 0xFD0003A0							; str d0, [x29]
 end macro
-;			-----
-macro			FNEG?					; negation flottante
-;			-----
+;			----
+macro			FNEG					; negation flottante
+;			----
 ;	ARM64 dispose d'une instruction native FNEG (qui complemente le bit de signe IEEE).
   dd 0xFD4003A0							; ldr d0, [x29]
   dd 0x1E614000							; fneg d0, d0
   dd 0xFD0003A0							; str d0, [x29]
 end macro
-;			-----
-macro			FABS?					; valeur absolue flottante
-;			-----
+;			----
+macro			FABS					; valeur absolue flottante
+;			----
 ;	ARM64 dispose d'une instruction native FABS.
   dd 0xFD4003A0							; ldr d0, [x29]
   dd 0x1E60C000							; fabs d0, d0
   dd 0xFD0003A0							; str d0, [x29]
 end macro
 
-;			-----
-macro			FEXP?					; exponentiation flottante A ** N (N entier positif sur la pile)
-;			-----
+;			----
+macro			FEXP					; exponentiation flottante A ** N (N entier POSITIF REQUIS sur la pile)
+;			----
 ;	N est sur la pile (au-dessus de A). On le depile dans x2.
 ;	Puis on charge A dans d0, on initialise d1 = 1.0, et on boucle N fois : d1 = d1 * d0.
   POP_RCX								; depiler N (exposant) dans x2
@@ -1025,7 +1165,7 @@ macro			FEXP?					; exponentiation flottante A ** N (N entier positif sur la pil
 ;	Charger 1.0 dans d1 (accumulateur). 1.0 IEEE 754 double = 0x3FF0000000000000.
   QUAD_CONST 0, 0x3FF0000000000000					; x0 = 1.0 en IEEE 754 (utilise x0 temporairement)
   dd 0x9E670001							; fmov d1, x0	(d1 = 1.0 accumulateur)
-  dd 0xB4000042							; cbz x2, .end	(si N=0, resultat = 1.0, sauter +8 octets = 2 instr)
+  dd 0xB4000082							; cbz x2, .end (+16)(si N=0, resultat = 1.0, sauter +16 octets = 3 instr)
 ;.loop:
   dd 0x1E600821							; fmul d1, d1, d0	(accum *= base)
   dd 0xD1000442							; sub x2, x2, #1
@@ -1040,27 +1180,28 @@ end macro
 ;	C O N V E	R S I O N	S   E N T	I E R  <->  F L O T	T A N T
 ;-----------------------------------------------------------------------------------------------------------------------
 
-;			------
-macro			CVTIF?					; Conversion entier signe 64 bits -> double IEEE 754
-;			------
+;			-----
+macro			CVTIF					; Conversion entier signe 64 bits -> double IEEE 754
+;			-----
   dd 0xF94003A0							; ldr x0, [x29]		(entier signe depuis la pile)
   dd 0x9E620000							; scvtf d0, x0		(convertir entier -> double)
   dd 0xFD0003A0							; str d0, [x29]		(ecraser l'entier par le double)
 end macro
-;			------
-macro			CVTFI?					; Conversion double IEEE 754 -> entier signe 64 bits (troncature vers zero)
-;			------
+;			-----
+macro			CVTFI					; Conversion double IEEE 754 -> entier signe 64 bits (troncature vers zero)
+;			-----
   dd 0xFD4003A0							; ldr d0, [x29]		(double depuis la pile dans d0)
   dd 0x9EF80000							; fcvtzs x0, d0		(convertir double -> entier avec troncature)
   dd 0xF90003A0							; str x0, [x29]		(ecraser le double par l'entier)
 end macro
 
 
-;			-------
-macro			CVTFIR?					; Float -> Integer, arrondi Ada
-;			-------
+;			------
+macro			CVTFIR					; Float -> Integer, arrondi Ada
+;			------
   dd 0xFD4003A0							; ldr d0, [x29]		(double depuis la pile dans d0)
-  dd 0x9E640000							; fcvtas x0, d0		(arrondi au plus proche, demi loin de zero)
+  dd 0x9E600000							; fcvtns x0, d0		nearest, ties-to-even (identique x86-64)
+;  dd 0x9E640000							; fcvtas x0, d0		(arrondi au plus proche, demi loin de zero)
   dd 0xF90003A0							; str x0, [x29]		(ecraser le double par l'entier)
 end macro
 
@@ -1068,25 +1209,93 @@ end macro
 ;	C O N V E	R S I O N	S   E N T	I E R  <->  F I X E D
 ;-----------------------------------------------------------------------------------------------------------------------
 
-;			------
-macro			CVTIX?					; Conversion de l'entier I en FIXED X de SMALL = NUMER/DENOM
-;			------					; Sont empiles I puis DENOM puis NUMER (I.D.N)
+;			--------------
+macro			SDIV128_64_POS				; Division signee 128/64 : (x3:x0) / x1, avec x1 > 0
+;			--------------				; Sortie : x0 = quotient signe, x3 = reste signe ; x1 preserve
+;	Chemin rapide si x3:x0 est deja l'extension de signe d'un entier 64 bits.
+;	Sinon division non signee des valeurs absolues sur 64 iterations, puis restauration du signe.
+;	Clobbers : x2, x16, x17.
+  local slow, boucle, soustraire, suite, fin
+  local d_slow, d_fin, d_sub, d_suite, d_loop
+
+; Produit deja representable sur 64 bits signes ?
+  dd 0x937FFC10							; asr x16, x0, #63
+  dd 0xEB10007F							; cmp x3, x16
+  dd 0x54000001 or (((d_slow shr 2) and 0x7FFFF) shl 5)			; b.ne slow
+  d_slow = slow - $ + 4
+
+; Chemin rapide : division materielle 64/64, reste par MSUB.
+  dd 0x9AC10C02							; sdiv x2, x0, x1
+  dd 0x9B018043							; msub x3, x2, x1, x0
+  dd 0xAA0203E0							; mov x0, x2
+  dd 0x14000000 or ((d_fin shr 2) and 0x3FFFFFF)				; b fin
+  d_fin = fin - $ + 4
+
+slow:
+; Masque de signe du dividende 128, puis valeur absolue 128 bits.
+  dd 0x937FFC70							; asr x16, x3, #63
+  dd 0xCA100000							; eor x0, x0, x16
+  dd 0xCA100063							; eor x3, x3, x16
+  dd 0xEB100000							; subs x0, x0, x16
+  dd 0xDA100063							; sbc x3, x3, x16
+
+; Division non signee 128/64.
+; x3 = reste courant, x2 = bits bas du dividende, x0 = quotient.
+  dd 0xAA0003E2							; mov x2, x0
+  dd 0xD2800000							; mov x0, #0
+  dd 0xD2800811							; mov x17, #64
+
+boucle:
+  dd 0xAB020042							; adds x2, x2, x2
+  dd 0xBA030063							; adcs x3, x3, x3
+  dd 0xD37FF800							; lsl x0, x0, #1
+
+  dd 0x54000002 or (((d_sub shr 2) and 0x7FFFF) shl 5)		; b.cs soustraire
+  d_sub = soustraire - $ + 4
+
+  dd 0xEB01007F							; cmp x3, x1
+  dd 0x54000003 or (((d_suite shr 2) and 0x7FFFF) shl 5)		; b.lo suite
+  d_suite = suite - $ + 4
+
+soustraire:
+  dd 0xCB010063							; sub x3, x3, x1
+  dd 0xB2400000							; orr x0, x0, #1
+
+suite:
+  dd 0xF1000631							; subs x17, x17, #1
+  dd 0x54000001 or (((d_loop shr 2) and 0x7FFFF) shl 5)		; b.ne boucle
+  d_loop = boucle - $ + 4
+
+; Restaurer le signe du quotient et du reste.
+  dd 0xCA100000							; eor x0, x0, x16
+  dd 0xCB100000							; sub x0, x0, x16
+  dd 0xCA100063							; eor x3, x3, x16
+  dd 0xCB100063							; sub x3, x3, x16
+
+fin:
+end macro
+;			-----
+macro			CVTIX					; Conversion de l'entier I en FIXED X de SMALL = NUMER/DENOM
+;			-----					; Sont empiles I puis DENOM puis NUMER (I.D.N)
   POP_RBX								; x1 = NUMER : diviseur
   POP_RCX								; x2 = DENOM : multiplicateur
   POP_RAX								; x0 = I : multiplicande
-  dd 0x9B027C00							; mul x0, x0, x2	x0 = I * DENOM
-  dd 0x9AC10C00							; sdiv x0, x0, x1	x0 = (I * DENOM) / NUMER
+  dd 0x9B427C03							; smulh x3, x0, x2
+  dd 0x9B027C00							; mul   x0, x0, x2
+  SDIV128_64_POS
   PUSH_RAX							; Resultat FIXED X sur 64 bits
 end macro
-;			------
-macro			CVTXI?					; Conversion du FIXED X de SMALL = NUMER/DENOM en INTEGER I
-;			------					; Sont empiles X puis NUMER puis DENOM (X.N.D)
+
+;			-----
+macro			CVTXI					; Conversion du FIXED X de SMALL = NUMER/DENOM en INTEGER I
+;			-----					; Sont empiles X puis NUMER puis DENOM (X.N.D)
   POP_RBX								; x1 = DENOM : diviseur
   POP_RCX								; x2 = NUMER : multiplicateur
   POP_RAX								; x0 = X : multiplicande
-  dd 0x9B027C00							; mul x0, x0, x2	x0 = X * NUMER
-  dd 0x9AC10C02							; sdiv x2, x0, x1	x2 = quotient
-  dd 0x9B018043							; msub x3, x2, x1, x0	x3 = reste signe
+
+  dd 0x9B427C03							; smulh x3, x0, x2
+  dd 0x9B027C00							; mul   x0, x0, x2
+  SDIV128_64_POS							; x0 = quotient, x3 = reste
 
   dd 0x937FFC64							; asr x4, x3, #63	x4 = masque signe du reste
   dd 0xCA040063							; eor x3, x3, x4
@@ -1099,12 +1308,10 @@ macro			CVTXI?					; Conversion du FIXED X de SMALL = NUMER/DENOM en INTEGER I
   dd 0x54000063							; b.lo no_round	(skip 2 instr)
 
   dd 0xB2400084							; orr x4, x4, #1	(+1 ou -1 selon signe du reste)
-  dd 0x8B040042							; add x2, x2, x4
+  dd 0x8B040000							; add x0, x0, x4
 ; no_round:
-  dd 0xAA0203E0							; mov x0, x2
   PUSH_RAX							; Resultat INTEGER I sur 64 bits
 end macro
-
 
 ;-----------------------------------------------------------------------------------------------------------------------
 ;				C O M P A	R A I S O	N S
@@ -1113,54 +1320,54 @@ end macro
 ; Sur ARM64, on utilise CMP + CSET. Resultat 0/1 strict sur 64 bits dans x0,
 ; range proprement par STR (alors que x86 setXX [rbp] ne touchait que l'octet bas).
 
-;			----
-macro			CEQ?
-;			----
+;			---
+macro			CEQ
+;			---
   POP_RBX								; x1 = B
   dd 0xF94003A0							; ldr x0, [x29]	x0 = A
   dd 0xEB01001F							; subs xzr, x0, x1	(cmp x0, x1)
   dd 0x9A9F17E0							; cset x0, eq
   dd 0xF90003A0							; str x0, [x29]
 end macro
-;			----
-macro			CNE?					; A /= B (A empile puis B)
-;			----
+;			---
+macro			CNE					; A /= B (A empile puis B)
+;			---
   POP_RBX
   dd 0xF94003A0							; ldr x0, [x29]
   dd 0xEB01001F							; cmp x0, x1
   dd 0x9A9F07E0							; cset x0, ne
   dd 0xF90003A0							; str x0, [x29]
 end macro
-;			----
-macro			CGT?					; A > B
-;			----
+;			---
+macro			CGT					; A > B
+;			---
   POP_RBX
   dd 0xF94003A0							; ldr x0, [x29]
   dd 0xEB01001F							; cmp x0, x1
   dd 0x9A9FD7E0							; cset x0, gt
   dd 0xF90003A0							; str x0, [x29]
 end macro
-;			----
-macro			CGE?					; A >= B
-;			----
+;			---
+macro			CGE					; A >= B
+;			---
   POP_RBX
   dd 0xF94003A0							; ldr x0, [x29]
   dd 0xEB01001F							; cmp x0, x1
   dd 0x9A9FB7E0							; cset x0, ge
   dd 0xF90003A0							; str x0, [x29]
 end macro
-;			----
-macro			CLT?					; A < B
-;			----
+;			---
+macro			CLT					; A < B
+;			---
   POP_RBX
   dd 0xF94003A0							; ldr x0, [x29]
   dd 0xEB01001F							; cmp x0, x1
   dd 0x9A9FA7E0							; cset x0, lt
   dd 0xF90003A0							; str x0, [x29]
 end macro
-;			----
-macro			CLE?					; A <= B
-;			----
+;			---
+macro			CLE					; A <= B
+;			---
   POP_RBX
   dd 0xF94003A0							; ldr x0, [x29]
   dd 0xEB01001F							; cmp x0, x1
@@ -1179,9 +1386,9 @@ end macro
 ;  NaN : si un operande est NaN, fcmp positionne C=1, V=1 (unordered).
 ;  Comportement Ada : NaN /= x est True (FCNE), toutes autres comparaisons False.
 
-;			-----
-macro			FCEQ?					; A = B  flottant
-;			-----
+;			----
+macro			FCEQ					; A = B  flottant
+;			----
   dd 0xFD4003A1							; ldr d1, [x29]	(B = TOS)
   DROP
   dd 0xFD4003A0							; ldr d0, [x29]	(A)
@@ -1189,9 +1396,9 @@ macro			FCEQ?					; A = B  flottant
   dd 0x9A9F17E0							; cset x0, eq
   dd 0xF90003A0							; str x0, [x29]
 end macro
-;			-----
-macro			FCNE?					; A /= B flottant
-;			-----
+;			----
+macro			FCNE					; A /= B flottant
+;			----
   dd 0xFD4003A1							; ldr d1, [x29]
   DROP
   dd 0xFD4003A0							; ldr d0, [x29]
@@ -1199,9 +1406,9 @@ macro			FCNE?					; A /= B flottant
   dd 0x9A9F07E0							; cset x0, ne
   dd 0xF90003A0							; str x0, [x29]
 end macro
-;			-----
-macro			FCGT?					; A > B flottant
-;			-----
+;			----
+macro			FCGT					; A > B flottant
+;			----
   dd 0xFD4003A1							; ldr d1, [x29]
   DROP
   dd 0xFD4003A0							; ldr d0, [x29]
@@ -1209,9 +1416,9 @@ macro			FCGT?					; A > B flottant
   dd 0x9A9FD7E0							; cset x0, gt
   dd 0xF90003A0							; str x0, [x29]
 end macro
-;			-----
-macro			FCGE?					; A >= B flottant
-;			-----
+;			----
+macro			FCGE					; A >= B flottant
+;			----
   dd 0xFD4003A1							; ldr d1, [x29]
   DROP
   dd 0xFD4003A0							; ldr d0, [x29]
@@ -1219,9 +1426,9 @@ macro			FCGE?					; A >= B flottant
   dd 0x9A9FB7E0							; cset x0, ge
   dd 0xF90003A0							; str x0, [x29]
 end macro
-;			-----
-macro			FCLT?					; A < B flottant
-;			-----
+;			----
+macro			FCLT					; A < B flottant
+;			----
 ;	Sur ARM64, fcmp d0, d1 positionne les flags ; pour A<B on utilise la condition mi
 ;	(N=1 = strictement inferieur). Pas besoin d'inverser comme sur SSE2.
   dd 0xFD4003A1							; ldr d1, [x29]
@@ -1231,9 +1438,9 @@ macro			FCLT?					; A < B flottant
   dd 0x9A9F57E0							; cset x0, mi  (= less than en flottant)
   dd 0xF90003A0							; str x0, [x29]
 end macro
-;			-----
-macro			FCLE?					; A <= B flottant
-;			-----
+;			----
+macro			FCLE					; A <= B flottant
+;			----
   dd 0xFD4003A1							; ldr d1, [x29]
   DROP
   dd 0xFD4003A0							; ldr d0, [x29]
@@ -1249,7 +1456,7 @@ end macro
 ;-----------------------------------------------------------------------------------------------------------------------
 
 ;			-------------
-macro			BRA?	lbl				; inconditionnel
+macro			BRA	lbl				; inconditionnel
 ;			-------------
 ;	B label : opcode 0x14000000 + (offset/4) sur 26 bits signe.
 ;	Plage : ±128 Mo. Offset = lbl - position_de_l_instruction.
@@ -1260,10 +1467,11 @@ macro			BRA?	lbl				; inconditionnel
   local disp
   dd 0x14000000 or ((disp shr 2) and 0x3FFFFFF)
   disp = lbl - $ + 4
+  assert (disp mod 4) = 0 & disp >= -134217728 & disp <= 134217724
 end macro
 
 ;			-------------
-macro			BT?	lbl				; branch true
+macro			BT	lbl				; branch true
 ;			-------------
 ;	POP x0 puis CBNZ x0, lbl (sauter si x0 != 0).
 ;	CBNZ a une plage limitee a ±1 Mo (imm19). Suffisant pour les programmes courants.
@@ -1271,88 +1479,76 @@ macro			BT?	lbl				; branch true
   local disp
   dd 0xB5000000 or (((disp shr 2) and 0x7FFFF) shl 5)			; cbnz x0, lbl
   disp = lbl - $ + 4
+  assert (disp mod 4) = 0 & disp >= -1048576 & disp <= 1048572
 end macro
 
 ;			-------------
-macro			BF?	lbl				; branch false
+macro			BF	lbl				; branch false
 ;			-------------
   POP_RAX
   local disp
   dd 0xB4000000 or (((disp shr 2) and 0x7FFFF) shl 5)			; cbz x0, lbl
   disp = lbl - $ + 4
+  assert (disp mod 4) = 0 & disp >= -1048576 & disp <= 1048572
 end macro
 
 ;			-------------------------
-macro			CALL?	prefix, subname			; CALL par offset
+macro			CALL	prefix, subname			; CALL par offset
 ;			-------------------------
-;	Sur ARM64 : 'bl' pose l'adresse de retour dans x30 (LR) au lieu de l'empiler.
-;	Pour respecter la semantique LLIR de la micro-pile descendante des adresses
-;	de retour, on sauvegarde manuellement LR sur SP avant le bl, et on le restaure
-;	apres. Cela simule l'effet 'CALL' qui ferait un push sur la micro-pile RSP.
-;	Note : SP doit etre aligne sur 16 octets pour AArch64 Linux ; on descend
-;	donc de 16 octets meme si on n'a besoin que de 8 (l'autre qword sert de padding).
-;
-;	Sequence (5 instructions, 20 octets) :
-;	  sub sp, sp, #16    descendre SP de 16 (alignement obligatoire)
-;	  str x30, [sp]      sauvegarder LR du caller
-;	  bl  target         appel : LR = adresse de retour
-;	  ldr x30, [sp]      restaurer LR du caller
-;	  add sp, sp, #16    remonter SP
-
+; AArch64 n'empile pas l'adresse de retour. Pour conserver EXACTEMENT le modele
+; LLIR/x86, on gere explicitement la micro-pile par SP : chaque appel reserve
+; 16 octets (alignement AArch64), range l'adresse de retour a [sp], puis branche.
+; RTD depile cette adresse. Ainsi une restauration de SP par EXC_RAISE deroule
+; aussi les retours des frames abandonnes, sans avoir a sauver x30 dans le contexte.
   postpone
     if ~definite prefix#subname#_
-      prefix#subname#_ = prefix#subname#.elab				; le nom finissant en _ determine l'assemblage de la routine
+      prefix#subname#_ = prefix#subname#.elab
     end if
   end postpone
 
+  local retour
+  QUAD_CONST	16, retour
   dd 0xD10043FF							; sub sp, sp, #16
-  dd 0xF90003FE							; str x30, [sp]
-  local ofs
-  dd 0x94000000 or ((ofs shr 2) and 0x3FFFFFF)				; bl prefix#subname#_  (offset 26 bits)
-  ofs = prefix#subname#_ - $ + 4
-  dd 0xF94003FE							; ldr x30, [sp]
-  dd 0x910043FF							; add sp, sp, #16
+  dd 0xF90003F0							; str x16, [sp]
+  BRA prefix#subname#_
+retour:
 end macro
-
-;			------
-macro			CALLI?					; CALL indirect par valeur empilee
-;			------
-;	Depile l'adresse cible dans x0, sauvegarde LR sur SP, BLR x0, restaure LR.
+;			-----
+macro			CALLI					; CALL indirect par valeur empilee
+;			-----
+  local retour
   POP_RAX								; x0 = adresse cible
+  QUAD_CONST	16, retour
   dd 0xD10043FF							; sub sp, sp, #16
-  dd 0xF90003FE							; str x30, [sp]
-  dd 0xD63F0000							; blr x0
-  dd 0xF94003FE							; ldr x30, [sp]
-  dd 0x910043FF							; add sp, sp, #16
+  dd 0xF90003F0							; str x16, [sp]
+  dd 0xD61F0000							; br x0
+retour:
 end macro
-
 ;			--------------------
-macro			RTD?	prm_size:0
-;			--------------------
-;	Desallouer prm_size octets de la pile de travail puis retour (ret x30).
-;	L'adresse de retour est dans x30 ; le 'CALL' du caller s'occupera de
-;	restaurer le LR du niveau encore au-dessus.
+macro			RTD	param_size:0
+;			----------------------
+  prm_size = param_size
   assert prm_size >= 0
   if prm_size <> 0
     if prm_size <= 4095
       dd 0xD1000000 or (prm_size shl 10) or (29 shl 5) or 29		; sub x29, x29, #prm_size
     else if prm_size <= 16777215  &  (prm_size mod 4096) = 0
-      dd 0xD1400000 or ((prm_size shr 12) shl 10) or (29 shl 5) or 29		; sub x29, x29, #prm_size, lsl #12
+      dd 0xD1400000 or ((prm_size shr 12) shl 10) or (29 shl 5) or 29	; sub x29, x29, #prm_size, lsl #12
     else
       QUAD_CONST	17, prm_size
       dd 0xCB1103BD							; sub x29, x29, x17
     end if
   end if
-  dd 0xD65F03C0							; ret x30
+  dd 0xF94003F0							; ldr x16, [sp]   adresse de retour LLIR
+  dd 0x910043FF							; add sp, sp, #16
+  dd 0xD61F0200							; br x16
 end macro
-
-
 ;-----------------------------------------------------------------------------------------------------------------------
 ;			O P E R A	T I O N S	  G E S T	I O N   D	E   P I L	E
 ;-----------------------------------------------------------------------------------------------------------------------
 
 ;			--------------------
-macro			LINK?	lvl, alloc			; ALLOCATION POUR VARIABLES LOCALES APRES FRAME PTR
+macro			LINK	lvl, alloc			; ALLOCATION POUR VARIABLES LOCALES APRES FRAME PTR
 ;			--------------------
 ;	Pour lvl > 0 : sauvegarder l'ancien FP du niveau dans la pile de travail,
 ;	puis mettre a jour l'entree du display.
@@ -1387,7 +1583,7 @@ macro			LINK?	lvl, alloc			; ALLOCATION POUR VARIABLES LOCALES APRES FRAME PTR
 end macro
 
 ;			-------------
-macro			UNLINK?	lvl				; DISPOSE VARS LOCALES ET RESTORE FRAME PTR
+macro			UNLINK	lvl				; DISPOSE VARS LOCALES ET RESTORE FRAME PTR
 ;			-------------
   FP_IN_RBP	lvl						; throw locals : x29 = FP(lvl)
   POP_RAX								; depiler l'ancien FP sauvegarde
@@ -1438,47 +1634,41 @@ elab:
   LINK lvl, loc_siz
 end macro
 
+;			--------------
+macro			BEGIN_BLOC_DEF				; Debut du bloc d'images d'un enumere
+;			--------------
+; Donnees inline protegees par BRA. Les noms fixes vivent dans le namespace
+; du type enumere ; pas de struc coupee ni de postpone inter-macros.
+  BRA	IMAGES.skip
+IMAGES.data = $
+end macro
+
+;			------------
+macro			END_BLOC_DEF	siz, fst, lst		; Fin : pose le ENUM_USE_INFO etendu
+;			------------
+; CONTRAT : SIZ @0 | FST @+4 | LST @+8 | pad | data_ptr @+16 | info_ptr @+24.
+IMAGES.data_end = $
+IMAGES.info = $
+  dd 8*(IMAGES.data_end - IMAGES.data), 8, 1, IMAGES.data_end - IMAGES.data
+  align_q
+SIZ = $
+  dd siz
+FST = $
+  dd fst
+LST = $
+  dd lst
+  dd 0
+IMAGES.data_ptr = $
+  dq IMAGES.data
+IMAGES.info_ptr = $
+  dq IMAGES.info
+IMAGES.skip:
+end macro
 
 ;	Une chaine Ada est un tableau d'octets caracteres, c'est a dire un descripteur
 ;	[ PTR_TO_CHARS qword | PTR_TO_INFO qword ] et un bloc info [ TOT_SIZ dword | COMP_SIZ dword | FIRST dword | LAST dword ].
 ;	Les caracteres pointes par PTR_TO_CHARS peuvent etre detaches du descripteur.
 ;	Ici, cas de constante, les caracteres sont juste apres le descripteur.
-
-;			--------------
-macro			BEGIN_BLOC_DEF				; Debut de definition d'un bloc octets utilisable comme STRING Ada
-;			--------------
-  esc struc BYTES_BLOC						; Structure du bloc type STRING avec saut de fin de macro par "esc" pour coupure en deux parties
-    postpone							; ATTENTION : differe terminé par la macro END_BLOC_DEF
-    local data
-    local info
-    local str_bit_size
-    align_q							; aligner le doublet descripteur sur un quadword
-  .data_ptr = $							; adresse de l'adresse de data
-    dq data							; offset 0 : adresse des octets
-  .info_ptr = $
-    dq info							; offset 8 : adresse des infos d'usage TOT_SIZ, COMP_SIZ, FST_1, LST_1
-  info = $
-    dd str_bit_size, 8, 1, str_bit_size/8				; offset 16 : TOT_SIZ ; offset 20 : COMP_SIZ=8 ; offset 24 : FST=1 ; offset 28 : LST
-    virtual at 0							; definition des offsets sur le useinfo
-    SIZ = $
-    rd 1
-    COMP_SIZ = $
-    rd 1
-    FST_1 = $
-    rd 1
-    LST_1 = $
-    end virtual
-  data = $							; pour une constante les caracteres suivent
-end macro
-
-;			-------------
-macro			END_BLOC_DEF!				; Fin de definition d'une constante chaine (Attention inconditionnelle "!")
-;			-------------
-    str_bit_size = 8*($ - data)					; Calculer la taille effective en bits
-  end postpone
-  esc end struc							; Fin de la structure du bloc, arret de la coupure par "esc"
-end macro
-
 
 ;			---------------------
 macro			STR	name, bytes			; Definition d'une constante chaine
@@ -1533,37 +1723,57 @@ macro			USEINFO	lvl, field_name, load_instruc&	; Reference a un __u use info
     rq 1								; reservation
   end virtual
   load_instruc
-  Sa lvl, field_name#__u
+  SA lvl, field_name#__u
 end macro
 ;			-------------------
-macro			STATOFS	name, siz				; Definition de l'offset statique (record statique, dans une virtual at 0)
-;			-------------------
-  if siz > 4
+macro			STATOFS	name, siz, algn:0			; Definition de l'offset statique
+;			---------------------------
+; algn = alignement du composant elementaire en octets (1/2/4/8).
+; algn 0 conserve l'ancienne regle derivee de la taille totale.
+  if algn = 8
     align_q
-  else if siz > 2
+  else if algn = 4
     align_d
-  else if siz > 1
+  else if algn = 2
     align_w
+  else if algn = 1
+  else
+    if siz > 4
+      align_q
+    else if siz > 2
+      align_d
+    else if siz > 1
+      align_w
+    end if
   end if
-name = $								; nom offset du champ
-  rb siz								; reservation
-size = $								; Taille de la structure (sert a l'allocation)
+name = $
+  rb siz
 end macro
-
 ;			-----------------------------------
 macro			VAR	name_disp, sizChar, siz:1		; Definition d'un lieu de variable
 ;			-----------------------------------
   virtual VARzone
-    if `sizChar = 'b'  |  `sizChar = 'w'  |  `sizChar = 'd'  |  `sizChar = 'q'
-      align_#sizChar
+     if `sizChar = 'B'  |  `sizChar = 'b'
+      align_b
       name_disp = $							; displacement des data de variable
-      r#sizChar siz							; reservation
+      rb siz							; reservation
+    else if `sizChar = 'W'  |  `sizChar = 'w'
+      align_w
+      name_disp = $
+      rw siz
+    else if `sizChar = 'D'  |  `sizChar = 'd'
+      align_d
+      name_disp = $
+      rd siz
+    else if `sizChar = 'Q'  |  `sizChar = 'q'
+      align_q
+      name_disp = $
+      rq siz
     else
       align_q							; assurer l'alignement de pile dans tous les cas possibles
-      name_disp = $
-      rb sizChar
+      name_disp = $							; displacement des data de variable
+      rb sizChar							; taille numerique en octets
     end if
-  end virtual
 end macro
 
 ;			------
@@ -1581,14 +1791,154 @@ macro			CO_VAR					; Allocation d'un bloc sur la co-pile, taille en octets sur l
   dd 0x8B000F7B							; add x27, x27, x0, lsl #3
 end macro
 
+
+;			----------
+macro			HEAP_ALLOC				; Allocation bump-pointer pour Ada new
+;			----------
+; x25 est le haut du tas mmap separe. La taille demandee est arrondie a 8,
+; le tas croit vers les adresses basses et l'adresse du bloc est empilee.
+  POP_RAX
+  dd 0x91001C00							; add x0, x0, #7
+  dd 0xD343FC00							; lsr x0, x0, #3
+  dd 0xD37DF000							; lsl x0, x0, #3
+  dd 0xCB000339							; sub x25, x25, x0
+  dd 0xAA1903E0							; mov x0, x25
+  PUSH_RAX
+end macro
 ;			------
 macro			endPRO					; Fin de procedure
 ;			------
 post:
   virtual VARzone
-    loc_siz = $							; taille des locales rétropropagee au LINK du ELAB
+    align_q
+    loc_siz = $							; taille des locales retropropagee au LINK du ELAB
+if DEBUG_LLIR = 1
+show 'loc_siz = ', loc_siz
+end if
   end virtual
   end namespace
+end macro
+
+;			----------------------------
+macro			EXC_MACH?		lvl, ctx			; photographie de l'etat machine cache
+;			----------------------------
+; Layout identique a la reference x86 :
+; +16 x29 (pile travail), +24 sp (micro-pile retours), +32 x26, +40 x27,
+; +48 nlvl=lvl+1, +56 prefixe display FP(0..lvl).
+  assert lvl >= 0 & lvl <= 31
+  FP_IN_RAX lvl							; x0 := FP(lvl), base du contexte
+  STORE_QUAD	ctx + 16, 0, 29
+  dd 0x910003F0							; mov x16, sp
+  STORE_QUAD	ctx + 24, 0, 16
+  STORE_QUAD	ctx + 32, 0, 26
+  STORE_QUAD	ctx + 40, 0, 27
+  QUAD_CONST	16, lvl + 1
+  STORE_QUAD	ctx + 48, 0, 16
+  repeat lvl + 1, n:0
+    LOAD_QUAD	8*n, 28, 16
+    STORE_QUAD	ctx + 56 + 8*n, 0, 16
+  end repeat
+end macro
+
+;			-----------------------
+macro			EXC_RAISE?	top			; deroulage vers le contexte sommet
+;			-----------------------
+; Atteint par BRA, jamais par CALL. Le POP du contexte est fait avant dispatch,
+; afin qu'un raise execute dans un handler remonte au contexte appelant.
+  local boucle, d_boucle
+  LOAD_QUAD	0, 28, 1						; x1 := FP(0)
+  LOAD_QUAD	top, 1, 0						; x0 := contexte sommet
+  dd 0xAA0003E3							; mov x3, x0   conserver ctx
+  LOAD_QUAD	0, 3, 2						; x2 := PREV_CTX
+  STORE_QUAD	top, 1, 2					; POP avant dispatch
+
+  LOAD_QUAD	32, 3, 26						; restaurer frame co-pile
+  LOAD_QUAD	40, 3, 27						; restaurer sommet co-pile
+  LOAD_QUAD	24, 3, 16						; micro-pile retours sauvegardee
+  dd 0x9100021F							; mov sp, x16
+  LOAD_QUAD	48, 3, 2						; x2 := NXT_LVL / nombre d'entrees display
+  dd 0x9100E064							; add x4, x3, #56  source prefixe
+  dd 0xAA1C03E5							; mov x5, x28      destination display
+boucle:
+  dd 0xF9400090							; ldr x16, [x4]
+  dd 0xF90000B0							; str x16, [x5]
+  dd 0x91002084							; add x4, x4, #8
+  dd 0x910020A5							; add x5, x5, #8
+  dd 0xD1000442							; sub x2, x2, #1
+  dd 0xB5000002 or (((d_boucle shr 2) and 0x7FFFF) shl 5)		; cbnz x2, boucle
+  d_boucle = boucle - $ + 4
+
+  LOAD_QUAD	16, 3, 29						; restaurer pile de travail
+  LOAD_QUAD	8, 3, 16						; DISPATCH
+  dd 0xD61F0200							; br x16
+end macro
+;-----------------------------------------------------------------------------------------------------------------------
+;		O P E R A T I O N S   L O G I Q U E S   D E   B L O C   (LRM 4.5.1)
+;-----------------------------------------------------------------------------------------------------------------------
+; pile binaire = @DST, LEN, @SRC ; [DST] op= [SRC]. LEN en octets.
+
+;			------------------------
+macro			BLK_OP_OCTET	opc*				; usine interne, opc miroir x86 20/08/30
+;			------------------------
+  local boucle, fin, d_fin, d_boucle
+  POP_RSI								; x4 = @SRC
+  POP_RCX								; x2 = LEN
+  POP_RDI								; x5 = @DST
+  dd 0xB4000002 or (((d_fin shr 2) and 0x7FFFF) shl 5)			; cbz x2, fin
+  d_fin = fin - $ + 4
+boucle:
+  dd 0x39400090							; ldrb w16, [x4]
+  dd 0x394000B1							; ldrb w17, [x5]
+  if opc = 0x20
+    dd 0x0A100231							; and w17, w17, w16
+  else if opc = 0x08
+    dd 0x2A100231							; orr w17, w17, w16
+  else if opc = 0x30
+    dd 0x4A100231							; eor w17, w17, w16
+  else
+    err 'BLK_OP_OCTET : operation non supportee'
+  end if
+  dd 0x390000B1							; strb w17, [x5]
+  dd 0x91000484							; add x4, x4, #1
+  dd 0x910004A5							; add x5, x5, #1
+  dd 0xD1000442							; sub x2, x2, #1
+  dd 0xB5000002 or (((d_boucle shr 2) and 0x7FFFF) shl 5)		; cbnz x2, boucle
+  d_boucle = boucle - $ + 4
+fin:
+end macro
+;			------
+macro			BLKAND
+;			------
+  BLK_OP_OCTET 0x20
+end macro
+;			-----
+macro			BLKOU
+;			-----
+  BLK_OP_OCTET 0x08
+end macro
+;			------
+macro			BLKOUX
+;			------
+  BLK_OP_OCTET 0x30
+end macro
+
+;			------
+macro			BLKNOT					; NOT composite : chaque octet ^= 1
+;			------
+  local boucle, fin, d_fin, d_boucle
+  POP_RCX								; x2 = LEN
+  POP_RDI								; x5 = @DST
+  dd 0xB4000002 or (((d_fin shr 2) and 0x7FFFF) shl 5)
+  d_fin = fin - $ + 4
+boucle:
+  dd 0x394000B0							; ldrb w16, [x5]
+  dd 0x52000210							; eor w16, w16, #1
+  dd 0x390000B0							; strb w16, [x5]
+  dd 0x910004A5							; add x5, x5, #1
+  dd 0xD1000442							; sub x2, x2, #1
+  dd 0xB5000002 or (((d_boucle shr 2) and 0x7FFFF) shl 5)
+  d_boucle = boucle - $ + 4
+fin:
 end macro
 
 ;			------
@@ -1608,9 +1958,115 @@ macro			BLKMOV					; Copie de bloc sans recouvrement
 ;.end:
 end macro
 
+;			------
+macro			BLKCMP					; Comparaison de blocs : 1 si egaux, 0 sinon
+;			------
+  local boucle, different, fin, d_fin0, d_diff, d_loop, d_fin1
+  POP_RSI								; x4 = @B
+  POP_RCX								; x2 = LEN
+  POP_RDI								; x5 = @A
+  dd 0xD2800020							; mov x0, #1 (LEN=0 => egal)
+  dd 0xB4000002 or (((d_fin0 shr 2) and 0x7FFFF) shl 5)
+  d_fin0 = fin - $ + 4
+boucle:
+  dd 0x39400090							; ldrb w16, [x4]
+  dd 0x394000B1							; ldrb w17, [x5]
+  dd 0x6B11021F							; cmp w16, w17
+  dd 0x54000001 or (((d_diff shr 2) and 0x7FFFF) shl 5)			; b.ne different
+  d_diff = different - $ + 4
+  dd 0x91000484							; add x4, x4, #1
+  dd 0x910004A5							; add x5, x5, #1
+  dd 0xD1000442							; sub x2, x2, #1
+  dd 0xB5000002 or (((d_loop shr 2) and 0x7FFFF) shl 5)
+  d_loop = boucle - $ + 4
+  BRA fin
+different:
+  dd 0xD2800000							; mov x0, #0
+fin:
+  PUSH_RAX
+end macro
 
+;			-----------------
+macro			LEXCMP siz*, sgn*				; Comparaison lexicographique de tableaux
+;			-----------------
+; Entree : @G, LEN_G, @D, LEN_D ; longueurs en octets. Sortie : -1/0/+1.
+  local boucle, epuise, differe, plus, egal, moins, empile
+  local d_g0, d_d0, d_ne, d_loop, d_eq, d_ltpre, d_lt, d_plus1, d_plus2, d_eqend
 
+  POP_RDX								; x3 = LEN_D
+  POP_RSI								; x4 = @D
+  POP_RCX								; x2 = LEN_G
+  POP_RDI								; x5 = @G
+boucle:
+  dd 0xB4000002 or (((d_g0 shr 2) and 0x7FFFF) shl 5)			; cbz x2, epuise
+  d_g0 = epuise - $ + 4
+  dd 0xB4000003 or (((d_d0 shr 2) and 0x7FFFF) shl 5)			; cbz x3, epuise
+  d_d0 = epuise - $ + 4
 
+if siz = 1
+  if sgn = 1
+    dd 0x398000A0							; ldrsb x0, [x5]
+    dd 0x39800081							; ldrsb x1, [x4]
+  else
+    dd 0x394000A0							; ldrb w0, [x5]
+    dd 0x39400081							; ldrb w1, [x4]
+  end if
+else if siz = 2
+  if sgn = 1
+    dd 0x798000A0							; ldrsh x0, [x5]
+    dd 0x79800081							; ldrsh x1, [x4]
+  else
+    dd 0x794000A0							; ldrh w0, [x5]
+    dd 0x79400081							; ldrh w1, [x4]
+  end if
+else if siz = 4
+  if sgn = 1
+    dd 0xB98000A0							; ldrsw x0, [x5]
+    dd 0xB9800081							; ldrsw x1, [x4]
+  else
+    dd 0xB94000A0							; ldr w0, [x5]
+    dd 0xB9400081							; ldr w1, [x4]
+  end if
+else if siz = 8
+    dd 0xF94000A0							; ldr x0, [x5]
+    dd 0xF9400081							; ldr x1, [x4]
+else
+  err 'LEXCMP : taille de composant non supportee'
+end if
+
+  dd 0xEB01001F							; cmp x0, x1
+  dd 0x54000001 or (((d_ne shr 2) and 0x7FFFF) shl 5)			; b.ne differe
+  d_ne = differe - $ + 4
+
+  if siz <= 4095
+    dd 0x910000A5 or (siz shl 10)					; add x5, x5, #siz
+    dd 0x91000084 or (siz shl 10)					; add x4, x4, #siz
+    dd 0xD1000042 or (siz shl 10)					; sub x2, x2, #siz
+    dd 0xD1000063 or (siz shl 10)					; sub x3, x3, #siz
+  end if
+  BRA boucle
+
+epuise:
+  dd 0xCB030042							; sub x2, x2, x3
+  dd 0x54000000 or (((d_eq shr 2) and 0x7FFFF) shl 5)			; b.eq egal
+  d_eq = egal - $ + 4
+  dd 0x5400000B or (((d_ltpre shr 2) and 0x7FFFF) shl 5)			; b.lt moins
+  d_ltpre = moins - $ + 4
+plus:
+  dd 0xD2800020							; mov x0, #1
+  BRA empile
+differe:
+  dd 0x5400000B or (((d_lt shr 2) and 0x7FFFF) shl 5)			; b.lt moins (flags du cmp)
+  d_lt = moins - $ + 4
+  BRA plus
+egal:
+  dd 0xD2800000							; mov x0, #0
+  BRA empile
+moins:
+  dd 0x92800000							; mov x0, #-1
+empile:
+  PUSH_RAX
+end macro
 ;				------------------------------
 ;				SPECIFIQUE  L I N U X   ARM64
 ;				------------------------------
@@ -1648,9 +2104,9 @@ macro			SYS_CLOCK_GETTIME
 end macro
 
 
-;			-------------
-macro			SYS_PUT_CHAR?				; affiche un seul caractere sur stdout
-;			-------------
+;			------------
+macro			SYS_PUT_CHAR				; affiche un seul caractere sur stdout
+;			------------
 ;	Le caractere est sur la pile en sommet (a l'adresse [x29]).
 ;	syscall : write(fd=1, buf=&caractere, count=1)
 ;	  x0 = fd = 1
@@ -1660,15 +2116,15 @@ macro			SYS_PUT_CHAR?				; affiche un seul caractere sur stdout
 
   dd 0xAA1D03E1							; mov x1, x29		(adresse du caractere = sommet de pile)
   dd 0xD2800020							; movz x0, #1		(fd = stdout)
-  dd 0xD2800042							; movz x2, #1		(count = 1)
+  dd 0xD2800022							; movz x2, #1		(count = 1)
   dd 0xD2800808							; movz x8, #64		(sys_write)
   dd 0xD4000001							; svc #0
   DROP								; caractere consomme
 end macro
 
-;			------------
-macro			SYS_PUT_STR?				; affiche tout une chaine sur stdout
-;			------------
+;			-----------
+macro			SYS_PUT_STR				; affiche tout une chaine sur stdout
+;			-----------
 ;	En entree : adresse du descripteur Ada (doublet @data | @info) sur la pile.
 ;	Le descripteur pointe vers data (offset 0) et info (offset 8).
 ;	Le bloc info contient : SIZ@0, COMP_SIZ@4, FST@8, LST@12 (dwords).
@@ -1713,9 +2169,9 @@ end macro
 ;	}
 ;	On reserve 64 octets sur sp (multiple de 16, alignement OK).
 
-;			-------------
-macro			SYS_GET_CHAR?				; lit un seul caractere sur stdin en mode non canonique
-;			-------------
+;			------------
+macro			SYS_GET_CHAR				; lit un seul caractere sur stdin en mode non canonique
+;			------------
 ;	1. Reserver 64 octets sur sp pour le termios.
   dd 0xD10103FF							; sub sp, sp, #64
 ;	2. ioctl(stdin=0, TCGETS=0x5401, &termios) — recupere les attributs courants
@@ -1739,7 +2195,7 @@ macro			SYS_GET_CHAR?				; lit un seul caractere sur stdin en mode non canonique
   POP_RDI								; x5 = adresse destination (depilee de la pile de travail)
   dd 0xAA0503E1							; mov x1, x5		(buf)
   dd 0xD2800000							; movz x0, #0		(fd = stdin)
-  dd 0xD2800042							; movz x2, #1		(count = 1)
+  dd 0xD2800022							; movz x2, #1		(count = 1)
   dd 0xD28007E8							; movz x8, #63		(sys_read)
   dd 0xD4000001							; svc #0
 ;	6. Restaurer le mode canonique : remettre ICANON (bit 1) et ECHO (bit 3)
@@ -1757,10 +2213,9 @@ macro			SYS_GET_CHAR?				; lit un seul caractere sur stdin en mode non canonique
   dd 0x910103FF							; add sp, sp, #64
 end macro
 
-
-;			------------
-macro			SYS_GET_STR?				; lit une ligne sur stdin
-;			------------
+;			-----------
+macro			SYS_GET_STR				; lit une ligne sur stdin
+;			-----------
 ;	En entree : adresse d'un descripteur Ada de chaine (doublet @data | @info).
 ;	Lecture jusqu'a la longueur LST+1-FST. On retourne aussi la longueur effectivement
 ;	lue dans un dword adresse par un second pop.
@@ -1823,10 +2278,9 @@ macro			COPY_STRING_APPEND_NUL			; descripteur dans x4, copie sur la pile montan
   dd 0x910023A5							; add x5, x29, #8	(remettre x5 au debut de la copie)
 end macro
 
-
-;			----------------
-macro			SYS_FILE_CREATE?				; openat(AT_FDCWD, name, O_CREAT|O_RDWR, 0700)
-;			----------------
+;			---------------
+macro			SYS_FILE_CREATE				; openat(AT_FDCWD, name, O_CREAT|O_RDWR, 0700)
+;			---------------
 ;	x86-64 utilisait sys_open (rax=2) ; ARM64 utilise sys_openat (x8=56).
 ;	openat prend AT_FDCWD = -100 en premier argument pour reproduire le sens 'open'.
 ;	Args : x0=AT_FDCWD=-100, x1=path, x2=flags=0x42 (O_CREAT|O_RDWR), x3=mode=0700=0x1C0
@@ -1835,17 +2289,16 @@ macro			SYS_FILE_CREATE?				; openat(AT_FDCWD, name, O_CREAT|O_RDWR, 0700)
   COPY_STRING_APPEND_NUL						; x5 = adresse copie NUL-terminee
   dd 0x92800C60							; movn x0, #99	(x0 = AT_FDCWD = -100)
   dd 0xAA0503E1							; mov x1, x5	(path)
-  dd 0xD2800842							; movz x2, #0x42	(O_CREAT | O_RDWR)
+  dd 0xD2804842							; movz x2, #0x242	(O_CREAT | O_RDWR | O_TRUNC)
   dd 0xD2803803							; movz x3, #0x1C0	(mode = 0700)
   dd 0xD2800708							; movz x8, #56	(sys_openat)
   dd 0xD4000001							; svc #0
   dd 0xF90003A0							; str x0, [x29]	(ATTENTION PAS PUSH ! ID rendu sur le lieu result de la fonction)
 end macro
 
-
-;			--------------
-macro			SYS_FILE_OPEN?				; openat(AT_FDCWD, name, O_RDWR, 0)
-;			--------------
+;			-------------
+macro			SYS_FILE_OPEN				; openat(AT_FDCWD, name, O_RDWR, 0)
+;			-------------
   POP_RSI
   COPY_STRING_APPEND_NUL
   dd 0x92800C60							; movn x0, #99	(AT_FDCWD)
@@ -1857,10 +2310,9 @@ macro			SYS_FILE_OPEN?				; openat(AT_FDCWD, name, O_RDWR, 0)
   dd 0xF90003A0							; str x0, [x29]
 end macro
 
-
-;			-----------------
-macro			SYS_FILE_SET_POS?				; lseek(fd, offset, SEEK_SET=0)
-;			-----------------
+;			----------------
+macro			SYS_FILE_SET_POS				; lseek(fd, offset, SEEK_SET=0)
+;			----------------
   POP_RDI								; x5 = FILE_ID
   POP_RSI								; x4 = offset
   dd 0xAA0503E0							; mov x0, x5	(fd)
@@ -1871,10 +2323,9 @@ macro			SYS_FILE_SET_POS?				; lseek(fd, offset, SEEK_SET=0)
   dd 0xF90003A0							; str x0, [x29]
 end macro
 
-
-;			------------------
-macro			SYS_FILE_GET_POS?				; lseek(fd, 0, SEEK_CUR=1) - position courante
-;			------------------
+;			----------------
+macro			SYS_FILE_GET_POS				; lseek(fd, 0, SEEK_CUR=1) - position courante
+;			----------------
   POP_RDI								; x5 = FILE_ID
   dd 0xAA0503E0							; mov x0, x5
   dd 0xD2800001							; movz x1, #0	(offset = 0)
@@ -1884,10 +2335,9 @@ macro			SYS_FILE_GET_POS?				; lseek(fd, 0, SEEK_CUR=1) - position courante
   dd 0xF90003A0							; str x0, [x29]
 end macro
 
-
-;			------------------
-macro			SYS_FILE_GET_SIZE?				; taille fichier (lseek SEEK_END puis SEEK_SET pour preserver)
-;			------------------
+;			-----------------
+macro			SYS_FILE_GET_SIZE				; taille fichier (lseek SEEK_END puis SEEK_SET pour preserver)
+;			-----------------
   POP_RDI								; x5 = FILE_ID
 ;	1. Sauver la position courante : lseek(fd, 0, SEEK_CUR) -> x0 = position
   dd 0xAA0503E0							; mov x0, x5
@@ -1913,10 +2363,9 @@ macro			SYS_FILE_GET_SIZE?				; taille fichier (lseek SEEK_END puis SEEK_SET pou
   dd 0xF90003A7							; str x7, [x29]
 end macro
 
-
-;			---------------
-macro			SYS_FILE_WRITE?				; write(fd, buf, count)
-;			---------------
+;			--------------
+macro			SYS_FILE_WRITE				; write(fd, buf, count)
+;			--------------
   POP_RDI								; x5 = FILE_ID
   POP_RSI								; x4 = adresse tampon
   POP_RDX								; x3 = longueur
@@ -1928,10 +2377,9 @@ macro			SYS_FILE_WRITE?				; write(fd, buf, count)
   dd 0xF90003A0							; str x0, [x29]
 end macro
 
-
-;			--------------
-macro			SYS_FILE_READ?				; read(fd, buf, count)
-;			--------------
+;			-------------
+macro			SYS_FILE_READ				; read(fd, buf, count)
+;			-------------
   POP_RDI								; x5 = FILE_ID
   POP_RSI								; x4 = adresse tampon
   POP_RDX								; x3 = longueur
@@ -1943,10 +2391,9 @@ macro			SYS_FILE_READ?				; read(fd, buf, count)
   dd 0xF90003A0							; str x0, [x29]
 end macro
 
-
-;			---------------
-macro			SYS_FILE_CLOSE?				; close(fd)
-;			---------------
+;			--------------
+macro			SYS_FILE_CLOSE				; close(fd)
+;			--------------
   POP_RDI								; x5 = FILE_ID
   dd 0xAA0503E0							; mov x0, x5
   dd 0xD2800728							; movz x8, #57	(sys_close)
@@ -1954,10 +2401,9 @@ macro			SYS_FILE_CLOSE?				; close(fd)
   dd 0xF90003A0							; str x0, [x29]
 end macro
 
-
-;			----------------
-macro			SYS_FILE_DELETE?				; unlinkat(AT_FDCWD, name, 0)
-;			----------------
+;			---------------
+macro			SYS_FILE_DELETE				; unlinkat(AT_FDCWD, name, 0)
+;			---------------
 ;	x86-64 utilisait sys_unlink (rax=87) ; ARM64 utilise sys_unlinkat (x8=35).
 
   POP_RSI								; x4 = descripteur chaine
@@ -1970,17 +2416,17 @@ macro			SYS_FILE_DELETE?				; unlinkat(AT_FDCWD, name, 0)
   dd 0xF90003A0							; str x0, [x29]
 end macro
 
-
-;			---------
-macro			SYS_EXIT?					; exit(0)
-;			---------
-  dd 0xD2800000							; movz x0, #0	(code de sortie = 0)
-  dd 0xD2800BA8							; movz x8, #93	(sys_exit)
+;			----------------
+macro			SYS_EXIT? code:0				; retour au systeme
+;			----------------
+  if code = 0
+    dd 0xD2800000							; movz x0, #0
+  else
+    QUAD_CONST	0, code
+  end if
+  dd 0xD2800BA8							; movz x8, #93 (sys_exit)
   dd 0xD4000001							; svc #0
 end macro
-
-
-
 ;				---------------------------------------------
 ;				MISE EN PLACE ENTETE ELF 64 POUR LINUX ARM64
 ;				---------------------------------------------
@@ -2016,25 +2462,37 @@ Elf64_Phdr:
 	p_vaddr		dq 0x00400078
 	p_paddr		dq 0
 	p_filesz		dq ASM_SIZE				; juste le necessaire code/constantes dans le fichier
-	p_memsz		dq ASM_SIZE + 64*1024*1024
+	p_memsz		dq ASM_SIZE + 1024*1024*1024
 	p_align		dq 4096
 
 
 ;		METTRE EN PLACE LA PILE CROISSANTE ET LE DISPLAY
 ;
-;	Sur ARM64, le noyau Linux passe deja un SP aligne 16. On l'utilise pour la
-;	micro-pile descendante des adresses de retour CALL/RET. Au-dessus de SP, on
-;	reserve 1 Mo de zone melangee qui contiendra :
-;	  - le display des frame pointers (32 entrees x 8 octets = 256 octets)
-;	  - la pile de travail x29 (croissant vers les adresses hautes)
+;		METTRE EN PLACE LE TAS SEPARE (mmap anonyme de 64 Mo)
+;
+; mmap(NULL, 64MiB, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0)
+; ABI Linux AArch64 : x8=222, arguments x0..x5, retour x0.
+TAILLE_TAS = 64*1024*1024
+  dd 0xD2800000							; mov x0, #0
+  dd 0xD2800801							; mov x1, #64
+  dd 0xD36CAC21							; lsl x1, x1, #20 = 64 MiB
+  dd 0xD2800062							; mov x2, #3   PROT_READ|PROT_WRITE
+  dd 0xD2800443							; mov x3, #0x22 MAP_PRIVATE|MAP_ANONYMOUS
+  dd 0x92800004							; mov x4, #-1
+  dd 0xD2800005							; mov x5, #0
+  dd 0xD2801BC8							; mov x8, #222  sys_mmap
+  dd 0xD4000001							; svc #0
+  dd 0xD2A08010							; movz x16, #0x400, lsl #16 = 64 MiB
+  dd 0x8B100019							; add x25, x0, x16  haut du tas descendant
 
-  dd 0x910003F9                    ; mov x25, sp
-  dd 0xD2A00C10                    ; movz x16, #0x60, lsl #16   (6 Mo)
-  dd 0xCB3063FF                    ; sub sp, sp, x16  (extended reg)
-  dd 0x910003FC                    ; mov x28, sp
-  dd 0x9104039D                    ; add x29, x28, #256
-  dd 0xF900039D                    ; str x29, [x28]
-
+;		METTRE EN PLACE LA PILE MONTANTE ET LE DISPLAY
+; Comme sur x86-64, le point de depart de la micro-pile est cale 4 MiB sous le
+; SP initial. Le display commence a ce SP, la pile de travail a display+256.
+  dd 0xD2A00810							; movz x16, #0x40, lsl #16 = 4 MiB
+  dd 0xCB3063FF							; sub sp, sp, x16
+  dd 0x910003FC							; mov x28, sp
+  dd 0x9104039D							; add x29, x28, #256
+  dd 0xF900039D							; str x29, [x28]  FP(0)
 
 ;		METTRE EN PLACE LA CO-PILE
 ;

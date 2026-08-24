@@ -6,185 +6,177 @@ PRMS					;    debut parametrage
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
  hexa_show 'var elab FULL_LIST ', $
-VAR FULL_LIST_disp, b			; variable bool char enum
+VAR FULL_LIST_disp, B			; variable bool char enum
 	LI	0
-	Sb  1,	FULL_LIST_disp
+	SB  1,	FULL_LIST_disp
 
  hexa_show ' disp ', FULL_LIST_disp
  hexa_show 'var elab IFILE ', $
-VAR IFILE_disp, q				; variable record : pointeur aux data record
-VAR IFILE__u, q				; variable record : pointeur aux useinfo
+VAR IFILE_disp, Q				; variable record : pointeur aux data record
+VAR IFILE__u, Q				; variable record : pointeur aux useinfo
 VAR IFILE__dat, STANDARD.TEXT_IO._FILE_TYPE.size
 	LVA	1, IFILE__dat
-	Sa	1, IFILE_disp				; record fin
-	LVA	1, STANDARD.TEXT_IO._FILE_TYPE.SIZ
-	Sa	1, IFILE__u
-	LIVa 1, STANDARD.IDL.ERR_PHASE_L12.IFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.ID
+	SA	1, IFILE_disp				; record fin
+	LVA	1, STANDARD.TEXT_IO._FILE_TYPE.SIZ__
+	SA	1, IFILE__u
+	LIVA 1, STANDARD.IDL.ERR_PHASE_L12.IFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.ID
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
 	NEG
-	Sd
-	LIVa 1, STANDARD.IDL.ERR_PHASE_L12.IFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.IS_OPENED
+	SD
+	LIVA 1, STANDARD.IDL.ERR_PHASE_L12.IFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.IS_OPENED
 	LI	0
-	Sb
-	LIVa 1, STANDARD.IDL.ERR_PHASE_L12.IFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.PAGE_LENGTH
-	ULd 0,	STANDARD.TEXT_IO.UNBOUNDED_disp
-	Sd
-	LIVa 1, STANDARD.IDL.ERR_PHASE_L12.IFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.LINE_LENGTH
-	ULd 0,	STANDARD.TEXT_IO.UNBOUNDED_disp
-	Sd
-	LIVa 1, STANDARD.IDL.ERR_PHASE_L12.IFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.PAGE
+	SB
+	LIVA 1, STANDARD.IDL.ERR_PHASE_L12.IFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.PAGE_LENGTH
+	ULD 0,	STANDARD.TEXT_IO.UNBOUNDED_disp
+	SD
+	LIVA 1, STANDARD.IDL.ERR_PHASE_L12.IFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.LINE_LENGTH
+	ULD 0,	STANDARD.TEXT_IO.UNBOUNDED_disp
+	SD
+	LIVA 1, STANDARD.IDL.ERR_PHASE_L12.IFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.PAGE
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
-	Sd
-	LIVa 1, STANDARD.IDL.ERR_PHASE_L12.IFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.LINE
+	SD
+	LIVA 1, STANDARD.IDL.ERR_PHASE_L12.IFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.LINE
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
-	Sd
-	LIVa 1, STANDARD.IDL.ERR_PHASE_L12.IFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.COL
+	SD
+	LIVA 1, STANDARD.IDL.ERR_PHASE_L12.IFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.COL
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
-	Sd
-	LIVa 1, STANDARD.IDL.ERR_PHASE_L12.IFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.IS_DEFAULT_IO
+	SD
+	LIVA 1, STANDARD.IDL.ERR_PHASE_L12.IFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.IS_DEFAULT_IO
 	LI	0
-	Sb
-	LIVa 1, STANDARD.IDL.ERR_PHASE_L12.IFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.LOOK_AHEAD
+	SB
+	LIVA 1, STANDARD.IDL.ERR_PHASE_L12.IFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.LOOK_AHEAD
 	LI	 0
-	Sb
-	LIVa 1, STANDARD.IDL.ERR_PHASE_L12.IFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.HAS_LOOK_AHEAD
+	SB
+	LIVA 1, STANDARD.IDL.ERR_PHASE_L12.IFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.HAS_LOOK_AHEAD
 	LI	0
-	Sb
-	LIVa 1, STANDARD.IDL.ERR_PHASE_L12.IFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.AT_END_OF_FILE
+	SB
+	LIVA 1, STANDARD.IDL.ERR_PHASE_L12.IFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.AT_END_OF_FILE
 	LI	0
-	Sb
+	SB
 
  hexa_show ' disp ', IFILE_disp
  hexa_show 'var elab LINE_COUNT ', $
-VAR LINE_COUNT_disp, d			; variable entiere
+VAR LINE_COUNT_disp, D			; variable entiere
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	0
 	DUP
-	Ld	0, STANDARD._NATURAL.FST
+	LD	0, STANDARD._NATURAL.FST
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	Ld	0, STANDARD._NATURAL.LST
+	LD	0, STANDARD._NATURAL.LST
 	CGT
 	BT	STANDARD.ce_raise_
-	Sd  1,	LINE_COUNT_disp
+	SD  1,	LINE_COUNT_disp
 
  hexa_show ' disp ', LINE_COUNT_disp
  hexa_show 'var elab ERR_COUNT ', $
-VAR ERR_COUNT_disp, d			; variable entiere
+VAR ERR_COUNT_disp, D			; variable entiere
 
  hexa_show ' disp ', ERR_COUNT_disp
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 ; CODE & concat _STRING
-VAR	ANON_19_24_L3_G_data, q
-VAR	ANON_19_24_L3_G_info, q
-VAR	ANON_19_61_L3_D_data, q
-VAR	ANON_19_61_L3_D_info, q
-VAR	ANON_19_24_L3_G_len,  q
-VAR	ANON_19_61_L3_D_len,  q
-VAR	ANON_19_24_L3_R_disp, q
-VAR	ANON_19_24_L3_R__u,   q
+VAR	ANON_19_24_L3_G_data, Q
+VAR	ANON_19_24_L3_G_info, Q
+VAR	ANON_19_61_L3_D_data, Q
+VAR	ANON_19_61_L3_D_info, Q
+VAR	ANON_19_24_L3_G_len,  Q
+VAR	ANON_19_61_L3_D_len,  Q
+VAR	ANON_19_24_L3_R_disp, Q
+VAR	ANON_19_24_L3_R__u,   Q
 namespace ANON_19_24_L3_R_info
-  VAR SIZ,      d
-  VAR _COMP_SIZ, d
-  VAR _FST_1,    d
-  VAR _LST_1,    d
+  VAR SIZ__, D
+  VAR _COMP_SIZ, D
+  VAR _FST_1, D
+  VAR _LST_1, D
 end namespace
-VAR	ANON_19_24_L3_G_slice_data, q
-VAR	ANON_19_24_L3_G_slice_len,  q
-VAR	ANON_19_24_L3_G_disp, q
-VAR	ANON_19_24_L3_G__u,   q
-namespace ANON_19_24_L3_G_info
-  VAR SIZ,      d
-  VAR _COMP_SIZ, d
-  VAR _FST_1,    d
-  VAR _LST_1,    d
-end namespace
-	La 0, STANDARD.IDL.LIB_PATH_disp
-	Ld 0,	STANDARD.IDL.LIB_PATH_LENGTH_disp
+	LA 0, STANDARD.IDL.LIB_PATH_disp
+namespace ANON_19_24			; ensemble doublet @data/@info pour slice anonyme source
+VAR ANON_19_24_disp, Q
+VAR ANON_19_24__u, Q
+VAR SIZ__, D
+VAR COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
+	SA	1, ANON_19_24_disp
+	LVA	1, SIZ__
+	SA	1, ANON_19_24__u
+	LI	8
+	SD	1, COMP_SIZ
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
+	SD	1, _FST_1
+	LD 0,	STANDARD.IDL.LIB_PATH_LENGTH_disp
+	SD	1, _LST_1
+	LD	1, _LST_1
+	LD	1, _FST_1
 	SUB
 	INC
 	CLAMP0
-	LI	1
-	MUL
-	Sa  1, ANON_19_24_L3_G_slice_len
-	Sa  1, ANON_19_24_L3_G_slice_data
-	La  1, ANON_19_24_L3_G_slice_data
-	Sa  1, ANON_19_24_L3_G_disp
-	LVA 1, ANON_19_24_L3_G_info.SIZ
-	Sa  1, ANON_19_24_L3_G__u
-	LI	1
-	Sd  1, ANON_19_24_L3_G_info._FST_1
-	La  1, ANON_19_24_L3_G_slice_len
-	Sd  1, ANON_19_24_L3_G_info._LST_1
-	LI	8
-	Sd  1, ANON_19_24_L3_G_info._COMP_SIZ
-	La  1, ANON_19_24_L3_G_slice_len
 	LI	8
 	MUL
-	Sd  1, ANON_19_24_L3_G_info.SIZ
-	LVA 1, ANON_19_24_L3_G_disp
+	SD	1, SIZ__
+	LVA	1, ANON_19_24_disp
+end namespace
 	DUP
-	La  ,  0
-	Sa  1, ANON_19_24_L3_G_data
-	La  ,  8
-	Sa  1, ANON_19_24_L3_G_info
-	LId 1, ANON_19_24_L3_G_info, _STRING.LST_1
-	LId 1, ANON_19_24_L3_G_info, _STRING.FST_1
+	LA  ,  0
+	SA  1, ANON_19_24_L3_G_data
+	LA  ,  8
+	SA  1, ANON_19_24_L3_G_info
+	LID 1, ANON_19_24_L3_G_info, _STRING.LST_1
+	LID 1, ANON_19_24_L3_G_info, _STRING.FST_1
 	SUB
 	INC
 	CLAMP0
-	Sa  1, ANON_19_24_L3_G_len
+	SA  1, ANON_19_24_L3_G_len
 STR ANON_19_61_L3_D, "$$$.TMP"		; constante string="$$$.TMP"
 	LCA	ANON_19_61_L3_D.data_ptr
 	DUP
-	La  ,  0
-	Sa  1, ANON_19_61_L3_D_data
-	La  ,  8
-	Sa  1, ANON_19_61_L3_D_info
-	LId 1, ANON_19_61_L3_D_info, _STRING.LST_1
-	LId 1, ANON_19_61_L3_D_info, _STRING.FST_1
+	LA  ,  0
+	SA  1, ANON_19_61_L3_D_data
+	LA  ,  8
+	SA  1, ANON_19_61_L3_D_info
+	LID 1, ANON_19_61_L3_D_info, _STRING.LST_1
+	LID 1, ANON_19_61_L3_D_info, _STRING.FST_1
 	SUB
 	INC
 	CLAMP0
-	Sa  1, ANON_19_61_L3_D_len
-	La  1, ANON_19_24_L3_G_len
-	La  1, ANON_19_61_L3_D_len
+	SA  1, ANON_19_61_L3_D_len
+	LA  1, ANON_19_24_L3_G_len
+	LA  1, ANON_19_61_L3_D_len
 	ADD
 	CO_VAR
-	Sa  1, ANON_19_24_L3_R_disp
+	SA  1, ANON_19_24_L3_R_disp
 	LI	1
-	Sd  1, ANON_19_24_L3_R_info._FST_1
-	La  1, ANON_19_24_L3_G_len
-	La  1, ANON_19_61_L3_D_len
+	SD  1, ANON_19_24_L3_R_info._FST_1
+	LA  1, ANON_19_24_L3_G_len
+	LA  1, ANON_19_61_L3_D_len
 	ADD
-	Sd  1, ANON_19_24_L3_R_info._LST_1
+	SD  1, ANON_19_24_L3_R_info._LST_1
 	LI	8
-	Sd  1, ANON_19_24_L3_R_info._COMP_SIZ
-	La  1, ANON_19_24_L3_G_len
-	La  1, ANON_19_61_L3_D_len
+	SD  1, ANON_19_24_L3_R_info._COMP_SIZ
+	LA  1, ANON_19_24_L3_G_len
+	LA  1, ANON_19_61_L3_D_len
 	ADD
 	LI	8
 	MUL
-	Sd  1, ANON_19_24_L3_R_info.SIZ
-	LVA 1, ANON_19_24_L3_R_info.SIZ
-	Sa  1, ANON_19_24_L3_R__u
-	La  1, ANON_19_24_L3_R_disp
-	La  1, ANON_19_24_L3_G_len
-	La  1, ANON_19_24_L3_G_data
+	SD  1, ANON_19_24_L3_R_info.SIZ__
+	LVA 1, ANON_19_24_L3_R_info.SIZ__
+	SA  1, ANON_19_24_L3_R__u
+	LA  1, ANON_19_24_L3_R_disp
+	LA  1, ANON_19_24_L3_G_len
+	LA  1, ANON_19_24_L3_G_data
 	BLKMOV
-	La  1, ANON_19_24_L3_R_disp
-	La  1, ANON_19_24_L3_G_len
+	LA  1, ANON_19_24_L3_R_disp
+	LA  1, ANON_19_24_L3_G_len
 	ADD
-	La  1, ANON_19_61_L3_D_len
-	La  1, ANON_19_61_L3_D_data
+	LA  1, ANON_19_61_L3_D_len
+	LA  1, ANON_19_61_L3_D_data
 	BLKMOV
 	LVA 1, ANON_19_24_L3_R_disp
 	CALL	STANDARD.IDL. ,OPEN_IDL_TREE_FILE_L6
@@ -193,16 +185,16 @@ STR ANON_19_61_L3_D, "$$$.TMP"		; constante string="$$$.TMP"
 	LI  3
 	CALL	STANDARD.IDL. ,DI_L21
 	DUP
-	Ld	0, STANDARD._NATURAL.FST
+	LD	0, STANDARD._NATURAL.FST
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	Ld	0, STANDARD._NATURAL.LST
+	LD	0, STANDARD._NATURAL.LST
 	CGT
 	BT	STANDARD.ce_raise_
-	Sd  1,	ERR_COUNT_disp
+	SD  1,	ERR_COUNT_disp
 					; debut if
-	Ld 1,	ERR_COUNT_disp
+	LD 1,	ERR_COUNT_disp
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	0
 	CEQ
@@ -213,67 +205,67 @@ L5:
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
 	DUP
-	ULd	0, STANDARD.TEXT_IO._POSITIVE_COUNT.FST
+	ULD	0, STANDARD.TEXT_IO._POSITIVE_COUNT.FST
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	ULd	0, STANDARD.TEXT_IO._POSITIVE_COUNT.LST
+	ULD	0, STANDARD.TEXT_IO._POSITIVE_COUNT.LST
 	CGT
 	BT	STANDARD.ce_raise_
 	CALL	STANDARD.TEXT_IO. ,NEW_LINE_L26
 L4:					; post if
 STR STR_L8, ""				; constante string=""
 	LCA	STR_L8.data_ptr
-	La  1,	-ACCES_TEXTE_ofs
+	LA  1,	-ACCES_TEXTE_ofs
 	LI  0
 	LVA  1,	STANDARD.IDL.ERR_PHASE_L12.IFILE_disp
 	CALL	STANDARD.TEXT_IO. ,OPEN_L2
 namespace	BLOCK__1
 ELB 2					;    BODY ELAB
  hexa_show 'var elab SOURCE_LIST ', $
-VAR SOURCE_LIST_disp, q			; variable record : pointeur aux data record
-VAR SOURCE_LIST__u, q			; variable record : pointeur aux useinfo
+VAR SOURCE_LIST_disp, Q			; variable record : pointeur aux data record
+VAR SOURCE_LIST__u, Q			; variable record : pointeur aux useinfo
 VAR SOURCE_LIST__dat, STANDARD.IDL._SEQ_TYPE.size
 	LVA	2, SOURCE_LIST__dat
-	Sa	2, SOURCE_LIST_disp			; record fin
-	LVA	2, STANDARD.IDL._SEQ_TYPE.SIZ
-	Sa	2, SOURCE_LIST__u
-	La  2, SOURCE_LIST_disp
+	SA	2, SOURCE_LIST_disp			; record fin
+	LVA	2, STANDARD.IDL._SEQ_TYPE.SIZ__
+	SA	2, SOURCE_LIST__u
+	LA  2, SOURCE_LIST_disp
 	LI	STANDARD.IDL._SEQ_TYPE.size
-VAR	ANON_28_32_disp, q
-VAR	ANON_28_32__u,    q
+VAR	ANON_28_32_disp, Q
+VAR	ANON_28_32__u,    Q
 VAR	ANON_28_32__dat, STANDARD.IDL._SEQ_TYPE.size
 	LVA 2, ANON_28_32__dat
-	Sa  2, ANON_28_32_disp
-	La  0, STANDARD.IDL._SEQ_TYPE.use__info
-	Sa  2, ANON_28_32__u
+	SA  2, ANON_28_32_disp
+	LA  0, STANDARD.IDL._SEQ_TYPE.use__info
+	SA  2, ANON_28_32__u
 	LVA 2, ANON_28_32_disp
 					; doublet resultat record anonyme
 	LVA  0,	STANDARD.IDL.TREE_ROOT_disp		; array actual
 	CALL	STANDARD.IDL. ,LIST_L22
-	La  ,  0
+	LA
 	BLKMOV
 
  hexa_show ' disp ', SOURCE_LIST_disp
  hexa_show 'var elab ERRORLIST ', $
-VAR ERRORLIST_disp, q			; variable record : pointeur aux data record
-VAR ERRORLIST__u, q				; variable record : pointeur aux useinfo
+VAR ERRORLIST_disp, Q			; variable record : pointeur aux data record
+VAR ERRORLIST__u, Q				; variable record : pointeur aux useinfo
 VAR ERRORLIST__dat, STANDARD.IDL._SEQ_TYPE.size
 	LVA	2, ERRORLIST__dat
-	Sa	2, ERRORLIST_disp			; record fin
-	LVA	2, STANDARD.IDL._SEQ_TYPE.SIZ
-	Sa	2, ERRORLIST__u
+	SA	2, ERRORLIST_disp			; record fin
+	LVA	2, STANDARD.IDL._SEQ_TYPE.SIZ__
+	SA	2, ERRORLIST__u
 
  hexa_show ' disp ', ERRORLIST_disp
  hexa_show 'var elab SOURCENBR ', $
-VAR SOURCENBR_disp, d			; variable entiere
+VAR SOURCENBR_disp, D			; variable entiere
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	0
-	Sd  2,	SOURCENBR_disp
+	SD  2,	SOURCENBR_disp
 
  hexa_show ' disp ', SOURCENBR_disp
  hexa_show 'var elab NB_PREFIX_CHARS ', $
-VAR NB_PREFIX_CHARS_disp, d			; variable entiere
+VAR NB_PREFIX_CHARS_disp, D			; variable entiere
 
  hexa_show ' disp ', NB_PREFIX_CHARS_disp
 					;    end elab
@@ -285,21 +277,21 @@ LOOP__2:
 	CALL	STANDARD.IDL. ,IS_EMPTY_L23
 	BF	L13
 	LI	002147483647
-	Sd  2,	SOURCENBR_disp
+	SD  2,	SOURCENBR_disp
 	LVA 2,	ERRORLIST_disp
-	La
+	LA
 					; Assign_record_aggregate type DN_RECORD
 	DUP
 	LVA	, STANDARD.IDL._SEQ_TYPE.FIRST
 	LI	STANDARD.IDL._TREE.size
 	LVA 0,	STANDARD.IDL.TREE_NIL_disp
-	La
+	LA
 	BLKMOV
 	DUP
 	LVA	, STANDARD.IDL._SEQ_TYPE.NEXT
 	LI	STANDARD.IDL._TREE.size
 	LVA 0,	STANDARD.IDL.TREE_NIL_disp
-	La
+	LA
 	BLKMOV
 	DROP
 	BRA	L12
@@ -307,22 +299,22 @@ L13:
 namespace	BLOCK__3
 ELB 3					;    BODY ELAB
  hexa_show 'var elab SOURCELINE ', $
-VAR SOURCELINE_disp, q			; variable record : pointeur aux data record
-VAR SOURCELINE__u, q			; variable record : pointeur aux useinfo
+VAR SOURCELINE_disp, Q			; variable record : pointeur aux data record
+VAR SOURCELINE__u, Q			; variable record : pointeur aux useinfo
 VAR SOURCELINE__dat, STANDARD.IDL._TREE.size
 	LVA	3, SOURCELINE__dat
-	Sa	3, SOURCELINE_disp			; record fin
-	LVA	3, STANDARD.IDL._TREE.SIZ
-	Sa	3, SOURCELINE__u
-	La  3, SOURCELINE_disp
+	SA	3, SOURCELINE_disp			; record fin
+	LVA	3, STANDARD.IDL._TREE.SIZ__
+	SA	3, SOURCELINE__u
+	LA  3, SOURCELINE_disp
 					; store represented component PT range 0 .. 1 width 2
 	DUP
-	Ld
+	LD
 	LI	0
 	LI	0
 	LI	2
 	BFI
-	Sd
+	SD
 
  hexa_show ' disp ', SOURCELINE_disp
 					;    end elab
@@ -334,29 +326,29 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA 3,	SOURCELINE_disp
 	LI  7
 	CALL	STANDARD.IDL. ,DI_L21
-	Sd  2,	STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.SOURCENBR_disp
+	SD  2,	STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.SOURCENBR_disp
 	LVA 2,	STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.ERRORLIST_disp
-	La
+	LA
 	LI	STANDARD.IDL._SEQ_TYPE.size
-VAR	ANON_44_15_disp, q
-VAR	ANON_44_15__u,    q
+VAR	ANON_44_15_disp, Q
+VAR	ANON_44_15__u,    Q
 VAR	ANON_44_15__dat, STANDARD.IDL._SEQ_TYPE.size
 	LVA 3, ANON_44_15__dat
-	Sa  3, ANON_44_15_disp
-	La  0, STANDARD.IDL._SEQ_TYPE.use__info
-	Sa  3, ANON_44_15__u
+	SA  3, ANON_44_15_disp
+	LA  0, STANDARD.IDL._SEQ_TYPE.use__info
+	SA  3, ANON_44_15__u
 	LVA 3, ANON_44_15_disp
 					; doublet resultat record anonyme
 	LVA 3,	SOURCELINE_disp
 	CALL	STANDARD.IDL. ,LIST_L22
-	La
+	LA
 	BLKMOV
 	UNLINK 3
 endPRO
 L12:					; post if
 LOOP__4:
-	Ld 1,	STANDARD.IDL.ERR_PHASE_L12.LINE_COUNT_disp
-	Ld 2,	SOURCENBR_disp
+	LD 1,	STANDARD.IDL.ERR_PHASE_L12.LINE_COUNT_disp
+	LD 2,	SOURCENBR_disp
 	CLT
 	DUP
 	BF	L17
@@ -368,19 +360,19 @@ LOOP__4:
 	OUX
 L17:
 	BF	L16
-	Ld 1,	STANDARD.IDL.ERR_PHASE_L12.LINE_COUNT_disp
+	LD 1,	STANDARD.IDL.ERR_PHASE_L12.LINE_COUNT_disp
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
 	ADD
 	DUP
-	Ld	0, STANDARD._NATURAL.FST
+	LD	0, STANDARD._NATURAL.FST
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	Ld	0, STANDARD._NATURAL.LST
+	LD	0, STANDARD._NATURAL.LST
 	CGT
 	BT	STANDARD.ce_raise_
-	Sd  1,	STANDARD.IDL.ERR_PHASE_L12.LINE_COUNT_disp
+	SD  1,	STANDARD.IDL.ERR_PHASE_L12.LINE_COUNT_disp
 					; debut if
 	LI	0					; lieu resultat sur pile
 	LVA 1,	STANDARD.IDL.ERR_PHASE_L12.IFILE_disp
@@ -389,26 +381,26 @@ L17:
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
 	DUP
-	ULd	0, STANDARD.TEXT_IO._POSITIVE_COUNT.FST
+	ULD	0, STANDARD.TEXT_IO._POSITIVE_COUNT.FST
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	ULd	0, STANDARD.TEXT_IO._POSITIVE_COUNT.LST
+	ULD	0, STANDARD.TEXT_IO._POSITIVE_COUNT.LST
 	CGT
 	BT	STANDARD.ce_raise_
 	LVA 1,	STANDARD.IDL.ERR_PHASE_L12.IFILE_disp
 	CALL	STANDARD.TEXT_IO. ,SKIP_LINE_L27
 					; debut if
-	ULb 1,	STANDARD.IDL.ERR_PHASE_L12.FULL_LIST_disp
+	ULB 1,	STANDARD.IDL.ERR_PHASE_L12.FULL_LIST_disp
 	BF	L21
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
 	DUP
-	ULd	0, STANDARD.TEXT_IO._POSITIVE_COUNT.FST
+	ULD	0, STANDARD.TEXT_IO._POSITIVE_COUNT.FST
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	ULd	0, STANDARD.TEXT_IO._POSITIVE_COUNT.LST
+	ULD	0, STANDARD.TEXT_IO._POSITIVE_COUNT.LST
 	CGT
 	BT	STANDARD.ce_raise_
 	CALL	STANDARD.TEXT_IO. ,NEW_LINE_L26
@@ -422,29 +414,29 @@ ELB 3					;    BODY ELAB
  hexa_show 'var elab SLINE ', $
 _SLINE__type = '_SLINE__type'
 namespace _SLINE__type			; array var constrained array type info
-VAR use__info, q
-VAR SIZ, d
-	LVA	3, SIZ
-	Sa	3, use__info
-VAR _COMP_SIZ, d
-VAR _FST_1, d
-VAR _LST_1, d
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	3, SIZ__
+	SA	3, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
 	LI	8
-	Sd	3, _COMP_SIZ
-	Ld	3, _COMP_SIZ
+	SD	3, _COMP_SIZ
+	LD	3, _COMP_SIZ
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
-	Sd	3, _FST_1
+	SD	3, _FST_1
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	256
-	Sd	3, _LST_1
-	Ld	3, _LST_1
-	Ld	3, _FST_1
+	SD	3, _LST_1
+	LD	3, _LST_1
+	LD	3, _FST_1
 	SUB
 	INC
 	CLAMP0
 	MUL
-	Sd	3, SIZ
+	SD	3, SIZ__
   virtual at 4
 COMP_SIZ = $
 	rd 1 
@@ -454,19 +446,19 @@ LST_1 = $
 	rd 1 
   end virtual
 end namespace
-VAR SLINE_disp, q				; variable array : pointeur aux data
-VAR SLINE__u, q				; variable array : useinfo pointeur au rec info
-	La 3, _SLINE__type.use__info
-	Sa	3, SLINE__u				; array info ptr at __u
-	Ld	3, _SLINE__type.SIZ
+VAR SLINE_disp, Q				; variable array : pointeur aux data
+VAR SLINE__u, Q				; variable array : useinfo pointeur au rec info
+	LA 3, _SLINE__type.use__info
+	SA	3, SLINE__u				; array info ptr at __u
+	LD	3, _SLINE__type.SIZ__
 	LI	8
 	DIV
 	CO_VAR
-	Sa	3, SLINE_disp				; array data ptr at _disp
+	SA	3, SLINE_disp				; array data ptr at _disp
 
  hexa_show ' disp ', SLINE_disp
  hexa_show 'var elab LAST ', $
-VAR LAST_disp, d				; variable entiere
+VAR LAST_disp, D				; variable entiere
 
  hexa_show ' disp ', LAST_disp
 					;    end elab
@@ -475,72 +467,72 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA  3,	STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.BLOCK__5.SLINE_disp
 	LVA 1,	STANDARD.IDL.ERR_PHASE_L12.IFILE_disp
 	CALL	STANDARD.TEXT_IO. ,GET_LINE_L57
-VAR	IL25_disp, d				; compteur boucle LOOP__8
-	LId	3, STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.BLOCK__5.SLINE__u, STANDARD._STRING.FST_1
-	Sd  3,	IL25_disp
-VAR	LMT_IL25_disp, d			; limite boucle LOOP__8
-	Ld 3,	LAST_disp
-	Sd  3,	LMT_IL25_disp
-	Ld  3,	IL25_disp				; test null range LOOP__8
-	Ld  3,	LMT_IL25_disp
+VAR	IL25_disp, D				; compteur boucle LOOP__8
+	LID	3, STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.BLOCK__5.SLINE__u, STANDARD._STRING.FST_1
+	SD  3,	IL25_disp
+VAR	LMT_IL25_disp, D			; limite boucle LOOP__8
+	LD 3,	LAST_disp
+	SD  3,	LMT_IL25_disp
+	LD  3,	IL25_disp				; test null range LOOP__8
+	LD  3,	LMT_IL25_disp
 	CGT
 	BT	L24
 LOOP__8:					; corps boucle LOOP__8
 					; debut if
-	La	 3, STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.BLOCK__5.SLINE_disp	; array data start address on stack
-	Ld 3,	IL25_disp
+	LA	 3, STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.BLOCK__5.SLINE_disp	; array data start address on stack
+	LD 3,	IL25_disp
 	DUP
-	LId	3, STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.BLOCK__5.SLINE__u, STANDARD._STRING.FST_1
+	LID	3, STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.BLOCK__5.SLINE__u, STANDARD._STRING.FST_1
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	LId	3, STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.BLOCK__5.SLINE__u, STANDARD._STRING.LST_1
+	LID	3, STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.BLOCK__5.SLINE__u, STANDARD._STRING.LST_1
 	CGT
 	BT	STANDARD.ce_raise_
-	LId	3, STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.BLOCK__5.SLINE__u, STANDARD._STRING.FST_1	; (index - FST_1) * SIZ_1
+	LID	3, STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.BLOCK__5.SLINE__u, STANDARD._STRING.FST_1	; (index - FST_1) * SIZ_1
 	SUB
-	LId	3, STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.BLOCK__5.SLINE__u, STANDARD._STRING.COMP_SIZ
+	LID	3, STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.BLOCK__5.SLINE__u, STANDARD._STRING.COMP_SIZ
 	LI	8
 	DIV
 	MUL
 	ADD					; add offset to start address
-	ULb
+	ULB
 	LI	 9
 	CEQ
 	BF	L27
-	La	 3, STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.BLOCK__5.SLINE_disp	; array data start address on stack
-	Ld 3,	IL25_disp
+	LA	 3, STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.BLOCK__5.SLINE_disp	; array data start address on stack
+	LD 3,	IL25_disp
 	DUP
-	LId	3, STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.BLOCK__5.SLINE__u, STANDARD._STRING.FST_1
+	LID	3, STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.BLOCK__5.SLINE__u, STANDARD._STRING.FST_1
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	LId	3, STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.BLOCK__5.SLINE__u, STANDARD._STRING.LST_1
+	LID	3, STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.BLOCK__5.SLINE__u, STANDARD._STRING.LST_1
 	CGT
 	BT	STANDARD.ce_raise_
-	LId	3, STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.BLOCK__5.SLINE__u, STANDARD._STRING.FST_1	; (index - FST_1) * SIZ_1
+	LID	3, STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.BLOCK__5.SLINE__u, STANDARD._STRING.FST_1	; (index - FST_1) * SIZ_1
 	SUB
-	LId	3, STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.BLOCK__5.SLINE__u, STANDARD._STRING.COMP_SIZ
+	LID	3, STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.BLOCK__5.SLINE__u, STANDARD._STRING.COMP_SIZ
 	LI	8
 	DIV
 	MUL
 	ADD					; add offset to start address
 	LI	32
-	Sb
+	SB
 	BRA	L26
 L27:
 L26:					; post if
-	Ld  3,	IL25_disp				; test de sortie LOOP__8
-	Ld  3,	LMT_IL25_disp
+	LD  3,	IL25_disp				; test de sortie LOOP__8
+	LD  3,	LMT_IL25_disp
 	CEQ
 	BT	L24
-	Ld  3,	IL25_disp				; mise a jour compteur LOOP__8
+	LD  3,	IL25_disp				; mise a jour compteur LOOP__8
 	INC
-	Sd  3,	IL25_disp
+	SD  3,	IL25_disp
 	BRA	LOOP__8				; iteration suivante LOOP__8
 L24:					; post loop LOOP__8
 					; debut if
-	ULb 1,	STANDARD.IDL.ERR_PHASE_L12.FULL_LIST_disp
+	ULB 1,	STANDARD.IDL.ERR_PHASE_L12.FULL_LIST_disp
 	DUP
 	BT	L30
 	DROP
@@ -552,32 +544,32 @@ L24:					; post loop LOOP__8
 	DUP
 	BF	L31
 	DROP
-	Ld 1,	STANDARD.IDL.ERR_PHASE_L12.LINE_COUNT_disp
-	Ld 2,	STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.SOURCENBR_disp
+	LD 1,	STANDARD.IDL.ERR_PHASE_L12.LINE_COUNT_disp
+	LD 2,	STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.SOURCENBR_disp
 	CEQ
 L31:
 L30:
 	BF	L29
-	Ld 0,	STANDARD.IDL.INT_IO.DEFAULT_BASE_disp
+	LD 0,	STANDARD.IDL.INT_IO.DEFAULT_BASE_disp
 	DUP
-	Ld	0, STANDARD.TEXT_IO._NUMBER_BASE.FST
+	LD	0, STANDARD.TEXT_IO._NUMBER_BASE.FST
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	Ld	0, STANDARD.TEXT_IO._NUMBER_BASE.LST
+	LD	0, STANDARD.TEXT_IO._NUMBER_BASE.LST
 	CGT
 	BT	STANDARD.ce_raise_
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
 	DUP
-	Ld	0, STANDARD.TEXT_IO._FIELD.FST
+	LD	0, STANDARD.TEXT_IO._FIELD.FST
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	Ld	0, STANDARD.TEXT_IO._FIELD.LST
+	LD	0, STANDARD.TEXT_IO._FIELD.LST
 	CGT
 	BT	STANDARD.ce_raise_
-	Ld 1,	STANDARD.IDL.ERR_PHASE_L12.LINE_COUNT_disp
+	LD 1,	STANDARD.IDL.ERR_PHASE_L12.LINE_COUNT_disp
 	CALL	STANDARD.IDL.INT_IO. ,PUT_L64
 STR STR_L32, ":  "				; constante string=":  "
 	LCA	STR_L32.data_ptr
@@ -586,58 +578,58 @@ STR STR_L32, ":  "				; constante string=":  "
 	CALL	STANDARD.TEXT_IO. ,COL_L44
 ; CODE CONVERSION SOURCE DN_INTEGER TARGET DN_INTEGER
 	DUP
-	Ld	0, STANDARD._NATURAL.FST
+	LD	0, STANDARD._NATURAL.FST
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	Ld	0, STANDARD._NATURAL.LST
+	LD	0, STANDARD._NATURAL.LST
 	CGT
 	BT	STANDARD.ce_raise_
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
 	SUB
 	DUP
-	Ld	0, STANDARD._NATURAL.FST
+	LD	0, STANDARD._NATURAL.FST
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	Ld	0, STANDARD._NATURAL.LST
+	LD	0, STANDARD._NATURAL.LST
 	CGT
 	BT	STANDARD.ce_raise_
-	Sd  2,	STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.NB_PREFIX_CHARS_disp
-	La 3, STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.BLOCK__5.SLINE_disp
+	SD  2,	STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.NB_PREFIX_CHARS_disp
+	LA 3, STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.BLOCK__5.SLINE_disp
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
-	LId 3, STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.BLOCK__5.SLINE__u, STANDARD._STRING.FST_1
+	LID 3, STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.BLOCK__5.SLINE__u, STANDARD._STRING.FST_1
 	SUB
 	LI	1
 	MUL
 	ADD
 namespace ANON_69_16			; ensemble doublet @data/@info pour slice anonyme source
-VAR ANON_69_16_disp, q
-VAR ANON_69_16__u, q
-VAR SIZ, d
-VAR COMP_SIZ, d
-VAR _FST_1, d
-VAR _LST_1, d
-	Sa	3, ANON_69_16_disp
-	LVA	3, SIZ
-	Sa	3, ANON_69_16__u
+VAR ANON_69_16_disp, Q
+VAR ANON_69_16__u, Q
+VAR SIZ__, D
+VAR COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
+	SA	3, ANON_69_16_disp
+	LVA	3, SIZ__
+	SA	3, ANON_69_16__u
 	LI	8
-	Sd	3, COMP_SIZ
+	SD	3, COMP_SIZ
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
-	Sd	3, _FST_1
-	Ld 3,	LAST_disp
-	Sd	3, _LST_1
-	Ld	3, _LST_1
-	Ld	3, _FST_1
+	SD	3, _FST_1
+	LD 3,	LAST_disp
+	SD	3, _LST_1
+	LD	3, _LST_1
+	LD	3, _FST_1
 	SUB
 	INC
 	CLAMP0
 	LI	8
 	MUL
-	Sd	3, SIZ
+	SD	3, SIZ__
 	LVA	3, ANON_69_16_disp
 end namespace
 	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
@@ -659,26 +651,26 @@ LOOP__6:
 namespace	BLOCK__7
 ELB 3					;    BODY ELAB
  hexa_show 'var elab ERROR ', $
-VAR ERROR_disp, q				; variable record : pointeur aux data record
-VAR ERROR__u, q				; variable record : pointeur aux useinfo
+VAR ERROR_disp, Q				; variable record : pointeur aux data record
+VAR ERROR__u, Q				; variable record : pointeur aux useinfo
 VAR ERROR__dat, STANDARD.IDL._TREE.size
 	LVA	3, ERROR__dat
-	Sa	3, ERROR_disp				; record fin
-	LVA	3, STANDARD.IDL._TREE.SIZ
-	Sa	3, ERROR__u
-	La  3, ERROR_disp
+	SA	3, ERROR_disp				; record fin
+	LVA	3, STANDARD.IDL._TREE.SIZ__
+	SA	3, ERROR__u
+	LA  3, ERROR_disp
 					; store represented component PT range 0 .. 1 width 2
 	DUP
-	Ld
+	LD
 	LI	0
 	LI	0
 	LI	2
 	BFI
-	Sd
+	SD
 
  hexa_show ' disp ', ERROR_disp
  hexa_show 'var elab COL ', $
-VAR COL_disp, d				; variable entiere
+VAR COL_disp, D				; variable entiere
 
  hexa_show ' disp ', COL_disp
 					;    end elab
@@ -687,13 +679,13 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA  2,	STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.ERRORLIST_disp
 	CALL	STANDARD.IDL. ,POP_L24
 	LI	0					; lieu resultat sur pile
-VAR	ANON_81_34_disp, q
-VAR	ANON_81_34__u,    q
+VAR	ANON_81_34_disp, Q
+VAR	ANON_81_34__u,    Q
 VAR	ANON_81_34__dat, STANDARD.IDL._TREE.size
 	LVA 3, ANON_81_34__dat
-	Sa  3, ANON_81_34_disp
-	La  0, STANDARD.IDL._TREE.use__info
-	Sa  3, ANON_81_34__u
+	SA  3, ANON_81_34_disp
+	LA  0, STANDARD.IDL._TREE.use__info
+	SA  3, ANON_81_34__u
 	LVA 3, ANON_81_34_disp
 					; doublet resultat record anonyme
 	LVA 3,	ERROR_disp
@@ -701,105 +693,105 @@ VAR	ANON_81_34__dat, STANDARD.IDL._TREE.size
 	CALL	STANDARD.IDL. ,D_L17
 	CALL	STANDARD.IDL.IDL_MAN. ,GET_SOURCE_COL_L44
 ; CODE CONVERSION SOURCE DN_INTEGER TARGET DN_INTEGER
-	Sd  3,	COL_disp
-VAR	NL37_disp, d				; compteur boucle LOOP__9
+	SD  3,	COL_disp
+VAR	NL37_disp, D				; compteur boucle LOOP__9
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
-	Sd  3,	NL37_disp
-VAR	LMT_NL37_disp, d			; limite boucle LOOP__9
-	Ld 2,	STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.NB_PREFIX_CHARS_disp
-	Ld 3,	COL_disp
+	SD  3,	NL37_disp
+VAR	LMT_NL37_disp, D			; limite boucle LOOP__9
+	LD 2,	STANDARD.IDL.ERR_PHASE_L12.BLOCK__1.NB_PREFIX_CHARS_disp
+	LD 3,	COL_disp
 	ADD
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
 	SUB
-	Sd  3,	LMT_NL37_disp
-	Ld  3,	NL37_disp				; test null range LOOP__9
-	Ld  3,	LMT_NL37_disp
+	SD  3,	LMT_NL37_disp
+	LD  3,	NL37_disp				; test null range LOOP__9
+	LD  3,	LMT_NL37_disp
 	CGT
 	BT	L36
 LOOP__9:					; corps boucle LOOP__9
 	LI	32
 	CALL	STANDARD.TEXT_IO. ,PUT_L52
-	Ld  3,	NL37_disp				; test de sortie LOOP__9
-	Ld  3,	LMT_NL37_disp
+	LD  3,	NL37_disp				; test de sortie LOOP__9
+	LD  3,	LMT_NL37_disp
 	CEQ
 	BT	L36
-	Ld  3,	NL37_disp				; mise a jour compteur LOOP__9
+	LD  3,	NL37_disp				; mise a jour compteur LOOP__9
 	INC
-	Sd  3,	NL37_disp
+	SD  3,	NL37_disp
 	BRA	LOOP__9				; iteration suivante LOOP__9
 L36:					; post loop LOOP__9
 STR STR_L38, "^ col "			; constante string="^ col "
 	LCA	STR_L38.data_ptr
 	CALL	STANDARD.TEXT_IO. ,PUT_L56
-	Ld 0,	STANDARD.IDL.INT_IO.DEFAULT_BASE_disp
+	LD 0,	STANDARD.IDL.INT_IO.DEFAULT_BASE_disp
 	DUP
-	Ld	0, STANDARD.TEXT_IO._NUMBER_BASE.FST
+	LD	0, STANDARD.TEXT_IO._NUMBER_BASE.FST
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	Ld	0, STANDARD.TEXT_IO._NUMBER_BASE.LST
+	LD	0, STANDARD.TEXT_IO._NUMBER_BASE.LST
 	CGT
 	BT	STANDARD.ce_raise_
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
 	DUP
-	Ld	0, STANDARD.TEXT_IO._FIELD.FST
+	LD	0, STANDARD.TEXT_IO._FIELD.FST
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	Ld	0, STANDARD.TEXT_IO._FIELD.LST
+	LD	0, STANDARD.TEXT_IO._FIELD.LST
 	CGT
 	BT	STANDARD.ce_raise_
-	Ld 3,	COL_disp
+	LD 3,	COL_disp
 	CALL	STANDARD.IDL.INT_IO. ,PUT_L64
 ; CODE & concat _STRING
-VAR	ANON_85_12_L39_G_data, q
-VAR	ANON_85_12_L39_G_info, q
-VAR	ANON_85_19_L39_D_data, q
-VAR	ANON_85_19_L39_D_info, q
-VAR	ANON_85_12_L39_G_len,  q
-VAR	ANON_85_19_L39_D_len,  q
-VAR	ANON_85_12_L39_R_disp, q
-VAR	ANON_85_12_L39_R__u,   q
+VAR	ANON_85_12_L39_G_data, Q
+VAR	ANON_85_12_L39_G_info, Q
+VAR	ANON_85_19_L39_D_data, Q
+VAR	ANON_85_19_L39_D_info, Q
+VAR	ANON_85_12_L39_G_len,  Q
+VAR	ANON_85_19_L39_D_len,  Q
+VAR	ANON_85_12_L39_R_disp, Q
+VAR	ANON_85_12_L39_R__u,   Q
 namespace ANON_85_12_L39_R_info
-  VAR SIZ,      d
-  VAR _COMP_SIZ, d
-  VAR _FST_1,    d
-  VAR _LST_1,    d
+  VAR SIZ__, D
+  VAR _COMP_SIZ, D
+  VAR _FST_1, D
+  VAR _LST_1, D
 end namespace
 STR ANON_85_12_L39_G, ": "			; constante string=": "
 	LCA	ANON_85_12_L39_G.data_ptr
 	DUP
-	La  ,  0
-	Sa  3, ANON_85_12_L39_G_data
-	La  ,  8
-	Sa  3, ANON_85_12_L39_G_info
-	LId 3, ANON_85_12_L39_G_info, _STRING.LST_1
-	LId 3, ANON_85_12_L39_G_info, _STRING.FST_1
+	LA  ,  0
+	SA  3, ANON_85_12_L39_G_data
+	LA  ,  8
+	SA  3, ANON_85_12_L39_G_info
+	LID 3, ANON_85_12_L39_G_info, _STRING.LST_1
+	LID 3, ANON_85_12_L39_G_info, _STRING.FST_1
 	SUB
 	INC
 	CLAMP0
-	Sa  3, ANON_85_12_L39_G_len
-VAR	ANON_85_19_disp, q
-VAR	ANON_85_19__u,   q
+	SA  3, ANON_85_12_L39_G_len
+VAR	ANON_85_19_disp, Q
+VAR	ANON_85_19__u,   Q
 namespace ANON_85_19_info
-  VAR SIZ, d
-  VAR _COMP_SIZ, d
-  VAR _FST_1, d
-  VAR _LST_1, d
+  VAR SIZ__, D
+  VAR _COMP_SIZ, D
+  VAR _FST_1, D
+  VAR _LST_1, D
 end namespace
-	LVA 3, ANON_85_19_info.SIZ
-	Sa  3, ANON_85_19__u
+	LVA 3, ANON_85_19_info.SIZ__
+	SA  3, ANON_85_19__u
 	LVA 3, ANON_85_19_disp
-VAR	ANON_85_31_disp, q
-VAR	ANON_85_31__u,    q
+VAR	ANON_85_31_disp, Q
+VAR	ANON_85_31__u,    Q
 VAR	ANON_85_31__dat, STANDARD.IDL._TREE.size
 	LVA 3, ANON_85_31__dat
-	Sa  3, ANON_85_31_disp
-	La  0, STANDARD.IDL._TREE.use__info
-	Sa  3, ANON_85_31__u
+	SA  3, ANON_85_31_disp
+	LA  0, STANDARD.IDL._TREE.use__info
+	SA  3, ANON_85_31__u
 	LVA 3, ANON_85_31_disp
 					; doublet resultat record anonyme
 	LVA 3,	ERROR_disp
@@ -807,46 +799,46 @@ VAR	ANON_85_31__dat, STANDARD.IDL._TREE.size
 	CALL	STANDARD.IDL. ,D_L17
 	CALL	STANDARD.IDL. ,PRINT_NAME_L25
 	DUP
-	La  ,  0
-	Sa  3, ANON_85_19_L39_D_data
-	La  ,  8
-	Sa  3, ANON_85_19_L39_D_info
-	LId 3, ANON_85_19_L39_D_info, _STRING.LST_1
-	LId 3, ANON_85_19_L39_D_info, _STRING.FST_1
+	LA  ,  0
+	SA  3, ANON_85_19_L39_D_data
+	LA  ,  8
+	SA  3, ANON_85_19_L39_D_info
+	LID 3, ANON_85_19_L39_D_info, _STRING.LST_1
+	LID 3, ANON_85_19_L39_D_info, _STRING.FST_1
 	SUB
 	INC
 	CLAMP0
-	Sa  3, ANON_85_19_L39_D_len
-	La  3, ANON_85_12_L39_G_len
-	La  3, ANON_85_19_L39_D_len
+	SA  3, ANON_85_19_L39_D_len
+	LA  3, ANON_85_12_L39_G_len
+	LA  3, ANON_85_19_L39_D_len
 	ADD
 	CO_VAR
-	Sa  3, ANON_85_12_L39_R_disp
+	SA  3, ANON_85_12_L39_R_disp
 	LI	1
-	Sd  3, ANON_85_12_L39_R_info._FST_1
-	La  3, ANON_85_12_L39_G_len
-	La  3, ANON_85_19_L39_D_len
+	SD  3, ANON_85_12_L39_R_info._FST_1
+	LA  3, ANON_85_12_L39_G_len
+	LA  3, ANON_85_19_L39_D_len
 	ADD
-	Sd  3, ANON_85_12_L39_R_info._LST_1
+	SD  3, ANON_85_12_L39_R_info._LST_1
 	LI	8
-	Sd  3, ANON_85_12_L39_R_info._COMP_SIZ
-	La  3, ANON_85_12_L39_G_len
-	La  3, ANON_85_19_L39_D_len
+	SD  3, ANON_85_12_L39_R_info._COMP_SIZ
+	LA  3, ANON_85_12_L39_G_len
+	LA  3, ANON_85_19_L39_D_len
 	ADD
 	LI	8
 	MUL
-	Sd  3, ANON_85_12_L39_R_info.SIZ
-	LVA 3, ANON_85_12_L39_R_info.SIZ
-	Sa  3, ANON_85_12_L39_R__u
-	La  3, ANON_85_12_L39_R_disp
-	La  3, ANON_85_12_L39_G_len
-	La  3, ANON_85_12_L39_G_data
+	SD  3, ANON_85_12_L39_R_info.SIZ__
+	LVA 3, ANON_85_12_L39_R_info.SIZ__
+	SA  3, ANON_85_12_L39_R__u
+	LA  3, ANON_85_12_L39_R_disp
+	LA  3, ANON_85_12_L39_G_len
+	LA  3, ANON_85_12_L39_G_data
 	BLKMOV
-	La  3, ANON_85_12_L39_R_disp
-	La  3, ANON_85_12_L39_G_len
+	LA  3, ANON_85_12_L39_R_disp
+	LA  3, ANON_85_12_L39_G_len
 	ADD
-	La  3, ANON_85_19_L39_D_len
-	La  3, ANON_85_19_L39_D_data
+	LA  3, ANON_85_19_L39_D_len
+	LA  3, ANON_85_19_L39_D_data
 	BLKMOV
 	LVA 3, ANON_85_12_L39_R_disp
 	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
@@ -854,7 +846,7 @@ VAR	ANON_85_31__dat, STANDARD.IDL._TREE.size
 endPRO
 	BRA	LOOP__6
 L33:					; post loop LOOP__6
-	Ld 2,	SOURCENBR_disp
+	LD 2,	SOURCENBR_disp
 	LI	002147483647
 	CEQ
 	BT	L11

@@ -1,0 +1,25 @@
+ada83 compiling ./../_standrd.ads@PD1 OP_AND [AND] L = 3 SYM = [DN_SYMBOL_REP<3.0]> "AND"
+@PD1 OP_OR [OR!] L = 2 SYM = [DN_SYMBOL_REP<3.3]> "OR"
+@PD1 OP_XOR [XOR] L = 3 SYM = [DN_SYMBOL_REP<3.6]> "XOR"
+@PD1 OP_NOT [NOT] L = 3 SYM = [DN_SYMBOL_REP<3.54]> "NOT"
+@PD1 OP_UNARY_PLUS [+!!] L = 1 SYM = [DN_SYMBOL_REP<3.27]> "+"
+@PD1 OP_UNARY_MINUS [-!!] L = 1 SYM = [DN_SYMBOL_REP<3.30]> "-"
+@PD1 OP_ABS [ABS] L = 3 SYM = [DN_SYMBOL_REP<3.51]> "ABS"
+@PD1 OP_EQ [=!!] L = 1 SYM = [DN_SYMBOL_REP<3.9]> "="
+@PD1 OP_NE [/=!] L = 2 SYM = [DN_SYMBOL_REP<3.12]> "/="
+@PD1 OP_LT [<!!] L = 1 SYM = [DN_SYMBOL_REP<3.15]> "<"
+@PD1 OP_LE [<=!] L = 2 SYM = [DN_SYMBOL_REP<3.18]> "<="
+@PD1 OP_GT [>!!] L = 1 SYM = [DN_SYMBOL_REP<3.21]> ">"
+@PD1 OP_GE [>=!] L = 2 SYM = [DN_SYMBOL_REP<3.24]> ">="
+@PD1 OP_PLUS [+!!] L = 1 SYM = [DN_SYMBOL_REP<3.27]> "+"
+@PD1 OP_MINUS [-!!] L = 1 SYM = [DN_SYMBOL_REP<3.30]> "-"
+@PD1 OP_MULT [*!!] L = 1 SYM = [DN_SYMBOL_REP<3.39]> "*"
+@PD1 OP_DIV [/!!] L = 1 SYM = [DN_SYMBOL_REP<3.36]> "/"
+@PD1 OP_MOD [MOD] L = 3 SYM = [DN_SYMBOL_REP<3.42]> "MOD"
+@PD1 OP_REM [REM] L = 3 SYM = [DN_SYMBOL_REP<3.45]> "REM"
+@PD1 OP_CAT [&!!] L = 1 SYM = [DN_SYMBOL_REP<3.33]> "&"
+@PD1 OP_EXP [**!] L = 2 SYM = [DN_SYMBOL_REP<3.48]> "**"
+_STANDRD
+STANDARD
+BOOLEAN
+SHORT_INTEGER

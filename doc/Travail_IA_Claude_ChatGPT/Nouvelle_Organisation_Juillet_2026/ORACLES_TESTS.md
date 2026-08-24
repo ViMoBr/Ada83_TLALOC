@@ -726,6 +726,32 @@ cloture du 11 aout ; retrait par grep @IB une fois la campagne T3
 entamee (elles ne touchent pas les FINC produits, seulement la
 verbosite de T2).
 
+## GOTO_SELARG_TEST — gardien du piège n° 148 (préfixe nom étendu indexé)
+
+Source : tests/goto_selarg_test.adb (livré avec le commit n° 148).
+Forme exacte du bug : table de records au niveau paquetage, index
+runtime, champ scalaire passé en actuel d'une fonction à résultat
+STRING, appel en opérande de concaténation ; plus un goto arrière et un
+goto avant (exercent CODE_GOTO/CODE_LABELED du compilateur HÔTE quand ce
+témoin sert de source compilée).
+
+Verdict attendu (exécution du binaire, checks ON) :
+	tour 1 -> L32
+	tour 2 -> L32
+	fin -> L12
+
+Rouge de référence : reproductible en recompilant le témoin avec le T1
+d'AVANT le commit n° 148 (segfault à l'exécution sur le premier
+PUT_LINE : BLKMOV, rdi = valeur du champ à [T(1)+8]).
+
+Oracle FINC associé (sans exécution) : sur le FINC du témoin,
+	grep -n -B1 "T_disp"
+ne doit montrer AUCUNE paire de `La` consécutifs identiques.
+
+Oracle suprême du dépôt (rappel, hérite de cette session) : diff des
+63 FINC entre la génération T1 et la génération T2 = VIDE. À rejouer
+après tout remaniement de l'expander.
+
 ### Sondes @GT/@PC/@AP (hors filet, outil de diagnostic bootstrap)
 
 Posees dans idl-par_phase.adb (@GT1-4 fin de GET_TOKEN, @PC1-5
@@ -736,3 +762,22 @@ par_phase. Protocole de re-usage (premier run W du bootstrappe) :
 run gnat-W = reference (existe, trace du 7/08) ; run boot-W ;
 normaliser CRLF (piege n 131) ; diff ; premiere divergence = point
 d entree du chantier. Retrait final par grep @GT/@PC/@AP.
+
+## Chaîne TARGET_CODE (pilote interactif, entrée vide = tests)
+
+TC_TEST19  blocs Ada internes (ELB sans PRO, fonction gardée morte)   exit 0 (3..5)
+TC_TEST20  thunks génériques, labels pointés, ET, BLKCMP, CALLI nu    exit 0 (3..7)
+TC_TEST21  complétion codi : mots, ALU, bitfields, flottants, CVTXI,
+           BLK*, LEXCMP ×3, horloge, fichiers bout en bout            exit 0 (3..33)
+TC_TEST23  entité unique symbole/namespace (les deux ordres)          exit 0 (3..6)
+TC_TEST24  redéfinition séquentielle (deux emplacements, 5 et 9)      exit 0 (3..5)
+TC_TEST25  rq en zone virtual (écarts 16 / 20)                        exit 0 (3..4)
+TC_TEST3   test négatif volontaire : CONSTRAINT_ERROR attendue, pas de BIN
+
+Chaque témoin : quadruple oracle — fasmg TC_TESTn.FAS TC_REFn && cmp
+muet ; exécution → 0 ; rejeu de toute la chaîne muet ; avalements du
+corpus réel muets. Oracle suprême : cmp ADA_COMP / ADA_COMP.x86exe muet
++ auto-recompilation du compilateur assemblé.
+
+Oracle unitaire (localisation) : squelette constant avec/sans le
+mnémonique isolé, delta d'octets = taille fasmg, confrontée à SIZE_OF.

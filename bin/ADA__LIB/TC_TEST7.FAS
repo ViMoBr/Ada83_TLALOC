@@ -1,0 +1,30 @@
+include '../../src/expander/fasmg/codi_x86_64.finc'
+STANDARD = 'STANDARD'
+namespace STANDARD
+main7:
+	LINK	1, 32
+	CALL	STANDARD., SP7
+	LD	1, 8
+	LI	42
+	CEQ
+	BT	ok7
+	UNLINK	1
+	SYS_EXIT	1
+ok7:
+	UNLINK	1
+	SYS_EXIT	0
+if defined SP7_
+	PRO	SP7
+	ELB	2
+	VAR	T7_disp, Q
+	LI	6
+	LI	7
+	MUL
+	SQ	2, T7_disp
+	LQ	2, T7_disp
+	SD	1, 8
+	UNLINK	2
+	RTD	0
+	endPRO
+end if
+end namespace

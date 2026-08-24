@@ -6,7 +6,7 @@ namespace MACHINE_CODE			;---------- PACKAGE DECLARATION
 					; _ASM_OPCODE ENUMERATION TYPE INFO
 _ASM_OPCODE = '_ASM_OPCODE'
 namespace _ASM_OPCODE
-VAR use__info, q
+VAR use__info, Q
 BEGIN_BLOC_DEF
 db 0, 2, "ET"
 db 1, 2, "OU"
@@ -57,133 +57,133 @@ db 45, 3, "SIA"
 END_BLOC_DEF 8, 0, 45
 	; SIZ en bits !
 	LCA	SIZ
-	Sa	0, use__info
+	SA	0, use__info
 end namespace
 
 					; _ASM_OPCODE_0 ENUMERATION SUBTYPE INFO
 _ASM_OPCODE_0 = '_ASM_OPCODE_0'
 namespace _ASM_OPCODE_0
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	0
-	Sb	0, FST
+	SB	0, FST
 	LI	18
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.MACHINE_CODE._ASM_OPCODE.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.MACHINE_CODE._ASM_OPCODE.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _ASM_OPCODE_1 ENUMERATION SUBTYPE INFO
 _ASM_OPCODE_1 = '_ASM_OPCODE_1'
 namespace _ASM_OPCODE_1
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	19
-	Sb	0, FST
+	SB	0, FST
 	LI	24
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.MACHINE_CODE._ASM_OPCODE.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.MACHINE_CODE._ASM_OPCODE.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _ASM_OPCODE_2 ENUMERATION SUBTYPE INFO
 _ASM_OPCODE_2 = '_ASM_OPCODE_2'
 namespace _ASM_OPCODE_2
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	25
-	Sb	0, FST
+	SB	0, FST
 	LI	35
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.MACHINE_CODE._ASM_OPCODE.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.MACHINE_CODE._ASM_OPCODE.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _ASM_OPCODE_3 ENUMERATION SUBTYPE INFO
 _ASM_OPCODE_3 = '_ASM_OPCODE_3'
 namespace _ASM_OPCODE_3
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	36
-	Sb	0, FST
+	SB	0, FST
 	LI	45
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.MACHINE_CODE._ASM_OPCODE.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.MACHINE_CODE._ASM_OPCODE.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _ASM_OP_0 RECORD TYPE INFO
 _ASM_OP_0 = '_ASM_OP_0'
 namespace _ASM_OP_0
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-USEINFO 0, OPCODE, 	La 0, STANDARD.MACHINE_CODE._ASM_OPCODE_0.use__info
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+USEINFO 0, OPCODE, 	LA 0, STANDARD.MACHINE_CODE._ASM_OPCODE_0.use__info
 virtual at 0				; calcul des offsets statiques
 STATOFS OPCODE, 1, 1
 size = $
 end virtual
 	LI	 size*8
-	Sd	0, SIZ
+	SD	0, SIZ__
 end namespace
 
 					; _ASM_OP_1 RECORD TYPE INFO
 _ASM_OP_1 = '_ASM_OP_1'
 namespace _ASM_OP_1
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-USEINFO 0, OPCODE, 	La 0, STANDARD.MACHINE_CODE._ASM_OPCODE_1.use__info
-USEINFO 0, VAL, 	La 0, STANDARD._INTEGER.use__info
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+USEINFO 0, OPCODE, 	LA 0, STANDARD.MACHINE_CODE._ASM_OPCODE_1.use__info
+USEINFO 0, VAL, 	LA 0, STANDARD._INTEGER.use__info
 virtual at 0				; calcul des offsets statiques
 STATOFS OPCODE, 1, 1
 STATOFS VAL, 4, 4
 size = $
 end virtual
 	LI	 size*8
-	Sd	0, SIZ
+	SD	0, SIZ__
 end namespace
 
 					; _ASM_OP_2 RECORD TYPE INFO
 _ASM_OP_2 = '_ASM_OP_2'
 namespace _ASM_OP_2
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-USEINFO 0, OPCODE, 	La 0, STANDARD.MACHINE_CODE._ASM_OPCODE_2.use__info
-USEINFO 0, LVL, 	La 0, STANDARD._NATURAL.use__info
-USEINFO 0, OFS, 	La 0, STANDARD._INTEGER.use__info
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+USEINFO 0, OPCODE, 	LA 0, STANDARD.MACHINE_CODE._ASM_OPCODE_2.use__info
+USEINFO 0, LVL, 	LA 0, STANDARD._NATURAL.use__info
+USEINFO 0, OFS, 	LA 0, STANDARD._INTEGER.use__info
 virtual at 0				; calcul des offsets statiques
 STATOFS OPCODE, 1, 1
 STATOFS LVL, 4, 4
@@ -191,20 +191,20 @@ STATOFS OFS, 4, 4
 size = $
 end virtual
 	LI	 size*8
-	Sd	0, SIZ
+	SD	0, SIZ__
 end namespace
 
 					; _ASM_OP_3 RECORD TYPE INFO
 _ASM_OP_3 = '_ASM_OP_3'
 namespace _ASM_OP_3
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-USEINFO 0, OPCODE, 	La 0, STANDARD.MACHINE_CODE._ASM_OPCODE_2.use__info
-USEINFO 0, LVL, 	La 0, STANDARD._NATURAL.use__info
-USEINFO 0, DISP, 	La 0, STANDARD._INTEGER.use__info
-USEINFO 0, OFS, 	La 0, STANDARD._INTEGER.use__info
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+USEINFO 0, OPCODE, 	LA 0, STANDARD.MACHINE_CODE._ASM_OPCODE_2.use__info
+USEINFO 0, LVL, 	LA 0, STANDARD._NATURAL.use__info
+USEINFO 0, DISP, 	LA 0, STANDARD._INTEGER.use__info
+USEINFO 0, OFS, 	LA 0, STANDARD._INTEGER.use__info
 virtual at 0				; calcul des offsets statiques
 STATOFS OPCODE, 1, 1
 STATOFS LVL, 4, 4
@@ -213,7 +213,7 @@ STATOFS OFS, 4, 4
 size = $
 end virtual
 	LI	 size*8
-	Sd	0, SIZ
+	SD	0, SIZ__
 end namespace
 ; EXC_LBL	L1
 end namespace

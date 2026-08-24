@@ -1,0 +1,41 @@
+	include '../../src/expander/fasmg/codi_x86_64.finc'
+STANDARD = 'STANDARD'
+namespace STANDARD
+  virtual at 8
+    VARzone::
+  end virtual
+	LINK	0, loc_siz
+_R12 = '_R12'
+ namespace _R12
+VAR SIZ12, D
+  virtual at 4
+A12 = $
+	rd 1 
+B12 = $
+	rd 2
+size12 = $
+  end virtual
+	LI	 size12*8
+	SD	0, SIZ12
+end namespace 
+	STR	V12, " l'ete "
+	STR	W12, 'c''est'
+	STR	X12, "dit ""oui"""
+	STR	E12, ""
+	LCA	W12.data_ptr
+	SYS_PUT_STR
+	LCA	V12.data_ptr
+	SYS_PUT_STR
+	LCA	X12.data_ptr
+	SYS_PUT_STR
+	LD	0, _R12.SIZ12
+	LI	128
+	CEQ
+	BT	ok12
+	SYS_EXIT	2
+ok12:
+	SYS_EXIT	0
+ virtual VARzone
+   loc_siz = $
+  end virtual
+end namespace

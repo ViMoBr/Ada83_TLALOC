@@ -1,0 +1,2220 @@
+elab_spec:				;    SPEC ELAB
+
+					; CODE_PACKAGE_SPEC
+ hexa_show ' spec ', $
+
+					; CODE_PACKAGE_SPEC
+ hexa_show ' spec ', $
+
+					; _BOOLEAN ENUMERATION TYPE INFO
+_BOOLEAN = '_BOOLEAN'
+namespace _BOOLEAN
+VAR use__info, Q
+BEGIN_BLOC_DEF
+db 0, 5, "FALSE"
+db 1, 4, "TRUE"
+END_BLOC_DEF 1, 0, 1
+	; SIZ en bits !
+	LCA	SIZ
+	SA	0, use__info
+end namespace
+
+					; _SHORT_INTEGER TYPE RANGE INFO
+_SHORT_INTEGER = '_SHORT_INTEGER'
+namespace _SHORT_INTEGER
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, W
+VAR LST, W
+	LI	16
+	SD	0, SIZ__
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	2
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	15
+	DEC
+	SHL
+	NEG
+	SW	0, FST
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	2
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	15
+	DEC
+	SHL
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	1
+	SUB
+	SW	0, LST
+end namespace
+
+					; _INTEGER TYPE RANGE INFO
+_INTEGER = '_INTEGER'
+namespace _INTEGER
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, D
+VAR LST, D
+	LI	32
+	SD	0, SIZ__
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	2
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	31
+	DEC
+	SHL
+	NEG
+	SD	0, FST
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	2
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	31
+	DEC
+	SHL
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	1
+	SUB
+	SD	0, LST
+end namespace
+
+					; _LONG_INTEGER TYPE RANGE INFO
+_LONG_INTEGER = '_LONG_INTEGER'
+namespace _LONG_INTEGER
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, Q
+VAR LST, Q
+	LI	64
+	SD	0, SIZ__
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	2
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	63
+	DEC
+	SHL
+	NEG
+	SQ	0, FST
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	2
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	63
+	DEC
+	SHL
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	1
+	SUB
+	SQ	0, LST
+end namespace
+
+					; _FLOAT FLOAT TYPE INFO
+_FLOAT = '_FLOAT'
+namespace _FLOAT
+VAR use__info, Q
+VAR SIZ__, D
+VAR FST, Q
+VAR LST, Q
+	LVA	0, SIZ__
+	SA	0, use__info
+	LI	 32
+	SD	0, SIZ__
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_REAL
+	LIF	1.0E38
+	FNEG
+	SQ	0, FST
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_REAL
+	LIF	1.0E38
+	SQ	0, LST
+end namespace
+
+					; _LONG_FLOAT FLOAT TYPE INFO
+_LONG_FLOAT = '_LONG_FLOAT'
+namespace _LONG_FLOAT
+VAR use__info, Q
+VAR SIZ__, D
+VAR FST, Q
+VAR LST, Q
+	LVA	0, SIZ__
+	SA	0, use__info
+	LI	 64
+	SD	0, SIZ__
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_REAL
+	LIF	1.0E308
+	FNEG
+	SQ	0, FST
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_REAL
+	LIF	1.0E308
+	SQ	0, LST
+end namespace
+
+					; _CHARACTER ENUMERATION TYPE INFO
+_CHARACTER = '_CHARACTER'
+namespace _CHARACTER
+VAR use__info, Q
+BEGIN_BLOC_DEF
+db 0, 4, "_NUL"
+db 1, 4, "_SOH"
+db 2, 4, "_STX"
+db 3, 4, "_ETX"
+db 4, 4, "_EOT"
+db 5, 4, "_ENQ"
+db 6, 4, "_ACK"
+db 7, 4, "_BEL"
+db 8, 3, "_BS"
+db 9, 3, "_HT"
+db 10, 3, "_LF"
+db 11, 3, "_VT"
+db 12, 3, "_FF"
+db 13, 3, "_CR"
+db 14, 3, "_SO"
+db 15, 3, "_SI"
+db 16, 4, "_DLE"
+db 17, 4, "_DC1"
+db 18, 4, "_DC2"
+db 19, 4, "_DC3"
+db 20, 4, "_DC4"
+db 21, 4, "_NAK"
+db 22, 4, "_SYN"
+db 23, 4, "_ETB"
+db 24, 4, "_CAN"
+db 25, 3, "_EM"
+db 26, 4, "_SUB"
+db 27, 4, "_ESC"
+db 28, 3, "_FS"
+db 29, 3, "_GS"
+db 30, 3, "_RS"
+db 31, 3, "_US"
+db 32, 3, "' '"
+db 33, 3, "'!'"
+db 34, 3, "'""'"
+db 35, 3, "'#'"
+db 36, 3, "'$'"
+db 37, 3, "'%'"
+db 38, 3, "'&'"
+db 39, 3, "'''"
+db 40, 3, "'('"
+db 41, 3, "')'"
+db 42, 3, "'*'"
+db 43, 3, "'+'"
+db 44, 3, "','"
+db 45, 3, "'-'"
+db 46, 3, "'.'"
+db 47, 3, "'/'"
+db 48, 3, "'0'"
+db 49, 3, "'1'"
+db 50, 3, "'2'"
+db 51, 3, "'3'"
+db 52, 3, "'4'"
+db 53, 3, "'5'"
+db 54, 3, "'6'"
+db 55, 3, "'7'"
+db 56, 3, "'8'"
+db 57, 3, "'9'"
+db 58, 3, "':'"
+db 59, 3, "';'"
+db 60, 3, "'<'"
+db 61, 3, "'='"
+db 62, 3, "'>'"
+db 63, 3, "'?'"
+db 64, 3, "'@'"
+db 65, 3, "'A'"
+db 66, 3, "'B'"
+db 67, 3, "'C'"
+db 68, 3, "'D'"
+db 69, 3, "'E'"
+db 70, 3, "'F'"
+db 71, 3, "'G'"
+db 72, 3, "'H'"
+db 73, 3, "'I'"
+db 74, 3, "'J'"
+db 75, 3, "'K'"
+db 76, 3, "'L'"
+db 77, 3, "'M'"
+db 78, 3, "'N'"
+db 79, 3, "'O'"
+db 80, 3, "'P'"
+db 81, 3, "'Q'"
+db 82, 3, "'R'"
+db 83, 3, "'S'"
+db 84, 3, "'T'"
+db 85, 3, "'U'"
+db 86, 3, "'V'"
+db 87, 3, "'W'"
+db 88, 3, "'X'"
+db 89, 3, "'Y'"
+db 90, 3, "'Z'"
+db 91, 3, "'['"
+db 92, 3, "'\'"
+db 93, 3, "']'"
+db 94, 3, "'^'"
+db 95, 3, "'_'"
+db 96, 3, "'`'"
+db 97, 3, "'a'"
+db 98, 3, "'b'"
+db 99, 3, "'c'"
+db 100, 3, "'d'"
+db 101, 3, "'e'"
+db 102, 3, "'f'"
+db 103, 3, "'g'"
+db 104, 3, "'h'"
+db 105, 3, "'i'"
+db 106, 3, "'j'"
+db 107, 3, "'k'"
+db 108, 3, "'l'"
+db 109, 3, "'m'"
+db 110, 3, "'n'"
+db 111, 3, "'o'"
+db 112, 3, "'p'"
+db 113, 3, "'q'"
+db 114, 3, "'r'"
+db 115, 3, "'s'"
+db 116, 3, "'t'"
+db 117, 3, "'u'"
+db 118, 3, "'v'"
+db 119, 3, "'w'"
+db 120, 3, "'x'"
+db 121, 3, "'y'"
+db 122, 3, "'z'"
+db 123, 3, "'{'"
+db 124, 3, "'|'"
+db 125, 3, "'}'"
+db 126, 3, "'~'"
+db 127, 4, "_DEL"
+END_BLOC_DEF 8, 0, 127
+	; SIZ en bits !
+	LCA	SIZ
+	SA	0, use__info
+end namespace
+ASCII = 'ASCII'
+namespace ASCII				;---------- PACKAGE DECLARATION
+					; CODE_PACKAGE_SPEC
+ hexa_show ' spec ', $
+ hexa_show 'var elab NUL ', $
+VAR NUL_disp, B				; variable bool char enum
+	LI	0
+	SB  0,	STANDARD.ASCII.NUL_disp
+
+ hexa_show ' disp ', NUL_disp
+ hexa_show 'var elab SOH ', $
+VAR SOH_disp, B				; variable bool char enum
+	LI	1
+	SB  0,	STANDARD.ASCII.SOH_disp
+
+ hexa_show ' disp ', SOH_disp
+ hexa_show 'var elab STX ', $
+VAR STX_disp, B				; variable bool char enum
+	LI	2
+	SB  0,	STANDARD.ASCII.STX_disp
+
+ hexa_show ' disp ', STX_disp
+ hexa_show 'var elab ETX ', $
+VAR ETX_disp, B				; variable bool char enum
+	LI	3
+	SB  0,	STANDARD.ASCII.ETX_disp
+
+ hexa_show ' disp ', ETX_disp
+ hexa_show 'var elab EOT ', $
+VAR EOT_disp, B				; variable bool char enum
+	LI	4
+	SB  0,	STANDARD.ASCII.EOT_disp
+
+ hexa_show ' disp ', EOT_disp
+ hexa_show 'var elab ENQ ', $
+VAR ENQ_disp, B				; variable bool char enum
+	LI	5
+	SB  0,	STANDARD.ASCII.ENQ_disp
+
+ hexa_show ' disp ', ENQ_disp
+ hexa_show 'var elab ACK ', $
+VAR ACK_disp, B				; variable bool char enum
+	LI	6
+	SB  0,	STANDARD.ASCII.ACK_disp
+
+ hexa_show ' disp ', ACK_disp
+ hexa_show 'var elab BEL ', $
+VAR BEL_disp, B				; variable bool char enum
+	LI	7
+	SB  0,	STANDARD.ASCII.BEL_disp
+
+ hexa_show ' disp ', BEL_disp
+ hexa_show 'var elab BS ', $
+VAR BS_disp, B				; variable bool char enum
+	LI	8
+	SB  0,	STANDARD.ASCII.BS_disp
+
+ hexa_show ' disp ', BS_disp
+ hexa_show 'var elab HT ', $
+VAR HT_disp, B				; variable bool char enum
+	LI	9
+	SB  0,	STANDARD.ASCII.HT_disp
+
+ hexa_show ' disp ', HT_disp
+ hexa_show 'var elab LF ', $
+VAR LF_disp, B				; variable bool char enum
+	LI	10
+	SB  0,	STANDARD.ASCII.LF_disp
+
+ hexa_show ' disp ', LF_disp
+ hexa_show 'var elab VT ', $
+VAR VT_disp, B				; variable bool char enum
+	LI	11
+	SB  0,	STANDARD.ASCII.VT_disp
+
+ hexa_show ' disp ', VT_disp
+ hexa_show 'var elab FF ', $
+VAR FF_disp, B				; variable bool char enum
+	LI	12
+	SB  0,	STANDARD.ASCII.FF_disp
+
+ hexa_show ' disp ', FF_disp
+ hexa_show 'var elab CR ', $
+VAR CR_disp, B				; variable bool char enum
+	LI	13
+	SB  0,	STANDARD.ASCII.CR_disp
+
+ hexa_show ' disp ', CR_disp
+ hexa_show 'var elab SO ', $
+VAR SO_disp, B				; variable bool char enum
+	LI	14
+	SB  0,	STANDARD.ASCII.SO_disp
+
+ hexa_show ' disp ', SO_disp
+ hexa_show 'var elab SI ', $
+VAR SI_disp, B				; variable bool char enum
+	LI	15
+	SB  0,	STANDARD.ASCII.SI_disp
+
+ hexa_show ' disp ', SI_disp
+ hexa_show 'var elab DLE ', $
+VAR DLE_disp, B				; variable bool char enum
+	LI	16
+	SB  0,	STANDARD.ASCII.DLE_disp
+
+ hexa_show ' disp ', DLE_disp
+ hexa_show 'var elab DC1 ', $
+VAR DC1_disp, B				; variable bool char enum
+	LI	17
+	SB  0,	STANDARD.ASCII.DC1_disp
+
+ hexa_show ' disp ', DC1_disp
+ hexa_show 'var elab DC2 ', $
+VAR DC2_disp, B				; variable bool char enum
+	LI	18
+	SB  0,	STANDARD.ASCII.DC2_disp
+
+ hexa_show ' disp ', DC2_disp
+ hexa_show 'var elab DC3 ', $
+VAR DC3_disp, B				; variable bool char enum
+	LI	19
+	SB  0,	STANDARD.ASCII.DC3_disp
+
+ hexa_show ' disp ', DC3_disp
+ hexa_show 'var elab DC4 ', $
+VAR DC4_disp, B				; variable bool char enum
+	LI	20
+	SB  0,	STANDARD.ASCII.DC4_disp
+
+ hexa_show ' disp ', DC4_disp
+ hexa_show 'var elab NAK ', $
+VAR NAK_disp, B				; variable bool char enum
+	LI	21
+	SB  0,	STANDARD.ASCII.NAK_disp
+
+ hexa_show ' disp ', NAK_disp
+ hexa_show 'var elab SYN ', $
+VAR SYN_disp, B				; variable bool char enum
+	LI	22
+	SB  0,	STANDARD.ASCII.SYN_disp
+
+ hexa_show ' disp ', SYN_disp
+ hexa_show 'var elab ETB ', $
+VAR ETB_disp, B				; variable bool char enum
+	LI	23
+	SB  0,	STANDARD.ASCII.ETB_disp
+
+ hexa_show ' disp ', ETB_disp
+ hexa_show 'var elab CAN ', $
+VAR CAN_disp, B				; variable bool char enum
+	LI	24
+	SB  0,	STANDARD.ASCII.CAN_disp
+
+ hexa_show ' disp ', CAN_disp
+ hexa_show 'var elab EM ', $
+VAR EM_disp, B				; variable bool char enum
+	LI	25
+	SB  0,	STANDARD.ASCII.EM_disp
+
+ hexa_show ' disp ', EM_disp
+ hexa_show 'var elab SUB ', $
+VAR SUB_disp, B				; variable bool char enum
+	LI	26
+	SB  0,	STANDARD.ASCII.SUB_disp
+
+ hexa_show ' disp ', SUB_disp
+ hexa_show 'var elab ESC ', $
+VAR ESC_disp, B				; variable bool char enum
+	LI	27
+	SB  0,	STANDARD.ASCII.ESC_disp
+
+ hexa_show ' disp ', ESC_disp
+ hexa_show 'var elab FS ', $
+VAR FS_disp, B				; variable bool char enum
+	LI	28
+	SB  0,	STANDARD.ASCII.FS_disp
+
+ hexa_show ' disp ', FS_disp
+ hexa_show 'var elab GS ', $
+VAR GS_disp, B				; variable bool char enum
+	LI	29
+	SB  0,	STANDARD.ASCII.GS_disp
+
+ hexa_show ' disp ', GS_disp
+ hexa_show 'var elab RS ', $
+VAR RS_disp, B				; variable bool char enum
+	LI	30
+	SB  0,	STANDARD.ASCII.RS_disp
+
+ hexa_show ' disp ', RS_disp
+ hexa_show 'var elab US ', $
+VAR US_disp, B				; variable bool char enum
+	LI	31
+	SB  0,	STANDARD.ASCII.US_disp
+
+ hexa_show ' disp ', US_disp
+ hexa_show 'var elab DEL ', $
+VAR DEL_disp, B				; variable bool char enum
+	LI	127
+	SB  0,	STANDARD.ASCII.DEL_disp
+
+ hexa_show ' disp ', DEL_disp
+ hexa_show 'var elab EXCLAM ', $
+VAR EXCLAM_disp, B				; variable bool char enum
+	LI	33
+	SB  0,	STANDARD.ASCII.EXCLAM_disp
+
+ hexa_show ' disp ', EXCLAM_disp
+ hexa_show 'var elab SHARP ', $
+VAR SHARP_disp, B				; variable bool char enum
+	LI	35
+	SB  0,	STANDARD.ASCII.SHARP_disp
+
+ hexa_show ' disp ', SHARP_disp
+ hexa_show 'var elab PERCENT ', $
+VAR PERCENT_disp, B				; variable bool char enum
+	LI	37
+	SB  0,	STANDARD.ASCII.PERCENT_disp
+
+ hexa_show ' disp ', PERCENT_disp
+ hexa_show 'var elab COLON ', $
+VAR COLON_disp, B				; variable bool char enum
+	LI	58
+	SB  0,	STANDARD.ASCII.COLON_disp
+
+ hexa_show ' disp ', COLON_disp
+ hexa_show 'var elab QUERY ', $
+VAR QUERY_disp, B				; variable bool char enum
+	LI	63
+	SB  0,	STANDARD.ASCII.QUERY_disp
+
+ hexa_show ' disp ', QUERY_disp
+ hexa_show 'var elab L_BRACKET ', $
+VAR L_BRACKET_disp, B			; variable bool char enum
+	LI	91
+	SB  0,	STANDARD.ASCII.L_BRACKET_disp
+
+ hexa_show ' disp ', L_BRACKET_disp
+ hexa_show 'var elab R_BRACKET ', $
+VAR R_BRACKET_disp, B			; variable bool char enum
+	LI	93
+	SB  0,	STANDARD.ASCII.R_BRACKET_disp
+
+ hexa_show ' disp ', R_BRACKET_disp
+ hexa_show 'var elab UNDERLINE ', $
+VAR UNDERLINE_disp, B			; variable bool char enum
+	LI	95
+	SB  0,	STANDARD.ASCII.UNDERLINE_disp
+
+ hexa_show ' disp ', UNDERLINE_disp
+ hexa_show 'var elab L_BRACE ', $
+VAR L_BRACE_disp, B				; variable bool char enum
+	LI	123
+	SB  0,	STANDARD.ASCII.L_BRACE_disp
+
+ hexa_show ' disp ', L_BRACE_disp
+ hexa_show 'var elab R_BRACE ', $
+VAR R_BRACE_disp, B				; variable bool char enum
+	LI	125
+	SB  0,	STANDARD.ASCII.R_BRACE_disp
+
+ hexa_show ' disp ', R_BRACE_disp
+ hexa_show 'var elab QUOTATION ', $
+VAR QUOTATION_disp, B			; variable bool char enum
+	LI	34
+	SB  0,	STANDARD.ASCII.QUOTATION_disp
+
+ hexa_show ' disp ', QUOTATION_disp
+ hexa_show 'var elab DOLLAR ', $
+VAR DOLLAR_disp, B				; variable bool char enum
+	LI	36
+	SB  0,	STANDARD.ASCII.DOLLAR_disp
+
+ hexa_show ' disp ', DOLLAR_disp
+ hexa_show 'var elab AMPERSAND ', $
+VAR AMPERSAND_disp, B			; variable bool char enum
+	LI	38
+	SB  0,	STANDARD.ASCII.AMPERSAND_disp
+
+ hexa_show ' disp ', AMPERSAND_disp
+ hexa_show 'var elab SEMICOLON ', $
+VAR SEMICOLON_disp, B			; variable bool char enum
+	LI	59
+	SB  0,	STANDARD.ASCII.SEMICOLON_disp
+
+ hexa_show ' disp ', SEMICOLON_disp
+ hexa_show 'var elab AT_SIGN ', $
+VAR AT_SIGN_disp, B				; variable bool char enum
+	LI	64
+	SB  0,	STANDARD.ASCII.AT_SIGN_disp
+
+ hexa_show ' disp ', AT_SIGN_disp
+ hexa_show 'var elab BACK_SLASH ', $
+VAR BACK_SLASH_disp, B			; variable bool char enum
+	LI	92
+	SB  0,	STANDARD.ASCII.BACK_SLASH_disp
+
+ hexa_show ' disp ', BACK_SLASH_disp
+ hexa_show 'var elab CIRCUMFLEX ', $
+VAR CIRCUMFLEX_disp, B			; variable bool char enum
+	LI	94
+	SB  0,	STANDARD.ASCII.CIRCUMFLEX_disp
+
+ hexa_show ' disp ', CIRCUMFLEX_disp
+ hexa_show 'var elab GRAVE ', $
+VAR GRAVE_disp, B				; variable bool char enum
+	LI	96
+	SB  0,	STANDARD.ASCII.GRAVE_disp
+
+ hexa_show ' disp ', GRAVE_disp
+ hexa_show 'var elab BAR ', $
+VAR BAR_disp, B				; variable bool char enum
+	LI	124
+	SB  0,	STANDARD.ASCII.BAR_disp
+
+ hexa_show ' disp ', BAR_disp
+ hexa_show 'var elab TILDE ', $
+VAR TILDE_disp, B				; variable bool char enum
+	LI	126
+	SB  0,	STANDARD.ASCII.TILDE_disp
+
+ hexa_show ' disp ', TILDE_disp
+ hexa_show 'var elab LC_A ', $
+VAR LC_A_disp, B				; variable bool char enum
+	LI	97
+	SB  0,	STANDARD.ASCII.LC_A_disp
+
+ hexa_show ' disp ', LC_A_disp
+ hexa_show 'var elab LC_B ', $
+VAR LC_B_disp, B				; variable bool char enum
+	LI	98
+	SB  0,	STANDARD.ASCII.LC_B_disp
+
+ hexa_show ' disp ', LC_B_disp
+ hexa_show 'var elab LC_C ', $
+VAR LC_C_disp, B				; variable bool char enum
+	LI	99
+	SB  0,	STANDARD.ASCII.LC_C_disp
+
+ hexa_show ' disp ', LC_C_disp
+ hexa_show 'var elab LC_D ', $
+VAR LC_D_disp, B				; variable bool char enum
+	LI	100
+	SB  0,	STANDARD.ASCII.LC_D_disp
+
+ hexa_show ' disp ', LC_D_disp
+ hexa_show 'var elab LC_E ', $
+VAR LC_E_disp, B				; variable bool char enum
+	LI	101
+	SB  0,	STANDARD.ASCII.LC_E_disp
+
+ hexa_show ' disp ', LC_E_disp
+ hexa_show 'var elab LC_F ', $
+VAR LC_F_disp, B				; variable bool char enum
+	LI	102
+	SB  0,	STANDARD.ASCII.LC_F_disp
+
+ hexa_show ' disp ', LC_F_disp
+ hexa_show 'var elab LC_G ', $
+VAR LC_G_disp, B				; variable bool char enum
+	LI	103
+	SB  0,	STANDARD.ASCII.LC_G_disp
+
+ hexa_show ' disp ', LC_G_disp
+ hexa_show 'var elab LC_H ', $
+VAR LC_H_disp, B				; variable bool char enum
+	LI	104
+	SB  0,	STANDARD.ASCII.LC_H_disp
+
+ hexa_show ' disp ', LC_H_disp
+ hexa_show 'var elab LC_I ', $
+VAR LC_I_disp, B				; variable bool char enum
+	LI	105
+	SB  0,	STANDARD.ASCII.LC_I_disp
+
+ hexa_show ' disp ', LC_I_disp
+ hexa_show 'var elab LC_J ', $
+VAR LC_J_disp, B				; variable bool char enum
+	LI	106
+	SB  0,	STANDARD.ASCII.LC_J_disp
+
+ hexa_show ' disp ', LC_J_disp
+ hexa_show 'var elab LC_K ', $
+VAR LC_K_disp, B				; variable bool char enum
+	LI	107
+	SB  0,	STANDARD.ASCII.LC_K_disp
+
+ hexa_show ' disp ', LC_K_disp
+ hexa_show 'var elab LC_L ', $
+VAR LC_L_disp, B				; variable bool char enum
+	LI	108
+	SB  0,	STANDARD.ASCII.LC_L_disp
+
+ hexa_show ' disp ', LC_L_disp
+ hexa_show 'var elab LC_M ', $
+VAR LC_M_disp, B				; variable bool char enum
+	LI	109
+	SB  0,	STANDARD.ASCII.LC_M_disp
+
+ hexa_show ' disp ', LC_M_disp
+ hexa_show 'var elab LC_N ', $
+VAR LC_N_disp, B				; variable bool char enum
+	LI	110
+	SB  0,	STANDARD.ASCII.LC_N_disp
+
+ hexa_show ' disp ', LC_N_disp
+ hexa_show 'var elab LC_O ', $
+VAR LC_O_disp, B				; variable bool char enum
+	LI	111
+	SB  0,	STANDARD.ASCII.LC_O_disp
+
+ hexa_show ' disp ', LC_O_disp
+ hexa_show 'var elab LC_P ', $
+VAR LC_P_disp, B				; variable bool char enum
+	LI	112
+	SB  0,	STANDARD.ASCII.LC_P_disp
+
+ hexa_show ' disp ', LC_P_disp
+ hexa_show 'var elab LC_Q ', $
+VAR LC_Q_disp, B				; variable bool char enum
+	LI	113
+	SB  0,	STANDARD.ASCII.LC_Q_disp
+
+ hexa_show ' disp ', LC_Q_disp
+ hexa_show 'var elab LC_R ', $
+VAR LC_R_disp, B				; variable bool char enum
+	LI	114
+	SB  0,	STANDARD.ASCII.LC_R_disp
+
+ hexa_show ' disp ', LC_R_disp
+ hexa_show 'var elab LC_S ', $
+VAR LC_S_disp, B				; variable bool char enum
+	LI	115
+	SB  0,	STANDARD.ASCII.LC_S_disp
+
+ hexa_show ' disp ', LC_S_disp
+ hexa_show 'var elab LC_T ', $
+VAR LC_T_disp, B				; variable bool char enum
+	LI	116
+	SB  0,	STANDARD.ASCII.LC_T_disp
+
+ hexa_show ' disp ', LC_T_disp
+ hexa_show 'var elab LC_U ', $
+VAR LC_U_disp, B				; variable bool char enum
+	LI	117
+	SB  0,	STANDARD.ASCII.LC_U_disp
+
+ hexa_show ' disp ', LC_U_disp
+ hexa_show 'var elab LC_V ', $
+VAR LC_V_disp, B				; variable bool char enum
+	LI	118
+	SB  0,	STANDARD.ASCII.LC_V_disp
+
+ hexa_show ' disp ', LC_V_disp
+ hexa_show 'var elab LC_W ', $
+VAR LC_W_disp, B				; variable bool char enum
+	LI	119
+	SB  0,	STANDARD.ASCII.LC_W_disp
+
+ hexa_show ' disp ', LC_W_disp
+ hexa_show 'var elab LC_X ', $
+VAR LC_X_disp, B				; variable bool char enum
+	LI	120
+	SB  0,	STANDARD.ASCII.LC_X_disp
+
+ hexa_show ' disp ', LC_X_disp
+ hexa_show 'var elab LC_Y ', $
+VAR LC_Y_disp, B				; variable bool char enum
+	LI	121
+	SB  0,	STANDARD.ASCII.LC_Y_disp
+
+ hexa_show ' disp ', LC_Y_disp
+ hexa_show 'var elab LC_Z ', $
+VAR LC_Z_disp, B				; variable bool char enum
+	LI	122
+	SB  0,	STANDARD.ASCII.LC_Z_disp
+
+ hexa_show ' disp ', LC_Z_disp
+; EXC_LBL	L1
+end namespace
+
+
+					; _NATURAL INTEGER SUBTYPE INFO
+_NATURAL = '_NATURAL'
+namespace _NATURAL
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, D
+VAR LST, D
+	LI	32
+	SD	0, SIZ__
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	SD	0, FST
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	002147483647
+	SD	0, LST
+VAR PARENT__u, Q
+	LA	0, STANDARD._INTEGER.use__info
+	SA	0, PARENT__u
+end namespace
+
+					; _POSITIVE INTEGER SUBTYPE INFO
+_POSITIVE = '_POSITIVE'
+namespace _POSITIVE
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, D
+VAR LST, D
+	LI	32
+	SD	0, SIZ__
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SD	0, FST
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	002147483647
+	SD	0, LST
+VAR PARENT__u, Q
+	LA	0, STANDARD._INTEGER.use__info
+	SA	0, PARENT__u
+end namespace
+
+					; _STRING UNCONSTRAINED ARRAY SUBTYPE INFO
+_STRING = '_STRING'
+namespace _STRING
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+	LI	1
+	NEG
+	SD	0, SIZ__
+  virtual at 4				; use info offsets pour acces sur array contraint
+
+COMP_SIZ = $
+	rd 1 
+FST_1 = $
+	rd 1 
+LST_1 = $
+	rd 1 
+  end virtual
+end namespace
+
+					; _DURATION FIXED SUBTYPE INFO
+_DURATION = '_DURATION'
+namespace _DURATION
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+	LI	64
+	SD	0, SIZ__
+VAR FST, Q
+VAR LST, Q
+	LI	-017179869184
+	LI	000536870912
+	LI	 1
+	CVTIX
+	SQ	0, FST
+	LI	017179869183
+	LI	000536870912
+	LI	 1
+	CVTIX
+	SQ	0, LST
+VAR NUMER, Q
+VAR DENOM, Q
+	LI	 1
+	SQ	0, NUMER
+	LI	000536870912
+	SQ	0, DENOM
+end namespace
+STR CONSTRAINT_ERROR__exc, "CONSTRAINT_ERROR"
+STR NUMERIC_ERROR__exc, "NUMERIC_ERROR"
+STR PROGRAM_ERROR__exc, "PROGRAM_ERROR"
+STR STORAGE_ERROR__exc, "STORAGE_ERROR"
+STR TASKING_ERROR__exc, "TASKING_ERROR"
+
+					; __ADDRESS TYPE RANGE INFO
+__ADDRESS = '__ADDRESS'
+namespace __ADDRESS
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, Q
+VAR LST, Q
+	LI	64
+	SD	0, SIZ__
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	2
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	63
+	DEC
+	SHL
+	NEG
+	SQ	0, FST
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	2
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	63
+	DEC
+	SHL
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	1
+	SUB
+	SQ	0, LST
+end namespace
+; EXC_LBL	L2
+
+					;    BODY ELAB
+
+					; _ENUM_USE_INFO RECORD TYPE INFO
+_ENUM_USE_INFO = '_ENUM_USE_INFO'
+namespace _ENUM_USE_INFO
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+USEINFO 0, SIZ, 	LA 0, STANDARD._NATURAL.use__info
+USEINFO 0, FST, 	LA 0, STANDARD._INTEGER.use__info
+USEINFO 0, LST, 	LA 0, STANDARD._INTEGER.use__info
+virtual at 0				; calcul des offsets statiques
+STATOFS SIZ, 4, 4
+STATOFS FST, 4, 4
+STATOFS LST, 4, 4
+size = $
+end virtual
+	LI	 size*8
+	SD	0, SIZ__
+end namespace
+
+					; _FIXED_USE_INFO RECORD TYPE INFO
+_FIXED_USE_INFO = '_FIXED_USE_INFO'
+namespace _FIXED_USE_INFO
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+USEINFO 0, SIZ, 	LA 0, STANDARD._NATURAL.use__info
+USEINFO 0, FST, 	LA 0, STANDARD._LONG_INTEGER.use__info
+USEINFO 0, LST, 	LA 0, STANDARD._LONG_INTEGER.use__info
+USEINFO 0, NUMER, 	LA 0, STANDARD._LONG_INTEGER.use__info
+USEINFO 0, DENOM, 	LA 0, STANDARD._LONG_INTEGER.use__info
+virtual at 0				; calcul des offsets statiques
+STATOFS SIZ, 4, 4
+STATOFS FST, 8, 8
+STATOFS LST, 8, 8
+STATOFS NUMER, 8, 8
+STATOFS DENOM, 8, 8
+size = $
+end virtual
+	LI	 size*8
+	SD	0, SIZ__
+end namespace
+ hexa_show 'var elab EXCEPTIONS_TOP_CTX ', $
+VAR EXCEPTIONS_TOP_CTX_disp, Q		; variable entiere
+
+ hexa_show ' disp ', EXCEPTIONS_TOP_CTX_disp
+ hexa_show 'var elab EXCEPTIONS_CURRENT ', $
+VAR EXCEPTIONS_CURRENT_disp, Q		; variable entiere
+
+ hexa_show ' disp ', EXCEPTIONS_CURRENT_disp
+
+					; array decl constrained array type info
+_FP_ARRAY = '_FP_ARRAY'
+namespace _FP_ARRAY
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
+	LI	64
+	SD	0, _COMP_SIZ
+	LD	0, _COMP_SIZ
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	SD	0, _FST_1
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	31
+	SD	0, _LST_1
+	LD	0, _LST_1
+	LD	0, _FST_1
+	SUB
+	INC
+	CLAMP0
+	MUL
+	SD	0, SIZ__
+  virtual at 4
+COMP_SIZ = $
+	rd 1 
+FST_1 = $
+	rd 1 
+LST_1 = $
+	rd 1 
+  end virtual
+end namespace
+
+					; _EXCEPTION_CONTEXT RECORD TYPE INFO
+_EXCEPTION_CONTEXT = '_EXCEPTION_CONTEXT'
+namespace _EXCEPTION_CONTEXT
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+USEINFO 0, PREV_CTX, 	LA 0, STANDARD._LONG_INTEGER.use__info
+USEINFO 0, DISPATCH, 	LA 0, STANDARD._LONG_INTEGER.use__info
+USEINFO 0, RBP, 	LA 0, STANDARD._LONG_INTEGER.use__info
+USEINFO 0, RSP, 	LA 0, STANDARD._LONG_INTEGER.use__info
+USEINFO 0, R13, 	LA 0, STANDARD._LONG_INTEGER.use__info
+USEINFO 0, R14, 	LA 0, STANDARD._LONG_INTEGER.use__info
+USEINFO 0, NXT_LVL, 	LA 0, STANDARD._LONG_INTEGER.use__info
+USEINFO 0, FRAME_POINTERS, 	LA 0, STANDARD._FP_ARRAY.use__info
+virtual at 0				; calcul des offsets statiques
+STATOFS PREV_CTX, 8, 8
+STATOFS DISPATCH, 8, 8
+STATOFS RBP, 8, 8
+STATOFS RSP, 8, 8
+STATOFS R13, 8, 8
+STATOFS R14, 8, 8
+STATOFS NXT_LVL, 8, 8
+STATOFS FRAME_POINTERS, 256, 8
+size = $
+end virtual
+	LI	 size*8
+	SD	0, SIZ__
+end namespace
+ hexa_show 'var elab EXC_CTX0 ', $
+VAR EXC_CTX0_disp, Q			; variable record : pointeur aux data record
+VAR EXC_CTX0__u, Q				; variable record : pointeur aux useinfo
+VAR EXC_CTX0__dat, STANDARD._EXCEPTION_CONTEXT.size
+	LVA	0, EXC_CTX0__dat
+	SA	0, EXC_CTX0_disp			; record fin
+	LVA	0, STANDARD._EXCEPTION_CONTEXT.SIZ__
+	SA	0, EXC_CTX0__u
+
+ hexa_show ' disp ', EXC_CTX0_disp
+
+if defined WIDTH_L3_
+PRO	WIDTH_L3				;---------- PRO WIDTH
+ hexa_show 'WIDTH_L3 ', $
+PRMS					;    debut parametrage
+	PRM BIT_SIZE_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+					; debut if
+	LD  1,	-BIT_SIZE_ofs
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	8
+	CLE
+	BF	L7
+; CODE_RETURN : EXPR TYPE = DN_INTEGER  VUE COMPLETE = DN_INTEGER
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	4
+	SQ  1,	-result__ofs
+	BRA ret_lbl
+	BRA	L6
+L7:
+	LD  1,	-BIT_SIZE_ofs
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	16
+	CLE
+	BF	L8
+; CODE_RETURN : EXPR TYPE = DN_INTEGER  VUE COMPLETE = DN_INTEGER
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	6
+	SQ  1,	-result__ofs
+	BRA ret_lbl
+	BRA	L6
+L8:
+	LD  1,	-BIT_SIZE_ofs
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	32
+	CLE
+	BF	L9
+; CODE_RETURN : EXPR TYPE = DN_INTEGER  VUE COMPLETE = DN_INTEGER
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	11
+	SQ  1,	-result__ofs
+	BRA ret_lbl
+	BRA	L6
+L9:
+	LD  1,	-BIT_SIZE_ofs
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	64
+	CLE
+	BF	L10
+; CODE_RETURN : EXPR TYPE = DN_INTEGER  VUE COMPLETE = DN_INTEGER
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	21
+	SQ  1,	-result__ofs
+	BRA ret_lbl
+	BRA	L6
+L10:
+; CODE_RETURN : EXPR TYPE = DN_INTEGER  VUE COMPLETE = DN_INTEGER
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	40
+	SQ  1,	-result__ofs
+	BRA ret_lbl
+L6:					; post if
+ret_lbl:
+	UNLINK 1
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO WIDTH
+end if
+
+if defined INTEGER_IMAGE_L11_
+PRO	INTEGER_IMAGE_L11			;---------- PRO INTEGER_IMAGE
+ hexa_show 'INTEGER_IMAGE_L11 ', $
+PRMS					;    debut parametrage
+	PRM ITEM_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1					;    BODY ELAB
+ hexa_show 'var elab LEN ', $
+VAR LEN_disp, D				; variable entiere
+
+ hexa_show ' disp ', LEN_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+namespace	INTEGER_IMAGE_WIDTH
+ELB 2					;    BODY ELAB
+ hexa_show 'var elab N ', $
+VAR N_disp, D				; variable entiere
+	LD  1,	-ITEM_ofs
+	SD  2,	N_disp
+
+ hexa_show ' disp ', N_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SD  1,	STANDARD.INTEGER_IMAGE_L11.LEN_disp
+					; debut if
+	LD 2,	N_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	CEQ
+	BF	L17
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	2
+	SD  1,	STANDARD.INTEGER_IMAGE_L11.LEN_disp
+	BRA	L16
+L17:
+					; debut if
+	LD 2,	N_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	CGT
+	BF	L19
+	LD 2,	N_disp
+	NEG
+	SD  2,	N_disp
+	BRA	L18
+L19:
+L18:					; post if
+LOOP__2:
+	LD 2,	N_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	CNE
+	BF	L20
+	LD 1,	STANDARD.INTEGER_IMAGE_L11.LEN_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	ADD
+	SD  1,	STANDARD.INTEGER_IMAGE_L11.LEN_disp
+	LD 2,	N_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	10
+	DUP
+	LI	0
+	CEQ
+	BT	STANDARD.ne_raise_
+	DIV
+	SD  2,	N_disp
+	BRA	LOOP__2
+L20:					; post loop LOOP__2
+L16:					; post if
+	UNLINK 2
+endPRO
+namespace	BLOCK__1
+ELB 2					;    BODY ELAB
+ hexa_show 'var elab BUF ', $
+_BUF__type = '_BUF__type'
+namespace _BUF__type			; array var constrained array type info
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	2, SIZ__
+	SA	2, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
+	LI	8
+	SD	2, _COMP_SIZ
+	LD	2, _COMP_SIZ
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SD	2, _FST_1
+	LD 1,	STANDARD.INTEGER_IMAGE_L11.LEN_disp
+	SD	2, _LST_1
+	LD	2, _LST_1
+	LD	2, _FST_1
+	SUB
+	INC
+	CLAMP0
+	MUL
+	SD	2, SIZ__
+  virtual at 4
+COMP_SIZ = $
+	rd 1 
+FST_1 = $
+	rd 1 
+LST_1 = $
+	rd 1 
+  end virtual
+end namespace
+VAR BUF_disp, Q				; variable array : pointeur aux data
+VAR BUF__u, Q				; variable array : useinfo pointeur au rec info
+	LA 2, _BUF__type.use__info
+	SA	2, BUF__u				; array info ptr at __u
+	LD	2, _BUF__type.SIZ__
+	LI	8
+	DIV
+	CO_VAR
+	SA	2, BUF_disp				; array data ptr at _disp
+
+ hexa_show ' disp ', BUF_disp
+ hexa_show 'var elab POS ', $
+VAR POS_disp, D				; variable entiere
+	LD 1,	STANDARD.INTEGER_IMAGE_L11.LEN_disp
+	SD  2,	POS_disp
+
+ hexa_show ' disp ', POS_disp
+ hexa_show 'var elab N ', $
+VAR N_disp, D				; variable entiere
+	LD  1,	-ITEM_ofs
+	SD  2,	N_disp
+
+ hexa_show ' disp ', N_disp
+ hexa_show 'var elab DIG ', $
+VAR DIG_disp, D				; variable entiere
+
+ hexa_show ' disp ', DIG_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+					; debut if
+	LD 2,	N_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	CEQ
+	BF	L24
+	LA	 2, STANDARD.INTEGER_IMAGE_L11.BLOCK__1.BUF_disp	; array data start address on stack
+	LD 2,	POS_disp
+	DUP
+	LID	2, STANDARD.INTEGER_IMAGE_L11.BLOCK__1.BUF__u, STANDARD._STRING.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	2, STANDARD.INTEGER_IMAGE_L11.BLOCK__1.BUF__u, STANDARD._STRING.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	2, STANDARD.INTEGER_IMAGE_L11.BLOCK__1.BUF__u, STANDARD._STRING.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	2, STANDARD.INTEGER_IMAGE_L11.BLOCK__1.BUF__u, STANDARD._STRING.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LI	48
+	SB
+	LD 2,	POS_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SUB
+	SD  2,	POS_disp
+	BRA	L23
+L24:
+					; debut if
+	LD 2,	N_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	CGT
+	BF	L26
+	LD 2,	N_disp
+	NEG
+	SD  2,	N_disp
+	BRA	L25
+L26:
+L25:					; post if
+LOOP__3:
+	LD 2,	N_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	CNE
+	BF	L27
+	LD 2,	N_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	10
+	DUP
+	LI	0
+	CEQ
+	BT	STANDARD.ne_raise_
+	REMI
+	NEG
+	SD  2,	DIG_disp
+	LA	 2, STANDARD.INTEGER_IMAGE_L11.BLOCK__1.BUF_disp	; array data start address on stack
+	LD 2,	POS_disp
+	DUP
+	LID	2, STANDARD.INTEGER_IMAGE_L11.BLOCK__1.BUF__u, STANDARD._STRING.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	2, STANDARD.INTEGER_IMAGE_L11.BLOCK__1.BUF__u, STANDARD._STRING.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	2, STANDARD.INTEGER_IMAGE_L11.BLOCK__1.BUF__u, STANDARD._STRING.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	2, STANDARD.INTEGER_IMAGE_L11.BLOCK__1.BUF__u, STANDARD._STRING.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LI	48
+	LD 2,	DIG_disp
+	ADD
+	SB
+	LD 2,	POS_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SUB
+	SD  2,	POS_disp
+	LD 2,	N_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	10
+	DUP
+	LI	0
+	CEQ
+	BT	STANDARD.ne_raise_
+	DIV
+	SD  2,	N_disp
+	BRA	LOOP__3
+L27:					; post loop LOOP__3
+L23:					; post if
+					; debut if
+	LD  1,	-ITEM_ofs
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	CLT
+	BF	L29
+	LA	 2, STANDARD.INTEGER_IMAGE_L11.BLOCK__1.BUF_disp	; array data start address on stack
+	LD 2,	POS_disp
+	DUP
+	LID	2, STANDARD.INTEGER_IMAGE_L11.BLOCK__1.BUF__u, STANDARD._STRING.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	2, STANDARD.INTEGER_IMAGE_L11.BLOCK__1.BUF__u, STANDARD._STRING.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	2, STANDARD.INTEGER_IMAGE_L11.BLOCK__1.BUF__u, STANDARD._STRING.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	2, STANDARD.INTEGER_IMAGE_L11.BLOCK__1.BUF__u, STANDARD._STRING.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LI	45
+	SB
+	BRA	L28
+L29:
+	LA	 2, STANDARD.INTEGER_IMAGE_L11.BLOCK__1.BUF_disp	; array data start address on stack
+	LD 2,	POS_disp
+	DUP
+	LID	2, STANDARD.INTEGER_IMAGE_L11.BLOCK__1.BUF__u, STANDARD._STRING.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	2, STANDARD.INTEGER_IMAGE_L11.BLOCK__1.BUF__u, STANDARD._STRING.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	2, STANDARD.INTEGER_IMAGE_L11.BLOCK__1.BUF__u, STANDARD._STRING.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	2, STANDARD.INTEGER_IMAGE_L11.BLOCK__1.BUF__u, STANDARD._STRING.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LI	32
+	SB
+L28:					; post if
+; CODE_RETURN : EXPR TYPE = DN_CONSTRAINED_ARRAY  VUE COMPLETE = DN_CONSTRAINED_ARRAY
+	LVA 2,	BUF_disp
+VAR	RET_INFO_L30, Q
+	DUP
+	LA  ,  0
+	SIQ   1, -result__ofs,  0
+	DUP
+	LA  ,  8
+	SA   2, RET_INFO_L30
+	DROP
+	LA   1, -result__ofs
+	LA  ,  8
+	LI	16
+	LA   2, RET_INFO_L30
+	BLKMOV
+	UNLINK 2
+	BRA ret_lbl
+	UNLINK 2
+endPRO
+ret_lbl:
+	UNLINK 1
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO INTEGER_IMAGE
+end if
+
+if defined ENUM_IMAGE_L31_
+PRO	ENUM_IMAGE_L31				;---------- PRO ENUM_IMAGE
+ hexa_show 'ENUM_IMAGE_L31 ', $
+PRMS					;    debut parametrage
+	PRM IMAGES_ofs				; in
+	PRM REP_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1					;    BODY ELAB
+ hexa_show 'var elab I ', $
+VAR I_disp, D				; variable entiere
+	LVA	1, -IMAGES_ofs
+	LIA	, , 8
+	LD	, _STRING.FST_1
+	DUP
+	LD	0, STANDARD._POSITIVE.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD._POSITIVE.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	SD  1,	I_disp
+
+ hexa_show ' disp ', I_disp
+ hexa_show 'var elab ITEM_REP ', $
+VAR ITEM_REP_disp, D			; variable entiere
+
+ hexa_show ' disp ', ITEM_REP_disp
+ hexa_show 'var elab LEN ', $
+VAR LEN_disp, D				; variable entiere
+
+ hexa_show ' disp ', LEN_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+LOOP__4:
+	LD 1,	I_disp
+	LVA	1, -IMAGES_ofs
+	LIA	, , 8
+	LD	, _STRING.LST_1
+	CLE
+	BF	L34
+	LVA	1, -IMAGES_ofs
+	LIA	, , 0				; array data start address on stack
+	LD 1,	I_disp
+	DUP
+	LVA	1, -IMAGES_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LVA	1, -IMAGES_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LVA	1, -IMAGES_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.FST_1			; (index - FST_1) * SIZ_1
+	SUB
+	LVA	1, -IMAGES_ofs
+	LIA	, , 8
+	LD	, STANDARD._STRING.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	ULB
+	SD  1,	ITEM_REP_disp
+	LVA	1, -IMAGES_ofs
+	LIA	, , 0				; array data start address on stack
+	LD 1,	I_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	ADD
+	DUP
+	LVA	1, -IMAGES_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LVA	1, -IMAGES_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LVA	1, -IMAGES_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.FST_1			; (index - FST_1) * SIZ_1
+	SUB
+	LVA	1, -IMAGES_ofs
+	LIA	, , 8
+	LD	, STANDARD._STRING.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	ULB
+	SD  1,	LEN_disp
+					; debut if
+	LD 1,	ITEM_REP_disp
+	LD  1,	-REP_ofs
+	CEQ
+	BF	L36
+namespace	BLOCK__5
+ELB 2					;    BODY ELAB
+ hexa_show 'var elab IMG ', $
+_IMG__type = '_IMG__type'
+namespace _IMG__type			; array var constrained array type info
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	2, SIZ__
+	SA	2, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
+	LI	8
+	SD	2, _COMP_SIZ
+	LD	2, _COMP_SIZ
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SD	2, _FST_1
+	LD 1,	STANDARD.ENUM_IMAGE_L31.LEN_disp
+	SD	2, _LST_1
+	LD	2, _LST_1
+	LD	2, _FST_1
+	SUB
+	INC
+	CLAMP0
+	MUL
+	SD	2, SIZ__
+  virtual at 4
+COMP_SIZ = $
+	rd 1 
+FST_1 = $
+	rd 1 
+LST_1 = $
+	rd 1 
+  end virtual
+end namespace
+VAR IMG_disp, Q				; variable array : pointeur aux data
+VAR IMG__u, Q				; variable array : useinfo pointeur au rec info
+	LA 2, _IMG__type.use__info
+	SA	2, IMG__u				; array info ptr at __u
+	LD	2, _IMG__type.SIZ__
+	LI	8
+	DIV
+	CO_VAR
+	SA	2, IMG_disp				; array data ptr at _disp
+	LA	2, IMG_disp
+	LD	2, _IMG__type.SIZ__
+	LI	8
+	DIV
+	LVA	1, -IMAGES_ofs
+	LIA	, , 0
+	LD 1,	STANDARD.ENUM_IMAGE_L31.I_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	2
+	ADD
+	LVA	1, -IMAGES_ofs
+	LIA	, , 8
+	LD	, STANDARD._STRING.FST_1
+	SUB
+	LI	1
+	MUL
+	ADD
+namespace ANON_141_39			; ensemble doublet @data/@info pour slice anonyme source
+VAR ANON_141_39_disp, Q
+VAR ANON_141_39__u, Q
+VAR SIZ__, D
+VAR COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
+	SA	2, ANON_141_39_disp
+	LVA	2, SIZ__
+	SA	2, ANON_141_39__u
+	LI	8
+	SD	2, COMP_SIZ
+	LD 1,	STANDARD.ENUM_IMAGE_L31.I_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	2
+	ADD
+	SD	2, _FST_1
+	LD 1,	STANDARD.ENUM_IMAGE_L31.I_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	ADD
+	LD 1,	STANDARD.ENUM_IMAGE_L31.LEN_disp
+	ADD
+	SD	2, _LST_1
+	LD	2, _LST_1
+	LD	2, _FST_1
+	SUB
+	INC
+	CLAMP0
+	LI	8
+	MUL
+	SD	2, SIZ__
+	LVA	2, ANON_141_39_disp
+end namespace
+	LA
+	BLKMOV
+
+ hexa_show ' disp ', IMG_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+; CODE_RETURN : EXPR TYPE = DN_CONSTRAINED_ARRAY  VUE COMPLETE = DN_CONSTRAINED_ARRAY
+	LVA 2,	IMG_disp
+VAR	RET_INFO_L39, Q
+	DUP
+	LA  ,  0
+	SIQ   1, -result__ofs,  0
+	DUP
+	LA  ,  8
+	SA   2, RET_INFO_L39
+	DROP
+	LA   1, -result__ofs
+	LA  ,  8
+	LI	16
+	LA   2, RET_INFO_L39
+	BLKMOV
+	UNLINK 2
+	BRA ret_lbl
+	UNLINK 2
+endPRO
+	BRA	L35
+L36:
+L35:					; post if
+	LD 1,	I_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	2
+	ADD
+	LD 1,	LEN_disp
+	ADD
+	DUP
+	LD	0, STANDARD._POSITIVE.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD._POSITIVE.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	SD  1,	I_disp
+	BRA	LOOP__4
+L34:					; post loop LOOP__4
+	LCA	STANDARD.PROGRAM_ERROR__exc.data_ptr
+	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
+	BRA	STANDARD.exc_raise_
+ret_lbl:
+	UNLINK 1
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO ENUM_IMAGE
+end if
+
+if defined INTEGER_VALUE_L40_
+PRO	INTEGER_VALUE_L40			;---------- PRO INTEGER_VALUE
+ hexa_show 'INTEGER_VALUE_L40 ', $
+PRMS					;    debut parametrage
+	PRM S_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1					;    BODY ELAB
+ hexa_show 'var elab I ', $
+VAR I_disp, D				; variable entiere
+	LVA	1, -S_ofs
+	LIA	, , 8
+	LD	, _STRING.FST_1
+	SD  1,	I_disp
+
+ hexa_show ' disp ', I_disp
+ hexa_show 'var elab N ', $
+VAR N_disp, Q				; variable entiere
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	SQ  1,	N_disp
+
+ hexa_show ' disp ', N_disp
+ hexa_show 'var elab NEGATIVE ', $
+VAR NEGATIVE_disp, B			; variable bool char enum
+	LI	0
+	SB  1,	NEGATIVE_disp
+
+ hexa_show ' disp ', NEGATIVE_disp
+ hexa_show 'var elab SOME_DIGIT ', $
+VAR SOME_DIGIT_disp, B			; variable bool char enum
+	LI	0
+	SB  1,	SOME_DIGIT_disp
+
+ hexa_show ' disp ', SOME_DIGIT_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+LOOP__6:
+	LD 1,	I_disp
+	LVA	1, -S_ofs
+	LIA	, , 8
+	LD	, _STRING.LST_1
+	CLE
+	DUP
+	BF	L44
+	DROP
+	LVA	1, -S_ofs
+	LIA	, , 0				; array data start address on stack
+	LD 1,	I_disp
+	DUP
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.FST_1			; (index - FST_1) * SIZ_1
+	SUB
+	LVA	1, -S_ofs
+	LIA	, , 8
+	LD	, STANDARD._STRING.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	ULB
+	LI	32
+	CEQ
+L44:
+	BF	L43
+	LD 1,	I_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	ADD
+	SD  1,	I_disp
+	BRA	LOOP__6
+L43:					; post loop LOOP__6
+					; debut if
+	LD 1,	I_disp
+	LVA	1, -S_ofs
+	LIA	, , 8
+	LD	, _STRING.LST_1
+	CLE
+	DUP
+	BF	L47
+	DROP
+	LVA	1, -S_ofs
+	LIA	, , 0				; array data start address on stack
+	LD 1,	I_disp
+	DUP
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.FST_1			; (index - FST_1) * SIZ_1
+	SUB
+	LVA	1, -S_ofs
+	LIA	, , 8
+	LD	, STANDARD._STRING.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	ULB
+	LI	45
+	CEQ
+	DUP
+	BT	L48
+	DROP
+	LVA	1, -S_ofs
+	LIA	, , 0				; array data start address on stack
+	LD 1,	I_disp
+	DUP
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.FST_1			; (index - FST_1) * SIZ_1
+	SUB
+	LVA	1, -S_ofs
+	LIA	, , 8
+	LD	, STANDARD._STRING.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	ULB
+	LI	43
+	CEQ
+L48:
+L47:
+	BF	L46
+	LVA	1, -S_ofs
+	LIA	, , 0				; array data start address on stack
+	LD 1,	I_disp
+	DUP
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.FST_1			; (index - FST_1) * SIZ_1
+	SUB
+	LVA	1, -S_ofs
+	LIA	, , 8
+	LD	, STANDARD._STRING.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	ULB
+	LI	45
+	CEQ
+	SB  1,	NEGATIVE_disp
+	LD 1,	I_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	ADD
+	SD  1,	I_disp
+	BRA	L45
+L46:
+L45:					; post if
+LOOP__7:
+	LD 1,	I_disp
+	LVA	1, -S_ofs
+	LIA	, , 8
+	LD	, _STRING.LST_1
+	CLE
+	DUP
+	BF	L50
+	DROP
+	LVA	1, -S_ofs
+	LIA	, , 0				; array data start address on stack
+	LD 1,	I_disp
+	DUP
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.FST_1			; (index - FST_1) * SIZ_1
+	SUB
+	LVA	1, -S_ofs
+	LIA	, , 8
+	LD	, STANDARD._STRING.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	ULB
+	LI	48
+	CGE
+	DUP
+	BF	L52
+	DROP
+	LVA	1, -S_ofs
+	LIA	, , 0				; array data start address on stack
+	LD 1,	I_disp
+	DUP
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.FST_1			; (index - FST_1) * SIZ_1
+	SUB
+	LVA	1, -S_ofs
+	LIA	, , 8
+	LD	, STANDARD._STRING.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	ULB
+	LI	57
+	CLE
+L52:
+	DUP
+	BT	L51
+	DROP
+	LVA	1, -S_ofs
+	LIA	, , 0				; array data start address on stack
+	LD 1,	I_disp
+	DUP
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.FST_1			; (index - FST_1) * SIZ_1
+	SUB
+	LVA	1, -S_ofs
+	LIA	, , 8
+	LD	, STANDARD._STRING.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	ULB
+	LI	95
+	CEQ
+	DUP
+	BF	L53
+	DROP
+	ULB 1,	SOME_DIGIT_disp
+L53:
+L51:
+L50:
+	BF	L49
+					; debut if
+	LVA	1, -S_ofs
+	LIA	, , 0				; array data start address on stack
+	LD 1,	I_disp
+	DUP
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.FST_1			; (index - FST_1) * SIZ_1
+	SUB
+	LVA	1, -S_ofs
+	LIA	, , 8
+	LD	, STANDARD._STRING.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	ULB
+	LI	95
+	CNE
+	BF	L55
+	LQ 1,	N_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	10
+	MUL
+	LVA	1, -S_ofs
+	LIA	, , 0				; array data start address on stack
+	LD 1,	I_disp
+	DUP
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.FST_1			; (index - FST_1) * SIZ_1
+	SUB
+	LVA	1, -S_ofs
+	LIA	, , 8
+	LD	, STANDARD._STRING.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	ULB
+	LI	48
+	SUB
+; CODE CONVERSION SOURCE DN_UNIVERSAL_INTEGER TARGET DN_INTEGER
+	SUB
+	SQ  1,	N_disp
+	LI	1
+	SB  1,	SOME_DIGIT_disp
+	BRA	L54
+L55:
+L54:					; post if
+	LD 1,	I_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	ADD
+	SD  1,	I_disp
+	BRA	LOOP__7
+L49:					; post loop LOOP__7
+LOOP__8:
+	LD 1,	I_disp
+	LVA	1, -S_ofs
+	LIA	, , 8
+	LD	, _STRING.LST_1
+	CLE
+	DUP
+	BF	L57
+	DROP
+	LVA	1, -S_ofs
+	LIA	, , 0				; array data start address on stack
+	LD 1,	I_disp
+	DUP
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LVA	1, -S_ofs
+	LIA	, 0,  8
+	LD	, STANDARD._STRING.FST_1			; (index - FST_1) * SIZ_1
+	SUB
+	LVA	1, -S_ofs
+	LIA	, , 8
+	LD	, STANDARD._STRING.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	ULB
+	LI	32
+	CEQ
+L57:
+	BF	L56
+	LD 1,	I_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	ADD
+	SD  1,	I_disp
+	BRA	LOOP__8
+L56:					; post loop LOOP__8
+					; debut if
+	ULB 1,	SOME_DIGIT_disp
+	LI	1
+	OUX
+	DUP
+	BT	L60
+	DROP
+	LD 1,	I_disp
+	LVA	1, -S_ofs
+	LIA	, , 8
+	LD	, _STRING.LST_1
+	CLE
+L60:
+	BF	L59
+	LCA	STANDARD.CONSTRAINT_ERROR__exc.data_ptr
+	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
+	BRA	STANDARD.exc_raise_
+	BRA	L58
+L59:
+L58:					; post if
+					; debut if
+	ULB 1,	NEGATIVE_disp
+	BF	L62
+; CODE_RETURN : EXPR TYPE = DN_INTEGER  VUE COMPLETE = DN_INTEGER
+	LQ 1,	N_disp
+	SQ  1,	-result__ofs
+	BRA ret_lbl
+	BRA	L61
+L62:
+; CODE_RETURN : EXPR TYPE = DN_INTEGER  VUE COMPLETE = DN_INTEGER
+	LQ 1,	N_disp
+	NEG
+	SQ  1,	-result__ofs
+	BRA ret_lbl
+L61:					; post if
+ret_lbl:
+	UNLINK 1
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO INTEGER_VALUE
+end if
+
+if defined INTEGER_POW_L63_
+PRO	INTEGER_POW_L63				;---------- PRO INTEGER_POW
+ hexa_show 'INTEGER_POW_L63 ', $
+PRMS					;    debut parametrage
+	PRM X_ofs				; in
+	PRM N_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1					;    BODY ELAB
+ hexa_show 'var elab R ', $
+VAR R_disp, Q				; variable entiere
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SQ  1,	R_disp
+
+ hexa_show ' disp ', R_disp
+ hexa_show 'var elab B ', $
+VAR B_disp, Q				; variable entiere
+	LQ  1,	-X_ofs
+	SQ  1,	B_disp
+
+ hexa_show ' disp ', B_disp
+ hexa_show 'var elab E ', $
+VAR E_disp, Q				; variable entiere
+	LQ  1,	-N_ofs
+	SQ  1,	E_disp
+
+ hexa_show ' disp ', E_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+					; debut if
+	LQ 1,	E_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	CLT
+	BF	L67
+	LCA	STANDARD.CONSTRAINT_ERROR__exc.data_ptr
+	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
+	BRA	STANDARD.exc_raise_
+	BRA	L66
+L67:
+L66:					; post if
+LOOP__9:
+	LQ 1,	E_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	CGT
+	BF	L68
+	LQ 1,	R_disp
+	LQ 1,	B_disp
+	MUL
+	SQ  1,	R_disp
+	LQ 1,	E_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SUB
+	SQ  1,	E_disp
+	BRA	LOOP__9
+L68:					; post loop LOOP__9
+; CODE_RETURN : EXPR TYPE = DN_INTEGER  VUE COMPLETE = DN_INTEGER
+	LQ 1,	R_disp
+	SQ  1,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINK 1
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO INTEGER_POW
+end if
+begin:					;---------- package BDY INSTRUCTIONS
+

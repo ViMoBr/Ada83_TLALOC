@@ -1209,3 +1209,119 @@ COPILE_TEST (capacité). Chantier ouvert : récupération saine (retour
 glissant ou marques de relâche). Leçon de méthode : les témoins de
 runtime doivent couvrir les contrats d'ÉVASION.
 
+148. ** double empilement de l'@data pour un préfixe
+NOM ÉTENDU ** dans CODE_INDEXED, un préfixe DN_SELECTED déclenchait
+CODE_SELECTED( IS_SOURCE => FALSE ) qui empilait l'adresse de la table,
+puis la queue commune (ARRAY_DEFN /= DN_COMPONENT_ID) la RE-empilait :
+pour PKG.ARR( I ) — désignateur DN_VARIABLE_ID — fuite de pile +1 par
+référence. Bénigne aux frontières d'instruction (résorbée), LÉTALE quand
+elle naît dans un bloc de paramètres : le quadmot parasite s'intercale
+entre le lieu-résultat et l'actuel, le callé lit -result__ofs = @table
+NUE, son SIq corrompt [table+0] en silence (inscriptible, pas de faute)
+et le BLKMOV d'info de CODE_RETURN vise [table+8] = petit champ de
+l'élément 1 -> stos sur 0x1, segfault dans l'ÉPILOGUE DU CALLÉ alors que
+la faute est au SITE D'APPEL. Symptôme : les 6 segfaults du bootstrap T2
+(lex, idl-lib_phase, idl-err_phase, expander-expressions,
+expander-declarations, ada_comp + types_decls collatéral) = exactement
+les unités contenant goto/étiquette, car les seuls PKG.ARR(I).champ du
+compilateur passés en actuels vivent dans CODE_GOTO/CODE_LABELED
+(CODI.GOTO_LABELS(E).LBL, CODI.GOTO_PENDING(TOP).LBL_G -> LABEL_STR).
+Diagnostic différentiel : PAS la co-pile (signature n° 109 absente :
+ici stos de BLKMOV, pas mov [r14],r13 à l'ELB) ; le paramètre LBL était
+LU JUSTE (tranche 2..3 en pile) -> un seul quadmot parasite, entre
+result__ofs et l'actuel. Empreinte FINC irréfutable : deux
+`La n, ...ARR_disp` CONSÉCUTIFS IDENTIQUES avant l'indexation.
+Correctif : garde sur le pré-empilement — seul le COMPOSANT (R.A(N))
+pré-empile, même prédicat que la queue commune :
+`D( SM_DEFN, D( AS_DESIGNATOR, NAME ) ).TY = DN_COMPONENT_ID` ;
+tout autre désignateur (variable, constante, paramètre de nom étendu)
+est servi par la queue (REGIONS_PATH absolu, checks via ARR__u,
+IS_PARAM). Chemin DN_COMPONENT_ID inchangé à l'octet près. Vérifié :
+les 6 unités passent, 63 FINC T2 identiques aux FINC T1. Gardien :
+GOTO_SELARG_TEST (forme exacte PKG.T(I).LBL en actuel d'une fonction
+STRING sous concaténation + goto arrière + goto avant ; rouge
+reproductible avec le T1 d'avant-commit) et l'oracle suprême du point
+fixe (diff des 63 FINC). Leçons : (a) une fuite de pile se cherche AU
+SITE D'APPEL, pas dans le callé — jumelle du n° 113 (result__ofs) et
+cousine du n° 141 (collisions ANON, l'audit recommandé pointait un cran
+trop haut) ; (b) un crash « dans » une routine ultra-exercée innocente
+la routine et accuse la forme de l'appel. À recenser : grep de
+l'empreinte double-La sur TOUS les FINC régénérés (aucune occurrence
+attendue) ; CODE_SLICE préfixe DN_SELECTED (structure différente, pas
+de queue ré-empilante — vérifier au FINC qu'aucun PKG.ARR(A..B) ne
+produit le motif).
+
+149. ** — ELB OUVRE LE FRAME, PAS PRO. Au codi, PRO = namespace + BRA
+post ; ELB = VARzone fraîche + elab: + LINK. La conflation « PRO ouvre »
+tenait par accident (PRO toujours suivi d'ELB sur le petit corpus). Les
+BLOCS Ada la brisent : namespace BLOCK__n / ELB n / … / endPRO, ELB
+sans PRO. Règle : PRO_PENDING — l'ELB d'un PRO armé appartient au
+sous-programme (PRMS déjà logés), un ELB orphelin pousse SON frame.
+Signature du défaut : « endPRO hors sous-programme » avec FTOP à zéro,
+plusieurs endPRO pour un seul PRO dans la même région paresseuse.
+Gardien : TC_TEST19 (fonction interne gardée morte + deux blocs
+imbriqués, verdicts exécutés).
+
+150. ** — LABELS POINTÉS : LA DÉTECTION AVANT LA DÉCLARATION. La tête de
+ligne est scannée par NEXT_WORD (sans points) : sur « LD_ENUM.elab: »,
+POS s'arrête au point, le test ':' échoue et la ligne devient un
+pseudo-mnémonique (refus « hors tranche » TROMPEUR : le mot fautif est
+un label raté, pas un mnémonique manquant). Deux volets indissociables :
+lookahead [mot|'.'] avant le test du ':', PUIS déclaration éclatée
+(ENTER_SCOPE par segment, USE_SCOPE de restauration). Gardien :
+TC_TEST20 (thunk BRA post_X / X.elab: / ULB -1,0 / RTD 0, appelé par
+CALLI nu).
+
+151. ** — L'ENTITÉ UNIQUE SYMBOLE/NAMESPACE (fasmg). Un même nom peut
+être variable ET espace de noms : VAR X puis namespace X (ou l'inverse)
+ne font qu'une entité — « namespace X » sur un X existant rouvre ses
+enfants, définir X sur un namespace pose classe et valeur SANS perdre
+les enfants. Relevé ADA_COMP : ANON_…_D_info (doublet d'info de type
+anonyme, GRMR_OPS). Modèle : la descente pointée teste « possède des
+enfants » (UNDER /= 0), pas « est un SCOPE_NAME » ; réouverture /
+attachement / unification selon l'état, classe et valeur conservées ;
+toute autre duplication reste refusée. Gardien : TC_TEST23 (les deux
+ordres, lectures de la variable ET de ses enfants pointés).
+
+152. ** — REDÉFINITION SÉQUENTIELLE name = $ : LES ÉPOQUES. La macro VAR
+fait une assignation fasmg REDÉFINISSABLE : GFP_disp peut être déclaré
+deux fois dans le même scope (ADA_COMP, HASH_SEARCH), chaque référence
+liée à la définition la plus récente AU POINT DU TEXTE, les deux
+emplacements réservés. Résolution tardive oblige : BIRTH par cellule
+(0 = de tout temps ; seules les OMBRES — FRAME_OFFSET sur FRAME_OFFSET
+— naissent à leur élément déclarant), FIND rend la première cellule de
+sa chaîne (plus récente d'abord) née avant ou à l'époque courante,
+boucles P2/P2B/P3 et différés estampillent l'élément courant. PIÈGE
+DANS LE PIÈGE : la boucle des différés va en ORDRE INVERSE — sans
+restauration NATURAL'LAST en sortie de chaque passe, l'époque reste
+figée sur le premier élément global et tout RESOLVE hors boucle remonte
+le temps (vu au CHECK du témoin : 24 au lieu de 32). Doctrine : l'ombre
+est restreinte au motif relevé ; d'autres classes redéfinies
+attendront leur relevé. Gardien : TC_TEST24 (défini/référencé/
+REDÉFINI/re-référencé, 5 et 9 survivent chacun dans son emplacement,
+CHECKs temporels par SET_EPOCH).
+
+153. ** — L'ORACLE UNITAIRE fasmg, ET LA FAUTE LATENTE ULW. Méthode :
+assembler un squelette constant AVEC et SANS le mnémonique isolé
+(opérandes du témoin), le delta d'octets EST la taille fasmg de
+l'instruction — confrontée à SIZE_OF, elle localise en secondes ce que
+le byte-diff global ne fait que signaler. Première prise : FETCH_WORD_U
+= movzx RAX (REX 48 0F B7, QUATRE octets d'opcode) — la ligne ULW de la
+table comptait trois ; ENUM_TEST n'exerce jamais ULW, la faute dormait
+sous seize cmp muets. Leçon jumelle du contrat SIZE_OF = ENCODE : le
+contrat garantit la cohérence INTERNE, seul fasmg arbitre la vérité
+EXTERNE — une entrée peut être cohérente et fausse des deux côtés.
+Réflexe : toute entrée nouvelle passe à l'oracle unitaire avec les
+opérandes de son témoin.
+
+154. ** — CONVENTIONS D'EXÉCUTION À CONSIGNER (TC-21, validées par cmp
+et exécution du témoin) : (a) fonctions SYS_FILE_* : convention
+LIEU-RÉSULTAT — l'appelant empile le slot résultat (LI 0) AVANT les
+arguments ; après les pops de la macro, mov [rbp], rax écrase ce slot ;
+(b) LEXCMP : normalisation 64 bits des composants (movsx/movzx/movsxd
+selon siz et sgn) puis UNE comparaison signée suffit à l'ordre
+lexicographique LRM 4.5.2 — taille 96 + paire de charges, huit
+variantes, sauts relatifs paramétrés ; (c) BLKAND/OU/OUX : une seule
+usine à opcode (BLK_OP_OCTET : and 20 / or 08 / xor 30), blocs vides
+égaux/neutres ; (d) rd/rq en zone virtual : zéro octet à l'émission,
+TOUTE la sémantique est l'avance de position (4×N / 8×N) à P2.

@@ -612,9 +612,9 @@ separate ( EXPANDER )
         PUT_LINE( "ANOMALIE : raise nu hors handler" );							--| DEFAUT DOCUMENTE (vague 5) : ceinture d'impossible
 												--| (sem le garantit), bruyante non fatale
       else
-        PUT_LINE( tab & "La " & IMAGE( CODI.HANDLER_LVL ) & ',' & tab
+        PUT_LINE( tab & "LA " & IMAGE( CODI.HANDLER_LVL ) & ',' & tab
 			& "exc_ctx_" & LABEL_STR( CODI.HANDLER_CTX_SUF ) );				-- l'exception DU handler, pas la globale
-        PUT_LINE( tab & "Sa" & tab & "0, STANDARD.EXCEPTIONS_CURRENT_disp" );
+        PUT_LINE( tab & "SA" & tab & "0, STANDARD.EXCEPTIONS_CURRENT_disp" );
         PUT_LINE( tab & "BRA" & tab & "STANDARD.exc_raise_" );
       end if;
 
@@ -625,7 +625,7 @@ separate ( EXPANDER )
         PUT( tab & "LCA" & tab );
         CODI.REGIONS_PATH( EXCEPTION_ID );
         PUT_LINE( PRINT_NAME( D( LX_SYMREP, EXCEPTION_ID ) ) & "__exc.data_ptr" );				-- l'ADRESSE fait identite
-        PUT_LINE( tab & "Sa" & tab & "0, STANDARD.EXCEPTIONS_CURRENT_disp" );
+        PUT_LINE( tab & "SA" & tab & "0, STANDARD.EXCEPTIONS_CURRENT_disp" );
         PUT_LINE( tab & "BRA" & tab & "STANDARD.exc_raise_" );						-- derouler
       end;
     end if;
@@ -738,11 +738,11 @@ separate ( EXPANDER )
 	PUT_LINE( "VAR" & tab & ANON & "_disp, q" );
 	PUT_LINE( "VAR" & tab & ANON & "__u,   q" );
 
-	PUT_LINE( tab & "Sa  " & LVL_STR & ", " & ANON & "_disp" );		-- consomme l'@element de CODE_EXP
-	PUT( tab & "La  " & IMAGE( DI( CD_LEVEL, FRM_TYPE ) ) & ", " );
+	PUT_LINE( tab & "SA  " & LVL_STR & ", " & ANON & "_disp" );		-- consomme l'@element de CODE_EXP
+	PUT( tab & "LA  " & IMAGE( DI( CD_LEVEL, FRM_TYPE ) ) & ", " );
 	CODI.REGIONS_PATH( TYPE_NAME );
 	PUT_LINE( TN_STR & ".use__info" );
-	PUT_LINE( tab & "Sa  " & LVL_STR & ", " & ANON & "__u" );
+	PUT_LINE( tab & "SA  " & LVL_STR & ", " & ANON & "__u" );
 
 	PUT_LINE( tab & "LVA " & LVL_STR & ", " & ANON & "_disp" );		-- @doublet, a la place de l'@data
         end;
@@ -795,7 +795,7 @@ separate ( EXPANDER )
 		      else
 		        EXPRESSIONS.CODE_OBJECT_ADDRESS( ACT_PRM );
 		      end if;
-	      PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & ANON & "_disp" );
+	      PUT_LINE( tab & "SA" & tab & LVL_STR & ", " & ANON & "_disp" );
 
 	      declare
 	        SEL_DEFN	: TREE	:= TREE_VOID;
@@ -817,7 +817,7 @@ separate ( EXPANDER )
 		-- famille que CODE_INDEXED/CODE_SLICE) ; niveau = CD_LEVEL pose
 		-- par le producteur.  Type NOMME / record / .all : chemin
 		-- historique inchange ci-dessous.
-		PUT( tab & "La " & IMAGE( DI( CD_LEVEL, ACT_TYPE ) ) & ", " );
+		PUT( tab & "LA " & IMAGE( DI( CD_LEVEL, ACT_TYPE ) ) & ", " );
 		CODI.REGIONS_PATH( SEL_DEFN );
 		PUT_LINE( '_' & PRINT_NAME( D( LX_SYMREP, SEL_DEFN ) ) & "__type.use__info" );
 	        elsif  SEL_DEFN /= TREE_VOID
@@ -825,17 +825,17 @@ separate ( EXPANDER )
 	        then
 		-- Nom ETENDU d'objet (IDL.LIB_PATH, classif 6 aout) : reprendre le
 		-- __u de l'OBJET (son info elaboree), jamais le patron du type.
-		PUT( tab & "La " & IMAGE( DI( CD_LEVEL, SEL_DEFN ) ) & ", " );
+		PUT( tab & "LA " & IMAGE( DI( CD_LEVEL, SEL_DEFN ) ) & ", " );
 		CODI.REGIONS_PATH( SEL_DEFN );
 		PUT_LINE( PRINT_NAME( D( LX_SYMREP, SEL_DEFN ) ) & "__u" );
 
 	        else
-		PUT( tab & "La " & IMAGE( DI( CD_LEVEL, ACT_TYPE ) ) & ", " );
+		PUT( tab & "LA " & IMAGE( DI( CD_LEVEL, ACT_TYPE ) ) & ", " );
 		CODI.REGIONS_PATH( TYPE_NAME );
 		PUT_LINE( TYPE_NAME_STR & ".use__info" );
 	        end if;
 	      end;
-	      PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & ANON & "__u" );
+	      PUT_LINE( tab & "SA" & tab & LVL_STR & ", " & ANON & "__u" );
 
 	      PUT_LINE( tab & "LVA " & LVL_STR & ", " & ANON & "_disp" );
 	    end;
@@ -915,8 +915,8 @@ separate ( EXPANDER )
 		if  HAS_GENERIC_TYPE  then								-- Mais a type generique
 		  PUT_LINE( tab & "LVA " & IMAGE( DI( CD_LEVEL, DEFN ) ) & ','
 		    & tab & '-' & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_ofs" );
-		  PUT_LINE( tab & "La" & LEVEL_NUM'IMAGE( CODI.GENERIC_BASE_LEVEL+1 ) & ',' & tab & "-GFP_ofs" );
-		  PUT_LINE( tab & "La ," & tab & '-'
+		  PUT_LINE( tab & "LA" & LEVEL_NUM'IMAGE( CODI.GENERIC_BASE_LEVEL+1 ) & ',' & tab & "-GFP_ofs" );
+		  PUT_LINE( tab & "LA ," & tab & '-'
 			& PRINT_NAME( D( LX_SYMREP, D( XD_SOURCE_NAME, D( SM_OBJ_TYPE, DEFN ) ) ) )
 			& "__ld_ofs" );
 		  PUT_LINE( tab & "CALLI" );
@@ -947,13 +947,13 @@ separate ( EXPANDER )
 			& '-' & DEFN_STR & "_ofs" );
 	        else
 	      -- out/inout -> in composite : le slot contient deja l'adresse, la propager
-		PUT_LINE( tab & "La " & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab
+		PUT_LINE( tab & "LA " & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab
 			& '-' & DEFN_STR & "_ofs" );
 	        end if;
 	      end;
 	    else
 	      -- out/inout -> out/inout : propager l'adresse
-	      PUT_LINE( tab & "La " & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab
+	      PUT_LINE( tab & "LA " & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab
 		      & '-' & DEFN_STR & "_ofs" );
 	    end if;
 
@@ -982,6 +982,12 @@ separate ( EXPANDER )
 			--| differee au lieu d'un signal au site.
 	    CODI.TROU( "INVERSE_RECURSE_ON_PARAMETERS actuel DN_COMPONENT_ID (LI sans operande)", DEFN );
 
+	  elsif  DEFN.TY = DN_NUMBER_ID  then								-- Appel avec un nombre nomme
+	    EXPRESSIONS.CODE_EXP( D( SM_INIT_EXP, DEFN ) );						--| plie A L'USAGE — idiome expressions:450
+												--| (CODE_USED_OBJECT_ID) ; mode in seul,
+												--| rvalue empilee = protocole attendu.
+												--| Temoins : numarg_test +
+												--| TARGET_CODE.EMITS ( Q64( ENTRY_PT ) ).
 	  else
 			--| Vague 3, DECOUVERTE (etait liste vague 5, mais c'est une
 			--| frontiere d'appel) : demi-bruyant, l'actuel n'etait PAS
@@ -1015,15 +1021,15 @@ separate ( EXPANDER )
 	  PUT_LINE( tab & "VAR " & ANONYMOUS_STR & "__u, q" );
 	  PUT( tab & "VAR " & ANONYMOUS_STR & "__dat, " );
 	  CODI.REGIONS_PATH( TYPE_NAME );
-	  PUT_LINE( TYPE_NAME_STR & ".SIZ" );
+	  PUT_LINE( TYPE_NAME_STR & ".SIZ__" );
 
 	  PUT_LINE( tab & "LVA " & IMAGE( CODI.CUR_LEVEL ) & ", " & ANONYMOUS_STR & "__dat" );
-	  PUT_LINE( tab & "Sa " & IMAGE( CODI.CUR_LEVEL ) & ", " & ANONYMOUS_STR & "_disp" );
+	  PUT_LINE( tab & "SA " & IMAGE( CODI.CUR_LEVEL ) & ", " & ANONYMOUS_STR & "_disp" );
 
-	  PUT( tab & "La " & IMAGE( DI( CD_LEVEL, TYPE_SPEC ) ) & ", " );
+	  PUT( tab & "LA " & IMAGE( DI( CD_LEVEL, TYPE_SPEC ) ) & ", " );
 	  CODI.REGIONS_PATH( TYPE_NAME );
 	  PUT_LINE( TYPE_NAME_STR & ".use__info" );
-	  PUT_LINE( tab & "Sa " & IMAGE( CODI.CUR_LEVEL ) & ", " & ANONYMOUS_STR & "__u" );
+	  PUT_LINE( tab & "SA " & IMAGE( CODI.CUR_LEVEL ) & ", " & ANONYMOUS_STR & "__u" );
 
 	  PUT_LINE( tab & "LVA " & IMAGE( CODI.CUR_LEVEL ) & ", " & ANONYMOUS_STR & "__dat" );
 	  EXPRESSIONS.CODE_AGGREGATE( ACT_PRM, TYPE_SPEC );
@@ -1037,16 +1043,13 @@ separate ( EXPANDER )
 	  WRAP_COMPOSITE_ACTUAL_DOUBLET( FRM_PRM_ID, ACT_PRM );						-- composite : @data -> @doublet
 
 	else
-	  declare											--| vague 2 (n 112, dette AUDITS) : out/in-out
-	    FRM_TYPE	: TREE	:= CODI.FULL_TYPE_VIEW( D( SM_OBJ_TYPE, FRM_PRM_ID ) );			--| composite INDEXE non normalise en doublet
-	  begin											--| (les selectes le sont, SELARG).  L'adresse
-	    if  FRM_TYPE.TY = DN_RECORD  or else  FRM_TYPE.TY = DN_CONSTRAINED_RECORD				--| seule violait la frontiere ; refus bruyant,
-	    or else  FRM_TYPE.TY = DN_ARRAY  or else  FRM_TYPE.TY = DN_CONSTRAINED_ARRAY			--| remede = WRAP_COMPOSITE_ACTUAL_DOUBLET
-	    then											--| exerce par temoin le jour venu.
-	      CODI.TROU( "actuel indexe out/in-out composite non normalise", FRM_TYPE );
-	    end if;
-	  end;
-	  EXPRESSIONS.CODE_OBJECT_ADDRESS( ACT_PRM );							-- out / in out : adresse seule (par reference)
+	  EXPRESSIONS.CODE_OBJECT_ADDRESS( ACT_PRM );							-- out / in out : @element (par reference)
+	  WRAP_COMPOSITE_ACTUAL_DOUBLET( FRM_PRM_ID, ACT_PRM );						--| n 112 INDARG paye (aout 2026) : composite
+												--| indexe out/in-out normalise en doublet,
+												--| use__info de la base (pilier 3.7).  No-op
+												--| scalaire (historique).  Temoins :
+												--| indarg_test + TARGET_CODE.LEX
+												--| ( OPEN( FILES( FTOP ), ... ) ).
 	end if;
 
         else
@@ -1067,8 +1070,7 @@ separate ( EXPANDER )
   begin
     if  IS_IN_CURRENT_GENERIC( PROC_ID )  and then  not EXPRESSIONS.IS_GENERIC_FORMAL_SUBPROGRAM( PROC_ID )
     then
-      PUT( tab & "La " & INTEGER'IMAGE( CODI.CUR_LEVEL ) & ',' & tab & "-GFP_ofs" );
---      PUT( tab & "La " & INTEGER'IMAGE( CODI.GENERIC_BASE_LEVEL+1 ) & ',' & tab & "-GFP_ofs" );
+      PUT( tab & "LA " & INTEGER'IMAGE( CODI.GFP_LEVEL ) & ',' & tab & "-GFP_ofs" );
       if  CODI.DEBUG  then PUT( tab50 & "; propagation GFP generique" ); end if;
       NEW_LINE;
     end if;
@@ -1082,9 +1084,8 @@ separate ( EXPANDER )
     end if;
 
     if  EXPRESSIONS.IS_GENERIC_FORMAL_SUBPROGRAM( PROC_ID )  then
-      PUT_LINE( tab & "La " & IMAGE( CODI.CUR_LEVEL ) & "," & tab & "-GFP_ofs" );
---      PUT_LINE( tab & "La " & IMAGE( CODI.GENERIC_BASE_LEVEL + 1 ) & "," & tab & "-GFP_ofs" );
-      PUT_LINE( tab & "La ," & tab & "-" & SUB_NAME & "__call_ofs" );
+      PUT_LINE( tab & "LA " & IMAGE( CODI.GFP_LEVEL ) & "," & tab & "-GFP_ofs" );
+      PUT_LINE( tab & "LA ," & tab & "-" & SUB_NAME & "__call_ofs" );
       PUT_LINE( tab & "CALLI" );
 
     else
@@ -1138,10 +1139,12 @@ separate ( EXPANDER )
 			---------------------
 			STORE_FUNCTION_RESULT:
         declare
-	EXPR_TYPE		: TREE		:= D ( SM_EXP_TYPE, EXP );
-	FULL_TYPE		: TREE		:= CODI.FULL_TYPE_VIEW( EXPR_TYPE );
-	RETURN_SUBTYPE	: TREE	:= D( SM_TYPE_SPEC,
-					D( SM_DEFN, D( AS_NAME, D( AS_HEADER, CODI.ENCLOSING_BODY ) ) ) );
+	EXPR_TYPE		: TREE	:= D ( SM_EXP_TYPE, EXP );
+	FULL_TYPE		: TREE	:= CODI.FULL_TYPE_VIEW( EXPR_TYPE );
+	ENCLOSING_NAME	: TREE	:= D( AS_NAME, D( AS_HEADER, CODI.ENCLOSING_BODY ) );
+	DEFN		: TREE	:= D( SM_DEFN, CODI.LAST_OF_SELECTED( ENCLOSING_NAME ) );
+	RETURN_SUBTYPE	: TREE	:= D( SM_TYPE_SPEC, DEFN );
+
         begin
 	if  CODI.DEBUG  then
 	  PUT_LINE( "; CODE_RETURN : EXPR TYPE = " & NODE_NAME'IMAGE( EXPR_TYPE.TY )
@@ -1171,7 +1174,7 @@ separate ( EXPANDER )
 			--| est imul 64) : ecrire le slot PLEIN, Sq, toujours -- l'acces
 			--| (Sa = Sq) ne change pas.  Les VARIABLES d/w/b ne sont pas
 			--| concernees : leurs relectures re-etendent (FETCH_DWORD signe).
-	  PUT_LINE( tab & "Sq " & INTEGER'IMAGE( ENCLOSING_LEVEL ) & ',' & tab & "-result__ofs" );
+	  PUT_LINE( tab & "SQ " & INTEGER'IMAGE( ENCLOSING_LEVEL ) & ',' & tab & "-result__ofs" );
 
 	elsif  FULL_TYPE.TY = DN_ARRAY  or  FULL_TYPE.TY = DN_CONSTRAINED_ARRAY
 	or     EXP.TY = DN_STRING_LITERAL								-- return "..." : SM_EXP_TYPE est DN_VOID
@@ -1218,25 +1221,25 @@ separate ( EXPANDER )
 	    declare
 	      INFO_SRC : constant STRING := "RET_INFO_" & NEW_LABEL;
 	    begin
-	      PUT_LINE( "VAR" & tab & INFO_SRC & ", q" );
+	      PUT_LINE( "VAR" & tab & INFO_SRC & ", Q" );
 
 		-- Copier data_ptr : data_ptr_dest <- data_ptr_src
 		-- EXP laisse @doublet_src sur pile ; on en garde une copie.
 	      PUT_LINE( tab & "DUP" );
-	      PUT_LINE( tab & "La  ,  0" );
-	      PUT_LINE( tab & "SIq  " & RES_LVL_STR & ", -result__ofs,  0" );
+	      PUT_LINE( tab & "LA  ,  0" );
+	      PUT_LINE( tab & "SIQ  " & RES_LVL_STR & ", -result__ofs,  0" );
 
       -- Sauver info_ptr_src = [@doublet_src + 8].
 	      PUT_LINE( tab & "DUP" );
-	      PUT_LINE( tab & "La  ,  8" );
-	      PUT_LINE( tab & "Sa  " & SRC_LVL_STR & ", " & INFO_SRC );
+	      PUT_LINE( tab & "LA  ,  8" );
+	      PUT_LINE( tab & "SA  " & SRC_LVL_STR & ", " & INFO_SRC );
 	      PUT_LINE( tab & "DROP" );
 
       -- Copier 16 octets d'info vers info_ptr_dest = [@doublet_dest + 8].
-	      PUT_LINE( tab & "La  " & RES_LVL_STR & ", -result__ofs" );
-	      PUT_LINE( tab & "La  ,  8" );
+	      PUT_LINE( tab & "LA  " & RES_LVL_STR & ", -result__ofs" );
+	      PUT_LINE( tab & "LA  ,  8" );
 	      PUT_LINE( tab & "LI" & tab & "16" );
-	      PUT_LINE( tab & "La  " & SRC_LVL_STR & ", " & INFO_SRC );
+	      PUT_LINE( tab & "LA  " & SRC_LVL_STR & ", " & INFO_SRC );
 	      PUT_LINE( tab & "BLKMOV" );
 	    end;
 	  end;
@@ -1267,15 +1270,15 @@ separate ( EXPANDER )
 	      if  EXP.TY = DN_AGGREGATE  then
 	      -- result__ofs contient l'adresse du doublet alloue par l'appelant
 	      -- Extraire data_ptr (offset 0 du doublet) pour CODE_AGGREGATE
-	        PUT_LINE( tab & "La  " & LVL_STR & ',' & tab & "-result__ofs" );
-	        PUT_LINE( tab & "La  ,  0" );			    -- data_ptr = [doublet + 0]
+	        PUT_LINE( tab & "LA  " & LVL_STR & ',' & tab & "-result__ofs" );
+	        PUT_LINE( tab & "LA  ,  0" );			    -- data_ptr = [doublet + 0]
 	        EXPRESSIONS.CODE_AGGREGATE( EXP, TYPE_SPEC );
 
 	      else
 	      -- EXP est une variable ou expression composite : BLKMOV vers la destination
 	      -- Destination : data_ptr du doublet result__ofs
-	        PUT_LINE( tab & "La  " & LVL_STR & ',' & tab & "-result__ofs" );
-	        PUT_LINE( tab & "La  ,  0" );			    -- @DST = data_ptr du doublet appelant
+	        PUT_LINE( tab & "LA  " & LVL_STR & ',' & tab & "-result__ofs" );
+	        PUT_LINE( tab & "LA  ,  0" );			    -- @DST = data_ptr du doublet appelant
 
 	        PUT( tab & "LI" & tab );
 	        CODI.REGIONS_PATH( TYPE_NAME );
@@ -1755,7 +1758,7 @@ separate ( EXPANDER )
 
         case  TYPE_SPEC.TY  is
         when  DN_ACCESS =>
-	PUT_LINE( tab & "Sa" );
+	PUT_LINE( tab & "SA" );
 
         when  DN_ENUMERATION | DN_INTEGER | DN_FIXED | DN_FLOAT =>
 	PUT_LINE( tab & "S" & CODI.OPER_SIZ_CHAR( TYPE_SPEC ) );						-- Juste stocker la valeur sur pile
@@ -1925,7 +1928,7 @@ separate ( EXPANDER )
 	      PUT_LINE( tab & "LI" & tab & IMAGE( LIT_LEN ) );					-- LEN = longueur du litteral (octets)
 	      EXPRESSIONS.CODE_STRING_LITERAL( SRC_EXP, IDL.ANONYMOUS_NAME_AT( SRC_EXP ) );
 	      PUT_LINE( tab & "LCA" & tab & IDL.ANONYMOUS_NAME_AT( SRC_EXP ) & ".data_ptr" );
-	      PUT_LINE( tab & "La" );							-- @SRC = data_ptr
+	      PUT_LINE( tab & "LA" );							-- @SRC = data_ptr
 	      PUT_LINE( tab & "BLKMOV" );
 	    end;
 
@@ -1984,8 +1987,8 @@ separate ( EXPANDER )
 	    begin
 	        -- Charger l'adresse de ST via le GFP
 	        -- Utiliser le niveau du parametre (= niveau de la procedure, pas du bloc declare)
-	      PUT_LINE( tab & "La " & INTEGER'IMAGE( CODI.GENERIC_BASE_LEVEL+1 ) & ',' & tab & "-GFP_ofs" );
-	      PUT_LINE( tab & "La ," & tab & '-' & FORMAL_TYPE_NAME & "__st_ofs" );
+	      PUT_LINE( tab & "LA " & INTEGER'IMAGE( CODI.GENERIC_BASE_LEVEL+1 ) & ',' & tab & "-GFP_ofs" );
+	      PUT_LINE( tab & "LA ," & tab & '-' & FORMAL_TYPE_NAME & "__st_ofs" );
 	      PUT_LINE( tab & "CALLI" );
 	    end;
 	  else
@@ -2030,7 +2033,7 @@ separate ( EXPANDER )
 	  else
 			-- Convention BLKMOV : pile = @DST, LEN, @SRC.
 	    CODI.LOAD_MEM( DEFN );									-- @doublet destination (variable ou parametre)
-	    PUT_LINE( tab & "La" );									-- @DST = data_ptr (offset 0 du doublet)
+	    PUT_LINE( tab & "LA" );									-- @DST = data_ptr (offset 0 du doublet)
 
         -- LEN (octets) lu dynamiquement dans le descripteur de la DESTINATION :
         -- SIZ (bits, dword a l'offset 0 du bloc info) / STORAGE_UNIT.
@@ -2041,11 +2044,11 @@ separate ( EXPANDER )
 	    if  DEFN.TY in CLASS_PARAM_NAME  then							-- idiome CODE_LENGTH, chemin parametre
 	      PUT_LINE( tab & "LVA" & tab & IMAGE( DI( CD_LEVEL, DEFN ) )
 			& ", -" & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_ofs" );
-	      PUT_LINE( tab & "LIa" & tab & ", ," & INTEGER'IMAGE( CODI.ADDR_SIZE ) );				-- @info
-	      PUT_LINE( tab & "Ld" & tab & ", 0" );							-- SIZ (bits)
+	      PUT_LINE( tab & "LIA" & tab & ", ," & INTEGER'IMAGE( CODI.ADDR_SIZE ) );				-- @info
+	      PUT_LINE( tab & "LD" & tab & ", 0" );							-- SIZ (bits)
 
 	    else											-- idiome CODE_LENGTH, chemin variable
-	      PUT( tab & "LId" & tab & IMAGE( DI( CD_LEVEL, DEFN ) ) & ", " );
+	      PUT( tab & "LID" & tab & IMAGE( DI( CD_LEVEL, DEFN ) ) & ", " );
 	      if  DI( CD_LEVEL, DEFN ) /= INTEGER( CODI.CUR_LEVEL )  then					-- uplevel : chemin absolu
 	        CODI.REGIONS_PATH( DEFN );								-- (! traverse mal une region generique, cf. PIEGES)
 	      end if;										-- local : nom relatif, comme l'elaboration
@@ -2059,7 +2062,7 @@ separate ( EXPANDER )
 	    if  SRC_EXP.TY = DN_STRING_LITERAL  then
 	      EXPRESSIONS.CODE_STRING_LITERAL( SRC_EXP, IDL.ANONYMOUS_NAME_AT( SRC_EXP ) );
 	      PUT_LINE( tab & "LCA" & tab & IDL.ANONYMOUS_NAME_AT( SRC_EXP ) & ".data_ptr" );			-- @SRC (idiome concat, l. 2550)
-	      PUT_LINE( tab & "La" );									-- @SRC = data_ptr  <<< LIGNE AJOUTEE
+	      PUT_LINE( tab & "LA" );									-- @SRC = data_ptr  <<< LIGNE AJOUTEE
 
 	    elsif  SRC_EXP.TY = DN_SLICE  then
 	      EXPRESSIONS.CODE_SLICE( SRC_EXP, IS_DESTINATION => TRUE );					-- @src, len_src
@@ -2077,7 +2080,7 @@ separate ( EXPANDER )
 	  if  ST_VIA_CALLI  then
 	    PUT_LINE( tab & "LVA " & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ','
 		    & tab & '-' & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_ofs" );
-	    PUT_LINE( tab & "La" );
+	    PUT_LINE( tab & "LA" );
 	  end if;
 	  EXPRESSIONS.CODE_EXP( SRC_EXP );
 	  EXPRESSIONS.CODE_RANGE_CHECK( NAME_TYPE );							-- PILIER CHECKS : gamme du sous-type de la vue
@@ -2089,7 +2092,7 @@ separate ( EXPANDER )
 
 	      PUT_LINE( tab & "LVA " & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ','
 		    & tab & '-' & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_ofs" );
-	      PUT_LINE( tab & "La" );
+	      PUT_LINE( tab & "LA" );
 
 	  end if;
 
@@ -2111,7 +2114,7 @@ separate ( EXPANDER )
 	    else
 	      CODI.LOAD_MEM( DEFN );									-- @variable (adresse du doublet @data @use__info)
 	    end if;
-	    PUT_LINE( tab & "La" );									-- @DST (adresse des data)
+	    PUT_LINE( tab & "LA" );									-- @DST (adresse des data)
 
 	    if  SRC_EXP.TY = DN_AGGREGATE  then
 	      EXPRESSIONS.CODE_AGGREGATE( SRC_EXP, REC_TYPE );
@@ -2129,7 +2132,7 @@ separate ( EXPANDER )
 	else											-- AUTRE TYPE SCALAIRE (type formel generique, etc.)
 	  if  ST_VIA_CALLI  then
 	    PUT_LINE( tab & "LVA " & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab & '-' & PRINT_NAME( D( LX_SYMREP, DEFN ) ) & "_ofs" );
-	    PUT_LINE( tab & "La" );
+	    PUT_LINE( tab & "LA" );
 	  end if;
 	  EXPRESSIONS.CODE_EXP( SRC_EXP );
 
@@ -2142,10 +2145,10 @@ separate ( EXPANDER )
 	  then
 	    declare
 	      LA_GFP	:constant STRING
-			 := tab & "LVa" & INTEGER'IMAGE( INTEGER( CODI.GENERIC_BASE_LEVEL ) + 1 )
+			 := tab & "LVA" & INTEGER'IMAGE( INTEGER( CODI.GENERIC_BASE_LEVEL ) + 1 )
 			  & ',' & tab & "-GFP_ofs";
 	      CHN_LID	:constant STRING
-			 := tab & "LId , -"
+			 := tab & "LID , -"
 			  & PRINT_NAME( D( LX_SYMREP, D( XD_SOURCE_NAME, NAME_TYPE ) ) )
 			  & "__u_ofs, STANDARD._ENUM_USE_INFO";
 	    begin

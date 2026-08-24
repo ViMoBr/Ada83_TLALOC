@@ -1586,10 +1586,123 @@ expander-declarations, ada_comp) -> prochaine session.
   meme famille que F1) : OUVERT — suspect n 1 de l'instabilite
   RECEQ2B/RECEQ3 (PK.MK2), a instruire avec les 6 segfaults.
 
-## Programme prochaine session
-1. Les 6 segfaults de T2comp — commencer par lex.adb (petit) ;
-   hypotheses croisees F2/F4/F6 a garder sous la main.
-2. F6 : temoin fonction-a-resultat-derive + audit des trois sites
-   RET_TS ; puis reintegrer R10 au verrou RECEQ.
-3. F4 : correctif agregat de derive (SM_COMP_LIST via percage).
-4. Si propre : point fixe T2 -> T3.
+## 12 août 2026 — Les 6 derniers segfaults, un seul bug ; POINT FIXE à 13h20
+
+Session gdb + lecture systématique sur le segfault de T2 compilant
+lex.adb (rapport seg_fault_T2_lex.md). Démarche et verdicts :
+
+1. Co-pile ÉCARTÉE en dix minutes par signature (n° 109 : faute au
+   mov [r14],r13 du prochain ELB ; ici stos d'un BLKMOV dans l'épilogue
+   de LABEL_STR, rdi=1). Le callé LABEL_STR innocenté : exercé par
+   toutes les unités vertes.
+2. Fil conducteur trouvé : CODE_GOTO/CODE_LABELED ne s'exécutent que si
+   l'unité compilée contient goto/étiquette. Les 6 unités en échec sont
+   EXACTEMENT celles-là (vérifié sur les 2 du projet, confirmé par grep
+   sur les 4 autres). Un bug, pas six.
+3. Décodage du crash : le paramètre LBL était lu juste (tranche 2..3 en
+   pile) -> UN quadmot parasite entre le lieu-résultat et l'actuel ->
+   -result__ofs du callé visait une @table nue ; SIq corrompait
+   [table+0] en silence, BLKMOV fautait sur [table+8]=1.
+4. Coupable : CODE_INDEXED, double empilement de l'@data pour un préfixe
+   nom étendu (CODE_SELECTED PUIS la queue commune). Empreinte FINC :
+   deux `La ...GOTO_LABELS_disp` consécutifs identiques — vérifiée AVANT
+   correctif, disparue APRÈS. Piste n° 141 (collisions ANON) écartée en
+   chemin : l'audit recommandé pointait PREPARE_ARRAY_RESULT_PLACE, le
+   trou était un cran plus bas, dans le préfixe de l'actuel.
+5. Correctif : garde DN_COMPONENT_ID sur le pré-empilement (même
+   prédicat que la queue commune ; chemin R.A(N) inchangé à l'octet).
+   Livraison ancrée LIVRAISON_FIX_INDEXED_NOM_ETENDU.md, commit unique.
+6. VERDICT : les 6 unités passent. Passe complète : 63 FINC produits par
+   T2, contrôlés IDENTIQUES à ceux de T1. fasmg -> T3 = T2 à 13h20.
+   **POINT FIXE DU BOOTSTRAP ATTEINT.** Consigné : piège n° 148, jalon
+   ETAT_PILIERS, témoin GOTO_SELARG_TEST au filet.
+
+Leçon de méthode (au piège) : un crash dans une routine ultra-exercée
+innocente la routine et accuse la FORME de l'appel ; une fuite de pile
+se cherche au site d'appel. Et : la table PIEGES a payé deux fois dans
+la même session (n° 109 pour écarter, n° 141 pour orienter).
+
+## 18 août 2026 — Fabrication de TARGET_CODE
+
+Purge du residu USEINFO (1.1) 
+
+## 20 août 2026 — Macros codi LLIR en majuscules pour TARGET_CODE
+
+Incident B/W/D/Q clos : macro VAR de codi réécrite (dispatch explicite double casse, pièges fasmg backquote/affectation-de-paramètre reportés dans PIEGES), quatre Lq résiduels et case d'alignement remis en majuscules ; filet vert, bootstrap T1→T2→T3 vert. Contrat retenu pour TARGET_CODE : surface LLIR en majuscules, endPRMS/endPRO à trancher
+
+## Sessions des 21–24 août 2026 — TARGET_CODE avale le compilateur : point fixe SANS fasmg
+
+Campagne en trois actes, du corpus élargi au bootstrap complet de
+l'assembleur natif.
+
+**Acte I — corpus ENUM_TEST (TC-19, TC-20).**
+1. « endPRO hors sous-programme » sur ENUM_TEST : la région PUT_L81 de
+   TEXT_IO, jamais atteinte par DIS_BONJOUR, contient des BLOCS Ada
+   internes. Au codi, PRO ne fait que namespace + BRA post : c'est ELB
+   QUI OUVRE LE FRAME (VARzone fraîche + LINK). Un bloc s'écrit
+   namespace BLOCK__n / ELB / endPRO — ELB sans PRO. Règle fidèle :
+   drapeau PRO_PENDING ; l'ELB d'un PRO armé est celui du
+   sous-programme, un ELB orphelin pousse son propre frame (TC-19,
+   treize cmp muets du premier coup).
+2. Thunks génériques : BRA post_X / X.elab: / corps bref / post_X:,
+   adressés par LCA X.elab et appelés par CALLI nu (macro sans
+   opérande, adresse empilée). Labels POINTÉS : détection par lookahead
+   [mot|'.'] avant le test ':' (NEXT_WORD s'arrêtait au point — la
+   ligne devenait un pseudo-mnémonique), déclaration éclatée
+   ENTER_SCOPE par segment. Plus ET (12) et BLKCMP (45). TC-20.
+3. En chemin : le renommage SIZ__ du patron est PARTOUT dans les
+   unités régénérées — recalage des copies sandbox, la cohérence du
+   corpus est source de vérité.
+
+**Acte II — complétion EMITS et capacités (TC-21, TC-22), sur les
+sources reformatées de l'utilisateur.**
+4. TC-21 : les 26 mnémoniques restants transcrits du codi, repérés par
+   les commentaires « a faire » (mots signés/non signés, ALU, champs de
+   bits UBFX/SBFX/BFI, flottants FABS/FEXP/CVTXI/FCEQ/FCLE, familles
+   BLK*, LEXCMP paramétrée 96+F à huit variantes, horloge, lseek).
+   Témoin à 31 verdicts, fichiers de bout en bout. L'ORACLE UNITAIRE
+   fasmg (delta d'octets par mnémonique isolé, avec/sans l'instruction
+   sur un squelette constant) a débusqué une faute LATENTE de la table
+   existante : FETCH_WORD_U est movzx RAX (REX 48 0F B7, quatre octets
+   d'opcode), pas trois — ULW dormait, jamais exercé par le corpus.
+5. TC-22 : jauges (TEXT_USED, POOL_USED/CAPACITY, SYM/SCOPE_COUNT,
+   BIN_CAPACITY) + relevé CARTO après chaque assemblage nommé ; bornes
+   ELT 500k, OPS 1,5M, DEFER 100k, TEXT 16M, SYM 1M, SCOPE 65 536,
+   POOL 16M, HASH 65 536, BIN 32M. Calibration ENUM_TEST : ~78
+   éléments par Ko de FINC.
+
+**Acte III — ADA_COMP, les trois motifs du compilateur (TC-23 à
+TC-25), et le point fixe.**
+6. « déclaration dupliquée ANON_…_D_info, FRAME_OFFSET vs SCOPE_NAME » :
+   en fasmg, un symbole et son espace d'enfants ne font QU'UNE entité.
+   TC-23 : descente pointée sur « possède des enfants » (UNDER /= 0),
+   ENTER_SCOPE sur un symbole valué = réouverture ou attachement
+   (classe et valeur conservées), DECLARE sur un namespace pur =
+   unification. Les deux ordres au témoin, cmp arbitre.
+7. « GFP_disp deux fois FRAME_OFFSET » : la macro VAR fait
+   name_disp = $ — assignation fasmg REDÉFINISSABLE, liaison de chaque
+   référence à la définition la plus récente AU POINT DU TEXTE. Notre
+   résolution étant tardive, restitution par ÉPOQUES : BIRTH par
+   cellule (0 = de tout temps ; les ombres naissent à leur élément
+   déclarant), FIND filtre BIRTH <= EPOCH, les boucles P2/P2B/P3 et les
+   différés estampillent l'élément courant, restauration NATURAL'LAST
+   en sortie de passe (la boucle INVERSE des différés figeait l'époque
+   sur le premier élément global — vu au CHECK du témoin). TC-24.
+8. TC-25 : rq (réservation de qwords, avance 8×N en zone virtual, zéro
+   octet), calqué sur rd. HEAP_ALLOC ajouté par l'utilisateur en
+   autonomie ; correctif expander en chemin.
+9. **VERDICT (24 août)** : ADA_COMP.fas — 14 Mo de FINC, 765 721
+   éléments, 200 347 symboles, 17 149 scopes, 10 294 504 octets émis —
+   **cmp INTÉGRALEMENT MUET contre fasmg**. L'exécutable produit
+   fonctionne, ET LE COMPILATEUR ASSEMBLÉ PAR TARGET_CODE SE RECOMPILE
+   LUI-MÊME. Assemblage ~3× plus rapide que fasmg. **POINT FIXE DU
+   BOOTSTRAP SANS fasmg : la chaîne est intégralement auto-hébergée.**
+
+Leçon de méthode : trois motifs de corpus seulement séparaient les
+unités de test du compilateur entier — et chacun s'est rendu au relevé
+(l'extrait GRMR_OPS, le message de refus, le micro-test fasmg), jamais
+à l'anticipation. L'oracle unitaire (delta par mnémonique isolé) rejoint
+la panoplie aux côtés du cmp intégral : il localise en secondes ce que
+le byte-diff global ne fait que signaler. Et les jauges CARTO ont
+transformé « il va peut-être y avoir des limites de tables » en trois
+constantes élargies sur mesure, sans une seule panne aveugle.

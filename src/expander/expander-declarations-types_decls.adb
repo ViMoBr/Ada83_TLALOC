@@ -154,7 +154,7 @@ is
 
     PUT_LINE( TYPE_STR & " = '" & TYPE_STR & "'" );
     PUT_LINE( "namespace " & TYPE_STR );
-    PUT_LINE( "VAR use__info, q" );
+    PUT_LINE( "VAR use__info, Q" );
 
     PUT_LINE( "BEGIN_BLOC_DEF" );
     CODE_ENUM_LITERAL_S( D( SM_LITERAL_S, TYPE_SPEC ) );
@@ -164,8 +164,8 @@ is
     if  CODI.DEBUG  then PUT( ASCII.HT & "; SIZ en bits !" ); end if;
     NEW_LINE;
 
-    PUT_LINE( tab & "LCA" & tab & "SIZ" );
-    PUT_LINE( tab & "Sa" & tab & IMAGE( CODI.CUR_LEVEL ) & ", use__info" );
+    PUT_LINE( tab & "LCA" & tab & "SIZ" );								-- SIZ defini par END_BLOC_DEF
+    PUT_LINE( tab & "SA" & tab & IMAGE( CODI.CUR_LEVEL ) & ", use__info" );
 
     PUT_LINE( "end namespace");
 
@@ -196,16 +196,16 @@ is
     PUT_LINE( TYPE_STR & " = '" & TYPE_STR & "'" );
     PUT_LINE( "namespace " & TYPE_STR );
 
-    PUT_LINE( "VAR use__info, q" );
-    PUT_LINE( "VAR SIZ, d" );
-    PUT_LINE( tab & "LVA" & tab & LVL_STR & ", SIZ" );
-    PUT_LINE( tab & "Sa" & tab & LVL_STR & ", use__info" );
+    PUT_LINE( "VAR use__info, Q" );
+    PUT_LINE( "VAR SIZ__, D" );									-- VAR taille de patron SIZ__
+    PUT_LINE( tab & "LVA" & tab & LVL_STR & ", SIZ__" );							-- Adresse debut patron sur SIZ__
+    PUT_LINE( tab & "SA" & tab & LVL_STR & ", use__info" );
 
     PUT_LINE( "VAR FST, " & SIZE_CHAR );
     PUT_LINE( "VAR LST, " & SIZE_CHAR );
 
     PUT_LINE( tab & "LI" & tab & IMAGE( DI( CD_IMPL_SIZE, INTEGER_SPEC ) ) );
-    PUT_LINE( tab & "Sd" & tab & LVL_STR & ", SIZ" );
+    PUT_LINE( tab & "SD" & tab & LVL_STR & ", SIZ__" );							-- Taille du patron
 
     EXPRESSIONS.CODE_EXP( EXP_FST );
     PUT_LINE( tab & 'S' & SIZE_CHAR & tab & LVL_STR & ", FST" );
@@ -236,12 +236,12 @@ is
     PUT_LINE( SUBTYPE_STR & " = '" & SUBTYPE_STR & "'" );
     PUT_LINE( "namespace " & SUBTYPE_STR );
 
-    PUT_LINE( "VAR use__info, q" );
-    PUT_LINE( "VAR SIZ, d" );
-    PUT_LINE( tab & "LVA" & tab & LVL_STR & ", SIZ" );
-    PUT_LINE( tab & "Sa" & tab & LVL_STR & ", use__info" );
+    PUT_LINE( "VAR use__info, Q" );
+    PUT_LINE( "VAR SIZ__, D" );
+    PUT_LINE( tab & "LVA" & tab & LVL_STR & ", SIZ__" );
+    PUT_LINE( tab & "SA" & tab & LVL_STR & ", use__info" );
     PUT_LINE( tab & "LI" & tab & IMAGE( DI( CD_IMPL_SIZE, TYPE_SPEC ) ) );
-    PUT_LINE( tab & "Sd" & tab & LVL_STR & ", SIZ" );
+    PUT_LINE( tab & "SD" & tab & LVL_STR & ", SIZ__" );
 
     PUT_LINE( "VAR FST, " & SIZE_CHAR );
     PUT_LINE( "VAR LST, " & SIZE_CHAR );
@@ -250,12 +250,12 @@ is
     EXPRESSIONS.CODE_STATIC_FIXED_VALUE( D( SM_VALUE, EXP_LST ), TYPE_SPEC );
     PUT_LINE( tab & 'S' & SIZE_CHAR & tab & LVL_STR & ", LST" );
 
-    PUT_LINE( "VAR NUMER, q" );
-    PUT_LINE( "VAR DENOM, q" );
+    PUT_LINE( "VAR NUMER, Q" );
+    PUT_LINE( "VAR DENOM, Q" );
     PUT_LINE( tab & "LI" & tab & PRINT_NUM( D( XD_NUMER, SMALL_VAL ) ) );
-    PUT_LINE( tab & "Sq" & tab & LVL_STR & ", NUMER" );
+    PUT_LINE( tab & "SQ" & tab & LVL_STR & ", NUMER" );
     PUT_LINE( tab & "LI" & tab & PRINT_NUM( D( XD_DENOM, SMALL_VAL ) ) );
-    PUT_LINE( tab & "Sq" & tab & LVL_STR & ", DENOM" );
+    PUT_LINE( tab & "SQ" & tab & LVL_STR & ", DENOM" );
 
     PUT_LINE( "end namespace" );
 
@@ -300,11 +300,11 @@ is
     PUT_LINE( TYPE_STR & " = '" & TYPE_STR & "'" );
     PUT_LINE( "namespace " & TYPE_STR );
 
-    PUT_LINE( "VAR use__info, q" );
+    PUT_LINE( "VAR use__info, Q" );
 
-    PUT_LINE( "VAR SIZ, d" );
-    PUT_LINE( "VAR FST, q" );
-    PUT_LINE( "VAR LST, q" );
+    PUT_LINE( "VAR SIZ__, D" );									-- VAR taille du patron
+    PUT_LINE( "VAR FST, Q" );
+    PUT_LINE( "VAR LST, Q" );
 
     declare
       FLOAT_RANGE	: TREE		:= D( SM_RANGE, FLOAT_SPEC );
@@ -312,17 +312,17 @@ is
       EXP_LST	: TREE		:= D( AS_EXP2, FLOAT_RANGE );
       LVL_STR	:constant STRING	:= IMAGE( CODI.CUR_LEVEL );
     begin
-      PUT_LINE( tab & "LVA" & tab & LVL_STR & ", SIZ" );
-      PUT_LINE( tab & "Sa"  & tab & LVL_STR & ", use__info" );
+      PUT_LINE( tab & "LVA" & tab & LVL_STR & ", SIZ__" );							-- Adresse debut de ptron
+      PUT_LINE( tab & "SA"  & tab & LVL_STR & ", use__info" );
 
       PUT_LINE( tab & "LI" & tab & INTEGER'IMAGE( DI( CD_IMPL_SIZE, FLOAT_SPEC ) ) );
-      PUT_LINE( tab & "Sd" & tab & LVL_STR & ", SIZ" );
+      PUT_LINE( tab & "SD" & tab & LVL_STR & ", SIZ__" );							-- Taille de patron
 
       EXPRESSIONS.CODE_EXP( EXP_FST );
-      PUT_LINE( tab & "Sq" & tab & LVL_STR & ", FST" );
+      PUT_LINE( tab & "SQ" & tab & LVL_STR & ", FST" );
 
       EXPRESSIONS.CODE_EXP( EXP_LST );
-      PUT_LINE( tab & "Sq" & tab & LVL_STR & ", LST" );
+      PUT_LINE( tab & "SQ" & tab & LVL_STR & ", LST" );
     end;
 
     PUT_LINE( "end namespace" );
@@ -393,13 +393,13 @@ is
     PUT_LINE( TYPE_ID_STR & " = '" & TYPE_ID_STR & "'" );
     PUT_LINE( "namespace " & TYPE_ID_STR );
 
-    PUT_LINE( "VAR use__info, q" );
-    PUT_LINE( "VAR SIZ, d" );
-    PUT_LINE( tab & "LVA" & tab & LVL_STR & ", SIZ" );
-    PUT_LINE( tab & "Sa" & tab & LVL_STR & ", use__info" );
+    PUT_LINE( "VAR use__info, Q" );
+    PUT_LINE( "VAR SIZ__, D" );									-- VAR taille de patron
+    PUT_LINE( tab & "LVA" & tab & LVL_STR & ", SIZ__" );							-- Adresse debut de patron
+    PUT_LINE( tab & "SA" & tab & LVL_STR & ", use__info" );
     PUT_LINE( tab & "LI" & tab & '1' );
     PUT_LINE( tab & "NEG" );
-    PUT_LINE( tab & "Sd" & tab & LVL_STR & ", SIZ" );							-- SIZ=-1 UNCONSTRAINED
+    PUT_LINE( tab & "SD" & tab & LVL_STR & ", SIZ__" );							-- SIZ=-1 UNCONSTRAINED
 
     PUT( "  virtual at 4" );										-- Commence apres SIZ
     if  CODI.DEBUG  then  PUT_LINE( tab50 & "; use info offsets pour acces sur array contraint" ); end if;
@@ -764,9 +764,9 @@ is
 	ELEMENT_SIZ_STR		:constant STRING	:= IMAGE( ELEMENT_SIZ );				-- IMAGE DE TAILLE EN BITS
         begin
 	ARRAY_STATIC_SIZE := ELEMENT_SIZ;
-	PUT_LINE( "VAR _COMP_SIZ, d" );
-	PUT_LINE( "VAR _FST_" & DIM_NBR_STR & ", d" );
-	PUT_LINE( "VAR _LST_" & DIM_NBR_STR & ", d" );
+	PUT_LINE( "VAR _COMP_SIZ, D" );
+	PUT_LINE( "VAR _FST_" & DIM_NBR_STR & ", D" );
+	PUT_LINE( "VAR _LST_" & DIM_NBR_STR & ", D" );
 
 	if  ELEMENT_SIZ = 0
 	  and then ( COMP_TYPE.TY = DN_RECORD  or else  COMP_TYPE.TY = DN_CONSTRAINED_RECORD )
@@ -799,20 +799,20 @@ is
 	  PUT_LINE(	tab & "LI" & tab & ELEMENT_SIZ_STR );						-- TAILLE D'UN ELEMENT DU TABLEAU
 	end if;
 
-	PUT_LINE( tab & "Sd" & tab & LVL_STR & ", _COMP_SIZ" );						-- DWORD COMP_SIZ
-	PUT_LINE( tab & "Ld" & tab & LVL_STR & ", _COMP_SIZ" );						-- recharge pour MUL suivant
+	PUT_LINE( tab & "SD" & tab & LVL_STR & ", _COMP_SIZ" );						-- DWORD COMP_SIZ
+	PUT_LINE( tab & "LD" & tab & LVL_STR & ", _COMP_SIZ" );						-- recharge pour MUL suivant
         end;
 
       else
         COMPILE_ARRAY_TYPE_DIMENSION( IDX_TYPE_LIST, RANGE_LIST, HAS_RANGES );
 
-        PUT_LINE( "VAR _SIZ_" & DIM_NBR_STR & ", d" );
-        PUT_LINE( "VAR _FST_" & DIM_NBR_STR & ", d" );
-        PUT_LINE( "VAR _LST_" & DIM_NBR_STR & ", d" );
+        PUT_LINE( "VAR _SIZ_" & DIM_NBR_STR & ", D" );
+        PUT_LINE( "VAR _FST_" & DIM_NBR_STR & ", D" );
+        PUT_LINE( "VAR _LST_" & DIM_NBR_STR & ", D" );
 
         PUT_LINE( tab & "MUL" );
-        PUT_LINE( tab & "Sd" & tab & LVL_STR & ", _SIZ_" & DIM_NBR_STR );					-- METTRE LA TAILLE TRANCHE A CELLE LAISSEE PAR LE CALCUL SUR LA DIM PRECEDENTE
-        PUT_LINE( tab & "Ld" & tab & LVL_STR & ", _SIZ_" & DIM_NBR_STR );					-- recharge pour MUL suivant
+        PUT_LINE( tab & "SD" & tab & LVL_STR & ", _SIZ_" & DIM_NBR_STR );					-- METTRE LA TAILLE TRANCHE A CELLE LAISSEE PAR LE CALCUL SUR LA DIM PRECEDENTE
+        PUT_LINE( tab & "LD" & tab & LVL_STR & ", _SIZ_" & DIM_NBR_STR );					-- recharge pour MUL suivant
       end if;
 
       if  HAS_RANGES  and then  SRC_RANGE /= TREE_VOID  then
@@ -832,10 +832,10 @@ is
         end;
 
         EXPRESSIONS.CODE_DISCRETE_RANGE_BOUND( SRC_RANGE, IS_LAST => FALSE );
-        PUT_LINE( tab & "Sd" & tab & LVL_STR & ", _FST_" & DIM_NBR_STR );
+        PUT_LINE( tab & "SD" & tab & LVL_STR & ", _FST_" & DIM_NBR_STR );
 
         EXPRESSIONS.CODE_DISCRETE_RANGE_BOUND( SRC_RANGE, IS_LAST => TRUE );
-        PUT_LINE( tab & "Sd" & tab & LVL_STR & ", _LST_" & DIM_NBR_STR );
+        PUT_LINE( tab & "SD" & tab & LVL_STR & ", _LST_" & DIM_NBR_STR );
 
       elsif  IDX_TYPE.TY = DN_INTEGER  then
         declare
@@ -850,9 +850,9 @@ is
 	end if;
 
 	EXPRESSIONS.CODE_EXP( RANGE_FIRST );
-	PUT_LINE( tab & "Sd" & tab & LVL_STR & ", _FST_" & DIM_NBR_STR );
+	PUT_LINE( tab & "SD" & tab & LVL_STR & ", _FST_" & DIM_NBR_STR );
 	EXPRESSIONS.CODE_EXP( RANGE_LAST );
-	PUT_LINE( tab & "Sd" & tab & LVL_STR & ", _LST_" & DIM_NBR_STR );
+	PUT_LINE( tab & "SD" & tab & LVL_STR & ", _LST_" & DIM_NBR_STR );
 
 	if  IS_STATIC  then
 	  ARRAY_STATIC_SIZE := ( DI( SM_VALUE, RANGE_LAST ) + 1 - DI( SM_VALUE, RANGE_FIRST ) ) * ARRAY_STATIC_SIZE;
@@ -885,7 +885,7 @@ is
 	  IS_STATIC := FALSE;
 	  EXPRESSIONS.CODE_EXP( RANGE_FIRST );
 	end if;
-	PUT_LINE( tab & "Sd" & tab & LVL_STR & ", _FST_" & DIM_NBR_STR );
+	PUT_LINE( tab & "SD" & tab & LVL_STR & ", _FST_" & DIM_NBR_STR );
 
 	if  OK_LST  then
 	  PUT_LINE( tab & "LI" & tab & IMAGE( V_LST ) );
@@ -893,7 +893,7 @@ is
 	  IS_STATIC := FALSE;
 	  EXPRESSIONS.CODE_EXP( RANGE_LAST );
 	end if;
-	PUT_LINE( tab & "Sd" & tab & LVL_STR & ", _LST_" & DIM_NBR_STR );
+	PUT_LINE( tab & "SD" & tab & LVL_STR & ", _LST_" & DIM_NBR_STR );
 
 	if  IS_STATIC  then
 	  ARRAY_STATIC_SIZE := ( V_LST + 1 - V_FST ) * ARRAY_STATIC_SIZE;
@@ -905,8 +905,8 @@ is
         CODI.TROU( "PROCESS_CONSTRAINED_ARRAY_TYPE_SPEC index non entier", IDX_TYPE );				--| vague 5 : bornes symboliques douteuses en aval
       end if;
 
-      PUT_LINE( tab & "Ld" & tab & LVL_STR & ", _LST_" & DIM_NBR_STR );
-      PUT_LINE( tab & "Ld" & tab & LVL_STR & ", _FST_" & DIM_NBR_STR );
+      PUT_LINE( tab & "LD" & tab & LVL_STR & ", _LST_" & DIM_NBR_STR );
+      PUT_LINE( tab & "LD" & tab & LVL_STR & ", _FST_" & DIM_NBR_STR );
       PUT_LINE( tab & "SUB" );
       PUT_LINE( tab & "INC" );
       PUT_LINE( tab & "CLAMP0" );
@@ -955,10 +955,10 @@ is
 
     DI( CD_LEVEL, TYPE_SPEC, INTEGER( LVL ) );
 
-    PUT_LINE( "VAR use__info, q" );
-    PUT_LINE( "VAR SIZ, d" );
-    PUT_LINE( tab & "LVA" & tab & LVL_STR & ", SIZ" );
-    PUT_LINE( tab & "Sa" & tab & LVL_STR & ", use__info" );
+    PUT_LINE( "VAR use__info, Q" );
+    PUT_LINE( "VAR SIZ__, D" );									-- VAR taille de patron
+    PUT_LINE( tab & "LVA" & tab & LVL_STR & ", SIZ__" );							-- Adresse debut de patron
+    PUT_LINE( tab & "SA" & tab & LVL_STR & ", use__info" );
 
 			-------------------
 			DESCRIPTOR_ON_STACK:
@@ -980,7 +980,7 @@ is
       end if;
 
       PUT_LINE( tab & "MUL" );
-      PUT_LINE( tab & "Sd" & tab & LVL_STR & ", SIZ" );
+      PUT_LINE( tab & "SD" & tab & LVL_STR & ", SIZ__" );							-- Taille de patron
 
       if  IS_STATIC  then
         DI( CD_IMPL_SIZE,	TYPE_SPEC,  ARRAY_STATIC_SIZE );
@@ -1266,8 +1266,10 @@ is
 	STATIC_BOUND_VALUE( LST, HI, HI_OK );
 
 	if  not( LO_OK and HI_OK )  then
-	  TROU( "STATIC_INDEX_LENGTH borne KO fst", FST );
-	  return  0;
+	  return  0;										-- INTENTIONNEL : borne dynamique -> record non
+												-- statique (perimetre ci-dessus). Le refus
+												-- bruyant reste en aval : CHAMPS_REGULIERS
+												-- "offset non statique" (piege n 121d).
 
 	elsif  HI < LO  then
 	  TROU( "STATIC_INDEX_LENGTH HI < LO", IDX_SPEC );
@@ -1421,9 +1423,9 @@ is
 
       if  TS.TY = DN_INTEGER  or else  TS.TY = DN_ENUMERATION  or else  TS.TY = DN_FIXED  then
         case  OPER_SIZ_CHAR( TS )  is
-	when 'b'		=>  return 1;
-	when 'w'		=>  return 2;
-	when 'd'		=>  return 4;
+	when 'B'		=>  return 1;
+	when 'W'		=>  return 2;
+	when 'D'		=>  return 4;
 	when others	=>  return 8;
         end case;
       end if;
@@ -1474,10 +1476,10 @@ is
     PUT_LINE( TYPE_ID_STR & " = '" & TYPE_ID_STR & "'" );
     PUT_LINE( "namespace " & TYPE_ID_STR );
 
-    PUT_LINE( "VAR use__info, q" );
-    PUT_LINE( "VAR SIZ, d" );
-    PUT_LINE( tab & "LVA" & tab & LVL_STR & ", SIZ" );
-    PUT_LINE( tab & "Sa" & tab & LVL_STR & ", use__info" );
+    PUT_LINE( "VAR use__info, Q" );
+    PUT_LINE( "VAR SIZ__, D" );									-- Var taille de patron
+    PUT_LINE( tab & "LVA" & tab & LVL_STR & ", SIZ__" );							-- Adresse de debut de patron
+    PUT_LINE( tab & "SA" & tab & LVL_STR & ", use__info" );
 
 			------------------------
 			INSERE_LES_DISCRIMINANTS:
@@ -1500,7 +1502,7 @@ is
 	    DISCRIMINANT_TYPE_STR	:constant STRING	:= '_' & PRINT_NAME( D( LX_SYMREP, DISCRIMINANT_TYPE_NAME ) );
 	  begin
 	    PUT( "USEINFO " & LVL_STR & ", " & DISCRIMINANT_STR & ", " );
-	    PUT( tab & "La " & IMAGE( DI( CD_LEVEL, DISCRIMINANT_TYPE_SPEC ) ) & ", " );
+	    PUT( tab & "LA " & IMAGE( DI( CD_LEVEL, DISCRIMINANT_TYPE_SPEC ) ) & ", " );
 	    REGIONS_PATH( D( XD_SOURCE_NAME, DISCRIMINANT_TYPE_SPEC ) );
 	    PUT_LINE( DISCRIMINANT_TYPE_STR & ".use__info" );
 	  end;
@@ -1587,9 +1589,9 @@ is
 
 		  PUT( "USEINFO " & LVL_STR & ", " & COMP_ID_STR & ", " );
 		  if  USE_LOCAL_INFO  then
-		    PUT_LINE( tab & "La " & LVL_STR & ", " & LOCAL_INFO_STR & ".use__info" );
+		    PUT_LINE( tab & "LA " & LVL_STR & ", " & LOCAL_INFO_STR & ".use__info" );
 		  else
-		    PUT( tab & "La " & IMAGE( DI( CD_LEVEL, COMP_TYPE ) ) & ", " );
+		    PUT( tab & "LA " & IMAGE( DI( CD_LEVEL, COMP_TYPE ) ) & ", " );
 		    REGIONS_PATH( D( XD_SOURCE_NAME, D( SM_TYPE_SPEC, COMP_TYPE_NAME ) ) );
 		    PUT_LINE( COMP_TYPE_STR & ".use__info" );
 		  end if;
@@ -1597,7 +1599,7 @@ is
 
 	        else
 		PUT( "USEINFO " & LVL_STR & ", " & COMP_ID_STR & ", " );
-		PUT( tab & "La " & IMAGE( DI( CD_LEVEL, COMP_TYPE ) ) & ", " );
+		PUT( tab & "LA " & IMAGE( DI( CD_LEVEL, COMP_TYPE ) ) & ", " );
 		REGIONS_PATH( COMP_TYPE_NAME );
 		PUT_LINE( COMP_TYPE_STR & ".use__info" );
 	        end if;
@@ -1797,7 +1799,7 @@ is
         PUT_LINE( "size = $" );
         PUT_LINE( "end virtual" );
         PUT_LINE( tab & "LI" & tab & " size*" & IMAGE( CODI.STORAGE_UNIT ) );
-        PUT_LINE( tab & "Sd" & tab & LVL_STR & ", SIZ" );
+        PUT_LINE( tab & "SD" & tab & LVL_STR & ", SIZ__" );							-- Taille du patron
         DI( CD_IMPL_SIZE, TYPE_SPEC, STATIC_SIZE );
       end if;
 
@@ -1922,7 +1924,7 @@ begin
 
   PUT( "SIZ = " );
   EMIT_BASE_PREFIX;
-  PUT_LINE( ".SIZ" );
+  PUT_LINE( ".SIZ__" );
 
   PUT( "size = " );
   EMIT_BASE_PREFIX;
@@ -2027,14 +2029,14 @@ begin
     PUT_LINE( TYPE_STR & " = '" & TYPE_STR & "'" );
     PUT_LINE( "namespace " & TYPE_STR );
 
-    PUT_LINE( "VAR use__info, q" );
-    PUT_LINE( "VAR SIZ, d" );
-    PUT_LINE( tab & "LVA" & tab & LVL_STR & ", SIZ" );
-    PUT_LINE( tab & "Sa"  & tab & LVL_STR & ", use__info" );
+    PUT_LINE( "VAR use__info, Q" );
+    PUT_LINE( "VAR SIZ__, D" );									-- VAR taille de patron
+    PUT_LINE( tab & "LVA" & tab & LVL_STR & ", SIZ__" );							-- Adresse debut de patron
+    PUT_LINE( tab & "SA"  & tab & LVL_STR & ", use__info" );
     PUT_LINE( tab & "LI"  & tab & IMAGE( CODI.ADDR_SIZE * CODI.STORAGE_UNIT ) );
-    PUT_LINE( tab & "Sd"  & tab & LVL_STR & ", SIZ" );
+    PUT_LINE( tab & "SD"  & tab & LVL_STR & ", SIZ__" );							-- Taille de patron
 
-    PUT_LINE( "VAR DESIG__u, q" );
+    PUT_LINE( "VAR DESIG__u, Q" );
 
     if  DESIG_TYPE.TY = DN_PRIVATE  or else  DESIG_TYPE.TY = DN_L_PRIVATE
 	or else  DESIG_TYPE.TY = DN_INCOMPLETE  or else  DESIG_TYPE = TREE_VOID
@@ -2055,24 +2057,24 @@ begin
          --  Le code de TA est exécuté avant l'initialisation de TD.use__info.
          --  On stocke donc directement le pointeur vers le bloc use_info.
 	if  DESIG_TYPE.TY = DN_ENUMERATION  then
-	  PUT( tab & "LCA" & tab );
+	  PUT( tab & "LCA" & tab );									-- CONSTANTE
 	  REGIONS_PATH( DESIG_NAME );
-	  PUT_LINE( DESIG_STR & ".SIZ" );
+	  PUT_LINE( DESIG_STR & ".SIZ" );								-- Defini par STR
 	else
 	  PUT( tab & "LVA" & tab & IMAGE( DESIG_LVL ) & ", " );
 	  REGIONS_PATH( DESIG_NAME );
-	  PUT_LINE( DESIG_STR & ".SIZ" );
+	  PUT_LINE( DESIG_STR & ".SIZ__" );								-- SIZ__ en patron
 	end if;
 
         else
-	PUT( tab & "La " & IMAGE( DI( CD_LEVEL, DESIG_TYPE ) ) & ", " );
+	PUT( tab & "LA " & IMAGE( DI( CD_LEVEL, DESIG_TYPE ) ) & ", " );
 	REGIONS_PATH( DESIG_NAME );
 	PUT_LINE( DESIG_STR & ".use__info" );
         end if;
       end;
     end if;
 
-    PUT_LINE( tab & "Sa" & tab & LVL_STR & ", DESIG__u" );
+    PUT_LINE( tab & "SA" & tab & LVL_STR & ", DESIG__u" );
     PUT_LINE( "end namespace" );
 
   end	CODE_ACCESS_DECL;
@@ -2132,14 +2134,14 @@ begin
         PUT_LINE( SUBTYPE_STR & " = '" & SUBTYPE_STR & "'" );
         PUT_LINE( "namespace " & SUBTYPE_STR );
 
-        PUT_LINE( "VAR use__info, q" );
-        PUT_LINE( "VAR SIZ, d" );
-        PUT_LINE( tab & "LVA" & tab & LVL_STR & ", SIZ" );
-        PUT_LINE( tab & "Sa" & tab & LVL_STR & ", use__info" );
+        PUT_LINE( "VAR use__info, Q" );
+        PUT_LINE( "VAR SIZ__, D" );									-- VAR taille de patron
+        PUT_LINE( tab & "LVA" & tab & LVL_STR & ", SIZ__" );						-- Adresse debut de patron
+        PUT_LINE( tab & "SA" & tab & LVL_STR & ", use__info" );
         PUT_LINE( "VAR FST, " & SIZE_CHAR );
         PUT_LINE( "VAR LST, " & SIZE_CHAR );
         PUT_LINE( tab & "LI" & tab & IMAGE( DI( CD_IMPL_SIZE, TYPE_SPEC ) ) );
-        PUT_LINE( tab & "Sd" & tab & LVL_STR & ", SIZ" );
+        PUT_LINE( tab & "SD" & tab & LVL_STR & ", SIZ__" );
 
         EXPRESSIONS.CODE_EXP( EXP_FST );
         PUT_LINE( tab & 'S' & SIZE_CHAR & tab & LVL_STR & ", FST" );
@@ -2147,11 +2149,11 @@ begin
         EXPRESSIONS.CODE_EXP( EXP_LST );
         PUT_LINE( tab & 'S' & SIZE_CHAR & tab & LVL_STR & ", LST" );
 
-        PUT_LINE( "VAR PARENT__u, q" );
-        PUT( tab & "La" & tab & IMAGE( DI( CD_LEVEL, BASE_TYPE ) ) & ", " );
+        PUT_LINE( "VAR PARENT__u, Q" );
+        PUT( tab & "LA" & tab & IMAGE( DI( CD_LEVEL, BASE_TYPE ) ) & ", " );
         REGIONS_PATH( D( XD_SOURCE_NAME, D( SM_BASE_TYPE, TYPE_SPEC ) ) );
         PUT_LINE(  BASETYPE_STR & ".use__info"	);
-        PUT_LINE( tab & "Sa" & tab & LVL_STR & ", PARENT__u" );
+        PUT_LINE( tab & "SA" & tab & LVL_STR & ", PARENT__u" );
 
         PUT_LINE( "end namespace" );
 
@@ -2177,15 +2179,15 @@ begin
         PUT_LINE( SUBTYPE_STR & " = '" & SUBTYPE_STR & "'" );
         PUT_LINE( "namespace " & SUBTYPE_STR );
 
-        PUT_LINE( "VAR use__info, q" );
-        PUT_LINE( "VAR SIZ, d" );
-        PUT_LINE( tab & "LVA" & tab & LVL_STR & ", SIZ" );
-        PUT_LINE( tab & "Sa" & tab & LVL_STR & ", use__info" );
+        PUT_LINE( "VAR use__info, Q" );
+        PUT_LINE( "VAR SIZ__, D" );									-- VAR taille de patron
+        PUT_LINE( tab & "LVA" & tab & LVL_STR & ", SIZ__" );						-- Adresse debut patron
+        PUT_LINE( tab & "SA" & tab & LVL_STR & ", use__info" );
 
         PUT_LINE( "VAR FST, " & SIZE_CHAR );
         PUT_LINE( "VAR LST, " & SIZE_CHAR );
         PUT_LINE( tab & "LI" & tab & IMAGE( DI( CD_IMPL_SIZE, TYPE_SPEC ) ) );
-        PUT_LINE( tab & "Sd" & tab & LVL_STR & ", SIZ" );
+        PUT_LINE( tab & "SD" & tab & LVL_STR & ", SIZ__" );							-- Taille patron
 
         EXPRESSIONS.CODE_EXP( EXP_FST );
         PUT_LINE( tab & 'S' & SIZE_CHAR & tab & LVL_STR & ", FST" );
@@ -2193,11 +2195,11 @@ begin
         EXPRESSIONS.CODE_EXP( EXP_LST );
         PUT_LINE( tab & 'S' & SIZE_CHAR & tab & LVL_STR & ", LST" );
 
-        PUT_LINE( "VAR PARENT__u, q" );
-        PUT( tab & "La " & IMAGE( DI( CD_LEVEL, BASE_TYPE ) ) & tab & ", " );
+        PUT_LINE( "VAR PARENT__u, Q" );
+        PUT( tab & "LA " & IMAGE( DI( CD_LEVEL, BASE_TYPE ) ) & tab & ", " );
         REGIONS_PATH( D( XD_SOURCE_NAME, BASE_TYPE ) );
         PUT_LINE(  BASETYPE_STR & ".use__info"	);
-        PUT_LINE( tab & "Sa" & tab & LVL_STR & ", PARENT__u" );
+        PUT_LINE( tab & "SA" & tab & LVL_STR & ", PARENT__u" );
 
         PUT_LINE( "end namespace" );
 
@@ -2246,28 +2248,28 @@ begin
         PUT_LINE( SUBTYPE_STR & " = '" & SUBTYPE_STR & "'" );
         PUT_LINE( "namespace " & SUBTYPE_STR );
 
-        PUT_LINE( "VAR use__info, q" );
-        PUT_LINE( "VAR SIZ, d" );
-        PUT_LINE( "VAR FST, q" );
-        PUT_LINE( "VAR LST, q" );
+        PUT_LINE( "VAR use__info, Q" );
+        PUT_LINE( "VAR SIZ__, D" );									-- VAR taille patron
+        PUT_LINE( "VAR FST, Q" );
+        PUT_LINE( "VAR LST, Q" );
 
-        PUT_LINE( tab & "LVA" & tab & LVL_STR & ", SIZ" );
-        PUT_LINE( tab & "Sa"  & tab & LVL_STR & ", use__info" );
+        PUT_LINE( tab & "LVA" & tab & LVL_STR & ", SIZ__" );						-- Adresse debut patron
+        PUT_LINE( tab & "SA"  & tab & LVL_STR & ", use__info" );
 
         PUT_LINE( tab & "LI" & tab & IMAGE( DI( CD_IMPL_SIZE, TYPE_SPEC ) ) );
-        PUT_LINE( tab & "Sd" & tab & LVL_STR & ", SIZ" );
+        PUT_LINE( tab & "SD" & tab & LVL_STR & ", SIZ__" );							-- Taille patron
 
         EXPRESSIONS.CODE_EXP( EXP_FST );
-        PUT_LINE( tab & "Sq" & tab & LVL_STR & ", FST" );
+        PUT_LINE( tab & "SQ" & tab & LVL_STR & ", FST" );
 
         EXPRESSIONS.CODE_EXP( EXP_LST );
-        PUT_LINE( tab & "Sq" & tab & LVL_STR & ", LST" );
+        PUT_LINE( tab & "SQ" & tab & LVL_STR & ", LST" );
 
-        PUT_LINE( "VAR PARENT__u, q" );
-        PUT( tab & "La " & IMAGE( DI( CD_LEVEL, BASE_TYPE ) ) & tab & ", " );
+        PUT_LINE( "VAR PARENT__u, Q" );
+        PUT( tab & "LA " & IMAGE( DI( CD_LEVEL, BASE_TYPE ) ) & tab & ", " );
         REGIONS_PATH( D( XD_SOURCE_NAME, BASE_TYPE ) );
         PUT_LINE( BASETYPE_STR & ".use__info" );
-        PUT_LINE( tab & "Sa" & tab & LVL_STR & ", PARENT__u" );
+        PUT_LINE( tab & "SA" & tab & LVL_STR & ", PARENT__u" );
 
         PUT_LINE( "end namespace" );
 

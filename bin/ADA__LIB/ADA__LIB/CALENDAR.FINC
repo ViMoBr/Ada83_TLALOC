@@ -1,0 +1,1432 @@
+if ~ definite MACHINE_CODE
+include 'MACHINE_CODE.FINC'
+display 'including withed unit MACHINE_CODE.FINC', 10
+end if
+if ~ definite MACHINE_CODE
+include 'MACHINE_CODE.FINC'
+display 'including trans withed unit MACHINE_CODE.FINC', 10
+end if
+CALENDAR = 'CALENDAR'
+namespace CALENDAR				;---------- PACKAGE (BDY)
+elab_spec:				;    SPEC ELAB
+
+					; CODE_PACKAGE_SPEC
+ hexa_show ' spec ', $
+; EXPANDER.DECLARATIONS.CODE_TYPE_DECL : skip PRIVATE TIME (deferred to full type)
+
+					; _YEAR_NUMBER INTEGER SUBTYPE INFO
+_YEAR_NUMBER = '_YEAR_NUMBER'
+namespace _YEAR_NUMBER
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, D
+VAR LST, D
+	LI	32
+	SD	0, SIZ__
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1901
+	SD	0, FST
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	2099
+	SD	0, LST
+VAR PARENT__u, Q
+	LA	0, STANDARD._INTEGER.use__info
+	SA	0, PARENT__u
+end namespace
+
+					; _MONTH_NUMBER INTEGER SUBTYPE INFO
+_MONTH_NUMBER = '_MONTH_NUMBER'
+namespace _MONTH_NUMBER
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, D
+VAR LST, D
+	LI	32
+	SD	0, SIZ__
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SD	0, FST
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	12
+	SD	0, LST
+VAR PARENT__u, Q
+	LA	0, STANDARD._INTEGER.use__info
+	SA	0, PARENT__u
+end namespace
+
+					; _DAY_NUMBER INTEGER SUBTYPE INFO
+_DAY_NUMBER = '_DAY_NUMBER'
+namespace _DAY_NUMBER
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, D
+VAR LST, D
+	LI	32
+	SD	0, SIZ__
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SD	0, FST
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	31
+	SD	0, LST
+VAR PARENT__u, Q
+	LA	0, STANDARD._INTEGER.use__info
+	SA	0, PARENT__u
+end namespace
+
+					; _DAY_DURATION FIXED SUBTYPE INFO
+_DAY_DURATION = '_DAY_DURATION'
+namespace _DAY_DURATION
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+	LI	64
+	SD	0, SIZ__
+VAR FST, Q
+VAR LST, Q
+	LI	 0
+	LI	000536870912
+	LI	 1
+	CVTIX
+	SQ	0, FST
+	LI	00086400
+	LI	000536870912
+	LI	 1
+	CVTIX
+	SQ	0, LST
+VAR NUMER, Q
+VAR DENOM, Q
+	LI	 1
+	SQ	0, NUMER
+	LI	000536870912
+	SQ	0, DENOM
+end namespace
+					; sub program entry decl (in instantiation FALSE )
+					; sub program entry decl (in instantiation FALSE )
+					; sub program entry decl (in instantiation FALSE )
+					; sub program entry decl (in instantiation FALSE )
+					; sub program entry decl (in instantiation FALSE )
+					; sub program entry decl (in instantiation FALSE )
+					; sub program entry decl (in instantiation FALSE )
+					; sub program entry decl (in instantiation FALSE )
+					; sub program entry decl (in instantiation FALSE )
+					; sub program entry decl (in instantiation FALSE )
+					; sub program entry decl (in instantiation FALSE )
+					; sub program entry decl (in instantiation FALSE )
+					; sub program entry decl (in instantiation FALSE )
+					; sub program entry decl (in instantiation FALSE )
+					; sub program entry decl (in instantiation FALSE )
+STR TIME_ERROR__exc, "TIME_ERROR"
+
+					; _TIME FIXED SUBTYPE INFO
+_TIME = '_TIME'
+namespace _TIME
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+	LI	64
+	SD	0, SIZ__
+VAR FST, Q
+VAR LST, Q
+	LI	-017179869184
+	LI	000536870912
+	LI	 1
+	CVTIX
+	SQ	0, FST
+	LI	017179869183
+	LI	000536870912
+	LI	 1
+	CVTIX
+	SQ	0, LST
+VAR NUMER, Q
+VAR DENOM, Q
+	LI	 1
+	SQ	0, NUMER
+	LI	000536870912
+	SQ	0, DENOM
+end namespace
+					;    BODY ELAB
+ hexa_show 'var elab EPOCH_DIFF_S ', $
+VAR EPOCH_DIFF_S_disp, Q			; variable entiere
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	002208988800
+	SQ  0,	STANDARD.CALENDAR.EPOCH_DIFF_S_disp
+
+ hexa_show ' disp ', EPOCH_DIFF_S_disp
+ hexa_show 'var elab SCALE ', $
+VAR SCALE_disp, Q				; variable entiere
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	000536870912
+	SQ  0,	STANDARD.CALENDAR.SCALE_disp
+
+ hexa_show ' disp ', SCALE_disp
+ hexa_show 'var elab DAYS_1900 ', $
+VAR DAYS_1900_disp, Q			; variable entiere
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	00693901
+	SQ  0,	STANDARD.CALENDAR.DAYS_1900_disp
+
+ hexa_show ' disp ', DAYS_1900_disp
+ hexa_show 'var elab SECONDS_PER_DAY ', $
+VAR SECONDS_PER_DAY_disp, Q			; variable entiere
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	00086400
+	SQ  0,	STANDARD.CALENDAR.SECONDS_PER_DAY_disp
+
+ hexa_show ' disp ', SECONDS_PER_DAY_disp
+ hexa_show 'var elab NS_PER_SEC ', $
+VAR NS_PER_SEC_disp, Q			; variable entiere
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	001000000000
+	SQ  0,	STANDARD.CALENDAR.NS_PER_SEC_disp
+
+ hexa_show ' disp ', NS_PER_SEC_disp
+
+if defined DAYS_FROM_CIVIL_L1_
+PRO	DAYS_FROM_CIVIL_L1			;---------- PRO DAYS_FROM_CIVIL
+ hexa_show 'DAYS_FROM_CIVIL_L1 ', $
+PRMS					;    debut parametrage
+	PRM Y_IN_ofs				; in
+	PRM M_IN_ofs				; in
+	PRM D_IN_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1					;    BODY ELAB
+ hexa_show 'var elab Y ', $
+VAR Y_disp, Q				; variable entiere
+
+ hexa_show ' disp ', Y_disp
+ hexa_show 'var elab M_ADJ ', $
+VAR M_ADJ_disp, Q				; variable entiere
+
+ hexa_show ' disp ', M_ADJ_disp
+ hexa_show 'var elab ERA ', $
+VAR ERA_disp, Q				; variable entiere
+
+ hexa_show ' disp ', ERA_disp
+ hexa_show 'var elab YOE ', $
+VAR YOE_disp, Q				; variable entiere
+
+ hexa_show ' disp ', YOE_disp
+ hexa_show 'var elab DOY ', $
+VAR DOY_disp, Q				; variable entiere
+
+ hexa_show ' disp ', DOY_disp
+ hexa_show 'var elab DOE ', $
+VAR DOE_disp, Q				; variable entiere
+
+ hexa_show ' disp ', DOE_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+					; debut if
+	LQ  1,	-M_IN_ofs
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	2
+	CLE
+	BF	L5
+	LQ  1,	-Y_IN_ofs
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SUB
+	SQ  1,	Y_disp
+	LQ  1,	-M_IN_ofs
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	9
+	ADD
+	SQ  1,	M_ADJ_disp
+	BRA	L4
+L5:
+	LQ  1,	-Y_IN_ofs
+	SQ  1,	Y_disp
+	LQ  1,	-M_IN_ofs
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	3
+	SUB
+	SQ  1,	M_ADJ_disp
+L4:					; post if
+					; debut if
+	LQ 1,	Y_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	CGE
+	BF	L7
+	LQ 1,	Y_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	400
+	DUP
+	LI	0
+	CEQ
+	BT	STANDARD.ne_raise_
+	DIV
+	SQ  1,	ERA_disp
+	BRA	L6
+L7:
+	LQ 1,	Y_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	399
+	SUB
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	400
+	DUP
+	LI	0
+	CEQ
+	BT	STANDARD.ne_raise_
+	DIV
+	SQ  1,	ERA_disp
+L6:					; post if
+	LQ 1,	Y_disp
+	LQ 1,	ERA_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	400
+	MUL
+	SUB
+	SQ  1,	YOE_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	153
+	LQ 1,	M_ADJ_disp
+	MUL
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	2
+	ADD
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	5
+	DUP
+	LI	0
+	CEQ
+	BT	STANDARD.ne_raise_
+	DIV
+	LQ  1,	-D_IN_ofs
+	ADD
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SUB
+	SQ  1,	DOY_disp
+	LQ 1,	YOE_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	365
+	MUL
+	LQ 1,	YOE_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	4
+	DUP
+	LI	0
+	CEQ
+	BT	STANDARD.ne_raise_
+	DIV
+	ADD
+	LQ 1,	YOE_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	100
+	DUP
+	LI	0
+	CEQ
+	BT	STANDARD.ne_raise_
+	DIV
+	SUB
+	LQ 1,	DOY_disp
+	ADD
+	SQ  1,	DOE_disp
+; CODE_RETURN : EXPR TYPE = DN_INTEGER  VUE COMPLETE = DN_INTEGER
+	LQ 1,	ERA_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	00146097
+	MUL
+	LQ 1,	DOE_disp
+	ADD
+	SQ  1,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINK 1
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO DAYS_FROM_CIVIL
+end if
+
+if defined CIVIL_FROM_DAYS_L8_
+PRO	CIVIL_FROM_DAYS_L8			;---------- PRO CIVIL_FROM_DAYS
+ hexa_show 'CIVIL_FROM_DAYS_L8 ', $
+PRMS					;    debut parametrage
+	PRM DAYS_ofs				; in
+	PRM Y_ofs				; out
+	PRM M_ofs				; out
+	PRM D_ofs				; out
+endPRMS					;    fin parametrage
+ELB 1					;    BODY ELAB
+ hexa_show 'var elab ERA ', $
+VAR ERA_disp, Q				; variable entiere
+
+ hexa_show ' disp ', ERA_disp
+ hexa_show 'var elab DOE ', $
+VAR DOE_disp, Q				; variable entiere
+
+ hexa_show ' disp ', DOE_disp
+ hexa_show 'var elab YOE ', $
+VAR YOE_disp, Q				; variable entiere
+
+ hexa_show ' disp ', YOE_disp
+ hexa_show 'var elab Y_OUT ', $
+VAR Y_OUT_disp, Q				; variable entiere
+
+ hexa_show ' disp ', Y_OUT_disp
+ hexa_show 'var elab DOY ', $
+VAR DOY_disp, Q				; variable entiere
+
+ hexa_show ' disp ', DOY_disp
+ hexa_show 'var elab MP ', $
+VAR MP_disp, Q				; variable entiere
+
+ hexa_show ' disp ', MP_disp
+ hexa_show 'var elab M_OUT ', $
+VAR M_OUT_disp, Q				; variable entiere
+
+ hexa_show ' disp ', M_OUT_disp
+ hexa_show 'var elab D_OUT ', $
+VAR D_OUT_disp, Q				; variable entiere
+
+ hexa_show ' disp ', D_OUT_disp
+ hexa_show 'var elab TMP ', $
+VAR TMP_disp, Q				; variable entiere
+
+ hexa_show ' disp ', TMP_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+					; debut if
+	LQ  1,	-DAYS_ofs
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	CGE
+	BF	L12
+	LQ  1,	-DAYS_ofs
+	SQ  1,	TMP_disp
+	BRA	L11
+L12:
+	LQ  1,	-DAYS_ofs
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	00146096
+	SUB
+	SQ  1,	TMP_disp
+L11:					; post if
+	LQ 1,	TMP_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	00146097
+	DUP
+	LI	0
+	CEQ
+	BT	STANDARD.ne_raise_
+	DIV
+	SQ  1,	ERA_disp
+	LQ  1,	-DAYS_ofs
+	LQ 1,	ERA_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	00146097
+	MUL
+	SUB
+	SQ  1,	DOE_disp
+	LQ 1,	DOE_disp
+	LQ 1,	DOE_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1460
+	DUP
+	LI	0
+	CEQ
+	BT	STANDARD.ne_raise_
+	DIV
+	SUB
+	LQ 1,	DOE_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	00036524
+	DUP
+	LI	0
+	CEQ
+	BT	STANDARD.ne_raise_
+	DIV
+	ADD
+	LQ 1,	DOE_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	00146096
+	DUP
+	LI	0
+	CEQ
+	BT	STANDARD.ne_raise_
+	DIV
+	SUB
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	365
+	DUP
+	LI	0
+	CEQ
+	BT	STANDARD.ne_raise_
+	DIV
+	SQ  1,	YOE_disp
+	LQ 1,	YOE_disp
+	LQ 1,	ERA_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	400
+	MUL
+	ADD
+	SQ  1,	Y_OUT_disp
+	LQ 1,	DOE_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	365
+	LQ 1,	YOE_disp
+	MUL
+	LQ 1,	YOE_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	4
+	DUP
+	LI	0
+	CEQ
+	BT	STANDARD.ne_raise_
+	DIV
+	ADD
+	LQ 1,	YOE_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	100
+	DUP
+	LI	0
+	CEQ
+	BT	STANDARD.ne_raise_
+	DIV
+	SUB
+	SUB
+	SQ  1,	DOY_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	5
+	LQ 1,	DOY_disp
+	MUL
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	2
+	ADD
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	153
+	DUP
+	LI	0
+	CEQ
+	BT	STANDARD.ne_raise_
+	DIV
+	SQ  1,	MP_disp
+	LQ 1,	DOY_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	153
+	LQ 1,	MP_disp
+	MUL
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	2
+	ADD
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	5
+	DUP
+	LI	0
+	CEQ
+	BT	STANDARD.ne_raise_
+	DIV
+	SUB
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	ADD
+	SQ  1,	D_OUT_disp
+					; debut if
+	LQ 1,	MP_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	10
+	CLT
+	BF	L14
+	LQ 1,	MP_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	3
+	ADD
+	SQ  1,	M_OUT_disp
+	BRA	L13
+L14:
+	LQ 1,	MP_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	9
+	SUB
+	SQ  1,	M_OUT_disp
+	LQ 1,	Y_OUT_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	ADD
+	SQ  1,	Y_OUT_disp
+L13:					; post if
+	LQ 1,	Y_OUT_disp
+	SIQ  1,	-Y_ofs
+	LQ 1,	M_OUT_disp
+	SIQ  1,	-M_ofs
+	LQ 1,	D_OUT_disp
+	SIQ  1,	-D_ofs
+ret_lbl:
+	UNLINK 1
+	RTD	prm_siz
+excep:
+endPRO					;---------- end PRO CIVIL_FROM_DAYS
+end if
+
+if defined CLOCK_L1_
+PRO	CLOCK_L1				;---------- PRO CLOCK
+ hexa_show 'CLOCK_L1 ', $
+PRMS					;    debut parametrage
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1					;    BODY ELAB
+
+					; _LINUX_TIMEVAL RECORD TYPE INFO
+_LINUX_TIMEVAL = '_LINUX_TIMEVAL'
+namespace _LINUX_TIMEVAL
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	1, SIZ__
+	SA	1, use__info
+USEINFO 1, SEC, 	LA 0, STANDARD._LONG_INTEGER.use__info
+USEINFO 1, NANOSEC, 	LA 0, STANDARD._LONG_INTEGER.use__info
+virtual at 0				; calcul des offsets statiques
+STATOFS SEC, 8, 8
+STATOFS NANOSEC, 8, 8
+size = $
+end virtual
+	LI	 size*8
+	SD	1, SIZ__
+end namespace
+ hexa_show 'var elab LTV ', $
+VAR LTV_disp, Q				; variable record : pointeur aux data record
+VAR LTV__u, Q				; variable record : pointeur aux useinfo
+VAR LTV__dat, STANDARD.CALENDAR.CLOCK_L1._LINUX_TIMEVAL.size
+	LVA	1, LTV__dat
+	SA	1, LTV_disp				; record fin
+	LVA	1, STANDARD.CALENDAR.CLOCK_L1._LINUX_TIMEVAL.SIZ__
+	SA	1, LTV__u
+
+ hexa_show ' disp ', LTV_disp
+ hexa_show 'var elab T ', $
+VAR T_disp, Q				; variable fixed
+
+ hexa_show ' disp ', T_disp
+ hexa_show 'var elab NANOSEC_PART ', $
+VAR NANOSEC_PART_disp, Q			; variable fixed
+
+ hexa_show ' disp ', NANOSEC_PART_disp
+
+if defined GETTIME_SYSCALL_L15_
+PRO	GETTIME_SYSCALL_L15			;---------- PRO GETTIME_SYSCALL
+ hexa_show 'GETTIME_SYSCALL_L15 ', $
+PRMS					;    debut parametrage
+	PRM TV_ofs				; out
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	LIA 2 ,	-8
+	SYS_CLOCK_GETTIME
+ret_lbl:
+	UNLINK 2
+	RTD	prm_siz
+excep:
+endPRO					;---------- end PRO GETTIME_SYSCALL
+end if
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	LVA  1,	STANDARD.CALENDAR.CLOCK_L1.LTV_disp
+	CALL	STANDARD.CALENDAR.CLOCK_L1. ,GETTIME_SYSCALL_L15
+	LIQ	1, STANDARD.CALENDAR.CLOCK_L1.LTV_disp, STANDARD.CALENDAR.CLOCK_L1._LINUX_TIMEVAL.NANOSEC
+; CODE CONVERSION SOURCE DN_INTEGER TARGET DN_FLOAT
+	CVTIF					; CODE_CONVERSION FLOAT TARGET FROM DN_INTEGER
+; CODE_NUMERIC_LITERAL DN_FLOAT
+	LIF	1.0E-9
+	FMUL
+; CODE CONVERSION SOURCE DN_FLOAT TARGET DN_FIXED
+	LI	000536870912
+	CVTIF
+	FMUL
+	CVTFIR
+	SQ  1,	NANOSEC_PART_disp
+	LIQ	1, STANDARD.CALENDAR.CLOCK_L1.LTV_disp, STANDARD.CALENDAR.CLOCK_L1._LINUX_TIMEVAL.SEC
+	LQ 0,	STANDARD.CALENDAR.EPOCH_DIFF_S_disp
+	ADD
+; CODE CONVERSION SOURCE DN_INTEGER TARGET DN_FIXED
+	LI	000536870912
+	LI	 1
+	CVTIX
+	LQ 1,	NANOSEC_PART_disp
+	ADD
+	SQ  1,	T_disp
+; CODE_RETURN : EXPR TYPE = DN_PRIVATE  VUE COMPLETE = DN_FIXED
+	LQ 1,	T_disp
+; CODE CONVERSION SOURCE DN_FIXED TARGET DN_FIXED
+	SQ  1,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINK 1
+	RTD
+excep:
+endPRO					;---------- end PRO CLOCK
+end if
+
+if defined WHOLE_SECONDS_L20_
+PRO	WHOLE_SECONDS_L20			;---------- PRO WHOLE_SECONDS
+ hexa_show 'WHOLE_SECONDS_L20 ', $
+PRMS					;    debut parametrage
+	PRM DATE_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1					;    BODY ELAB
+ hexa_show 'var elab D ', $
+VAR D_disp, Q				; variable fixed
+	LA  1,	-DATE_ofs
+; CODE CONVERSION SOURCE DN_FIXED TARGET DN_FIXED
+	SQ  1,	D_disp
+
+ hexa_show ' disp ', D_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+					; debut if
+	LQ 1,	D_disp
+; CODE_NUMERIC_LITERAL DN_FIXED
+	LI	 0
+	LI	000536870912
+	LI	 1
+	CVTIX
+	CEQ
+	BF	L24
+; CODE_RETURN : EXPR TYPE = DN_INTEGER  VUE COMPLETE = DN_INTEGER
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	SQ  1,	-result__ofs
+	BRA ret_lbl
+	BRA	L23
+L24:
+; CODE_RETURN : EXPR TYPE = DN_INTEGER  VUE COMPLETE = DN_INTEGER
+	LQ 1,	D_disp
+; CODE_NUMERIC_LITERAL DN_FIXED
+	LI	 1
+	LI	000536870912
+	LI	 2
+	CVTIX
+	SUB
+; CODE CONVERSION SOURCE DN_FIXED TARGET DN_INTEGER
+	LI	 1
+	LI	 536870912
+	CVTXI
+	SQ  1,	-result__ofs
+	BRA ret_lbl
+L23:					; post if
+ret_lbl:
+	UNLINK 1
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO WHOLE_SECONDS
+end if
+
+if defined YEAR_L2_
+PRO	YEAR_L2				;---------- PRO YEAR
+ hexa_show 'YEAR_L2 ', $
+PRMS					;    debut parametrage
+	PRM DATE_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1					;    BODY ELAB
+ hexa_show 'var elab SECONDS_TOTAL ', $
+VAR SECONDS_TOTAL_disp, Q			; variable entiere
+	LI	0					; lieu resultat sur pile
+	LA  1,	-DATE_ofs
+	CALL	STANDARD.CALENDAR. ,WHOLE_SECONDS_L20
+	SQ  1,	SECONDS_TOTAL_disp
+
+ hexa_show ' disp ', SECONDS_TOTAL_disp
+ hexa_show 'var elab DAYS_FROM_1900 ', $
+VAR DAYS_FROM_1900_disp, Q			; variable entiere
+	LQ 1,	SECONDS_TOTAL_disp
+	LQ 0,	STANDARD.CALENDAR.SECONDS_PER_DAY_disp
+	DUP
+	LI	0
+	CEQ
+	BT	STANDARD.ne_raise_
+	DIV
+	SQ  1,	DAYS_FROM_1900_disp
+
+ hexa_show ' disp ', DAYS_FROM_1900_disp
+ hexa_show 'var elab Y ', $
+VAR Y_disp, Q				; variable entiere
+
+ hexa_show ' disp ', Y_disp
+ hexa_show 'var elab M ', $
+VAR M_disp, Q				; variable entiere
+
+ hexa_show ' disp ', M_disp
+ hexa_show 'var elab D ', $
+VAR D_disp, Q				; variable entiere
+
+ hexa_show ' disp ', D_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	LVA  1,	STANDARD.CALENDAR.YEAR_L2.D_disp
+	LVA  1,	STANDARD.CALENDAR.YEAR_L2.M_disp
+	LVA  1,	STANDARD.CALENDAR.YEAR_L2.Y_disp
+	LQ 1,	DAYS_FROM_1900_disp
+	LQ 0,	STANDARD.CALENDAR.DAYS_1900_disp
+	ADD
+	CALL	STANDARD.CALENDAR. ,CIVIL_FROM_DAYS_L8
+; CODE_RETURN : EXPR TYPE = DN_INTEGER  VUE COMPLETE = DN_INTEGER
+	LQ 1,	Y_disp
+; CODE CONVERSION SOURCE DN_INTEGER TARGET DN_INTEGER
+	DUP
+	LD	0, STANDARD.CALENDAR._YEAR_NUMBER.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.CALENDAR._YEAR_NUMBER.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.CALENDAR._YEAR_NUMBER.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.CALENDAR._YEAR_NUMBER.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	SQ  1,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINK 1
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO YEAR
+end if
+
+if defined MONTH_L3_
+PRO	MONTH_L3				;---------- PRO MONTH
+ hexa_show 'MONTH_L3 ', $
+PRMS					;    debut parametrage
+	PRM DATE_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1					;    BODY ELAB
+ hexa_show 'var elab SECONDS_TOTAL ', $
+VAR SECONDS_TOTAL_disp, Q			; variable entiere
+	LI	0					; lieu resultat sur pile
+	LA  1,	-DATE_ofs
+	CALL	STANDARD.CALENDAR. ,WHOLE_SECONDS_L20
+	SQ  1,	SECONDS_TOTAL_disp
+
+ hexa_show ' disp ', SECONDS_TOTAL_disp
+ hexa_show 'var elab DAYS_FROM_1900 ', $
+VAR DAYS_FROM_1900_disp, Q			; variable entiere
+	LQ 1,	SECONDS_TOTAL_disp
+	LQ 0,	STANDARD.CALENDAR.SECONDS_PER_DAY_disp
+	DUP
+	LI	0
+	CEQ
+	BT	STANDARD.ne_raise_
+	DIV
+	SQ  1,	DAYS_FROM_1900_disp
+
+ hexa_show ' disp ', DAYS_FROM_1900_disp
+ hexa_show 'var elab Y ', $
+VAR Y_disp, Q				; variable entiere
+
+ hexa_show ' disp ', Y_disp
+ hexa_show 'var elab M ', $
+VAR M_disp, Q				; variable entiere
+
+ hexa_show ' disp ', M_disp
+ hexa_show 'var elab D ', $
+VAR D_disp, Q				; variable entiere
+
+ hexa_show ' disp ', D_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	LVA  1,	STANDARD.CALENDAR.MONTH_L3.D_disp
+	LVA  1,	STANDARD.CALENDAR.MONTH_L3.M_disp
+	LVA  1,	STANDARD.CALENDAR.MONTH_L3.Y_disp
+	LQ 1,	DAYS_FROM_1900_disp
+	LQ 0,	STANDARD.CALENDAR.DAYS_1900_disp
+	ADD
+	CALL	STANDARD.CALENDAR. ,CIVIL_FROM_DAYS_L8
+; CODE_RETURN : EXPR TYPE = DN_INTEGER  VUE COMPLETE = DN_INTEGER
+	LQ 1,	M_disp
+; CODE CONVERSION SOURCE DN_INTEGER TARGET DN_INTEGER
+	DUP
+	LD	0, STANDARD.CALENDAR._MONTH_NUMBER.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.CALENDAR._MONTH_NUMBER.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.CALENDAR._MONTH_NUMBER.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.CALENDAR._MONTH_NUMBER.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	SQ  1,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINK 1
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO MONTH
+end if
+
+if defined DAY_L4_
+PRO	DAY_L4				;---------- PRO DAY
+ hexa_show 'DAY_L4 ', $
+PRMS					;    debut parametrage
+	PRM DATE_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1					;    BODY ELAB
+ hexa_show 'var elab SECONDS_TOTAL ', $
+VAR SECONDS_TOTAL_disp, Q			; variable entiere
+	LI	0					; lieu resultat sur pile
+	LA  1,	-DATE_ofs
+	CALL	STANDARD.CALENDAR. ,WHOLE_SECONDS_L20
+	SQ  1,	SECONDS_TOTAL_disp
+
+ hexa_show ' disp ', SECONDS_TOTAL_disp
+ hexa_show 'var elab DAYS_FROM_1900 ', $
+VAR DAYS_FROM_1900_disp, Q			; variable entiere
+	LQ 1,	SECONDS_TOTAL_disp
+	LQ 0,	STANDARD.CALENDAR.SECONDS_PER_DAY_disp
+	DUP
+	LI	0
+	CEQ
+	BT	STANDARD.ne_raise_
+	DIV
+	SQ  1,	DAYS_FROM_1900_disp
+
+ hexa_show ' disp ', DAYS_FROM_1900_disp
+ hexa_show 'var elab Y ', $
+VAR Y_disp, Q				; variable entiere
+
+ hexa_show ' disp ', Y_disp
+ hexa_show 'var elab M ', $
+VAR M_disp, Q				; variable entiere
+
+ hexa_show ' disp ', M_disp
+ hexa_show 'var elab D ', $
+VAR D_disp, Q				; variable entiere
+
+ hexa_show ' disp ', D_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	LVA  1,	STANDARD.CALENDAR.DAY_L4.D_disp
+	LVA  1,	STANDARD.CALENDAR.DAY_L4.M_disp
+	LVA  1,	STANDARD.CALENDAR.DAY_L4.Y_disp
+	LQ 1,	DAYS_FROM_1900_disp
+	LQ 0,	STANDARD.CALENDAR.DAYS_1900_disp
+	ADD
+	CALL	STANDARD.CALENDAR. ,CIVIL_FROM_DAYS_L8
+; CODE_RETURN : EXPR TYPE = DN_INTEGER  VUE COMPLETE = DN_INTEGER
+	LQ 1,	D_disp
+; CODE CONVERSION SOURCE DN_INTEGER TARGET DN_INTEGER
+	DUP
+	LD	0, STANDARD.CALENDAR._DAY_NUMBER.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.CALENDAR._DAY_NUMBER.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.CALENDAR._DAY_NUMBER.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.CALENDAR._DAY_NUMBER.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	SQ  1,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINK 1
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO DAY
+end if
+
+if defined SECONDS_L5_
+PRO	SECONDS_L5				;---------- PRO SECONDS
+ hexa_show 'SECONDS_L5 ', $
+PRMS					;    debut parametrage
+	PRM DATE_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1					;    BODY ELAB
+ hexa_show 'var elab SECONDS_TOTAL ', $
+VAR SECONDS_TOTAL_disp, Q			; variable entiere
+	LI	0					; lieu resultat sur pile
+	LA  1,	-DATE_ofs
+	CALL	STANDARD.CALENDAR. ,WHOLE_SECONDS_L20
+	SQ  1,	SECONDS_TOTAL_disp
+
+ hexa_show ' disp ', SECONDS_TOTAL_disp
+ hexa_show 'var elab SEC_OF_DAY ', $
+VAR SEC_OF_DAY_disp, Q			; variable entiere
+	LQ 1,	SECONDS_TOTAL_disp
+	LQ 0,	STANDARD.CALENDAR.SECONDS_PER_DAY_disp
+	DUP
+	LI	0
+	CEQ
+	BT	STANDARD.ne_raise_
+	REMI
+	SQ  1,	SEC_OF_DAY_disp
+
+ hexa_show ' disp ', SEC_OF_DAY_disp
+ hexa_show 'var elab FRAC_PART ', $
+VAR FRAC_PART_disp, Q			; variable fixed
+	LA  1,	-DATE_ofs
+; CODE CONVERSION SOURCE DN_FIXED TARGET DN_FIXED
+	LQ 1,	SECONDS_TOTAL_disp
+; CODE CONVERSION SOURCE DN_INTEGER TARGET DN_FIXED
+	LI	000536870912
+	LI	 1
+	CVTIX
+	SUB
+	SQ  1,	FRAC_PART_disp
+
+ hexa_show ' disp ', FRAC_PART_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+; CODE_RETURN : EXPR TYPE = DN_FIXED  VUE COMPLETE = DN_FIXED
+	LQ 1,	SEC_OF_DAY_disp
+; CODE CONVERSION SOURCE DN_INTEGER TARGET DN_FIXED
+	LI	000536870912
+	LI	 1
+	CVTIX
+	LQ 1,	FRAC_PART_disp
+	ADD
+; CODE CONVERSION SOURCE DN_FIXED TARGET DN_FIXED
+	SQ  1,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINK 1
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO SECONDS
+end if
+
+if defined SPLIT_L6_
+PRO	SPLIT_L6				;---------- PRO SPLIT
+ hexa_show 'SPLIT_L6 ', $
+PRMS					;    debut parametrage
+	PRM DATE_ofs				; in
+	PRM YEAR_ofs				; out
+	PRM MONTH_ofs				; out
+	PRM DAY_ofs				; out
+	PRM SECONDS_ofs				; out
+endPRMS					;    fin parametrage
+ELB 1					;    BODY ELAB
+ hexa_show 'var elab SEC_TOTAL ', $
+VAR SEC_TOTAL_disp, Q			; variable entiere
+	LI	0					; lieu resultat sur pile
+	LA  1,	-DATE_ofs
+	CALL	STANDARD.CALENDAR. ,WHOLE_SECONDS_L20
+	SQ  1,	SEC_TOTAL_disp
+
+ hexa_show ' disp ', SEC_TOTAL_disp
+ hexa_show 'var elab DAYS_FROM_1900 ', $
+VAR DAYS_FROM_1900_disp, Q			; variable entiere
+	LQ 1,	SEC_TOTAL_disp
+	LQ 0,	STANDARD.CALENDAR.SECONDS_PER_DAY_disp
+	DUP
+	LI	0
+	CEQ
+	BT	STANDARD.ne_raise_
+	DIV
+	SQ  1,	DAYS_FROM_1900_disp
+
+ hexa_show ' disp ', DAYS_FROM_1900_disp
+ hexa_show 'var elab SEC_OF_DAY ', $
+VAR SEC_OF_DAY_disp, Q			; variable entiere
+	LQ 1,	SEC_TOTAL_disp
+	LQ 0,	STANDARD.CALENDAR.SECONDS_PER_DAY_disp
+	DUP
+	LI	0
+	CEQ
+	BT	STANDARD.ne_raise_
+	REMI
+	SQ  1,	SEC_OF_DAY_disp
+
+ hexa_show ' disp ', SEC_OF_DAY_disp
+ hexa_show 'var elab FRAC_PART ', $
+VAR FRAC_PART_disp, Q			; variable fixed
+	LA  1,	-DATE_ofs
+; CODE CONVERSION SOURCE DN_FIXED TARGET DN_FIXED
+	LQ 1,	SEC_TOTAL_disp
+; CODE CONVERSION SOURCE DN_INTEGER TARGET DN_FIXED
+	LI	000536870912
+	LI	 1
+	CVTIX
+	SUB
+	SQ  1,	FRAC_PART_disp
+
+ hexa_show ' disp ', FRAC_PART_disp
+ hexa_show 'var elab Y ', $
+VAR Y_disp, Q				; variable entiere
+
+ hexa_show ' disp ', Y_disp
+ hexa_show 'var elab M ', $
+VAR M_disp, Q				; variable entiere
+
+ hexa_show ' disp ', M_disp
+ hexa_show 'var elab D ', $
+VAR D_disp, Q				; variable entiere
+
+ hexa_show ' disp ', D_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	LVA  1,	STANDARD.CALENDAR.SPLIT_L6.D_disp
+	LVA  1,	STANDARD.CALENDAR.SPLIT_L6.M_disp
+	LVA  1,	STANDARD.CALENDAR.SPLIT_L6.Y_disp
+	LQ 1,	DAYS_FROM_1900_disp
+	LQ 0,	STANDARD.CALENDAR.DAYS_1900_disp
+	ADD
+	CALL	STANDARD.CALENDAR. ,CIVIL_FROM_DAYS_L8
+	LQ 1,	Y_disp
+; CODE CONVERSION SOURCE DN_INTEGER TARGET DN_INTEGER
+	DUP
+	LD	0, STANDARD.CALENDAR._YEAR_NUMBER.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.CALENDAR._YEAR_NUMBER.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.CALENDAR._YEAR_NUMBER.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.CALENDAR._YEAR_NUMBER.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	SID  1,	-YEAR_ofs
+	LQ 1,	M_disp
+; CODE CONVERSION SOURCE DN_INTEGER TARGET DN_INTEGER
+	DUP
+	LD	0, STANDARD.CALENDAR._MONTH_NUMBER.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.CALENDAR._MONTH_NUMBER.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.CALENDAR._MONTH_NUMBER.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.CALENDAR._MONTH_NUMBER.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	SID  1,	-MONTH_ofs
+	LQ 1,	D_disp
+; CODE CONVERSION SOURCE DN_INTEGER TARGET DN_INTEGER
+	DUP
+	LD	0, STANDARD.CALENDAR._DAY_NUMBER.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.CALENDAR._DAY_NUMBER.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.CALENDAR._DAY_NUMBER.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.CALENDAR._DAY_NUMBER.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	SID  1,	-DAY_ofs
+	LQ 1,	SEC_OF_DAY_disp
+; CODE CONVERSION SOURCE DN_INTEGER TARGET DN_FIXED
+	LI	000536870912
+	LI	 1
+	CVTIX
+	LQ 1,	FRAC_PART_disp
+	ADD
+; CODE CONVERSION SOURCE DN_FIXED TARGET DN_FIXED
+	SIQ  1,	-SECONDS_ofs
+ret_lbl:
+	UNLINK 1
+	RTD	prm_siz
+excep:
+endPRO					;---------- end PRO SPLIT
+end if
+
+if defined TIME_OF_L7_
+PRO	TIME_OF_L7				;---------- PRO TIME_OF
+ hexa_show 'TIME_OF_L7 ', $
+PRMS					;    debut parametrage
+	PRM YEAR_ofs				; in
+	PRM MONTH_ofs				; in
+	PRM DAY_ofs				; in
+	PRM SECONDS_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1					;    BODY ELAB
+ hexa_show 'var elab DAYS_FROM_HINNANT ', $
+VAR DAYS_FROM_HINNANT_disp, Q			; variable entiere
+	LI	0					; lieu resultat sur pile
+	LD  1,	-DAY_ofs
+; CODE CONVERSION SOURCE DN_INTEGER TARGET DN_INTEGER
+	LD  1,	-MONTH_ofs
+; CODE CONVERSION SOURCE DN_INTEGER TARGET DN_INTEGER
+	LD  1,	-YEAR_ofs
+; CODE CONVERSION SOURCE DN_INTEGER TARGET DN_INTEGER
+	CALL	STANDARD.CALENDAR. ,DAYS_FROM_CIVIL_L1
+	SQ  1,	DAYS_FROM_HINNANT_disp
+
+ hexa_show ' disp ', DAYS_FROM_HINNANT_disp
+ hexa_show 'var elab DAYS_FROM_1900_LOCAL ', $
+VAR DAYS_FROM_1900_LOCAL_disp, Q		; variable entiere
+	LQ 1,	DAYS_FROM_HINNANT_disp
+	LQ 0,	STANDARD.CALENDAR.DAYS_1900_disp
+	SUB
+	SQ  1,	DAYS_FROM_1900_LOCAL_disp
+
+ hexa_show ' disp ', DAYS_FROM_1900_LOCAL_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+; CODE_RETURN : EXPR TYPE = DN_PRIVATE  VUE COMPLETE = DN_FIXED
+	LI	0					; lieu resultat sur pile
+	LQ  1,	-SECONDS_ofs
+	LQ 1,	DAYS_FROM_1900_LOCAL_disp
+	LQ 0,	STANDARD.CALENDAR.SECONDS_PER_DAY_disp
+	MUL
+; CODE CONVERSION SOURCE DN_INTEGER TARGET DN_FIXED
+	LI	000536870912
+	LI	 1
+	CVTIX
+	CALL	STANDARD.CALENDAR. ,_PLUS__L8
+	SQ  1,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINK 1
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO TIME_OF
+end if
+
+if defined _PLUS__L8_
+PRO	_PLUS__L8				;---------- PRO _PLUS_
+ hexa_show '_PLUS__L8 ', $
+PRMS					;    debut parametrage
+	PRM LEFT_ofs				; in
+	PRM RIGHT_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+; CODE_RETURN : EXPR TYPE = DN_PRIVATE  VUE COMPLETE = DN_FIXED
+	LA  1,	-LEFT_ofs
+; CODE CONVERSION SOURCE DN_FIXED TARGET DN_FIXED
+	LQ  1,	-RIGHT_ofs
+	ADD
+; CODE CONVERSION SOURCE DN_FIXED TARGET DN_FIXED
+	SQ  1,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINK 1
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO _PLUS_
+end if
+
+if defined _PLUS__L9_
+PRO	_PLUS__L9				;---------- PRO _PLUS_
+ hexa_show '_PLUS__L9 ', $
+PRMS					;    debut parametrage
+	PRM LEFT_ofs				; in
+	PRM RIGHT_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+; CODE_RETURN : EXPR TYPE = DN_PRIVATE  VUE COMPLETE = DN_FIXED
+	LQ  1,	-LEFT_ofs
+	LA  1,	-RIGHT_ofs
+; CODE CONVERSION SOURCE DN_FIXED TARGET DN_FIXED
+	ADD
+; CODE CONVERSION SOURCE DN_FIXED TARGET DN_FIXED
+	SQ  1,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINK 1
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO _PLUS_
+end if
+
+if defined _MINUS__L10_
+PRO	_MINUS__L10				;---------- PRO _MINUS_
+ hexa_show '_MINUS__L10 ', $
+PRMS					;    debut parametrage
+	PRM LEFT_ofs				; in
+	PRM RIGHT_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+; CODE_RETURN : EXPR TYPE = DN_PRIVATE  VUE COMPLETE = DN_FIXED
+	LA  1,	-LEFT_ofs
+; CODE CONVERSION SOURCE DN_FIXED TARGET DN_FIXED
+	LQ  1,	-RIGHT_ofs
+	SUB
+; CODE CONVERSION SOURCE DN_FIXED TARGET DN_FIXED
+	SQ  1,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINK 1
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO _MINUS_
+end if
+
+if defined _MINUS__L11_
+PRO	_MINUS__L11				;---------- PRO _MINUS_
+ hexa_show '_MINUS__L11 ', $
+PRMS					;    debut parametrage
+	PRM LEFT_ofs				; in
+	PRM RIGHT_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+; CODE_RETURN : EXPR TYPE = DN_FIXED  VUE COMPLETE = DN_FIXED
+	LA  1,	-LEFT_ofs
+; CODE CONVERSION SOURCE DN_FIXED TARGET DN_FIXED
+	LA  1,	-RIGHT_ofs
+; CODE CONVERSION SOURCE DN_FIXED TARGET DN_FIXED
+	SUB
+	SQ  1,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINK 1
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO _MINUS_
+end if
+
+if defined _LT__L12_
+PRO	_LT__L12				;---------- PRO _LT_
+ hexa_show '_LT__L12 ', $
+PRMS					;    debut parametrage
+	PRM LEFT_ofs				; in
+	PRM RIGHT_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+; CODE_RETURN : EXPR TYPE = DN_ENUMERATION  VUE COMPLETE = DN_ENUMERATION
+	LA  1,	-LEFT_ofs
+; CODE CONVERSION SOURCE DN_FIXED TARGET DN_FIXED
+	LA  1,	-RIGHT_ofs
+; CODE CONVERSION SOURCE DN_FIXED TARGET DN_FIXED
+	CLT
+	SQ  1,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINK 1
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO _LT_
+end if
+
+if defined _LE__L13_
+PRO	_LE__L13				;---------- PRO _LE_
+ hexa_show '_LE__L13 ', $
+PRMS					;    debut parametrage
+	PRM LEFT_ofs				; in
+	PRM RIGHT_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+; CODE_RETURN : EXPR TYPE = DN_ENUMERATION  VUE COMPLETE = DN_ENUMERATION
+	LA  1,	-LEFT_ofs
+; CODE CONVERSION SOURCE DN_FIXED TARGET DN_FIXED
+	LA  1,	-RIGHT_ofs
+; CODE CONVERSION SOURCE DN_FIXED TARGET DN_FIXED
+	CLE
+	SQ  1,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINK 1
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO _LE_
+end if
+
+if defined _GT__L14_
+PRO	_GT__L14				;---------- PRO _GT_
+ hexa_show '_GT__L14 ', $
+PRMS					;    debut parametrage
+	PRM LEFT_ofs				; in
+	PRM RIGHT_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+; CODE_RETURN : EXPR TYPE = DN_ENUMERATION  VUE COMPLETE = DN_ENUMERATION
+	LA  1,	-LEFT_ofs
+; CODE CONVERSION SOURCE DN_FIXED TARGET DN_FIXED
+	LA  1,	-RIGHT_ofs
+; CODE CONVERSION SOURCE DN_FIXED TARGET DN_FIXED
+	CGT
+	SQ  1,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINK 1
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO _GT_
+end if
+
+if defined _GE__L15_
+PRO	_GE__L15				;---------- PRO _GE_
+ hexa_show '_GE__L15 ', $
+PRMS					;    debut parametrage
+	PRM LEFT_ofs				; in
+	PRM RIGHT_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+; CODE_RETURN : EXPR TYPE = DN_ENUMERATION  VUE COMPLETE = DN_ENUMERATION
+	LA  1,	-LEFT_ofs
+; CODE CONVERSION SOURCE DN_FIXED TARGET DN_FIXED
+	LA  1,	-RIGHT_ofs
+; CODE CONVERSION SOURCE DN_FIXED TARGET DN_FIXED
+	CGE
+	SQ  1,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINK 1
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO _GE_
+end if
+begin:					;---------- package BDY INSTRUCTIONS
+end namespace 				;---------- end package BDY CALENDAR
+

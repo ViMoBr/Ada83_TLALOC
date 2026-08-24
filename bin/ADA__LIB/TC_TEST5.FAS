@@ -1,0 +1,12 @@
+include '../../src/expander/fasmg/codi_x86_64.finc'
+namespace STANDARD
+main5:
+	LCA	MSG5A.data_ptr
+	SYS_PUT_STR
+	LCA	MSG5B.data_ptr
+	SYS_PUT_STR
+	SYS_EXIT	0
+STR	MSG5A, 'ok'
+STR	MSG5B, 'AH'
+	CST	K5, q, 123
+end namespace

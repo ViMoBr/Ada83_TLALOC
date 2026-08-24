@@ -6,7 +6,7 @@ namespace DIANA_NODE_ATTR_CLASS_NAMES		;---------- PACKAGE DECLARATION
 					; _NODE_NAME ENUMERATION TYPE INFO
 _NODE_NAME = '_NODE_NAME'
 namespace _NODE_NAME
-VAR use__info, q
+VAR use__info, Q
 BEGIN_BLOC_DEF
 db 0, 7, "DN_ROOT"
 db 1, 9, "DN_TXTREP"
@@ -243,13 +243,13 @@ db 231, 9, "DN_VIRGIN"
 END_BLOC_DEF 8, 0, 231
 	; SIZ en bits !
 	LCA	SIZ
-	Sa	0, use__info
+	SA	0, use__info
 end namespace
 
 					; _ATTRIBUTE_NAME ENUMERATION TYPE INFO
 _ATTRIBUTE_NAME = '_ATTRIBUTE_NAME'
 namespace _ATTRIBUTE_NAME
-VAR use__info, q
+VAR use__info, Q
 BEGIN_BLOC_DEF
 db 0, 12, "XD_HIGH_PAGE"
 db 1, 12, "XD_USER_ROOT"
@@ -427,1987 +427,1987 @@ db 172, 10, "XD_IS_USED"
 END_BLOC_DEF 8, 0, 172
 	; SIZ en bits !
 	LCA	SIZ
-	Sa	0, use__info
+	SA	0, use__info
 end namespace
 
 					; _CLASS_STANDARD_IDL ENUMERATION SUBTYPE INFO
 _CLASS_STANDARD_IDL = '_CLASS_STANDARD_IDL'
 namespace _CLASS_STANDARD_IDL
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	0
-	Sb	0, FST
+	SB	0, FST
 	LI	11
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_BOOLEAN ENUMERATION SUBTYPE INFO
 _CLASS_BOOLEAN = '_CLASS_BOOLEAN'
 namespace _CLASS_BOOLEAN
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	3
-	Sb	0, FST
+	SB	0, FST
 	LI	4
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_ALL_SOURCE ENUMERATION SUBTYPE INFO
 _CLASS_ALL_SOURCE = '_CLASS_ALL_SOURCE'
 namespace _CLASS_ALL_SOURCE
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	12
-	Sb	0, FST
+	SB	0, FST
 	LI	200
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_DEF_NAME ENUMERATION SUBTYPE INFO
 _CLASS_DEF_NAME = '_CLASS_DEF_NAME'
 namespace _CLASS_DEF_NAME
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	12
-	Sb	0, FST
+	SB	0, FST
 	LI	40
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_SOURCE_NAME ENUMERATION SUBTYPE INFO
 _CLASS_SOURCE_NAME = '_CLASS_SOURCE_NAME'
 namespace _CLASS_SOURCE_NAME
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	12
-	Sb	0, FST
+	SB	0, FST
 	LI	36
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_OBJECT_NAME ENUMERATION SUBTYPE INFO
 _CLASS_OBJECT_NAME = '_CLASS_OBJECT_NAME'
 namespace _CLASS_OBJECT_NAME
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	12
-	Sb	0, FST
+	SB	0, FST
 	LI	22
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_INIT_OBJECT_NAME ENUMERATION SUBTYPE INFO
 _CLASS_INIT_OBJECT_NAME = '_CLASS_INIT_OBJECT_NAME'
 namespace _CLASS_INIT_OBJECT_NAME
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	12
-	Sb	0, FST
+	SB	0, FST
 	LI	19
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_VC_NAME ENUMERATION SUBTYPE INFO
 _CLASS_VC_NAME = '_CLASS_VC_NAME'
 namespace _CLASS_VC_NAME
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	12
-	Sb	0, FST
+	SB	0, FST
 	LI	13
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_COMP_NAME ENUMERATION SUBTYPE INFO
 _CLASS_COMP_NAME = '_CLASS_COMP_NAME'
 namespace _CLASS_COMP_NAME
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	15
-	Sb	0, FST
+	SB	0, FST
 	LI	16
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_PARAM_NAME ENUMERATION SUBTYPE INFO
 _CLASS_PARAM_NAME = '_CLASS_PARAM_NAME'
 namespace _CLASS_PARAM_NAME
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	17
-	Sb	0, FST
+	SB	0, FST
 	LI	19
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_PARAM_IO_O ENUMERATION SUBTYPE INFO
 _CLASS_PARAM_IO_O = '_CLASS_PARAM_IO_O'
 namespace _CLASS_PARAM_IO_O
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	18
-	Sb	0, FST
+	SB	0, FST
 	LI	19
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_ENUM_LITERAL ENUMERATION SUBTYPE INFO
 _CLASS_ENUM_LITERAL = '_CLASS_ENUM_LITERAL'
 namespace _CLASS_ENUM_LITERAL
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	20
-	Sb	0, FST
+	SB	0, FST
 	LI	21
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_TYPE_NAME ENUMERATION SUBTYPE INFO
 _CLASS_TYPE_NAME = '_CLASS_TYPE_NAME'
 namespace _CLASS_TYPE_NAME
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	23
-	Sb	0, FST
+	SB	0, FST
 	LI	26
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_UNIT_NAME ENUMERATION SUBTYPE INFO
 _CLASS_UNIT_NAME = '_CLASS_UNIT_NAME'
 namespace _CLASS_UNIT_NAME
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	27
-	Sb	0, FST
+	SB	0, FST
 	LI	32
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_NON_TASK_NAME ENUMERATION SUBTYPE INFO
 _CLASS_NON_TASK_NAME = '_CLASS_NON_TASK_NAME'
 namespace _CLASS_NON_TASK_NAME
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	27
-	Sb	0, FST
+	SB	0, FST
 	LI	31
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_SUBPROG_PACK_NAME ENUMERATION SUBTYPE INFO
 _CLASS_SUBPROG_PACK_NAME = '_CLASS_SUBPROG_PACK_NAME'
 namespace _CLASS_SUBPROG_PACK_NAME
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	27
-	Sb	0, FST
+	SB	0, FST
 	LI	30
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_SUBPROG_NAME ENUMERATION SUBTYPE INFO
 _CLASS_SUBPROG_NAME = '_CLASS_SUBPROG_NAME'
 namespace _CLASS_SUBPROG_NAME
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	27
-	Sb	0, FST
+	SB	0, FST
 	LI	29
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_LABEL_NAME ENUMERATION SUBTYPE INFO
 _CLASS_LABEL_NAME = '_CLASS_LABEL_NAME'
 namespace _CLASS_LABEL_NAME
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	33
-	Sb	0, FST
+	SB	0, FST
 	LI	34
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_PREDEF_NAME ENUMERATION SUBTYPE INFO
 _CLASS_PREDEF_NAME = '_CLASS_PREDEF_NAME'
 namespace _CLASS_PREDEF_NAME
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	37
-	Sb	0, FST
+	SB	0, FST
 	LI	40
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_ALL_DECL ENUMERATION SUBTYPE INFO
 _CLASS_ALL_DECL = '_CLASS_ALL_DECL'
 namespace _CLASS_ALL_DECL
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	41
-	Sb	0, FST
+	SB	0, FST
 	LI	68
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_ITEM ENUMERATION SUBTYPE INFO
 _CLASS_ITEM = '_CLASS_ITEM'
 namespace _CLASS_ITEM
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	42
-	Sb	0, FST
+	SB	0, FST
 	LI	67
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_DSCRMT_PARAM_DECL ENUMERATION SUBTYPE INFO
 _CLASS_DSCRMT_PARAM_DECL = '_CLASS_DSCRMT_PARAM_DECL'
 namespace _CLASS_DSCRMT_PARAM_DECL
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	42
-	Sb	0, FST
+	SB	0, FST
 	LI	45
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_PARAM ENUMERATION SUBTYPE INFO
 _CLASS_PARAM = '_CLASS_PARAM'
 namespace _CLASS_PARAM
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	43
-	Sb	0, FST
+	SB	0, FST
 	LI	45
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_DECL ENUMERATION SUBTYPE INFO
 _CLASS_DECL = '_CLASS_DECL'
 namespace _CLASS_DECL
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	46
-	Sb	0, FST
+	SB	0, FST
 	LI	64
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_ID_S_DECL ENUMERATION SUBTYPE INFO
 _CLASS_ID_S_DECL = '_CLASS_ID_S_DECL'
 namespace _CLASS_ID_S_DECL
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	46
-	Sb	0, FST
+	SB	0, FST
 	LI	50
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_EXP_DECL ENUMERATION SUBTYPE INFO
 _CLASS_EXP_DECL = '_CLASS_EXP_DECL'
 namespace _CLASS_EXP_DECL
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	46
-	Sb	0, FST
+	SB	0, FST
 	LI	48
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_OBJECT_DECL ENUMERATION SUBTYPE INFO
 _CLASS_OBJECT_DECL = '_CLASS_OBJECT_DECL'
 namespace _CLASS_OBJECT_DECL
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	46
-	Sb	0, FST
+	SB	0, FST
 	LI	47
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_ID_DECL ENUMERATION SUBTYPE INFO
 _CLASS_ID_DECL = '_CLASS_ID_DECL'
 namespace _CLASS_ID_DECL
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	51
-	Sb	0, FST
+	SB	0, FST
 	LI	58
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_UNIT_DECL ENUMERATION SUBTYPE INFO
 _CLASS_UNIT_DECL = '_CLASS_UNIT_DECL'
 namespace _CLASS_UNIT_DECL
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	54
-	Sb	0, FST
+	SB	0, FST
 	LI	56
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_NON_GENERIC_DECL ENUMERATION SUBTYPE INFO
 _CLASS_NON_GENERIC_DECL = '_CLASS_NON_GENERIC_DECL'
 namespace _CLASS_NON_GENERIC_DECL
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	55
-	Sb	0, FST
+	SB	0, FST
 	LI	56
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_SIMPLE_RENAME_DECL ENUMERATION SUBTYPE INFO
 _CLASS_SIMPLE_RENAME_DECL = '_CLASS_SIMPLE_RENAME_DECL'
 namespace _CLASS_SIMPLE_RENAME_DECL
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	57
-	Sb	0, FST
+	SB	0, FST
 	LI	58
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_REP ENUMERATION SUBTYPE INFO
 _CLASS_REP = '_CLASS_REP'
 namespace _CLASS_REP
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	60
-	Sb	0, FST
+	SB	0, FST
 	LI	62
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_NAMED_REP ENUMERATION SUBTYPE INFO
 _CLASS_NAMED_REP = '_CLASS_NAMED_REP'
 namespace _CLASS_NAMED_REP
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	60
-	Sb	0, FST
+	SB	0, FST
 	LI	61
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_USE_PRAGMA ENUMERATION SUBTYPE INFO
 _CLASS_USE_PRAGMA = '_CLASS_USE_PRAGMA'
 namespace _CLASS_USE_PRAGMA
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	63
-	Sb	0, FST
+	SB	0, FST
 	LI	64
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_SUBUNIT_BODY ENUMERATION SUBTYPE INFO
 _CLASS_SUBUNIT_BODY = '_CLASS_SUBUNIT_BODY'
 namespace _CLASS_SUBUNIT_BODY
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	65
-	Sb	0, FST
+	SB	0, FST
 	LI	67
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_TYPE_DEF ENUMERATION SUBTYPE INFO
 _CLASS_TYPE_DEF = '_CLASS_TYPE_DEF'
 namespace _CLASS_TYPE_DEF
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	69
-	Sb	0, FST
+	SB	0, FST
 	LI	84
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_CONSTRAINED_DEF ENUMERATION SUBTYPE INFO
 _CLASS_CONSTRAINED_DEF = '_CLASS_CONSTRAINED_DEF'
 namespace _CLASS_CONSTRAINED_DEF
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	70
-	Sb	0, FST
+	SB	0, FST
 	LI	73
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_ARR_ACC_DER_DEF ENUMERATION SUBTYPE INFO
 _CLASS_ARR_ACC_DER_DEF = '_CLASS_ARR_ACC_DER_DEF'
 namespace _CLASS_ARR_ACC_DER_DEF
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	74
-	Sb	0, FST
+	SB	0, FST
 	LI	77
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_SEQUENCES ENUMERATION SUBTYPE INFO
 _CLASS_SEQUENCES = '_CLASS_SEQUENCES'
 namespace _CLASS_SEQUENCES
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	85
-	Sb	0, FST
+	SB	0, FST
 	LI	107
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_STM_ELEM ENUMERATION SUBTYPE INFO
 _CLASS_STM_ELEM = '_CLASS_STM_ELEM'
 namespace _CLASS_STM_ELEM
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	108
-	Sb	0, FST
+	SB	0, FST
 	LI	129
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_STM ENUMERATION SUBTYPE INFO
 _CLASS_STM = '_CLASS_STM'
 namespace _CLASS_STM
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	108
-	Sb	0, FST
+	SB	0, FST
 	LI	128
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_STM_WITH_EXP ENUMERATION SUBTYPE INFO
 _CLASS_STM_WITH_EXP = '_CLASS_STM_WITH_EXP'
 namespace _CLASS_STM_WITH_EXP
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	111
-	Sb	0, FST
+	SB	0, FST
 	LI	116
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_STM_WITH_EXP_NAME ENUMERATION SUBTYPE INFO
 _CLASS_STM_WITH_EXP_NAME = '_CLASS_STM_WITH_EXP_NAME'
 namespace _CLASS_STM_WITH_EXP_NAME
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	113
-	Sb	0, FST
+	SB	0, FST
 	LI	115
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_STM_WITH_NAME ENUMERATION SUBTYPE INFO
 _CLASS_STM_WITH_NAME = '_CLASS_STM_WITH_NAME'
 namespace _CLASS_STM_WITH_NAME
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	117
-	Sb	0, FST
+	SB	0, FST
 	LI	120
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_CALL_STM ENUMERATION SUBTYPE INFO
 _CLASS_CALL_STM = '_CLASS_CALL_STM'
 namespace _CLASS_CALL_STM
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	119
-	Sb	0, FST
+	SB	0, FST
 	LI	120
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_BLOCK_LOOP ENUMERATION SUBTYPE INFO
 _CLASS_BLOCK_LOOP = '_CLASS_BLOCK_LOOP'
 namespace _CLASS_BLOCK_LOOP
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	122
-	Sb	0, FST
+	SB	0, FST
 	LI	123
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_ENTRY_STM ENUMERATION SUBTYPE INFO
 _CLASS_ENTRY_STM = '_CLASS_ENTRY_STM'
 namespace _CLASS_ENTRY_STM
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	124
-	Sb	0, FST
+	SB	0, FST
 	LI	125
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_CLAUSES_STM ENUMERATION SUBTYPE INFO
 _CLASS_CLAUSES_STM = '_CLASS_CLAUSES_STM'
 namespace _CLASS_CLAUSES_STM
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	126
-	Sb	0, FST
+	SB	0, FST
 	LI	127
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_GENERAL_ASSOC ENUMERATION SUBTYPE INFO
 _CLASS_GENERAL_ASSOC = '_CLASS_GENERAL_ASSOC'
 namespace _CLASS_GENERAL_ASSOC
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	130
-	Sb	0, FST
+	SB	0, FST
 	LI	153
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_NAMED_ASSOC ENUMERATION SUBTYPE INFO
 _CLASS_NAMED_ASSOC = '_CLASS_NAMED_ASSOC'
 namespace _CLASS_NAMED_ASSOC
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	130
-	Sb	0, FST
+	SB	0, FST
 	LI	131
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_EXP ENUMERATION SUBTYPE INFO
 _CLASS_EXP = '_CLASS_EXP'
 namespace _CLASS_EXP
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	132
-	Sb	0, FST
+	SB	0, FST
 	LI	153
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_NAME ENUMERATION SUBTYPE INFO
 _CLASS_NAME = '_CLASS_NAME'
 namespace _CLASS_NAME
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	132
-	Sb	0, FST
+	SB	0, FST
 	LI	141
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_DESIGNATOR ENUMERATION SUBTYPE INFO
 _CLASS_DESIGNATOR = '_CLASS_DESIGNATOR'
 namespace _CLASS_DESIGNATOR
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	132
-	Sb	0, FST
+	SB	0, FST
 	LI	135
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_USED_OBJECT ENUMERATION SUBTYPE INFO
 _CLASS_USED_OBJECT = '_CLASS_USED_OBJECT'
 namespace _CLASS_USED_OBJECT
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	132
-	Sb	0, FST
+	SB	0, FST
 	LI	133
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_USED_NAME ENUMERATION SUBTYPE INFO
 _CLASS_USED_NAME = '_CLASS_USED_NAME'
 namespace _CLASS_USED_NAME
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	134
-	Sb	0, FST
+	SB	0, FST
 	LI	135
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_NAME_EXP ENUMERATION SUBTYPE INFO
 _CLASS_NAME_EXP = '_CLASS_NAME_EXP'
 namespace _CLASS_NAME_EXP
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	136
-	Sb	0, FST
+	SB	0, FST
 	LI	141
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_NAME_VAL ENUMERATION SUBTYPE INFO
 _CLASS_NAME_VAL = '_CLASS_NAME_VAL'
 namespace _CLASS_NAME_VAL
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	136
-	Sb	0, FST
+	SB	0, FST
 	LI	138
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_EXP_EXP ENUMERATION SUBTYPE INFO
 _CLASS_EXP_EXP = '_CLASS_EXP_EXP'
 namespace _CLASS_EXP_EXP
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	142
-	Sb	0, FST
+	SB	0, FST
 	LI	153
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_EXP_VAL ENUMERATION SUBTYPE INFO
 _CLASS_EXP_VAL = '_CLASS_EXP_VAL'
 namespace _CLASS_EXP_VAL
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	142
-	Sb	0, FST
+	SB	0, FST
 	LI	149
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_EXP_VAL_EXP ENUMERATION SUBTYPE INFO
 _CLASS_EXP_VAL_EXP = '_CLASS_EXP_VAL_EXP'
 namespace _CLASS_EXP_VAL_EXP
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	145
-	Sb	0, FST
+	SB	0, FST
 	LI	149
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_MEMBERSHIP ENUMERATION SUBTYPE INFO
 _CLASS_MEMBERSHIP = '_CLASS_MEMBERSHIP'
 namespace _CLASS_MEMBERSHIP
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	145
-	Sb	0, FST
+	SB	0, FST
 	LI	146
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_QUAL_CONV ENUMERATION SUBTYPE INFO
 _CLASS_QUAL_CONV = '_CLASS_QUAL_CONV'
 namespace _CLASS_QUAL_CONV
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	147
-	Sb	0, FST
+	SB	0, FST
 	LI	148
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_AGG_EXP ENUMERATION SUBTYPE INFO
 _CLASS_AGG_EXP = '_CLASS_AGG_EXP'
 namespace _CLASS_AGG_EXP
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	150
-	Sb	0, FST
+	SB	0, FST
 	LI	151
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_CONSTRAINT ENUMERATION SUBTYPE INFO
 _CLASS_CONSTRAINT = '_CLASS_CONSTRAINT'
 namespace _CLASS_CONSTRAINT
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	154
-	Sb	0, FST
+	SB	0, FST
 	LI	160
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_DISCRETE_RANGE ENUMERATION SUBTYPE INFO
 _CLASS_DISCRETE_RANGE = '_CLASS_DISCRETE_RANGE'
 namespace _CLASS_DISCRETE_RANGE
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	154
-	Sb	0, FST
+	SB	0, FST
 	LI	156
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_RANGE ENUMERATION SUBTYPE INFO
 _CLASS_RANGE = '_CLASS_RANGE'
 namespace _CLASS_RANGE
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	154
-	Sb	0, FST
+	SB	0, FST
 	LI	155
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_REAL_CONSTRAINT ENUMERATION SUBTYPE INFO
 _CLASS_REAL_CONSTRAINT = '_CLASS_REAL_CONSTRAINT'
 namespace _CLASS_REAL_CONSTRAINT
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	157
-	Sb	0, FST
+	SB	0, FST
 	LI	158
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_CHOICE ENUMERATION SUBTYPE INFO
 _CLASS_CHOICE = '_CLASS_CHOICE'
 namespace _CLASS_CHOICE
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	161
-	Sb	0, FST
+	SB	0, FST
 	LI	163
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_HEADER ENUMERATION SUBTYPE INFO
 _CLASS_HEADER = '_CLASS_HEADER'
 namespace _CLASS_HEADER
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	164
-	Sb	0, FST
+	SB	0, FST
 	LI	167
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_SUBP_ENTRY_HEADER ENUMERATION SUBTYPE INFO
 _CLASS_SUBP_ENTRY_HEADER = '_CLASS_SUBP_ENTRY_HEADER'
 namespace _CLASS_SUBP_ENTRY_HEADER
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	164
-	Sb	0, FST
+	SB	0, FST
 	LI	166
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_UNIT_DESC ENUMERATION SUBTYPE INFO
 _CLASS_UNIT_DESC = '_CLASS_UNIT_DESC'
 namespace _CLASS_UNIT_DESC
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	168
-	Sb	0, FST
+	SB	0, FST
 	LI	176
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_UNIT_KIND ENUMERATION SUBTYPE INFO
 _CLASS_UNIT_KIND = '_CLASS_UNIT_KIND'
 namespace _CLASS_UNIT_KIND
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	168
-	Sb	0, FST
+	SB	0, FST
 	LI	172
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_RENAME_INSTANT ENUMERATION SUBTYPE INFO
 _CLASS_RENAME_INSTANT = '_CLASS_RENAME_INSTANT'
 namespace _CLASS_RENAME_INSTANT
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	168
-	Sb	0, FST
+	SB	0, FST
 	LI	169
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_GENERIC_PARAM ENUMERATION SUBTYPE INFO
 _CLASS_GENERIC_PARAM = '_CLASS_GENERIC_PARAM'
 namespace _CLASS_GENERIC_PARAM
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	170
-	Sb	0, FST
+	SB	0, FST
 	LI	172
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_BODY ENUMERATION SUBTYPE INFO
 _CLASS_BODY = '_CLASS_BODY'
 namespace _CLASS_BODY
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	173
-	Sb	0, FST
+	SB	0, FST
 	LI	174
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_TEST_CLAUSE_ELEM ENUMERATION SUBTYPE INFO
 _CLASS_TEST_CLAUSE_ELEM = '_CLASS_TEST_CLAUSE_ELEM'
 namespace _CLASS_TEST_CLAUSE_ELEM
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	177
-	Sb	0, FST
+	SB	0, FST
 	LI	179
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_TEST_CLAUSE ENUMERATION SUBTYPE INFO
 _CLASS_TEST_CLAUSE = '_CLASS_TEST_CLAUSE'
 namespace _CLASS_TEST_CLAUSE
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	177
-	Sb	0, FST
+	SB	0, FST
 	LI	178
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_MEMBERSHIP_OP ENUMERATION SUBTYPE INFO
 _CLASS_MEMBERSHIP_OP = '_CLASS_MEMBERSHIP_OP'
 namespace _CLASS_MEMBERSHIP_OP
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	180
-	Sb	0, FST
+	SB	0, FST
 	LI	181
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_SHORT_CIRCUIT_OP ENUMERATION SUBTYPE INFO
 _CLASS_SHORT_CIRCUIT_OP = '_CLASS_SHORT_CIRCUIT_OP'
 namespace _CLASS_SHORT_CIRCUIT_OP
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	182
-	Sb	0, FST
+	SB	0, FST
 	LI	183
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_ITERATION ENUMERATION SUBTYPE INFO
 _CLASS_ITERATION = '_CLASS_ITERATION'
 namespace _CLASS_ITERATION
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	184
-	Sb	0, FST
+	SB	0, FST
 	LI	186
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_FOR_REV ENUMERATION SUBTYPE INFO
 _CLASS_FOR_REV = '_CLASS_FOR_REV'
 namespace _CLASS_FOR_REV
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	184
-	Sb	0, FST
+	SB	0, FST
 	LI	185
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_ALTERNATIVE_ELEM ENUMERATION SUBTYPE INFO
 _CLASS_ALTERNATIVE_ELEM = '_CLASS_ALTERNATIVE_ELEM'
 namespace _CLASS_ALTERNATIVE_ELEM
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	187
-	Sb	0, FST
+	SB	0, FST
 	LI	188
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_COMP_REP_ELEM ENUMERATION SUBTYPE INFO
 _CLASS_COMP_REP_ELEM = '_CLASS_COMP_REP_ELEM'
 namespace _CLASS_COMP_REP_ELEM
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	189
-	Sb	0, FST
+	SB	0, FST
 	LI	190
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_CONTEXT_ELEM ENUMERATION SUBTYPE INFO
 _CLASS_CONTEXT_ELEM = '_CLASS_CONTEXT_ELEM'
 namespace _CLASS_CONTEXT_ELEM
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	191
-	Sb	0, FST
+	SB	0, FST
 	LI	192
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_VARIANT_ELEM ENUMERATION SUBTYPE INFO
 _CLASS_VARIANT_ELEM = '_CLASS_VARIANT_ELEM'
 namespace _CLASS_VARIANT_ELEM
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	193
-	Sb	0, FST
+	SB	0, FST
 	LI	194
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_ALIGNMENT_CLAUSE ENUMERATION SUBTYPE INFO
 _CLASS_ALIGNMENT_CLAUSE = '_CLASS_ALIGNMENT_CLAUSE'
 namespace _CLASS_ALIGNMENT_CLAUSE
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	195
-	Sb	0, FST
+	SB	0, FST
 	LI	195
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_VARIANT_PART ENUMERATION SUBTYPE INFO
 _CLASS_VARIANT_PART = '_CLASS_VARIANT_PART'
 namespace _CLASS_VARIANT_PART
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	196
-	Sb	0, FST
+	SB	0, FST
 	LI	196
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_TYPE_SPEC ENUMERATION SUBTYPE INFO
 _CLASS_TYPE_SPEC = '_CLASS_TYPE_SPEC'
 namespace _CLASS_TYPE_SPEC
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	201
-	Sb	0, FST
+	SB	0, FST
 	LI	217
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_DERIVABLE_SPEC ENUMERATION SUBTYPE INFO
 _CLASS_DERIVABLE_SPEC = '_CLASS_DERIVABLE_SPEC'
 namespace _CLASS_DERIVABLE_SPEC
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	201
-	Sb	0, FST
+	SB	0, FST
 	LI	213
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_FULL_TYPE_SPEC ENUMERATION SUBTYPE INFO
 _CLASS_FULL_TYPE_SPEC = '_CLASS_FULL_TYPE_SPEC'
 namespace _CLASS_FULL_TYPE_SPEC
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	201
-	Sb	0, FST
+	SB	0, FST
 	LI	211
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_NON_TASK ENUMERATION SUBTYPE INFO
 _CLASS_NON_TASK = '_CLASS_NON_TASK'
 namespace _CLASS_NON_TASK
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	202
-	Sb	0, FST
+	SB	0, FST
 	LI	211
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_SCALAR ENUMERATION SUBTYPE INFO
 _CLASS_SCALAR = '_CLASS_SCALAR'
 namespace _CLASS_SCALAR
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	202
-	Sb	0, FST
+	SB	0, FST
 	LI	205
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_REAL ENUMERATION SUBTYPE INFO
 _CLASS_REAL = '_CLASS_REAL'
 namespace _CLASS_REAL
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	204
-	Sb	0, FST
+	SB	0, FST
 	LI	205
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_UNCONSTRAINED ENUMERATION SUBTYPE INFO
 _CLASS_UNCONSTRAINED = '_CLASS_UNCONSTRAINED'
 namespace _CLASS_UNCONSTRAINED
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	206
-	Sb	0, FST
+	SB	0, FST
 	LI	208
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_UNCONSTRAINED_COMPOSITE ENUMERATION SUBTYPE INFO
 _CLASS_UNCONSTRAINED_COMPOSITE = '_CLASS_UNCONSTRAINED_COMPOSITE'
 namespace _CLASS_UNCONSTRAINED_COMPOSITE
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	206
-	Sb	0, FST
+	SB	0, FST
 	LI	207
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_CONSTRAINED ENUMERATION SUBTYPE INFO
 _CLASS_CONSTRAINED = '_CLASS_CONSTRAINED'
 namespace _CLASS_CONSTRAINED
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	209
-	Sb	0, FST
+	SB	0, FST
 	LI	211
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_PRIVATE_SPEC ENUMERATION SUBTYPE INFO
 _CLASS_PRIVATE_SPEC = '_CLASS_PRIVATE_SPEC'
 namespace _CLASS_PRIVATE_SPEC
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	212
-	Sb	0, FST
+	SB	0, FST
 	LI	213
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_NON_DIANA ENUMERATION SUBTYPE INFO
 _CLASS_NON_DIANA = '_CLASS_NON_DIANA'
 namespace _CLASS_NON_DIANA
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	218
-	Sb	0, FST
+	SB	0, FST
 	LI	230
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 
 					; _CLASS_UNSPECIFIED_TYPE ENUMERATION SUBTYPE INFO
 _CLASS_UNSPECIFIED_TYPE = '_CLASS_UNSPECIFIED_TYPE'
 namespace _CLASS_UNSPECIFIED_TYPE
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 	LI	223
-	Sb	0, FST
+	SB	0, FST
 	LI	228
-	Sb	0, LST
-VAR PARENT__u, q
-	La 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
-	Sa	0, PARENT__u
+	SB	0, LST
+VAR PARENT__u, Q
+	LA 0	, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._NODE_NAME.use__info
+	SA	0, PARENT__u
 end namespace
 ; EXC_LBL	L1
 end namespace

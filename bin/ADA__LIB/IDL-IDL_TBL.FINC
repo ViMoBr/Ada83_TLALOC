@@ -16,12 +16,12 @@ elab_spec:				;    SPEC ELAB
 ; F4A SET  cle=NUM  actuel=DN_INTEGER
 BRA post_LD_NUM
 LD_NUM.elab:
-	Ld -1, 0
+	LD -1, 0
 	RTD 0
 post_LD_NUM:
 BRA post_ST_NUM
 ST_NUM.elab:
-	Sd -1, 0
+	SD -1, 0
 	RTD 0
 post_ST_NUM:
 BRA post_INADR_NUM
@@ -30,60 +30,60 @@ INADR_NUM.elab:
 post_INADR_NUM:
 BRA post_OUTADR_NUM
 OUTADR_NUM.elab:
-	La
+	LA
 	RTD 0
 post_OUTADR_NUM:
-VAR NUM__outadr_ofs, q
+VAR NUM__outadr_ofs, Q
 	LCA OUTADR_NUM.elab
-	Sa	 1, NUM__outadr_ofs
-VAR NUM__inadr_ofs, q
+	SA	 1, NUM__outadr_ofs
+VAR NUM__inadr_ofs, Q
 	LCA INADR_NUM.elab
-	Sa	 1, NUM__inadr_ofs
-VAR NUM__st_ofs, q
+	SA	 1, NUM__inadr_ofs
+VAR NUM__st_ofs, Q
 	LCA ST_NUM.elab
-	Sa	 1, NUM__st_ofs
-VAR NUM__ld_ofs, q
+	SA	 1, NUM__st_ofs
+VAR NUM__ld_ofs, Q
 	LCA LD_NUM.elab
-	Sa	 1, NUM__ld_ofs
-VAR NUM__u_ofs, q
-	La	 0, STANDARD._INTEGER.use__info
-	Sa	 1, NUM__u_ofs
-VAR GFP_disp, q				; Lieu du Generic Frame Pointer 
+	SA	 1, NUM__ld_ofs
+VAR NUM__u_ofs, Q
+	LA	 0, STANDARD._INTEGER.use__info
+	SA	 1, NUM__u_ofs
+VAR GFP_disp, Q				; Lieu du Generic Frame Pointer 
 					; CODE_PACKAGE_SPEC
  hexa_show ' spec ', $
  hexa_show 'var elab DEFAULT_WIDTH ', $
-VAR DEFAULT_WIDTH_disp, d			; variable entiere
+VAR DEFAULT_WIDTH_disp, D			; variable entiere
 	LI	 11
 	DUP
-	Ld	0, STANDARD.TEXT_IO._FIELD.FST
+	LD	0, STANDARD.TEXT_IO._FIELD.FST
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	Ld	0, STANDARD.TEXT_IO._FIELD.LST
+	LD	0, STANDARD.TEXT_IO._FIELD.LST
 	CGT
 	BT	STANDARD.ce_raise_
-	Sd  1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.INT_IO.DEFAULT_WIDTH_disp
+	SD  1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.INT_IO.DEFAULT_WIDTH_disp
 
  hexa_show ' disp ', DEFAULT_WIDTH_disp
  hexa_show 'var elab DEFAULT_BASE ', $
-VAR DEFAULT_BASE_disp, d			; variable entiere
+VAR DEFAULT_BASE_disp, D			; variable entiere
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	10
 	DUP
-	Ld	0, STANDARD.TEXT_IO._NUMBER_BASE.FST
+	LD	0, STANDARD.TEXT_IO._NUMBER_BASE.FST
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	Ld	0, STANDARD.TEXT_IO._NUMBER_BASE.LST
+	LD	0, STANDARD.TEXT_IO._NUMBER_BASE.LST
 	CGT
 	BT	STANDARD.ce_raise_
-	Sd  1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.INT_IO.DEFAULT_BASE_disp
+	SD  1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.INT_IO.DEFAULT_BASE_disp
 
  hexa_show ' disp ', DEFAULT_BASE_disp
 					; sub program entry decl (in instantiation TRUE )
-if defined GET_L1_
-PRO	GET_L1				;---------- PRO GET
- hexa_show 'GET_L1 ', $
+if defined GET_L61_
+PRO	GET_L61				;---------- PRO GET
+ hexa_show 'GET_L61 ', $
 PRMS					;    debut parametrage
 	PRM FILE_ofs				; in
 	PRM ITEM_ofs				; out
@@ -92,18 +92,18 @@ endPRMS					;    fin parametrage
 ELB 2
 begin:
 	LVA	 1, GFP_disp
-	Ld	 2, -WIDTH_ofs
-	La 	 2, -ITEM_ofs
-	La 	 2, -FILE_ofs
+	LD	 2, -WIDTH_ofs
+	LA 	 2, -ITEM_ofs
+	LA 	 2, -FILE_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L61
 	UNLINK	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO GET
 end if
 					; sub program entry decl (in instantiation TRUE )
-if defined GET_L2_
-PRO	GET_L2				;---------- PRO GET
- hexa_show 'GET_L2 ', $
+if defined GET_L62_
+PRO	GET_L62				;---------- PRO GET
+ hexa_show 'GET_L62 ', $
 PRMS					;    debut parametrage
 	PRM ITEM_ofs				; out
 	PRM WIDTH_ofs				; in
@@ -111,17 +111,17 @@ endPRMS					;    fin parametrage
 ELB 2
 begin:
 	LVA	 1, GFP_disp
-	Ld	 2, -WIDTH_ofs
-	La 	 2, -ITEM_ofs
+	LD	 2, -WIDTH_ofs
+	LA 	 2, -ITEM_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L62
 	UNLINK	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO GET
 end if
 					; sub program entry decl (in instantiation TRUE )
-if defined PUT_L3_
-PRO	PUT_L3				;---------- PRO PUT
- hexa_show 'PUT_L3 ', $
+if defined PUT_L63_
+PRO	PUT_L63				;---------- PRO PUT
+ hexa_show 'PUT_L63 ', $
 PRMS					;    debut parametrage
 	PRM FILE_ofs				; in
 	PRM ITEM_ofs				; in
@@ -131,19 +131,19 @@ endPRMS					;    fin parametrage
 ELB 2
 begin:
 	LVA	 1, GFP_disp
-	Ld	 2, -BASE_ofs
-	Ld	 2, -WIDTH_ofs
-	Ld	 2, -ITEM_ofs
-	La 	 2, -FILE_ofs
+	LD	 2, -BASE_ofs
+	LD	 2, -WIDTH_ofs
+	LD	 2, -ITEM_ofs
+	LA 	 2, -FILE_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L63
 	UNLINK	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO PUT
 end if
 					; sub program entry decl (in instantiation TRUE )
-if defined PUT_L4_
-PRO	PUT_L4				;---------- PRO PUT
- hexa_show 'PUT_L4 ', $
+if defined PUT_L64_
+PRO	PUT_L64				;---------- PRO PUT
+ hexa_show 'PUT_L64 ', $
 PRMS					;    debut parametrage
 	PRM ITEM_ofs				; in
 	PRM WIDTH_ofs				; in
@@ -152,18 +152,18 @@ endPRMS					;    fin parametrage
 ELB 2
 begin:
 	LVA	 1, GFP_disp
-	Ld	 2, -BASE_ofs
-	Ld	 2, -WIDTH_ofs
-	Ld	 2, -ITEM_ofs
+	LD	 2, -BASE_ofs
+	LD	 2, -WIDTH_ofs
+	LD	 2, -ITEM_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L64
 	UNLINK	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO PUT
 end if
 					; sub program entry decl (in instantiation TRUE )
-if defined GET_L5_
-PRO	GET_L5				;---------- PRO GET
- hexa_show 'GET_L5 ', $
+if defined GET_L65_
+PRO	GET_L65				;---------- PRO GET
+ hexa_show 'GET_L65 ', $
 PRMS					;    debut parametrage
 	PRM FROM_ofs				; in
 	PRM ITEM_ofs				; out
@@ -172,18 +172,18 @@ endPRMS					;    fin parametrage
 ELB 2
 begin:
 	LVA	 1, GFP_disp
-	La 	 2, -LAST_ofs
-	La 	 2, -ITEM_ofs
-	La 	 2, -FROM_ofs
+	LA 	 2, -LAST_ofs
+	LA 	 2, -ITEM_ofs
+	LA 	 2, -FROM_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L65
 	UNLINK	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO GET
 end if
 					; sub program entry decl (in instantiation TRUE )
-if defined PUT_L6_
-PRO	PUT_L6				;---------- PRO PUT
- hexa_show 'PUT_L6 ', $
+if defined PUT_L66_
+PRO	PUT_L66				;---------- PRO PUT
+ hexa_show 'PUT_L66 ', $
 PRMS					;    debut parametrage
 	PRM TO_ofs				; out
 	PRM ITEM_ofs				; in
@@ -192,9 +192,9 @@ endPRMS					;    fin parametrage
 ELB 2
 begin:
 	LVA	 1, GFP_disp
-	Ld	 2, -BASE_ofs
-	Ld	 2, -ITEM_ofs
-	La 	 2, -TO_ofs
+	LD	 2, -BASE_ofs
+	LD	 2, -ITEM_ofs
+	LA 	 2, -TO_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L66
 	UNLINK	 2
 	RTD	prm_siz
@@ -204,87 +204,87 @@ end if
 end namespace
 
  hexa_show 'var elab SFILE ', $
-VAR SFILE_disp, q				; variable record : pointeur aux data record
-VAR SFILE__u, q				; variable record : pointeur aux useinfo
+VAR SFILE_disp, Q				; variable record : pointeur aux data record
+VAR SFILE__u, Q				; variable record : pointeur aux useinfo
 VAR SFILE__dat, STANDARD.TEXT_IO._FILE_TYPE.size
 	LVA	1, SFILE__dat
-	Sa	1, SFILE_disp				; record fin
-	LVA	1, STANDARD.TEXT_IO._FILE_TYPE.SIZ
-	Sa	1, SFILE__u
-	LIVa 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.SFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.ID
+	SA	1, SFILE_disp				; record fin
+	LVA	1, STANDARD.TEXT_IO._FILE_TYPE.SIZ__
+	SA	1, SFILE__u
+	LIVA 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.SFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.ID
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
 	NEG
-	Sd
-	LIVa 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.SFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.IS_OPENED
+	SD
+	LIVA 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.SFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.IS_OPENED
 	LI	0
-	Sb
-	LIVa 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.SFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.PAGE_LENGTH
-	ULd 0,	STANDARD.TEXT_IO.UNBOUNDED_disp
-	Sd
-	LIVa 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.SFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.LINE_LENGTH
-	ULd 0,	STANDARD.TEXT_IO.UNBOUNDED_disp
-	Sd
-	LIVa 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.SFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.PAGE
+	SB
+	LIVA 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.SFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.PAGE_LENGTH
+	ULD 0,	STANDARD.TEXT_IO.UNBOUNDED_disp
+	SD
+	LIVA 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.SFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.LINE_LENGTH
+	ULD 0,	STANDARD.TEXT_IO.UNBOUNDED_disp
+	SD
+	LIVA 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.SFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.PAGE
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
-	Sd
-	LIVa 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.SFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.LINE
+	SD
+	LIVA 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.SFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.LINE
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
-	Sd
-	LIVa 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.SFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.COL
+	SD
+	LIVA 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.SFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.COL
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
-	Sd
-	LIVa 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.SFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.IS_DEFAULT_IO
+	SD
+	LIVA 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.SFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.IS_DEFAULT_IO
 	LI	0
-	Sb
-	LIVa 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.SFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.LOOK_AHEAD
+	SB
+	LIVA 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.SFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.LOOK_AHEAD
 	LI	 0
-	Sb
-	LIVa 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.SFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.HAS_LOOK_AHEAD
+	SB
+	LIVA 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.SFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.HAS_LOOK_AHEAD
 	LI	0
-	Sb
-	LIVa 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.SFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.AT_END_OF_FILE
+	SB
+	LIVA 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.SFILE_disp, STANDARD.TEXT_IO._FILE_TYPE.AT_END_OF_FILE
 	LI	0
-	Sb
+	SB
 
  hexa_show ' disp ', SFILE_disp
  hexa_show 'var elab T_CHR ', $
-VAR T_CHR_disp, b				; variable bool char enum
+VAR T_CHR_disp, B				; variable bool char enum
 
  hexa_show ' disp ', T_CHR_disp
  hexa_show 'var elab T_INT ', $
-VAR T_INT_disp, d				; variable entiere
+VAR T_INT_disp, D				; variable entiere
 
  hexa_show ' disp ', T_INT_disp
  hexa_show 'var elab T_TXT ', $
 _T_TXT__type = '_T_TXT__type'
 namespace _T_TXT__type			; array var constrained array type info
-VAR use__info, q
-VAR SIZ, d
-	LVA	1, SIZ
-	Sa	1, use__info
-VAR _COMP_SIZ, d
-VAR _FST_1, d
-VAR _LST_1, d
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	1, SIZ__
+	SA	1, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
 	LI	8
-	Sd	1, _COMP_SIZ
-	Ld	1, _COMP_SIZ
+	SD	1, _COMP_SIZ
+	LD	1, _COMP_SIZ
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
-	Sd	1, _FST_1
+	SD	1, _FST_1
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	50
-	Sd	1, _LST_1
-	Ld	1, _LST_1
-	Ld	1, _FST_1
+	SD	1, _LST_1
+	LD	1, _LST_1
+	LD	1, _FST_1
 	SUB
 	INC
 	CLAMP0
 	MUL
-	Sd	1, SIZ
+	SD	1, SIZ__
   virtual at 4
 COMP_SIZ = $
 	rd 1 
@@ -294,31 +294,31 @@ LST_1 = $
 	rd 1 
   end virtual
 end namespace
-VAR T_TXT_disp, q				; variable array : pointeur aux data
-VAR T_TXT__u, q				; variable array : useinfo pointeur au rec info
-	La 1, _T_TXT__type.use__info
-	Sa	1, T_TXT__u				; array info ptr at __u
-	Ld	1, _T_TXT__type.SIZ
+VAR T_TXT_disp, Q				; variable array : pointeur aux data
+VAR T_TXT__u, Q				; variable array : useinfo pointeur au rec info
+	LA 1, _T_TXT__type.use__info
+	SA	1, T_TXT__u				; array info ptr at __u
+	LD	1, _T_TXT__type.SIZ__
 	LI	8
 	DIV
 	CO_VAR
-	Sa	1, T_TXT_disp				; array data ptr at _disp
+	SA	1, T_TXT_disp				; array data ptr at _disp
 
  hexa_show ' disp ', T_TXT_disp
  hexa_show 'var elab T_LAST ', $
-VAR T_LAST_disp, d				; variable entiere
+VAR T_LAST_disp, D				; variable entiere
 
  hexa_show ' disp ', T_LAST_disp
  hexa_show 'var elab AS_SEEN ', $
-VAR AS_SEEN_disp, b				; variable bool char enum
+VAR AS_SEEN_disp, B				; variable bool char enum
 
  hexa_show ' disp ', AS_SEEN_disp
  hexa_show 'var elab AS_LIST_SEEN ', $
-VAR AS_LIST_SEEN_disp, b			; variable bool char enum
+VAR AS_LIST_SEEN_disp, B			; variable bool char enum
 
  hexa_show ' disp ', AS_LIST_SEEN_disp
  hexa_show 'var elab NON_AS_SEEN ', $
-VAR NON_AS_SEEN_disp, b			; variable bool char enum
+VAR NON_AS_SEEN_disp, B			; variable bool char enum
 
  hexa_show ' disp ', NON_AS_SEEN_disp
 					;    end elab
@@ -326,75 +326,75 @@ begin:					;---------- BDY INSTRUCTIONS
 STR STR_L9, ""				; constante string=""
 	LCA	STR_L9.data_ptr
 ; CODE & concat _STRING
-VAR	ANON_33_25_L10_G_data, q
-VAR	ANON_33_25_L10_G_info, q
-VAR	ANON_33_37_L10_D_data, q
-VAR	ANON_33_37_L10_D_info, q
-VAR	ANON_33_25_L10_G_len,  q
-VAR	ANON_33_37_L10_D_len,  q
-VAR	ANON_33_25_L10_R_disp, q
-VAR	ANON_33_25_L10_R__u,   q
+VAR	ANON_33_25_L10_G_data, Q
+VAR	ANON_33_25_L10_G_info, Q
+VAR	ANON_33_37_L10_D_data, Q
+VAR	ANON_33_37_L10_D_info, Q
+VAR	ANON_33_25_L10_G_len,  Q
+VAR	ANON_33_37_L10_D_len,  Q
+VAR	ANON_33_25_L10_R_disp, Q
+VAR	ANON_33_25_L10_R__u,   Q
 namespace ANON_33_25_L10_R_info
-  VAR SIZ,      d
-  VAR _COMP_SIZ, d
-  VAR _FST_1,    d
-  VAR _LST_1,    d
+  VAR SIZ__, D
+  VAR _COMP_SIZ, D
+  VAR _FST_1, D
+  VAR _LST_1, D
 end namespace
-	La  1,	-SPEC_FILE_ofs
+	LA  1,	-SPEC_FILE_ofs
 	DUP
-	La  ,  0
-	Sa  1, ANON_33_25_L10_G_data
-	La  ,  8
-	Sa  1, ANON_33_25_L10_G_info
-	LId 1, ANON_33_25_L10_G_info, _STRING.LST_1
-	LId 1, ANON_33_25_L10_G_info, _STRING.FST_1
+	LA  ,  0
+	SA  1, ANON_33_25_L10_G_data
+	LA  ,  8
+	SA  1, ANON_33_25_L10_G_info
+	LID 1, ANON_33_25_L10_G_info, _STRING.LST_1
+	LID 1, ANON_33_25_L10_G_info, _STRING.FST_1
 	SUB
 	INC
 	CLAMP0
-	Sa  1, ANON_33_25_L10_G_len
+	SA  1, ANON_33_25_L10_G_len
 STR ANON_33_37_L10_D, ".tbl"			; constante string=".tbl"
 	LCA	ANON_33_37_L10_D.data_ptr
 	DUP
-	La  ,  0
-	Sa  1, ANON_33_37_L10_D_data
-	La  ,  8
-	Sa  1, ANON_33_37_L10_D_info
-	LId 1, ANON_33_37_L10_D_info, _STRING.LST_1
-	LId 1, ANON_33_37_L10_D_info, _STRING.FST_1
+	LA  ,  0
+	SA  1, ANON_33_37_L10_D_data
+	LA  ,  8
+	SA  1, ANON_33_37_L10_D_info
+	LID 1, ANON_33_37_L10_D_info, _STRING.LST_1
+	LID 1, ANON_33_37_L10_D_info, _STRING.FST_1
 	SUB
 	INC
 	CLAMP0
-	Sa  1, ANON_33_37_L10_D_len
-	La  1, ANON_33_25_L10_G_len
-	La  1, ANON_33_37_L10_D_len
+	SA  1, ANON_33_37_L10_D_len
+	LA  1, ANON_33_25_L10_G_len
+	LA  1, ANON_33_37_L10_D_len
 	ADD
 	CO_VAR
-	Sa  1, ANON_33_25_L10_R_disp
+	SA  1, ANON_33_25_L10_R_disp
 	LI	1
-	Sd  1, ANON_33_25_L10_R_info._FST_1
-	La  1, ANON_33_25_L10_G_len
-	La  1, ANON_33_37_L10_D_len
+	SD  1, ANON_33_25_L10_R_info._FST_1
+	LA  1, ANON_33_25_L10_G_len
+	LA  1, ANON_33_37_L10_D_len
 	ADD
-	Sd  1, ANON_33_25_L10_R_info._LST_1
+	SD  1, ANON_33_25_L10_R_info._LST_1
 	LI	8
-	Sd  1, ANON_33_25_L10_R_info._COMP_SIZ
-	La  1, ANON_33_25_L10_G_len
-	La  1, ANON_33_37_L10_D_len
+	SD  1, ANON_33_25_L10_R_info._COMP_SIZ
+	LA  1, ANON_33_25_L10_G_len
+	LA  1, ANON_33_37_L10_D_len
 	ADD
 	LI	8
 	MUL
-	Sd  1, ANON_33_25_L10_R_info.SIZ
-	LVA 1, ANON_33_25_L10_R_info.SIZ
-	Sa  1, ANON_33_25_L10_R__u
-	La  1, ANON_33_25_L10_R_disp
-	La  1, ANON_33_25_L10_G_len
-	La  1, ANON_33_25_L10_G_data
+	SD  1, ANON_33_25_L10_R_info.SIZ__
+	LVA 1, ANON_33_25_L10_R_info.SIZ__
+	SA  1, ANON_33_25_L10_R__u
+	LA  1, ANON_33_25_L10_R_disp
+	LA  1, ANON_33_25_L10_G_len
+	LA  1, ANON_33_25_L10_G_data
 	BLKMOV
-	La  1, ANON_33_25_L10_R_disp
-	La  1, ANON_33_25_L10_G_len
+	LA  1, ANON_33_25_L10_R_disp
+	LA  1, ANON_33_25_L10_G_len
 	ADD
-	La  1, ANON_33_37_L10_D_len
-	La  1, ANON_33_37_L10_D_data
+	LA  1, ANON_33_37_L10_D_len
+	LA  1, ANON_33_37_L10_D_data
 	BLKMOV
 	LVA 1, ANON_33_25_L10_R_disp
 	LI  0
@@ -403,14 +403,14 @@ STR ANON_33_37_L10_D, ".tbl"			; constante string=".tbl"
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
 	NEG
-	SId	0, 	STANDARD.IDL.IDL_TBL.LAST_NODE_disp, 0
+	SID	0, 	STANDARD.IDL.IDL_TBL.LAST_NODE_disp, 0
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
 	NEG
-	SId	0, 	STANDARD.IDL.IDL_TBL.LAST_ATTR_disp, 0
+	SID	0, 	STANDARD.IDL.IDL_TBL.LAST_ATTR_disp, 0
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	0
-	SId	0, 	STANDARD.IDL.IDL_TBL.LAST_NODE_ATTR_disp, 0
+	SID	0, 	STANDARD.IDL.IDL_TBL.LAST_NODE_ATTR_disp, 0
 LOOP__1:
 	LI	0					; lieu resultat sur pile
 	LVA 1,	SFILE_disp
@@ -422,10 +422,10 @@ LOOP__1:
 	LVA 1,	SFILE_disp
 	CALL	STANDARD.TEXT_IO. ,GET_L49
 					; debut if
-	ULb 1,	T_CHR_disp
+	ULB 1,	T_CHR_disp
 	LI	67
 	CNE
-	ULb 1,	T_CHR_disp
+	ULB 1,	T_CHR_disp
 	LI	69
 	CNE
 	ET
@@ -433,16 +433,16 @@ LOOP__1:
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	0
 	DUP
-	Ld	0, STANDARD.TEXT_IO._FIELD.FST
+	LD	0, STANDARD.TEXT_IO._FIELD.FST
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	Ld	0, STANDARD.TEXT_IO._FIELD.LST
+	LD	0, STANDARD.TEXT_IO._FIELD.LST
 	CGT
 	BT	STANDARD.ce_raise_
 	LVA  1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_INT_disp
 	LVA 1,	SFILE_disp
-	CALL	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.INT_IO. ,GET_L1
+	CALL	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.INT_IO. ,GET_L61
 	BRA	L12
 L13:
 L12:					; post if
@@ -453,171 +453,171 @@ L12:					; post if
 namespace	SUPPRESS_BLANKS
 ELB 2					;    BODY ELAB
  hexa_show 'var elab D ', $
-VAR D_disp, d				; variable entiere
+VAR D_disp, D				; variable entiere
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	0
-	Sd  2,	D_disp
+	SD  2,	D_disp
 
  hexa_show ' disp ', D_disp
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
-VAR	SL17_disp, d				; compteur boucle LOOP__3
+VAR	SL17_disp, D				; compteur boucle LOOP__3
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
-	Sd  2,	SL17_disp
-VAR	LMT_SL17_disp, d			; limite boucle LOOP__3
-	Ld 1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_LAST_disp
-	Sd  2,	LMT_SL17_disp
-	Ld  2,	SL17_disp				; test null range LOOP__3
-	Ld  2,	LMT_SL17_disp
+	SD  2,	SL17_disp
+VAR	LMT_SL17_disp, D			; limite boucle LOOP__3
+	LD 1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_LAST_disp
+	SD  2,	LMT_SL17_disp
+	LD  2,	SL17_disp				; test null range LOOP__3
+	LD  2,	LMT_SL17_disp
 	CGT
 	BT	L16
 LOOP__3:					; corps boucle LOOP__3
 					; debut if
-	La	 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT_disp	; array data start address on stack
-	Ld 2,	SL17_disp
+	LA	 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT_disp	; array data start address on stack
+	LD 2,	SL17_disp
 	DUP
-	LId	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.FST_1
+	LID	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.FST_1
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	LId	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.LST_1
+	LID	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.LST_1
 	CGT
 	BT	STANDARD.ce_raise_
-	LId	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.FST_1	; (index - FST_1) * SIZ_1
+	LID	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.FST_1	; (index - FST_1) * SIZ_1
 	SUB
-	LId	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.COMP_SIZ
+	LID	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.COMP_SIZ
 	LI	8
 	DIV
 	MUL
 	ADD					; add offset to start address
-	ULb
+	ULB
 	LI	32
 	CNE
-	La	 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT_disp	; array data start address on stack
-	Ld 2,	SL17_disp
+	LA	 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT_disp	; array data start address on stack
+	LD 2,	SL17_disp
 	DUP
-	LId	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.FST_1
+	LID	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.FST_1
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	LId	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.LST_1
+	LID	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.LST_1
 	CGT
 	BT	STANDARD.ce_raise_
-	LId	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.FST_1	; (index - FST_1) * SIZ_1
+	LID	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.FST_1	; (index - FST_1) * SIZ_1
 	SUB
-	LId	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.COMP_SIZ
+	LID	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.COMP_SIZ
 	LI	8
 	DIV
 	MUL
 	ADD					; add offset to start address
-	ULb
+	ULB
 	LI	 9
 	CNE
 	ET
 	BF	L19
-	Ld 2,	D_disp
+	LD 2,	D_disp
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
 	ADD
-	Sd  2,	D_disp
-	La	 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT_disp	; array data start address on stack
-	Ld 2,	D_disp
+	SD  2,	D_disp
+	LA	 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT_disp	; array data start address on stack
+	LD 2,	D_disp
 	DUP
-	LId	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.FST_1
+	LID	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.FST_1
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	LId	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.LST_1
+	LID	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.LST_1
 	CGT
 	BT	STANDARD.ce_raise_
-	LId	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.FST_1	; (index - FST_1) * SIZ_1
+	LID	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.FST_1	; (index - FST_1) * SIZ_1
 	SUB
-	LId	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.COMP_SIZ
+	LID	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.COMP_SIZ
 	LI	8
 	DIV
 	MUL
 	ADD					; add offset to start address
-	La	 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT_disp	; array data start address on stack
-	Ld 2,	SL17_disp
+	LA	 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT_disp	; array data start address on stack
+	LD 2,	SL17_disp
 	DUP
-	LId	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.FST_1
+	LID	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.FST_1
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	LId	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.LST_1
+	LID	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.LST_1
 	CGT
 	BT	STANDARD.ce_raise_
-	LId	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.FST_1	; (index - FST_1) * SIZ_1
+	LID	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.FST_1	; (index - FST_1) * SIZ_1
 	SUB
-	LId	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.COMP_SIZ
+	LID	1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.COMP_SIZ
 	LI	8
 	DIV
 	MUL
 	ADD					; add offset to start address
-	ULb
-	Sb
+	ULB
+	SB
 	BRA	L18
 L19:
 L18:					; post if
-	Ld  2,	SL17_disp				; test de sortie LOOP__3
-	Ld  2,	LMT_SL17_disp
+	LD  2,	SL17_disp				; test de sortie LOOP__3
+	LD  2,	LMT_SL17_disp
 	CEQ
 	BT	L16
-	Ld  2,	SL17_disp				; mise a jour compteur LOOP__3
+	LD  2,	SL17_disp				; mise a jour compteur LOOP__3
 	INC
-	Sd  2,	SL17_disp
+	SD  2,	SL17_disp
 	BRA	LOOP__3				; iteration suivante LOOP__3
 L16:					; post loop LOOP__3
-	Ld 2,	D_disp
+	LD 2,	D_disp
 	DUP
-	Ld	0, STANDARD._NATURAL.FST
+	LD	0, STANDARD._NATURAL.FST
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	Ld	0, STANDARD._NATURAL.LST
+	LD	0, STANDARD._NATURAL.LST
 	CGT
 	BT	STANDARD.ce_raise_
-	Sd  1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_LAST_disp
+	SD  1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_LAST_disp
 	UNLINK 2
 endPRO
 					; debut if
-	ULb 1,	T_CHR_disp
+	ULB 1,	T_CHR_disp
 	LI	78
 	CEQ
 	BF	L21
-	LId	0, STANDARD.IDL.IDL_TBL.LAST_NODE_disp, 0
+	LID	0, STANDARD.IDL.IDL_TBL.LAST_NODE_disp, 0
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
 	ADD
-	SId	0, 	STANDARD.IDL.IDL_TBL.LAST_NODE_disp, 0
+	SID	0, 	STANDARD.IDL.IDL_TBL.LAST_NODE_disp, 0
 					; debut if
-	LId	0, STANDARD.IDL.IDL_TBL.LAST_NODE_disp, 0
-	Ld 1,	T_INT_disp
+	LID	0, STANDARD.IDL.IDL_TBL.LAST_NODE_disp, 0
+	LD 1,	T_INT_disp
 	CNE
 	BF	L23
 STR STR_L24, "IDL.IDL_TBL.INIT_SPEC: LAST NODE /= T_INT"	; constante string="IDL.IDL_TBL.INIT_SPEC: LAST NODE /= T_INT"
 	LCA	STR_L24.data_ptr
 	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
 	LCA	STANDARD.PROGRAM_ERROR__exc.data_ptr
-	Sa	0, STANDARD.EXCEPTIONS_CURRENT_disp
+	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 	BRA	L22
 L23:
 L22:					; post if
-	La	 0, STANDARD.IDL.IDL_TBL.N_SPEC_disp	; array data start address on stack
-	LId	0, STANDARD.IDL.IDL_TBL.LAST_NODE_disp, 0
+	LA	 0, STANDARD.IDL.IDL_TBL.N_SPEC_disp	; array data start address on stack
+	LID	0, STANDARD.IDL.IDL_TBL.LAST_NODE_disp, 0
 	DUP
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.LST_1
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.LST_1
 	CGT
 	BT	STANDARD.ce_raise_
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1	; (index - FST_1) * SIZ_1
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1	; (index - FST_1) * SIZ_1
 	SUB
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.COMP_SIZ
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.COMP_SIZ
 	LI	8
 	DIV
 	MUL
@@ -627,140 +627,140 @@ L22:					; post if
 	LVA	, STANDARD.IDL.IDL_TBL._NODE_SPECIF.NS_SIZE
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	0
-	Sb
+	SB
 	DUP
 	LVA	, STANDARD.IDL.IDL_TBL._NODE_SPECIF.NS_FIRST_A
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	0
-	Sd
+	SD
 	DUP
 	LVA	, STANDARD.IDL.IDL_TBL._NODE_SPECIF.NS_ARITY
 	LI	0
-	Sb
+	SB
 	DROP
 	LI	0
-	Sb  1,	AS_LIST_SEEN_disp
+	SB  1,	AS_LIST_SEEN_disp
 	LI	0
-	Sb  1,	AS_SEEN_disp
+	SB  1,	AS_SEEN_disp
 	LI	0
-	Sb  1,	NON_AS_SEEN_disp
+	SB  1,	NON_AS_SEEN_disp
 	BRA	L20
 L21:
-	ULb 1,	T_CHR_disp
+	ULB 1,	T_CHR_disp
 	LI	65
 	CEQ
-	ULb 1,	T_CHR_disp
+	ULB 1,	T_CHR_disp
 	LI	66
 	CEQ
 	OU
-	ULb 1,	T_CHR_disp
+	ULB 1,	T_CHR_disp
 	LI	73
 	CEQ
 	OU
 	BF	L25
-	LId	0, STANDARD.IDL.IDL_TBL.LAST_NODE_ATTR_disp, 0
+	LID	0, STANDARD.IDL.IDL_TBL.LAST_NODE_ATTR_disp, 0
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
 	ADD
-	SId	0, 	STANDARD.IDL.IDL_TBL.LAST_NODE_ATTR_disp, 0
+	SID	0, 	STANDARD.IDL.IDL_TBL.LAST_NODE_ATTR_disp, 0
 namespace	BLOCK__2
 ELB 2					;    BODY ELAB
  hexa_show 'var elab NN ', $
-VAR NN_disp, b				; variable entiere
-	LId	0, STANDARD.IDL.IDL_TBL.LAST_NODE_disp, 0
-	Sb  2,	NN_disp
+VAR NN_disp, B				; variable entiere
+	LID	0, STANDARD.IDL.IDL_TBL.LAST_NODE_disp, 0
+	SB  2,	NN_disp
 
  hexa_show ' disp ', NN_disp
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 					; debut if
-	La	 0, STANDARD.IDL.IDL_TBL.N_SPEC_disp	; array data start address on stack
-	ULb 2,	NN_disp
+	LA	 0, STANDARD.IDL.IDL_TBL.N_SPEC_disp	; array data start address on stack
+	ULB 2,	NN_disp
 	DUP
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.LST_1
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.LST_1
 	CGT
 	BT	STANDARD.ce_raise_
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1	; (index - FST_1) * SIZ_1
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1	; (index - FST_1) * SIZ_1
 	SUB
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.COMP_SIZ
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.COMP_SIZ
 	LI	8
 	DIV
 	MUL
 	ADD					; add offset to start address
-	Ld	, STANDARD.IDL.IDL_TBL._NODE_SPECIF.NS_FIRST_A
+	LD	, STANDARD.IDL.IDL_TBL._NODE_SPECIF.NS_FIRST_A
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	0
 	CEQ
 	BF	L29
-	La	 0, STANDARD.IDL.IDL_TBL.N_SPEC_disp	; array data start address on stack
-	ULb 2,	NN_disp
+	LA	 0, STANDARD.IDL.IDL_TBL.N_SPEC_disp	; array data start address on stack
+	ULB 2,	NN_disp
 	DUP
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.LST_1
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.LST_1
 	CGT
 	BT	STANDARD.ce_raise_
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1	; (index - FST_1) * SIZ_1
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1	; (index - FST_1) * SIZ_1
 	SUB
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.COMP_SIZ
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.COMP_SIZ
 	LI	8
 	DIV
 	MUL
 	ADD					; add offset to start address
 	LVA	, STANDARD.IDL.IDL_TBL._NODE_SPECIF.NS_FIRST_A
-	LId	0, STANDARD.IDL.IDL_TBL.LAST_NODE_ATTR_disp, 0
-	Sd
+	LID	0, STANDARD.IDL.IDL_TBL.LAST_NODE_ATTR_disp, 0
+	SD
 	BRA	L28
 L29:
 L28:					; post if
-	La	 0, STANDARD.IDL.IDL_TBL.N_SPEC_disp	; array data start address on stack
-	ULb 2,	NN_disp
+	LA	 0, STANDARD.IDL.IDL_TBL.N_SPEC_disp	; array data start address on stack
+	ULB 2,	NN_disp
 	DUP
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.LST_1
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.LST_1
 	CGT
 	BT	STANDARD.ce_raise_
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1	; (index - FST_1) * SIZ_1
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1	; (index - FST_1) * SIZ_1
 	SUB
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.COMP_SIZ
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.COMP_SIZ
 	LI	8
 	DIV
 	MUL
 	ADD					; add offset to start address
 	LVA	, STANDARD.IDL.IDL_TBL._NODE_SPECIF.NS_SIZE
-	La	 0, STANDARD.IDL.IDL_TBL.N_SPEC_disp	; array data start address on stack
-	ULb 2,	NN_disp
+	LA	 0, STANDARD.IDL.IDL_TBL.N_SPEC_disp	; array data start address on stack
+	ULB 2,	NN_disp
 	DUP
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.LST_1
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.LST_1
 	CGT
 	BT	STANDARD.ce_raise_
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1	; (index - FST_1) * SIZ_1
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1	; (index - FST_1) * SIZ_1
 	SUB
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.COMP_SIZ
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.COMP_SIZ
 	LI	8
 	DIV
 	MUL
 	ADD					; add offset to start address
-	ULb	, STANDARD.IDL.IDL_TBL._NODE_SPECIF.NS_SIZE
+	ULB	, STANDARD.IDL.IDL_TBL._NODE_SPECIF.NS_SIZE
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
 	ADD
-	Sb
+	SB
 					; debut if
-	Ld 1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_LAST_disp
+	LD 1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_LAST_disp
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	3
 	CGE
@@ -768,216 +768,200 @@ L28:					; post if
 	BF	L32
 	DROP
 ; CODE composite "=" _STRING
-VAR	ANON_90_36_L33_G_data, q
-VAR	ANON_90_36_L33_G_info, q
-VAR	ANON_90_36_L33_G_len,  q
-VAR	ANON_90_36_L33_G_slice_data, q
-VAR	ANON_90_36_L33_G_slice_len,  q
-VAR	ANON_90_36_L33_G_disp, q
-VAR	ANON_90_36_L33_G__u,   q
-namespace ANON_90_36_L33_G_info
-  VAR SIZ,      d
-  VAR _COMP_SIZ, d
-  VAR _FST_1,    d
-  VAR _LST_1,    d
-end namespace
-	La 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT_disp
+VAR	ANON_90_36_L33_G_data, Q
+VAR	ANON_90_36_L33_G_info, Q
+VAR	ANON_90_36_L33_G_len,  Q
+	LA 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT_disp
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
-	LId 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.FST_1
+	LID 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.FST_1
 	SUB
 	LI	1
 	MUL
 	ADD
+namespace ANON_90_36			; ensemble doublet @data/@info pour slice anonyme source
+VAR ANON_90_36_disp, Q
+VAR ANON_90_36__u, Q
+VAR SIZ__, D
+VAR COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
+	SA	2, ANON_90_36_disp
+	LVA	2, SIZ__
+	SA	2, ANON_90_36__u
+	LI	8
+	SD	2, COMP_SIZ
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SD	2, _FST_1
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	3
-; CODE_NUMERIC_LITERAL DN_INTEGER
-	LI	1
+	SD	2, _LST_1
+	LD	2, _LST_1
+	LD	2, _FST_1
 	SUB
 	INC
 	CLAMP0
-	LI	1
-	MUL
-	Sa  2, ANON_90_36_L33_G_slice_len
-	Sa  2, ANON_90_36_L33_G_slice_data
-	La  2, ANON_90_36_L33_G_slice_data
-	Sa  2, ANON_90_36_L33_G_disp
-	LVA 2, ANON_90_36_L33_G_info.SIZ
-	Sa  2, ANON_90_36_L33_G__u
-	LI	1
-	Sd  2, ANON_90_36_L33_G_info._FST_1
-	La  2, ANON_90_36_L33_G_slice_len
-	Sd  2, ANON_90_36_L33_G_info._LST_1
-	LI	8
-	Sd  2, ANON_90_36_L33_G_info._COMP_SIZ
-	La  2, ANON_90_36_L33_G_slice_len
 	LI	8
 	MUL
-	Sd  2, ANON_90_36_L33_G_info.SIZ
-	LVA 2, ANON_90_36_L33_G_disp
+	SD	2, SIZ__
+	LVA	2, ANON_90_36_disp
+end namespace
 	DUP
-	La  ,  0
-	Sa  2, ANON_90_36_L33_G_data
-	La  ,  8
-	Sa  2, ANON_90_36_L33_G_info
-	LId 2, ANON_90_36_L33_G_info, STANDARD._STRING.LST_1
-	LId 2, ANON_90_36_L33_G_info, STANDARD._STRING.FST_1
+	LA  ,  0
+	SA  2, ANON_90_36_L33_G_data
+	LA  ,  8
+	SA  2, ANON_90_36_L33_G_info
+	LID 2, ANON_90_36_L33_G_info, STANDARD._STRING.LST_1
+	LID 2, ANON_90_36_L33_G_info, STANDARD._STRING.FST_1
 	SUB
 	INC
 	CLAMP0
-	Sa  2, ANON_90_36_L33_G_len
-VAR	ANON_90_52_L33_D_data, q
-VAR	ANON_90_52_L33_D_info, q
-VAR	ANON_90_52_L33_D_len,  q
+	SA  2, ANON_90_36_L33_G_len
+VAR	ANON_90_52_L33_D_data, Q
+VAR	ANON_90_52_L33_D_info, Q
+VAR	ANON_90_52_L33_D_len,  Q
 STR ANON_90_52_L33_D, "as_"			; constante string="as_"
 	LCA	ANON_90_52_L33_D.data_ptr
 	DUP
-	La  ,  0
-	Sa  2, ANON_90_52_L33_D_data
-	La  ,  8
-	Sa  2, ANON_90_52_L33_D_info
-	LId 2, ANON_90_52_L33_D_info, STANDARD._STRING.LST_1
-	LId 2, ANON_90_52_L33_D_info, STANDARD._STRING.FST_1
+	LA  ,  0
+	SA  2, ANON_90_52_L33_D_data
+	LA  ,  8
+	SA  2, ANON_90_52_L33_D_info
+	LID 2, ANON_90_52_L33_D_info, STANDARD._STRING.LST_1
+	LID 2, ANON_90_52_L33_D_info, STANDARD._STRING.FST_1
 	SUB
 	INC
 	CLAMP0
-	Sa  2, ANON_90_52_L33_D_len
-	La  2, ANON_90_36_L33_G_len
-	La  2, ANON_90_52_L33_D_len
+	SA  2, ANON_90_52_L33_D_len
+	LA  2, ANON_90_36_L33_G_len
+	LA  2, ANON_90_52_L33_D_len
 	CEQ
 	DUP
 	BF	L34
 	DROP
-	La  2, ANON_90_36_L33_G_data
-	La  2, ANON_90_36_L33_G_len
-	La  2, ANON_90_52_L33_D_data
+	LA  2, ANON_90_36_L33_G_data
+	LA  2, ANON_90_36_L33_G_len
+	LA  2, ANON_90_52_L33_D_data
 	BLKCMP
 L34:
 L32:
 	BF	L31
 					; debut if
-	Ld 1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_INT_disp
+	LD 1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_INT_disp
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	0
 	CLT
 	BF	L36
 					; debut if
-	ULb 1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.AS_SEEN_disp
-	ULb 1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.NON_AS_SEEN_disp
+	ULB 1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.AS_SEEN_disp
+	ULB 1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.NON_AS_SEEN_disp
 	OU
 	BF	L38
 ; CODE & concat _STRING
-VAR	ANON_93_17_L39_G_data, q
-VAR	ANON_93_17_L39_G_info, q
-VAR	ANON_93_36_L39_D_data, q
-VAR	ANON_93_36_L39_D_info, q
-VAR	ANON_93_17_L39_G_len,  q
-VAR	ANON_93_36_L39_D_len,  q
-VAR	ANON_93_17_L39_R_disp, q
-VAR	ANON_93_17_L39_R__u,   q
+VAR	ANON_93_17_L39_G_data, Q
+VAR	ANON_93_17_L39_G_info, Q
+VAR	ANON_93_36_L39_D_data, Q
+VAR	ANON_93_36_L39_D_info, Q
+VAR	ANON_93_17_L39_G_len,  Q
+VAR	ANON_93_36_L39_D_len,  Q
+VAR	ANON_93_17_L39_R_disp, Q
+VAR	ANON_93_17_L39_R__u,   Q
 namespace ANON_93_17_L39_R_info
-  VAR SIZ,      d
-  VAR _COMP_SIZ, d
-  VAR _FST_1,    d
-  VAR _LST_1,    d
+  VAR SIZ__, D
+  VAR _COMP_SIZ, D
+  VAR _FST_1, D
+  VAR _LST_1, D
 end namespace
 STR ANON_93_17_L39_G, "BAD AS_LIST: "		; constante string="BAD AS_LIST: "
 	LCA	ANON_93_17_L39_G.data_ptr
 	DUP
-	La  ,  0
-	Sa  2, ANON_93_17_L39_G_data
-	La  ,  8
-	Sa  2, ANON_93_17_L39_G_info
-	LId 2, ANON_93_17_L39_G_info, _STRING.LST_1
-	LId 2, ANON_93_17_L39_G_info, _STRING.FST_1
+	LA  ,  0
+	SA  2, ANON_93_17_L39_G_data
+	LA  ,  8
+	SA  2, ANON_93_17_L39_G_info
+	LID 2, ANON_93_17_L39_G_info, _STRING.LST_1
+	LID 2, ANON_93_17_L39_G_info, _STRING.FST_1
 	SUB
 	INC
 	CLAMP0
-	Sa  2, ANON_93_17_L39_G_len
-VAR	ANON_93_36_L39_D_slice_data, q
-VAR	ANON_93_36_L39_D_slice_len,  q
-VAR	ANON_93_36_L39_D_disp, q
-VAR	ANON_93_36_L39_D__u,   q
-namespace ANON_93_36_L39_D_info
-  VAR SIZ,      d
-  VAR _COMP_SIZ, d
-  VAR _FST_1,    d
-  VAR _LST_1,    d
-end namespace
-	La 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT_disp
+	SA  2, ANON_93_17_L39_G_len
+	LA 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT_disp
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
-	LId 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.FST_1
+	LID 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.FST_1
 	SUB
 	LI	1
 	MUL
 	ADD
-	Ld 1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_LAST_disp
+namespace ANON_93_36			; ensemble doublet @data/@info pour slice anonyme source
+VAR ANON_93_36_disp, Q
+VAR ANON_93_36__u, Q
+VAR SIZ__, D
+VAR COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
+	SA	2, ANON_93_36_disp
+	LVA	2, SIZ__
+	SA	2, ANON_93_36__u
+	LI	8
+	SD	2, COMP_SIZ
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
+	SD	2, _FST_1
+	LD 1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_LAST_disp
+	SD	2, _LST_1
+	LD	2, _LST_1
+	LD	2, _FST_1
 	SUB
 	INC
 	CLAMP0
-	LI	1
-	MUL
-	Sa  2, ANON_93_36_L39_D_slice_len
-	Sa  2, ANON_93_36_L39_D_slice_data
-	La  2, ANON_93_36_L39_D_slice_data
-	Sa  2, ANON_93_36_L39_D_disp
-	LVA 2, ANON_93_36_L39_D_info.SIZ
-	Sa  2, ANON_93_36_L39_D__u
-	LI	1
-	Sd  2, ANON_93_36_L39_D_info._FST_1
-	La  2, ANON_93_36_L39_D_slice_len
-	Sd  2, ANON_93_36_L39_D_info._LST_1
-	LI	8
-	Sd  2, ANON_93_36_L39_D_info._COMP_SIZ
-	La  2, ANON_93_36_L39_D_slice_len
 	LI	8
 	MUL
-	Sd  2, ANON_93_36_L39_D_info.SIZ
-	LVA 2, ANON_93_36_L39_D_disp
+	SD	2, SIZ__
+	LVA	2, ANON_93_36_disp
+end namespace
 	DUP
-	La  ,  0
-	Sa  2, ANON_93_36_L39_D_data
-	La  ,  8
-	Sa  2, ANON_93_36_L39_D_info
-	LId 2, ANON_93_36_L39_D_info, _STRING.LST_1
-	LId 2, ANON_93_36_L39_D_info, _STRING.FST_1
+	LA  ,  0
+	SA  2, ANON_93_36_L39_D_data
+	LA  ,  8
+	SA  2, ANON_93_36_L39_D_info
+	LID 2, ANON_93_36_L39_D_info, _STRING.LST_1
+	LID 2, ANON_93_36_L39_D_info, _STRING.FST_1
 	SUB
 	INC
 	CLAMP0
-	Sa  2, ANON_93_36_L39_D_len
-	La  2, ANON_93_17_L39_G_len
-	La  2, ANON_93_36_L39_D_len
+	SA  2, ANON_93_36_L39_D_len
+	LA  2, ANON_93_17_L39_G_len
+	LA  2, ANON_93_36_L39_D_len
 	ADD
 	CO_VAR
-	Sa  2, ANON_93_17_L39_R_disp
+	SA  2, ANON_93_17_L39_R_disp
 	LI	1
-	Sd  2, ANON_93_17_L39_R_info._FST_1
-	La  2, ANON_93_17_L39_G_len
-	La  2, ANON_93_36_L39_D_len
+	SD  2, ANON_93_17_L39_R_info._FST_1
+	LA  2, ANON_93_17_L39_G_len
+	LA  2, ANON_93_36_L39_D_len
 	ADD
-	Sd  2, ANON_93_17_L39_R_info._LST_1
+	SD  2, ANON_93_17_L39_R_info._LST_1
 	LI	8
-	Sd  2, ANON_93_17_L39_R_info._COMP_SIZ
-	La  2, ANON_93_17_L39_G_len
-	La  2, ANON_93_36_L39_D_len
+	SD  2, ANON_93_17_L39_R_info._COMP_SIZ
+	LA  2, ANON_93_17_L39_G_len
+	LA  2, ANON_93_36_L39_D_len
 	ADD
 	LI	8
 	MUL
-	Sd  2, ANON_93_17_L39_R_info.SIZ
-	LVA 2, ANON_93_17_L39_R_info.SIZ
-	Sa  2, ANON_93_17_L39_R__u
-	La  2, ANON_93_17_L39_R_disp
-	La  2, ANON_93_17_L39_G_len
-	La  2, ANON_93_17_L39_G_data
+	SD  2, ANON_93_17_L39_R_info.SIZ__
+	LVA 2, ANON_93_17_L39_R_info.SIZ__
+	SA  2, ANON_93_17_L39_R__u
+	LA  2, ANON_93_17_L39_R_disp
+	LA  2, ANON_93_17_L39_G_len
+	LA  2, ANON_93_17_L39_G_data
 	BLKMOV
-	La  2, ANON_93_17_L39_R_disp
-	La  2, ANON_93_17_L39_G_len
+	LA  2, ANON_93_17_L39_R_disp
+	LA  2, ANON_93_17_L39_G_len
 	ADD
-	La  2, ANON_93_36_L39_D_len
-	La  2, ANON_93_36_L39_D_data
+	LA  2, ANON_93_36_L39_D_len
+	LA  2, ANON_93_36_L39_D_data
 	BLKMOV
 	LVA 2, ANON_93_17_L39_R_disp
 	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
@@ -985,168 +969,160 @@ end namespace
 L38:
 L37:					; post if
 	LI	1
-	Sb  1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.AS_SEEN_disp
+	SB  1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.AS_SEEN_disp
 	LI	1
-	Sb  1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.AS_LIST_SEEN_disp
-	La	 0, STANDARD.IDL.IDL_TBL.N_SPEC_disp	; array data start address on stack
-	ULb 2,	NN_disp
+	SB  1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.AS_LIST_SEEN_disp
+	LA	 0, STANDARD.IDL.IDL_TBL.N_SPEC_disp	; array data start address on stack
+	ULB 2,	NN_disp
 	DUP
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.LST_1
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.LST_1
 	CGT
 	BT	STANDARD.ce_raise_
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1	; (index - FST_1) * SIZ_1
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1	; (index - FST_1) * SIZ_1
 	SUB
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.COMP_SIZ
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.COMP_SIZ
 	LI	8
 	DIV
 	MUL
 	ADD					; add offset to start address
 	LVA	, STANDARD.IDL.IDL_TBL._NODE_SPECIF.NS_ARITY
-	La	 0, STANDARD.IDL.IDL_TBL.N_SPEC_disp	; array data start address on stack
-	ULb 2,	NN_disp
+	LA	 0, STANDARD.IDL.IDL_TBL.N_SPEC_disp	; array data start address on stack
+	ULB 2,	NN_disp
 	DUP
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.LST_1
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.LST_1
 	CGT
 	BT	STANDARD.ce_raise_
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1	; (index - FST_1) * SIZ_1
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1	; (index - FST_1) * SIZ_1
 	SUB
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.COMP_SIZ
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.COMP_SIZ
 	LI	8
 	DIV
 	MUL
 	ADD					; add offset to start address
-	ULb	, STANDARD.IDL.IDL_TBL._NODE_SPECIF.NS_ARITY
+	ULB	, STANDARD.IDL.IDL_TBL._NODE_SPECIF.NS_ARITY
 ; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
 	LI	4
 	ADD
-	Sb
+	SB
 	BRA	L35
 L36:
 					; debut if
-	ULb 1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.AS_LIST_SEEN_disp
-	ULb 1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.NON_AS_SEEN_disp
+	ULB 1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.AS_LIST_SEEN_disp
+	ULB 1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.NON_AS_SEEN_disp
 	OU
 	BF	L41
 ; CODE & concat _STRING
-VAR	ANON_101_17_L42_G_data, q
-VAR	ANON_101_17_L42_G_info, q
-VAR	ANON_101_34_L42_D_data, q
-VAR	ANON_101_34_L42_D_info, q
-VAR	ANON_101_17_L42_G_len,  q
-VAR	ANON_101_34_L42_D_len,  q
-VAR	ANON_101_17_L42_R_disp, q
-VAR	ANON_101_17_L42_R__u,   q
+VAR	ANON_101_17_L42_G_data, Q
+VAR	ANON_101_17_L42_G_info, Q
+VAR	ANON_101_34_L42_D_data, Q
+VAR	ANON_101_34_L42_D_info, Q
+VAR	ANON_101_17_L42_G_len,  Q
+VAR	ANON_101_34_L42_D_len,  Q
+VAR	ANON_101_17_L42_R_disp, Q
+VAR	ANON_101_17_L42_R__u,   Q
 namespace ANON_101_17_L42_R_info
-  VAR SIZ,      d
-  VAR _COMP_SIZ, d
-  VAR _FST_1,    d
-  VAR _LST_1,    d
+  VAR SIZ__, D
+  VAR _COMP_SIZ, D
+  VAR _FST_1, D
+  VAR _LST_1, D
 end namespace
 STR ANON_101_17_L42_G, "BAD AS_...: "		; constante string="BAD AS_...: "
 	LCA	ANON_101_17_L42_G.data_ptr
 	DUP
-	La  ,  0
-	Sa  2, ANON_101_17_L42_G_data
-	La  ,  8
-	Sa  2, ANON_101_17_L42_G_info
-	LId 2, ANON_101_17_L42_G_info, _STRING.LST_1
-	LId 2, ANON_101_17_L42_G_info, _STRING.FST_1
+	LA  ,  0
+	SA  2, ANON_101_17_L42_G_data
+	LA  ,  8
+	SA  2, ANON_101_17_L42_G_info
+	LID 2, ANON_101_17_L42_G_info, _STRING.LST_1
+	LID 2, ANON_101_17_L42_G_info, _STRING.FST_1
 	SUB
 	INC
 	CLAMP0
-	Sa  2, ANON_101_17_L42_G_len
-VAR	ANON_101_34_L42_D_slice_data, q
-VAR	ANON_101_34_L42_D_slice_len,  q
-VAR	ANON_101_34_L42_D_disp, q
-VAR	ANON_101_34_L42_D__u,   q
-namespace ANON_101_34_L42_D_info
-  VAR SIZ,      d
-  VAR _COMP_SIZ, d
-  VAR _FST_1,    d
-  VAR _LST_1,    d
-end namespace
-	La 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT_disp
+	SA  2, ANON_101_17_L42_G_len
+	LA 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT_disp
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
-	LId 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.FST_1
+	LID 1, STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_TXT__u, STANDARD._STRING.FST_1
 	SUB
 	LI	1
 	MUL
 	ADD
-	Ld 1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_LAST_disp
+namespace ANON_101_34			; ensemble doublet @data/@info pour slice anonyme source
+VAR ANON_101_34_disp, Q
+VAR ANON_101_34__u, Q
+VAR SIZ__, D
+VAR COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
+	SA	2, ANON_101_34_disp
+	LVA	2, SIZ__
+	SA	2, ANON_101_34__u
+	LI	8
+	SD	2, COMP_SIZ
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
+	SD	2, _FST_1
+	LD 1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_LAST_disp
+	SD	2, _LST_1
+	LD	2, _LST_1
+	LD	2, _FST_1
 	SUB
 	INC
 	CLAMP0
-	LI	1
-	MUL
-	Sa  2, ANON_101_34_L42_D_slice_len
-	Sa  2, ANON_101_34_L42_D_slice_data
-	La  2, ANON_101_34_L42_D_slice_data
-	Sa  2, ANON_101_34_L42_D_disp
-	LVA 2, ANON_101_34_L42_D_info.SIZ
-	Sa  2, ANON_101_34_L42_D__u
-	LI	1
-	Sd  2, ANON_101_34_L42_D_info._FST_1
-	La  2, ANON_101_34_L42_D_slice_len
-	Sd  2, ANON_101_34_L42_D_info._LST_1
-	LI	8
-	Sd  2, ANON_101_34_L42_D_info._COMP_SIZ
-	La  2, ANON_101_34_L42_D_slice_len
 	LI	8
 	MUL
-	Sd  2, ANON_101_34_L42_D_info.SIZ
-	LVA 2, ANON_101_34_L42_D_disp
+	SD	2, SIZ__
+	LVA	2, ANON_101_34_disp
+end namespace
 	DUP
-	La  ,  0
-	Sa  2, ANON_101_34_L42_D_data
-	La  ,  8
-	Sa  2, ANON_101_34_L42_D_info
-	LId 2, ANON_101_34_L42_D_info, _STRING.LST_1
-	LId 2, ANON_101_34_L42_D_info, _STRING.FST_1
+	LA  ,  0
+	SA  2, ANON_101_34_L42_D_data
+	LA  ,  8
+	SA  2, ANON_101_34_L42_D_info
+	LID 2, ANON_101_34_L42_D_info, _STRING.LST_1
+	LID 2, ANON_101_34_L42_D_info, _STRING.FST_1
 	SUB
 	INC
 	CLAMP0
-	Sa  2, ANON_101_34_L42_D_len
-	La  2, ANON_101_17_L42_G_len
-	La  2, ANON_101_34_L42_D_len
+	SA  2, ANON_101_34_L42_D_len
+	LA  2, ANON_101_17_L42_G_len
+	LA  2, ANON_101_34_L42_D_len
 	ADD
 	CO_VAR
-	Sa  2, ANON_101_17_L42_R_disp
+	SA  2, ANON_101_17_L42_R_disp
 	LI	1
-	Sd  2, ANON_101_17_L42_R_info._FST_1
-	La  2, ANON_101_17_L42_G_len
-	La  2, ANON_101_34_L42_D_len
+	SD  2, ANON_101_17_L42_R_info._FST_1
+	LA  2, ANON_101_17_L42_G_len
+	LA  2, ANON_101_34_L42_D_len
 	ADD
-	Sd  2, ANON_101_17_L42_R_info._LST_1
+	SD  2, ANON_101_17_L42_R_info._LST_1
 	LI	8
-	Sd  2, ANON_101_17_L42_R_info._COMP_SIZ
-	La  2, ANON_101_17_L42_G_len
-	La  2, ANON_101_34_L42_D_len
+	SD  2, ANON_101_17_L42_R_info._COMP_SIZ
+	LA  2, ANON_101_17_L42_G_len
+	LA  2, ANON_101_34_L42_D_len
 	ADD
 	LI	8
 	MUL
-	Sd  2, ANON_101_17_L42_R_info.SIZ
-	LVA 2, ANON_101_17_L42_R_info.SIZ
-	Sa  2, ANON_101_17_L42_R__u
-	La  2, ANON_101_17_L42_R_disp
-	La  2, ANON_101_17_L42_G_len
-	La  2, ANON_101_17_L42_G_data
+	SD  2, ANON_101_17_L42_R_info.SIZ__
+	LVA 2, ANON_101_17_L42_R_info.SIZ__
+	SA  2, ANON_101_17_L42_R__u
+	LA  2, ANON_101_17_L42_R_disp
+	LA  2, ANON_101_17_L42_G_len
+	LA  2, ANON_101_17_L42_G_data
 	BLKMOV
-	La  2, ANON_101_17_L42_R_disp
-	La  2, ANON_101_17_L42_G_len
+	LA  2, ANON_101_17_L42_R_disp
+	LA  2, ANON_101_17_L42_G_len
 	ADD
-	La  2, ANON_101_34_L42_D_len
-	La  2, ANON_101_34_L42_D_data
+	LA  2, ANON_101_34_L42_D_len
+	LA  2, ANON_101_34_L42_D_data
 	BLKMOV
 	LVA 2, ANON_101_17_L42_R_disp
 	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
@@ -1154,108 +1130,108 @@ end namespace
 L41:
 L40:					; post if
 	LI	1
-	Sb  1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.AS_SEEN_disp
-	La	 0, STANDARD.IDL.IDL_TBL.N_SPEC_disp	; array data start address on stack
-	ULb 2,	NN_disp
+	SB  1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.AS_SEEN_disp
+	LA	 0, STANDARD.IDL.IDL_TBL.N_SPEC_disp	; array data start address on stack
+	ULB 2,	NN_disp
 	DUP
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.LST_1
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.LST_1
 	CGT
 	BT	STANDARD.ce_raise_
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1	; (index - FST_1) * SIZ_1
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1	; (index - FST_1) * SIZ_1
 	SUB
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.COMP_SIZ
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.COMP_SIZ
 	LI	8
 	DIV
 	MUL
 	ADD					; add offset to start address
 	LVA	, STANDARD.IDL.IDL_TBL._NODE_SPECIF.NS_ARITY
-	La	 0, STANDARD.IDL.IDL_TBL.N_SPEC_disp	; array data start address on stack
-	ULb 2,	NN_disp
+	LA	 0, STANDARD.IDL.IDL_TBL.N_SPEC_disp	; array data start address on stack
+	ULB 2,	NN_disp
 	DUP
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.LST_1
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.LST_1
 	CGT
 	BT	STANDARD.ce_raise_
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1	; (index - FST_1) * SIZ_1
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.FST_1	; (index - FST_1) * SIZ_1
 	SUB
-	LId	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.COMP_SIZ
+	LID	0, STANDARD.IDL.IDL_TBL.N_SPEC__u, STANDARD.IDL.IDL_TBL._NODE_SPECIF_TABLE.COMP_SIZ
 	LI	8
 	DIV
 	MUL
 	ADD					; add offset to start address
-	ULb	, STANDARD.IDL.IDL_TBL._NODE_SPECIF.NS_ARITY
+	ULB	, STANDARD.IDL.IDL_TBL._NODE_SPECIF.NS_ARITY
 ; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
 	LI	1
 	ADD
-	Sb
+	SB
 L35:					; post if
 	BRA	L30
 L31:
 	LI	1
-	Sb  1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.NON_AS_SEEN_disp
+	SB  1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.NON_AS_SEEN_disp
 L30:					; post if
 	UNLINK 2
 endPRO
-	La	 0, STANDARD.IDL.IDL_TBL.A_SPEC_disp	; array data start address on stack
-	LId	0, STANDARD.IDL.IDL_TBL.LAST_NODE_ATTR_disp, 0
+	LA	 0, STANDARD.IDL.IDL_TBL.A_SPEC_disp	; array data start address on stack
+	LID	0, STANDARD.IDL.IDL_TBL.LAST_NODE_ATTR_disp, 0
 	DUP
-	LId	0, STANDARD.IDL.IDL_TBL.A_SPEC__u, STANDARD.IDL.IDL_TBL._ATTR_ID_TABLE.FST_1
+	LID	0, STANDARD.IDL.IDL_TBL.A_SPEC__u, STANDARD.IDL.IDL_TBL._ATTR_ID_TABLE.FST_1
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	LId	0, STANDARD.IDL.IDL_TBL.A_SPEC__u, STANDARD.IDL.IDL_TBL._ATTR_ID_TABLE.LST_1
+	LID	0, STANDARD.IDL.IDL_TBL.A_SPEC__u, STANDARD.IDL.IDL_TBL._ATTR_ID_TABLE.LST_1
 	CGT
 	BT	STANDARD.ce_raise_
-	LId	0, STANDARD.IDL.IDL_TBL.A_SPEC__u, STANDARD.IDL.IDL_TBL._ATTR_ID_TABLE.FST_1	; (index - FST_1) * SIZ_1
+	LID	0, STANDARD.IDL.IDL_TBL.A_SPEC__u, STANDARD.IDL.IDL_TBL._ATTR_ID_TABLE.FST_1	; (index - FST_1) * SIZ_1
 	SUB
-	LId	0, STANDARD.IDL.IDL_TBL.A_SPEC__u, STANDARD.IDL.IDL_TBL._ATTR_ID_TABLE.COMP_SIZ
+	LID	0, STANDARD.IDL.IDL_TBL.A_SPEC__u, STANDARD.IDL.IDL_TBL._ATTR_ID_TABLE.COMP_SIZ
 	LI	8
 	DIV
 	MUL
 	ADD					; add offset to start address
 	LVA	, STANDARD.IDL.IDL_TBL._ATTR_SPECIF.IS_LIST
-	Ld 1,	T_INT_disp
+	LD 1,	T_INT_disp
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	0
 	CLT
-	Sb
-	Ld 1,	T_INT_disp
+	SB
+	LD 1,	T_INT_disp
 	ABS
-	Sd  1,	T_INT_disp
-	La	 0, STANDARD.IDL.IDL_TBL.A_SPEC_disp	; array data start address on stack
-	LId	0, STANDARD.IDL.IDL_TBL.LAST_NODE_ATTR_disp, 0
+	SD  1,	T_INT_disp
+	LA	 0, STANDARD.IDL.IDL_TBL.A_SPEC_disp	; array data start address on stack
+	LID	0, STANDARD.IDL.IDL_TBL.LAST_NODE_ATTR_disp, 0
 	DUP
-	LId	0, STANDARD.IDL.IDL_TBL.A_SPEC__u, STANDARD.IDL.IDL_TBL._ATTR_ID_TABLE.FST_1
+	LID	0, STANDARD.IDL.IDL_TBL.A_SPEC__u, STANDARD.IDL.IDL_TBL._ATTR_ID_TABLE.FST_1
 	CLT
 	BT	STANDARD.ce_raise_
 	DUP
-	LId	0, STANDARD.IDL.IDL_TBL.A_SPEC__u, STANDARD.IDL.IDL_TBL._ATTR_ID_TABLE.LST_1
+	LID	0, STANDARD.IDL.IDL_TBL.A_SPEC__u, STANDARD.IDL.IDL_TBL._ATTR_ID_TABLE.LST_1
 	CGT
 	BT	STANDARD.ce_raise_
-	LId	0, STANDARD.IDL.IDL_TBL.A_SPEC__u, STANDARD.IDL.IDL_TBL._ATTR_ID_TABLE.FST_1	; (index - FST_1) * SIZ_1
+	LID	0, STANDARD.IDL.IDL_TBL.A_SPEC__u, STANDARD.IDL.IDL_TBL._ATTR_ID_TABLE.FST_1	; (index - FST_1) * SIZ_1
 	SUB
-	LId	0, STANDARD.IDL.IDL_TBL.A_SPEC__u, STANDARD.IDL.IDL_TBL._ATTR_ID_TABLE.COMP_SIZ
+	LID	0, STANDARD.IDL.IDL_TBL.A_SPEC__u, STANDARD.IDL.IDL_TBL._ATTR_ID_TABLE.COMP_SIZ
 	LI	8
 	DIV
 	MUL
 	ADD					; add offset to start address
 	LVA	, STANDARD.IDL.IDL_TBL._ATTR_SPECIF.ATTR
-	Ld 1,	T_INT_disp
-	Sb
+	LD 1,	T_INT_disp
+	SB
 					; debut if
-	Ld 1,	T_INT_disp
-	LId	0, STANDARD.IDL.IDL_TBL.LAST_ATTR_disp, 0
+	LD 1,	T_INT_disp
+	LID	0, STANDARD.IDL.IDL_TBL.LAST_ATTR_disp, 0
 	CGT
 	BF	L44
-	Ld 1,	T_INT_disp
-	SId	0, 	STANDARD.IDL.IDL_TBL.LAST_ATTR_disp, 0
+	LD 1,	T_INT_disp
+	SID	0, 	STANDARD.IDL.IDL_TBL.LAST_ATTR_disp, 0
 	BRA	L43
 L44:
 L43:					; post if
@@ -1289,30 +1265,30 @@ ST_ELEMENT_TYPE.elab:
 post_ST_ELEMENT_TYPE:
 BRA post_INADR_ELEMENT_TYPE
 INADR_ELEMENT_TYPE.elab:
-	LIa
+	LIA
 	RTD 0
 post_INADR_ELEMENT_TYPE:
 BRA post_OUTADR_ELEMENT_TYPE
 OUTADR_ELEMENT_TYPE.elab:
-	LIa
+	LIA
 	RTD 0
 post_OUTADR_ELEMENT_TYPE:
-VAR ELEMENT_TYPE__outadr_ofs, q
+VAR ELEMENT_TYPE__outadr_ofs, Q
 	LCA OUTADR_ELEMENT_TYPE.elab
-	Sa	 0, ELEMENT_TYPE__outadr_ofs
-VAR ELEMENT_TYPE__inadr_ofs, q
+	SA	 0, ELEMENT_TYPE__outadr_ofs
+VAR ELEMENT_TYPE__inadr_ofs, Q
 	LCA INADR_ELEMENT_TYPE.elab
-	Sa	 0, ELEMENT_TYPE__inadr_ofs
-VAR ELEMENT_TYPE__st_ofs, q
+	SA	 0, ELEMENT_TYPE__inadr_ofs
+VAR ELEMENT_TYPE__st_ofs, Q
 	LCA ST_ELEMENT_TYPE.elab
-	Sa	 0, ELEMENT_TYPE__st_ofs
-VAR ELEMENT_TYPE__ld_ofs, q
+	SA	 0, ELEMENT_TYPE__st_ofs
+VAR ELEMENT_TYPE__ld_ofs, Q
 	LCA LD_ELEMENT_TYPE.elab
-	Sa	 0, ELEMENT_TYPE__ld_ofs
-VAR ELEMENT_TYPE__u_ofs, q
-	La	 0, STANDARD.IDL.IDL_TBL._DIANA_TABLE_TYPE.use__info
-	Sa	 0, ELEMENT_TYPE__u_ofs
-VAR GFP_disp, q				; Lieu du Generic Frame Pointer 
+	SA	 0, ELEMENT_TYPE__ld_ofs
+VAR ELEMENT_TYPE__u_ofs, Q
+	LA	 0, STANDARD.IDL.IDL_TBL._DIANA_TABLE_TYPE.use__info
+	SA	 0, ELEMENT_TYPE__u_ofs
+VAR GFP_disp, Q				; Lieu du Generic Frame Pointer 
 					; CODE_PACKAGE_SPEC
  hexa_show ' spec ', $
 ; EXPANDER.DECLARATIONS.CODE_TYPE_DECL : skip PRIVATE FILE_TYPE (deferred to full type)
@@ -1320,19 +1296,19 @@ VAR GFP_disp, q				; Lieu du Generic Frame Pointer
 					; _FILE_MODE ENUMERATION TYPE INFO
 _FILE_MODE = '_FILE_MODE'
 namespace _FILE_MODE
-VAR use__info, q
+VAR use__info, Q
 BEGIN_BLOC_DEF
 db 0, 7, "IN_FILE"
 db 1, 8, "OUT_FILE"
 END_BLOC_DEF 8, 0, 1
 	; SIZ en bits !
 	LCA	SIZ
-	Sa	0, use__info
+	SA	0, use__info
 end namespace
 					; sub program entry decl (in instantiation TRUE )
-if defined CREATE_L45_
-PRO	CREATE_L45				;---------- PRO CREATE
- hexa_show 'CREATE_L45 ', $
+if defined CREATE_L1_
+PRO	CREATE_L1				;---------- PRO CREATE
+ hexa_show 'CREATE_L1 ', $
 PRMS					;    debut parametrage
 	PRM FILE_ofs				; in out
 	PRM MODE_ofs				; in
@@ -1342,19 +1318,19 @@ endPRMS					;    fin parametrage
 ELB 1
 begin:
 	LVA	 0, GFP_disp
-	La 	 1, -FORM_ofs
-	La 	 1, -NAME_ofs
-	Lb	 1, -MODE_ofs
-	La 	 1, -FILE_ofs
+	LA 	 1, -FORM_ofs
+	LA 	 1, -NAME_ofs
+	LB	 1, -MODE_ofs
+	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,CREATE_L1
 	UNLINK	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO CREATE
 end if
 					; sub program entry decl (in instantiation TRUE )
-if defined OPEN_L46_
-PRO	OPEN_L46				;---------- PRO OPEN
- hexa_show 'OPEN_L46 ', $
+if defined OPEN_L2_
+PRO	OPEN_L2				;---------- PRO OPEN
+ hexa_show 'OPEN_L2 ', $
 PRMS					;    debut parametrage
 	PRM FILE_ofs				; in out
 	PRM MODE_ofs				; in
@@ -1364,51 +1340,51 @@ endPRMS					;    fin parametrage
 ELB 1
 begin:
 	LVA	 0, GFP_disp
-	La 	 1, -FORM_ofs
-	La 	 1, -NAME_ofs
-	Lb	 1, -MODE_ofs
-	La 	 1, -FILE_ofs
+	LA 	 1, -FORM_ofs
+	LA 	 1, -NAME_ofs
+	LB	 1, -MODE_ofs
+	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,OPEN_L2
 	UNLINK	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO OPEN
 end if
 					; sub program entry decl (in instantiation TRUE )
-if defined CLOSE_L47_
-PRO	CLOSE_L47				;---------- PRO CLOSE
- hexa_show 'CLOSE_L47 ', $
+if defined CLOSE_L3_
+PRO	CLOSE_L3				;---------- PRO CLOSE
+ hexa_show 'CLOSE_L3 ', $
 PRMS					;    debut parametrage
 	PRM FILE_ofs				; in out
 endPRMS					;    fin parametrage
 ELB 1
 begin:
 	LVA	 0, GFP_disp
-	La 	 1, -FILE_ofs
+	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,CLOSE_L3
 	UNLINK	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO CLOSE
 end if
 					; sub program entry decl (in instantiation TRUE )
-if defined DELETE_L48_
-PRO	DELETE_L48				;---------- PRO DELETE
- hexa_show 'DELETE_L48 ', $
+if defined DELETE_L4_
+PRO	DELETE_L4				;---------- PRO DELETE
+ hexa_show 'DELETE_L4 ', $
 PRMS					;    debut parametrage
 	PRM FILE_ofs				; in out
 endPRMS					;    fin parametrage
 ELB 1
 begin:
 	LVA	 0, GFP_disp
-	La 	 1, -FILE_ofs
+	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,DELETE_L4
 	UNLINK	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO DELETE
 end if
 					; sub program entry decl (in instantiation TRUE )
-if defined RESET_L49_
-PRO	RESET_L49				;---------- PRO RESET
- hexa_show 'RESET_L49 ', $
+if defined RESET_L5_
+PRO	RESET_L5				;---------- PRO RESET
+ hexa_show 'RESET_L5 ', $
 PRMS					;    debut parametrage
 	PRM FILE_ofs				; in out
 	PRM MODE_ofs				; in
@@ -1416,33 +1392,33 @@ endPRMS					;    fin parametrage
 ELB 1
 begin:
 	LVA	 0, GFP_disp
-	Lb	 1, -MODE_ofs
-	La 	 1, -FILE_ofs
+	LB	 1, -MODE_ofs
+	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,RESET_L5
 	UNLINK	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO RESET
 end if
 					; sub program entry decl (in instantiation TRUE )
-if defined RESET_L50_
-PRO	RESET_L50				;---------- PRO RESET
- hexa_show 'RESET_L50 ', $
+if defined RESET_L6_
+PRO	RESET_L6				;---------- PRO RESET
+ hexa_show 'RESET_L6 ', $
 PRMS					;    debut parametrage
 	PRM FILE_ofs				; in out
 endPRMS					;    fin parametrage
 ELB 1
 begin:
 	LVA	 0, GFP_disp
-	La 	 1, -FILE_ofs
+	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,RESET_L6
 	UNLINK	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO RESET
 end if
 					; sub program entry decl (in instantiation TRUE )
-if defined MODE_L51_
-PRO	MODE_L51				;---------- PRO MODE
- hexa_show 'MODE_L51 ', $
+if defined MODE_L7_
+PRO	MODE_L7				;---------- PRO MODE
+ hexa_show 'MODE_L7 ', $
 PRMS					;    debut parametrage
 	PRM FILE_ofs				; in
 	PRM result__ofs				; resultat de fonction
@@ -1451,53 +1427,53 @@ ELB 1
 begin:
 	LI	0					; lieu result
 	LVA	 0, GFP_disp
-	La 	 1, -FILE_ofs
+	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,MODE_L7
-	Sb	 1, -result__ofs			; retour resultat
+	SB	 1, -result__ofs			; retour resultat
 	UNLINK	 1
 	RTD	prm_siz-8
 endPRO					;---------- end PRO MODE
 end if
 					; sub program entry decl (in instantiation TRUE )
-if defined NAME_L52_
-PRO	NAME_L52				;---------- PRO NAME
- hexa_show 'NAME_L52 ', $
+if defined NAME_L8_
+PRO	NAME_L8				;---------- PRO NAME
+ hexa_show 'NAME_L8 ', $
 PRMS					;    debut parametrage
 	PRM FILE_ofs				; in
 	PRM result__ofs				; resultat de fonction
 endPRMS					;    fin parametrage
 ELB 1
 begin:
-	La 	 1, -result__ofs			; lieu result = relais du slot recu (doublet)
+	LA 	 1, -result__ofs			; lieu result = relais du slot recu (doublet)
 	LVA	 0, GFP_disp
-	La 	 1, -FILE_ofs
+	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,NAME_L8
 	UNLINK	 1
 	RTD	prm_siz-8
 endPRO					;---------- end PRO NAME
 end if
 					; sub program entry decl (in instantiation TRUE )
-if defined FORM_L53_
-PRO	FORM_L53				;---------- PRO FORM
- hexa_show 'FORM_L53 ', $
+if defined FORM_L9_
+PRO	FORM_L9				;---------- PRO FORM
+ hexa_show 'FORM_L9 ', $
 PRMS					;    debut parametrage
 	PRM FILE_ofs				; in
 	PRM result__ofs				; resultat de fonction
 endPRMS					;    fin parametrage
 ELB 1
 begin:
-	La 	 1, -result__ofs			; lieu result = relais du slot recu (doublet)
+	LA 	 1, -result__ofs			; lieu result = relais du slot recu (doublet)
 	LVA	 0, GFP_disp
-	La 	 1, -FILE_ofs
+	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,FORM_L9
 	UNLINK	 1
 	RTD	prm_siz-8
 endPRO					;---------- end PRO FORM
 end if
 					; sub program entry decl (in instantiation TRUE )
-if defined IS_OPEN_L54_
-PRO	IS_OPEN_L54				;---------- PRO IS_OPEN
- hexa_show 'IS_OPEN_L54 ', $
+if defined IS_OPEN_L10_
+PRO	IS_OPEN_L10				;---------- PRO IS_OPEN
+ hexa_show 'IS_OPEN_L10 ', $
 PRMS					;    debut parametrage
 	PRM FILE_ofs				; in
 	PRM result__ofs				; resultat de fonction
@@ -1506,17 +1482,17 @@ ELB 1
 begin:
 	LI	0					; lieu result
 	LVA	 0, GFP_disp
-	La 	 1, -FILE_ofs
+	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,IS_OPEN_L10
-	Sb	 1, -result__ofs			; retour resultat
+	SB	 1, -result__ofs			; retour resultat
 	UNLINK	 1
 	RTD	prm_siz-8
 endPRO					;---------- end PRO IS_OPEN
 end if
 					; sub program entry decl (in instantiation TRUE )
-if defined READ_L55_
-PRO	READ_L55				;---------- PRO READ
- hexa_show 'READ_L55 ', $
+if defined READ_L11_
+PRO	READ_L11				;---------- PRO READ
+ hexa_show 'READ_L11 ', $
 PRMS					;    debut parametrage
 	PRM FILE_ofs				; in
 	PRM ITEM_ofs				; out
@@ -1524,17 +1500,17 @@ endPRMS					;    fin parametrage
 ELB 1
 begin:
 	LVA	 0, GFP_disp
-	La 	 1, -ITEM_ofs
-	La 	 1, -FILE_ofs
+	LA 	 1, -ITEM_ofs
+	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,READ_L11
 	UNLINK	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO READ
 end if
 					; sub program entry decl (in instantiation TRUE )
-if defined WRITE_L56_
-PRO	WRITE_L56				;---------- PRO WRITE
- hexa_show 'WRITE_L56 ', $
+if defined WRITE_L12_
+PRO	WRITE_L12				;---------- PRO WRITE
+ hexa_show 'WRITE_L12 ', $
 PRMS					;    debut parametrage
 	PRM FILE_ofs				; in
 	PRM ITEM_ofs				; in
@@ -1542,17 +1518,17 @@ endPRMS					;    fin parametrage
 ELB 1
 begin:
 	LVA	 0, GFP_disp
-	La 	 1, -ITEM_ofs
-	La 	 1, -FILE_ofs
+	LA 	 1, -ITEM_ofs
+	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,WRITE_L12
 	UNLINK	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO WRITE
 end if
 					; sub program entry decl (in instantiation TRUE )
-if defined END_OF_FILE_L57_
-PRO	END_OF_FILE_L57				;---------- PRO END_OF_FILE
- hexa_show 'END_OF_FILE_L57 ', $
+if defined END_OF_FILE_L13_
+PRO	END_OF_FILE_L13				;---------- PRO END_OF_FILE
+ hexa_show 'END_OF_FILE_L13 ', $
 PRMS					;    debut parametrage
 	PRM FILE_ofs				; in
 	PRM result__ofs				; resultat de fonction
@@ -1561,38 +1537,38 @@ ELB 1
 begin:
 	LI	0					; lieu result
 	LVA	 0, GFP_disp
-	La 	 1, -FILE_ofs
+	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,END_OF_FILE_L13
-	Sb	 1, -result__ofs			; retour resultat
+	SB	 1, -result__ofs			; retour resultat
 	UNLINK	 1
 	RTD	prm_siz-8
 endPRO					;---------- end PRO END_OF_FILE
 end if
 _FILE_NAME_BUFFER = '_FILE_NAME_BUFFER'
 namespace _FILE_NAME_BUFFER			; _FILE_NAME_BUFFER CONSTRAINED ARRAY SUBTYPE INFO
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR _COMP_SIZ, d
-VAR _FST_1, d
-VAR _LST_1, d
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
 	LI	8
-	Sd	0, _COMP_SIZ
-	Ld	0, _COMP_SIZ
+	SD	0, _COMP_SIZ
+	LD	0, _COMP_SIZ
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
-	Sd	0, _FST_1
+	SD	0, _FST_1
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	256
-	Sd	0, _LST_1
-	Ld	0, _LST_1
-	Ld	0, _FST_1
+	SD	0, _LST_1
+	LD	0, _LST_1
+	LD	0, _FST_1
 	SUB
 	INC
 	CLAMP0
 	MUL
-	Sd	0, SIZ
+	SD	0, SIZ__
   virtual at 4
 COMP_SIZ = $
 	rd 1 
@@ -1606,16 +1582,16 @@ end namespace
 					; _FILE_TYPE RECORD TYPE INFO
 _FILE_TYPE = '_FILE_TYPE'
 namespace _FILE_TYPE
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-USEINFO 0, ID, 	La 0, STANDARD._INTEGER.use__info
-USEINFO 0, NAME, 	La 0, STANDARD.IDL.IDL_TBL.DTT_IO._FILE_NAME_BUFFER.use__info
-USEINFO 0, NAME_LEN, 	La 0, STANDARD._POSITIVE.use__info
-USEINFO 0, IS_OPENED, 	La 0, STANDARD._BOOLEAN.use__info
-USEINFO 0, MODE, 	La 0, STANDARD.IDL.IDL_TBL.DTT_IO._FILE_MODE.use__info
-USEINFO 0, AT_END_OF_FILE, 	La 0, STANDARD._BOOLEAN.use__info
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+USEINFO 0, ID, 	LA 0, STANDARD._INTEGER.use__info
+USEINFO 0, NAME, 	LA 0, STANDARD.IDL.IDL_TBL.DTT_IO._FILE_NAME_BUFFER.use__info
+USEINFO 0, NAME_LEN, 	LA 0, STANDARD._POSITIVE.use__info
+USEINFO 0, IS_OPENED, 	LA 0, STANDARD._BOOLEAN.use__info
+USEINFO 0, MODE, 	LA 0, STANDARD.IDL.IDL_TBL.DTT_IO._FILE_MODE.use__info
+USEINFO 0, AT_END_OF_FILE, 	LA 0, STANDARD._BOOLEAN.use__info
 virtual at 0				; calcul des offsets statiques
 STATOFS ID, 4, 4
 STATOFS NAME, 256, 1
@@ -1626,7 +1602,7 @@ STATOFS AT_END_OF_FILE, 1, 1
 size = $
 end virtual
 	LI	 size*8
-	Sd	0, SIZ
+	SD	0, SIZ__
 end namespace
 					;---------- end generic package instantiation DTT_IO
 end namespace
@@ -1640,24 +1616,24 @@ PRMS					;    debut parametrage
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
  hexa_show 'var elab SFILE ', $
-VAR SFILE_disp, q				; variable record : pointeur aux data record
-VAR SFILE__u, q				; variable record : pointeur aux useinfo
+VAR SFILE_disp, Q				; variable record : pointeur aux data record
+VAR SFILE__u, Q				; variable record : pointeur aux useinfo
 VAR SFILE__dat, STANDARD.IDL.IDL_TBL.DTT_IO._FILE_TYPE.size
 	LVA	1, SFILE__dat
-	Sa	1, SFILE_disp				; record fin
-	LVA	1, STANDARD.IDL.IDL_TBL.DTT_IO._FILE_TYPE.SIZ
-	Sa	1, SFILE__u
-	LIVa 1, STANDARD.IDL.IDL_TBL.WRITE_SPEC_L54.SFILE_disp, STANDARD.IDL.IDL_TBL.DTT_IO._FILE_TYPE.ID
+	SA	1, SFILE_disp				; record fin
+	LVA	1, STANDARD.IDL.IDL_TBL.DTT_IO._FILE_TYPE.SIZ__
+	SA	1, SFILE__u
+	LIVA 1, STANDARD.IDL.IDL_TBL.WRITE_SPEC_L54.SFILE_disp, STANDARD.IDL.IDL_TBL.DTT_IO._FILE_TYPE.ID
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
 	NEG
-	Sd
-	LIVa 1, STANDARD.IDL.IDL_TBL.WRITE_SPEC_L54.SFILE_disp, STANDARD.IDL.IDL_TBL.DTT_IO._FILE_TYPE.IS_OPENED
+	SD
+	LIVA 1, STANDARD.IDL.IDL_TBL.WRITE_SPEC_L54.SFILE_disp, STANDARD.IDL.IDL_TBL.DTT_IO._FILE_TYPE.IS_OPENED
 	LI	0
-	Sb
-	LIVa 1, STANDARD.IDL.IDL_TBL.WRITE_SPEC_L54.SFILE_disp, STANDARD.IDL.IDL_TBL.DTT_IO._FILE_TYPE.AT_END_OF_FILE
+	SB
+	LIVA 1, STANDARD.IDL.IDL_TBL.WRITE_SPEC_L54.SFILE_disp, STANDARD.IDL.IDL_TBL.DTT_IO._FILE_TYPE.AT_END_OF_FILE
 	LI	0
-	Sb
+	SB
 
  hexa_show ' disp ', SFILE_disp
 					;    end elab
@@ -1665,85 +1641,85 @@ begin:					;---------- BDY INSTRUCTIONS
 STR STR_L60, ""				; constante string=""
 	LCA	STR_L60.data_ptr
 ; CODE & concat _STRING
-VAR	ANON_140_35_L61_G_data, q
-VAR	ANON_140_35_L61_G_info, q
-VAR	ANON_140_47_L61_D_data, q
-VAR	ANON_140_47_L61_D_info, q
-VAR	ANON_140_35_L61_G_len,  q
-VAR	ANON_140_47_L61_D_len,  q
-VAR	ANON_140_35_L61_R_disp, q
-VAR	ANON_140_35_L61_R__u,   q
+VAR	ANON_140_35_L61_G_data, Q
+VAR	ANON_140_35_L61_G_info, Q
+VAR	ANON_140_47_L61_D_data, Q
+VAR	ANON_140_47_L61_D_info, Q
+VAR	ANON_140_35_L61_G_len,  Q
+VAR	ANON_140_47_L61_D_len,  Q
+VAR	ANON_140_35_L61_R_disp, Q
+VAR	ANON_140_35_L61_R__u,   Q
 namespace ANON_140_35_L61_R_info
-  VAR SIZ,      d
-  VAR _COMP_SIZ, d
-  VAR _FST_1,    d
-  VAR _LST_1,    d
+  VAR SIZ__, D
+  VAR _COMP_SIZ, D
+  VAR _FST_1, D
+  VAR _LST_1, D
 end namespace
-	La  1,	-SPEC_FILE_ofs
+	LA  1,	-SPEC_FILE_ofs
 	DUP
-	La  ,  0
-	Sa  1, ANON_140_35_L61_G_data
-	La  ,  8
-	Sa  1, ANON_140_35_L61_G_info
-	LId 1, ANON_140_35_L61_G_info, _STRING.LST_1
-	LId 1, ANON_140_35_L61_G_info, _STRING.FST_1
+	LA  ,  0
+	SA  1, ANON_140_35_L61_G_data
+	LA  ,  8
+	SA  1, ANON_140_35_L61_G_info
+	LID 1, ANON_140_35_L61_G_info, _STRING.LST_1
+	LID 1, ANON_140_35_L61_G_info, _STRING.FST_1
 	SUB
 	INC
 	CLAMP0
-	Sa  1, ANON_140_35_L61_G_len
+	SA  1, ANON_140_35_L61_G_len
 STR ANON_140_47_L61_D, ".bin"			; constante string=".bin"
 	LCA	ANON_140_47_L61_D.data_ptr
 	DUP
-	La  ,  0
-	Sa  1, ANON_140_47_L61_D_data
-	La  ,  8
-	Sa  1, ANON_140_47_L61_D_info
-	LId 1, ANON_140_47_L61_D_info, _STRING.LST_1
-	LId 1, ANON_140_47_L61_D_info, _STRING.FST_1
+	LA  ,  0
+	SA  1, ANON_140_47_L61_D_data
+	LA  ,  8
+	SA  1, ANON_140_47_L61_D_info
+	LID 1, ANON_140_47_L61_D_info, _STRING.LST_1
+	LID 1, ANON_140_47_L61_D_info, _STRING.FST_1
 	SUB
 	INC
 	CLAMP0
-	Sa  1, ANON_140_47_L61_D_len
-	La  1, ANON_140_35_L61_G_len
-	La  1, ANON_140_47_L61_D_len
+	SA  1, ANON_140_47_L61_D_len
+	LA  1, ANON_140_35_L61_G_len
+	LA  1, ANON_140_47_L61_D_len
 	ADD
 	CO_VAR
-	Sa  1, ANON_140_35_L61_R_disp
+	SA  1, ANON_140_35_L61_R_disp
 	LI	1
-	Sd  1, ANON_140_35_L61_R_info._FST_1
-	La  1, ANON_140_35_L61_G_len
-	La  1, ANON_140_47_L61_D_len
+	SD  1, ANON_140_35_L61_R_info._FST_1
+	LA  1, ANON_140_35_L61_G_len
+	LA  1, ANON_140_47_L61_D_len
 	ADD
-	Sd  1, ANON_140_35_L61_R_info._LST_1
+	SD  1, ANON_140_35_L61_R_info._LST_1
 	LI	8
-	Sd  1, ANON_140_35_L61_R_info._COMP_SIZ
-	La  1, ANON_140_35_L61_G_len
-	La  1, ANON_140_47_L61_D_len
+	SD  1, ANON_140_35_L61_R_info._COMP_SIZ
+	LA  1, ANON_140_35_L61_G_len
+	LA  1, ANON_140_47_L61_D_len
 	ADD
 	LI	8
 	MUL
-	Sd  1, ANON_140_35_L61_R_info.SIZ
-	LVA 1, ANON_140_35_L61_R_info.SIZ
-	Sa  1, ANON_140_35_L61_R__u
-	La  1, ANON_140_35_L61_R_disp
-	La  1, ANON_140_35_L61_G_len
-	La  1, ANON_140_35_L61_G_data
+	SD  1, ANON_140_35_L61_R_info.SIZ__
+	LVA 1, ANON_140_35_L61_R_info.SIZ__
+	SA  1, ANON_140_35_L61_R__u
+	LA  1, ANON_140_35_L61_R_disp
+	LA  1, ANON_140_35_L61_G_len
+	LA  1, ANON_140_35_L61_G_data
 	BLKMOV
-	La  1, ANON_140_35_L61_R_disp
-	La  1, ANON_140_35_L61_G_len
+	LA  1, ANON_140_35_L61_R_disp
+	LA  1, ANON_140_35_L61_G_len
 	ADD
-	La  1, ANON_140_47_L61_D_len
-	La  1, ANON_140_47_L61_D_data
+	LA  1, ANON_140_47_L61_D_len
+	LA  1, ANON_140_47_L61_D_data
 	BLKMOV
 	LVA 1, ANON_140_35_L61_R_disp
 	LI  1
 	LVA  1,	STANDARD.IDL.IDL_TBL.WRITE_SPEC_L54.SFILE_disp
-	CALL	STANDARD.IDL.IDL_TBL.DTT_IO. ,CREATE_L45
+	CALL	STANDARD.IDL.IDL_TBL.DTT_IO. ,CREATE_L1
 	LVA 0,	STANDARD.IDL.IDL_TBL.DIANA_TABLE_AREA_disp
 	LVA 1,	SFILE_disp
-	CALL	STANDARD.IDL.IDL_TBL.DTT_IO. ,WRITE_L56
+	CALL	STANDARD.IDL.IDL_TBL.DTT_IO. ,WRITE_L12
 	LVA  1,	STANDARD.IDL.IDL_TBL.WRITE_SPEC_L54.SFILE_disp
-	CALL	STANDARD.IDL.IDL_TBL.DTT_IO. ,CLOSE_L47
+	CALL	STANDARD.IDL.IDL_TBL.DTT_IO. ,CLOSE_L3
 ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
@@ -1759,24 +1735,24 @@ PRMS					;    debut parametrage
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
  hexa_show 'var elab SFILE ', $
-VAR SFILE_disp, q				; variable record : pointeur aux data record
-VAR SFILE__u, q				; variable record : pointeur aux useinfo
+VAR SFILE_disp, Q				; variable record : pointeur aux data record
+VAR SFILE__u, Q				; variable record : pointeur aux useinfo
 VAR SFILE__dat, STANDARD.IDL.IDL_TBL.DTT_IO._FILE_TYPE.size
 	LVA	1, SFILE__dat
-	Sa	1, SFILE_disp				; record fin
-	LVA	1, STANDARD.IDL.IDL_TBL.DTT_IO._FILE_TYPE.SIZ
-	Sa	1, SFILE__u
-	LIVa 1, STANDARD.IDL.IDL_TBL.READ_SPEC_L55.SFILE_disp, STANDARD.IDL.IDL_TBL.DTT_IO._FILE_TYPE.ID
+	SA	1, SFILE_disp				; record fin
+	LVA	1, STANDARD.IDL.IDL_TBL.DTT_IO._FILE_TYPE.SIZ__
+	SA	1, SFILE__u
+	LIVA 1, STANDARD.IDL.IDL_TBL.READ_SPEC_L55.SFILE_disp, STANDARD.IDL.IDL_TBL.DTT_IO._FILE_TYPE.ID
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
 	NEG
-	Sd
-	LIVa 1, STANDARD.IDL.IDL_TBL.READ_SPEC_L55.SFILE_disp, STANDARD.IDL.IDL_TBL.DTT_IO._FILE_TYPE.IS_OPENED
+	SD
+	LIVA 1, STANDARD.IDL.IDL_TBL.READ_SPEC_L55.SFILE_disp, STANDARD.IDL.IDL_TBL.DTT_IO._FILE_TYPE.IS_OPENED
 	LI	0
-	Sb
-	LIVa 1, STANDARD.IDL.IDL_TBL.READ_SPEC_L55.SFILE_disp, STANDARD.IDL.IDL_TBL.DTT_IO._FILE_TYPE.AT_END_OF_FILE
+	SB
+	LIVA 1, STANDARD.IDL.IDL_TBL.READ_SPEC_L55.SFILE_disp, STANDARD.IDL.IDL_TBL.DTT_IO._FILE_TYPE.AT_END_OF_FILE
 	LI	0
-	Sb
+	SB
 
  hexa_show ' disp ', SFILE_disp
 					;    end elab
@@ -1784,85 +1760,85 @@ begin:					;---------- BDY INSTRUCTIONS
 STR STR_L64, ""				; constante string=""
 	LCA	STR_L64.data_ptr
 ; CODE & concat _STRING
-VAR	ANON_154_33_L65_G_data, q
-VAR	ANON_154_33_L65_G_info, q
-VAR	ANON_154_45_L65_D_data, q
-VAR	ANON_154_45_L65_D_info, q
-VAR	ANON_154_33_L65_G_len,  q
-VAR	ANON_154_45_L65_D_len,  q
-VAR	ANON_154_33_L65_R_disp, q
-VAR	ANON_154_33_L65_R__u,   q
+VAR	ANON_154_33_L65_G_data, Q
+VAR	ANON_154_33_L65_G_info, Q
+VAR	ANON_154_45_L65_D_data, Q
+VAR	ANON_154_45_L65_D_info, Q
+VAR	ANON_154_33_L65_G_len,  Q
+VAR	ANON_154_45_L65_D_len,  Q
+VAR	ANON_154_33_L65_R_disp, Q
+VAR	ANON_154_33_L65_R__u,   Q
 namespace ANON_154_33_L65_R_info
-  VAR SIZ,      d
-  VAR _COMP_SIZ, d
-  VAR _FST_1,    d
-  VAR _LST_1,    d
+  VAR SIZ__, D
+  VAR _COMP_SIZ, D
+  VAR _FST_1, D
+  VAR _LST_1, D
 end namespace
-	La  1,	-SPEC_FILE_ofs
+	LA  1,	-SPEC_FILE_ofs
 	DUP
-	La  ,  0
-	Sa  1, ANON_154_33_L65_G_data
-	La  ,  8
-	Sa  1, ANON_154_33_L65_G_info
-	LId 1, ANON_154_33_L65_G_info, _STRING.LST_1
-	LId 1, ANON_154_33_L65_G_info, _STRING.FST_1
+	LA  ,  0
+	SA  1, ANON_154_33_L65_G_data
+	LA  ,  8
+	SA  1, ANON_154_33_L65_G_info
+	LID 1, ANON_154_33_L65_G_info, _STRING.LST_1
+	LID 1, ANON_154_33_L65_G_info, _STRING.FST_1
 	SUB
 	INC
 	CLAMP0
-	Sa  1, ANON_154_33_L65_G_len
+	SA  1, ANON_154_33_L65_G_len
 STR ANON_154_45_L65_D, ".bin"			; constante string=".bin"
 	LCA	ANON_154_45_L65_D.data_ptr
 	DUP
-	La  ,  0
-	Sa  1, ANON_154_45_L65_D_data
-	La  ,  8
-	Sa  1, ANON_154_45_L65_D_info
-	LId 1, ANON_154_45_L65_D_info, _STRING.LST_1
-	LId 1, ANON_154_45_L65_D_info, _STRING.FST_1
+	LA  ,  0
+	SA  1, ANON_154_45_L65_D_data
+	LA  ,  8
+	SA  1, ANON_154_45_L65_D_info
+	LID 1, ANON_154_45_L65_D_info, _STRING.LST_1
+	LID 1, ANON_154_45_L65_D_info, _STRING.FST_1
 	SUB
 	INC
 	CLAMP0
-	Sa  1, ANON_154_45_L65_D_len
-	La  1, ANON_154_33_L65_G_len
-	La  1, ANON_154_45_L65_D_len
+	SA  1, ANON_154_45_L65_D_len
+	LA  1, ANON_154_33_L65_G_len
+	LA  1, ANON_154_45_L65_D_len
 	ADD
 	CO_VAR
-	Sa  1, ANON_154_33_L65_R_disp
+	SA  1, ANON_154_33_L65_R_disp
 	LI	1
-	Sd  1, ANON_154_33_L65_R_info._FST_1
-	La  1, ANON_154_33_L65_G_len
-	La  1, ANON_154_45_L65_D_len
+	SD  1, ANON_154_33_L65_R_info._FST_1
+	LA  1, ANON_154_33_L65_G_len
+	LA  1, ANON_154_45_L65_D_len
 	ADD
-	Sd  1, ANON_154_33_L65_R_info._LST_1
+	SD  1, ANON_154_33_L65_R_info._LST_1
 	LI	8
-	Sd  1, ANON_154_33_L65_R_info._COMP_SIZ
-	La  1, ANON_154_33_L65_G_len
-	La  1, ANON_154_45_L65_D_len
+	SD  1, ANON_154_33_L65_R_info._COMP_SIZ
+	LA  1, ANON_154_33_L65_G_len
+	LA  1, ANON_154_45_L65_D_len
 	ADD
 	LI	8
 	MUL
-	Sd  1, ANON_154_33_L65_R_info.SIZ
-	LVA 1, ANON_154_33_L65_R_info.SIZ
-	Sa  1, ANON_154_33_L65_R__u
-	La  1, ANON_154_33_L65_R_disp
-	La  1, ANON_154_33_L65_G_len
-	La  1, ANON_154_33_L65_G_data
+	SD  1, ANON_154_33_L65_R_info.SIZ__
+	LVA 1, ANON_154_33_L65_R_info.SIZ__
+	SA  1, ANON_154_33_L65_R__u
+	LA  1, ANON_154_33_L65_R_disp
+	LA  1, ANON_154_33_L65_G_len
+	LA  1, ANON_154_33_L65_G_data
 	BLKMOV
-	La  1, ANON_154_33_L65_R_disp
-	La  1, ANON_154_33_L65_G_len
+	LA  1, ANON_154_33_L65_R_disp
+	LA  1, ANON_154_33_L65_G_len
 	ADD
-	La  1, ANON_154_45_L65_D_len
-	La  1, ANON_154_45_L65_D_data
+	LA  1, ANON_154_45_L65_D_len
+	LA  1, ANON_154_45_L65_D_data
 	BLKMOV
 	LVA 1, ANON_154_33_L65_R_disp
 	LI  0
 	LVA  1,	STANDARD.IDL.IDL_TBL.READ_SPEC_L55.SFILE_disp
-	CALL	STANDARD.IDL.IDL_TBL.DTT_IO. ,OPEN_L46
+	CALL	STANDARD.IDL.IDL_TBL.DTT_IO. ,OPEN_L2
 	LVA  0,	STANDARD.IDL.IDL_TBL.DIANA_TABLE_AREA_disp
 	LVA 1,	SFILE_disp
-	CALL	STANDARD.IDL.IDL_TBL.DTT_IO. ,READ_L55
+	CALL	STANDARD.IDL.IDL_TBL.DTT_IO. ,READ_L11
 	LVA  1,	STANDARD.IDL.IDL_TBL.READ_SPEC_L55.SFILE_disp
-	CALL	STANDARD.IDL.IDL_TBL.DTT_IO. ,CLOSE_L47
+	CALL	STANDARD.IDL.IDL_TBL.DTT_IO. ,CLOSE_L3
 ret_lbl:
 	UNLINK 1
 	RTD	prm_siz

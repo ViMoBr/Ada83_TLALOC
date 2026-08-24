@@ -1,0 +1,37 @@
+	include '../../src/expander/fasmg/codi_x86_64.finc'
+STANDARD = 'STANDARD'
+namespace STANDARD
+  virtual at 8
+    VARzone::
+  end virtual
+	LINK	0, loc_siz
+	VAR	G8_disp, Q
+	VAR	B8_disp, B, 3
+	LI	41
+	SQ	0, G8_disp
+	CALL	STANDARD., SP8
+	LQ	0, G8_disp
+	LI	42
+	CEQ
+	BT	ok8
+	SYS_EXIT	1
+ok8:
+	SYS_EXIT	0
+if defined SP8_
+	PRO	SP8
+	ELB	1
+	VAR	T8_disp, Q
+	LQ	0, G8_disp
+	LI	1
+	ADD
+	SQ	1, T8_disp
+	LQ	1, T8_disp
+	SQ	0, G8_disp
+	UNLINK	1
+	RTD	0
+	endPRO
+end if
+ virtual VARzone
+   loc_siz = $
+  end virtual
+end namespace

@@ -1,0 +1,1022 @@
+if ~ definite TEXT_IO
+include 'TEXT_IO.FINC'
+display 'including withed unit TEXT_IO.FINC', 10
+end if
+if ~ definite IO_EXCEPTIONS
+include 'IO_EXCEPTIONS.FINC'
+display 'including trans withed unit IO_EXCEPTIONS.FINC', 10
+end if
+if ~ definite TEXT_IO
+include 'TEXT_IO.FINC'
+display 'including trans withed unit TEXT_IO.FINC', 10
+end if
+GENBLK_TEST = 'GENBLK_TEST'
+PRO	GENBLK_TEST_L1				;---------- PRO GENBLK_TEST
+ hexa_show 'GENBLK_TEST_L1 ', $
+ELB 1					;    BODY ELAB
+ hexa_show 'var elab NB_OK ', $
+VAR NB_OK_disp, D				; variable entiere
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	SD  1,	NB_OK_disp
+
+ hexa_show ' disp ', NB_OK_disp
+ hexa_show 'var elab NB_ECHECS ', $
+VAR NB_ECHECS_disp, D			; variable entiere
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	SD  1,	NB_ECHECS_disp
+
+ hexa_show ' disp ', NB_ECHECS_disp
+INT_IO = 'INT_IO'
+namespace INT_IO				;---------- GENERIC PACKAGE INSTANTIATION
+elab_spec:				;    SPEC ELAB
+
+; F4A SET  cle=NUM  actuel=DN_INTEGER
+BRA post_LD_NUM
+LD_NUM.elab:
+	LD -1, 0
+	RTD 0
+post_LD_NUM:
+BRA post_ST_NUM
+ST_NUM.elab:
+	SD -1, 0
+	RTD 0
+post_ST_NUM:
+BRA post_INADR_NUM
+INADR_NUM.elab:
+	RTD 0
+post_INADR_NUM:
+BRA post_OUTADR_NUM
+OUTADR_NUM.elab:
+	LA
+	RTD 0
+post_OUTADR_NUM:
+VAR NUM__outadr_ofs, Q
+	LCA OUTADR_NUM.elab
+	SA	 1, NUM__outadr_ofs
+VAR NUM__inadr_ofs, Q
+	LCA INADR_NUM.elab
+	SA	 1, NUM__inadr_ofs
+VAR NUM__st_ofs, Q
+	LCA ST_NUM.elab
+	SA	 1, NUM__st_ofs
+VAR NUM__ld_ofs, Q
+	LCA LD_NUM.elab
+	SA	 1, NUM__ld_ofs
+VAR NUM__u_ofs, Q
+	LA	 0, STANDARD._INTEGER.use__info
+	SA	 1, NUM__u_ofs
+VAR GFP_disp, Q				; Lieu du Generic Frame Pointer 
+					; CODE_PACKAGE_SPEC
+ hexa_show ' spec ', $
+ hexa_show 'var elab DEFAULT_WIDTH ', $
+VAR DEFAULT_WIDTH_disp, D			; variable entiere
+	LI	 11
+	DUP
+	LD	0, STANDARD.TEXT_IO._FIELD.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.TEXT_IO._FIELD.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	SD  1,	STANDARD.GENBLK_TEST_L1.INT_IO.DEFAULT_WIDTH_disp
+
+ hexa_show ' disp ', DEFAULT_WIDTH_disp
+ hexa_show 'var elab DEFAULT_BASE ', $
+VAR DEFAULT_BASE_disp, D			; variable entiere
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	10
+	DUP
+	LD	0, STANDARD.TEXT_IO._NUMBER_BASE.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.TEXT_IO._NUMBER_BASE.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	SD  1,	STANDARD.GENBLK_TEST_L1.INT_IO.DEFAULT_BASE_disp
+
+ hexa_show ' disp ', DEFAULT_BASE_disp
+					; sub program entry decl (in instantiation TRUE )
+if defined GET_L61_
+PRO	GET_L61				;---------- PRO GET
+ hexa_show 'GET_L61 ', $
+PRMS					;    debut parametrage
+	PRM FILE_ofs				; in
+	PRM ITEM_ofs				; out
+	PRM WIDTH_ofs				; in
+endPRMS					;    fin parametrage
+ELB 2
+begin:
+	LVA	 1, GFP_disp
+	LD	 2, -WIDTH_ofs
+	LA 	 2, -ITEM_ofs
+	LA 	 2, -FILE_ofs
+	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L61
+	UNLINK	 2
+	RTD	prm_siz
+endPRO					;---------- end PRO GET
+end if
+					; sub program entry decl (in instantiation TRUE )
+if defined GET_L62_
+PRO	GET_L62				;---------- PRO GET
+ hexa_show 'GET_L62 ', $
+PRMS					;    debut parametrage
+	PRM ITEM_ofs				; out
+	PRM WIDTH_ofs				; in
+endPRMS					;    fin parametrage
+ELB 2
+begin:
+	LVA	 1, GFP_disp
+	LD	 2, -WIDTH_ofs
+	LA 	 2, -ITEM_ofs
+	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L62
+	UNLINK	 2
+	RTD	prm_siz
+endPRO					;---------- end PRO GET
+end if
+					; sub program entry decl (in instantiation TRUE )
+if defined PUT_L63_
+PRO	PUT_L63				;---------- PRO PUT
+ hexa_show 'PUT_L63 ', $
+PRMS					;    debut parametrage
+	PRM FILE_ofs				; in
+	PRM ITEM_ofs				; in
+	PRM WIDTH_ofs				; in
+	PRM BASE_ofs				; in
+endPRMS					;    fin parametrage
+ELB 2
+begin:
+	LVA	 1, GFP_disp
+	LD	 2, -BASE_ofs
+	LD	 2, -WIDTH_ofs
+	LD	 2, -ITEM_ofs
+	LA 	 2, -FILE_ofs
+	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L63
+	UNLINK	 2
+	RTD	prm_siz
+endPRO					;---------- end PRO PUT
+end if
+					; sub program entry decl (in instantiation TRUE )
+if defined PUT_L64_
+PRO	PUT_L64				;---------- PRO PUT
+ hexa_show 'PUT_L64 ', $
+PRMS					;    debut parametrage
+	PRM ITEM_ofs				; in
+	PRM WIDTH_ofs				; in
+	PRM BASE_ofs				; in
+endPRMS					;    fin parametrage
+ELB 2
+begin:
+	LVA	 1, GFP_disp
+	LD	 2, -BASE_ofs
+	LD	 2, -WIDTH_ofs
+	LD	 2, -ITEM_ofs
+	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L64
+	UNLINK	 2
+	RTD	prm_siz
+endPRO					;---------- end PRO PUT
+end if
+					; sub program entry decl (in instantiation TRUE )
+if defined GET_L65_
+PRO	GET_L65				;---------- PRO GET
+ hexa_show 'GET_L65 ', $
+PRMS					;    debut parametrage
+	PRM FROM_ofs				; in
+	PRM ITEM_ofs				; out
+	PRM LAST_ofs				; out
+endPRMS					;    fin parametrage
+ELB 2
+begin:
+	LVA	 1, GFP_disp
+	LA 	 2, -LAST_ofs
+	LA 	 2, -ITEM_ofs
+	LA 	 2, -FROM_ofs
+	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L65
+	UNLINK	 2
+	RTD	prm_siz
+endPRO					;---------- end PRO GET
+end if
+					; sub program entry decl (in instantiation TRUE )
+if defined PUT_L66_
+PRO	PUT_L66				;---------- PRO PUT
+ hexa_show 'PUT_L66 ', $
+PRMS					;    debut parametrage
+	PRM TO_ofs				; out
+	PRM ITEM_ofs				; in
+	PRM BASE_ofs				; in
+endPRMS					;    fin parametrage
+ELB 2
+begin:
+	LVA	 1, GFP_disp
+	LD	 2, -BASE_ofs
+	LD	 2, -ITEM_ofs
+	LA 	 2, -TO_ofs
+	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L66
+	UNLINK	 2
+	RTD	prm_siz
+endPRO					;---------- end PRO PUT
+end if
+					;---------- end generic package instantiation INT_IO
+end namespace
+
+GEN_PKG = 'GEN_PKG'
+GEN_PKG = 'GEN_PKG'
+namespace GEN_PKG
+					;---------- GENERIC PACKAGE ----------
+
+ hexa_show 'GEN_PKG body ', $
+PRMS
+	PRM NUM__u_ofs
+	PRM NUM__ld_ofs
+	PRM NUM__st_ofs
+	PRM NUM__inadr_ofs
+	PRM NUM__outadr_ofs
+endPRMS
+
+					;---------- GENERIC PACKAGE SPEC OF BODY ----------
+
+					; CODE_PACKAGE_SPEC
+ hexa_show ' spec ', $
+					; sub program entry decl (in instantiation FALSE )
+					; sub program entry decl (in instantiation FALSE )
+					; sub program entry decl (in instantiation FALSE )
+					; sub program entry decl (in instantiation FALSE )
+
+					;---------- GENERIC PACKAGE BODY ----------
+
+					;    BODY ELAB
+
+if defined HALF_SUM_L8_
+PRO	HALF_SUM_L8				;---------- PRO HALF_SUM
+ hexa_show 'HALF_SUM_L8 ', $
+PRMS					;    debut parametrage
+	PRM A_ofs				; in
+	PRM B_ofs				; in
+	PRM GFP_ofs
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+ hexa_show 'var elab R ', $
+VAR R_disp, Q				; variable flottante
+	LVA  2,	-A_ofs
+	LA 2,	-GFP_ofs
+	LA ,	-NUM__inadr_ofs
+	CALLI
+	LA  2,	-GFP_ofs
+	LA ,	-NUM__ld_ofs
+	CALLI
+	SQ  2,	R_disp
+
+ hexa_show ' disp ', R_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+namespace	BLOCK__1
+ELB 3					;    BODY ELAB
+ hexa_show 'var elab H ', $
+VAR H_disp, Q				; variable flottante
+; CODE_NUMERIC_LITERAL DN_FLOAT
+	LIF	0.5
+	SQ  3,	H_disp
+
+ hexa_show ' disp ', H_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	LVA 3,	H_disp
+	LA 2,	-GFP_ofs
+	LA ,	-NUM__inadr_ofs
+	CALLI
+	LA 2,	-GFP_ofs
+	LA ,	-NUM__ld_ofs
+	CALLI
+	LVA  2,	-B_ofs
+	LA 2,	-GFP_ofs
+	LA ,	-NUM__inadr_ofs
+	CALLI
+	LA  2,	-GFP_ofs
+	LA ,	-NUM__ld_ofs
+	CALLI
+	FMUL
+	SQ  3,	H_disp
+	LVA 2,	STANDARD.GENBLK_TEST_L1.GEN_PKG.HALF_SUM_L8.R_disp
+	LA 2,	-GFP_ofs
+	LA ,	-NUM__inadr_ofs
+	CALLI
+	LA 2,	-GFP_ofs
+	LA ,	-NUM__ld_ofs
+	CALLI
+; CODE_NUMERIC_LITERAL DN_FLOAT
+	LIF	0.5
+	FMUL
+	LVA 3,	H_disp
+	LA 2,	-GFP_ofs
+	LA ,	-NUM__inadr_ofs
+	CALLI
+	LA 2,	-GFP_ofs
+	LA ,	-NUM__ld_ofs
+	CALLI
+	FADD
+	SQ  2,	STANDARD.GENBLK_TEST_L1.GEN_PKG.HALF_SUM_L8.R_disp
+	UNLINK 3
+endPRO
+; CODE_RETURN : EXPR TYPE = DN_FLOAT  VUE COMPLETE = DN_FLOAT
+	LVA 2,	R_disp
+	LA 2,	-GFP_ofs
+	LA ,	-NUM__inadr_ofs
+	CALLI
+	LA 2,	-GFP_ofs
+	LA ,	-NUM__ld_ofs
+	CALLI
+	SQ  2,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINK 2
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO HALF_SUM
+end if
+
+if defined NESTED_L9_
+PRO	NESTED_L9				;---------- PRO NESTED
+ hexa_show 'NESTED_L9 ', $
+PRMS					;    debut parametrage
+	PRM A_ofs				; in
+	PRM GFP_ofs
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+
+if defined TWICE_L16_
+PRO	TWICE_L16				;---------- PRO TWICE
+ hexa_show 'TWICE_L16 ', $
+PRMS					;    debut parametrage
+	PRM V_ofs				; in
+	PRM GFP_ofs
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 3					;    BODY ELAB
+ hexa_show 'var elab W ', $
+VAR W_disp, Q				; variable flottante
+	LVA  3,	-V_ofs
+	LA 2,	-GFP_ofs
+	LA ,	-NUM__inadr_ofs
+	CALLI
+	LA  2,	-GFP_ofs
+	LA ,	-NUM__ld_ofs
+	CALLI
+	SQ  3,	W_disp
+
+ hexa_show ' disp ', W_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+namespace	BLOCK__2
+ELB 4					;    BODY ELAB
+ hexa_show 'var elab Z ', $
+VAR Z_disp, Q				; variable flottante
+; CODE_NUMERIC_LITERAL DN_FLOAT
+	LIF	2.0
+	SQ  4,	Z_disp
+
+ hexa_show ' disp ', Z_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	LVA 3,	STANDARD.GENBLK_TEST_L1.GEN_PKG.NESTED_L9.TWICE_L16.W_disp
+	LA 3,	-GFP_ofs
+	LA ,	-NUM__inadr_ofs
+	CALLI
+	LA 3,	-GFP_ofs
+	LA ,	-NUM__ld_ofs
+	CALLI
+	LVA 4,	Z_disp
+	LA 3,	-GFP_ofs
+	LA ,	-NUM__inadr_ofs
+	CALLI
+	LA 3,	-GFP_ofs
+	LA ,	-NUM__ld_ofs
+	CALLI
+	FMUL
+	SQ  3,	STANDARD.GENBLK_TEST_L1.GEN_PKG.NESTED_L9.TWICE_L16.W_disp
+	UNLINK 4
+endPRO
+; CODE_RETURN : EXPR TYPE = DN_FLOAT  VUE COMPLETE = DN_FLOAT
+	LVA 3,	W_disp
+	LA 3,	-GFP_ofs
+	LA ,	-NUM__inadr_ofs
+	CALLI
+	LA 3,	-GFP_ofs
+	LA ,	-NUM__ld_ofs
+	CALLI
+	SQ  3,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINK 3
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO TWICE
+end if
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+; CODE_RETURN : EXPR TYPE = DN_FLOAT  VUE COMPLETE = DN_FLOAT
+	LI	0					; lieu resultat sur pile
+	LA  2,	-GFP_ofs				; propagation GFP generique
+	LVA 2,	-A_ofs
+	LA 2,	-GFP_ofs
+	LA ,	-NUM__ld_ofs
+	CALLI
+	CALL	STANDARD.GENBLK_TEST_L1.GEN_PKG.NESTED_L9. ,TWICE_L16
+	SQ  2,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINK 2
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO NESTED
+end if
+
+if defined SCALE_L10_
+PRO	SCALE_L10				;---------- PRO SCALE
+ hexa_show 'SCALE_L10 ', $
+PRMS					;    debut parametrage
+	PRM X_ofs				; in out
+	PRM K_ofs				; in
+	PRM GFP_ofs
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	LVA  2,	-X_ofs
+	LA
+	LVA  2,	-X_ofs
+	LA 2,	-GFP_ofs
+	LA ,	-NUM__outadr_ofs
+	CALLI
+	LA  2,	-GFP_ofs
+	LA ,	-NUM__ld_ofs
+	CALLI
+	LVA  2,	-K_ofs
+	LA 2,	-GFP_ofs
+	LA ,	-NUM__inadr_ofs
+	CALLI
+	LA  2,	-GFP_ofs
+	LA ,	-NUM__ld_ofs
+	CALLI
+	FMUL
+	LA  2,	-GFP_ofs
+	LA ,	-NUM__st_ofs
+	CALLI
+ret_lbl:
+	UNLINK 2
+	RTD	prm_siz
+excep:
+endPRO					;---------- end PRO SCALE
+end if
+
+if defined CALL_IN_BLOCK_L11_
+PRO	CALL_IN_BLOCK_L11			;---------- PRO CALL_IN_BLOCK
+ hexa_show 'CALL_IN_BLOCK_L11 ', $
+PRMS					;    debut parametrage
+	PRM A_ofs				; in
+	PRM GFP_ofs
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+ hexa_show 'var elab R ', $
+VAR R_disp, Q				; variable flottante
+	LVA  2,	-A_ofs
+	LA 2,	-GFP_ofs
+	LA ,	-NUM__inadr_ofs
+	CALLI
+	LA  2,	-GFP_ofs
+	LA ,	-NUM__ld_ofs
+	CALLI
+	SQ  2,	R_disp
+
+ hexa_show ' disp ', R_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+namespace	BLOCK__3
+ELB 3					;    BODY ELAB
+ hexa_show 'var elab K ', $
+VAR K_disp, Q				; variable flottante
+; CODE_NUMERIC_LITERAL DN_FLOAT
+	LIF	3.0
+	SQ  3,	K_disp
+
+ hexa_show ' disp ', K_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	LA  2,	-GFP_ofs				; propagation GFP generique
+	LQ 3,	K_disp
+	LVA  2,	STANDARD.GENBLK_TEST_L1.GEN_PKG.CALL_IN_BLOCK_L11.R_disp
+	CALL	STANDARD.GENBLK_TEST_L1.GEN_PKG. ,SCALE_L10
+	UNLINK 3
+endPRO
+; CODE_RETURN : EXPR TYPE = DN_FLOAT  VUE COMPLETE = DN_FLOAT
+	LVA 2,	R_disp
+	LA 2,	-GFP_ofs
+	LA ,	-NUM__inadr_ofs
+	CALLI
+	LA 2,	-GFP_ofs
+	LA ,	-NUM__ld_ofs
+	CALLI
+	SQ  2,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINK 2
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO CALL_IN_BLOCK
+end if
+begin:					;---------- package BDY INSTRUCTIONS
+end namespace 				;---------- end generic package BDY GEN_PKG
+LF_PKG = 'LF_PKG'
+namespace LF_PKG				;---------- GENERIC PACKAGE INSTANTIATION
+elab_spec:				;    SPEC ELAB
+
+; F4A SET  cle=NUM  actuel=DN_FLOAT
+BRA post_LD_NUM
+LD_NUM.elab:
+	LQ -1, 0
+	RTD 0
+post_LD_NUM:
+BRA post_ST_NUM
+ST_NUM.elab:
+	SQ -1, 0
+	RTD 0
+post_ST_NUM:
+BRA post_INADR_NUM
+INADR_NUM.elab:
+	RTD 0
+post_INADR_NUM:
+BRA post_OUTADR_NUM
+OUTADR_NUM.elab:
+	LA
+	RTD 0
+post_OUTADR_NUM:
+VAR NUM__outadr_ofs, Q
+	LCA OUTADR_NUM.elab
+	SA	 1, NUM__outadr_ofs
+VAR NUM__inadr_ofs, Q
+	LCA INADR_NUM.elab
+	SA	 1, NUM__inadr_ofs
+VAR NUM__st_ofs, Q
+	LCA ST_NUM.elab
+	SA	 1, NUM__st_ofs
+VAR NUM__ld_ofs, Q
+	LCA LD_NUM.elab
+	SA	 1, NUM__ld_ofs
+VAR NUM__u_ofs, Q
+	LA	 0, STANDARD._LONG_FLOAT.use__info
+	SA	 1, NUM__u_ofs
+VAR GFP_disp, Q				; Lieu du Generic Frame Pointer 
+					; CODE_PACKAGE_SPEC
+ hexa_show ' spec ', $
+					; sub program entry decl (in instantiation TRUE )
+if defined HALF_SUM_L31_
+PRO	HALF_SUM_L31				;---------- PRO HALF_SUM
+ hexa_show 'HALF_SUM_L31 ', $
+PRMS					;    debut parametrage
+	PRM A_ofs				; in
+	PRM B_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 2
+begin:
+	LI	0					; lieu result
+	LVA	 1, GFP_disp
+	LQ	 2, -B_ofs
+	LQ	 2, -A_ofs
+	CALL	STANDARD.GENBLK_TEST_L1.GEN_PKG. ,HALF_SUM_L8
+	SQ	 2, -result__ofs			; retour resultat
+	UNLINK	 2
+	RTD	prm_siz-8
+endPRO					;---------- end PRO HALF_SUM
+end if
+					; sub program entry decl (in instantiation TRUE )
+if defined NESTED_L32_
+PRO	NESTED_L32				;---------- PRO NESTED
+ hexa_show 'NESTED_L32 ', $
+PRMS					;    debut parametrage
+	PRM A_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 2
+begin:
+	LI	0					; lieu result
+	LVA	 1, GFP_disp
+	LQ	 2, -A_ofs
+	CALL	STANDARD.GENBLK_TEST_L1.GEN_PKG. ,NESTED_L9
+	SQ	 2, -result__ofs			; retour resultat
+	UNLINK	 2
+	RTD	prm_siz-8
+endPRO					;---------- end PRO NESTED
+end if
+					; sub program entry decl (in instantiation TRUE )
+if defined SCALE_L33_
+PRO	SCALE_L33				;---------- PRO SCALE
+ hexa_show 'SCALE_L33 ', $
+PRMS					;    debut parametrage
+	PRM X_ofs				; in out
+	PRM K_ofs				; in
+endPRMS					;    fin parametrage
+ELB 2
+begin:
+	LVA	 1, GFP_disp
+	LQ	 2, -K_ofs
+	LA 	 2, -X_ofs
+	CALL	STANDARD.GENBLK_TEST_L1.GEN_PKG. ,SCALE_L10
+	UNLINK	 2
+	RTD	prm_siz
+endPRO					;---------- end PRO SCALE
+end if
+					; sub program entry decl (in instantiation TRUE )
+if defined CALL_IN_BLOCK_L34_
+PRO	CALL_IN_BLOCK_L34			;---------- PRO CALL_IN_BLOCK
+ hexa_show 'CALL_IN_BLOCK_L34 ', $
+PRMS					;    debut parametrage
+	PRM A_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 2
+begin:
+	LI	0					; lieu result
+	LVA	 1, GFP_disp
+	LQ	 2, -A_ofs
+	CALL	STANDARD.GENBLK_TEST_L1.GEN_PKG. ,CALL_IN_BLOCK_L11
+	SQ	 2, -result__ofs			; retour resultat
+	UNLINK	 2
+	RTD	prm_siz-8
+endPRO					;---------- end PRO CALL_IN_BLOCK
+end if
+					;---------- end generic package instantiation LF_PKG
+end namespace
+
+F_PKG = 'F_PKG'
+namespace F_PKG				;---------- GENERIC PACKAGE INSTANTIATION
+elab_spec:				;    SPEC ELAB
+
+; F4A SET  cle=NUM  actuel=DN_FLOAT
+BRA post_LD_NUM
+LD_NUM.elab:
+	LQ -1, 0
+	RTD 0
+post_LD_NUM:
+BRA post_ST_NUM
+ST_NUM.elab:
+	SQ -1, 0
+	RTD 0
+post_ST_NUM:
+BRA post_INADR_NUM
+INADR_NUM.elab:
+	RTD 0
+post_INADR_NUM:
+BRA post_OUTADR_NUM
+OUTADR_NUM.elab:
+	LA
+	RTD 0
+post_OUTADR_NUM:
+VAR NUM__outadr_ofs, Q
+	LCA OUTADR_NUM.elab
+	SA	 1, NUM__outadr_ofs
+VAR NUM__inadr_ofs, Q
+	LCA INADR_NUM.elab
+	SA	 1, NUM__inadr_ofs
+VAR NUM__st_ofs, Q
+	LCA ST_NUM.elab
+	SA	 1, NUM__st_ofs
+VAR NUM__ld_ofs, Q
+	LCA LD_NUM.elab
+	SA	 1, NUM__ld_ofs
+VAR NUM__u_ofs, Q
+	LA	 0, STANDARD._FLOAT.use__info
+	SA	 1, NUM__u_ofs
+VAR GFP_disp, Q				; Lieu du Generic Frame Pointer 
+					; CODE_PACKAGE_SPEC
+ hexa_show ' spec ', $
+					; sub program entry decl (in instantiation TRUE )
+if defined HALF_SUM_L35_
+PRO	HALF_SUM_L35				;---------- PRO HALF_SUM
+ hexa_show 'HALF_SUM_L35 ', $
+PRMS					;    debut parametrage
+	PRM A_ofs				; in
+	PRM B_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 2
+begin:
+	LI	0					; lieu result
+	LVA	 1, GFP_disp
+	LQ	 2, -B_ofs
+	LQ	 2, -A_ofs
+	CALL	STANDARD.GENBLK_TEST_L1.GEN_PKG. ,HALF_SUM_L8
+	SQ	 2, -result__ofs			; retour resultat
+	UNLINK	 2
+	RTD	prm_siz-8
+endPRO					;---------- end PRO HALF_SUM
+end if
+					; sub program entry decl (in instantiation TRUE )
+if defined NESTED_L36_
+PRO	NESTED_L36				;---------- PRO NESTED
+ hexa_show 'NESTED_L36 ', $
+PRMS					;    debut parametrage
+	PRM A_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 2
+begin:
+	LI	0					; lieu result
+	LVA	 1, GFP_disp
+	LQ	 2, -A_ofs
+	CALL	STANDARD.GENBLK_TEST_L1.GEN_PKG. ,NESTED_L9
+	SQ	 2, -result__ofs			; retour resultat
+	UNLINK	 2
+	RTD	prm_siz-8
+endPRO					;---------- end PRO NESTED
+end if
+					; sub program entry decl (in instantiation TRUE )
+if defined SCALE_L37_
+PRO	SCALE_L37				;---------- PRO SCALE
+ hexa_show 'SCALE_L37 ', $
+PRMS					;    debut parametrage
+	PRM X_ofs				; in out
+	PRM K_ofs				; in
+endPRMS					;    fin parametrage
+ELB 2
+begin:
+	LVA	 1, GFP_disp
+	LQ	 2, -K_ofs
+	LA 	 2, -X_ofs
+	CALL	STANDARD.GENBLK_TEST_L1.GEN_PKG. ,SCALE_L10
+	UNLINK	 2
+	RTD	prm_siz
+endPRO					;---------- end PRO SCALE
+end if
+					; sub program entry decl (in instantiation TRUE )
+if defined CALL_IN_BLOCK_L38_
+PRO	CALL_IN_BLOCK_L38			;---------- PRO CALL_IN_BLOCK
+ hexa_show 'CALL_IN_BLOCK_L38 ', $
+PRMS					;    debut parametrage
+	PRM A_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 2
+begin:
+	LI	0					; lieu result
+	LVA	 1, GFP_disp
+	LQ	 2, -A_ofs
+	CALL	STANDARD.GENBLK_TEST_L1.GEN_PKG. ,CALL_IN_BLOCK_L11
+	SQ	 2, -result__ofs			; retour resultat
+	UNLINK	 2
+	RTD	prm_siz-8
+endPRO					;---------- end PRO CALL_IN_BLOCK
+end if
+					;---------- end generic package instantiation F_PKG
+end namespace
+
+
+if defined CHECK_L39_
+PRO	CHECK_L39				;---------- PRO CHECK
+ hexa_show 'CHECK_L39 ', $
+PRMS					;    debut parametrage
+	PRM OK_ofs				; in
+	PRM SECTION_ofs				; in
+	PRM NUMERO_ofs				; in
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+					; debut if
+	ULB  2,	-OK_ofs
+	BF	L43
+	LD 1,	STANDARD.GENBLK_TEST_L1.NB_OK_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	ADD
+	SD  1,	STANDARD.GENBLK_TEST_L1.NB_OK_disp
+	BRA	L42
+L43:
+	LD 1,	STANDARD.GENBLK_TEST_L1.NB_ECHECS_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	ADD
+	SD  1,	STANDARD.GENBLK_TEST_L1.NB_ECHECS_disp
+STR STR_L44, "* ECHEC section "		; constante string="* ECHEC section "
+	LCA	STR_L44.data_ptr
+	CALL	STANDARD.TEXT_IO. ,PUT_L56
+	LD 1,	STANDARD.GENBLK_TEST_L1.INT_IO.DEFAULT_BASE_disp
+	DUP
+	LD	0, STANDARD.TEXT_IO._NUMBER_BASE.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.TEXT_IO._NUMBER_BASE.LST
+	CGT
+	BT	STANDARD.ce_raise_
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	DUP
+	LD	0, STANDARD.TEXT_IO._FIELD.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.TEXT_IO._FIELD.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	LD  2,	-SECTION_ofs
+	CALL	STANDARD.GENBLK_TEST_L1.INT_IO. ,PUT_L64
+STR STR_L45, " test "			; constante string=" test "
+	LCA	STR_L45.data_ptr
+	CALL	STANDARD.TEXT_IO. ,PUT_L56
+	LD 1,	STANDARD.GENBLK_TEST_L1.INT_IO.DEFAULT_BASE_disp
+	DUP
+	LD	0, STANDARD.TEXT_IO._NUMBER_BASE.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.TEXT_IO._NUMBER_BASE.LST
+	CGT
+	BT	STANDARD.ce_raise_
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	DUP
+	LD	0, STANDARD.TEXT_IO._FIELD.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.TEXT_IO._FIELD.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	LD  2,	-NUMERO_ofs
+	CALL	STANDARD.GENBLK_TEST_L1.INT_IO. ,PUT_L64
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	DUP
+	ULD	0, STANDARD.TEXT_IO._POSITIVE_COUNT.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	ULD	0, STANDARD.TEXT_IO._POSITIVE_COUNT.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	CALL	STANDARD.TEXT_IO. ,NEW_LINE_L26
+L42:					; post if
+ret_lbl:
+	UNLINK 2
+	RTD	prm_siz
+excep:
+endPRO					;---------- end PRO CHECK
+end if
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+STR STR_L48, "=== GENBLK_TEST : GFP depuis bloc declare / PRO imbrique (piege 144) ==="	; constante string="=== GENBLK_TEST : GFP depuis bloc declare / PRO imbrique (piege 144) ==="
+	LCA	STR_L48.data_ptr
+	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	LI	0					; lieu resultat sur pile
+; CODE_NUMERIC_LITERAL DN_FLOAT
+	LIF	6.0
+; CODE_NUMERIC_LITERAL DN_FLOAT
+	LIF	4.0
+	CALL	STANDARD.GENBLK_TEST_L1.LF_PKG. ,HALF_SUM_L31
+; CODE_NUMERIC_LITERAL DN_FLOAT
+	LIF	5.0
+	FCEQ
+	CALL	STANDARD.GENBLK_TEST_L1. ,CHECK_L39
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	2
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	LI	0					; lieu resultat sur pile
+; CODE_NUMERIC_LITERAL DN_FLOAT
+	LIF	1.25
+	CALL	STANDARD.GENBLK_TEST_L1.LF_PKG. ,NESTED_L32
+; CODE_NUMERIC_LITERAL DN_FLOAT
+	LIF	2.5
+	FCEQ
+	CALL	STANDARD.GENBLK_TEST_L1. ,CHECK_L39
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	3
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	LI	0					; lieu resultat sur pile
+; CODE_NUMERIC_LITERAL DN_FLOAT
+	LIF	2.0
+	CALL	STANDARD.GENBLK_TEST_L1.LF_PKG. ,CALL_IN_BLOCK_L34
+; CODE_NUMERIC_LITERAL DN_FLOAT
+	LIF	6.0
+	FCEQ
+	CALL	STANDARD.GENBLK_TEST_L1. ,CHECK_L39
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	2
+	LI	0					; lieu resultat sur pile
+; CODE_NUMERIC_LITERAL DN_FLOAT
+	LIF	6.0
+; CODE_NUMERIC_LITERAL DN_FLOAT
+	LIF	4.0
+	CALL	STANDARD.GENBLK_TEST_L1.F_PKG. ,HALF_SUM_L35
+; CODE_NUMERIC_LITERAL DN_FLOAT
+	LIF	5.0
+	FCEQ
+	CALL	STANDARD.GENBLK_TEST_L1. ,CHECK_L39
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	2
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	2
+	LI	0					; lieu resultat sur pile
+; CODE_NUMERIC_LITERAL DN_FLOAT
+	LIF	1.25
+	CALL	STANDARD.GENBLK_TEST_L1.F_PKG. ,NESTED_L36
+; CODE_NUMERIC_LITERAL DN_FLOAT
+	LIF	2.5
+	FCEQ
+	CALL	STANDARD.GENBLK_TEST_L1. ,CHECK_L39
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	3
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	2
+	LI	0					; lieu resultat sur pile
+; CODE_NUMERIC_LITERAL DN_FLOAT
+	LIF	2.0
+	CALL	STANDARD.GENBLK_TEST_L1.F_PKG. ,CALL_IN_BLOCK_L38
+; CODE_NUMERIC_LITERAL DN_FLOAT
+	LIF	6.0
+	FCEQ
+	CALL	STANDARD.GENBLK_TEST_L1. ,CHECK_L39
+STR STR_L49, "RESULTAT : "			; constante string="RESULTAT : "
+	LCA	STR_L49.data_ptr
+	CALL	STANDARD.TEXT_IO. ,PUT_L56
+	LD 1,	STANDARD.GENBLK_TEST_L1.INT_IO.DEFAULT_BASE_disp
+	DUP
+	LD	0, STANDARD.TEXT_IO._NUMBER_BASE.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.TEXT_IO._NUMBER_BASE.LST
+	CGT
+	BT	STANDARD.ce_raise_
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	DUP
+	LD	0, STANDARD.TEXT_IO._FIELD.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.TEXT_IO._FIELD.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	LD 1,	NB_OK_disp
+	CALL	STANDARD.GENBLK_TEST_L1.INT_IO. ,PUT_L64
+STR STR_L50, " OK, "			; constante string=" OK, "
+	LCA	STR_L50.data_ptr
+	CALL	STANDARD.TEXT_IO. ,PUT_L56
+	LD 1,	STANDARD.GENBLK_TEST_L1.INT_IO.DEFAULT_BASE_disp
+	DUP
+	LD	0, STANDARD.TEXT_IO._NUMBER_BASE.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.TEXT_IO._NUMBER_BASE.LST
+	CGT
+	BT	STANDARD.ce_raise_
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	DUP
+	LD	0, STANDARD.TEXT_IO._FIELD.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD.TEXT_IO._FIELD.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	LD 1,	NB_ECHECS_disp
+	CALL	STANDARD.GENBLK_TEST_L1.INT_IO. ,PUT_L64
+STR STR_L51, " ECHECS"			; constante string=" ECHECS"
+	LCA	STR_L51.data_ptr
+	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
+					; debut if
+	LD 1,	NB_ECHECS_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	CEQ
+	BF	L53
+STR STR_L54, "GENBLK_TEST PASSE"		; constante string="GENBLK_TEST PASSE"
+	LCA	STR_L54.data_ptr
+	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
+	BRA	L52
+L53:
+STR STR_L55, "GENBLK_TEST ECHOUE"		; constante string="GENBLK_TEST ECHOUE"
+	LCA	STR_L55.data_ptr
+	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
+L52:					; post if
+ret_lbl:
+	UNLINK 1
+	RTD
+excep:
+endPRO					;---------- end PRO GENBLK_TEST

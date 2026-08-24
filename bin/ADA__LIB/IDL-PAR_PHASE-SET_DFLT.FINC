@@ -4,13 +4,13 @@ PRO	SET_DFLT_L1				;---------- PRO SET_DFLT
 PRMS					;    debut parametrage
 	PRM NODE_ofs				; in
 endPRMS					;    fin parametrage
-ELB 1					;    BODY ELAB
+ELB 2					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 					; debut case
-	La 1, -NODE_ofs
-	La	-1, 0
-	Ld
+	LA 2, -NODE_ofs
+	LA	-1, 0
+	LD
 	LI	24
 	LI	8
 	UBFX
@@ -122,221 +122,221 @@ L27:
 L4:
 	DROP
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  24
 	CALL	STANDARD.IDL. ,D_L16
 	LI  0
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  25
 	CALL	STANDARD.IDL. ,DB_L18
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  26
 	CALL	STANDARD.IDL. ,D_L16
 	LI  0
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  31
 	CALL	STANDARD.IDL. ,DB_L18
 	BRA	L3
 L5:
 	DROP
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  24
 	CALL	STANDARD.IDL. ,D_L16
 	LI  0
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  25
 	CALL	STANDARD.IDL. ,DB_L18
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  26
 	CALL	STANDARD.IDL. ,D_L16
-	La  1,	-NODE_ofs
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  16
 	CALL	STANDARD.IDL. ,D_L16
 	BRA	L3
 L6:
 	DROP
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  24
 	CALL	STANDARD.IDL. ,D_L16
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  70
 	CALL	STANDARD.IDL. ,D_L16
 	BRA	L3
 L7:
 	DROP
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  24
 	CALL	STANDARD.IDL. ,D_L16
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  70
 	CALL	STANDARD.IDL. ,D_L16
-	La  1,	-NODE_ofs
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  16
 	CALL	STANDARD.IDL. ,D_L16
 	BRA	L3
 L8:
 	DROP
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  24
 	CALL	STANDARD.IDL. ,D_L16
-	La  1,	-NODE_ofs
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  16
 	CALL	STANDARD.IDL. ,D_L16
 	BRA	L3
 L9:
 	DROP
-	La  1,	-NODE_ofs
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  16
 	CALL	STANDARD.IDL. ,D_L16
 	BRA	L3
 L10:
 	DROP
-	La  1,	-NODE_ofs
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  16
 	CALL	STANDARD.IDL. ,D_L16
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  26
 	CALL	STANDARD.IDL. ,D_L16
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  110
 	CALL	STANDARD.IDL. ,D_L16
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  111
 	CALL	STANDARD.IDL. ,D_L16
 	LI  0
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  113
 	CALL	STANDARD.IDL. ,DB_L18
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  114
 	CALL	STANDARD.IDL. ,D_L16
 	LI  0
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  30
 	CALL	STANDARD.IDL. ,DB_L18
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	0
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  73
 	CALL	STANDARD.IDL. ,DI_L20
 	BRA	L3
 L11:
 	DROP
-	La  1,	-NODE_ofs
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  16
 	CALL	STANDARD.IDL. ,D_L16
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  26
 	CALL	STANDARD.IDL. ,D_L16
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  110
 	CALL	STANDARD.IDL. ,D_L16
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  111
 	CALL	STANDARD.IDL. ,D_L16
 	LI  0
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  113
 	CALL	STANDARD.IDL. ,DB_L18
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  114
 	CALL	STANDARD.IDL. ,D_L16
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  119
 	CALL	STANDARD.IDL. ,D_L16
 	LI  0
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  30
 	CALL	STANDARD.IDL. ,DB_L18
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	0
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  73
 	CALL	STANDARD.IDL. ,DI_L20
 	BRA	L3
 L12:
 	DROP
-	La  1,	-NODE_ofs
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  16
 	CALL	STANDARD.IDL. ,D_L16
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  26
 	CALL	STANDARD.IDL. ,D_L16
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  110
 	CALL	STANDARD.IDL. ,D_L16
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  111
 	CALL	STANDARD.IDL. ,D_L16
 	BRA	L3
 L13:
 	DROP
-	La  1,	-NODE_ofs
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  16
 	CALL	STANDARD.IDL. ,D_L16
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  110
 	CALL	STANDARD.IDL. ,D_L16
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  111
 	CALL	STANDARD.IDL. ,D_L16
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  133
 	CALL	STANDARD.IDL. ,D_L16
 	LI  0
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  113
 	CALL	STANDARD.IDL. ,DB_L18
 	BRA	L3
 L14:
 	DROP
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  26
 	CALL	STANDARD.IDL. ,D_L16
 	BRA	L3
 L15:
 	DROP
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  147
 	CALL	STANDARD.IDL. ,D_L16
 	BRA	L3
 L16:
 	DROP
 	LI  0
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  129
 	CALL	STANDARD.IDL. ,DB_L18
 	BRA	L3
@@ -344,78 +344,78 @@ L17:
 	DROP
 	VAR ANON_87_18_disp, q
 	VAR ANON_87_18__u, q
-	VAR ANON_87_18__dat, STANDARD.IDL._SEQ_TYPE.SIZ
-	LVA 1, ANON_87_18__dat
-	Sa 1, ANON_87_18_disp
-	La 0, STANDARD.IDL._SEQ_TYPE.use__info
-	Sa 1, ANON_87_18__u
-	LVA 1, ANON_87_18__dat
+	VAR ANON_87_18__dat, STANDARD.IDL._SEQ_TYPE.SIZ__
+	LVA 2, ANON_87_18__dat
+	SA 2, ANON_87_18_disp
+	LA 0, STANDARD.IDL._SEQ_TYPE.use__info
+	SA 2, ANON_87_18__u
+	LVA 2, ANON_87_18__dat
 					; Assign_record_aggregate type DN_RECORD
 	DUP
 	LVA	, STANDARD.IDL._SEQ_TYPE.FIRST
 	LI	STANDARD.IDL._TREE.size
 	LVA 0,	STANDARD.IDL.TREE_NIL_disp
-	La
+	LA
 	BLKMOV
 	DUP
 	LVA	, STANDARD.IDL._SEQ_TYPE.NEXT
 	LI	STANDARD.IDL._TREE.size
 	LVA 0,	STANDARD.IDL.TREE_NIL_disp
-	La
+	LA
 	BLKMOV
 	DROP
-	LVA 1, ANON_87_18_disp
-	La  1,	-NODE_ofs
+	LVA 2, ANON_87_18_disp
+	LA  2,	-NODE_ofs
 	CALL	STANDARD.IDL.IDL_MAN. ,LIST_L36
 	BRA	L3
 L18:
 	DROP
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  101
 	CALL	STANDARD.IDL. ,D_L16
 	BRA	L3
 L19:
 	DROP
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  88
 	CALL	STANDARD.IDL. ,D_L16
 	BRA	L3
 L20:
 	DROP
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  88
 	CALL	STANDARD.IDL. ,D_L16
 	BRA	L3
 L21:
 	DROP
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  88
 	CALL	STANDARD.IDL. ,D_L16
 	LI  1
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  125
 	CALL	STANDARD.IDL. ,DB_L18
 	BRA	L3
 L22:
 	DROP
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  88
 	CALL	STANDARD.IDL. ,D_L16
 	BRA	L3
 L23:
 	DROP
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  142
 	CALL	STANDARD.IDL. ,D_L16
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	0
-	La  1,	-NODE_ofs
+	LA  2,	-NODE_ofs
 	LI  141
 	CALL	STANDARD.IDL. ,DI_L20
 	BRA	L3
@@ -424,7 +424,7 @@ L24:
 L3:
 					; fin case
 ret_lbl:
-	UNLINK 1
+	UNLINK 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SET_DFLT

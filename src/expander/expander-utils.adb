@@ -369,7 +369,7 @@ is					-----
   function		  OPER_SIZ_CHAR		( DEFN :TREE )		return CHARACTER
   is			--=============--
   begin
-    if  DEFN.TY = DN_FLOAT  or  DEFN.TY = DN_ACCESS  then return 'q'; end if;
+    if  DEFN.TY = DN_FLOAT  or  DEFN.TY = DN_ACCESS  then return 'Q'; end if;
 
     declare
       TS		: TREE		:= DEFN;
@@ -392,10 +392,10 @@ is					-----
 	);
       raise  PROGRAM_ERROR;
       end if;
-      if	 SIZ <= 8		then return 'b';
-      elsif SIZ <= 16	then return 'w';
-      elsif SIZ <= 32	then return 'd';
-      elsif SIZ <= 64	then return 'q';
+      if	 SIZ <= 8		then return 'B';
+      elsif SIZ <= 16	then return 'W';
+      elsif SIZ <= 32	then return 'D';
+      elsif SIZ <= 64	then return 'Q';
       else
         PUT_LINE( "'; EXPANDER.UTILS.OPER_SIZ_CHAR : taille > 64 bits -- operande non scalaire ? "
 	  & NODE_NAME'IMAGE( DEFN.TY ) );
@@ -415,15 +415,15 @@ is					-----
 
   begin
     -- Les flottants sont toujours en double IEEE 754 = 64 bits = qword
-    if  EXP_TYPE.TY = DN_FLOAT  or  EXP_TYPE.TY = DN_ACCESS then return 'q'; end if;
+    if  EXP_TYPE.TY = DN_FLOAT  or  EXP_TYPE.TY = DN_ACCESS then return 'Q'; end if;
     declare
       SIZ		: NATURAL		:= DI( CD_IMPL_SIZE, EXP_TYPE );
     begin
-    if	 SIZ <= 8		then return 'b';
-    elsif  SIZ <= 16	then return 'w';
-    elsif  SIZ <= 32	then return 'd';
-    elsif  SIZ <= 64	then return 'q';
-    else return 'v';
+    if	 SIZ <= 8		then return 'B';
+    elsif  SIZ <= 16	then return 'W';
+    elsif  SIZ <= 32	then return 'D';
+    elsif  SIZ <= 64	then return 'Q';
+    else return 'V';
     end if;
     end;
 
@@ -538,7 +538,7 @@ is					-----
   is			-----------------
     C	: CHARACTER	:= OPER_SIZ_CHAR( DEFN );
   begin
-    if  C /= 'q'  and then  IS_UNSIGNED_TYPE( DEFN )  then
+    if  C /= 'Q'  and then  IS_UNSIGNED_TYPE( DEFN )  then
       return "UL" & C;
     else
       return "L" & C;
@@ -553,7 +553,7 @@ is					-----
   is			------------------
     C	: CHARACTER	:= OPER_SIZ_CHAR( DEFN );
   begin
-    if  C /= 'q'  and then  IS_UNSIGNED_TYPE( DEFN )  then
+    if  C /= 'Q'  and then  IS_UNSIGNED_TYPE( DEFN )  then
       return "ULI" & C;
     else
       return "LI" & C;
@@ -579,11 +579,11 @@ is					-----
       begin
 
         if  HAS_GENERIC_TYPE  then
-	PUT_LINE( tab & "La " & IMAGE( CODI.GENERIC_BASE_LEVEL + 1 ) & "," & tab & "-GFP_ofs" );
+	PUT_LINE( tab & "LA " & IMAGE( CODI.GENERIC_BASE_LEVEL + 1 ) & "," & tab & "-GFP_ofs" );
 	PUT_LINE( tab & "LVA ," & tab & "-" & DEFN_STR & "_ofs" );
 
-	PUT_LINE( tab & "La" & LEVEL_NUM'IMAGE( CODI.GENERIC_BASE_LEVEL+1 ) & ',' & tab & "-GFP_ofs" );
-	PUT_LINE( tab & "La ," & tab & '-'
+	PUT_LINE( tab & "LA" & LEVEL_NUM'IMAGE( CODI.GENERIC_BASE_LEVEL+1 ) & ',' & tab & "-GFP_ofs" );
+	PUT_LINE( tab & "LA ," & tab & '-'
 			& PRINT_NAME( D( LX_SYMREP, D( XD_SOURCE_NAME, D( SM_OBJ_TYPE, DEFN ) ) ) )
 			& "__ld_ofs" );
 	PUT_LINE( tab & "CALLI" );
@@ -593,7 +593,7 @@ is					-----
 	  OBJ_TYPE := D( SM_TYPE_SPEC, OBJ_TYPE );
 	end loop;
 
-	PUT_LINE( tab & "La " & IMAGE( CODI.GENERIC_BASE_LEVEL + 1 ) & "," & tab & "-GFP_ofs" );
+	PUT_LINE( tab & "LA " & IMAGE( CODI.GENERIC_BASE_LEVEL + 1 ) & "," & tab & "-GFP_ofs" );
 
 	if  OBJ_TYPE.TY in CLASS_SCALAR  or else  OBJ_TYPE.TY = DN_ACCESS  then
 	  PUT_LINE( tab & OPER_LOAD_STR( OBJ_TYPE ) & " ," & tab & "-" & DEFN_STR & "_ofs" );
@@ -634,7 +634,7 @@ is					-----
 			--------------------
 
       else											-- pas scalaire ou out in/out
-        PUT( tab & "La " & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab );
+        PUT( tab & "LA " & INTEGER'IMAGE( DI( CD_LEVEL, DEFN ) ) & ',' & tab );
         PUT( '-' & PRINT_NAME( D( LX_SYMREP, DEFN ) ) );							-- ATTENTION signe offset de params opposé aux vars
         PUT_LINE( "_ofs" );										-- offset de parametre adresse
 
@@ -830,9 +830,9 @@ end	SUBPROGRAM_ORIGIN;
   procedure		EXC_POP
   is			-------									-- PILIER 11 : EXC_TOP := EXC_TOP.PREV_CTX
   begin
-    PUT_LINE( tab & "La 0," & tab & "STANDARD.EXCEPTIONS_TOP_CTX_disp" );
-    PUT_LINE( tab & "La , 0" );									-- PREV_CTX (offset 0)
-    PUT_LINE( tab & "Sa 0," & tab & "STANDARD.EXCEPTIONS_TOP_CTX_disp" );
+    PUT_LINE( tab & "LA 0," & tab & "STANDARD.EXCEPTIONS_TOP_CTX_disp" );
+    PUT_LINE( tab & "LA , 0" );									-- PREV_CTX (offset 0)
+    PUT_LINE( tab & "SA 0," & tab & "STANDARD.EXCEPTIONS_TOP_CTX_disp" );
 
   end	EXC_POP;
 	-------

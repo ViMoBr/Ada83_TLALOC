@@ -1,0 +1,102 @@
+	include '../../src/expander/fasmg/codi_x86_64.finc'
+STANDARD = 'STANDARD'
+namespace STANDARD
+  virtual at 8
+    VARzone::
+  end virtual
+	LINK	0, loc_siz
+	VAR	P14_disp, Q
+	VAR	B14_disp, B, 1
+	VAR	PAD14_disp, 199
+	VAR	FAR14_disp, D
+	VAR	BLK14_disp, 24
+	LVA	0, BLK14_disp
+	SA	0, P14_disp
+	LI	81985529216486895
+	SIQ	0, P14_disp, 16
+	LI	0
+	SIQ	0, P14_disp, 8
+	LI	255
+	SIB	0, P14_disp, 2
+	LI	-2
+	SID	0, P14_disp, 4
+	ULIB	0, P14_disp, 2
+	LI	255
+	CEQ
+	BT	k1
+	SYS_EXIT	3
+k1:
+	ULID	0, P14_disp, 4
+	LI	4294967294
+	CEQ
+	BT	k2
+	SYS_EXIT	4
+k2:
+	LID	0, P14_disp, 4
+	LI	-2
+	CEQ
+	BT	k3
+	SYS_EXIT	5
+k3:
+	LIQ	0, P14_disp, 16
+	LI	81985529216486895
+	CEQ
+	BT	k4
+	SYS_EXIT	6
+k4:
+	LVA	0, P14_disp
+	LIA	, , 16
+	LI	81985529216486895
+	CEQ
+	BT	k5
+	SYS_EXIT	7
+k5:
+	LIVA	0, P14_disp, 16
+	LVA	0, BLK14_disp + 16
+	CEQ
+	BT	k6
+	SYS_EXIT	8
+k6:
+	LVA	0, BLK14_disp + 8
+	LI	48879
+	SW	, 0
+	ULD	0, BLK14_disp + 8
+	LI	48879
+	CEQ
+	BT	k7
+	SYS_EXIT	9
+k7:
+	LI	255
+	SB	0, B14_disp
+	ULB	0, B14_disp
+	LI	255
+	CEQ
+	BT	k8
+	SYS_EXIT	10
+k8:
+	LI	-1
+	SD	0, FAR14_disp
+	ULD	0, FAR14_disp
+	LI	4294967295
+	CEQ
+	BT	k9
+	SYS_EXIT	11
+k9:
+	LIF	10.0
+	SIQ	0, P14_disp, 0
+	LIF	10.0
+	LIQ	0, P14_disp, 0
+	CEQ
+	BT	k10
+	SYS_EXIT	12
+k10:
+	SYS_EXIT	0
+	LIF	0.1
+	LIF	0.5
+	LIF	1.0E38
+	LIF	1.0E308
+	LIF	-2.5
+ virtual VARzone
+   loc_siz = $
+  end virtual
+end namespace

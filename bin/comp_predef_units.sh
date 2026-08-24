@@ -1,7 +1,8 @@
 #!/bin/bash
-rm ./ADA__LIB/*.DCL
-rm ./ADA__LIB/*.BDY
-rm ./ADA__LIB/*.SUB
+rm -f ./ADA__LIB/*.DCL
+rm -f ./ADA__LIB/*.BDY
+rm -f ./ADA__LIB/*.SUB
+rm -f ./ADA__LIB/*.FINC
 
 ./a83.sh ./ _standrd.ads W
 ./a83.sh ./ system.ads W

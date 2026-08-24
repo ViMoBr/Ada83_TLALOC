@@ -1,0 +1,45 @@
+	include '../../src/expander/fasmg/codi_x86_64.finc'
+STANDARD = 'STANDARD'
+namespace STANDARD
+  virtual at 8
+    VARzone::
+  end virtual
+	LINK	0, loc_siz
+	VAR	P24A_disp, Q
+	VAR	P24B_disp, Q
+; premiere definition et reference AVANT redefinition
+	VAR	GFP24_disp, Q
+	LVA	0, GFP24_disp
+	SA	0, P24A_disp
+	LI	5
+	SD	0, GFP24_disp
+; redefinition sequentielle (name = $) et references APRES
+	VAR	GFP24_disp, Q
+	LVA	0, GFP24_disp
+	SA	0, P24B_disp
+	LI	9
+	SD	0, GFP24_disp
+; les deux emplacements sont DISTINCTS et gardent chacun leur valeur
+	LA	0, P24A_disp
+	LA	0, P24B_disp
+	CEQ
+	BF	k24_3
+	SYS_EXIT	3
+k24_3:
+	LID	0, P24A_disp, 0
+	LI	5
+	CEQ
+	BT	k24_4
+	SYS_EXIT	4
+k24_4:
+	LID	0, P24B_disp, 0
+	LI	9
+	CEQ
+	BT	k24_5
+	SYS_EXIT	5
+k24_5:
+	SYS_EXIT	0
+ virtual VARzone
+   loc_siz = $
+  end virtual
+end namespace

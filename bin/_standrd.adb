@@ -47,7 +47,7 @@ is				--------
 
 			-------------
   function		INTEGER_IMAGE	( ITEM :INTEGER )	return STRING
-  is
+  is			-------------
 
     LEN	: INTEGER;
 

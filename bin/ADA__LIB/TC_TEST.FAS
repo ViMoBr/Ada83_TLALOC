@@ -1,0 +1,21 @@
+namespace STANDARD
+GLOB = 'GLOB'
+if ~ definite TC_INC
+include 'TC_TEST_INC.FINC'
+end if
+if ~ definite TC_INC
+include 'TC_TEST_INC.FINC'
+end if
+main:
+	LIA	, , 16
+	LIF	1.5
+	PRO	SP1
+ret_lbl:
+	UNLINK
+	RTD	0
+	endPRO
+if defined SP1_
+	LI	7	; corps sous garde lazy
+end if
+	STR	msg, 'Bonjour'
+end namespace

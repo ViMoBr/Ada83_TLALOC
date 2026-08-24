@@ -1,0 +1,37 @@
+namespace STANDARD
+main3:
+	CALL	STANDARD., M3SP1
+if defined M3SP1_
+	PRO	M3SP1
+	PRMS
+	PRM	X3_ofs
+	PRM	Y3_ofs
+	endPRMS
+	ELB	1
+	VAR	A3_disp, B
+	VAR	B3_disp, Q, 2
+	VAR	C3_disp, 24
+	USEINFO	1, BUF3, LI 0
+virtual at 0
+	STATOFS	FA3, 1, 1
+	STATOFS	FB3, 4, 4
+	STATOFS	FC3, 8, 0
+end virtual
+	CALL	STANDARD., M3SP3
+ret3:
+	UNLINK
+	RTD	0
+	endPRO
+end if
+if defined M3SP2_
+	PRO	M3SP2
+	ELB	1
+	VAR	Z3_disp, Q
+	endPRO
+end if
+if defined M3SP3_
+	PRO	M3SP3
+	ELB	1
+	endPRO
+end if
+end namespace

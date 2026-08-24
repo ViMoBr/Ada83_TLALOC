@@ -276,7 +276,7 @@ is					--------
   function		"<"		( LEFT, RIGHT : TIME )		return BOOLEAN
   is			---
   begin
-    return  LEFT < RIGHT;
+    return  DURATION( LEFT ) < DURATION( RIGHT );
 
   end	"<";
 	---
@@ -286,7 +286,7 @@ is					--------
   function		"<="		( LEFT, RIGHT : TIME )		return BOOLEAN
   is			----
   begin
-    return  LEFT <= RIGHT;
+    return  DURATION( LEFT )  <= DURATION( RIGHT );
 
   end	"<=";
 	----
@@ -296,7 +296,7 @@ is					--------
   function		">"		( LEFT, RIGHT : TIME )		return BOOLEAN
   is			---
   begin
-    return  LEFT > RIGHT;
+    return  DURATION( LEFT ) > DURATION( RIGHT );
 
   end	">";
 	---
@@ -306,7 +306,7 @@ is					--------
   function		">="		( LEFT, RIGHT : TIME )		return BOOLEAN
   is			----
   begin
-    return  LEFT >=  RIGHT;
+    return  DURATION( LEFT ) >=  DURATION( RIGHT );
 
   end	">=";
 	----

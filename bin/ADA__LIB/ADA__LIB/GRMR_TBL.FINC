@@ -1,0 +1,639 @@
+if ~ definite SEQUENTIAL_IO
+include 'SEQUENTIAL_IO.FINC'
+display 'including withed unit SEQUENTIAL_IO.FINC', 10
+end if
+if ~ definite IO_EXCEPTIONS
+include 'IO_EXCEPTIONS.FINC'
+display 'including trans withed unit IO_EXCEPTIONS.FINC', 10
+end if
+if ~ definite SEQUENTIAL_IO
+include 'SEQUENTIAL_IO.FINC'
+display 'including trans withed unit SEQUENTIAL_IO.FINC', 10
+end if
+GRMR_TBL = 'GRMR_TBL'
+namespace GRMR_TBL				;---------- PACKAGE DECLARATION
+					; CODE_PACKAGE_SPEC
+ hexa_show ' spec ', $
+
+					; _AC_BYTE TYPE RANGE INFO
+_AC_BYTE = '_AC_BYTE'
+namespace _AC_BYTE
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
+	LI	8
+	SD	0, SIZ__
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	0
+	SB	0, FST
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	255
+	SB	0, LST
+end namespace
+
+					; _AC_SHORT TYPE RANGE INFO
+_AC_SHORT = '_AC_SHORT'
+namespace _AC_SHORT
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, W
+VAR LST, W
+	LI	16
+	SD	0, SIZ__
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	00032768
+	NEG
+	SW	0, FST
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	32767
+	SW	0, LST
+end namespace
+
+					; array decl constrained array type info
+_ST_TBL_TYPE = '_ST_TBL_TYPE'
+namespace _ST_TBL_TYPE
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
+	LI	32
+	SD	0, _COMP_SIZ
+	LD	0, _COMP_SIZ
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SD	0, _FST_1
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1000
+	SD	0, _LST_1
+	LD	0, _LST_1
+	LD	0, _FST_1
+	SUB
+	INC
+	CLAMP0
+	MUL
+	SD	0, SIZ__
+  virtual at 4
+COMP_SIZ = $
+	rd 1 
+FST_1 = $
+	rd 1 
+LST_1 = $
+	rd 1 
+  end virtual
+end namespace
+
+					; array decl constrained array type info
+_AC_SYM_TYPE = '_AC_SYM_TYPE'
+namespace _AC_SYM_TYPE
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
+	LI	8
+	SD	0, _COMP_SIZ
+	LD	0, _COMP_SIZ
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SD	0, _FST_1
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	4800
+	SD	0, _LST_1
+	LD	0, _LST_1
+	LD	0, _FST_1
+	SUB
+	INC
+	CLAMP0
+	MUL
+	SD	0, SIZ__
+  virtual at 4
+COMP_SIZ = $
+	rd 1 
+FST_1 = $
+	rd 1 
+LST_1 = $
+	rd 1 
+  end virtual
+end namespace
+
+					; array decl constrained array type info
+_AC_TBL_TYPE = '_AC_TBL_TYPE'
+namespace _AC_TBL_TYPE
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
+	LI	16
+	SD	0, _COMP_SIZ
+	LD	0, _COMP_SIZ
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SD	0, _FST_1
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	6000
+	SD	0, _LST_1
+	LD	0, _LST_1
+	LD	0, _FST_1
+	SUB
+	INC
+	CLAMP0
+	MUL
+	SD	0, SIZ__
+  virtual at 4
+COMP_SIZ = $
+	rd 1 
+FST_1 = $
+	rd 1 
+LST_1 = $
+	rd 1 
+  end virtual
+end namespace
+
+					; array decl constrained array type info
+_NTER_PG_TYPE = '_NTER_PG_TYPE'
+namespace _NTER_PG_TYPE
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
+	LI	8
+	SD	0, _COMP_SIZ
+	LD	0, _COMP_SIZ
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SD	0, _FST_1
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	255
+	SD	0, _LST_1
+	LD	0, _LST_1
+	LD	0, _FST_1
+	SUB
+	INC
+	CLAMP0
+	MUL
+	SD	0, SIZ__
+  virtual at 4
+COMP_SIZ = $
+	rd 1 
+FST_1 = $
+	rd 1 
+LST_1 = $
+	rd 1 
+  end virtual
+end namespace
+
+					; array decl constrained array type info
+_NTER_LN_TYPE = '_NTER_LN_TYPE'
+namespace _NTER_LN_TYPE
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
+	LI	8
+	SD	0, _COMP_SIZ
+	LD	0, _COMP_SIZ
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SD	0, _FST_1
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	255
+	SD	0, _LST_1
+	LD	0, _LST_1
+	LD	0, _FST_1
+	SUB
+	INC
+	CLAMP0
+	MUL
+	SD	0, SIZ__
+  virtual at 4
+COMP_SIZ = $
+	rd 1 
+FST_1 = $
+	rd 1 
+LST_1 = $
+	rd 1 
+  end virtual
+end namespace
+
+					; _GRMR_TBL_RECORD RECORD TYPE INFO
+_GRMR_TBL_RECORD = '_GRMR_TBL_RECORD'
+namespace _GRMR_TBL_RECORD
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+USEINFO 0, ST_TBL, 	LA 0, STANDARD.GRMR_TBL._ST_TBL_TYPE.use__info
+USEINFO 0, ST_TBL_LAST, 	LA 0, STANDARD._INTEGER.use__info
+USEINFO 0, AC_SYM, 	LA 0, STANDARD.GRMR_TBL._AC_SYM_TYPE.use__info
+USEINFO 0, AC_TBL, 	LA 0, STANDARD.GRMR_TBL._AC_TBL_TYPE.use__info
+USEINFO 0, AC_SYM_LAST, 	LA 0, STANDARD._INTEGER.use__info
+USEINFO 0, AC_TBL_LAST, 	LA 0, STANDARD._INTEGER.use__info
+USEINFO 0, NTER_PG, 	LA 0, STANDARD.GRMR_TBL._NTER_PG_TYPE.use__info
+USEINFO 0, NTER_LN, 	LA 0, STANDARD.GRMR_TBL._NTER_LN_TYPE.use__info
+USEINFO 0, NTER_LAST, 	LA 0, STANDARD._INTEGER.use__info
+virtual at 0				; calcul des offsets statiques
+STATOFS ST_TBL, 4000, 4
+STATOFS ST_TBL_LAST, 4, 4
+STATOFS AC_SYM, 4800, 1
+STATOFS AC_TBL, 12000, 2
+STATOFS AC_SYM_LAST, 4, 4
+STATOFS AC_TBL_LAST, 4, 4
+STATOFS NTER_PG, 255, 1
+STATOFS NTER_LN, 255, 1
+STATOFS NTER_LAST, 4, 4
+size = $
+end virtual
+	LI	 size*8
+	SD	0, SIZ__
+end namespace
+ hexa_show 'var elab GRMR ', $
+VAR GRMR_disp, Q				; variable record : pointeur aux data record
+VAR GRMR__u, Q				; variable record : pointeur aux useinfo
+VAR GRMR__dat, STANDARD.GRMR_TBL._GRMR_TBL_RECORD.size
+	LVA	0, GRMR__dat
+	SA	0, GRMR_disp				; record fin
+	LVA	0, STANDARD.GRMR_TBL._GRMR_TBL_RECORD.SIZ__
+	SA	0, GRMR__u
+
+ hexa_show ' disp ', GRMR_disp
+GRMR_TBL_IO = 'GRMR_TBL_IO'
+namespace GRMR_TBL_IO			;---------- GENERIC PACKAGE INSTANTIATION
+elab_spec:				;    SPEC ELAB
+
+; F4A SET  cle=ELEMENT_TYPE  actuel=DN_RECORD
+BRA post_LD_ELEMENT_TYPE
+LD_ELEMENT_TYPE.elab:
+	LI 0
+	RTD 0
+post_LD_ELEMENT_TYPE:
+BRA post_ST_ELEMENT_TYPE
+ST_ELEMENT_TYPE.elab:
+	DROP
+	RTD 0
+post_ST_ELEMENT_TYPE:
+BRA post_INADR_ELEMENT_TYPE
+INADR_ELEMENT_TYPE.elab:
+	LIA
+	RTD 0
+post_INADR_ELEMENT_TYPE:
+BRA post_OUTADR_ELEMENT_TYPE
+OUTADR_ELEMENT_TYPE.elab:
+	LIA
+	RTD 0
+post_OUTADR_ELEMENT_TYPE:
+VAR ELEMENT_TYPE__outadr_ofs, Q
+	LCA OUTADR_ELEMENT_TYPE.elab
+	SA	 0, ELEMENT_TYPE__outadr_ofs
+VAR ELEMENT_TYPE__inadr_ofs, Q
+	LCA INADR_ELEMENT_TYPE.elab
+	SA	 0, ELEMENT_TYPE__inadr_ofs
+VAR ELEMENT_TYPE__st_ofs, Q
+	LCA ST_ELEMENT_TYPE.elab
+	SA	 0, ELEMENT_TYPE__st_ofs
+VAR ELEMENT_TYPE__ld_ofs, Q
+	LCA LD_ELEMENT_TYPE.elab
+	SA	 0, ELEMENT_TYPE__ld_ofs
+VAR ELEMENT_TYPE__u_ofs, Q
+	LA	 0, STANDARD.GRMR_TBL._GRMR_TBL_RECORD.use__info
+	SA	 0, ELEMENT_TYPE__u_ofs
+VAR GFP_disp, Q				; Lieu du Generic Frame Pointer 
+					; CODE_PACKAGE_SPEC
+ hexa_show ' spec ', $
+; EXPANDER.DECLARATIONS.CODE_TYPE_DECL : skip PRIVATE FILE_TYPE (deferred to full type)
+
+					; _FILE_MODE ENUMERATION TYPE INFO
+_FILE_MODE = '_FILE_MODE'
+namespace _FILE_MODE
+VAR use__info, Q
+BEGIN_BLOC_DEF
+db 0, 7, "IN_FILE"
+db 1, 8, "OUT_FILE"
+END_BLOC_DEF 8, 0, 1
+	; SIZ en bits !
+	LCA	SIZ
+	SA	0, use__info
+end namespace
+					; sub program entry decl (in instantiation TRUE )
+if defined CREATE_L1_
+PRO	CREATE_L1				;---------- PRO CREATE
+ hexa_show 'CREATE_L1 ', $
+PRMS					;    debut parametrage
+	PRM FILE_ofs				; in out
+	PRM MODE_ofs				; in
+	PRM NAME_ofs				; in
+	PRM FORM_ofs				; in
+endPRMS					;    fin parametrage
+ELB 1
+begin:
+	LVA	 0, GFP_disp
+	LA 	 1, -FORM_ofs
+	LA 	 1, -NAME_ofs
+	LB	 1, -MODE_ofs
+	LA 	 1, -FILE_ofs
+	CALL	STANDARD.SEQUENTIAL_IO. ,CREATE_L1
+	UNLINK	 1
+	RTD	prm_siz
+endPRO					;---------- end PRO CREATE
+end if
+					; sub program entry decl (in instantiation TRUE )
+if defined OPEN_L2_
+PRO	OPEN_L2				;---------- PRO OPEN
+ hexa_show 'OPEN_L2 ', $
+PRMS					;    debut parametrage
+	PRM FILE_ofs				; in out
+	PRM MODE_ofs				; in
+	PRM NAME_ofs				; in
+	PRM FORM_ofs				; in
+endPRMS					;    fin parametrage
+ELB 1
+begin:
+	LVA	 0, GFP_disp
+	LA 	 1, -FORM_ofs
+	LA 	 1, -NAME_ofs
+	LB	 1, -MODE_ofs
+	LA 	 1, -FILE_ofs
+	CALL	STANDARD.SEQUENTIAL_IO. ,OPEN_L2
+	UNLINK	 1
+	RTD	prm_siz
+endPRO					;---------- end PRO OPEN
+end if
+					; sub program entry decl (in instantiation TRUE )
+if defined CLOSE_L3_
+PRO	CLOSE_L3				;---------- PRO CLOSE
+ hexa_show 'CLOSE_L3 ', $
+PRMS					;    debut parametrage
+	PRM FILE_ofs				; in out
+endPRMS					;    fin parametrage
+ELB 1
+begin:
+	LVA	 0, GFP_disp
+	LA 	 1, -FILE_ofs
+	CALL	STANDARD.SEQUENTIAL_IO. ,CLOSE_L3
+	UNLINK	 1
+	RTD	prm_siz
+endPRO					;---------- end PRO CLOSE
+end if
+					; sub program entry decl (in instantiation TRUE )
+if defined DELETE_L4_
+PRO	DELETE_L4				;---------- PRO DELETE
+ hexa_show 'DELETE_L4 ', $
+PRMS					;    debut parametrage
+	PRM FILE_ofs				; in out
+endPRMS					;    fin parametrage
+ELB 1
+begin:
+	LVA	 0, GFP_disp
+	LA 	 1, -FILE_ofs
+	CALL	STANDARD.SEQUENTIAL_IO. ,DELETE_L4
+	UNLINK	 1
+	RTD	prm_siz
+endPRO					;---------- end PRO DELETE
+end if
+					; sub program entry decl (in instantiation TRUE )
+if defined RESET_L5_
+PRO	RESET_L5				;---------- PRO RESET
+ hexa_show 'RESET_L5 ', $
+PRMS					;    debut parametrage
+	PRM FILE_ofs				; in out
+	PRM MODE_ofs				; in
+endPRMS					;    fin parametrage
+ELB 1
+begin:
+	LVA	 0, GFP_disp
+	LB	 1, -MODE_ofs
+	LA 	 1, -FILE_ofs
+	CALL	STANDARD.SEQUENTIAL_IO. ,RESET_L5
+	UNLINK	 1
+	RTD	prm_siz
+endPRO					;---------- end PRO RESET
+end if
+					; sub program entry decl (in instantiation TRUE )
+if defined RESET_L6_
+PRO	RESET_L6				;---------- PRO RESET
+ hexa_show 'RESET_L6 ', $
+PRMS					;    debut parametrage
+	PRM FILE_ofs				; in out
+endPRMS					;    fin parametrage
+ELB 1
+begin:
+	LVA	 0, GFP_disp
+	LA 	 1, -FILE_ofs
+	CALL	STANDARD.SEQUENTIAL_IO. ,RESET_L6
+	UNLINK	 1
+	RTD	prm_siz
+endPRO					;---------- end PRO RESET
+end if
+					; sub program entry decl (in instantiation TRUE )
+if defined MODE_L7_
+PRO	MODE_L7				;---------- PRO MODE
+ hexa_show 'MODE_L7 ', $
+PRMS					;    debut parametrage
+	PRM FILE_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1
+begin:
+	LI	0					; lieu result
+	LVA	 0, GFP_disp
+	LA 	 1, -FILE_ofs
+	CALL	STANDARD.SEQUENTIAL_IO. ,MODE_L7
+	SB	 1, -result__ofs			; retour resultat
+	UNLINK	 1
+	RTD	prm_siz-8
+endPRO					;---------- end PRO MODE
+end if
+					; sub program entry decl (in instantiation TRUE )
+if defined NAME_L8_
+PRO	NAME_L8				;---------- PRO NAME
+ hexa_show 'NAME_L8 ', $
+PRMS					;    debut parametrage
+	PRM FILE_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1
+begin:
+	LA 	 1, -result__ofs			; lieu result = relais du slot recu (doublet)
+	LVA	 0, GFP_disp
+	LA 	 1, -FILE_ofs
+	CALL	STANDARD.SEQUENTIAL_IO. ,NAME_L8
+	UNLINK	 1
+	RTD	prm_siz-8
+endPRO					;---------- end PRO NAME
+end if
+					; sub program entry decl (in instantiation TRUE )
+if defined FORM_L9_
+PRO	FORM_L9				;---------- PRO FORM
+ hexa_show 'FORM_L9 ', $
+PRMS					;    debut parametrage
+	PRM FILE_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1
+begin:
+	LA 	 1, -result__ofs			; lieu result = relais du slot recu (doublet)
+	LVA	 0, GFP_disp
+	LA 	 1, -FILE_ofs
+	CALL	STANDARD.SEQUENTIAL_IO. ,FORM_L9
+	UNLINK	 1
+	RTD	prm_siz-8
+endPRO					;---------- end PRO FORM
+end if
+					; sub program entry decl (in instantiation TRUE )
+if defined IS_OPEN_L10_
+PRO	IS_OPEN_L10				;---------- PRO IS_OPEN
+ hexa_show 'IS_OPEN_L10 ', $
+PRMS					;    debut parametrage
+	PRM FILE_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1
+begin:
+	LI	0					; lieu result
+	LVA	 0, GFP_disp
+	LA 	 1, -FILE_ofs
+	CALL	STANDARD.SEQUENTIAL_IO. ,IS_OPEN_L10
+	SB	 1, -result__ofs			; retour resultat
+	UNLINK	 1
+	RTD	prm_siz-8
+endPRO					;---------- end PRO IS_OPEN
+end if
+					; sub program entry decl (in instantiation TRUE )
+if defined READ_L11_
+PRO	READ_L11				;---------- PRO READ
+ hexa_show 'READ_L11 ', $
+PRMS					;    debut parametrage
+	PRM FILE_ofs				; in
+	PRM ITEM_ofs				; out
+endPRMS					;    fin parametrage
+ELB 1
+begin:
+	LVA	 0, GFP_disp
+	LA 	 1, -ITEM_ofs
+	LA 	 1, -FILE_ofs
+	CALL	STANDARD.SEQUENTIAL_IO. ,READ_L11
+	UNLINK	 1
+	RTD	prm_siz
+endPRO					;---------- end PRO READ
+end if
+					; sub program entry decl (in instantiation TRUE )
+if defined WRITE_L12_
+PRO	WRITE_L12				;---------- PRO WRITE
+ hexa_show 'WRITE_L12 ', $
+PRMS					;    debut parametrage
+	PRM FILE_ofs				; in
+	PRM ITEM_ofs				; in
+endPRMS					;    fin parametrage
+ELB 1
+begin:
+	LVA	 0, GFP_disp
+	LA 	 1, -ITEM_ofs
+	LA 	 1, -FILE_ofs
+	CALL	STANDARD.SEQUENTIAL_IO. ,WRITE_L12
+	UNLINK	 1
+	RTD	prm_siz
+endPRO					;---------- end PRO WRITE
+end if
+					; sub program entry decl (in instantiation TRUE )
+if defined END_OF_FILE_L13_
+PRO	END_OF_FILE_L13				;---------- PRO END_OF_FILE
+ hexa_show 'END_OF_FILE_L13 ', $
+PRMS					;    debut parametrage
+	PRM FILE_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 1
+begin:
+	LI	0					; lieu result
+	LVA	 0, GFP_disp
+	LA 	 1, -FILE_ofs
+	CALL	STANDARD.SEQUENTIAL_IO. ,END_OF_FILE_L13
+	SB	 1, -result__ofs			; retour resultat
+	UNLINK	 1
+	RTD	prm_siz-8
+endPRO					;---------- end PRO END_OF_FILE
+end if
+_FILE_NAME_BUFFER = '_FILE_NAME_BUFFER'
+namespace _FILE_NAME_BUFFER			; _FILE_NAME_BUFFER CONSTRAINED ARRAY SUBTYPE INFO
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
+	LI	8
+	SD	0, _COMP_SIZ
+	LD	0, _COMP_SIZ
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SD	0, _FST_1
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	256
+	SD	0, _LST_1
+	LD	0, _LST_1
+	LD	0, _FST_1
+	SUB
+	INC
+	CLAMP0
+	MUL
+	SD	0, SIZ__
+  virtual at 4
+COMP_SIZ = $
+	rd 1 
+FST_1 = $
+	rd 1 
+LST_1 = $
+	rd 1 
+  end virtual
+end namespace
+
+					; _FILE_TYPE RECORD TYPE INFO
+_FILE_TYPE = '_FILE_TYPE'
+namespace _FILE_TYPE
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+USEINFO 0, ID, 	LA 0, STANDARD._INTEGER.use__info
+USEINFO 0, NAME, 	LA 0, STANDARD.GRMR_TBL.GRMR_TBL_IO._FILE_NAME_BUFFER.use__info
+USEINFO 0, NAME_LEN, 	LA 0, STANDARD._POSITIVE.use__info
+USEINFO 0, IS_OPENED, 	LA 0, STANDARD._BOOLEAN.use__info
+USEINFO 0, MODE, 	LA 0, STANDARD.GRMR_TBL.GRMR_TBL_IO._FILE_MODE.use__info
+USEINFO 0, AT_END_OF_FILE, 	LA 0, STANDARD._BOOLEAN.use__info
+virtual at 0				; calcul des offsets statiques
+STATOFS ID, 4, 4
+STATOFS NAME, 256, 1
+STATOFS NAME_LEN, 4, 4
+STATOFS IS_OPENED, 1, 1
+STATOFS MODE, 1, 1
+STATOFS AT_END_OF_FILE, 1, 1
+size = $
+end virtual
+	LI	 size*8
+	SD	0, SIZ__
+end namespace
+					;---------- end generic package instantiation GRMR_TBL_IO
+end namespace
+
+; EXC_LBL	L14
+end namespace
+

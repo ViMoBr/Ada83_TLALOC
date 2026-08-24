@@ -69,6 +69,52 @@ chmod u+x FLOAT_FIXED_IO_TEST
 ./FLOAT_FIXED_IO_TEST
 cd ..
 
+echo "          -------------------"
+echo "          COMPILE ARRAY_TEST1"
+echo "          -------------------"
+./a83.sh ./ ./array_test1.ada W
+./a83.sh ./ ./array_test1.ada B
+cd ./ADA__LIB
+./fasmg ARRAY_TEST1.fas ARRAY_TEST1
+chmod u+x ARRAY_TEST1
+./ARRAY_TEST1
+cd ..
+
+echo "          -------------------"
+echo "          COMPILE ARRAY_TEST2"
+echo "          -------------------"
+./a83.sh ./ ./array_test2.ada W
+./a83.sh ./ ./array_test2.ada B
+cd ./ADA__LIB
+./fasmg ARRAY_TEST2.fas ARRAY_TEST2
+chmod u+x ARRAY_TEST2
+./ARRAY_TEST2
+cd ..
+
+echo "          -------------------"
+echo "          COMPILE ARRAY_TEST3"
+echo "          -------------------"
+./a83.sh ./ ./array_test3.ada W
+./a83.sh ./ ./array_test3.ada B
+cd ./ADA__LIB
+./fasmg ARRAY_TEST3.fas ARRAY_TEST3
+chmod u+x ARRAY_TEST3
+./ARRAY_TEST3
+cd ..
+
+echo "          --------------------"
+echo "          COMPILE REC_ARR_TEST"
+echo "          --------------------"
+./a83.sh ./ ./rec_pack.ads W
+./a83.sh ./ ./rec_pack.adb W
+./a83.sh ./ ./rec_arr_test.adb W
+./a83.sh ./ ./rec_arr_test.adb B
+cd ./ADA__LIB
+./fasmg REC_ARR_TEST.fas REC_ARR_TEST
+chmod u+x REC_ARR_TEST
+./REC_ARR_TEST
+cd ..
+
 echo "          -----------------"
 echo "          COMPILE GOTO_TEST"
 echo "          -----------------"
@@ -127,7 +173,7 @@ cd ..
 echo "          --------------"
 echo "          COMPILE INSTF1"
 echo "          --------------"
-./a83.sh ./ ./inst1.adb W
+./a83.sh ./ ./instf1.adb W
 ./a83.sh ./ ./instf1.adb B
 cd ./ADA__LIB
 ./fasmg INSTF1.fas INSTF1
@@ -144,6 +190,105 @@ cd ./ADA__LIB
 ./fasmg ADDR_OV1.fas ADDR_OV1
 chmod u+x ADDR_OV1
 ./ADDR_OV1
+cd ..
+
+echo "          ----------------"
+echo "          COMPILE SLCONV1"
+echo "          ----------------"
+./a83.sh ./ ./slconv1.adb W
+./a83.sh ./ ./slconv1.adb B
+cd ./ADA__LIB
+./fasmg SLCONV1.fas SLCONV1
+chmod u+x SLCONV1
+./SLCONV1
+cd ..
+
+echo "          ----------------"
+echo "          COMPILE LITAFF1"
+echo "          ----------------"
+./a83.sh ./ ./litaff1.adb W
+./a83.sh ./ ./litaff1.adb B
+cd ./ADA__LIB
+./fasmg LITAFF1.fas LITAFF1
+chmod u+x LITAFF1
+./LITAFF1
+cd ..
+
+echo "          ----------------"
+echo "          COMPILE RETPKG1"
+echo "          ----------------"
+./a83.sh ./ ./retpkg1.ada W
+./a83.sh ./ ./retpkg1.ada B
+cd ./ADA__LIB
+./fasmg RETPKG1.fas RETPKG1
+chmod u+x RETPKG1
+./RETPKG1
+cd ..
+
+echo "          -------------------"
+echo "          COMPILE AGGSTR_TEST"
+echo "          -------------------"
+./a83.sh ./ ./aggstr_test.adb W
+./a83.sh ./ ./aggstr_test.adb B
+cd ./ADA__LIB
+./fasmg AGGSTR_TEST.fas AGGSTR_TEST
+chmod u+x AGGSTR_TEST
+./AGGSTR_TEST
+cd ..
+
+echo "          ------------------"
+echo "          COMPILE OPDEF_TEST"
+echo "          ------------------"
+./a83.sh ./ ./opdef_test.adb W
+./a83.sh ./ ./opdef_test.adb B
+cd ./ADA__LIB
+./fasmg OPDEF_TEST.fas OPDEF_TEST
+chmod u+x OPDEF_TEST
+./OPDEF_TEST
+cd ..
+
+echo "          ------------------"
+echo "          COMPILE PACKV_TEST"
+echo "          ------------------"
+./a83.sh ./ ./packv_test.adb W
+./a83.sh ./ ./packv_test.adb B
+cd ./ADA__LIB
+./fasmg PACKV_TEST.fas PACKV_TEST
+chmod u+x PACKV_TEST
+./PACKV_TEST
+cd ..
+
+echo "          ----------------"
+echo "          COMPILE OPB_TEST"
+echo "          ----------------"
+./a83.sh ./ ./opb_test.adb W
+./a83.sh ./ ./opb_test.adb B
+cd ./ADA__LIB
+./fasmg OPB_TEST.fas OPB_TEST
+chmod u+x OPB_TEST
+./OPB_TEST
+cd ..
+
+echo "          ------------------------"
+echo "          COMPILE GOTO_SELARG_TEST"
+echo "          ------------------------"
+./a83.sh ./ ./goto_selarg_test.adb W
+./a83.sh ./ ./goto_selarg_test.adb B
+cd ./ADA__LIB
+./fasmg GOTO_SELARG_TEST.fas GOTO_SELARG_TEST
+chmod u+x GOTO_SELARG_TEST
+./GOTO_SELARG_TEST
+cd ..
+
+echo "          -------------------"
+echo "          COMPILE INDARG_TEST"
+echo "          -------------------"
+./a83.sh ./ ./indarg_test.adb W
+./a83.sh ./ ./indarg_test.adb B
+cd ./ADA__LIB
+./fasmg INDARG_TEST.fas INDARG_TEST
+chmod u+x INDARG_TEST
+./INDARG_TEST
 cd ..
 
 echo "          --------------"

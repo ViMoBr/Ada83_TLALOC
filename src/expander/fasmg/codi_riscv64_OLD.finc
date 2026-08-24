@@ -1,0 +1,2548 @@
+;-----------------------------------------------------------------------------------------------------------------------
+;- SPDX-FileCopyrightText: 2026 VINCENT MORIN, UBO
+;- SPDX-License-Identifier: GPL-3.0-or-later
+;-----------------------------------------------------------------------------------------------------------------------
+;	1	2	3	4	5	6	7	8	9	0	1	2
+
+;					|
+;				       \\	| //
+;				     \\ u	^ u //		/-------_______------\
+;				   \ )Y|Y|Y|Y|Y( /		|  T  h e		 |
+;				     / /o	o o\ \		|  L  o n	e s o m e	 |
+;				    \|H|H|H|H|H|/		|  A  d a		 |
+;				   G))  Q	  Q  ((G		|  L  o v	i n g	 |
+;				    / \	"   / \ 	   	|  O  l't i m e r    |
+;				   /_/  \V¨V/  \_\		|  C  o m	p i l e r	 |
+;				       \vvvvv/		\-------______-------/
+;				     \ooooooooo/
+
+
+;		-------------------------------------------------------------------------------
+;		M A C R O	S   F A S	M G   P O	U R   B A	C K E N D	  A D A 8	3   /   T	L A L O C
+;		-------------------------------------------------------------------------------
+;
+;	VERSION RISC-V 64 (RV64IMFD) -  Linux  -  StarFive VisionFive 2 et autres SBC
+;
+;	Le portage conserve a l'identique la semantique LLIR definie pour x86-64 et ARM64.
+;	L'EXPANDER produit le meme code de macros, seul le contenu binaire emis
+;	par chaque macro change. Toutes les instructions RV64I de base font 32 bits, on
+;	les emet par 'dd 0xXXXXXXXX' tout comme en ARM64.
+;
+;	Convention de portage des registres :
+;	  RBP -> s0  (x8)   pile de travail croissante (frame pointer naturel ABI)
+;	  RSP -> sp  (x2)   micro-pile descendante des adresses de retour CALL/RET
+;	  R15 -> s1  (x9)   display des frame pointers
+;	  R14 -> s2  (x18)  sommet de co-pile
+;	  R13 -> s3  (x19)  frame pointer co-pile
+;	  R12 -> s4  (x20)  haut du tas
+;	  R11 -> s5  (x21)  bloc libre tas
+;	  RAX -> a0  (x10)  registre de travail principal et retour syscall
+;	  RBX -> a1  (x11)  registre de travail secondaire
+;	  RCX -> a2  (x12)  compteur
+;	  RDX -> a3  (x13)  auxiliaire
+;	  RSI -> a4  (x14)  param syscall
+;	  RDI -> a5  (x15)  param syscall
+;	  LR  -> ra  (x1)   link register, pousse manuellement sur sp pour CALL/RET
+;	  scratch interne : t0 (x5), t1 (x6), t2 (x7)
+
+postpone							; sera fait en toute toute fin car c'est le premier postpone
+  ASM_SIZE = $-0x400078
+end postpone
+
+DEBUG_LLIR = 0
+
+macro show description, value					; pour debogage
+  repeat 1, d:value
+    display description,`d,13,10
+  end repeat
+end macro
+
+macro hexa_show description, value			; adresse hexa pour la carto de debogage
+  local x, digit
+  x = value
+  display description, '0', 'x'
+  repeat 16, n:0
+    digit = (x shr ((15 - n) shl 2)) and 0Fh
+    if digit < 10
+      display '0' + digit
+    else
+      display 'A' + digit - 10
+    end if
+  end repeat
+  display 13, 10
+end macro
+
+;			-------------------------------------------------------------------
+;			S P E C I	F I Q U E	  P R O C	E S S E U	R   R I S	C   V   6 4
+;			-------------------------------------------------------------------
+
+
+	; sur processeur RISC-V 64 les mouvements de pile se font en 64 bits (qword)
+	; mais on a choisi de faire les operations arithmetiques en 32 bits pour rester comme sur une
+	; architecture 32 bits (note : sur RV64 la difference se voit avec les variantes "W"
+	; comme addw/subw/mulw qui operent sur 32 bits avec sign-extension ; ici on reste en
+	; 64 bits par defaut, c'est plus simple et cela colle a la semantique de la pile qword).
+
+	; QUANT A LA PILE : ON A DECIDE DE LA FAIRE CROITRE VERS LES ADRESSES HAUTES CAR LE SENS HABITUEL DESCENDANT
+	; EST INGERABLE POUR CERTAINES VARIABLES LOCALES STRUCTUREES
+	; Le sp processeur reste en bas de pile pour gerer une micro-pile descendante des adresses de CALL/RET uniquement.
+	; ATTENTION : sur RISC-V Linux, sp doit etre aligne sur 16 octets sous peine de SIGBUS sur certains acces.
+	; On reserve donc 16 octets par CALL au lieu de 8 (sur les 16 octets, seul un qword sert
+	; effectivement a stocker ra, l'autre est du padding d'alignement).
+	;
+	; Attention : s0 pointe sur la derniere valeur empilee (qword)
+	; AUTRE PROBLEME DE PILE : Les variables dont on connaît la taille a la compilation s'accomodent bien a
+	; la pile usuelle, les offsets sont determines a la compilation
+	; MAIS, si l'on a comme en Ada des variables (tableau par exemple) dont la taille n'est connue qu'a
+	; l'execution (indices eux-memes variables)
+	; on ne peut pas mettre ces variables sur la pile normale. Mettre ces variables dans le tas n'est pas tres
+	; satisfaisant car la gestion de la desallocation va poser probleme.
+	; On invente donc la Co-Pile qui est une suite de blocs alloues dynamiquement pour un niveau d'execution
+	; et qui est desallouee a la maniere de la pile usuelle.
+	; De la sorte, il n'y a pas de melange avec les allocations de taille statique.
+	; s2 est le pointeur de sommet de Co-Pile (l'analogue de s0 pour la pile standard).
+
+	; s1  pointeur de base display des frame pointers
+	; s2  pointeur de haut de co-pile (lieu d'allocation)
+	; s3  pointeur de debut de chaine de frame de co-pile (pour desallocation)
+	; s4  pointeur post haut de tas (zone de tas allouee sur la pile en debut d'execution expansion vers le bas)
+	; s5  pointeur de bloc tas libre
+
+
+;.......................................................................................................................
+;   M A C	R O S   A	N C I L L	A I R E S	  ( P A S	  U T I L	I S E E S	  P A R	L E   C O	D E _ G E	N   T L A	L O C
+;.......................................................................................................................
+;
+; Sur RISC-V, "PUSH" et "POP" ne sont pas des instructions matérielles. On les simule par
+; un store qword vers [s0+8] suivi d'un addi s0, s0, 8 pour empiler ;
+; et par un load qword [s0] suivi d'un addi s0, s0, -8 pour depiler.
+; Encodages :
+;   sd a0, 8(s0)    -> 0x00A43423   (S-type, opcode 0x23, funct3=3, rs1=8, rs2=10, imm=8)
+;   addi s0, s0, 8  -> 0x00840413   (I-type, opcode 0x13, funct3=0, rs1=8, rd=8, imm=8)
+;   ld  a0, 0(s0)   -> 0x00043503   (I-type, opcode 0x03, funct3=3, rs1=8, rd=10, imm=0)
+;   addi s0, s0, -8 -> 0xFF840413   (imm = -8 = 0xFF8 sur 12 bits signe)
+
+;			........
+macro			PUSH_RAX
+;			........
+  dd 0x00A43423							; sd a0, 8(s0)
+  dd 0x00840413							; addi s0, s0, 8
+end macro
+
+;			........
+macro			PUSH_RDX
+;			........
+  dd 0x00D43423							; sd a3, 8(s0)
+  dd 0x00840413							; addi s0, s0, 8
+end macro
+
+;			.......
+macro			POP_RAX
+;			.......
+  dd 0x00043503							; ld  a0, 0(s0)
+  dd 0xFF840413							; addi s0, s0, -8
+end macro
+
+;			.......
+macro			POP_RBX
+;			.......
+  dd 0x00043583							; ld  a1, 0(s0)
+  dd 0xFF840413							; addi s0, s0, -8
+end macro
+
+;			.......
+macro			POP_RCX
+;			.......
+  dd 0x00043603							; ld  a2, 0(s0)
+  dd 0xFF840413							; addi s0, s0, -8
+end macro
+
+;			.......
+macro			POP_RDX
+;			.......
+  dd 0x00043683							; ld  a3, 0(s0)
+  dd 0xFF840413							; addi s0, s0, -8
+end macro
+
+;			.......
+macro			POP_RSI
+;			.......
+  dd 0x00043703							; ld  a4, 0(s0)   (RSI -> a4)
+  dd 0xFF840413							; addi s0, s0, -8
+end macro
+
+;			.......
+macro			POP_RDI
+;			.......
+  dd 0x00043783							; ld  a5, 0(s0)   (RDI -> a5)
+  dd 0xFF840413							; addi s0, s0, -8
+end macro
+
+;			....
+macro			DROP
+;			....
+  dd 0xFF840413							; addi s0, s0, -8
+end macro
+
+;			...
+macro			DUP
+;			...
+  dd 0x00043503							; ld  a0, 0(s0)		amener le TOS dans a0
+  dd 0x00A43423							; sd  a0, 8(s0)		dupliquer
+  dd 0x00840413							; addi s0, s0, 8
+end macro
+
+;			....
+macro			OVER
+;			....
+  dd 0xFF843503							; ld  a0, -8(s0)		amener le NOS dans a0
+  dd 0x00A43423							; sd  a0, 8(s0)		empiler la copie
+  dd 0x00840413							; addi s0, s0, 8
+end macro
+
+;			.......
+macro			align_b
+;			.......
+end macro
+
+;			.......
+macro			align_w
+;			.......
+  desalign = $ mod 2
+  if desalign <> 0
+    repeat 2-desalign
+      db 0x00							; padding zero (data, not code)
+    end repeat
+  end if
+end macro
+
+;			.......
+macro			align_d
+;			.......
+  desalign = $ mod 4
+  if desalign <> 0
+    repeat 4-desalign
+      db 0x00							; padding zero (data, not code)
+    end repeat
+  end if
+end macro
+
+;			.......
+macro			align_q
+;			.......
+  desalign = $ mod 8
+  if desalign <> 0
+    repeat 8-desalign
+      db 0x00							; padding zero (data, not code)
+    end repeat
+  end if
+end macro
+
+
+;-----------------------------------------------------------------------------------------------------------------------
+;	M A T E R I A L I S A T I O N   D E   C O N S T A N T E S	  6 4   B	I T S
+;-----------------------------------------------------------------------------------------------------------------------
+;
+;	Sur RISC-V, il n'y a pas d'instruction de chargement immediat 64 bits en une fois.
+;	On materialise via une sequence tieree :
+;	  - val tient en imm12 signe : addi rd, x0, val           (1 instruction)
+;	  - val tient en imm32 signe : lui rd, hi20 + addi rd, rd, lo12  (2 instructions, +1 si lo12=0)
+;	  - val 64 bits arbitraire   : sequence de 8 instructions (lui+addi+slli+addi+slli+addi+slli+addi)
+;
+;	IMPORTANT : addi sign-extend l'imm12, donc si lo12 a son bit 11 a 1, il faut ajouter 1
+;	a hi20 (compensation) et utiliser lo12 - 0x1000 (negatif) dans addi.
+
+;			...........................
+macro			QUAD_CONST	rd, val
+;			...........................
+;	Materialise une valeur 64 bits arbitraire dans rd via lui/addi/slli (jusqu'a 8 instructions).
+  local v, sval
+  v = val and 0xFFFFFFFFFFFFFFFF						; vue 64 bits non signee
+  if (v shr 63) and 1
+    sval = v - 0x10000000000000000					; vue 64 bits signee
+  else
+    sval = v
+  end if
+
+  if sval >= -2048  &  sval <= 2047
+;	Cas 1 : tient en 12 bits signe -> addi rd, x0, val
+    dd 0x00000013 or ((sval and 0xFFF) shl 20) or (rd shl 7)		; addi rd, x0, sval
+
+  else if sval >= -0x80000000  &  sval <= 0x7FFFFFFF
+;	Cas 2 : tient en 32 bits signe -> lui rd, hi20 + addi rd, rd, lo12 (compense)
+    local lo12, hi20, lo12s
+    lo12 = sval and 0xFFF
+    if lo12 and 0x800
+      hi20 = ((sval - (lo12 - 0x1000)) shr 12) and 0xFFFFF
+      lo12s = lo12 - 0x1000
+    else
+      hi20 = (sval shr 12) and 0xFFFFF
+      lo12s = lo12
+    end if
+    dd 0x00000037 or (hi20 shl 12) or (rd shl 7)			; lui rd, hi20
+    if lo12s <> 0
+      dd 0x00000013 or ((lo12s and 0xFFF) shl 20) or (rd shl 15) or (rd shl 7)	; addi rd, rd, lo12s
+    end if
+
+  else
+;	Cas 3 : valeur 64 bits arbitraire.
+;	Construire d'abord les 32 bits hauts signes dans rd, puis injecter les
+;	32 bits bas par chunks de 11/11/10 bits positifs.
+    local hi32, hi32s
+    hi32 = (v shr 32) and 0xFFFFFFFF
+    if hi32 and 0x80000000
+      hi32s = hi32 - 0x100000000
+    else
+      hi32s = hi32
+    end if
+
+;	Etape A : hi32s dans rd
+    if hi32s >= -2048  &  hi32s <= 2047
+      dd 0x00000013 or ((hi32s and 0xFFF) shl 20) or (rd shl 7)		; addi rd, x0, hi32s
+    else
+      local lo12h, hi20h, lo12hs
+      lo12h = hi32s and 0xFFF
+      if lo12h and 0x800
+        hi20h = ((hi32s - (lo12h - 0x1000)) shr 12) and 0xFFFFF
+        lo12hs = lo12h - 0x1000
+      else
+        hi20h = (hi32s shr 12) and 0xFFFFF
+        lo12hs = lo12h
+      end if
+      dd 0x00000037 or (hi20h shl 12) or (rd shl 7)			; lui rd, hi20h
+      if lo12hs <> 0
+        dd 0x00000013 or ((lo12hs and 0xFFF) shl 20) or (rd shl 15) or (rd shl 7)	; addi rd, rd, lo12hs
+      end if
+    end if
+
+;	Etape B : injecter les 32 bits bas par chunks 11/11/10.
+;	IMPORTANT : ne pas faire slli rd, rd, 32 ici. Les shifts 11+11+10
+;	constituent deja le decalage total de 32 bits.
+    local lo32, ca, cb, cc
+    lo32 = v and 0xFFFFFFFF
+    ca = (lo32 shr 21) and 0x7FF						; chunk haut 11 bits
+    cb = (lo32 shr 10) and 0x7FF						; chunk middle 11 bits
+    cc = lo32 and 0x3FF							; chunk bas 10 bits
+
+    dd 0x00000013 or (11 shl 20) or (rd shl 15) or (1 shl 12) or (rd shl 7)	; slli rd, rd, 11
+    if ca <> 0
+      dd 0x00000013 or ((ca and 0xFFF) shl 20) or (rd shl 15) or (rd shl 7)	; addi rd, rd, ca
+    end if
+
+    dd 0x00000013 or (11 shl 20) or (rd shl 15) or (1 shl 12) or (rd shl 7)	; slli rd, rd, 11
+    if cb <> 0
+      dd 0x00000013 or ((cb and 0xFFF) shl 20) or (rd shl 15) or (rd shl 7)	; addi rd, rd, cb
+    end if
+
+    dd 0x00000013 or (10 shl 20) or (rd shl 15) or (1 shl 12) or (rd shl 7)	; slli rd, rd, 10
+    if cc <> 0
+      dd 0x00000013 or ((cc and 0xFFF) shl 20) or (rd shl 15) or (rd shl 7)	; addi rd, rd, cc
+    end if
+  end if
+end macro
+
+;-----------------------------------------------------------------------------------------------------------------------
+;	L O A D	/   S T O	R E   Q W	O R D   A V E C   O F	F S E T   ( I N T E R N E )
+;-----------------------------------------------------------------------------------------------------------------------
+;
+;	Sur RISC-V, ld/sd ont un imm12 signe (±2048 octets). Pour les offsets plus grands,
+;	il faut materialiser l'offset dans un registre scratch (t0 = x5) puis ajouter.
+
+;			...............................
+macro			LOAD_QUAD	ofs, Ra, Rd		; load qword Rd depuis [Ra + imm]
+;			...............................
+;	Charge un qword (64 bits) depuis [Ra + ofs] dans Rd.
+  local signed_ofs
+  signed_ofs = ofs
+
+  if ofs >= -2048  &  ofs <= 2047
+;	Cas direct : ld Rd, ofs(Ra)
+    dd 0x00003003 or ((signed_ofs and 0xFFF) shl 20) or (Ra shl 15) or (Rd shl 7)
+  else
+;	Cas large : materialiser l'offset dans t0 (x5), faire add t0, Ra, t0, puis ld
+    QUAD_CONST	5, signed_ofs						; t0 = ofs
+    dd 0x00028333 or (Ra shl 15)						; add t0, Ra, t0  (rs1=Ra, rs2=5, rd=5)
+    dd 0x0002B003 or (Rd shl 7)						; ld Rd, 0(t0)
+  end if
+end macro
+
+;			...............................
+macro			STORE_QUAD	ofs, Ra, Rs		; store qword Rs vers [Ra + ofs]
+;			...............................
+  local signed_ofs
+  signed_ofs = ofs
+
+  if ofs >= -2048  &  ofs <= 2047
+;	Cas direct : sd Rs, ofs(Ra)
+;	S-type : imm[11:5] | rs2 | rs1 | funct3=3 | imm[4:0] | opcode=0x23
+    local imm12, imm115, imm40
+    imm12 = signed_ofs and 0xFFF
+    imm115 = (imm12 shr 5) and 0x7F
+    imm40 = imm12 and 0x1F
+    dd 0x00003023 or (imm115 shl 25) or (Rs shl 20) or (Ra shl 15) or (imm40 shl 7)	; sd Rs, ofs(Ra)
+  else
+;	Cas large : materialiser l'offset dans t0, add t0, Ra, t0, puis sd
+    QUAD_CONST	5, signed_ofs
+    dd 0x00028333 or (Ra shl 15)						; add t0, Ra, t0
+    dd 0x0002B023 or (Rs shl 20)						; sd Rs, 0(t0)
+  end if
+end macro
+
+
+;			........................................
+macro			RV_BRANCH	funct3*, rs1*, rs2*, lbl*
+;			........................................
+; Branche B-type interne. Plage +/-4 KiB, suffisante pour les boucles locales des macros.
+  local disp, b12, b105, b41, b11
+  b12  = (disp shr 12) and 1
+  b105 = (disp shr 5) and 0x3F
+  b41  = (disp shr 1) and 0x0F
+  b11  = (disp shr 11) and 1
+  dd 0x00000063 or (b12 shl 31) or (b105 shl 25) or (rs2 shl 20) or (rs1 shl 15) or (funct3 shl 12) or (b41 shl 8) or (b11 shl 7)
+  disp = lbl - $ + 4
+end macro
+;			.......................
+macro			FP_IN_RAX		lvl
+;			.......................
+;	Aller chercher le frame pointer du niveau lvl dans le display pointe par s1
+  assert lvl >= 0 & lvl <= 31
+  LOAD_QUAD	8*lvl, 9, 10						; ld a0, 8*lvl(s1)
+end macro
+
+;			.......................
+macro			RAX_IN_FP		lvl
+;			.......................
+  assert lvl >= 0 & lvl <= 31
+  STORE_QUAD	8*lvl, 9, 10						; sd a0, 8*lvl(s1)
+end macro
+
+;			.......................
+macro			FP_IN_RBP	lvl
+;			.......................
+  assert lvl >= 0 & lvl <= 31
+  LOAD_QUAD 8*lvl, 9, 8							; ld s0, 8*lvl(s1)
+end macro
+
+;			.......................
+macro			BASE_IN_RAX	lvl
+;			.......................
+  assert lvl >= -1 & lvl <= 31
+  if lvl = -1							; adresse stockage empilee
+    POP_RAX							; (adresse data)
+  else
+    FP_IN_RAX	lvl						; FP(lvl) base
+  end if
+end macro
+
+;			.......................................
+macro			INDIRECT_BASE_IN_RAX	lvl, disp
+;			.......................................
+  assert lvl >= -1 & lvl <= 31
+  if lvl = -1							; top stacked address of address
+    POP_RAX							; pop a0 = adresse pointant sur l'adresse de la donnee
+    FETCH_QWORD	disp						; fetch adresse de la donnee
+  else								; framed address of qword
+    FP_IN_RAX	lvl
+    FETCH_QWORD	disp						; le FP(lvl) + disp est dans a0
+  end if
+end macro
+
+
+;-----------------------------------------------------------------------------------------------------------------------
+;					F E T C H	  /   S T	O R E   I	N T E R N	E
+;-----------------------------------------------------------------------------------------------------------------------
+;
+;	Charge une valeur (avec extension de signe) depuis [a0 + disp] dans a0.
+;	Sur RISC-V : LB / LH / LW / LD font l'extension de signe automatiquement.
+;	Imm12 signe ±2048 ; au dela on materialise dans t0 et on fait add a0, a0, t0 ; load 0(a0).
+
+;			........................
+macro			FETCH_BYTE_U	disp
+;			........................
+  local signed_disp
+  signed_disp = disp
+  if disp >= -2048  &  disp <= 2047
+    dd 0x00054503 or ((signed_disp and 0xFFF) shl 20)			; lbu a0, disp(a0)
+  else
+    QUAD_CONST	5, signed_disp
+    dd 0x00550533							; add a0, a0, t0
+    dd 0x00054503							; lbu a0, 0(a0)
+  end if
+end macro
+
+;			........................
+macro			FETCH_WORD_U	disp
+;			........................
+  local signed_disp
+  signed_disp = disp
+  if disp >= -2048  &  disp <= 2047
+    dd 0x00055503 or ((signed_disp and 0xFFF) shl 20)			; lhu a0, disp(a0)
+  else
+    QUAD_CONST	5, signed_disp
+    dd 0x00550533
+    dd 0x00055503							; lhu a0, 0(a0)
+  end if
+end macro
+
+;			........................
+macro			FETCH_DWORD_U	disp
+;			........................
+  local signed_disp
+  signed_disp = disp
+  if disp >= -2048  &  disp <= 2047
+    dd 0x00056503 or ((signed_disp and 0xFFF) shl 20)			; lwu a0, disp(a0)
+  else
+    QUAD_CONST	5, signed_disp
+    dd 0x00550533
+    dd 0x00056503							; lwu a0, 0(a0)
+  end if
+end macro
+
+;			........................
+macro			FETCH_BYTE	disp
+;			........................
+;	lb a0, disp(a0) : opcode=0x03, funct3=0, rs1=10, rd=10
+  local signed_disp
+  signed_disp = disp
+
+  if disp >= -2048  &  disp <= 2047
+    dd 0x00050503 or ((signed_disp and 0xFFF) shl 20)			; lb a0, disp(a0)
+  else
+    QUAD_CONST	5, signed_disp						; t0 = disp
+    dd 0x00550533							; add a0, a0, t0
+    dd 0x00050503							; lb a0, 0(a0)
+  end if
+end macro
+
+;			........................
+macro			FETCH_WORD	disp
+;			........................
+;	lh a0, disp(a0) : opcode=0x03, funct3=1, rs1=10, rd=10
+  local signed_disp
+  signed_disp = disp
+
+  if disp >= -2048  &  disp <= 2047
+    dd 0x00051503 or ((signed_disp and 0xFFF) shl 20)			; lh a0, disp(a0)
+  else
+    QUAD_CONST	5, signed_disp
+    dd 0x00550533							; add a0, a0, t0
+    dd 0x00051503							; lh a0, 0(a0)
+  end if
+end macro
+
+;			........................
+macro			FETCH_DWORD	disp
+;			........................
+;	lw a0, disp(a0) : opcode=0x03, funct3=2, rs1=10, rd=10  (sign-extend vers 64 bits)
+  local signed_disp
+  signed_disp = disp
+
+  if disp >= -2048  &  disp <= 2047
+    dd 0x00052503 or ((signed_disp and 0xFFF) shl 20)			; lw a0, disp(a0)
+  else
+    QUAD_CONST	5, signed_disp
+    dd 0x00550533							; add a0, a0, t0
+    dd 0x00052503							; lw a0, 0(a0)
+  end if
+end macro
+
+;			........................
+macro			FETCH_QWORD	disp
+;			........................
+  LOAD_QUAD	disp, 10, 10						; ld a0, disp(a0)
+end macro
+
+;			........................
+macro			STORE_BYTE	disp
+;			........................
+;	Range a1 (en byte) vers [a0 + disp]
+;	sb a1, disp(a0) : opcode=0x23, funct3=0, rs1=10, rs2=11
+  local signed_disp
+  signed_disp = disp
+
+  if disp >= -2048  &  disp <= 2047
+    local imm12, imm115, imm40
+    imm12 = signed_disp and 0xFFF
+    imm115 = (imm12 shr 5) and 0x7F
+    imm40 = imm12 and 0x1F
+    dd 0x00B50023 or (imm115 shl 25) or (imm40 shl 7)			; sb a1, disp(a0)
+  else
+    QUAD_CONST	5, signed_disp
+    dd 0x00550533							; add a0, a0, t0
+    dd 0x00B50023							; sb a1, 0(a0)
+  end if
+end macro
+
+;			........................
+macro			STORE_WORD	disp
+;			........................
+;	sh a1, disp(a0) : opcode=0x23, funct3=1
+  local signed_disp
+  signed_disp = disp
+
+  if disp >= -2048  &  disp <= 2047
+    local imm12, imm115, imm40
+    imm12 = signed_disp and 0xFFF
+    imm115 = (imm12 shr 5) and 0x7F
+    imm40 = imm12 and 0x1F
+    dd 0x00B51023 or (imm115 shl 25) or (imm40 shl 7)			; sh a1, disp(a0)
+  else
+    QUAD_CONST	5, signed_disp
+    dd 0x00550533							; add a0, a0, t0
+    dd 0x00B51023							; sh a1, 0(a0)
+  end if
+end macro
+
+;			........................
+macro			STORE_DWORD	disp
+;			........................
+;	sw a1, disp(a0) : opcode=0x23, funct3=2
+  local signed_disp
+  signed_disp = disp
+
+  if disp >= -2048  &  disp <= 2047
+    local imm12, imm115, imm40
+    imm12 = signed_disp and 0xFFF
+    imm115 = (imm12 shr 5) and 0x7F
+    imm40 = imm12 and 0x1F
+    dd 0x00B52023 or (imm115 shl 25) or (imm40 shl 7)			; sw a1, disp(a0)
+  else
+    QUAD_CONST	5, signed_disp
+    dd 0x00550533							; add a0, a0, t0
+    dd 0x00B52023							; sw a1, 0(a0)
+  end if
+end macro
+
+;			........................
+macro			STORE_QWORD	disp
+;			........................
+  STORE_QUAD	disp, 10, 11						; sd a1, disp(a0)
+end macro
+
+
+;-----------------------------------------------------------------------------------------------------------------------
+;			L O A D	C O N S T	A N T E S	  I M M E	D I A T E	S
+;-----------------------------------------------------------------------------------------------------------------------
+
+;			-------------
+macro			LI?	val				; Load Integer (32 bits etendu signe vers 64)
+;			-------------
+;	Sur x86-64 c'etait : mov rax, val (5 octets imm32 + sign-extend automatique).
+;	Sur RISC-V on materialise via QUAD_CONST (jusqu'a 8 instructions selon la valeur).
+  QUAD_CONST 10, val
+  PUSH_RAX
+end macro
+
+;			-------------
+macro			LIF?	val				; Load Immediate Float (IEEE 754 double 64 bits sur la pile entiere)
+;			-------------
+;	Pour obtenir le pattern de bits 64 du flottant, on utilise une zone virtuelle :
+;	  - on emet 'dq val' dans un buffer virtuel (fasmg fait la conversion IEEE 754)
+;	  - on relit les 8 octets vers une variable entiere
+;	  - on materialise cette entiere par QUAD_CONST
+  local bits
+  virtual at 0
+    dq val
+    load bits qword from 0
+  end virtual
+  QUAD_CONST 10, bits
+  PUSH_RAX
+end macro
+
+
+;-----------------------------------------------------------------------------------------------------------------------
+;			L O A D	C O N S T	A N T  /	V A R I A	B L E   A	D R E S S	E
+;-----------------------------------------------------------------------------------------------------------------------
+
+;			---------------------
+macro			LCA?	ptr, disp:0			; Load Constant Address
+;			---------------------
+;	Materialise une adresse 64 bits dans a0 et l'empile.
+  QUAD_CONST	10, ptr+disp
+  PUSH_RAX
+end macro
+
+
+;			--------------------------
+macro			LSPA?	prefix, subname			; Load SubProgram Address de .elab, en armant l'assemblage lazy
+;			--------------------------
+  postpone
+    if ~definite prefix#subname#_
+      prefix#subname#_ = prefix#subname#.elab
+    end if
+  end postpone
+  QUAD_CONST	10, prefix#subname#_
+  PUSH_RAX
+end macro
+;			------------------------
+macro			LVa?	lvl:-1, disp:0			; Load Variable Address pour lvl et disp
+;			------------------------
+;	Empile l'adresse de la variable au deplacement disp du frame de niveau lvl.
+;	x86 : lea rax, [base + disp] ; RISC-V : addi a0, a0, disp (12 bits signe)
+;	ou via QUAD_CONST + add pour les grandes valeurs.
+  BASE_IN_RAX	lvl
+  if disp = 0
+;	a0 deja a la bonne valeur
+  else if disp >= -2048  &  disp <= 2047
+;	addi a0, a0, disp
+    dd 0x00050513 or ((disp and 0xFFF) shl 20)
+  else
+    QUAD_CONST	5, disp						; t0 = disp
+    dd 0x00550533							; add a0, a0, t0
+  end if
+  PUSH_RAX
+end macro
+
+;			-------------------------------
+macro			LIVa?	lvl:-1, disp:0, ofs:0		; Load Indirect Variable Address
+;			-------------------------------
+;	Empile l'adresse de la variable pointee par l adresse au deplacement disp du frame de lvl,
+;	a laquelle on ajoute ofs.
+  INDIRECT_BASE_IN_RAX	lvl, disp
+  if ofs = 0
+;	a0 deja a la bonne valeur
+  else if ofs >= -2048  &  ofs <= 2047
+    dd 0x00050513 or ((ofs and 0xFFF) shl 20)				; addi a0, a0, ofs
+  else
+    QUAD_CONST	5, ofs
+    dd 0x00550533							; add a0, a0, t0
+  end if
+  PUSH_RAX
+end macro
+
+
+;-----------------------------------------------------------------------------------------------------------------------
+;					L O A D	D A T A
+;-----------------------------------------------------------------------------------------------------------------------
+
+;			------------------------
+macro			ULb?	lvl:-1, disp:0			; Unsigned Load Byte 8 bits
+;			------------------------
+  BASE_IN_RAX	lvl
+  FETCH_BYTE_U	disp
+  PUSH_RAX
+end macro
+;			------------------------
+macro			ULw?	lvl:-1, disp:0			; Unsigned Load Word 16 bits
+;			------------------------
+  BASE_IN_RAX	lvl
+  FETCH_WORD_U	disp
+  PUSH_RAX
+end macro
+;			------------------------
+macro			ULd?	lvl:-1, disp:0			; Unsigned Load doubleword 32 bits
+;			------------------------
+  BASE_IN_RAX	lvl
+  FETCH_DWORD_U	disp
+  PUSH_RAX
+end macro
+
+;			------------------------
+macro			Lb?	lvl:-1, disp:0			; Load Byte 8 bits
+;			------------------------
+  BASE_IN_RAX	lvl
+  FETCH_BYTE	disp
+  PUSH_RAX
+end macro
+;			------------------------
+macro			Lw?	lvl:-1, disp:0			; Load Word 16 bits
+;			------------------------
+  BASE_IN_RAX	lvl
+  FETCH_WORD	disp
+  PUSH_RAX
+end macro
+;			------------------------
+macro			Ld?	lvl:-1, disp:0			; Load doubleword 32 bits
+;			------------------------
+  BASE_IN_RAX	lvl
+  FETCH_DWORD	disp
+  PUSH_RAX
+end macro
+;			------------------------
+macro			Lq?	lvl:-1, disp:0			; Load quadword 64 bits
+;			------------------------
+  BASE_IN_RAX	lvl
+  FETCH_QWORD	disp
+  PUSH_RAX
+end macro
+;			------------------------
+macro			La?	lvl:-1, disp:0			; Load Address 64 bits
+;			------------------------
+  Lq lvl, disp
+end macro
+
+;			-------------------------------
+macro			ULIb?	lvl:-1, disp:0, ofs:0		; Unsigned Load Indirect byte
+;			-------------------------------
+  INDIRECT_BASE_IN_RAX	lvl, disp
+  FETCH_BYTE_U		ofs
+  PUSH_RAX
+end macro
+;			-------------------------------
+macro			ULIw?	lvl:-1, disp:0, ofs:0		; Unsigned Load Indirect word
+;			-------------------------------
+  INDIRECT_BASE_IN_RAX	lvl, disp
+  FETCH_WORD_U		ofs
+  PUSH_RAX
+end macro
+;			-------------------------------
+macro			ULId?	lvl:-1, disp:0, ofs:0		; Unsigned Load Indirect doubleword
+;			-------------------------------
+  INDIRECT_BASE_IN_RAX	lvl, disp
+  FETCH_DWORD_U		ofs
+  PUSH_RAX
+end macro
+
+;			-------------------------------
+macro			LIb?	lvl:-1, disp:0, ofs:0		; Load Indirect byte
+;			-------------------------------
+  INDIRECT_BASE_IN_RAX	lvl, disp
+  FETCH_BYTE		ofs
+  PUSH_RAX
+end macro
+;			-------------------------------
+macro			LIw?	lvl:-1, disp:0, ofs:0		; Load Indirect word
+;			-------------------------------
+  INDIRECT_BASE_IN_RAX	lvl, disp
+  FETCH_WORD		ofs
+  PUSH_RAX
+end macro
+;			-------------------------------
+macro			LId?	lvl:-1, disp:0, ofs:0		; Load Indirect doubleword
+;			-------------------------------
+  INDIRECT_BASE_IN_RAX	lvl, disp
+  FETCH_DWORD		ofs
+  PUSH_RAX
+end macro
+;			-------------------------------
+macro			LIq?	lvl:-1, disp:0, ofs:0		; Load Indirect quadword
+;			-------------------------------
+  INDIRECT_BASE_IN_RAX	lvl, disp
+  FETCH_QWORD		ofs
+  PUSH_RAX
+end macro
+;			-------------------------------
+macro			LIa?	lvl:-1, disp:0, ofs:0		; Load Address 64 bits Indirect
+;			-------------------------------
+  LIq lvl, disp, ofs
+end macro
+
+
+;-----------------------------------------------------------------------------------------------------------------------
+;					S T O R E	  D A T A
+;-----------------------------------------------------------------------------------------------------------------------
+
+;			------------------------
+macro			Sb?	lvl:-1, disp:0			; Store byte 8 bits
+;			------------------------
+  POP_RBX							; (data dans a1)
+  BASE_IN_RAX	lvl
+  STORE_BYTE	disp
+end macro
+;			------------------------
+macro			Sw?	lvl:-1, disp:0			; Store word 16 bits
+;			------------------------
+  POP_RBX
+  BASE_IN_RAX	lvl
+  STORE_WORD	disp
+end macro
+;			------------------------
+macro			Sd?	lvl:-1, disp:0			; Store doubleword 32 bits
+;			------------------------
+  POP_RBX
+  BASE_IN_RAX	lvl
+  STORE_DWORD	disp
+end macro
+;			------------------------
+macro			Sq?	lvl:-1, disp:0			; Store Quadword 64 bits
+;			------------------------
+  POP_RBX
+  BASE_IN_RAX	lvl
+  STORE_QWORD	disp
+end macro
+;			------------------------
+macro			Sa?	lvl:-1, disp:0			; Store Address 64 bits
+;			------------------------
+  Sq lvl, disp
+end macro
+
+
+;			-------------------------------
+macro			SIb?	lvl:-1, disp:0, ofs:0		; Store Indirect byte
+;			-------------------------------
+  POP_RBX
+  INDIRECT_BASE_IN_RAX	lvl, disp
+  STORE_BYTE		ofs
+end macro
+;			-------------------------------
+macro			SIw?	lvl:-1, disp:0, ofs:0		; Store Indirect word
+;			-------------------------------
+  POP_RBX
+  INDIRECT_BASE_IN_RAX	lvl, disp
+  STORE_WORD		ofs
+end macro
+;			-------------------------------
+macro			SId?	lvl:-1, disp:0, ofs:0		; Store Indirect doubleword
+;			-------------------------------
+  POP_RBX
+  INDIRECT_BASE_IN_RAX	lvl, disp
+  STORE_DWORD		ofs
+end macro
+;			-------------------------------
+macro			SIq?	lvl:-1, disp:0, ofs:0		; Store Indirect quadword
+;			-------------------------------
+  POP_RBX
+  INDIRECT_BASE_IN_RAX	lvl, disp
+  STORE_QWORD		ofs
+end macro
+;			-------------------
+macro			SIa?	lvl, disp, ofs			; Store Address 64 bits Indirect
+;			-------------------
+  SIq lvl, disp, ofs
+end macro
+
+
+;-----------------------------------------------------------------------------------------------------------------------
+;				O P E R A	T I O N S	  L O G I	Q U E S
+;-----------------------------------------------------------------------------------------------------------------------
+;
+; Sur RISC-V comme sur ARM64 il n'y a pas d'operation read-modify-write memoire ;
+; chaque operation devient ld / op / sd.
+
+;			---
+macro			ET?
+;			---
+  POP_RAX								; a0 = B
+  dd 0x00043583							; ld a1, 0(s0)		a1 = A
+  dd 0x00A5F5B3							; and a1, a1, a0	a1 = A and B
+  dd 0x00B43023							; sd a1, 0(s0)
+end macro
+;			---
+macro			OU?
+;			---
+  POP_RAX								; a0 = B
+  dd 0x00043583							; ld a1, 0(s0)
+  dd 0x00A5E5B3							; or a1, a1, a0
+  dd 0x00B43023							; sd a1, 0(s0)
+end macro
+;			----
+macro			NON?
+;			----
+  dd 0x00043503							; ld a0, 0(s0)
+  dd 0xFFF54513							; xori a0, a0, -1	(NOT bitwise)
+  dd 0x00A43023							; sd a0, 0(s0)
+end macro
+;			----
+macro			OUX?
+;			----
+  POP_RAX								; a0 = B
+  dd 0x00043583							; ld a1, 0(s0)
+  dd 0x00A5C5B3							; xor a1, a1, a0
+  dd 0x00B43023							; sd a1, 0(s0)
+end macro
+;			----
+macro			SHL?					; decalage gauche
+;			----
+  POP_RCX								; nombre de positions de decalage dans a2
+  dd 0x00043503							; ld a0, 0(s0)
+  dd 0x00C51533							; sll a0, a0, a2
+  dd 0x00A43023							; sd a0, 0(s0)
+end macro
+
+;			----
+macro			SHR?					; decalage logique droit
+;			----
+  POP_RCX								; nombre de positions de decalage dans a2
+  dd 0x00043503							; ld  a0, 0(s0)
+  dd 0x00C55533							; srl a0, a0, a2
+  dd 0x00A43023							; sd  a0, 0(s0)
+end macro
+
+
+;-----------------------------------------------------------------------------------------------------------------------
+;		O P E R A	T I O N S	  B I T   F I E L D S
+;-----------------------------------------------------------------------------------------------------------------------
+
+;			-----
+macro			UBFX?					; unsigned bit field extract
+;			-----
+;	Pile : source, LSB, Width  ->  champ non signe. Width doit etre non nul.
+;	Forme RV64 sans masque (robuste pour Width = 64 si LSB = 0) :
+;	(source << (64 - LSB - Width)) >> (64 - Width).
+  POP_RDX								; a3 = Width
+  POP_RCX								; a2 = LSB
+  dd 0x00043503							; ld   a0, 0(s0)		valeur source
+  dd 0x04000293							; addi t0, x0, 64
+  dd 0x40C28333							; sub  t1, t0, a2		t1 = 64 - LSB
+  dd 0x40D30333							; sub  t1, t1, a3		t1 = 64 - LSB - Width
+  dd 0x00651533							; sll  a0, a0, t1
+  dd 0x40D282B3							; sub  t0, t0, a3		t0 = 64 - Width
+  dd 0x00555533							; srl  a0, a0, t0
+  dd 0x00A43023							; sd   a0, 0(s0)
+end macro
+;			-----
+macro			SBFX?					; signed bit field extract
+;			-----
+;	Pile : source, LSB, Width  ->  champ signe etendu sur 64 bits. Width doit etre non nul.
+;	(source << (64 - LSB - Width)) >>s (64 - Width).
+  POP_RDX								; a3 = Width
+  POP_RCX								; a2 = LSB
+  dd 0x00043503							; ld   a0, 0(s0)		valeur source
+  dd 0x04000293							; addi t0, x0, 64
+  dd 0x40C28333							; sub  t1, t0, a2		t1 = 64 - LSB
+  dd 0x40D30333							; sub  t1, t1, a3		t1 = 64 - LSB - Width
+  dd 0x00651533							; sll  a0, a0, t1
+  dd 0x40D282B3							; sub  t0, t0, a3		t0 = 64 - Width
+  dd 0x40555533							; sra  a0, a0, t0		extension de signe
+  dd 0x00A43023							; sd   a0, 0(s0)
+end macro
+;			----
+macro			BFI?					; bit field insert in stacked value
+;			----
+;	Pile : old_quad, inserted, LSB, Width  ->  old_quad avec champ remplace.
+;	Le masque est construit comme (-1) >> (64-Width), ce qui accepte Width = 64.
+  POP_RCX								; a2 = Width
+  POP_RDX								; a3 = LSB
+  POP_RAX								; a0 = valeur a inserer
+								; MAKE MASK
+  dd 0xFFF00293							; addi t0, x0, -1		t0 = -1
+  dd 0x04000313							; addi t1, x0, 64
+  dd 0x40C30333							; sub  t1, t1, a2		t1 = 64 - Width
+  dd 0x0062D2B3							; srl  t0, t0, t1		mask = low Width bits
+								; CUT SHIFT INSERTION
+  dd 0x00557533							; and  a0, a0, t0		inserted &= mask
+  dd 0x00D51533							; sll  a0, a0, a3		inserted <<= LSB
+								; SHIFT INVERT MASK
+  dd 0x00D292B3							; sll  t0, t0, a3		mask <<= LSB
+  dd 0xFFF2C293							; xori t0, t0, -1		~shifted_mask
+								; CLEAR INSERT FIELD
+  dd 0x00043583							; ld   a1, 0(s0)		old_quad
+  dd 0x0055F5B3							; and  a1, a1, t0		clear field in old_quad
+  dd 0x00A5E5B3							; or   a1, a1, a0		insert field
+  dd 0x00B43023							; sd   a1, 0(s0)
+end macro
+
+
+;-----------------------------------------------------------------------------------------------------------------------
+;		O P E R A	T I O N S	  A R I T	H M E T I	Q U E   E	N T I E R	E
+;-----------------------------------------------------------------------------------------------------------------------
+
+;			----
+macro			DEC?
+;			----
+  dd 0x00043503							; ld a0, 0(s0)
+  dd 0xFFF50513							; addi a0, a0, -1
+  dd 0x00A43023							; sd a0, 0(s0)
+end macro
+;			----
+macro			INC?
+;			----
+  dd 0x00043503							; ld a0, 0(s0)
+  dd 0x00150513							; addi a0, a0, 1
+  dd 0x00A43023							; sd a0, 0(s0)
+end macro
+;			----
+macro			NEG?
+;			----
+  dd 0x00043503							; ld a0, 0(s0)
+  dd 0x40A00533							; sub a0, x0, a0	(neg pseudo-instruction)
+  dd 0x00A43023							; sd a0, 0(s0)
+end macro
+;			----
+macro			ABS?
+;			----
+;	Valeur absolue : si a0 < 0 alors a0 = -a0, sinon a0 inchange.
+;	Sequence sans branchement (5 instructions) :
+;	  ld   a0, 0(s0)
+;	  srai t0, a0, 63    ; t0 = 0 si a0 >= 0, t0 = -1 si a0 < 0
+;	  xor  a0, a0, t0    ; complement bit a bit si negatif
+;	  sub  a0, a0, t0    ; +1 si etait negatif (sub avec -1 = add 1), 0 si positif
+;	  sd   a0, 0(s0)
+  dd 0x00043503							; ld a0, 0(s0)
+  dd 0x43F55293							; srai t0, a0, 63
+  dd 0x00554533							; xor a0, a0, t0
+  dd 0x40550533							; sub a0, a0, t0
+  dd 0x00A43023							; sd a0, 0(s0)
+end macro
+;			----
+macro			CLAMP0?					; sommet := max(0, sommet)
+;			-------
+  dd 0x00043503							; ld   a0, 0(s0)
+  dd 0x43F55293							; srai t0, a0, 63
+  dd 0xFFF2C293							; xori t0, t0, -1
+  dd 0x00557533							; and  a0, a0, t0
+  dd 0x00A43023							; sd   a0, 0(s0)
+end macro
+;			----
+macro			ADD?
+;			----
+  POP_RAX								; a0 = B
+  dd 0x00043583							; ld a1, 0(s0)		a1 = A
+  dd 0x00A585B3							; add a1, a1, a0
+  dd 0x00B43023							; sd a1, 0(s0)
+end macro
+;			----
+macro			SUB?
+;			----
+  POP_RAX								; a0 = B
+  dd 0x00043583							; ld a1, 0(s0)		a1 = A
+  dd 0x40A585B3							; sub a1, a1, a0
+  dd 0x00B43023							; sd a1, 0(s0)
+end macro
+;			----
+macro			MUL?
+;			----
+  POP_RAX								; a0 = B
+  dd 0x00043583							; ld a1, 0(s0)		a1 = A
+  dd 0x02A585B3							; mul a1, a1, a0
+  dd 0x00B43023							; sd a1, 0(s0)
+end macro
+;			----
+macro			DIV?
+;			----
+  POP_RBX								; a1 = B (diviseur)
+  POP_RAX								; a0 = A (dividende)
+  dd 0x02B54533							; div a0, a0, a1	(division signee)
+  PUSH_RAX
+end macro
+;			----
+macro			REMI?					; A rem B (reste division tronquee, signe du dividende)
+;			----
+  POP_RBX								; a1 = B
+  POP_RAX								; a0 = A
+  dd 0x02B56533							; rem a0, a0, a1	(reste division signee, signe dividende)
+  PUSH_RAX
+end macro
+;			----
+macro			MODI?					; A mod B (modulo mathematique, signe du diviseur)
+;			----
+;	Calculer d'abord le reste tronque (rem), puis ajuster :
+;	si reste != 0 et si signes du reste et du diviseur different, ajouter le diviseur.
+;	En RISC-V :
+;	  rem  a0, a0, a1     reste dans a0
+;	  beq  a0, x0, .end   si reste = 0, fini
+;	  xor  t0, a0, a1     XOR pour comparer signes
+;	  bge  t0, x0, .end   si t0 >= 0 (memes signes), fini
+;	  add  a0, a0, a1     ajustement
+;	.end:
+;
+  POP_RBX								; a1 = B
+  POP_RAX								; a0 = A
+  dd 0x02B56533							; rem a0, a0, a1
+  dd 0x00050863							; beq a0, x0, .end (saut +16 octets = 4 instr)
+  dd 0x00B542B3							; xor t0, a0, a1
+  dd 0x0002D463							; bge t0, x0, .end (saut +8 octets = 2 instr)
+  dd 0x00B50533							; add a0, a0, a1
+;.end:
+  PUSH_RAX
+end macro
+
+;			----
+macro			SAR?					; decalage arithmetique droit
+;			----
+  POP_RCX								; nombre de positions de decalage dans a2
+  dd 0x00043503							; ld a0, 0(s0)
+  dd 0x40C55533							; sra a0, a0, a2
+  dd 0x00A43023							; sd a0, 0(s0)
+end macro
+
+
+;-----------------------------------------------------------------------------------------------------------------------
+;	O P E R A	T I O N S	  A R I T	H M E T I	Q U E   F	L O T T A	N T E   (	R V 6 4 D )
+;-----------------------------------------------------------------------------------------------------------------------
+
+;  Convention : les flottants IEEE 754 double 64 bits transitent par la pile entiere (qword).
+;  Sur RISC-V D, les operations flottantes utilisent les registres flottants fa0..fa7 (vue 64 bits).
+;  Transfers pile <-> faN via 'fld faN, 0(s0)' / 'fsd faN, 0(s0)'.
+;  Format : opcode 0x07 (fp-load) / 0x27 (fp-store), funct3=3 (double).
+
+;			-----
+macro			FADD?
+;			-----
+  dd 0x00043587							; fld fa1, 0(s0)	(B = TOS dans fa1)
+  DROP								; descendre pile (consommer B)
+  dd 0x00043507							; fld fa0, 0(s0)	(A = nouveau TOS dans fa0)
+  dd 0x02B57553							; fadd.d fa0, fa0, fa1	(fa0 = A + B, rm=dyn)
+  dd 0x00A43027							; fsd fa0, 0(s0)	(ecraser A par le resultat)
+end macro
+;			-----
+macro			FSUB?
+;			-----
+  dd 0x00043587							; fld fa1, 0(s0)
+  DROP
+  dd 0x00043507							; fld fa0, 0(s0)
+  dd 0x0AB57553							; fsub.d fa0, fa0, fa1
+  dd 0x00A43027							; fsd fa0, 0(s0)
+end macro
+;			-----
+macro			FMUL?
+;			-----
+  dd 0x00043587							; fld fa1, 0(s0)
+  DROP
+  dd 0x00043507							; fld fa0, 0(s0)
+  dd 0x12B57553							; fmul.d fa0, fa0, fa1
+  dd 0x00A43027							; fsd fa0, 0(s0)
+end macro
+;			-----
+macro			FDIV?
+;			-----
+  dd 0x00043587							; fld fa1, 0(s0)	(B = diviseur)
+  DROP
+  dd 0x00043507							; fld fa0, 0(s0)	(A = dividende)
+  dd 0x1AB57553							; fdiv.d fa0, fa0, fa1
+  dd 0x00A43027							; fsd fa0, 0(s0)
+end macro
+;			-----
+macro			FNEG?					; negation flottante
+;			-----
+;	RISC-V : fneg.d fa0, fa0  est en realite fsgnjn.d fa0, fa0, fa0
+;	(funct7=0x11, funct3=1, rs1=rs2=10, rd=10).
+  dd 0x00043507							; fld fa0, 0(s0)
+  dd 0x22A51553							; fneg.d fa0, fa0  (fsgnjn.d fa0, fa0, fa0)
+  dd 0x00A43027							; fsd fa0, 0(s0)
+end macro
+;			-----
+macro			FABS?					; valeur absolue flottante
+;			-----
+;	RISC-V : fabs.d fa0, fa0  est en realite fsgnjx.d fa0, fa0, fa0
+;	(funct7=0x11, funct3=2, rs1=rs2=10, rd=10).
+  dd 0x00043507							; fld fa0, 0(s0)
+  dd 0x22A52553							; fabs.d fa0, fa0  (fsgnjx.d fa0, fa0, fa0)
+  dd 0x00A43027							; fsd fa0, 0(s0)
+end macro
+
+;			-----
+macro			FEXP?					; exponentiation flottante A ** N (N entier positif sur la pile)
+;			-----
+;	N est sur la pile (au-dessus de A). On le depile dans a2.
+;	Puis on charge A dans fa0, on initialise fa1 = 1.0, et on boucle N fois : fa1 = fa1 * fa0.
+  POP_RCX								; depiler N (exposant) dans a2
+  dd 0x00043507							; fld fa0, 0(s0)	(fa0 = base)
+;	Charger 1.0 dans fa1. 1.0 IEEE 754 double = 0x3FF0000000000000.
+  QUAD_CONST 10, 0x3FF0000000000000					; a0 = 1.0 en IEEE 754 (utilise a0 temporairement)
+  dd 0xF20505D3							; fmv.d.x fa1, a0	(fa1 = 1.0 accumulateur)
+  dd 0x00060863							; beq a2, x0, .end	(saut +16 octets = 4 instr)
+;.loop:
+  dd 0x12A5F5D3							; fmul.d fa1, fa1, fa0, dyn	(accum *= base)
+  dd 0xFFF60613							; addi a2, a2, -1
+  dd 0xFE061CE3							; bne a2, x0, .loop	(saut -8 octets = retour sur fmul.d)
+;.end:
+  dd 0x00B43027							; fsd fa1, 0(s0)	(ecraser TOS par le resultat)
+;	Note : on a ecrase a0 ; pas grave, a0 n'a pas de valeur a preserver ici.
+end macro
+
+;-----------------------------------------------------------------------------------------------------------------------
+;	C O N V E	R S I O N	S   E N T	I E R  <->  F L O T	T A N T
+;-----------------------------------------------------------------------------------------------------------------------
+
+;			------
+macro			CVTIF?					; Conversion entier signe 64 bits -> double IEEE 754
+;			------
+  dd 0x00043503							; ld a0, 0(s0)		(entier signe depuis la pile)
+  dd 0xD2257553							; fcvt.d.l fa0, a0	(convertir entier signe -> double, funct7=0x69, rs2=2)
+  dd 0x00A43027							; fsd fa0, 0(s0)	(ecraser l'entier par le double)
+end macro
+;			------
+macro			CVTFI?					; Conversion double IEEE 754 -> entier signe 64 bits (troncature vers zero)
+;			------
+  dd 0x00043507							; fld fa0, 0(s0)	(double depuis la pile dans fa0)
+  dd 0xC2251553							; fcvt.l.d a0, fa0, rtz	(funct7=0x61, rs2=2, funct3=1=rtz, rs1=10, rd=10)
+  dd 0x00A43023							; sd a0, 0(s0)		(ecraser le double par l'entier)
+end macro
+
+;			-------
+macro			CVTFIR?					; Float -> Integer, arrondi Ada
+;			-------
+  dd 0x00043507							; fld fa0, 0(s0)	(double depuis la pile dans fa0)
+  dd 0xC2250553							; fcvt.l.d a0, fa0, rne	(arrondi au plus proche, mode RNE)
+  dd 0x00A43023							; sd a0, 0(s0)		(ecraser le double par l'entier)
+end macro
+
+;-----------------------------------------------------------------------------------------------------------------------
+;	C O N V E	R S I O N	S   E N T	I E R  <->  F I X E D
+;-----------------------------------------------------------------------------------------------------------------------
+
+;			------
+macro			CVTIX?					; Conversion de l'entier I en FIXED X de SMALL = NUMER/DENOM
+;			------					; Sont empiles I puis DENOM puis NUMER (I.D.N)
+  POP_RBX								; a1 = NUMER : diviseur
+  POP_RCX								; a2 = DENOM : multiplicateur
+  POP_RAX								; a0 = I : multiplicande
+  dd 0x02C50533							; mul a0, a0, a2		produit 64 bits bas
+  dd 0x02B54533							; div a0, a0, a1		quotient signe
+  PUSH_RAX							; Resultat FIXED X sur 64 bits
+end macro
+;			------
+macro			CVTXI?					; Conversion du FIXED X de SMALL = NUMER/DENOM en INTEGER I
+;			------					; Sont empiles X puis NUMER puis DENOM (X.N.D)
+  POP_RBX								; a1 = DENOM : diviseur
+  POP_RCX								; a2 = NUMER : multiplicateur
+  POP_RAX								; a0 = X : multiplicande
+  dd 0x02C502B3							; mul  t0, a0, a2		produit 64 bits bas
+  dd 0x02B2C533							; div  a0, t0, a1		quotient tronque
+  dd 0x02B2E6B3							; rem  a3, t0, a1		reste signe
+
+  dd 0x43F6D613							; srai a2, a3, 63		masque signe du reste
+  dd 0x00C6C6B3							; xor  a3, a3, a2
+  dd 0x40C686B3							; sub  a3, a3, a2		abs(reste)
+
+  dd 0x0015F313							; andi t1, a1, 1		bit impair du denominateur
+  dd 0x0015D593							; srli a1, a1, 1
+  dd 0x006585B3							; add  a1, a1, t1		ceil(DENOM/2)
+
+  dd 0x00B6E663							; bltu a3, a1, +12		si abs(reste) < demi, pas d'arrondi
+  dd 0x00166613							; ori  a2, a2, 1		+1 si reste positif, -1 si negatif
+  dd 0x00C50533							; add  a0, a0, a2		arrondi loin de zero au demi
+  PUSH_RAX							; Resultat INTEGER I sur 64 bits
+end macro
+
+
+;-----------------------------------------------------------------------------------------------------------------------
+;				C O M P A	R A I S O	N S
+;-----------------------------------------------------------------------------------------------------------------------
+;
+; Sur RISC-V, on utilise les comparaisons SLT/SLTU pour produire 0/1 directement,
+; ou bien on combine avec XOR/SLT pour les autres conditions.
+; Le resultat est range proprement par sd (64 bits).
+
+;			----
+macro			CEQ?					; A = B
+;			----
+;	x0 - (a0 ^ a1) si zero -> 1, sinon -> 0. On utilise sltiu rd, rs1, 1 :
+;	met 1 si rs1 < 1 (i.e. rs1 == 0), sinon 0. Donc :
+;	  xor a0, a0, a1
+;	  sltiu a0, a0, 1
+  POP_RBX								; a1 = B
+  dd 0x00043503							; ld a0, 0(s0)		a0 = A
+  dd 0x00B54533							; xor a0, a0, a1
+  dd 0x00153513							; sltiu a0, a0, 1	(a0 = (a0 == 0) ? 1 : 0)
+  dd 0x00A43023							; sd a0, 0(s0)
+end macro
+;			----
+macro			CNE?					; A /= B
+;			----
+;	  xor a0, a0, a1
+;	  sltu a0, x0, a0     (a0 = (0 < a0) ? 1 : 0, i.e. != 0)
+  POP_RBX
+  dd 0x00043503							; ld a0, 0(s0)
+  dd 0x00B54533							; xor a0, a0, a1
+  dd 0x00A03533							; sltu a0, x0, a0	(funct3=3, rs1=0, rs2=10, rd=10)
+  dd 0x00A43023							; sd a0, 0(s0)
+end macro
+;			----
+macro			CGT?					; A > B  (A empile puis B)
+;			----
+;	  slt a0, a1, a0      (a0 = (a1 < a0) ? 1 : 0, i.e. (B < A) = (A > B))
+  POP_RBX
+  dd 0x00043503							; ld a0, 0(s0)
+  dd 0x00A5A533							; slt a0, a1, a0	(funct3=2, rs1=11, rs2=10, rd=10)
+  dd 0x00A43023							; sd a0, 0(s0)
+end macro
+;			----
+macro			CGE?					; A >= B
+;			----
+;	A >= B equivaut a NOT (A < B). On fait slt a0, a0, a1 puis xori a0, a0, 1.
+  POP_RBX
+  dd 0x00043503							; ld a0, 0(s0)
+  dd 0x00B52533							; slt a0, a0, a1	(a0 = A < B ? 1 : 0)
+  dd 0x00154513							; xori a0, a0, 1	(a0 = NOT (A<B) = A>=B)
+  dd 0x00A43023							; sd a0, 0(s0)
+end macro
+;			----
+macro			CLT?					; A < B
+;			----
+;	  slt a0, a0, a1
+  POP_RBX
+  dd 0x00043503							; ld a0, 0(s0)
+  dd 0x00B52533							; slt a0, a0, a1
+  dd 0x00A43023							; sd a0, 0(s0)
+end macro
+;			----
+macro			CLE?					; A <= B
+;			----
+;	A <= B equivaut a NOT (A > B). On fait slt a0, a1, a0 puis xori a0, a0, 1.
+  POP_RBX
+  dd 0x00043503							; ld a0, 0(s0)
+  dd 0x00A5A533							; slt a0, a1, a0	(a0 = B < A ? 1 : 0)
+  dd 0x00154513							; xori a0, a0, 1	(a0 = NOT (B<A) = A<=B)
+  dd 0x00A43023							; sd a0, 0(s0)
+end macro
+
+
+;-----------------------------------------------------------------------------------------------------------------------
+;		C O M P A	R A I S O	N S   F L	O T T A N	T E S
+;-----------------------------------------------------------------------------------------------------------------------
+;
+;  Convention : A empile puis B. Sur RISC-V D, on dispose de feq.d, flt.d, fle.d
+;  qui produisent directement 0/1 dans un registre entier. NaN : feq.d donne 0,
+;  flt.d et fle.d donnent 0 aussi (et levent eventuellement une exception).
+;  Comportement Ada : NaN /= x est True (FCNE), toutes autres comparaisons False.
+
+;			-----
+macro			FCEQ?					; A = B  flottant
+;			-----
+  dd 0x00043587							; fld fa1, 0(s0)	(B = TOS)
+  DROP
+  dd 0x00043507							; fld fa0, 0(s0)	(A)
+  dd 0xA2B52553							; feq.d a0, fa0, fa1	(funct7=0x51, rs1=10, rs2=11, funct3=2, rd=10)
+  dd 0x00A43023							; sd a0, 0(s0)
+end macro
+;			-----
+macro			FCNE?					; A /= B flottant
+;			-----
+;	feq.d donne 1 si egal, 0 sinon. On inverse via xori a0, a0, 1.
+  dd 0x00043587							; fld fa1, 0(s0)
+  DROP
+  dd 0x00043507							; fld fa0, 0(s0)
+  dd 0xA2B52553							; feq.d a0, fa0, fa1
+  dd 0x00154513							; xori a0, a0, 1	(NOT egal = different)
+  dd 0x00A43023							; sd a0, 0(s0)
+end macro
+;			-----
+macro			FCGT?					; A > B flottant
+;			-----
+;	A > B equivaut a B < A : flt.d a0, fa1, fa0
+  dd 0x00043587							; fld fa1, 0(s0)
+  DROP
+  dd 0x00043507							; fld fa0, 0(s0)
+  dd 0xA2A59553							; flt.d a0, fa1, fa0	(funct7=0x51, rs1=11, rs2=10, funct3=1, rd=10)
+  dd 0x00A43023							; sd a0, 0(s0)
+end macro
+;			-----
+macro			FCGE?					; A >= B flottant
+;			-----
+;	A >= B equivaut a B <= A : fle.d a0, fa1, fa0
+  dd 0x00043587							; fld fa1, 0(s0)
+  DROP
+  dd 0x00043507							; fld fa0, 0(s0)
+  dd 0xA2A58553							; fle.d a0, fa1, fa0	(funct7=0x51, rs1=11, rs2=10, funct3=0, rd=10)
+  dd 0x00A43023							; sd a0, 0(s0)
+end macro
+;			-----
+macro			FCLT?					; A < B flottant
+;			-----
+;	flt.d a0, fa0, fa1
+  dd 0x00043587							; fld fa1, 0(s0)
+  DROP
+  dd 0x00043507							; fld fa0, 0(s0)
+  dd 0xA2B51553							; flt.d a0, fa0, fa1	(funct7=0x51, rs1=10, rs2=11, funct3=1, rd=10)
+  dd 0x00A43023							; sd a0, 0(s0)
+end macro
+;			-----
+macro			FCLE?					; A <= B flottant
+;			-----
+;	fle.d a0, fa0, fa1
+  dd 0x00043587							; fld fa1, 0(s0)
+  DROP
+  dd 0x00043507							; fld fa0, 0(s0)
+  dd 0xA2B50553							; fle.d a0, fa0, fa1	(funct7=0x51, rs1=10, rs2=11, funct3=0, rd=10)
+  dd 0x00A43023							; sd a0, 0(s0)
+end macro
+
+
+
+;-----------------------------------------------------------------------------------------------------------------------
+;			O P E R A	T I O N S	  C O N T	R O L E	D E   F L	O T
+;-----------------------------------------------------------------------------------------------------------------------
+
+;			-------------
+macro			BRA?	lbl				; inconditionnel, saut long PC-relatif
+;			-------------
+; AUIPC+JALR : plage PC-relative +/-2 GiB, sans la limite +/-1 MiB de JAL.
+  local rel, lo12, hi20
+  lo12 = rel and 0xFFF
+  if lo12 and 0x800
+    hi20 = ((rel - (lo12 - 0x1000)) shr 12) and 0xFFFFF
+    lo12 = lo12 - 0x1000
+  else
+    hi20 = (rel shr 12) and 0xFFFFF
+  end if
+  dd 0x00000297 or (hi20 shl 12)					; auipc t0, hi20
+  dd 0x00028067 or ((lo12 and 0xFFF) shl 20)			; jalr x0, lo12(t0)
+  rel = lbl - $ + 8							; PC de l'AUIPC = $-8
+end macro
+
+;			-------------
+macro			BT?	lbl				; branch true
+;			-------------
+; Si faux, sauter les 8 octets du BRA long ; sinon BRA lbl.
+  POP_RAX
+  dd 0x00050663							; beq a0, x0, +12
+  BRA lbl
+end macro
+
+;			-------------
+macro			BF?	lbl				; branch false
+;			-------------
+; Si vrai, sauter les 8 octets du BRA long ; sinon BRA lbl.
+  POP_RAX
+  dd 0x00051663							; bne a0, x0, +12
+  BRA lbl
+end macro
+
+;			-------------------------
+macro			CALL?	prefix, subname			; CALL direct longue portee
+;			-------------------------
+; Sauvegarde ra sur la micro-pile 16-octets alignee, puis AUIPC+JALR.
+  postpone
+    if ~definite prefix#subname#_
+      prefix#subname#_ = prefix#subname#.elab
+    end if
+  end postpone
+
+  dd 0xFF010113							; addi sp, sp, -16
+  dd 0x00113023							; sd ra, 0(sp)
+
+  local rel, lo12, hi20
+  lo12 = rel and 0xFFF
+  if lo12 and 0x800
+    hi20 = ((rel - (lo12 - 0x1000)) shr 12) and 0xFFFFF
+    lo12 = lo12 - 0x1000
+  else
+    hi20 = (rel shr 12) and 0xFFFFF
+  end if
+  dd 0x00000297 or (hi20 shl 12)					; auipc t0, hi20
+  dd 0x000280E7 or ((lo12 and 0xFFF) shl 20)			; jalr ra, lo12(t0)
+  rel = prefix#subname#_ - $ + 8					; PC de l'AUIPC = $-8
+
+  dd 0x00013083							; ld ra, 0(sp)
+  dd 0x01010113							; addi sp, sp, 16
+end macro
+
+;			-------------------------
+macro			CALLI?					; CALL indirect par valeur empilee
+;			-------------------------
+;	Depile l'adresse cible dans a0, sauvegarde ra sur sp, jalr ra, a0, restaure ra.
+  POP_RAX								; a0 = adresse cible
+  dd 0xFF010113							; addi sp, sp, -16
+  dd 0x00113023							; sd ra, 0(sp)
+  dd 0x000500E7							; jalr ra, 0(a0)	(opcode 0x67, funct3=0, rs1=10, rd=1)
+  dd 0x00013083							; ld ra, 0(sp)
+  dd 0x01010113							; addi sp, sp, 16
+end macro
+
+;			--------------------
+macro			RTD?	param_size:0
+;			--------------------
+;	Desallouer param_size octets de la pile de travail puis retour (ret = jalr x0, 0(ra)).
+;	L'adresse de retour est dans ra ; le 'CALL' du caller s'occupera de
+;	restaurer le ra du niveau encore au-dessus.
+  assert param_size >= 0
+  if param_size <> 0
+    if param_size <= 2047
+;	addi s0, s0, -param_size
+      dd 0x00040413 or (((-param_size) and 0xFFF) shl 20)
+    else
+      QUAD_CONST	5, param_size					; t0 = param_size
+      dd 0x40540433							; sub s0, s0, t0  (funct7=0x20, rs1=8, rs2=5, rd=8)
+    end if
+  end if
+  dd 0x00008067							; ret  (jalr x0, 0(ra))
+end macro
+
+
+;-----------------------------------------------------------------------------------------------------------------------
+;			O P E R A	T I O N S	  G E S T	I O N   D	E   P I L	E
+;-----------------------------------------------------------------------------------------------------------------------
+
+;			--------------------
+macro			LINK?	lvl, alloc			; ALLOCATION POUR VARIABLES LOCALES APRES FRAME PTR
+;			--------------------
+;	Pour lvl > 0 : sauvegarder l'ancien FP du niveau dans la pile de travail,
+;	puis mettre a jour l'entree du display.
+;	Allouer ensuite alloc octets pour les variables locales.
+;	Creer un frame de co-pile.
+  if lvl > 0
+    FP_IN_RAX	lvl						; a0 = ancien FP du niveau
+    PUSH_RAX							; pousser sur la pile de travail
+;	Mettre a jour l'entree lvl du display avec le RBP courant (=s0)
+    STORE_QUAD 8*lvl, 9, 8						; sd s0, 8*lvl(s1)
+  end if
+  assert alloc >= 0
+  if alloc <> 0
+    local alloc8
+    alloc8 = 8*((alloc+7)/8)						; arrondir a multiple de 8
+    if alloc8 <= 2047
+      dd 0x00040413 or ((alloc8 and 0xFFF) shl 20)			; addi s0, s0, alloc8
+    else
+      QUAD_CONST	5, alloc8					; t0 = alloc8
+      dd 0x00540433							; add s0, s0, t0  (funct7=0, rs1=8, rs2=5, rd=8)
+    end if
+  end if
+;	Gerer la co-pile
+;	sd s3, 0(s2)   (empiler le frame pointer de co-pile sur celle-ci)
+  dd 0x01393023							; sd s3, 0(s2)  (rs1=18, rs2=19)
+;	mv s3, s2     (mettre a jour le frame pointer de co-pile : addi s3, s2, 0)
+  dd 0x00090993							; addi s3, s2, 0
+;	addi s2, s2, 8 (monter le haut de co-pile sur le premier lieu libre)
+  dd 0x00890913							; addi s2, s2, 8
+end macro
+
+;			-------------
+macro			UNLINK?	lvl				; DISPOSE VARS LOCALES ET RESTORE FRAME PTR
+;			-------------
+  FP_IN_RBP	lvl						; throw locals : s0 = FP(lvl)
+  POP_RAX								; depiler l'ancien FP sauvegarde
+  RAX_IN_FP	lvl						; restaurer l'entree lvl du display
+;	Liberer le frame de co-pile : ld s3, 0(s3)
+  dd 0x0009B983							; ld s3, 0(s3)  (rs1=19, rd=19)
+end macro
+
+;			----------------------
+macro			PRO	sub_name_lbl			; Debut de procedure declaree
+;			----------------------
+  namespace sub_name_lbl						; definir son espace de noms
+  BRA post							; contournement de l'elaboration autour de la procedure
+end macro
+
+;			----
+macro			PRMS					; En tete de la definition des parametres
+;			----
+  virtual at 8							; La pile de travail croit vers les adresses hautes, les parametres sont au dessus du FP dynamique
+    PRMzone::							; donc 8 octets (adresses 64 bits) au dessus du FP
+  end virtual
+end macro
+
+;			------------------
+macro			PRM	name_ofs				; Definition d'un parametre
+;			------------------
+  virtual PRMzone
+    name_ofs = $
+    dq ?
+  end virtual
+end macro
+
+;			-------
+macro			endPRMS					; Fin de la definition des parametres
+;			-------
+  virtual PRMzone
+    prm_siz = $-8							; Calcul de la taille du parametrage
+  end virtual
+end macro
+
+;			-------------
+macro			ELB	lvl				; En tete de la partie elaboration de procedure
+;			-------------
+elab:
+  virtual at 8							; Commence 8 octets apres le FP dynamique
+    VARzone::
+  end virtual
+  LINK lvl, loc_siz
+end macro
+
+
+;	Une chaine Ada est un tableau d'octets caracteres, c'est a dire un descripteur
+;	[ PTR_TO_CHARS qword | PTR_TO_INFO qword ] et un bloc info [ TOT_SIZ dword | COMP_SIZ dword | FIRST dword | LAST dword ].
+;	Les caracteres pointes par PTR_TO_CHARS peuvent etre detaches du descripteur.
+;	Ici, cas de constante, les caracteres sont juste apres le descripteur.
+
+;			--------------
+macro			BEGIN_BLOC_DEF_OLD
+;			--------------
+  esc struc BYTES_BLOC
+    postpone
+    local data
+    local info
+    local str_bit_size
+    align_q
+  .data_ptr = $
+    dq data
+  .info_ptr = $
+    dq info
+  info = $
+    dd str_bit_size, 8, 1, str_bit_size/8
+    virtual at 0
+    SIZ = $
+    rd 1
+    COMP_SIZ = $
+    rd 1
+    FST_1 = $
+    rd 1
+    LST_1 = $
+    end virtual
+  data = $
+end macro
+
+macro			END_BLOC_DEF_OLD!
+  str_bit_size = 8*($ - data)
+  end postpone
+  esc end struc
+end macro
+
+;			--------------
+macro			BEGIN_BLOC_DEF				; Debut du bloc d'images d'un enumere
+;			--------------
+  BRA	IMAGES.skip
+IMAGES.data = $
+end macro
+
+;			------------
+macro			END_BLOC_DEF	siz, fst, lst		; Fin : pose le ENUM_USE_INFO etendu
+;			------------
+IMAGES.data_end = $
+IMAGES.info = $
+  dd 8*(IMAGES.data_end - IMAGES.data), 8, 1, IMAGES.data_end - IMAGES.data
+  align_q
+SIZ = $
+  dd siz
+FST = $
+  dd fst
+LST = $
+  dd lst
+  dd 0
+IMAGES.data_ptr = $
+  dq IMAGES.data
+IMAGES.info_ptr = $
+  dq IMAGES.info
+IMAGES.skip:
+end macro
+
+;			---------------------
+macro			STR	name, bytes			; Definition d'une constante chaine
+;			---------------------
+  postpone
+    local data
+    local info
+    local str_bit_size
+    align_q							; aligner le descripteur sur un quadword
+
+  namespace name
+
+  data_ptr = $							; adresse de la constante STRING (en fait double pointeur)
+    dq data							; offset 0 : adresse des caracteres (juste apres dans le cas present)
+  info_ptr = $
+    dq info							; offset 8 : adresse des infos TOT_SIZ, COMP_SIZ, FST_1, LST_1
+  info = $							; use info
+    dd str_bit_size, 8, 1, str_bit_size/8				; offset 16 : TOT_SIZ ; offset 20 : COMP_SIZ=8 ; offset 24 : FST=1 ; offset 28 : LST
+    virtual at 0
+    SIZ = $
+    rd 1
+    COMP_SIZ = $
+    rd 1
+    FST_1 = $
+    rd 1
+    LST_1 = $
+    end virtual
+  data = $
+    db bytes
+    str_bit_size = 8*($ - data)					; Calculer la longueur effective en bits
+  end namespace
+
+  end postpone
+end macro
+
+;			-----------------------------------------
+macro			CST	name_cst:_nil_, sizChar:b, val&	; Definition d'une constante
+;			-----------------------------------------
+  postpone
+    align_#sizChar							; aligner en fonction de l'unite de reservation
+    name_cst = $
+    d#sizChar val							; reservation
+  end postpone
+end macro
+
+;			----------------------------------------
+macro			USEINFO	lvl, field_name, load_instruc&	; Reference a un __u use info
+;			----------------------------------------
+  virtual VARzone
+    align_q
+    field_name#__u = $						; lieu ptr use info
+    rq 1								; reservation
+  end virtual
+  load_instruc
+  Sa lvl, field_name#__u
+end macro
+;			-------------------
+macro			STATOFS	name, siz, algn:0			; Definition de l'offset statique
+;			-------------------
+  if algn = 8
+    align_q
+  else if algn = 4
+    align_d
+  else if algn = 2
+    align_w
+  else if algn = 1
+  else
+    if siz > 4
+      align_q
+    else if siz > 2
+      align_d
+    else if siz > 1
+      align_w
+    end if
+  end if
+name = $
+  rb siz
+end macro
+
+;			-----------------------------------
+macro			VAR	name_disp, sizChar, siz:1		; Definition d'un lieu de variable
+;			-----------------------------------
+  virtual VARzone
+    if `sizChar = 'b'  |  `sizChar = 'w'  |  `sizChar = 'd'  |  `sizChar = 'q'
+      align_#sizChar
+      name_disp = $							; displacement des data de variable
+      r#sizChar siz							; reservation
+    else
+      align_q							; assurer l'alignement de pile dans tous les cas possibles
+      name_disp = $
+      rb sizChar
+    end if
+  end virtual
+end macro
+
+;			------
+macro			CO_VAR					; Allocation d'un bloc sur la co-pile, taille en octets sur la pile standard, laisse l'adresse de debut de bloc sur la pile
+;			------
+;	Depile la taille demandee dans a0.
+;	Empile le sommet courant de co-pile (s2) sur la pile standard.
+;	Arrondit la taille a multiple de 8 et avance s2 d'autant.
+  POP_RAX								; a0 = taille demandee
+  dd 0x01243423							; sd s2, 8(s0)   (rs1=8, rs2=18, imm=8) : empile sommet courant co-pile
+  dd 0x00840413							; addi s0, s0, 8                         : ajuste sommet pile travail
+  dd 0x00750513							; addi a0, a0, 7                         : a0 += 7
+  dd 0x00355513							; srli a0, a0, 3                         : a0 >>= 3 (logique)
+  dd 0x00351513							; slli a0, a0, 3                         : a0 <<= 3 (arrondi mult de 8)
+  dd 0x00A90933							; add  s2, s2, a0                        : avance sommet co-pile
+end macro
+
+;			----------
+macro			HEAP_ALLOC				; Allocation bump-pointer pour Ada new : taille en octets sur pile, laisse @bloc
+;			----------
+;	Le tas descend depuis s4, initialise avec le sp Linux initial avant reservation de la zone TLALOC.
+  POP_RAX								; a0 = taille demandee
+  dd 0x00750513							; addi a0, a0, 7
+  dd 0x00355513							; srli a0, a0, 3		nombre de qwords
+  dd 0x00351513							; slli a0, a0, 3		taille alignee en octets
+  dd 0x40AA0A33							; sub  s4, s4, a0		tas descendant depuis le haut reserve
+  dd 0x000A0513							; addi a0, s4, 0		adresse du nouveau bloc
+  PUSH_RAX
+end macro
+
+;			------
+macro			endPRO					; Fin de procedure
+;			------
+post:
+  virtual VARzone
+    align_q
+    loc_siz = $							; taille des locales rétropropagee au LINK du ELAB
+if DEBUG_LLIR = 1
+show 'loc_siz = ', loc_siz
+end if
+  end virtual
+  end namespace
+end macro
+
+
+;			----------------------------
+macro			EXC_MACH?		lvl, ctx			; photographie de l'etat machine cache
+;			----------------------------
+; Layout identique x86/ARM : +16 s0, +24 sp, +32 s3, +40 s2,
+; +48 nlvl=lvl+1, +56 prefixe display FP(0..lvl).
+  assert lvl >= 0 & lvl <= 31
+  FP_IN_RAX lvl							; a0 := FP(lvl), base contexte
+  STORE_QUAD	ctx + 16, 10, 8					; pile de travail s0
+  STORE_QUAD	ctx + 24, 10, 2					; micro-pile sp
+  STORE_QUAD	ctx + 32, 10, 19				; frame co-pile s3
+  STORE_QUAD	ctx + 40, 10, 18				; sommet co-pile s2
+  QUAD_CONST	6, lvl + 1						; t1 = nombre d'entrees display
+  STORE_QUAD	ctx + 48, 10, 6
+  repeat lvl + 1, n:0
+    LOAD_QUAD	8*n, 9, 6						; t1 := display[n]
+    STORE_QUAD	ctx + 56 + 8*n, 10, 6
+  end repeat
+end macro
+
+;			-----------------------
+macro			EXC_RAISE?	top			; deroulage vers le contexte sommet
+;			-----------------------
+; Atteint par BRA, jamais par CALL. Le contexte est depile avant dispatch.
+  local boucle
+  LOAD_QUAD	0, 9, 11						; a1 := FP(0)
+  LOAD_QUAD	top, 11, 10					; a0 := contexte sommet
+  dd 0x00050693							; mv a3, a0 (conserver ctx)
+  LOAD_QUAD	0, 13, 12						; a2 := PREV_CTX
+  STORE_QUAD	top, 11, 12					; POP avant dispatch
+
+  LOAD_QUAD	32, 13, 19					; restaurer frame co-pile s3
+  LOAD_QUAD	40, 13, 18					; restaurer sommet co-pile s2
+  LOAD_QUAD	24, 13, 6						; t1 := sp sauvegarde
+  dd 0x00030113							; mv sp, t1
+  LOAD_QUAD	48, 13, 12					; a2 := nombre d'entrees display
+  dd 0x03868713							; addi a4, a3, 56 (source prefixe)
+  dd 0x00048793							; mv a5, s1 (destination display)
+boucle:
+  dd 0x00073283							; ld t0, 0(a4)
+  dd 0x0057B023							; sd t0, 0(a5)
+  dd 0x00870713							; addi a4, a4, 8
+  dd 0x00878793							; addi a5, a5, 8
+  dd 0xFFF60613							; addi a2, a2, -1
+  RV_BRANCH	1, 12, 0, boucle					; bne a2, x0, boucle
+
+  LOAD_QUAD	16, 13, 8						; restaurer pile de travail s0
+  LOAD_QUAD	8, 13, 5						; t0 := DISPATCH
+  dd 0x00028067							; jalr x0, 0(t0)
+end macro
+
+;-----------------------------------------------------------------------------------------------------------------------
+;		O P E R A T I O N S   L O G I Q U E S   D E   B L O C   (LRM 4.5.1)
+;-----------------------------------------------------------------------------------------------------------------------
+
+;			-----------
+macro			BLK_OP_OCTET	opc*
+;			-----------
+  local boucle, fin
+  POP_RSI								; a4 = @SRC
+  POP_RCX								; a2 = LEN
+  POP_RDI								; a5 = @DST
+  RV_BRANCH	0, 12, 0, fin					; beq a2, x0, fin
+boucle:
+  dd 0x00074283							; lbu t0, 0(a4)
+  dd 0x0007C303							; lbu t1, 0(a5)
+  if opc = 0x20
+    dd 0x00537333							; and t1, t1, t0
+  else if opc = 0x08
+    dd 0x00536333							; or t1, t1, t0
+  else if opc = 0x30
+    dd 0x00534333							; xor t1, t1, t0
+  else
+    err 'BLK_OP_OCTET : operation non supportee'
+  end if
+  dd 0x00678023							; sb t1, 0(a5)
+  dd 0x00170713							; addi a4, a4, 1
+  dd 0x00178793							; addi a5, a5, 1
+  dd 0xFFF60613							; addi a2, a2, -1
+  RV_BRANCH	1, 12, 0, boucle					; bne a2, x0, boucle
+fin:
+end macro
+
+macro			BLKAND?
+  BLK_OP_OCTET 0x20
+end macro
+
+macro			BLKOU?
+  BLK_OP_OCTET 0x08
+end macro
+
+macro			BLKOUX?
+  BLK_OP_OCTET 0x30
+end macro
+
+;			------
+macro			BLKNOT?
+;			------
+  local boucle, fin
+  POP_RCX								; a2 = LEN
+  POP_RDI								; a5 = @DST
+  RV_BRANCH	0, 12, 0, fin
+boucle:
+  dd 0x0007C283							; lbu t0, 0(a5)
+  dd 0x0012C293							; xori t0, t0, 1
+  dd 0x00578023							; sb t0, 0(a5)
+  dd 0x00178793							; addi a5, a5, 1
+  dd 0xFFF60613							; addi a2, a2, -1
+  RV_BRANCH	1, 12, 0, boucle
+fin:
+end macro
+
+;			------
+macro			BLKMOV					; Copie de bloc sans recouvrement
+;			------
+;	Depile src (a4), count (a2), dst (a5) ; copie octet par octet via boucle.
+;	Utilise t0 comme registre de transit (scratch).
+;	  beq  a2, x0, .end       cas count = 0
+;	.loop:
+;	  lb   t0, 0(a4)
+;	  sb   t0, 0(a5)
+;	  addi a4, a4, 1
+;	  addi a5, a5, 1
+;	  addi a2, a2, -1
+;	  bne  a2, x0, .loop
+;	.end:
+  POP_RSI								; a4 = adresse source
+  POP_RCX								; a2 = nombre d'octets
+  POP_RDI								; a5 = adresse destination
+  dd 0x00060E63							; beq  a2, x0, +28        : saut vers .end (saute 6 instr de boucle)
+  dd 0x00070283							; lb   t0, 0(a4)
+  dd 0x00578023							; sb   t0, 0(a5)
+  dd 0x00170713							; addi a4, a4, 1
+  dd 0x00178793							; addi a5, a5, 1
+  dd 0xFFF60613							; addi a2, a2, -1
+  dd 0xFE0616E3							; bne  a2, x0, -20        : retour au lb (.loop)
+end macro
+
+
+
+;			------
+macro			BLKCMP					; 1 si blocs egaux, 0 sinon (LEN=0 -> 1)
+;			------
+  local boucle, different, fin
+  POP_RSI								; a4 = @B
+  POP_RCX								; a2 = LEN
+  POP_RDI								; a5 = @A
+  dd 0x00100513							; li a0, 1
+  RV_BRANCH	0, 12, 0, fin					; beq a2, x0, fin
+boucle:
+  dd 0x00074283							; lbu t0, 0(a4)
+  dd 0x0007C303							; lbu t1, 0(a5)
+  RV_BRANCH	1, 5, 6, different					; bne t0, t1, different
+  dd 0x00170713							; addi a4, a4, 1
+  dd 0x00178793							; addi a5, a5, 1
+  dd 0xFFF60613							; addi a2, a2, -1
+  RV_BRANCH	1, 12, 0, boucle
+  BRA fin
+different:
+  dd 0x00000513							; li a0, 0
+fin:
+  PUSH_RAX
+end macro
+
+;			-----------------
+macro			LEXCMP siz*, sgn*				; comparaison lexicographique, resultat -1/0/+1
+;			-----------------
+; Entree : @G, LEN_G, @D, LEN_D ; longueurs en octets.
+  local boucle, epuise, differe, plus, egal, moins, empile
+  POP_RDX								; a3 = LEN_D
+  POP_RSI								; a4 = @D
+  POP_RCX								; a2 = LEN_G
+  POP_RDI								; a5 = @G
+boucle:
+  RV_BRANCH	0, 12, 0, epuise					; beq a2, x0, epuise
+  RV_BRANCH	0, 13, 0, epuise					; beq a3, x0, epuise
+
+if siz = 1
+  if sgn = 1
+    dd 0x00078503							; lb  a0, 0(a5)
+    dd 0x00070583							; lb  a1, 0(a4)
+  else
+    dd 0x0007C503							; lbu a0, 0(a5)
+    dd 0x00074583							; lbu a1, 0(a4)
+  end if
+else if siz = 2
+  if sgn = 1
+    dd 0x00079503							; lh  a0, 0(a5)
+    dd 0x00071583							; lh  a1, 0(a4)
+  else
+    dd 0x0007D503							; lhu a0, 0(a5)
+    dd 0x00075583							; lhu a1, 0(a4)
+  end if
+else if siz = 4
+  if sgn = 1
+    dd 0x0007A503							; lw  a0, 0(a5)
+    dd 0x00072583							; lw  a1, 0(a4)
+  else
+    dd 0x0007E503							; lwu a0, 0(a5)
+    dd 0x00076583							; lwu a1, 0(a4)
+  end if
+else if siz = 8
+  dd 0x0007B503							; ld a0, 0(a5)
+  dd 0x00073583							; ld a1, 0(a4)
+else
+  err 'LEXCMP : taille de composant non supportee'
+end if
+
+  RV_BRANCH	1, 10, 11, differe					; bne a0, a1, differe
+  dd 0x00078793 or ((siz and 0xFFF) shl 20)			; addi a5, a5, siz
+  dd 0x00070713 or ((siz and 0xFFF) shl 20)			; addi a4, a4, siz
+  dd 0x00060613 or (((-siz) and 0xFFF) shl 20)			; addi a2, a2, -siz
+  dd 0x00068693 or (((-siz) and 0xFFF) shl 20)			; addi a3, a3, -siz
+  BRA boucle
+
+epuise:
+  dd 0x40D602B3							; sub t0, a2, a3
+  RV_BRANCH	0, 5, 0, egal						; beq t0, x0, egal
+  RV_BRANCH	4, 5, 0, moins					; blt t0, x0, moins
+plus:
+  dd 0x00100513							; li a0, 1
+  BRA empile
+differe:
+  RV_BRANCH	4, 10, 11, moins					; blt a0, a1, moins
+  BRA plus
+egal:
+  dd 0x00000513							; li a0, 0
+  BRA empile
+moins:
+  dd 0xFFF00513							; li a0, -1
+empile:
+  PUSH_RAX
+end macro
+;				------------------------------
+;				SPECIFIQUE  L I N U X   RISC-V64
+;				------------------------------
+;
+;	Convention syscall RISC-V64 Linux :
+;	  a7       = numero de syscall
+;	  a0..a5   = arguments (jusqu'a 6)
+;	  retour   = a0
+;	  instruction = ecall
+;
+;	Numeros de syscall RISC-V64 (asm-generic, identiques a ARM64) :
+;	  read     = 63
+;	  write    = 64
+;	  close    = 57
+;	  openat   = 56  (remplace open ; AT_FDCWD = -100 en arg 1)
+;	  unlinkat = 35  (remplace unlink ; AT_FDCWD en arg 1, flag = 0)
+;	  lseek    = 62
+;	  ioctl    = 29
+;	  clock_gettime = 113
+;	  exit     = 93
+;
+;	Constantes ioctl identiques x86/ARM/RISC-V (constantes du noyau Linux) :
+;	  TCGETS = 0x5401
+;	  TCSETS = 0x5402
+
+
+;			-----------------
+macro			SYS_CLOCK_GETTIME
+;			-----------------
+;	Depile @timespec_buffer. Syscall : clock_gettime(CLOCK_REALTIME=0, @buffer).
+  POP_RSI								; a4 = @timespec_buffer
+  dd 0x00070593							; addi a1, a4, 0		arg1 = @timespec
+  dd 0x00000513							; addi a0, x0, 0		arg0 = CLOCK_REALTIME
+  dd 0x07100893							; addi a7, x0, 113		sys_clock_gettime
+  dd 0x00000073							; ecall
+end macro
+
+;			-------------
+macro			SYS_PUT_CHAR?				; affiche un seul caractere sur stdout
+;			-------------
+;	Le caractere est sur la pile en sommet (a l'adresse [s0]).
+;	syscall : write(fd=1, buf=&caractere, count=1)
+;	  a0 = fd = 1
+;	  a1 = adresse caractere = s0
+;	  a2 = count = 1
+;	  a7 = 64 (sys_write)
+
+  dd 0x00040593							; addi a1, s0, 0	(adresse du caractere = sommet de pile)
+  dd 0x00100513							; addi a0, x0, 1	(fd = stdout)
+  dd 0x00100613							; addi a2, x0, 1	(count = 1)
+  dd 0x04000893							; addi a7, x0, 64	(sys_write)
+  dd 0x00000073							; ecall
+  DROP									; caractere consomme
+end macro
+
+;			------------
+macro			SYS_PUT_STR?				; affiche tout une chaine sur stdout
+;			------------
+;	En entree : adresse du descripteur Ada (doublet @data | @info) sur la pile.
+;	Le descripteur pointe vers data (offset 0) et info (offset 8).
+;	Le bloc info contient : SIZ@0, COMP_SIZ@4, FST@8, LST@12 (dwords).
+;	Longueur a ecrire = LST + 1 - FST.
+;
+;	  a4 = pop (adresse descripteur)
+;	  a0 = ld  [a4, 8]    adresse info
+;	  a2 = lw  [a0, 12]   LST (en dword signe)
+;	  add a2, a2, 1       LST + 1
+;	  t1 = lw  [a0, 8]    FST
+;	  sub a2, a2, t1      longueur effective
+;	  a1 = ld  [a4]       adresse des caracteres
+;	  a0 = li  1          fd = stdout
+;	  a7 = li  64         sys_write
+;	  ecall
+  POP_RSI								; a4 = adresse descripteur
+  dd 0x00873503							; ld   a0, 8(a4)        (a0 = adresse info)
+  dd 0x00C52603							; lw   a2, 12(a0)       (a2 = LST)
+  dd 0x00160613							; addi a2, a2, 1
+  dd 0x00852303							; lw   t1, 8(a0)        (t1 = FST)
+  dd 0x40660633							; sub  a2, a2, t1       (a2 = longueur)
+  dd 0x00073583							; ld   a1, 0(a4)        (a1 = adresse caracteres)
+  dd 0x00100513							; addi a0, x0, 1        (fd = stdout)
+  dd 0x04000893							; addi a7, x0, 64       (sys_write)
+  dd 0x00000073							; ecall
+end macro
+
+
+; - - - -	- - - - -	- - - - -	- - - - -	- - - - -	- - - - -
+;	Pour le GET de caractere on veut obtenir chaque caractere tape immediatement,
+;	il faut modifier le comportement du terminal via ioctl(TCGETS/TCSETS) sur stdin.
+;
+;	struc termios {
+;	  c_iflag  rd 1     0  input mode flags
+;	  c_oflag  rd 1     4  output mode flags
+;	  c_cflag  rd 1     8  control mode flags
+;	  c_lflag  rd 1     12 local mode flags    <-- on modifie ICANON (bit 1) et ECHO (bit 3)
+;	  c_line   rb 1     16
+;	  c_cc     rb 32    17
+;	  c_ispeed rd 1
+;	  c_ospeed rd 1
+;	}
+;	On reserve 64 octets sur sp (multiple de 16, alignement OK).
+
+;			-------------
+macro			SYS_GET_CHAR?				; lit un seul caractere sur stdin en mode non canonique
+;			-------------
+;	1. Reserver 64 octets sur sp pour le termios.
+  dd 0xFC010113							; addi sp, sp, -64
+;	2. ioctl(stdin=0, TCGETS=0x5401, &termios) — recupere les attributs courants
+  dd 0x00000513							; addi a0, x0, 0	(fd = stdin)
+  dd 0x000055B7							; lui  a1, 0x5
+  dd 0x40158593							; addi a1, a1, 0x401	(a1 = 0x5401, TCGETS)
+  dd 0x00010613							; addi a2, sp, 0	(adresse du termios temporaire = sp)
+  dd 0x01D00893							; addi a7, x0, 29	(sys_ioctl)
+  dd 0x00000073							; ecall
+;	3. Modifier c_lflag : effacer ICANON (bit 1) et ECHO (bit 3) -> mask = ~0xA = -11
+;	   andi avec immediat -11 (0xFF5) sign-etendu donne le bon masque 64 bits.
+  dd 0x00C12503							; lw   a0, 12(sp)	(charger c_lflag)
+  dd 0xFF557513							; andi a0, a0, -11	(masquer ICANON et ECHO)
+  dd 0x00A12623							; sw   a0, 12(sp)	(remettre c_lflag)
+;	4. ioctl(stdin, TCSETS=0x5402, &termios) — applique les nouveaux attributs
+  dd 0x00000513							; addi a0, x0, 0	(fd = stdin)
+  dd 0x000055B7							; lui  a1, 0x5
+  dd 0x40258593							; addi a1, a1, 0x402	(a1 = 0x5402, TCSETS)
+  dd 0x00010613							; addi a2, sp, 0
+  dd 0x01D00893							; addi a7, x0, 29	(sys_ioctl)
+  dd 0x00000073							; ecall
+;	5. Lire le caractere : read(stdin, &dest, 1)
+  POP_RDI								; a5 = adresse destination (depilee de la pile de travail)
+  dd 0x00078593							; addi a1, a5, 0	(buf)
+  dd 0x00000513							; addi a0, x0, 0	(fd = stdin)
+  dd 0x00100613							; addi a2, x0, 1	(count = 1)
+  dd 0x03F00893							; addi a7, x0, 63	(sys_read)
+  dd 0x00000073							; ecall
+;	6. Restaurer le mode canonique : remettre ICANON (bit 1) et ECHO (bit 3)
+  dd 0x00C12503							; lw   a0, 12(sp)
+  dd 0x00A56513							; ori  a0, a0, 0xA	(remettre ICANON et ECHO)
+  dd 0x00A12623							; sw   a0, 12(sp)
+;	7. ioctl(stdin, TCSETS, &termios) — reapplique le mode canonique
+  dd 0x00000513							; addi a0, x0, 0
+  dd 0x000055B7							; lui  a1, 0x5
+  dd 0x40258593							; addi a1, a1, 0x402
+  dd 0x00010613							; addi a2, sp, 0
+  dd 0x01D00893							; addi a7, x0, 29
+  dd 0x00000073							; ecall
+;	8. Liberer la zone termios sur sp
+  dd 0x04010113							; addi sp, sp, 64
+end macro
+
+
+;			------------
+macro			SYS_GET_STR?				; lit une ligne sur stdin
+;			------------
+;	En entree : adresse d'un descripteur Ada de chaine (doublet @data | @info).
+;	Lecture jusqu'a la longueur LST+1-FST. On retourne aussi la longueur effectivement
+;	lue dans un dword adresse par un second pop.
+;	read(fd=stdin=0, buf=@data, count=longueur)
+;	Retour a0 = longueur lue (incluant le \n eventuel).
+  POP_RSI								; a4 = adresse descripteur
+  dd 0x00873503							; ld   a0, 8(a4)        (a0 = adresse info)
+  dd 0x00C52603							; lw   a2, 12(a0)       (a2 = LST)
+  dd 0x00160613							; addi a2, a2, 1
+  dd 0x00852303							; lw   t1, 8(a0)        (t1 = FST)
+  dd 0x40660633							; sub  a2, a2, t1       (a2 = count)
+  dd 0x00073583							; ld   a1, 0(a4)        (a1 = adresse buffer)
+  dd 0x00000513							; addi a0, x0, 0        (fd = stdin)
+  dd 0x03F00893							; addi a7, x0, 63       (sys_read)
+  dd 0x00000073							; ecall
+;	a0 contient maintenant la longueur lue.
+;	On depile l'adresse de stockage de la longueur effective et on y range a0 - 1
+;	(retirer le \n final).
+  POP_RSI								; a4 = adresse longueur effective
+  dd 0xFFF50513							; addi a0, a0, -1
+  dd 0x00A72023							; sw   a0, 0(a4)
+end macro
+
+;			----------------------
+macro			COPY_STRING_APPEND_NUL			; descripteur dans a4, copie sur la pile montante avec NUL final
+;			----------------------
+;	En entree : a4 pointe sur le descripteur Ada (apres POP_RSI).
+;	En sortie : a5 pointe sur le debut de la copie (sur la pile [s0+8]).
+;	Sur RISC-V64 :
+;	  a0 = ld  [a4, 8]     adresse info
+;	  a2 = lw  [a0, 12]    LST
+;	  add a2, a2, 1
+;	  t1 = lw  [a0, 8]     FST
+;	  sub a2, a2, t1       count
+;	  a4 = ld  [a4]        adresse caracteres source
+;	  addi a5, s0, 8       destination = juste au-dessus de TOS
+;	Boucle :
+;	  beq  a2, x0, .end    cas pathologique chaine vide
+;	.loop:
+;	  lb   t0, 0(a4)
+;	  sb   t0, 0(a5)
+;	  addi a4, a4, 1
+;	  addi a5, a5, 1
+;	  addi a2, a2, -1
+;	  bne  a2, x0, .loop
+;	.end:
+;	  sb   x0, 0(a5)       NUL final
+;	  addi a5, s0, 8       remettre a5 sur le debut
+
+  dd 0x00873503							; ld   a0, 8(a4)	(adresse info)
+  dd 0x00C52603							; lw   a2, 12(a0)	(LST)
+  dd 0x00160613							; addi a2, a2, 1
+  dd 0x00852303							; lw   t1, 8(a0)	(FST)
+  dd 0x40660633							; sub  a2, a2, t1	(count)
+  dd 0x00073703							; ld   a4, 0(a4)	(adresse caracteres source)
+  dd 0x00840793							; addi a5, s0, 8	(destination)
+  dd 0x00060E63							; beq  a2, x0, +28	(saute la boucle si count=0)
+;.loop:
+  dd 0x00070283							; lb   t0, 0(a4)
+  dd 0x00578023							; sb   t0, 0(a5)
+  dd 0x00170713							; addi a4, a4, 1
+  dd 0x00178793							; addi a5, a5, 1
+  dd 0xFFF60613							; addi a2, a2, -1
+  dd 0xFE0616E3							; bne  a2, x0, -20	(retour au lb)
+;.end:
+  dd 0x00078023							; sb   x0, 0(a5)	(NUL final)
+  dd 0x00840793							; addi a5, s0, 8	(remettre a5 au debut de la copie)
+end macro
+
+
+;			----------------
+macro			SYS_FILE_CREATE?				; openat(AT_FDCWD, name, O_CREAT|O_RDWR, 0700)
+;			----------------
+;	x86-64 utilisait sys_open (rax=2) ; RISC-V64 utilise sys_openat (a7=56), comme ARM64.
+;	openat prend AT_FDCWD = -100 en premier argument pour reproduire le sens 'open'.
+;	Args : a0=AT_FDCWD=-100, a1=path, a2=flags=0x42 (O_CREAT|O_RDWR), a3=mode=0700=0x1C0
+
+  POP_RSI								; a4 = descripteur de chaine Ada
+  COPY_STRING_APPEND_NUL						; a5 = adresse copie NUL-terminee
+  dd 0xF9C00513							; addi a0, x0, -100	(a0 = AT_FDCWD)
+  dd 0x00078593							; addi a1, a5, 0	(path)
+  dd 0x24200613							; addi a2, x0, 0x242	(O_CREAT | O_RDWR | O_TRUNC)
+  dd 0x1C000693							; addi a3, x0, 0x1C0	(mode = 0700)
+  dd 0x03800893							; addi a7, x0, 56	(sys_openat)
+  dd 0x00000073							; ecall
+  dd 0x00A43023							; sd   a0, 0(s0)	(ATTENTION PAS PUSH ! ID rendu sur le lieu result de la fonction)
+end macro
+
+
+;			--------------
+macro			SYS_FILE_OPEN?				; openat(AT_FDCWD, name, O_RDWR, 0)
+;			--------------
+  POP_RSI
+  COPY_STRING_APPEND_NUL
+  dd 0xF9C00513							; addi a0, x0, -100	(AT_FDCWD)
+  dd 0x00078593							; addi a1, a5, 0
+  dd 0x00200613							; addi a2, x0, 2	(O_RDWR)
+  dd 0x00000693							; addi a3, x0, 0	(mode = 0)
+  dd 0x03800893							; addi a7, x0, 56	(sys_openat)
+  dd 0x00000073							; ecall
+  dd 0x00A43023							; sd   a0, 0(s0)
+end macro
+
+
+;			-----------------
+macro			SYS_FILE_SET_POS?				; lseek(fd, offset, SEEK_SET=0)
+;			-----------------
+  POP_RDI								; a5 = FILE_ID
+  POP_RSI								; a4 = offset
+  dd 0x00078513							; addi a0, a5, 0	(fd)
+  dd 0x00070593							; addi a1, a4, 0	(offset)
+  dd 0x00000613							; addi a2, x0, 0	(SEEK_SET)
+  dd 0x03E00893							; addi a7, x0, 62	(sys_lseek)
+  dd 0x00000073							; ecall
+  dd 0x00A43023							; sd   a0, 0(s0)
+end macro
+
+
+;			------------------
+macro			SYS_FILE_GET_POS?				; lseek(fd, 0, SEEK_CUR=1) - position courante
+;			------------------
+  POP_RDI								; a5 = FILE_ID
+  dd 0x00078513							; addi a0, a5, 0	(fd)
+  dd 0x00000593							; addi a1, x0, 0	(offset = 0)
+  dd 0x00100613							; addi a2, x0, 1	(SEEK_CUR)
+  dd 0x03E00893							; addi a7, x0, 62
+  dd 0x00000073							; ecall
+  dd 0x00A43023							; sd   a0, 0(s0)
+end macro
+
+
+;			------------------
+macro			SYS_FILE_GET_SIZE?				; taille fichier (lseek SEEK_END puis SEEK_SET pour preserver)
+;			------------------
+  POP_RDI								; a5 = FILE_ID
+;	1. Sauver la position courante : lseek(fd, 0, SEEK_CUR) -> a0 = position
+  dd 0x00078513							; addi a0, a5, 0
+  dd 0x00000593							; addi a1, x0, 0
+  dd 0x00100613							; addi a2, x0, 1	(SEEK_CUR)
+  dd 0x03E00893							; addi a7, x0, 62
+  dd 0x00000073							; ecall
+  dd 0x00050B13							; addi s6, a0, 0	(s6 = position courante a restaurer)
+;	2. Lire la taille : lseek(fd, 0, SEEK_END) -> a0 = taille
+  dd 0x00078513							; addi a0, a5, 0
+  dd 0x00000593							; addi a1, x0, 0
+  dd 0x00200613							; addi a2, x0, 2	(SEEK_END)
+  dd 0x03E00893							; addi a7, x0, 62
+  dd 0x00000073							; ecall
+  dd 0x00050B93							; addi s7, a0, 0	(s7 = taille du fichier)
+;	3. Restaurer la position : lseek(fd, s6, SEEK_SET)
+  dd 0x00078513							; addi a0, a5, 0
+  dd 0x000B0593							; addi a1, s6, 0
+  dd 0x00000613							; addi a2, x0, 0	(SEEK_SET)
+  dd 0x03E00893							; addi a7, x0, 62
+  dd 0x00000073							; ecall
+;	4. Resultat = s7 (taille) sur le lieu result
+  dd 0x01743023							; sd   s7, 0(s0)
+end macro
+
+
+;			---------------
+macro			SYS_FILE_WRITE?				; write(fd, buf, count)
+;			---------------
+  POP_RDI								; a5 = FILE_ID
+  POP_RSI								; a4 = adresse tampon
+  POP_RDX								; a3 = longueur
+  dd 0x00078513							; addi a0, a5, 0	(fd)
+  dd 0x00070593							; addi a1, a4, 0	(buf)
+  dd 0x00068613							; addi a2, a3, 0	(count)
+  dd 0x04000893							; addi a7, x0, 64	(sys_write)
+  dd 0x00000073							; ecall
+  dd 0x00A43023							; sd   a0, 0(s0)
+end macro
+
+
+;			--------------
+macro			SYS_FILE_READ?				; read(fd, buf, count)
+;			--------------
+  POP_RDI								; a5 = FILE_ID
+  POP_RSI								; a4 = adresse tampon
+  POP_RDX								; a3 = longueur
+  dd 0x00078513							; addi a0, a5, 0
+  dd 0x00070593							; addi a1, a4, 0
+  dd 0x00068613							; addi a2, a3, 0
+  dd 0x03F00893							; addi a7, x0, 63	(sys_read)
+  dd 0x00000073							; ecall
+  dd 0x00A43023							; sd   a0, 0(s0)
+end macro
+
+
+;			---------------
+macro			SYS_FILE_CLOSE?				; close(fd)
+;			---------------
+  POP_RDI								; a5 = FILE_ID
+  dd 0x00078513							; addi a0, a5, 0
+  dd 0x03900893							; addi a7, x0, 57	(sys_close)
+  dd 0x00000073							; ecall
+  dd 0x00A43023							; sd   a0, 0(s0)
+end macro
+
+
+;			----------------
+macro			SYS_FILE_DELETE?				; unlinkat(AT_FDCWD, name, 0)
+;			----------------
+;	x86-64 utilisait sys_unlink (rax=87) ; RISC-V64 utilise sys_unlinkat (a7=35), comme ARM64.
+
+  POP_RSI								; a4 = descripteur chaine
+  COPY_STRING_APPEND_NUL						; a5 = adresse copie NUL-terminee
+  dd 0xF9C00513							; addi a0, x0, -100	(AT_FDCWD)
+  dd 0x00078593							; addi a1, a5, 0	(path)
+  dd 0x00000613							; addi a2, x0, 0	(flag)
+  dd 0x02300893							; addi a7, x0, 35	(sys_unlinkat)
+  dd 0x00000073							; ecall
+  dd 0x00A43023							; sd   a0, 0(s0)
+end macro
+
+
+;			---------
+macro			SYS_EXIT? code:0				; retour au systeme
+;			---------
+  if code = 0
+    dd 0x00000513							; addi a0, x0, 0
+  else
+    QUAD_CONST	10, code
+  end if
+  dd 0x05D00893							; addi a7, x0, 93
+  dd 0x00000073							; ecall
+end macro
+
+
+
+;				----------------------------------------------
+;				MISE EN PLACE ENTETE ELF 64 POUR LINUX RISC-V64
+;				----------------------------------------------
+
+ELFCLASS64	= 2
+ELFDATA2LSB	= 1
+EV_CURRENT	= 1
+ET_EXEC		= 2
+SYSTEM_V		= 0
+EM_RISCV		= 243						; e_machine pour RISC-V (au lieu de 183 pour ARM64)
+
+org 0x400000							; adresse entree programme linux
+
+Elf64_Header:
+	e_ident		db 0x7F,'ELF', ELFCLASS64, ELFDATA2LSB,	EV_CURRENT, SYSTEM_V, (0x400010-$) dup 0
+	e_type		dw ET_EXEC
+	e_machine		dw EM_RISCV
+	e_version		dd EV_CURRENT
+	e_entry		dq 0x00400078
+	e_phoff		dq 64
+	e_shoff		dq 0
+	e_flags		dd 0
+	e_ehsize		dw 64
+	e_phentsize	dw 56
+	e_phnum		dw 1
+	e_shentsize	dw 0
+	e_shnum		dw 0
+	e_shstrndx	dw 0
+Elf64_Phdr:
+	p_type		dd 1					; PT_LOAD
+	p_flags		dd 7					; RWX
+	p_offset		dq 0x78
+	p_vaddr		dq 0x00400078
+	p_paddr		dq 0
+	p_filesz		dq ASM_SIZE				; juste le necessaire code/constantes dans le fichier
+	p_memsz		dq ASM_SIZE + 1024*1024*1024
+	p_align		dq 4096
+
+
+;		METTRE EN PLACE LA PILE CROISSANTE ET LE DISPLAY
+;
+;	Sur RISC-V64, le noyau Linux passe deja un sp aligne 16. On l'utilise pour la
+;	micro-pile descendante des adresses de retour CALL/RET. Au-dessus de la nouvelle
+;	valeur de sp (apres reservation), on reserve 4 MiB de zone melangee qui contiendra :
+;	  - le display des frame pointers (32 entrees x 8 octets = 256 octets)
+;	  - la pile de travail s0 (croissant vers les adresses hautes)
+
+;		METTRE EN PLACE LE TAS SEPARE (mmap anonyme de 64 MiB)
+TAILLE_TAS = 64*1024*1024
+  dd 0x00000513							; addi a0, x0, 0
+  dd 0x040005B7							; lui  a1, 0x4000	64 MiB
+  dd 0x00300613							; addi a2, x0, 3
+  dd 0x02200693							; addi a3, x0, 0x22
+  dd 0xFFF00713							; addi a4, x0, -1
+  dd 0x00000793							; addi a5, x0, 0
+  dd 0x0DE00893							; addi a7, x0, 222
+  dd 0x00000073							; ecall
+  dd 0x040002B7							; lui  t0, 0x4000	64 MiB
+  dd 0x00550A33							; add  s4, a0, t0
+
+;		METTRE EN PLACE LA PILE MONTANTE ET LE DISPLAY
+  dd 0x004002B7							; lui  t0, 0x400	4 MiB
+  dd 0x40510133							; sub  sp, sp, t0
+  dd 0x00010493							; addi s1, sp, 0	(s1 = base du display = nouvelle valeur de sp)
+  dd 0x10048413							; addi s0, s1, 256	(s0 = pile travail commence apres display 32 x 8)
+  dd 0x0084B023							; sd   s0, 0(s1)	(display[0] = frame pointer courant)
+
+
+;		METTRE EN PLACE LA CO-PILE
+;
+;	La co-pile commence juste apres le code et les constantes, alignee qword.
+;	Adresse calculee dynamiquement : 0x400078 + 8*((ASM_SIZE+7)/8).
+;	Sur RISC-V64, on materialise cette adresse en PC-relatif via auipc + addi
+;	(toujours 8 octets, pas de risque d'oscillation multi-passes contrairement a
+;	QUAD_CONST dont la taille depend de la valeur). On vise s2 (x18).
+;	Format : auipc rd, hi20 ; addi rd, rd, lo12 ou hi20/lo12 corrigent le
+;	sign-extend du lo12 sur 12 bits.
+
+  co_pile_start = 0x400078 + 8*((ASM_SIZE+7)/8)
+;  local rel, lo12, hi20
+  rel = co_pile_start - $							; deplacement PC-relatif depuis l'auipc
+  lo12 = rel and 0xFFF
+  if lo12 and 0x800
+    hi20 = ((rel - (lo12 - 0x1000)) shr 12) and 0xFFFFF
+    lo12 = lo12 - 0x1000
+  else
+    hi20 = (rel shr 12) and 0xFFFFF
+  end if
+  dd 0x00000917 or (hi20 shl 12)					; auipc s2, hi20		(rd=18, opcode=0x17)
+  dd 0x00090913 or ((lo12 and 0xFFF) shl 20)				; addi  s2, s2, lo12	(rd=18, rs1=18, funct3=0, opcode=0x13)
+
+  dd 0x01293023							; sd   s2, 0(s2)	(empiler le premier "frame" de co-pile)
+  dd 0x00090993							; addi s3, s2, 0	(s3 = "frame pointer" de co-pile)
+  dd 0x00890913							; addi s2, s2, 8	(monter le haut de co-pile sur le premier lieu libre)
+
+;-----------------------------------------------------------------------------------------------------------------------
+;	1	2	3	4	5	6	7	8	9	0	1	2

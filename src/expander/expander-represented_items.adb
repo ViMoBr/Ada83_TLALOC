@@ -314,13 +314,13 @@ is
 
     -- Patron minimal compatible avec les records ordinaires :
     -- SIZ reste exprimé en bits, comme les autres patrons de type.
-    PUT_LINE( "VAR use__info, q" );
-    PUT_LINE( "VAR SIZ, d" );
-    PUT_LINE( tab & "LVA" & CODI.tab & LVL_STR & ", SIZ" );
-    PUT_LINE( tab & "Sa"  & CODI.tab & LVL_STR & ", use__info" );
+    PUT_LINE( "VAR use__info, Q" );
+    PUT_LINE( "VAR SIZ__, D" );
+    PUT_LINE( tab & "LVA" & CODI.tab & LVL_STR & ", SIZ__" );
+    PUT_LINE( tab & "SA"  & CODI.tab & LVL_STR & ", use__info" );
 
     PUT_LINE( tab & "LI" & CODI.tab & IMAGE( SIZE_BITS ) );
-    PUT_LINE( tab & "Sd" & CODI.tab & LVL_STR & ", SIZ" );
+    PUT_LINE( tab & "SD" & CODI.tab & LVL_STR & ", SIZ__" );
 
     declare
       SIZE_BYTES : INTEGER;
@@ -564,7 +564,7 @@ is
     -- Sd -1,0 dépile packed_word puis dépile @data comme adresse cible.
     -- Il reste l'exemplaire initial de @data, supprimé ensuite.
 
-    PUT_LINE( tab & "Sd" );
+    PUT_LINE( tab & "SD" );
     PUT_LINE( tab & "DROP" );
 
   end	CODE_REPRESENTED_RECORD_AGGREGATE;
@@ -597,7 +597,7 @@ is
 
     -- L'adresse du record est au sommet de pile.
     -- Ld sans argument = Ld -1, 0 : charge le dword pointé.
-    PUT_LINE( tab & "Ld" );
+    PUT_LINE( tab & "LD" );
 
     PUT_LINE( tab & "LI" & TAB & IMAGE( FIRST_BIT ) );
     PUT_LINE( tab & "LI" & TAB & IMAGE( WIDTH ) );
@@ -677,10 +677,10 @@ is
     procedure	EMIT_LOAD_OLD_WORD
     is		------------------
     begin
-      if SIZE_BYTES <= 1 then  PUT_LINE( tab & "Lb" );
-      elsif SIZE_BYTES <= 2 then  PUT_LINE( tab & "Lw" );
-      elsif SIZE_BYTES <= 4 then  PUT_LINE( tab & "Ld" );
-      else  PUT_LINE( TAB & "Lq" );
+      if SIZE_BYTES <= 1 then  PUT_LINE( tab & "LB" );
+      elsif SIZE_BYTES <= 2 then  PUT_LINE( tab & "LW" );
+      elsif SIZE_BYTES <= 4 then  PUT_LINE( tab & "LD" );
+      else  PUT_LINE( TAB & "LQ" );
       end if;
 
     end	EMIT_LOAD_OLD_WORD;
@@ -690,10 +690,10 @@ is
     procedure	EMIT_STORE_NEW_WORD
     is		-------------------
     begin
-      if SIZE_BYTES <= 1 then  PUT_LINE( tab & "Sb" );
-      elsif SIZE_BYTES <= 2 then  PUT_LINE( tab & "Sw" );
-      elsif SIZE_BYTES <= 4 then  PUT_LINE( tab & "Sd" );
-      else  PUT_LINE( tab & "Sq" );
+      if SIZE_BYTES <= 1 then  PUT_LINE( tab & "SB" );
+      elsif SIZE_BYTES <= 2 then  PUT_LINE( tab & "SW" );
+      elsif SIZE_BYTES <= 4 then  PUT_LINE( tab & "SD" );
+      else  PUT_LINE( tab & "SQ" );
       end if;
 
     end	EMIT_STORE_NEW_WORD;

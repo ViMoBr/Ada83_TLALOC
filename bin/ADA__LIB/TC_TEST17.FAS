@@ -1,0 +1,70 @@
+	include '../../src/expander/fasmg/codi_x86_64.finc'
+STANDARD = 'STANDARD'
+namespace STANDARD
+  virtual at 8
+    VARzone::
+  end virtual
+	LINK	0, loc_siz
+_B17 = '_B17'
+namespace _B17
+VAR use__info, Q
+BEGIN_BLOC_DEF
+db 0, 5, "FALSE"
+db 1, 4, "TRUE"
+END_BLOC_DEF 1, 0, 1
+	; SIZ en bits !
+	LCA	SIZ
+	SA	0, use__info
+end namespace
+	VAR	BUF17_disp, 8
+	VAR	CP17_disp, Q
+	LA	0, _B17.use__info
+	ULD	, 0
+	LI	1
+	CEQ
+	BT	k17_3
+	SYS_EXIT	3
+k17_3:
+	LA	0, _B17.use__info
+	LQ	, 16
+	SA	0, CP17_disp
+	ULIB	0, CP17_disp, 2
+	LI	70
+	CEQ
+	BT	k17_4
+	SYS_EXIT	4
+k17_4:
+	LVA	0, BUF17_disp
+	LI	4
+	LA	0, CP17_disp
+	LI	9
+	ADD
+	BLKMOV
+	ULB	0, BUF17_disp
+	LI	84
+	CEQ
+	BT	k17_5
+	SYS_EXIT	5
+k17_5:
+	ULB	0, BUF17_disp + 3
+	LI	69
+	CEQ
+	BT	k17_6
+	SYS_EXIT	6
+k17_6:
+	LI	24
+	CO_VAR
+	SA	0, CP17_disp
+	LI	77
+	SIB	0, CP17_disp, 5
+	ULIB	0, CP17_disp, 5
+	LI	77
+	CEQ
+	BT	k17_7
+	SYS_EXIT	7
+k17_7:
+	SYS_EXIT	0
+ virtual VARzone
+   loc_siz = $
+  end virtual
+end namespace

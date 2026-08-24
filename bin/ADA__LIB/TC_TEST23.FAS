@@ -1,0 +1,54 @@
+	include '../../src/expander/fasmg/codi_x86_64.finc'
+STANDARD = 'STANDARD'
+namespace STANDARD
+  virtual at 8
+    VARzone::
+  end virtual
+	LINK	0, loc_siz
+; ordre 1 : namespace PUIS VAR du meme nom (le releve ADA_COMP)
+namespace	UNI23
+	VAR	F23_disp, D
+end namespace
+	VAR	UNI23, Q
+	LI	7
+	SA	0, UNI23
+	LA	0, UNI23
+	LI	7
+	CEQ
+	BT	k23_3
+	SYS_EXIT	3
+k23_3:
+	LI	5
+	SD	0, UNI23.F23_disp
+	LD	0, UNI23.F23_disp
+	LI	5
+	CEQ
+	BT	k23_4
+	SYS_EXIT	4
+k23_4:
+; ordre 2 : VAR PUIS namespace du meme nom
+	VAR	REV23_disp, Q
+namespace	REV23_disp
+	VAR	G23_disp, D
+end namespace
+	LI	9
+	SA	0, REV23_disp
+	LA	0, REV23_disp
+	LI	9
+	CEQ
+	BT	k23_5
+	SYS_EXIT	5
+k23_5:
+	LI	11
+	SD	0, REV23_disp.G23_disp
+	LD	0, REV23_disp.G23_disp
+	LI	11
+	CEQ
+	BT	k23_6
+	SYS_EXIT	6
+k23_6:
+	SYS_EXIT	0
+ virtual VARzone
+   loc_siz = $
+  end virtual
+end namespace

@@ -502,7 +502,7 @@ is
 
         elsif  EXPRESSIONS.IS_GENERIC_FORMAL_TYPE( D( XD_SOURCE_NAME, TYPE_SPEC ) ) then
 	IS_GENERIC_FORMAL := TRUE;
-	OPER_TYPE := 'q';										-- Place maximale, on ne sait pas quelle taille actuelle sera prise
+	OPER_TYPE := 'Q';										-- Place maximale, on ne sait pas quelle taille actuelle sera prise
 
         else
 	OPER_TYPE := OPER_SIZ_CHAR( TYPE_SPEC );
@@ -525,8 +525,8 @@ is
 	  CODI.STORE( VC_NAME );
 
 	else											-- Acceder a variable de type instancie
-	  PUT_LINE( tab & "La " & IMAGE( GENERIC_BASE_LEVEL+1 ) & ',' & tab & "-GFP_ofs" );
-	  PUT_LINE( tab & "La , -" & PRINT_NAME( D( LX_SYMREP, D( XD_SOURCE_NAME, TYPE_SPEC ) ) )  & "__st_ofs" );
+	  PUT_LINE( tab & "LA " & IMAGE( GENERIC_BASE_LEVEL+1 ) & ',' & tab & "-GFP_ofs" );
+	  PUT_LINE( tab & "LA , -" & PRINT_NAME( D( LX_SYMREP, D( XD_SOURCE_NAME, TYPE_SPEC ) ) )  & "__st_ofs" );
 	  PUT_LINE( tab & "CALLI" );
 	end if;
         end if;
@@ -539,7 +539,6 @@ is
       procedure	COMPILE_VC_NAME_FLOAT	( VC_NAME :TREE )
       is		---------------------
 
---	OPER_TYPE		: CHARACTER	:= OPER_SIZ_CHAR( D( SM_OBJ_TYPE, VC_NAME ) );
         OPER_TYPE		: CHARACTER	:= OPER_SIZ_CHAR( TYPE_SPEC );
         INIT_EXP		: TREE		:= D( SM_INIT_EXP, VC_NAME );
 
@@ -629,7 +628,7 @@ is
         DI( CD_LEVEL,     VAR_ID, INTEGER( LVL ) );
         DB( CD_COMPILED,  VAR_ID, TRUE );
 
-        PUT_LINE( "VAR " & VAR_STR & "_disp, q" );
+        PUT_LINE( "VAR " & VAR_STR & "_disp, Q" );
 
         declare
 		INIT_EXP		: TREE	:= D( SM_INIT_EXP, VAR_ID );
@@ -640,7 +639,7 @@ is
 		  EXPRESSIONS.CODE_EXP( INIT_EXP );
 		end if;
 
-		PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & VAR_STR & "_disp" );
+		PUT_LINE( tab & "SA" & tab & LVL_STR & ", " & VAR_STR & "_disp" );
         end;
 
       end COMPILE_ACCESS_VAR;
@@ -683,14 +682,14 @@ is
         procedure		COVAR_ALLOCATE
         is		--------------
         begin
-	PUT( tab & "Ld" & tab & IMAGE( TYPE_LEVEL ) & ", " );						-- LOAD SIZ FOR ALLOCATION
+	PUT( tab & "LD" & tab & IMAGE( TYPE_LEVEL ) & ", " );						-- LOAD SIZ FOR ALLOCATION
 	PUT_TYPE_INFO_PREFIX;
-	PUT_LINE( ".SIZ" );
+	PUT_LINE( ".SIZ__" );
 	PUT_LINE( tab & "LI" & tab & '8' );
 	PUT_LINE( tab & "DIV" );
 
 	PUT_LINE( tab & "CO_VAR" );
-	PUT( tab & "Sa" & tab & LVL_STR & ", " & VC_STR & "_disp" );
+	PUT( tab & "SA" & tab & LVL_STR & ", " & VC_STR & "_disp" );
 	if  CODI.DEBUG  then PUT( tab50 & "; array data ptr at _disp" ); end if;
 	NEW_LINE;
 
@@ -854,10 +853,10 @@ is
 
         -- ---- Bloc info anonyme (layout aligne sur virtual at 4) ----
         PUT_LINE( "namespace " & INFO_STR );
-        PUT_LINE( "  VAR SIZ,      d" );
-        PUT_LINE( "  VAR _COMP_SIZ, d" );
-        PUT_LINE( "  VAR _FST_1,    d" );
-        PUT_LINE( "  VAR _LST_1,    d" );
+        PUT_LINE( "  VAR SIZ__, D" );
+        PUT_LINE( "  VAR _COMP_SIZ, D" );
+        PUT_LINE( "  VAR _FST_1, D" );
+        PUT_LINE( "  VAR _LST_1, D" );
         PUT_LINE( "end namespace" );
 
         -- ---- Bornes deduites ; laisse COUNT en sommet de pile ----
@@ -871,10 +870,10 @@ is
 	begin
 	  EXPRESSIONS.CODE_EXP( D( AS_EXP1, RNG ) );			-- INDEX'FIRST
 	  PUT_LINE( tab & "DUP" );
-	  PUT_LINE( tab & "Sd  " & LVL_STR & ", " & INFO_STR & "._FST_1" );
+	  PUT_LINE( tab & "SD  " & LVL_STR & ", " & INFO_STR & "._FST_1" );
 	  EMIT_LI( INTEGER( NB_ELEMENTS ) - 1 );
 	  PUT_LINE( tab & "ADD" );
-	  PUT_LINE( tab & "Sd  " & LVL_STR & ", " & INFO_STR & "._LST_1" );
+	  PUT_LINE( tab & "SD  " & LVL_STR & ", " & INFO_STR & "._LST_1" );
 	  EMIT_LI( INTEGER( NB_ELEMENTS ) );				-- COUNT
 	end	POSITIONAL_BOUNDS;
 		-----------------
@@ -882,21 +881,21 @@ is
 				-- RM83 4.3.2 : bornes = min/max des choix
 				-- (couverture contigue garantie par sem).
 	EMIT_LI( MIN_CHOICE );
-	PUT_LINE( tab & "Sd  " & LVL_STR & ", " & INFO_STR & "._FST_1" );
+	PUT_LINE( tab & "SD  " & LVL_STR & ", " & INFO_STR & "._FST_1" );
 	EMIT_LI( MAX_CHOICE );
-	PUT_LINE( tab & "Sd  " & LVL_STR & ", " & INFO_STR & "._LST_1" );
+	PUT_LINE( tab & "SD  " & LVL_STR & ", " & INFO_STR & "._LST_1" );
 	EMIT_LI( MAX_CHOICE - MIN_CHOICE + 1 );				-- COUNT
         end if;
 
         -- ---- COMP_SIZ ; SIZ := COUNT * COMP_BITS ----
         PUT_LINE( tab & "LI"  & tab & IMAGE( COMP_BITS ) );
-        PUT_LINE( tab & "Sd  " & LVL_STR & ", " & INFO_STR & "._COMP_SIZ" );
+        PUT_LINE( tab & "SD  " & LVL_STR & ", " & INFO_STR & "._COMP_SIZ" );
         PUT_LINE( tab & "DUP" );						-- COUNT preserve pour l'allocation
         if  COMP_BITS /= 1  then
 	PUT_LINE( tab & "LI" & tab & IMAGE( COMP_BITS ) );
 	PUT_LINE( tab & "MUL" );
         end if;
-        PUT_LINE( tab & "Sd  " & LVL_STR & ", " & INFO_STR & ".SIZ" );
+        PUT_LINE( tab & "SD  " & LVL_STR & ", " & INFO_STR & ".SIZ__" );
 
         -- ---- Allocation co-pile : COUNT * COMP_BYTES octets ----
         if  COMP_BYTES /= 1  then
@@ -904,18 +903,18 @@ is
 	PUT_LINE( tab & "MUL" );
         end if;
         PUT_LINE( tab & "CO_VAR" );
-        PUT( tab & "Sa" & tab & LVL_STR & ", " & VC_STR & "_disp" );
+        PUT( tab & "SA" & tab & LVL_STR & ", " & VC_STR & "_disp" );
         if  CODI.DEBUG  then PUT( tab50 & "; array data ptr at _disp" ); end if;
         NEW_LINE;
 
         -- ---- Re-pointer __u sur le bloc anonyme (ecrase use__info du type) ----
-        PUT_LINE( tab & "LVA " & LVL_STR & ", " & INFO_STR & ".SIZ" );
-        PUT( tab & "Sa" & tab & LVL_STR & ", " & VC_STR & "__u" );
+        PUT_LINE( tab & "LVA " & LVL_STR & ", " & INFO_STR & ".SIZ__" );
+        PUT( tab & "SA" & tab & LVL_STR & ", " & VC_STR & "__u" );
         if  CODI.DEBUG  then PUT( tab50 & "; array info ptr at __u (agregat, bornes deduites)" ); end if;
         NEW_LINE;
 
         -- ---- Donnees : chemin existant inchange ----
-        PUT_LINE( tab & "La" & tab & LVL_STR & ", " & VC_STR & "_disp" );
+        PUT_LINE( tab & "LA" & tab & LVL_STR & ", " & VC_STR & "_disp" );
         EXPRESSIONS.CODE_AGGREGATE( AGG, TYPE_SPEC );
 
       end UNCONSTRAINED_AGGREGATE_OBJECT;
@@ -967,33 +966,33 @@ is
 	if  CODI.DEBUG  then PUT( tab50 & "; variable array OVERLAY : data_ptr partage (pas d'allocation)" ); end if;
 	NEW_LINE;
         elsif  OVERLAY_LVA  then									-- C8 : cible SCALAIRE (print_nod, endianite) --
-	PUT( "VAR " & VC_STR & "_disp, q" );								--| le slot scalaire contient sa VALEUR : pas d'equation --
+	PUT( "VAR " & VC_STR & "_disp, Q" );								--| le slot scalaire contient sa VALEUR : pas d'equation --
 	if  CODI.DEBUG  then PUT( tab50 & "; variable array OVERLAY sur scalaire" ); end if;		--| le data_ptr de l'overlay = ADRESSE du slot cible
 	NEW_LINE;
 	PUT_LINE( tab & "LVA" & tab & LVL_STR & ", " & PRINT_NAME( D( LX_SYMREP, OVERLAY_TGT ) ) & "_disp" );
-	PUT( tab & "Sa" & tab & LVL_STR & ", " & VC_STR & "_disp" );
+	PUT( tab & "SA" & tab & LVL_STR & ", " & VC_STR & "_disp" );
 	if  CODI.DEBUG  then PUT( tab50 & "; array data ptr at _disp (OVERLAY, pas d'allocation)" ); end if;
 	NEW_LINE;
         else
 	if  VC_ADDRESS /= TREE_VOID  then
 	  CODI.TROU( "COMPILE_ARRAY_VAR overlay 'ADDRESS hors motif (non statique-par-nom, ou cible ni composite ni scalaire)", VC_NAME );	--| discrimine (n 122) ; retombee : objet DISTINCT, FINC SUSPECT
 	end if;
-	PUT( "VAR " & VC_STR & "_disp, q" );
+	PUT( "VAR " & VC_STR & "_disp, Q" );
 	if  CODI.DEBUG  then PUT( tab50 & "; variable array : pointeur aux data" ); end if;
 	NEW_LINE;
         end if;
 
-        PUT( "VAR " & VC_STR & "__u, q" );
+        PUT( "VAR " & VC_STR & "__u, Q" );
         if  CODI.DEBUG  then PUT( tab50 & "; variable array : useinfo pointeur au rec info" ); end if;
         NEW_LINE;
 
         DI( CD_LEVEL, VC_NAME, INTEGER( LVL ) );
 
-        PUT( tab & "La" & INTEGER'IMAGE( TYPE_LEVEL ) & ", " );						-- LOAD ADDRESS FOR INFO
+        PUT( tab & "LA" & INTEGER'IMAGE( TYPE_LEVEL ) & ", " );						-- LOAD ADDRESS FOR INFO
         PUT_TYPE_INFO_PREFIX;
         PUT_LINE( ".use__info" );
 
-        PUT( tab & "Sa" & tab & LVL_STR & ", " & VC_STR & "__u" );
+        PUT( tab & "SA" & tab & LVL_STR & ", " & VC_STR & "__u" );
         if  CODI.DEBUG  then PUT( tab50 & "; array info ptr at __u" ); end if;
         NEW_LINE;
 				----------
@@ -1009,7 +1008,7 @@ is
 			--| PAS d'allocation ; l'agregat s'ecrit dans la memoire de la
 			--| CIBLE via [_disp].  LRM 13.5 : l'elaboration de l'objet ECRIT
 			--| l'emplacement vise -- c'est le but meme de l'idiome.
-	    PUT_LINE( tab &  "La" & tab & LVL_STR & ", " & VC_STR & "_disp" );
+	    PUT_LINE( tab &  "LA" & tab & LVL_STR & ", " & VC_STR & "_disp" );
 	    EXPRESSIONS.CODE_AGGREGATE( INIT_EXP, TYPE_SPEC );
 	  else
 	    CODI.TROU( "COMPILE_ARRAY_VAR overlay : forme d'initialisation non observee", INIT_EXP );	--| n 122 ; un litteral chaine RE-POINTERAIT _disp sur la CONSTANTE -- jamais ici
@@ -1021,14 +1020,14 @@ is
 	    EXPRESSIONS.CODE_STRING_LITERAL( INIT_EXP, VC_STR );
 
 	    PUT_LINE( tab & "LCA" & tab & VC_STR & ".data_ptr" );
-	    PUT_LINE( tab & "La" );
-	    PUT( tab & "Sa" & tab & LVL_STR & ", " & VC_STR & "_disp" );
+	    PUT_LINE( tab & "LA" );
+	    PUT( tab & "SA" & tab & LVL_STR & ", " & VC_STR & "_disp" );
 	    if  CODI.DEBUG  then PUT( tab50 & "; array data ptr at _disp" ); end if;
 	    NEW_LINE;
 
 	    PUT_LINE( tab & "LCA" & tab & VC_STR & ".info_ptr" );						-- LOAD CONSTANT ADDRESS FOR INFO
-	    PUT_LINE( tab & "La" );
-	    PUT( tab & "Sa" & tab & LVL_STR & ", " & VC_STR & "__u" );
+	    PUT_LINE( tab & "LA" );
+	    PUT( tab & "SA" & tab & LVL_STR & ", " & VC_STR & "__u" );
 	    if  CODI.DEBUG  then PUT( tab50 & "; array info ptr at __u" ); end if;
 	    NEW_LINE;
 
@@ -1037,13 +1036,13 @@ is
 	    EXPRESSIONS.CODE_EXP( INIT_EXP );								-- appel fonction, resultat = adresse du descripteur
 
 	    PUT_LINE( tab & "DUP" );									-- dupliquer l'adresse du descripteur
-	    PUT_LINE( tab & "La" );									-- charger data_ptr (qword a offset 0)
-	    PUT( tab & "Sa" & tab & LVL_STR & ", " & VC_STR & "_disp" );
+	    PUT_LINE( tab & "LA" );									-- charger data_ptr (qword a offset 0)
+	    PUT( tab & "SA" & tab & LVL_STR & ", " & VC_STR & "_disp" );
 	    if  CODI.DEBUG  then PUT( tab50 & "; array data ptr from function result" ); end if;
 	    NEW_LINE;
 
-	    PUT_LINE( tab & "La , 8" );								-- offset +8 pour info_ptr
-	    PUT( tab & "Sa" & tab & LVL_STR & ", " & VC_STR & "__u" );
+	    PUT_LINE( tab & "LA , 8" );								-- offset +8 pour info_ptr
+	    PUT( tab & "SA" & tab & LVL_STR & ", " & VC_STR & "__u" );
 	    if  CODI.DEBUG  then PUT( tab50 & "; array info ptr from function result" ); end if;
 	    NEW_LINE;
 
@@ -1057,7 +1056,7 @@ is
 	      if  CODI.DEBUG  then PUT( tab50 & "; array data aggregate" ); end if;
 	      NEW_LINE;
 
-	      PUT_LINE( tab &  "La" & tab & LVL_STR & ", " & VC_STR & "_disp" );
+	      PUT_LINE( tab &  "LA" & tab & LVL_STR & ", " & VC_STR & "_disp" );
 	      EXPRESSIONS.CODE_AGGREGATE( INIT_EXP, TYPE_SPEC );
 	    end if;
 
@@ -1077,7 +1076,7 @@ is
 	        end if;
 	        NEW_LINE;
 
-	        PUT_LINE( tab & "La" & tab & LVL_STR & ", " & VC_STR & "_disp" );
+	        PUT_LINE( tab & "LA" & tab & LVL_STR & ", " & VC_STR & "_disp" );
 	        EXPRESSIONS.CODE_AGGREGATE( QUAL_EXP, TYPE_SPEC );
 
 	      else
@@ -1087,14 +1086,14 @@ is
 	          CODI.TROU( "COMPILE_ARRAY_VAR init NON CONTRAINTE par qualifie non-agregat (remede : modele tranche, commit 6)", INIT_EXP );
 	        end if;
 	        COVAR_ALLOCATE;
-	        PUT_LINE( tab & "La" & tab & LVL_STR & ", " & VC_STR & "_disp" );
-	        PUT( tab & "Ld" & tab & IMAGE( TYPE_LEVEL ) & ", " );
+	        PUT_LINE( tab & "LA" & tab & LVL_STR & ", " & VC_STR & "_disp" );
+	        PUT( tab & "LD" & tab & IMAGE( TYPE_LEVEL ) & ", " );
 	        PUT_TYPE_INFO_PREFIX;
-	        PUT_LINE( ".SIZ" );
+	        PUT_LINE( ".SIZ__" );
 	        PUT_LINE( tab & "LI" & tab & '8' );
 	        PUT_LINE( tab & "DIV" );
 	        EXPRESSIONS.CODE_EXP( INIT_EXP );
-	        PUT_LINE( tab & "La" );
+	        PUT_LINE( tab & "LA" );
 	        PUT_LINE( tab & "BLKMOV" );
 	      end if;
 	    end;
@@ -1113,7 +1112,7 @@ is
 	  -- segfault du bootstrap (GRMR_OPS.GRMR_OP_IMAGE), frere de celui de
 	  -- HASH_SEARCH corrige dans CODE_ARRAY_OPERAND.  Allouer la destination
 	  -- puis BLKMOV depuis l'@data du composant, obtenue directement par
-	  -- CODE_OBJECT_ADDRESS (pas de doublet a dereferencer : PAS de "La ,0",
+	  -- CODE_OBJECT_ADDRESS (pas de doublet a dereferencer : PAS de "LA ,0",
 	  -- contrairement au repli defensif de la branche DN_QUALIFIED).
 	  -- Le designator fonction (P.F sans parametre) reste hors perimetre :
 	  -- il retombe comme avant dans la branche bruyante.
@@ -1124,37 +1123,37 @@ is
 	    -- spec, commit 8) normalise le composant en DOUBLET -- bornes
 	    -- re-emises au perimetre du commit 3, bruyant au-dela -- puis meme
 	    -- modele que la tranche non contrainte (commit 6).
-	      PUT_LINE( "VAR " & VC_STR & "__isrc, q" );
-	      PUT_LINE( "VAR " & VC_STR & "__ilen, q" );
+	      PUT_LINE( "VAR " & VC_STR & "__isrc, Q" );
+	      PUT_LINE( "VAR " & VC_STR & "__ilen, Q" );
 	      EXPRESSIONS.CODE_ARRAY_OPERAND( INIT_EXP, VC_STR & "__init", TYPE_SPEC );		-- @doublet source
-	      PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & VC_STR & "__isrc" );
-	      PUT_LINE( tab & "La" & tab & LVL_STR & ", " & VC_STR & "__isrc" );
-	      PUT_LINE( tab & "La , 8" );
-	      PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & VC_STR & "__u" );			-- __u := info du composant normalise
-	      PUT_LINE( tab & "LId " & LVL_STR & ", " & VC_STR & "__u, " & TYPE_NAME_STR & ".LST_1" );
-	      PUT_LINE( tab & "LId " & LVL_STR & ", " & VC_STR & "__u, " & TYPE_NAME_STR & ".FST_1" );
+	      PUT_LINE( tab & "SA" & tab & LVL_STR & ", " & VC_STR & "__isrc" );
+	      PUT_LINE( tab & "LA" & tab & LVL_STR & ", " & VC_STR & "__isrc" );
+	      PUT_LINE( tab & "LA , 8" );
+	      PUT_LINE( tab & "SA" & tab & LVL_STR & ", " & VC_STR & "__u" );			-- __u := info du composant normalise
+	      PUT_LINE( tab & "LID " & LVL_STR & ", " & VC_STR & "__u, " & TYPE_NAME_STR & ".LST_1" );
+	      PUT_LINE( tab & "LID " & LVL_STR & ", " & VC_STR & "__u, " & TYPE_NAME_STR & ".FST_1" );
 	      PUT_LINE( tab & "SUB" );
 	      PUT_LINE( tab & "INC" );
 	      PUT_LINE( tab & "CLAMP0" );
-	      PUT_LINE( tab & "LId " & LVL_STR & ", " & VC_STR & "__u, " & TYPE_NAME_STR & ".COMP_SIZ" );
+	      PUT_LINE( tab & "LID " & LVL_STR & ", " & VC_STR & "__u, " & TYPE_NAME_STR & ".COMP_SIZ" );
 	      PUT_LINE( tab & "LI" & tab & '8' );
 	      PUT_LINE( tab & "DIV" );
 	      PUT_LINE( tab & "MUL" );
-	      PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & VC_STR & "__ilen" );
-	      PUT_LINE( tab & "La" & tab & LVL_STR & ", " & VC_STR & "__ilen" );
+	      PUT_LINE( tab & "SA" & tab & LVL_STR & ", " & VC_STR & "__ilen" );
+	      PUT_LINE( tab & "LA" & tab & LVL_STR & ", " & VC_STR & "__ilen" );
 	      PUT_LINE( tab & "CO_VAR" );
-	      PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & VC_STR & "_disp" );
-	      PUT_LINE( tab & "La" & tab & LVL_STR & ", " & VC_STR & "_disp" );			-- @DST
-	      PUT_LINE( tab & "La" & tab & LVL_STR & ", " & VC_STR & "__ilen" );			-- LEN
-	      PUT_LINE( tab & "La" & tab & LVL_STR & ", " & VC_STR & "__isrc" );
-	      PUT_LINE( tab & "La" );								-- @SRC = data_ptr du doublet
+	      PUT_LINE( tab & "SA" & tab & LVL_STR & ", " & VC_STR & "_disp" );
+	      PUT_LINE( tab & "LA" & tab & LVL_STR & ", " & VC_STR & "_disp" );			-- @DST
+	      PUT_LINE( tab & "LA" & tab & LVL_STR & ", " & VC_STR & "__ilen" );			-- LEN
+	      PUT_LINE( tab & "LA" & tab & LVL_STR & ", " & VC_STR & "__isrc" );
+	      PUT_LINE( tab & "LA" );								-- @SRC = data_ptr du doublet
 	      PUT_LINE( tab & "BLKMOV" );
 	    else
 	      COVAR_ALLOCATE;
-	      PUT_LINE( tab & "La" & tab & LVL_STR & ", " & VC_STR & "_disp" );					-- @DST
-	      PUT( tab & "Ld" & tab & IMAGE( TYPE_LEVEL ) & ", " );						-- LEN en octets : SIZ destination / 8
+	      PUT_LINE( tab & "LA" & tab & LVL_STR & ", " & VC_STR & "_disp" );					-- @DST
+	      PUT( tab & "LD" & tab & IMAGE( TYPE_LEVEL ) & ", " );						-- LEN en octets : SIZ destination / 8
 	      PUT_TYPE_INFO_PREFIX;
-	      PUT_LINE( ".SIZ" );
+	      PUT_LINE( ".SIZ__" );
 	      PUT_LINE( tab & "LI" & tab & '8' );
 	      PUT_LINE( tab & "DIV" );
 	      EXPRESSIONS.CODE_OBJECT_ADDRESS( INIT_EXP );							-- @SRC = @data du composant
@@ -1169,7 +1168,7 @@ is
 	  -- usage : CE ou segfault chez l'appelant, cf. HASH_POS).  CODE_SLICE en
 	  -- mode SOURCE fabrique le doublet anonyme de la tranche (bornes de la
 	  -- slice) ; ensuite meme copie que le repli defensif DN_QUALIFIED :
-	  -- extraction du data_ptr par "La ,0" puis BLKMOV vers la destination.
+	  -- extraction du data_ptr par "LA ,0" puis BLKMOV vers la destination.
 
 	    if  TYPE_SPEC.TY = DN_ARRAY  then
 	    -- OBJET NON CONTRAINT init par tranche (NOM_TEXTE := CMD(1..N), classif
@@ -1178,41 +1177,41 @@ is
 	    -- __u sur le patron.  Le doublet source de CODE_SLICE porte l'info
 	    -- NORMALISEE 1..len dans le frame courant : __u la partage, la longueur
 	    -- s'y lit par l'idiome LId du "&".
-	      PUT_LINE( "VAR " & VC_STR & "__isrc, q" );						-- @doublet source (scratch)
-	      PUT_LINE( "VAR " & VC_STR & "__ilen, q" );						-- longueur en octets (scratch)
+	      PUT_LINE( "VAR " & VC_STR & "__isrc, Q" );						-- @doublet source (scratch)
+	      PUT_LINE( "VAR " & VC_STR & "__ilen, Q" );						-- longueur en octets (scratch)
 	      EXPRESSIONS.CODE_SLICE( INIT_EXP, IS_DESTINATION => FALSE );
-	      PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & VC_STR & "__isrc" );
-	      PUT_LINE( tab & "La" & tab & LVL_STR & ", " & VC_STR & "__isrc" );
-	      PUT_LINE( tab & "La , 8" );
-	      PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & VC_STR & "__u" );			-- __u := info normalisee 1..len
-	      PUT_LINE( tab & "LId " & LVL_STR & ", " & VC_STR & "__u, " & TYPE_NAME_STR & ".LST_1" );
-	      PUT_LINE( tab & "LId " & LVL_STR & ", " & VC_STR & "__u, " & TYPE_NAME_STR & ".FST_1" );
+	      PUT_LINE( tab & "SA" & tab & LVL_STR & ", " & VC_STR & "__isrc" );
+	      PUT_LINE( tab & "LA" & tab & LVL_STR & ", " & VC_STR & "__isrc" );
+	      PUT_LINE( tab & "LA , 8" );
+	      PUT_LINE( tab & "SA" & tab & LVL_STR & ", " & VC_STR & "__u" );			-- __u := info normalisee 1..len
+	      PUT_LINE( tab & "LID " & LVL_STR & ", " & VC_STR & "__u, " & TYPE_NAME_STR & ".LST_1" );
+	      PUT_LINE( tab & "LID " & LVL_STR & ", " & VC_STR & "__u, " & TYPE_NAME_STR & ".FST_1" );
 	      PUT_LINE( tab & "SUB" );
 	      PUT_LINE( tab & "INC" );
 	      PUT_LINE( tab & "CLAMP0" );
-	      PUT_LINE( tab & "LId " & LVL_STR & ", " & VC_STR & "__u, " & TYPE_NAME_STR & ".COMP_SIZ" );
+	      PUT_LINE( tab & "LID " & LVL_STR & ", " & VC_STR & "__u, " & TYPE_NAME_STR & ".COMP_SIZ" );
 	      PUT_LINE( tab & "LI" & tab & '8' );
 	      PUT_LINE( tab & "DIV" );
 	      PUT_LINE( tab & "MUL" );
-	      PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & VC_STR & "__ilen" );
-	      PUT_LINE( tab & "La" & tab & LVL_STR & ", " & VC_STR & "__ilen" );
+	      PUT_LINE( tab & "SA" & tab & LVL_STR & ", " & VC_STR & "__ilen" );
+	      PUT_LINE( tab & "LA" & tab & LVL_STR & ", " & VC_STR & "__ilen" );
 	      PUT_LINE( tab & "CO_VAR" );
-	      PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & VC_STR & "_disp" );
-	      PUT_LINE( tab & "La" & tab & LVL_STR & ", " & VC_STR & "_disp" );			-- @DST
-	      PUT_LINE( tab & "La" & tab & LVL_STR & ", " & VC_STR & "__ilen" );			-- LEN
-	      PUT_LINE( tab & "La" & tab & LVL_STR & ", " & VC_STR & "__isrc" );
-	      PUT_LINE( tab & "La" );								-- @SRC = data_ptr du doublet
+	      PUT_LINE( tab & "SA" & tab & LVL_STR & ", " & VC_STR & "_disp" );
+	      PUT_LINE( tab & "LA" & tab & LVL_STR & ", " & VC_STR & "_disp" );			-- @DST
+	      PUT_LINE( tab & "LA" & tab & LVL_STR & ", " & VC_STR & "__ilen" );			-- LEN
+	      PUT_LINE( tab & "LA" & tab & LVL_STR & ", " & VC_STR & "__isrc" );
+	      PUT_LINE( tab & "LA" );								-- @SRC = data_ptr du doublet
 	      PUT_LINE( tab & "BLKMOV" );
 	    else
 	      COVAR_ALLOCATE;
-	      PUT_LINE( tab & "La" & tab & LVL_STR & ", " & VC_STR & "_disp" );					-- @DST
-	      PUT( tab & "Ld" & tab & IMAGE( TYPE_LEVEL ) & ", " );						-- LEN en octets : SIZ destination / 8
+	      PUT_LINE( tab & "LA" & tab & LVL_STR & ", " & VC_STR & "_disp" );					-- @DST
+	      PUT( tab & "LD" & tab & IMAGE( TYPE_LEVEL ) & ", " );						-- LEN en octets : SIZ destination / 8
 	      PUT_TYPE_INFO_PREFIX;
-	      PUT_LINE( ".SIZ" );
+	      PUT_LINE( ".SIZ__" );
 	      PUT_LINE( tab & "LI" & tab & '8' );
 	      PUT_LINE( tab & "DIV" );
 	      EXPRESSIONS.CODE_SLICE( INIT_EXP, IS_DESTINATION => FALSE );					-- @doublet de la tranche
-	      PUT_LINE( tab & "La" );									-- @SRC = data_ptr du doublet
+	      PUT_LINE( tab & "LA" );									-- @SRC = data_ptr du doublet
 	      PUT_LINE( tab & "BLKMOV" );
 	    end if;
 
@@ -1232,10 +1231,10 @@ is
 	      CODI.TROU( "COMPILE_ARRAY_VAR init NON CONTRAINTE par objet entier (remede : modele tranche, commit 6)", INIT_EXP );
 	    end if;
 	    COVAR_ALLOCATE;
-	    PUT_LINE( tab & "La" & tab & LVL_STR & ", " & VC_STR & "_disp" );					-- @DST
-	    PUT( tab & "Ld" & tab & IMAGE( TYPE_LEVEL ) & ", " );						-- LEN en octets : SIZ destination / 8
+	    PUT_LINE( tab & "LA" & tab & LVL_STR & ", " & VC_STR & "_disp" );					-- @DST
+	    PUT( tab & "LD" & tab & IMAGE( TYPE_LEVEL ) & ", " );						-- LEN en octets : SIZ destination / 8
 	    PUT_TYPE_INFO_PREFIX;
-	    PUT_LINE( ".SIZ" );
+	    PUT_LINE( ".SIZ__" );
 	    PUT_LINE( tab & "LI" & tab & '8' );
 	    PUT_LINE( tab & "DIV" );
 	    EXPRESSIONS.CODE_COMPOSITE_DATA_ADDRESS( INIT_EXP );						-- @SRC (@doublet -> La par la regle)
@@ -1287,13 +1286,13 @@ is
 
 	if  DO_OVERLAY  then
 	  if  OVERLAY_TGT.TY = DN_IN_ID  or else  OVERLAY_TGT.TY = DN_IN_OUT_ID  then				-- C8 : cible = PARAMETRE composite (univ_ops) --
-	    PUT( "VAR " & VC_STR & "_disp, q" );							--| son slot porte l'@doublet de l'ACTUEL (n 91/94) :
+	    PUT( "VAR " & VC_STR & "_disp, Q" );							--| son slot porte l'@doublet de l'ACTUEL (n 91/94) :
 	    if  CODI.DEBUG  then  PUT( tab50 & "; variable record OVERLAY sur parametre" ); end if;		--| data_ptr := [[-ofs]+0] -- pas d'equation possible
 	    NEW_LINE;
-	    PUT_LINE( tab & "La  " & IMAGE( DI( CD_LEVEL, OVERLAY_TGT ) ) & ", -"
+	    PUT_LINE( tab & "LA  " & IMAGE( DI( CD_LEVEL, OVERLAY_TGT ) ) & ", -"
 			& PRINT_NAME( D( LX_SYMREP, OVERLAY_TGT ) ) & "_ofs" );				-- niveau de la CIBLE (VDP peut etre dans un bloc)
-	    PUT_LINE( tab & "La  ,  0" );
-	    PUT( tab & "Sa" & tab & LVL_STR & ", " & VC_STR & "_disp" );
+	    PUT_LINE( tab & "LA  ,  0" );
+	    PUT( tab & "SA" & tab & LVL_STR & ", " & VC_STR & "_disp" );
 	    if  CODI.DEBUG  then  PUT( tab50 & "; record data ptr at _disp (OVERLAY, data de l'actuel)" ); end if;
 	    NEW_LINE;
 	  else
@@ -1301,15 +1300,15 @@ is
 	    if  CODI.DEBUG  then  PUT( tab50 & "; variable record OVERLAY : data_ptr partage" ); end if;
 	    NEW_LINE;
 	  end if;
-	  PUT( "VAR " & VC_STR & "__u, q" );								-- Ptr to rec
+	  PUT( "VAR " & VC_STR & "__u, Q" );								-- Ptr to rec
 	  if  CODI.DEBUG  then  PUT( tab50 & "; variable record : pointeur aux useinfo" ); end if;
 	  NEW_LINE;
 
 	else
-	  PUT( "VAR " & VC_STR & "_disp, q" );								-- Ptr to rec
+	  PUT( "VAR " & VC_STR & "_disp, Q" );								-- Ptr to rec
 	  if  CODI.DEBUG  then  PUT( tab50 & "; variable record : pointeur aux data record" ); end if;
 	  NEW_LINE;
-	  PUT( "VAR " & VC_STR & "__u, q" );								-- Ptr to rec
+	  PUT( "VAR " & VC_STR & "__u, Q" );								-- Ptr to rec
 	  if  CODI.DEBUG  then  PUT( tab50 & "; variable record : pointeur aux useinfo" ); end if;
 	  NEW_LINE;
 
@@ -1318,7 +1317,7 @@ is
 	  PUT_LINE( TYPE_NAME_STR & ".size" );
 
 	  PUT_LINE( tab & "LVA" & tab & LVL_STR & ", " & VC_STR & "__dat" );
-	  PUT( tab & "Sa" & tab & LVL_STR & ", " & VC_STR & "_disp" );					-- Stocker l'adresse du rec dans le ptr
+	  PUT( tab & "SA" & tab & LVL_STR & ", " & VC_STR & "_disp" );					-- Stocker l'adresse du rec dans le ptr
 	  if  CODI.DEBUG   then  PUT( tab50 & "; record fin" ); end if;
 	  NEW_LINE;
 	end if;
@@ -1326,8 +1325,8 @@ is
 
         PUT( tab & "LVA" & tab & LVL_STR & ", " );
         REGIONS_PATH( TYPE_NAME );
-        PUT_LINE( TYPE_NAME_STR & ".SIZ" );
-        PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & VC_STR & "__u" );
+        PUT_LINE( TYPE_NAME_STR & ".SIZ__" );
+        PUT_LINE( tab & "SA" & tab & LVL_STR & ", " & VC_STR & "__u" );
 
         DI( CD_LEVEL, VC_NAME, INTEGER( LVL ) );
 
@@ -1337,14 +1336,14 @@ is
         DB( CD_COMPILED,  VC_NAME, TRUE );
 
         if  INIT_EXP.TY = DN_AGGREGATE  then
-	PUT_LINE( tab & "La " & LVL_STR & ", " & VC_STR & "_disp" );					-- Adresse de debut data
+	PUT_LINE( tab & "LA " & LVL_STR & ", " & VC_STR & "_disp" );					-- Adresse de debut data
 	EXPRESSIONS.CODE_AGGREGATE( INIT_EXP, TYPE_SPEC );
 
 
         elsif  INIT_EXP /= TREE_VOID  then
 	-- Initialisation par expression quelconque (function_call, variable, ...) retournant un record
 	-- @DST = data_ptr de la variable destination
-	PUT_LINE( tab & "La  " & LVL_STR & ", " & VC_STR & "_disp" );   -- @DST
+	PUT_LINE( tab & "LA  " & LVL_STR & ", " & VC_STR & "_disp" );   -- @DST
 
 	declare
 	  TYPE_NAME2  : TREE	  := D( XD_SOURCE_NAME, TYPE_SPEC );
@@ -1355,7 +1354,7 @@ is
 	  PUT_LINE( TN_STR2 & ".size" );			     -- LEN
 	end;
 			--| TTAIL1 (7/08) : miroir du n 112 au site de DECLARATION -- le
-			--| "La ,0" inconditionnel supposait un @doublet, mais une reference
+			--| "LA ,0" inconditionnel supposait un @doublet, mais une reference
 			--| de composante (T_TAIL := S.NEXT, IDL_MAN.APPEND) produit l @data
 			--| nue : le La lisait un data comme un data_ptr, la VALEUR 32 bits
 			--| du TREE devenait l adresse source du BLKMOV (T_TAIL =
@@ -1414,7 +1413,7 @@ is
 		  if  DSCRMT_EXP /= TREE_VOID  and then  DSCRMT_EXP /= TREE_NIL  then
 
 		    if  REPRESENTED_ITEMS.HAS_COMPONENT_REP( DISCR_ID )  then
-		      PUT_LINE( tab & "La  " & LVL_STR & ", " & VC_STR & "_disp" );				-- @data du record (meme idiome que BLKMOV)
+		      PUT_LINE( tab & "LA  " & LVL_STR & ", " & VC_STR & "_disp" );				-- @data du record (meme idiome que BLKMOV)
 		      REPRESENTED_ITEMS.CODE_STORE_REP_COMPONENT( DISCR_ID, DSCRMT_EXP );
 
 		    elsif  REPRESENTED_ITEMS.HAS_RECORD_REP( BASE_REC )  then
@@ -1476,7 +1475,7 @@ is
 		      PUT_LINE( "; COMPILE_RECORD_VAR : composant composite d'un record represente non gere" );
 		      raise PROGRAM_ERROR;
 		    end if;
-		    PUT( tab & "LIVa " & LVL_STR & ", " );
+		    PUT( tab & "LIVA " & LVL_STR & ", " );
 		    CODI.REGIONS_PATH( VC_NAME );
 		    PUT( VC_STR & "_disp, " );
 		    CODI.REGIONS_PATH( TYPE_NAME );
@@ -1486,11 +1485,11 @@ is
 
 		  else										-- composant scalaire : store direct
 		    if  REPRESENTED_ITEMS.HAS_COMPONENT_REP( COMP_ID )  then
-		      PUT_LINE( tab & "La  " & LVL_STR & ", " & VC_STR & "_disp" );	-- @data du record
+		      PUT_LINE( tab & "LA  " & LVL_STR & ", " & VC_STR & "_disp" );	-- @data du record
 		      REPRESENTED_ITEMS.CODE_STORE_REP_COMPONENT( COMP_ID, FIELD_INIT );
 
 		    else
-		      PUT( tab & "LIVa " & LVL_STR & ", " );
+		      PUT( tab & "LIVA " & LVL_STR & ", " );
 		      CODI.REGIONS_PATH( VC_NAME );
 		      PUT( VC_STR & "_disp, " );
 		      CODI.REGIONS_PATH( TYPE_NAME );
@@ -1592,21 +1591,21 @@ is
 	    or else SRC_TYPE.TY = DN_CONSTRAINED_ARRAY;
         begin
 	  if  IS_COMPOSITE  and then  NAME.TY = DN_SLICE  then
-	    PUT_LINE( "VAR " & SRC_STR & "_disp, q" );
-	    PUT_LINE( "VAR " & SRC_STR & "__u, q" );
+	    PUT_LINE( "VAR " & SRC_STR & "_disp, Q" );
+	    PUT_LINE( "VAR " & SRC_STR & "__u, Q" );
 
 	    EXPRESSIONS.CODE_SLICE( NAME, IS_DESTINATION => FALSE );
 	    PUT_LINE( tab & "DUP" );
-	    PUT_LINE( tab & "La" );
-	    PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & SRC_STR & "_disp" );
-	    PUT_LINE( tab & "La" & tab & ", 8" );
-	    PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & SRC_STR & "__u" );
+	    PUT_LINE( tab & "LA" );
+	    PUT_LINE( tab & "SA" & tab & LVL_STR & ", " & SRC_STR & "_disp" );
+	    PUT_LINE( tab & "LA" & tab & ", 8" );
+	    PUT_LINE( tab & "SA" & tab & LVL_STR & ", " & SRC_STR & "__u" );
 
 	  else
-	    PUT_LINE( "VAR " & SRC_STR & "_disp, q" );
+	    PUT_LINE( "VAR " & SRC_STR & "_disp, Q" );
 
 	    EXPRESSIONS.CODE_OBJECT_ADDRESS( NAME );
-	    PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & SRC_STR & "_disp" );
+	    PUT_LINE( tab & "SA" & tab & LVL_STR & ", " & SRC_STR & "_disp" );
 
 	  -- Pour les composites non-tranches, on garde le doublet TLALOC habituel.
 	    if  IS_COMPOSITE  then
@@ -1615,13 +1614,13 @@ is
 	        TYPE_NAME_STR	:constant STRING	:= '_' & PRINT_NAME( D( LX_SYMREP, TYPE_NAME ) );
 	        TYPE_LVL_STR	:constant STRING	:= IMAGE( DI( CD_LEVEL, SRC_TYPE ) );			-- niveau du TYPE (frame de sa def)
 	      begin
-	        PUT_LINE( "VAR " & SRC_STR & "__u, q" );
+	        PUT_LINE( "VAR " & SRC_STR & "__u, Q" );
 
 	        PUT( tab & "LVA" & tab & TYPE_LVL_STR & ", " );
 	        CODI.REGIONS_PATH( TYPE_NAME );
-	        PUT_LINE( TYPE_NAME_STR & ".SIZ" );
+	        PUT_LINE( TYPE_NAME_STR & ".SIZ__" );
 
-	        PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & SRC_STR & "__u" );
+	        PUT_LINE( tab & "SA" & tab & LVL_STR & ", " & SRC_STR & "__u" );
 	      end;
 	    end if;
 	  end if;
@@ -1997,22 +1996,22 @@ is
 
 	    begin
 	      if  ACTUAL_TYPE.TY in CLASS_SCALAR  or else  ACTUAL_TYPE.TY = DN_ACCESS  then
-	        PUT_LINE( "VAR " & FORMAL_STR & "_disp, q" );
+	        PUT_LINE( "VAR " & FORMAL_STR & "_disp, Q" );
 
 	        CODE_ACTUAL_OBJECT_VALUE( ACTUAL, ACTUAL_TYPE );
 
 	        PUT_LINE( tab & "S" & OPER_SIZ_CHAR( ACTUAL_TYPE ) & " " & LVL_STR & ", " & FORMAL_STR & "_disp" );
 
 	      else
-	        PUT_LINE( "VAR " & FORMAL_STR & "_disp, q" );
-	        PUT_LINE( "VAR " & FORMAL_STR & "__u, q" );
+	        PUT_LINE( "VAR " & FORMAL_STR & "_disp, Q" );
+	        PUT_LINE( "VAR " & FORMAL_STR & "__u, Q" );
 
 	        CODE_ACTUAL_OBJECT_VALUE( ACTUAL, ACTUAL_TYPE );
 	        PUT_LINE( tab & "DUP" );
-	        PUT_LINE( tab & "La  ,  0" );
-	        PUT_LINE( tab & "Sa " & LVL_STR & ", " & FORMAL_STR & "_disp" );
-	        PUT_LINE( tab & "La  ,  8" );
-	        PUT_LINE( tab & "Sa " & LVL_STR & ", " & FORMAL_STR & "__u" );
+	        PUT_LINE( tab & "LA  ,  0" );
+	        PUT_LINE( tab & "SA " & LVL_STR & ", " & FORMAL_STR & "_disp" );
+	        PUT_LINE( tab & "LA  ,  8" );
+	        PUT_LINE( tab & "SA " & LVL_STR & ", " & FORMAL_STR & "__u" );
 	      end if;
 	    end;
 	  end loop;
@@ -2060,7 +2059,7 @@ is
 
 	      PUT_LINE(	"BRA post_OUTADR_" & FORMAL_STR );
 	      PUT_LINE(	"OUTADR_" & FORMAL_STR & ".elab:" );
-	      PUT_LINE(	tab & "La" );								-- Pointer Data
+	      PUT_LINE(	tab & "LA" );								-- Pointer Data
 	      PUT_LINE(	tab & "RTD 0" );								-- Rien a faire pour un scalaire
 	      PUT_LINE(	"post_OUTADR_" & FORMAL_STR & ":" );
 	    end;
@@ -2068,21 +2067,21 @@ is
 	        -- VAR en ordre INVERSE des PRM du modele :
 	        -- PRM: __u(8) __ld(16) __st(24)  → VAR: __st(-24) __ld(-16) __u(-8)
 
-	    PUT_LINE( "VAR " & FORMAL_STR & "__outadr_ofs, q" );
+	    PUT_LINE( "VAR " & FORMAL_STR & "__outadr_ofs, Q" );
 	    PUT_LINE( tab & "LCA OUTADR_" &	FORMAL_STR & ".elab" );
-	    PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & FORMAL_STR & "__outadr_ofs" );
+	    PUT_LINE( tab & "SA" & tab & LVL_STR & ", " & FORMAL_STR & "__outadr_ofs" );
 
-	    PUT_LINE( "VAR " & FORMAL_STR & "__inadr_ofs, q" );
+	    PUT_LINE( "VAR " & FORMAL_STR & "__inadr_ofs, Q" );
 	    PUT_LINE( tab & "LCA INADR_" & FORMAL_STR &	".elab" );
-	    PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & FORMAL_STR & "__inadr_ofs"	);
+	    PUT_LINE( tab & "SA" & tab & LVL_STR & ", " & FORMAL_STR & "__inadr_ofs"	);
 
-	    PUT_LINE( "VAR " & FORMAL_STR & "__st_ofs, q" );
+	    PUT_LINE( "VAR " & FORMAL_STR & "__st_ofs, Q" );
 	    PUT_LINE( tab & "LCA ST_" & FORMAL_STR & ".elab" );
-	    PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & FORMAL_STR & "__st_ofs" );
+	    PUT_LINE( tab & "SA" & tab & LVL_STR & ", " & FORMAL_STR & "__st_ofs" );
 
-	    PUT_LINE( "VAR " & FORMAL_STR & "__ld_ofs, q" );
+	    PUT_LINE( "VAR " & FORMAL_STR & "__ld_ofs, Q" );
 	    PUT_LINE( tab & "LCA LD_" & FORMAL_STR & ".elab" );
-	    PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & FORMAL_STR & "__ld_ofs" );
+	    PUT_LINE( tab & "SA" & tab & LVL_STR & ", " & FORMAL_STR & "__ld_ofs" );
 
 	  elsif  DEFN_TYPE_SPEC.TY  in  CLASS_UNCONSTRAINED						-- COMPOSITE ARRAY OU RECORD GENERIQUES
 	     or  DEFN_TYPE_SPEC.TY  in  CLASS_CONSTRAINED  then
@@ -2105,42 +2104,42 @@ is
 
 	      PUT_LINE(	"BRA post_INADR_" & FORMAL_STR );
 	      PUT_LINE(	"INADR_" & FORMAL_STR	& ".elab:" );
-	      PUT_LINE(	tab & "LIa" );								-- Indirection
+	      PUT_LINE(	tab & "LIA" );								-- Indirection
 	      PUT_LINE(	tab & "RTD 0" );
 	      PUT_LINE(	"post_INADR_" & FORMAL_STR & ":" );
 
 	      PUT_LINE(	"BRA post_OUTADR_" & FORMAL_STR	);
 	      PUT_LINE(	"OUTADR_" & FORMAL_STR & ".elab:" );
-	      PUT_LINE(	tab & "LIa" );								-- Indirection
+	      PUT_LINE(	tab & "LIA" );								-- Indirection
 	      PUT_LINE(	tab & "RTD 0" );
 	      PUT_LINE(	"post_OUTADR_" & FORMAL_STR & ":" );
 	    end;
 
-	    PUT_LINE( "VAR " & FORMAL_STR & "__outadr_ofs, q" );
+	    PUT_LINE( "VAR " & FORMAL_STR & "__outadr_ofs, Q" );
 	    PUT_LINE( tab & "LCA OUTADR_" &	FORMAL_STR & ".elab" );
-	    PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & FORMAL_STR & "__outadr_ofs" );
+	    PUT_LINE( tab & "SA" & tab & LVL_STR & ", " & FORMAL_STR & "__outadr_ofs" );
 
-	    PUT_LINE( "VAR " & FORMAL_STR & "__inadr_ofs, q" );
+	    PUT_LINE( "VAR " & FORMAL_STR & "__inadr_ofs, Q" );
 	    PUT_LINE( tab & "LCA INADR_" & FORMAL_STR &	".elab" );
-	    PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & FORMAL_STR & "__inadr_ofs"	);
+	    PUT_LINE( tab & "SA" & tab & LVL_STR & ", " & FORMAL_STR & "__inadr_ofs"	);
 
-	    PUT_LINE( "VAR " & FORMAL_STR & "__st_ofs, q" );
+	    PUT_LINE( "VAR " & FORMAL_STR & "__st_ofs, Q" );
 	    PUT_LINE( tab & "LCA ST_" & FORMAL_STR & ".elab" );
-	    PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & FORMAL_STR & "__st_ofs" );
+	    PUT_LINE( tab & "SA" & tab & LVL_STR & ", " & FORMAL_STR & "__st_ofs" );
 
-	    PUT_LINE( "VAR " & FORMAL_STR & "__ld_ofs, q" );
+	    PUT_LINE( "VAR " & FORMAL_STR & "__ld_ofs, Q" );
 	    PUT_LINE( tab & "LCA LD_" & FORMAL_STR & ".elab" );
-	    PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & FORMAL_STR & "__ld_ofs" );
+	    PUT_LINE( tab & "SA" & tab & LVL_STR & ", " & FORMAL_STR & "__ld_ofs" );
 
 	  else
 	    CODI.TROU( "ACTUAL_GENERIC_TYPE actuel generique de type : sorte non geree", DEFN_TYPE_SPEC );		--| vague 5 : __ld_ofs absent, appels indirects faux
 	  end if;
 
-	  PUT_LINE( "VAR " & FORMAL_STR & "__u_ofs, q"	);
-	  PUT( tab & "La" & tab & INTEGER'IMAGE( DI( CD_LEVEL, D( SM_TYPE_SPEC, DEFN ) ) ) & ", " );
+	  PUT_LINE( "VAR " & FORMAL_STR & "__u_ofs, Q"	);
+	  PUT( tab & "LA" & tab & INTEGER'IMAGE( DI( CD_LEVEL, D( SM_TYPE_SPEC, DEFN ) ) ) & ", " );
 	  CODI.REGIONS_PATH( DEFN	);
 	  PUT_LINE( '_' & DEFN_STR & ".use__info"	);
-	  PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & FORMAL_STR & "__u_ofs" );
+	  PUT_LINE( tab & "SA" & tab & LVL_STR & ", " & FORMAL_STR & "__u_ofs" );
 
 	end	ACTUAL_GENERIC_TYPE;
 		-------------------
@@ -2164,15 +2163,15 @@ is
 	  end if;
 
 	  if  ACTUAL_DEFN.TY = DN_ENTRY_ID  then
-	    PUT_LINE( "VAR " & LETTERED_SUBNAME( FORMAL_STR )  & "__call_ofs, q" );
+	    PUT_LINE( "VAR " & LETTERED_SUBNAME( FORMAL_STR )  & "__call_ofs, Q" );
 
 	  elsif  ACTUAL_DEFN.TY = DN_BLTN_OPERATOR_ID  then
-	    PUT_LINE( "VAR " & LETTERED_SUBNAME( FORMAL_STR )  & "__call_ofs, q" );
+	    PUT_LINE( "VAR " & LETTERED_SUBNAME( FORMAL_STR )  & "__call_ofs, Q" );
 
 	  elsif  ACTUAL_DEFN.TY = DN_ENUMERATION_ID  or  ACTUAL_DEFN.TY = DN_CHARACTER_ID  then
-	    PUT_LINE( "VAR " & FORMAL_STR & "_disp, q" );
+	    PUT_LINE( "VAR " & FORMAL_STR & "_disp, Q" );
 	    PUT_LINE( tab & "LI" & tab & IMAGE( DI( SM_POS, ACTUAL_DEFN ) ) );
-	    PUT_LINE( tab & "Sb " & LVL_STR & ", " & FORMAL_STR & "_disp" );
+	    PUT_LINE( tab & "SB " & LVL_STR & ", " & FORMAL_STR & "_disp" );
 
 	  else
 
@@ -2181,11 +2180,11 @@ is
 					   & "_L" & IMAGE( DI( CD_LABEL, ACTUAL_DEFN ) );
 	      SUBNAME_STR	:constant string	:= LETTERED_SUBNAME( FORMAL_STR );
 	    begin
-	      PUT_LINE( "VAR " & SUBNAME_STR & "__call_ofs, q" );
+	      PUT_LINE( "VAR " & SUBNAME_STR & "__call_ofs, Q" );
 	      PUT( tab & "LSPA" & tab );
 	      CODI.REGIONS_PATH( ACTUAL_DEFN );
 	      PUT_LINE( " ," & ACTUAL_STR );
-	      PUT_LINE( tab & "Sa" & tab & LVL_STR & ", " & SUBNAME_STR & "__call_ofs" );
+	      PUT_LINE( tab & "SA" & tab & LVL_STR & ", " & SUBNAME_STR & "__call_ofs" );
 
 	    end;
 	  end if;
@@ -2198,7 +2197,7 @@ is
       end;
     end loop;
 
-    PUT( "VAR GFP_disp, q" );
+    PUT( "VAR GFP_disp, Q" );
     if  CODI.DEBUG  then
       PUT( tab50 & "; Lieu du Generic Frame Pointer " );
     end if;
@@ -2308,7 +2307,7 @@ is
 	        WRAP_RESULT_TYPE	: TREE		:= D( SM_TYPE_SPEC, D( SM_DEFN, D( AS_NAME, HEADER ) ) );
 	      begin
 	        if  WRAP_RESULT_TYPE.TY = DN_ARRAY  then							--| C7 (oracle INSTF1) : resultat NON CONTRAINT --
-	          PUT( tab & "La " & tab & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & ", -result__ofs" );		--| RELAYER le slot recu au modele : son CODE_RETURN
+	          PUT( tab & "LA " & tab & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) & ", -result__ofs" );		--| RELAYER le slot recu au modele : son CODE_RETURN
 	          if  CODI.DEBUG  then PUT( tab50 & "; lieu result = relais du slot recu (doublet)" ); end if;	--| ecrit data_ptr+descripteur CHEZ l'appelant
 	          NEW_LINE;
 	        else
@@ -2355,7 +2354,7 @@ is
 
 	        else
 		-- in composite (record, array) ou out / in_out : propager l'adresse
-		PUT_LINE( tab & "La " & tab & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL )
+		PUT_LINE( tab & "LA " & tab & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL )
 			& ", -" & PRINT_NAME( D( LX_SYMREP, NAME ) ) & "_ofs" );
 	        end if;
 	      end INVERSE_RECURSE_NAMES;
@@ -2423,9 +2422,9 @@ is
 	        TN : TREE := D( XD_SOURCE_NAME, TT );
 	        TS : constant STRING := '_' & PRINT_NAME( D( LX_SYMREP, TN ) );
 	      begin
-	        PUT( tab & "Ld" & tab & IMAGE( DI( CD_LEVEL, TT ) ) & ", " );
+	        PUT( tab & "LD" & tab & IMAGE( DI( CD_LEVEL, TT ) ) & ", " );
 	        REGIONS_PATH( TN );
-	        PUT_LINE( TS & ".SIZ" );
+	        PUT_LINE( TS & ".SIZ__" );
 
 	        PUT_LINE( tab & "LI" & tab & IMAGE( CODI.STORAGE_UNIT ) );
 	        PUT_LINE( tab & "DIV" );
@@ -2473,15 +2472,15 @@ is
 	       or else DST_TYPE.TY = DN_RECORD)
 	  then
 	    -- @DST = result__ofs.data_ptr
-	    PUT_LINE( tab & "La" & tab & IMAGE( CODI.CUR_LEVEL ) & ", -result__ofs" );
-	    PUT_LINE( tab & "La" );
+	    PUT_LINE( tab & "LA" & tab & IMAGE( CODI.CUR_LEVEL ) & ", -result__ofs" );
+	    PUT_LINE( tab & "LA" );
 
     -- LEN = taille du type cible en octets
 	    EMIT_TYPE_SIZE_BYTES( DST_TYPE );
 
     -- @SRC = S.data_ptr
-	    PUT_LINE( tab & "La" & tab & IMAGE( CODI.CUR_LEVEL ) & ", -S_ofs" );
-	    PUT_LINE( tab & "La" );
+	    PUT_LINE( tab & "LA" & tab & IMAGE( CODI.CUR_LEVEL ) & ", -S_ofs" );
+	    PUT_LINE( tab & "LA" );
 
 	    PUT_LINE( tab & "BLKMOV" );
 
@@ -2490,8 +2489,8 @@ is
 	then
   -- Source composite passée par adresse de doublet.
   -- result__ofs est un résultat scalaire.
-	  PUT_LINE( tab & "La" & tab & IMAGE( CODI.CUR_LEVEL ) & ", -S_ofs" );
-	  PUT_LINE( tab & "La" );
+	  PUT_LINE( tab & "LA" & tab & IMAGE( CODI.CUR_LEVEL ) & ", -S_ofs" );
+	  PUT_LINE( tab & "LA" );
   -- Lire les octets bruts avec la taille du type cible.
 	  PUT_LINE( tab & OPER_LOAD_STR( DST_TYPE ) );
   -- Stocker dans le slot résultat.

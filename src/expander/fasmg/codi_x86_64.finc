@@ -176,12 +176,12 @@ macro			OVER
 end macro
 
 ;			.......
-macro			align_b
+macro			align_b?
 ;			.......
 end macro
 
 ;			.......
-macro			align_w
+macro			align_w?
 ;			.......
   desalign = $ mod 2
   if desalign <> 0
@@ -192,7 +192,7 @@ macro			align_w
 end macro
 
 ;			.......
-macro			align_d
+macro			align_d?
 ;			.......
   desalign = $ mod 4
   if desalign <> 0
@@ -203,7 +203,7 @@ macro			align_d
 end macro
 
 ;			.......
-macro			align_q
+macro			align_q?
 ;			.......
   desalign = $ mod 8
   if desalign <> 0
@@ -212,9 +212,6 @@ macro			align_q
     end repeat
   end if
 end macro
-
-;last_instr_was_POP = 0				; sert a faire du peep-hole sur POP - PUSH
-;last_instr_was_PUSH = 0				; sert a faire du peep-hole sur PUSH - POP
 
 ;			.......................
 macro			FP_IN_RAX		lvl
@@ -451,18 +448,15 @@ end macro
 ;-----------------------------------------------------------------------------------------------------------------------
 
 ;			-------------
-macro			LI?	val				; Load Integer
+macro			LI	val				; Load Integer
 ;			-------------
-;  db 0x48, 0xC7, 0xC0						; mov rax, val
-;  dd val
-
   db 0x48, 0xB8							; mov rax, quadval
   dq val
   PUSH_RAX
 end macro
 
 ;			-------------
-macro			LIF?	val				; Load Immediate Float (IEEE 754 double 64 bits sur la pile entiere)
+macro			LIF	val				; Load Immediate Float (IEEE 754 double 64 bits sur la pile entiere)
 ;			-------------
   db 0x48, 0xB8							; movabs rax, imm64
   dq val								; fasmg convertit le litteral flottant en 8 octets IEEE 754 double
@@ -475,7 +469,7 @@ end macro
 ;-----------------------------------------------------------------------------------------------------------------------
 
 ;			---------------------
-macro			LCA?	ptr, disp:0			; Load Constant Address (distinguer de LI - qui charge en 32 bits - car les adresses sont en 64 bits sur x64)
+macro			LCA	ptr, disp:0			; Load Constant Address (distinguer de LI - qui charge en 32 bits - car les adresses sont en 64 bits sur x64)
 ;			---------------------
   db 0x48, 0xB8							; movabs rax, ptr
   dq ptr+disp
@@ -483,7 +477,7 @@ macro			LCA?	ptr, disp:0			; Load Constant Address (distinguer de LI - qui charg
 end macro
 
 ;			--------------------------
-macro			LSPA?	prefix, subname			; Load SubProgram Address de .elab, en armant l'assemblage lazy
+macro			LSPA	prefix, subname			; Load SubProgram Address de .elab, en armant l'assemblage lazy
 ;			--------------------------
   postpone
     if ~definite prefix#subname#_
@@ -497,7 +491,7 @@ macro			LSPA?	prefix, subname			; Load SubProgram Address de .elab, en armant l'
 end macro
 
 ;			------------------------
-macro			LVa?	lvl:-1, disp:0			; Load Variable Address pour lvl et disp (empile l'adresse de la variable au deplacement disp du frame de lvl donne)
+macro			LVA	lvl:-1, disp:0			; Load Variable Address pour lvl et disp (empile l'adresse de la variable au deplacement disp du frame de lvl donne)
 ;			------------------------
   BASE_IN_RAX	lvl
   if disp = 0
@@ -512,7 +506,7 @@ macro			LVa?	lvl:-1, disp:0			; Load Variable Address pour lvl et disp (empile l
 end macro
 
 ;			-------------------------------
-macro			LIVa?	lvl:-1, disp:0, ofs:0		; Load Indirect Variable Address pour lvl et disp (empile l'adresse de la variable pointee par l adresse au deplacement disp du frame de lvl donne)
+macro			LIVA	lvl:-1, disp:0, ofs:0		; Load Indirect Variable Address pour lvl et disp (empile l'adresse de la variable pointee par l adresse au deplacement disp du frame de lvl donne)
 ;			-------------------------------
   INDIRECT_BASE_IN_RAX	lvl, disp
   if ofs = 0
@@ -532,113 +526,113 @@ end macro
 ;-----------------------------------------------------------------------------------------------------------------------
 
 ;			------------------------
-macro			ULb?	lvl:-1, disp:0			; Unsigned Load Byte 8 bits (zero extension)
+macro			ULB	lvl:-1, disp:0			; Unsigned Load Byte 8 bits (zero extension)
 ;			------------------------
   BASE_IN_RAX	lvl						; 1 ou 2 instr
   FETCH_BYTE_U	disp
   PUSH_RAX							; 2 instr
 end macro
 ;			------------------------
-macro			ULw?	lvl:-1, disp:0			; Unsigned Load Word 16 bits
+macro			ULW	lvl:-1, disp:0			; Unsigned Load Word 16 bits
 ;			------------------------
   BASE_IN_RAX	lvl
   FETCH_WORD_U	disp
   PUSH_RAX
 end macro
 ;			------------------------
-macro			ULd?	lvl:-1, disp:0			; Unsigned Load doubleword 32 bits
+macro			ULD	lvl:-1, disp:0			; Unsigned Load doubleword 32 bits
 ;			------------------------
   BASE_IN_RAX	lvl
   FETCH_DWORD_U	disp
   PUSH_RAX
 end macro
 ;			------------------------
-macro			Lb?	lvl:-1, disp:0			; 4 ou 5 instr : Load Byte 8 bits
+macro			LB	lvl:-1, disp:0			; 4 ou 5 instr : Load Byte 8 bits
 ;			------------------------
   BASE_IN_RAX	lvl						; 1 ou 2 instr
   FETCH_BYTE	disp
   PUSH_RAX							; 2 instr
 end macro
 ;			------------------------
-macro			Lw?	lvl:-1, disp:0			; Load Word 16 bits
+macro			LW	lvl:-1, disp:0			; Load Word 16 bits
 ;			------------------------
   BASE_IN_RAX	lvl
   FETCH_WORD	disp
   PUSH_RAX
 end macro
 ;			------------------------
-macro			Ld?	lvl:-1, disp:0			; Load doubleword 32 bits
+macro			LD	lvl:-1, disp:0			; Load doubleword 32 bits
 ;			------------------------
   BASE_IN_RAX	lvl
   FETCH_DWORD	disp
   PUSH_RAX
 end macro
 ;			------------------------
-macro			Lq?	lvl:-1, disp:0			; Load quadword 64 bits
+macro			LQ	lvl:-1, disp:0			; Load quadword 64 bits
 ;			------------------------
   BASE_IN_RAX	lvl
   FETCH_QWORD	disp
   PUSH_RAX
 end macro
 ;			------------------------
-macro			La?	lvl:-1, disp:0			; Load Address 64 bits
+macro			LA	lvl:-1, disp:0			; Load Address 64 bits
 ;			------------------------
-  Lq lvl, disp
+  LQ lvl, disp
 end macro
 
 ;			-------------------------------
-macro			ULIb?	lvl:-1, disp:0, ofs:0		; Unsigned Load Indirect byte (la variable en frame ou empilee est une adresse, octet zero-etendu)
+macro			ULIB	lvl:-1, disp:0, ofs:0		; Unsigned Load Indirect byte (la variable en frame ou empilee est une adresse, octet zero-etendu)
 ;			-------------------------------
   INDIRECT_BASE_IN_RAX	lvl, disp
   FETCH_BYTE_U		ofs
   PUSH_RAX							; empiler la donnee
 end macro
 ;			-------------------------------
-macro			ULIw?	lvl:-1, disp:0, ofs:0		; Unsigned Load Indirect word
+macro			ULIW	lvl:-1, disp:0, ofs:0		; Unsigned Load Indirect word
 ;			-------------------------------
   INDIRECT_BASE_IN_RAX	lvl, disp
   FETCH_WORD_U		ofs
   PUSH_RAX
 end macro
 ;			-------------------------------
-macro			ULId?	lvl:-1, disp:0, ofs:0		; Unsigned Load Indirect doubleword
+macro			ULID	lvl:-1, disp:0, ofs:0		; Unsigned Load Indirect doubleword
 ;			-------------------------------
   INDIRECT_BASE_IN_RAX	lvl, disp
   FETCH_DWORD_U		ofs
   PUSH_RAX
 end macro
 ;			-------------------------------
-macro			LIb?	lvl:-1, disp:0, ofs:0		; Load Indirect byte (la variable en frame ou empilee est une adresse, adresse a laquelle on va chercher l'octet avec offset)
+macro			LIB	lvl:-1, disp:0, ofs:0		; Load Indirect byte (la variable en frame ou empilee est une adresse, adresse a laquelle on va chercher l'octet avec offset)
 ;			-------------------------------
   INDIRECT_BASE_IN_RAX	lvl, disp
   FETCH_BYTE		ofs
   PUSH_RAX							; empiler la donnee
 end macro
 ;			-------------------------------
-macro			LIw?	lvl:-1, disp:0, ofs:0		; Load Indirect word
+macro			LIW	lvl:-1, disp:0, ofs:0		; Load Indirect word
 ;			-------------------------------
   INDIRECT_BASE_IN_RAX	lvl, disp
   FETCH_WORD		ofs
   PUSH_RAX
 end macro
 ;			-------------------------------
-macro			LId?	lvl:-1, disp:0, ofs:0		; Load Indirect doubleword
+macro			LID	lvl:-1, disp:0, ofs:0		; Load Indirect doubleword
 ;			-------------------------------
   INDIRECT_BASE_IN_RAX	lvl, disp
   FETCH_DWORD		ofs
   PUSH_RAX
 end macro
 ;			-------------------------------
-macro			LIq?	lvl:-1, disp:0, ofs:0		; Load Indirect quadword
+macro			LIQ	lvl:-1, disp:0, ofs:0		; Load Indirect quadword
 ;			-------------------------------
   INDIRECT_BASE_IN_RAX	lvl, disp
   FETCH_QWORD		ofs
   PUSH_RAX
 end macro
 ;			-------------------------------
-macro			LIa?	lvl:-1, disp:0, ofs:0		; Load Address 64 bits Indirect
+macro			LIA	lvl:-1, disp:0, ofs:0		; Load Address 64 bits Indirect
 ;			-------------------------------
-  LIq lvl, disp, ofs
+  LIQ lvl, disp, ofs
 end macro
 
 
@@ -647,72 +641,72 @@ end macro
 ;-----------------------------------------------------------------------------------------------------------------------
 
 ;			------------------------
-macro			Sb?	lvl:-1, disp:0			; Store byte 8 bits
+macro			SB	lvl:-1, disp:0			; Store byte 8 bits
 ;			------------------------
   POP_RBX								; (data)
   BASE_IN_RAX	lvl
   STORE_BYTE	disp
 end macro
 ;			------------------------
-macro			Sw?	lvl:-1, disp:0			; Store word 16 bits
+macro			SW	lvl:-1, disp:0			; Store word 16 bits
 ;			------------------------
   POP_RBX								; (data)
   BASE_IN_RAX	lvl
   STORE_WORD	disp
 end macro
 ;			------------------------
-macro			Sd?	lvl:-1, disp:0			; Store doubleword 32 bits
+macro			SD	lvl:-1, disp:0			; Store doubleword 32 bits
 ;			------------------------
   POP_RBX								; (data)
   BASE_IN_RAX	lvl
   STORE_DWORD	disp
 end macro
 ;			------------------------
-macro			Sq?	lvl:-1, disp:0			; Store Quadword 64 bits
+macro			SQ	lvl:-1, disp:0			; Store Quadword 64 bits
 ;			------------------------
   POP_RBX								; (data)
   BASE_IN_RAX	lvl
   STORE_QWORD	disp
 end macro
 ;			------------------------
-macro			Sa?	lvl:-1, disp:0			; Store Address 64 bits
+macro			SA	lvl:-1, disp:0			; Store Address 64 bits
 ;			------------------------
-  Sq lvl, disp
+  SQ lvl, disp
 end macro
 
 
 ;			-------------------------------
-macro			SIb?	lvl:-1, disp:0, ofs:0		; Store Indirect byte
+macro			SIB	lvl:-1, disp:0, ofs:0		; Store Indirect byte
 ;			-------------------------------
   POP_RBX								; (data)
   INDIRECT_BASE_IN_RAX	lvl, disp
   STORE_BYTE		ofs
 end macro
 ;			-------------------------------
-macro			SIw?	lvl:-1, disp:0, ofs:0		; Store Indirect word
+macro			SIW	lvl:-1, disp:0, ofs:0		; Store Indirect word
 ;			-------------------------------
   POP_RBX								; (data)
   INDIRECT_BASE_IN_RAX	lvl, disp
   STORE_WORD		ofs
 end macro
 ;			-------------------------------
-macro			SId?	lvl:-1, disp:0, ofs:0		; Store Indirect doubleword
+macro			SID	lvl:-1, disp:0, ofs:0		; Store Indirect doubleword
 ;			-------------------------------
   POP_RBX								; (data)
   INDIRECT_BASE_IN_RAX	lvl, disp
   STORE_DWORD		ofs
 end macro
 ;			-------------------------------
-macro			SIq?	lvl:-1, disp:0, ofs:0		; Store Indirect quadword
+macro			SIQ	lvl:-1, disp:0, ofs:0		; Store Indirect quadword
 ;			-------------------------------
   POP_RBX								; (data)
   INDIRECT_BASE_IN_RAX	lvl, disp
   STORE_QWORD		ofs
 end macro
 ;			-------------------
-macro			SIa?	lvl, disp, ofs			; Store Address 64 bits Indirect
+macro			SIA	lvl, disp, ofs			; Store Address 64 bits Indirect
 ;			-------------------
-  SIq lvl, disp, ofs
+  SIQ lvl, disp, ofs
 end macro
 
 
@@ -720,38 +714,38 @@ end macro
 ;				O P E R A T I O N S	  L O G I Q U E S
 ;-----------------------------------------------------------------------------------------------------------------------
 
-;			---
-macro			ET?
-;			---
+;			--
+macro			ET
+;			--
   POP_RAX
   db 0x48, 0x21, 0x45, 0x00						; and qword ptr [rbp], rax
 end macro
-;			---
-macro			OU?
-;			---
+;			--
+macro			OU
+;			--
   POP_RAX
   db 0x48, 0x09, 0x45, 0x00						; or qword ptr [rbp], rax
 end macro
-;			----
-macro			NON?
-;			----
+;			---
+macro			NON
+;			---
   db 0x48, 0xF7, 0x55, 0x00						; not qword ptr [rbp]
 end macro
-;			----
-macro			OUX?
-;			----
+;			---
+macro			OUX
+;			---
   POP_RAX
   db 0x48, 0x31, 0x45, 0x00						; xor qword ptr [rbp], rax
 end macro
-;			----
-macro			SHL?					; decalage gauche
-;			----
+;			---
+macro			SHL					; decalage gauche
+;			---
   POP_RCX								; nombre de positions de decalage
   db 0x48, 0xD3, 0x65, 0x00						; shl qword ptr [rbp], cl
 end macro
-;			----
-macro			SHR?					; decalage droit
-;			----
+;			---
+macro			SHR					; decalage droit
+;			---
   POP_RCX								; nombre de positions de decalage
   db 0x48, 0xD3, 0x6D, 0x00						; shr qword ptr [rbp], cl
 end macro
@@ -761,9 +755,9 @@ end macro
 ;		O P E R A T I O N S	  B I T	F I E L D S
 ;-----------------------------------------------------------------------------------------------------------------------
 
-;			-----
-macro			UBFX?					; unsigned bit field extract
-;			-----
+;			----
+macro			UBFX					; unsigned bit field extract
+;			----
   POP_RDX								; rdx = Width
   POP_RCX								; rcx = LSB
   db 0x48, 0x8B, 0x45, 0x00						; mov rax, qword ptr [rbp]	valeur source
@@ -776,9 +770,9 @@ macro			UBFX?					; unsigned bit field extract
   db 0x48, 0x21, 0xD0						; and rax, rdx		rax = field non signe
   db 0x48, 0x89, 0x45, 0x00						; mov qword ptr [rbp], rax
 end macro
-;			-----
-macro			SBFX?					; signed bit field extract
-;			-----
+;			----
+macro			SBFX					; signed bit field extract
+;			----
 
   POP_RDX								; rdx = Width
   POP_RCX								; rcx = LSB
@@ -791,9 +785,9 @@ macro			SBFX?					; signed bit field extract
   db 0x48, 0xD3, 0xF8						; sar rax, cl		extension de signe
   db 0x48, 0x89, 0x45, 0x00						; mov qword ptr [rbp], rax
 end macro
-;			----
-macro			BFI?					; bit field insert in stacked value
-;			----
+;			---
+macro			BFI					; bit field insert in stacked value
+;			---
   POP_RCX								; rcx = Width
   POP_RDX								; rdx = LSB
   POP_RAX								; rax = valeur a inserer
@@ -820,60 +814,60 @@ end macro
 ;		O P E R A T I O N S	  A R I T H M E T I Q U E   E N T I E R E
 ;-----------------------------------------------------------------------------------------------------------------------
 
-;			----
-macro			DEC?
-;			----
+;			---
+macro			DEC
+;			---
   db 0x48, 0xFF, 0x4D, 0x00						; dec qword ptr [rbp]
 end macro
-;			----
-macro			INC?
+;			---
+macro			INC
 ;			---
   db 0x48, 0xFF, 0x45, 0x00						; inc qword ptr [rbp]
 end macro
-;			----
-macro			NEG?
-;			----
+;			---
+macro			NEG
+;			---
   db 0x48, 0xF7, 0x5D, 0x00						; neg qword ptr [rbp]
 end macro
-;			----
-macro			ABS?
-;			----
+;			---
+macro			ABS
+;			---
   db 0x48, 0x8B, 0x45, 0x00						; mov rax, QWORD PTR [rbp]		(lire dans RAX la valeur top X sur le rbp)
   db 0x48, 0xC1, 0xF8, 0x3F						; sar rax, 63			(RAX = tout bit de signe = allsign)
   db 0x48, 0x31, 0x45, 0x00						; xor QWORD PTR [rbp], rax		(X xor allsign)
   db 0x48, 0x29, 0x45, 0x00						; sub QWORD PTR [rbp], rax		( (X xor allsign) - allsign )
 end macro
-;			-------
-macro			CLAMP0?					; sommet := max( 0, sommet )		(compte d'elements : intervalle nul -> 0)
-;			-------
+;			------
+macro			CLAMP0					; sommet := max( 0, sommet )		(compte d'elements : intervalle nul -> 0)
+;			------
   db 0x48, 0x8B, 0x45, 0x00						; mov rax, QWORD PTR [rbp]		(lire dans RAX la valeur top X sur le rbp)
   db 0x48, 0xC1, 0xF8, 0x3F						; sar rax, 63			(RAX = tout bit de signe = allsign)
   db 0x48, 0xF7, 0xD0						; not rax				(RAX = masque : 0 si X<0, tout-a-un si X>=0)
   db 0x48, 0x21, 0x45, 0x00						; and QWORD PTR [rbp], rax		(X and masque = max(0, X))
 end macro
-;			----
-macro			ADD?
-;			----
+;			---
+macro			ADD
+;			---
   POP_RAX
   db 0x48, 0x01, 0x45, 0x00						; add qword ptr [rbp], rax
 end macro
-;			----
-macro			SUB?
-;			----
+;			---
+macro			SUB
+;			---
   POP_RAX
   db 0x48, 0x29, 0x45, 0x00						; sub qword ptr [rbp], rax
 end macro
-;			----
-macro			MUL?
-;			----
+;			---
+macro			MUL
+;			---
   POP_RAX
   db 0x48, 0xF7, 0x6D, 0x00						; imul qword ptr [rbp]
   DROP
   PUSH_RAX
 end macro
-;			----
-macro			DIV?
-;			----
+;			---
+macro			DIV
+;			---
   POP_RBX
   POP_RAX
   db 0x48, 0x99							; cqo : extension signee RAX -> RDX:RAX
@@ -881,7 +875,7 @@ macro			DIV?
   PUSH_RAX
 end macro
 ;			----
-macro			REMI?					; A rem B	  (reste division tronquee, signe du dividende)
+macro			REMI					; A rem B	  (reste division tronquee, signe du dividende)
 ;			----
   POP_RBX								; depiler B (diviseur) dans RBX
   POP_RAX								; depiler A (dividende) dans RAX
@@ -891,7 +885,7 @@ macro			REMI?					; A rem B	  (reste division tronquee, signe du dividende)
   PUSH_RAX
 end macro
 ;			----
-macro			MODI?					; A mod B	  (modulo mathematique, signe du diviseur)
+macro			MODI					; A mod B	  (modulo mathematique, signe du diviseur)
 ;			----
   POP_RBX								; depiler B (diviseur) dans RBX
   POP_RAX								; depiler A (dividende) dans RAX
@@ -907,9 +901,9 @@ macro			MODI?					; A mod B	  (modulo mathematique, signe du diviseur)
 ; done:
   PUSH_RAX
 end macro
-;			----
-macro			SAR?					; decalage arithmetique droit
-;			----
+;			---
+macro			SAR					; decalage arithmetique droit
+;			---
   POP_RCX								; nombre de positions de decalage
   db 0x48, 0xD3, 0x7D, 0x00						; sar qword ptr [rbp], cl
 end macro
@@ -924,56 +918,56 @@ end macro
 ;  movsd est toujours 64 bits, sans ambiguite movd/movq.
 ;  Sur ARM : vadd.f64 / vsub.f64 / vmul.f64 / vdiv.f64   Sur RISC-V : fadd.d / fsub.d / fmul.d / fdiv.d
 
-;			-----
-macro			FADD?
-;			-----
+;			----
+macro			FADD
+;			----
   db 0xF2, 0x0F, 0x10, 0x4D, 0x00					; movsd xmm1, [rbp]		(B = TOS dans xmm1)
   DROP									; descendre pile (consommer B)
   db 0xF2, 0x0F, 0x10, 0x45, 0x00					; movsd xmm0, [rbp]		(A = nouveau TOS dans xmm0)
   db 0xF2, 0x0F, 0x58, 0xC1						; addsd xmm0, xmm1		(xmm0 = A + B)
   db 0xF2, 0x0F, 0x11, 0x45, 0x00					; movsd [rbp], xmm0		(ecraser A par le resultat)
 end macro
-;			-----
-macro			FSUB?
-;			-----
+;			----
+macro			FSUB
+;			----
   db 0xF2, 0x0F, 0x10, 0x4D, 0x00					; movsd xmm1, [rbp]		(B = TOS)
   DROP
   db 0xF2, 0x0F, 0x10, 0x45, 0x00					; movsd xmm0, [rbp]		(A)
   db 0xF2, 0x0F, 0x5C, 0xC1						; subsd xmm0, xmm1		(xmm0 = A - B)
   db 0xF2, 0x0F, 0x11, 0x45, 0x00					; movsd [rbp], xmm0
 end macro
-;			-----
-macro			FMUL?
-;			-----
+;			----
+macro			FMUL
+;			----
   db 0xF2, 0x0F, 0x10, 0x4D, 0x00					; movsd xmm1, [rbp]		(B = TOS)
   DROP
   db 0xF2, 0x0F, 0x10, 0x45, 0x00					; movsd xmm0, [rbp]		(A)
   db 0xF2, 0x0F, 0x59, 0xC1						; mulsd xmm0, xmm1		(xmm0 = A * B)
   db 0xF2, 0x0F, 0x11, 0x45, 0x00					; movsd [rbp], xmm0
 end macro
-;			-----
-macro			FDIV?
-;			-----
+;			----
+macro			FDIV
+;			----
   db 0xF2, 0x0F, 0x10, 0x4D, 0x00					; movsd xmm1, [rbp]		(B = TOS = diviseur)
   DROP
   db 0xF2, 0x0F, 0x10, 0x45, 0x00					; movsd xmm0, [rbp]		(A = dividende)
   db 0xF2, 0x0F, 0x5E, 0xC1						; divsd xmm0, xmm1		(xmm0 = A / B)
   db 0xF2, 0x0F, 0x11, 0x45, 0x00					; movsd [rbp], xmm0
 end macro
-;			-----
-macro			FNEG?						; negation flottante : complement du bit de signe IEEE 754 (bit 63)
-;			-----
+;			----
+macro			FNEG						; negation flottante : complement du bit de signe IEEE 754 (bit 63)
+;			----
   db 0x80, 0x75, 0x07, 0x80						; xor byte ptr [rbp+7], 0x80  (complementer bit 7 de l'octet haut = bit 63 du qword = signe IEEE 754)
 end macro
-;			-----
-macro			FABS?						; valeur absolue flottante : mise a zero du bit de signe IEEE 754 (bit 63)
-;			-----
+;			----
+macro			FABS						; valeur absolue flottante : mise a zero du bit de signe IEEE 754 (bit 63)
+;			----
   db 0x80, 0x65, 0x07, 0x7F						; and byte ptr [rbp+7], 0x7F  (effacer bit 7 de l'octet haut = bit 63 du qword = signe IEEE 754)
 end macro
 
-;			-----
-macro			FEXP?						; exponentiation flottante A ** B  (B entier positif sur la pile)
-;			-----
+;			----
+macro			FEXP						; exponentiation flottante A ** B  (B entier positif sur la pile)
+;			----
   POP_RCX								; depiler N (exposant entier)
   db 0xF2, 0x0F, 0x10, 0x45, 0x00					; movsd xmm0, [rbp]		(xmm0 = base)
 									; charger 1.0 dans xmm1 (accumulateur)
@@ -995,24 +989,24 @@ end macro
 ;	C O N V E R S I O N S   E N T I E R  <->  F L O T T A N T
 ;-----------------------------------------------------------------------------------------------------------------------
 
-;			------
-macro			CVTIF?					; Conversion entier signe 64 bits -> double IEEE 754
-;			------
+;			-----
+macro			CVTIF					; Conversion entier signe 64 bits -> double IEEE 754
+;			-----
   db 0x48, 0x8B, 0x45, 0x00						; mov rax, [rbp]		(entier signe depuis la pile)
   db 0xF2, 0x48, 0x0F, 0x2A, 0xC0					; cvtsi2sd xmm0, rax		(convertir entier -> double)
   db 0xF2, 0x0F, 0x11, 0x45, 0x00					; movsd [rbp], xmm0		(ecraser l'entier par le double)
 end macro
-;			------
-macro			CVTFI?					; Conversion double IEEE 754 -> entier signe 64 bits (troncature vers zero)
-;			------
+;			-----
+macro			CVTFI					; Conversion double IEEE 754 -> entier signe 64 bits (troncature vers zero)
+;			-----
   db 0xF2, 0x0F, 0x10, 0x45, 0x00					; movsd xmm0, [rbp]		(double depuis la pile dans xmm0)
   db 0xF2, 0x48, 0x0F, 0x2C, 0xC0					; cvttsd2si rax, xmm0	(convertir double -> entier avec troncature)
   db 0x48, 0x89, 0x45, 0x00						; mov [rbp], rax		(ecraser le double par l'entier)
 end macro
 
-;			-------
-macro			CVTFIR?					; Float -> Integer, arrondi Ada
-;			-------
+;			------
+macro			CVTFIR					; Float -> Integer, arrondi Ada
+;			------
   db 0xF2, 0x0F, 0x10, 0x45, 0x00					; movsd xmm0, [rbp]		(double depuis la pile dans xmm0)
   db 0xF2, 0x48, 0x0F, 0x2D, 0xC0					; cvtsd2si rax, xmm0
   db 0x48, 0x89, 0x45, 0x00						; mov qword [rbp], rax
@@ -1022,9 +1016,9 @@ end macro
 ;	C O N V E R S I O N S   E N T I E R  <->  F I X E D
 ;-----------------------------------------------------------------------------------------------------------------------
 
-;			------
-macro			CVTIX?					; Conversion de l'entier I en FIXED X de SMALL = NUMER/DENOM
-;			------					; Sont empilés I puis DENOM puis NUMER (I.D.N)
+;			-----
+macro			CVTIX					; Conversion de l'entier I en FIXED X de SMALL = NUMER/DENOM
+;			-----					; Sont empilés I puis DENOM puis NUMER (I.D.N)
   POP_RBX								; rbx = NUMER : diviseur
   POP_RCX								; rcx = DENOM : multiplicateur
   POP_RAX								; rax = I : multiplicande
@@ -1032,9 +1026,9 @@ macro			CVTIX?					; Conversion de l'entier I en FIXED X de SMALL = NUMER/DENOM
   db 0x48, 0xF7, 0xFB						; idiv rbx : RAX = (RDX:RAX) / RBX
   PUSH_RAX							; Resultat FIXED X sur 64 bits
 end macro
-;			------
-macro			CVTXI?					; Conversion du FIXED X de SMALL = NUMER/DENOM en INTEGER I
-;			------					; Sont empilés X puis NUMER puis DENOM (X.N.D)
+;			-----
+macro			CVTXI					; Conversion du FIXED X de SMALL = NUMER/DENOM en INTEGER I
+;			-----					; Sont empilés X puis NUMER puis DENOM (X.N.D)
   POP_RBX								; rbx = DENOM : diviseur
   POP_RCX								; rcx = NUMER : multiplicateur
   POP_RAX								; rax = X : multiplicande
@@ -1061,44 +1055,44 @@ end macro
 ;				C O M P A R A I S O N S
 ;-----------------------------------------------------------------------------------------------------------------------
 
-;			----
-macro			CEQ?
-;			----
+;			---
+macro			CEQ
+;			---
   POP_RBX
   db 0x48, 0x39, 0x5D, 0x00						; cmp [rbp], rbx   (NXT > TOP ?)
   db 0x0F, 0x94, 0x45, 0x00						; sete [rbp]
 end macro
-;			----
-macro			CNE?					; A /= B	 A empile puis B
-;			----
+;			---
+macro			CNE					; A /= B	 A empile puis B
+;			---
   POP_RBX								; depiler le B dans RBX
   db 0x48, 0x39, 0x5D, 0x00						; cmp [rbp], rbx   (comparer avec A, calcule A-B)
   db 0x0F, 0x95, 0x45, 0x00						; setne [rbp]
 end macro
-;			----
-macro			CGT?					; A > B A empile puis B (note pour avoir "A less than B" intervertir A et B)
-;			----
+;			---
+macro			CGT					; A > B A empile puis B (note pour avoir "A less than B" intervertir A et B)
+;			---
   POP_RBX								; depiler le B dans RBX
   db 0x48, 0x39, 0x5D, 0x00						; cmp [rbp], rbx   (comparer avec A, calcule B-A)
   db 0x0F, 0x9F, 0x45, 0x00						; setg [rbp]
 end macro
-;			----
-macro			CGE?					; A >= B A empile puis B (note pour avoir "A less or equal than B" intervertir A et B)
-;			----
+;			---
+macro			CGE					; A >= B A empile puis B (note pour avoir "A less or equal than B" intervertir A et B)
+;			---
   POP_RBX								; depiler le B dans RBX
   db 0x48, 0x39, 0x5D, 0x00						; cmp [rbp], rbx   (comparer avec A, calcule B-A)
   db 0x0F, 0x9D, 0x45, 0x00						; setge [rbp]
 end macro
-;			----
-macro			CLT?					; A < B	A empile puis B
-;			----
+;			---
+macro			CLT					; A < B	A empile puis B
+;			---
   POP_RBX								; depiler le B dans RBX
   db 0x48, 0x39, 0x5D, 0x00						; cmp [rbp], rbx   (comparer avec A, calcule A-B)
   db 0x0F, 0x9C, 0x45, 0x00						; setl [rbp]
 end macro
-;			----
-macro			CLE?					; A <= B	 A empile puis B
-;			----
+;			---
+macro			CLE					; A <= B	 A empile puis B
+;			---
   POP_RBX								; depiler le B dans RBX
   db 0x48, 0x39, 0x5D, 0x00						; cmp [rbp], rbx   (comparer avec A, calcule A-B)
   db 0x0F, 0x9E, 0x45, 0x00						; setle [rbp]
@@ -1116,9 +1110,9 @@ end macro
 ;  sauf FCNE qui donnera 1 (NaN /= x est True).
 ;  Sur ARM : vcmp.f64 + vmrs APSR   Sur RISC-V : feq.d / flt.d / fle.d
 
-;			-----
-macro			FCEQ?						; A = B  flottant
-;			-----
+;			----
+macro			FCEQ						; A = B  flottant
+;			----
   db 0xF2, 0x0F, 0x10, 0x4D, 0x00					; movsd xmm1, [rbp]		(B = TOS)
   DROP
   db 0xF2, 0x0F, 0x10, 0x45, 0x00					; movsd xmm0, [rbp]		(A)
@@ -1127,9 +1121,9 @@ macro			FCEQ?						; A = B  flottant
   db 0x0F, 0x9B, 0xC0						; setnp al			(PF=0 si pas NaN)
   db 0x20, 0x45, 0x00						; and [rbp], al		(result = equal ET pas NaN)
 end macro
-;			-----
-macro			FCNE?						; A /= B  flottant
-;			-----
+;			----
+macro			FCNE						; A /= B  flottant
+;			----
   db 0xF2, 0x0F, 0x10, 0x4D, 0x00					; movsd xmm1, [rbp]		(B = TOS)
   DROP
   db 0xF2, 0x0F, 0x10, 0x45, 0x00					; movsd xmm0, [rbp]		(A)
@@ -1138,36 +1132,36 @@ macro			FCNE?						; A /= B  flottant
   db 0x0F, 0x9A, 0xC0						; setp al			(PF=1 si NaN)
   db 0x08, 0x45, 0x00						; or [rbp], al			(result = different OU NaN)
 end macro
-;			-----
-macro			FCGT?						; A > B  flottant
-;			-----
+;			----
+macro			FCGT						; A > B  flottant
+;			----
   db 0xF2, 0x0F, 0x10, 0x4D, 0x00					; movsd xmm1, [rbp]		(B = TOS)
   DROP
   db 0xF2, 0x0F, 0x10, 0x45, 0x00					; movsd xmm0, [rbp]		(A)
   db 0x66, 0x0F, 0x2E, 0xC1						; ucomisd xmm0, xmm1
   db 0x0F, 0x97, 0x45, 0x00						; seta [rbp]			(A above B)
 end macro
-;			-----
-macro			FCGE?						; A >= B  flottant
-;			-----
+;			----
+macro			FCGE						; A >= B  flottant
+;			----
   db 0xF2, 0x0F, 0x10, 0x4D, 0x00					; movsd xmm1, [rbp]		(B = TOS)
   DROP
   db 0xF2, 0x0F, 0x10, 0x45, 0x00					; movsd xmm0, [rbp]		(A)
   db 0x66, 0x0F, 0x2E, 0xC1						; ucomisd xmm0, xmm1
   db 0x0F, 0x93, 0x45, 0x00						; setae [rbp]			(A above or equal B)
 end macro
-;			-----
-macro			FCLT?						; A < B  flottant
-;			-----
+;			----
+macro			FCLT						; A < B  flottant
+;			----
   db 0xF2, 0x0F, 0x10, 0x4D, 0x00					; movsd xmm1, [rbp]		(B = TOS)
   DROP
   db 0xF2, 0x0F, 0x10, 0x45, 0x00					; movsd xmm0, [rbp]		(A)
   db 0x66, 0x0F, 0x2E, 0xC8						; ucomisd xmm1, xmm0		(INVERSER : B vs A)
   db 0x0F, 0x97, 0x45, 0x00						; seta [rbp]			(B above A = A below B)
 end macro
-;			-----
-macro			FCLE?						; A <= B  flottant
-;			-----
+;			----
+macro			FCLE						; A <= B  flottant
+;			----
   db 0xF2, 0x0F, 0x10, 0x4D, 0x00					; movsd xmm1, [rbp]		(B = TOS)
   DROP
   db 0xF2, 0x0F, 0x10, 0x45, 0x00					; movsd xmm0, [rbp]		(A)
@@ -1181,7 +1175,7 @@ end macro
 ;-----------------------------------------------------------------------------------------------------------------------
 
 ;			-------------
-macro			BRA?	lbl				; inconditionnel
+macro			BRA	lbl				; inconditionnel
 ;			-------------
   local disp
 ;  if disp >= -128 & disp <= 127
@@ -1194,7 +1188,7 @@ macro			BRA?	lbl				; inconditionnel
   disp = lbl-$
 end macro
 ;			-------------
-macro			BT?	lbl				; branch true
+macro			BT	lbl				; branch true
 ;			-------------
   POP_RAX
   db 0x08, 0xC0							; or AL, AL
@@ -1209,7 +1203,7 @@ macro			BT?	lbl				; branch true
   disp = lbl-$
 end macro
 ;			-------------
-macro			BF?	lbl				; branch false
+macro			BF	lbl				; branch false
 ;			-------------
   POP_RAX
   db 0x08, 0xC0							; or AL, AL
@@ -1224,7 +1218,7 @@ macro			BF?	lbl				; branch false
   disp = lbl-$
 end macro
 ;			-------------------------
-macro			CALL?	prefix, subname			; CALL par offset
+macro			CALL	prefix, subname			; CALL par offset
 ;			-------------------------
   postpone
     if ~definite prefix#subname#_
@@ -1238,7 +1232,7 @@ macro			CALL?	prefix, subname			; CALL par offset
   ofs = prefix#subname#_ - $
 end macro
 ;			---------------------------
-macro			CALLI?	; prefix, subname			; CALL indirect par RAX
+macro			CALLI					; CALL indirect par RAX
 ;			---------------------------
 ;  postpone
 ;    if ~definite prefix#subname#_
@@ -1250,7 +1244,7 @@ macro			CALLI?	; prefix, subname			; CALL indirect par RAX
   db 0xFF, 0xD0							; CALL RAX empile sur la micro-pile des adresses de retour (qui	croit vers le bas)
 end macro
 ;			----------------------
-macro			RTD?	param_size:0
+macro			RTD	param_size:0
 ;			----------------------
   prm_size = param_size
   assert prm_size >= 0						; la taille de desallocation est donnee positive
@@ -1271,7 +1265,7 @@ end macro
 ;-----------------------------------------------------------------------------------------------------------------------
 
 ;			--------------------
-macro			LINK?	lvl, alloc			; ALLOCATION POUR VARIABLES LOCALES APRES FRAME PTR
+macro			LINK	lvl, alloc			; ALLOCATION POUR VARIABLES LOCALES APRES FRAME PTR
 ;			--------------------
   if lvl > 0							; ATTENTION : rien au lvl 0
     FP_IN_RAX	lvl						; store FP(lvl) le pointeur de pile RBP reste a pointer sur l'empile
@@ -1301,7 +1295,7 @@ macro			LINK?	lvl, alloc			; ALLOCATION POUR VARIABLES LOCALES APRES FRAME PTR
 end macro
 
 ;			-------------
-macro			UNLINK?	lvl				; DISPOSE VARS LOCALES ET RESTORE FRAME PTR
+macro			UNLINK	lvl				; DISPOSE VARS LOCALES ET RESTORE FRAME PTR
 ;			-------------
   FP_IN_RBP	lvl						; (throw locals)
   POP_RAX
@@ -1357,41 +1351,6 @@ elab:
 
 end macro
 
-
-;	Une chaine Ada est un tableau d'octets caracteres, c'est a dire un descripteur [ PTR_TO CHARS qword | CAR_SIZE dword | FIRST dword | LAST dword ]
-; et des caracteres qui pointes par PTR_TO_CHARS peuvent etre detaches du descripteur. Ici, cas de constante, les caracteres sont juste apres le descripteur.
-;	On décompose en deux parties la constitution d'une chaîne pour pouvoir insérer tous les octets voulus.
-
-;			--------------
-macro			BEGIN_BLOC_DEF_OLD				; Debut de definition d'un bloc octets utilisable comme STRING Ada
-;			--------------
-;
-;BLOC_DEF_ACTIF = 1
-  esc struc BYTES_BLOC						; Structure du bloc type STRING avec saut de fin de macro par "esc" pour coupure en deux parties
-    postpone							; ATTENTION : différé terminé par la macro BYTE_BLK_END
-    local data
-    local info
-    local str_bit_size
-    align_q							; aligner le doublet descripteur sur un quadword (taille adresses)
-  .data_ptr = $							; adresse de l'adresse de data
-    dq	data							; offset 0 : adresse des octets
-  .info_ptr = $							;
-    dq	info							; offset 8 : adresse des infos d'usage associées TOT_SIZ, COMP_SIZ, FST_1, LST_1
-  info = $							; info d'usage mises ici
-    dd	str_bit_size, 8, 1, str_bit_size/8				; offset 16 : TOT_SIZ=str_bit_size ; offset 20 :  COMP_SIZ=8bits ; offset	24 : FST=1 ; offset 28 : LST=str_bit_size/8
-    virtual at 0							; definition des offsets sur le useinfo
-    SIZ = $
-    rd 1
-    COMP_SIZ = $
-    rd 1
-    FST_1 = $
-    rd 1
-    LST_1 = $
-    end virtual
-  data = $							; pour une constante les caracteres suivent (pour une chaine variable ce n'est pas le cas, les octets sont dans la co-pile)
-								; les octets deront places ici
-end macro
-
 ;			--------------
 macro			BEGIN_BLOC_DEF				; Debut du bloc d'images d'un enumere
 ;			--------------
@@ -1403,9 +1362,9 @@ macro			BEGIN_BLOC_DEF				; Debut du bloc d'images d'un enumere
 IMAGES.data = $							; les db d'images suivent, inline
 end macro
 
-;			------------
+;			---------------------------------
 macro			END_BLOC_DEF	siz, fst, lst		; Fin : pose le ENUM_USE_INFO etendu
-;			------------
+;			---------------------------------
 ;	CONTRAT (record ENUM_USE_INFO du prelude + doublet images) :
 ;	  SIZ @0 (dd) | FST @+4 | LST @+8 | pad | data_ptr @+16 | info_ptr @+24
 ;	  use__info pointe SIZ ; TEXT_IO (GET_ENUM_IMAGES) lit le doublet a __u+16.
@@ -1426,6 +1385,10 @@ IMAGES.info_ptr = $
 	dq IMAGES.info
 IMAGES.skip:
 end macro
+
+;	Une chaine Ada est un tableau d'octets caracteres, c'est a dire un descripteur [ PTR_TO CHARS qword | CAR_SIZE dword | FIRST dword | LAST dword ]
+; et des caracteres qui pointes par PTR_TO_CHARS peuvent etre detaches du descripteur. Ici, cas de constante, les caracteres sont juste apres le descripteur.
+;	On décompose en deux parties la constitution d'une chaîne pour pouvoir insérer tous les octets voulus.
 
 ;			---------------------
 macro			STR	name, bytes			; Definition d'une constante chaine au format d'un tableau de caracteres (pour traitement homogene des chaines)
@@ -1488,7 +1451,7 @@ end if
 
   end virtual
   load_instruc
-  Sa lvl, field_name#__u
+  SA lvl, field_name#__u
 end macro
 
 ;			---------------------------
@@ -1521,14 +1484,26 @@ end macro
 macro			VAR	name_disp, sizChar, siz:1		; Definition d'un lieu de variable
 ;			-----------------------------------
   virtual VARzone
-    if `sizChar = 'b'  |  `sizChar = 'w'  |  `sizChar = 'd'  |  `sizChar = 'q'
-      align_#sizChar
+     if `sizChar = 'B'  |  `sizChar = 'b'
+      align_b
       name_disp = $							; displacement des data de variable
-      r#sizChar siz							; reservation
+      rb siz							; reservation
+    else if `sizChar = 'W'  |  `sizChar = 'w'
+      align_w
+      name_disp = $
+      rw siz
+    else if `sizChar = 'D'  |  `sizChar = 'd'
+      align_d
+      name_disp = $
+      rd siz
+    else if `sizChar = 'Q'  |  `sizChar = 'q'
+      align_q
+      name_disp = $
+      rq siz
     else
       align_q							; assurer l'alignement de pile dans tous les cas possibles
       name_disp = $							; displacement des data de variable
-      rb sizChar
+      rb sizChar							; taille numerique en octets
     end if
   end virtual
 end macro
@@ -1573,7 +1548,7 @@ end if
 end macro
 
 ;			----------------------------
-macro			EXC_MACH?		lvl, ctx			; PILIER 11 : photographie de l'etat machine cache
+macro			EXC_MACH		lvl, ctx			; PILIER 11 : photographie de l'etat machine cache
 ;			----------------------------			; dans le contexte de reprise a [FP(lvl) + ctx].
 		; Remplit +16.. : RBP (pile de travail, etat courant),
 		; RSP (micro-pile), R13/R14 (co-pile), nlvl = lvl+1,
@@ -1605,7 +1580,7 @@ macro			EXC_MACH?		lvl, ctx			; PILIER 11 : photographie de l'etat machine cache
 end macro
 
 ;			-----------------------
-macro			EXC_RAISE?	top			; PILIER 11 : deroulage. Corps de l'INSTANCE UNIQUE,
+macro			EXC_RAISE		top			; PILIER 11 : deroulage. Corps de l'INSTANCE UNIQUE,
 ;			-----------------------			; posee par le wrapper sous le label exc_raise_ ;
 			; top = deplacement VARzone niveau 0 du sommet de
 			; pile des contextes (EXCEPTIONS_TOP_CTX_disp).
@@ -1642,9 +1617,9 @@ end macro
 ; LEN en octets, borne a 0 par CLAMP0 en amont (piege n 52) -- garde jz neanmoins.
 ; Detruit RAX (al), RCX, RSI, RDI.
 
-;			-----------
-macro			BLK_OP_OCTET opc*				; usine interne : opc = octet d'opcode "op r/m8, r8"
-;			-----------
+;			------------------------
+macro			BLK_OP_OCTET	opc*			; usine interne : opc = octet d'opcode "op r/m8, r8"
+;			------------------------
   local  boucle, fin
   POP_RSI								; @SRC (operande droit)
   POP_RCX								; LEN (octets)
@@ -1660,25 +1635,22 @@ boucle:
 fin:
 end macro
 ;			------
-macro			BLKAND?					; [DST] and= [SRC] octet a octet
+macro			BLKAND					; [DST] and= [SRC] octet a octet
 ;			------
   BLK_OP_OCTET 0x20
 end macro
-
 ;			-----
-macro			BLKOU?					; [DST] or= [SRC] octet a octet
+macro			BLKOU					; [DST] or= [SRC] octet a octet
 ;			-----
   BLK_OP_OCTET 0x08
 end macro
-
 ;			------
-macro			BLKOUX?					; [DST] xor= [SRC] octet a octet
+macro			BLKOUX					; [DST] xor= [SRC] octet a octet
 ;			------
   BLK_OP_OCTET 0x30
 end macro
-
 ;			------
-macro			BLKNOT?					; NOT composite : chaque octet ^= 1
+macro			BLKNOT					; NOT composite : chaque octet ^= 1
 ;			------
 ; Pile = @DST, LEN.  xor avec 1 et non 0xFF : c'est le NOT booleen 0/1
 ; (piege n 5) applique par octet.  La destination a deja recu la copie
@@ -1838,9 +1810,9 @@ macro			SYS_CLOCK_GETTIME
 end macro
 
 
-;			-------------
-macro			SYS_PUT_CHAR?				; affiche un seul caractere sur stdout
-;			-------------
+;			------------
+macro			SYS_PUT_CHAR				; affiche un seul caractere sur stdout
+;			------------
 
   db 0x48, 0x89, 0xEE						; mov rsi, rbp	(ADRESSE du caractere empile sur la pile)
   db 0x6A, 0x01							; push 1
@@ -1852,9 +1824,9 @@ macro			SYS_PUT_CHAR?				; affiche un seul caractere sur stdout
 end macro
 
 
-;			------------
-macro			SYS_PUT_STR?				; affiche tout une chaine sur stdout
-;			------------
+;			-----------
+macro			SYS_PUT_STR				; affiche tout une chaine sur stdout
+;			-----------
   POP_RSI								;			(l'adresse du doublet @DATA | @USEINFO a ete empilee)
   db 0x48, 0x8B, 0x46, 0x08						; mov rax, [rsi+8]		(rax contient l'adresse du USEINFO
   db 0x8B, 0x50, 0x0C						; mov edx, dword ptr[rax+12]  (edx=last)
@@ -1880,9 +1852,9 @@ end macro
 ;        .c_ispeed  rd 1						; input speed
 ;        .c_ospeed  rd 1						; output speed
 ;}
-;			-------------
-macro			SYS_GET_CHAR?				; lit un seul caractere sur stdin en mode non canonique
-;			-------------
+;			------------
+macro			SYS_GET_CHAR				; lit un seul caractere sur stdin en mode non canonique
+;			------------
 			; reserver le termios sur la micro-pile du rsp
   db 0x48, 0x83, 0xEC, 0x40						; sub rsp, 64 (espace large pour le termios)
 			; amener le termios
@@ -1922,10 +1894,9 @@ macro			SYS_GET_CHAR?				; lit un seul caractere sur stdin en mode non canonique
   db 0x48, 0x83, 0xC4, 0x40						; add rsp, 64
 end macro
 
-
-;			------------
-macro			SYS_GET_STR?				; lit une ligne sur stdin
-;			------------
+;			-----------
+macro			SYS_GET_STR				; lit une ligne sur stdin
+;			-----------
   POP_RSI								;			(l'adresse du doublet @DATA | @USEINFO a ete empilee)
   db 0x48, 0x8B, 0x46, 0x08						; mov rax, [rsi+8]		(rax contient l'adresse du USEINFO
   db 0x8B, 0x50, 0x0C						; mov edx, dword ptr[rax+12]  (edx=last)
@@ -1939,8 +1910,6 @@ macro			SYS_GET_STR?				; lit une ligne sur stdin
   db 0xFF, 0xC8							; dec eax			(diminuer la longueur rendue = retirer le caractere de fin)
   db 0x89, 0x06							; mov dword ptr[rsi], eax	(reporter la longueur effectivement lue retournee par syscall dans eax)
 end macro
-
-
 
 ;			----------------------
 macro			COPY_STRING_APPEND_NUL			; donne le descripteur pointe par RSI, copie la chaine sur la pile montante et ajoute un NUL de fin
@@ -1961,24 +1930,22 @@ macro			COPY_STRING_APPEND_NUL			; donne le descripteur pointe par RSI, copie la
   db 0x48, 0x8D, 0x7D, 0x08						; lea rdi, [rbp+0x8]	(remettre RDI sur le debut de chaine)
 end macro
 
-
-;			----------------
-macro			SYS_FILE_CREATE?				; FONCTION creation d'un fichier	rax=2 rdi=ptr_name rsi=flags(O_CREAT) rdx=mode(S_IRWXU) retour rax=ID
-;			----------------
+;			---------------
+macro			SYS_FILE_CREATE				; FONCTION creation d'un fichier	rax=2 rdi=ptr_name rsi=flags(O_CREAT) rdx=mode(S_IRWXU) retour rax=ID
+;			---------------
   POP_RSI								; adresse du descripteur de chaine Ada
   COPY_STRING_APPEND_NUL						; faire une copie sur pile avec NUL en fin pointee par RDI
   db 0x6A, 0x02							; push 2
   db 0x58								; pop rax			(rax=2=sys_open )
-  db 0xBE, 0x42, 0x00, 0x00, 0x00					; mov esi, 0x42		(rsi=0x42=O_CREAT+O_RDWR)
+  db 0xBE, 0x42, 0x02, 0x00, 0x00					; mov esi, 0x242		(rsi=0x242=O_CREAT+O_RDWR+O_TRUNC)
   db 0xBA, 0xC0, 0x01, 0x00, 0x00					; mov edx, 0x1C0		(rdx=b111_000_000=u+rwx)
   db 0x0F, 0x05							; syscall
   db 0x48, 0x89, 0x45, 0x00						; mov QWORD PTR [rbp], rax	(ATTENTION PAS PUSH ! ID de fichier rendu sur le lieu result de la fonction)
 end macro
 
-
-;			--------------
-macro			SYS_FILE_OPEN?				; FONCTION ouverture d'un fichier
-;			--------------
+;			-------------
+macro			SYS_FILE_OPEN				; FONCTION ouverture d'un fichier
+;			-------------
   POP_RSI								; adresse du descripteur de chaine Ada
   COPY_STRING_APPEND_NUL						; faire une copie sur pile avec NUL en fin pointee par RDI
   db 0x6A, 0x02							; push 2
@@ -1990,10 +1957,9 @@ macro			SYS_FILE_OPEN?				; FONCTION ouverture d'un fichier
   db 0x48, 0x89, 0x45, 0x00						; mov QWORD PTR [rbp], rax	(ATTENTION PAS PUSH ! ID de fichier rendu sur le lieu result de la fonction)
 end macro
 
-
-;			-----------------
-macro			SYS_FILE_SET_POS?				; positionnement sur un fichier
-;			-----------------
+;			----------------
+macro			SYS_FILE_SET_POS				; positionnement sur un fichier
+;			----------------
   POP_RDI								;		(rdi = FILE_ID)
   POP_RSI								;		(rsi = offset du début)
   db 0x48, 0x31, 0xD2						; xor rdx, rdx	(rdx = 0 = SEEK_SET = position du début
@@ -2003,10 +1969,9 @@ macro			SYS_FILE_SET_POS?				; positionnement sur un fichier
   db 0x48, 0x89, 0x45, 0x00						; mov QWORD PTR [rbp], rax	(ATTENTION PAS PUSH ! ID de fichier rendu sur le lieu result de la fonction)
 end macro
 
-
-;			------------------
-macro			SYS_FILE_GET_POS?				; position courante dans un fichier (lseek SEEK_CUR avec offset 0)
-;			------------------
+;			----------------
+macro			SYS_FILE_GET_POS				; position courante dans un fichier (lseek SEEK_CUR avec offset 0)
+;			----------------
   POP_RDI								;		(rdi = FILE_ID)
   db 0x48, 0x31, 0xF6						; xor rsi, rsi	(rsi = 0  = offset)
   db 0x6A, 0x01							; push 1
@@ -2017,10 +1982,9 @@ macro			SYS_FILE_GET_POS?				; position courante dans un fichier (lseek SEEK_CUR
   db 0x48, 0x89, 0x45, 0x00						; mov QWORD PTR [rbp], rax	(position courante en octets rendue sur le lieu result de la fonction)
 end macro
 
-
-;			------------------
-macro			SYS_FILE_GET_SIZE?				; taille d'un fichier en octets (lseek SEEK_END puis SEEK_SET pour preserver la position courante)
-;			------------------
+;			-----------------
+macro			SYS_FILE_GET_SIZE				; taille d'un fichier en octets (lseek SEEK_END puis SEEK_SET pour preserver la position courante)
+;			-----------------
   POP_RDI								;		(rdi = FILE_ID)
   ; --- 1. Sauver la position courante : lseek(fd, 0, SEEK_CUR) -> rax = position courante
   db 0x48, 0x31, 0xF6						; xor rsi, rsi	(rsi = 0  = offset)
@@ -2048,10 +2012,9 @@ macro			SYS_FILE_GET_SIZE?				; taille d'un fichier en octets (lseek SEEK_END pu
   db 0x4C, 0x89, 0x4D, 0x00						; mov QWORD PTR [rbp], r9	(taille en octets rendue sur le lieu result de la fonction)
 end macro
 
-
-;			---------------
-macro			SYS_FILE_WRITE?				; ecriture sur un fichier
-;			---------------
+;			--------------
+macro			SYS_FILE_WRITE				; ecriture sur un fichier
+;			--------------
   POP_RDI								;		(rdi = FILE_ID)
   POP_RSI								;		(rsi = ADRESSE du tampon source)
   POP_RDX								;		(rdx = LONGUEUR du transfert)
@@ -2061,10 +2024,9 @@ macro			SYS_FILE_WRITE?				; ecriture sur un fichier
   db 0x48, 0x89, 0x45, 0x00						; mov QWORD PTR [rbp], rax	(ATTENTION PAS PUSH ! ID de fichier rendu sur le lieu result de la fonction)
 end macro
 
-
-;			--------------
-macro			SYS_FILE_READ?				; lecture sur un fichier
-;			--------------
+;			-------------
+macro			SYS_FILE_READ				; lecture sur un fichier
+;			-------------
   POP_RDI								;		(rdi = FILE_ID)
   POP_RSI								;		(rsi = ADRESSE du tampon source)
   POP_RDX								;		(rdx = LONGUEUR du transfert)
@@ -2074,10 +2036,9 @@ macro			SYS_FILE_READ?				; lecture sur un fichier
   db 0x48, 0x89, 0x45, 0x00						; mov QWORD PTR [rbp], rax	(ATTENTION PAS PUSH ! ID de fichier rendu sur le lieu result de la fonction)
 end macro
 
-
-;			---------------
-macro			SYS_FILE_CLOSE?				; fermeture d'un fichier
-;			---------------
+;			--------------
+macro			SYS_FILE_CLOSE				; fermeture d'un fichier
+;			--------------
   POP_RDI								; ID fichier empile
   db 0x6A, 0x03							; push 3
   db 0x58								; pop rax			(rax=3=sys_close )
@@ -2085,10 +2046,9 @@ macro			SYS_FILE_CLOSE?				; fermeture d'un fichier
   db 0x48, 0x89, 0x45, 0x00						; mov QWORD PTR [rbp], rax	(ATTENTION PAS PUSH ! ID de fichier rendu sur le lieu result de la fonction)
 end macro
 
-
-;			----------------
-macro			SYS_FILE_DELETE?				; destruction d'un fichier
-;			----------------
+;			---------------
+macro			SYS_FILE_DELETE				; destruction d'un fichier
+;			---------------
   POP_RSI								; ptr au doublet @data/@info
   COPY_STRING_APPEND_NUL						; faire une copie sur pile avec NUL en fin pointee par RDI
   db 0xB8, 0x57, 0x00, 0x00, 0x00					; mov eax, 87			(rax=87=sys_unlink )
@@ -2096,9 +2056,8 @@ macro			SYS_FILE_DELETE?				; destruction d'un fichier
   db 0x48, 0x89, 0x45, 0x00						; mov QWORD PTR [rbp], rax	(ATTENTION PAS PUSH ! ID de fichier rendu sur le lieu result de la fonction)
 end macro
 
-
 ;			----------------
-macro			SYS_EXIT? code:0				; retour au systeme
+macro			SYS_EXIT	code:0				; retour au systeme
 ;			----------------
   db 0x6A, 0x3C							; push x3C  (sys_exit rax=60)
   db 0x58								; pop rax

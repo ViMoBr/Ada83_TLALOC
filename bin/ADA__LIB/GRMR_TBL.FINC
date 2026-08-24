@@ -18,68 +18,68 @@ namespace GRMR_TBL				;---------- PACKAGE DECLARATION
 					; _AC_BYTE TYPE RANGE INFO
 _AC_BYTE = '_AC_BYTE'
 namespace _AC_BYTE
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, b
-VAR LST, b
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, B
+VAR LST, B
 	LI	8
-	Sd	0, SIZ
+	SD	0, SIZ__
 ; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
 	LI	0
-	Sb	0, FST
+	SB	0, FST
 ; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
 	LI	255
-	Sb	0, LST
+	SB	0, LST
 end namespace
 
 					; _AC_SHORT TYPE RANGE INFO
 _AC_SHORT = '_AC_SHORT'
 namespace _AC_SHORT
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR FST, w
-VAR LST, w
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR FST, W
+VAR LST, W
 	LI	16
-	Sd	0, SIZ
+	SD	0, SIZ__
 ; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
 	LI	00032768
 	NEG
-	Sw	0, FST
+	SW	0, FST
 ; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
 	LI	32767
-	Sw	0, LST
+	SW	0, LST
 end namespace
 
 					; array decl constrained array type info
 _ST_TBL_TYPE = '_ST_TBL_TYPE'
 namespace _ST_TBL_TYPE
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR _COMP_SIZ, d
-VAR _FST_1, d
-VAR _LST_1, d
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
 	LI	32
-	Sd	0, _COMP_SIZ
-	Ld	0, _COMP_SIZ
+	SD	0, _COMP_SIZ
+	LD	0, _COMP_SIZ
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
-	Sd	0, _FST_1
+	SD	0, _FST_1
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1000
-	Sd	0, _LST_1
-	Ld	0, _LST_1
-	Ld	0, _FST_1
+	SD	0, _LST_1
+	LD	0, _LST_1
+	LD	0, _FST_1
 	SUB
 	INC
 	CLAMP0
 	MUL
-	Sd	0, SIZ
+	SD	0, SIZ__
   virtual at 4
 COMP_SIZ = $
 	rd 1 
@@ -93,29 +93,29 @@ end namespace
 					; array decl constrained array type info
 _AC_SYM_TYPE = '_AC_SYM_TYPE'
 namespace _AC_SYM_TYPE
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR _COMP_SIZ, d
-VAR _FST_1, d
-VAR _LST_1, d
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
 	LI	8
-	Sd	0, _COMP_SIZ
-	Ld	0, _COMP_SIZ
+	SD	0, _COMP_SIZ
+	LD	0, _COMP_SIZ
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
-	Sd	0, _FST_1
+	SD	0, _FST_1
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	4800
-	Sd	0, _LST_1
-	Ld	0, _LST_1
-	Ld	0, _FST_1
+	SD	0, _LST_1
+	LD	0, _LST_1
+	LD	0, _FST_1
 	SUB
 	INC
 	CLAMP0
 	MUL
-	Sd	0, SIZ
+	SD	0, SIZ__
   virtual at 4
 COMP_SIZ = $
 	rd 1 
@@ -129,29 +129,29 @@ end namespace
 					; array decl constrained array type info
 _AC_TBL_TYPE = '_AC_TBL_TYPE'
 namespace _AC_TBL_TYPE
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR _COMP_SIZ, d
-VAR _FST_1, d
-VAR _LST_1, d
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
 	LI	16
-	Sd	0, _COMP_SIZ
-	Ld	0, _COMP_SIZ
+	SD	0, _COMP_SIZ
+	LD	0, _COMP_SIZ
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
-	Sd	0, _FST_1
+	SD	0, _FST_1
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	6000
-	Sd	0, _LST_1
-	Ld	0, _LST_1
-	Ld	0, _FST_1
+	SD	0, _LST_1
+	LD	0, _LST_1
+	LD	0, _FST_1
 	SUB
 	INC
 	CLAMP0
 	MUL
-	Sd	0, SIZ
+	SD	0, SIZ__
   virtual at 4
 COMP_SIZ = $
 	rd 1 
@@ -165,29 +165,29 @@ end namespace
 					; array decl constrained array type info
 _NTER_PG_TYPE = '_NTER_PG_TYPE'
 namespace _NTER_PG_TYPE
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR _COMP_SIZ, d
-VAR _FST_1, d
-VAR _LST_1, d
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
 	LI	8
-	Sd	0, _COMP_SIZ
-	Ld	0, _COMP_SIZ
+	SD	0, _COMP_SIZ
+	LD	0, _COMP_SIZ
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
-	Sd	0, _FST_1
+	SD	0, _FST_1
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	255
-	Sd	0, _LST_1
-	Ld	0, _LST_1
-	Ld	0, _FST_1
+	SD	0, _LST_1
+	LD	0, _LST_1
+	LD	0, _FST_1
 	SUB
 	INC
 	CLAMP0
 	MUL
-	Sd	0, SIZ
+	SD	0, SIZ__
   virtual at 4
 COMP_SIZ = $
 	rd 1 
@@ -201,29 +201,29 @@ end namespace
 					; array decl constrained array type info
 _NTER_LN_TYPE = '_NTER_LN_TYPE'
 namespace _NTER_LN_TYPE
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR _COMP_SIZ, d
-VAR _FST_1, d
-VAR _LST_1, d
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
 	LI	8
-	Sd	0, _COMP_SIZ
-	Ld	0, _COMP_SIZ
+	SD	0, _COMP_SIZ
+	LD	0, _COMP_SIZ
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
-	Sd	0, _FST_1
+	SD	0, _FST_1
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	255
-	Sd	0, _LST_1
-	Ld	0, _LST_1
-	Ld	0, _FST_1
+	SD	0, _LST_1
+	LD	0, _LST_1
+	LD	0, _FST_1
 	SUB
 	INC
 	CLAMP0
 	MUL
-	Sd	0, SIZ
+	SD	0, SIZ__
   virtual at 4
 COMP_SIZ = $
 	rd 1 
@@ -237,19 +237,19 @@ end namespace
 					; _GRMR_TBL_RECORD RECORD TYPE INFO
 _GRMR_TBL_RECORD = '_GRMR_TBL_RECORD'
 namespace _GRMR_TBL_RECORD
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-USEINFO 0, ST_TBL, 	La 0, STANDARD.GRMR_TBL._ST_TBL_TYPE.use__info
-USEINFO 0, ST_TBL_LAST, 	La 0, STANDARD._INTEGER.use__info
-USEINFO 0, AC_SYM, 	La 0, STANDARD.GRMR_TBL._AC_SYM_TYPE.use__info
-USEINFO 0, AC_TBL, 	La 0, STANDARD.GRMR_TBL._AC_TBL_TYPE.use__info
-USEINFO 0, AC_SYM_LAST, 	La 0, STANDARD._INTEGER.use__info
-USEINFO 0, AC_TBL_LAST, 	La 0, STANDARD._INTEGER.use__info
-USEINFO 0, NTER_PG, 	La 0, STANDARD.GRMR_TBL._NTER_PG_TYPE.use__info
-USEINFO 0, NTER_LN, 	La 0, STANDARD.GRMR_TBL._NTER_LN_TYPE.use__info
-USEINFO 0, NTER_LAST, 	La 0, STANDARD._INTEGER.use__info
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+USEINFO 0, ST_TBL, 	LA 0, STANDARD.GRMR_TBL._ST_TBL_TYPE.use__info
+USEINFO 0, ST_TBL_LAST, 	LA 0, STANDARD._INTEGER.use__info
+USEINFO 0, AC_SYM, 	LA 0, STANDARD.GRMR_TBL._AC_SYM_TYPE.use__info
+USEINFO 0, AC_TBL, 	LA 0, STANDARD.GRMR_TBL._AC_TBL_TYPE.use__info
+USEINFO 0, AC_SYM_LAST, 	LA 0, STANDARD._INTEGER.use__info
+USEINFO 0, AC_TBL_LAST, 	LA 0, STANDARD._INTEGER.use__info
+USEINFO 0, NTER_PG, 	LA 0, STANDARD.GRMR_TBL._NTER_PG_TYPE.use__info
+USEINFO 0, NTER_LN, 	LA 0, STANDARD.GRMR_TBL._NTER_LN_TYPE.use__info
+USEINFO 0, NTER_LAST, 	LA 0, STANDARD._INTEGER.use__info
 virtual at 0				; calcul des offsets statiques
 STATOFS ST_TBL, 4000, 4
 STATOFS ST_TBL_LAST, 4, 4
@@ -263,16 +263,16 @@ STATOFS NTER_LAST, 4, 4
 size = $
 end virtual
 	LI	 size*8
-	Sd	0, SIZ
+	SD	0, SIZ__
 end namespace
  hexa_show 'var elab GRMR ', $
-VAR GRMR_disp, q				; variable record : pointeur aux data record
-VAR GRMR__u, q				; variable record : pointeur aux useinfo
+VAR GRMR_disp, Q				; variable record : pointeur aux data record
+VAR GRMR__u, Q				; variable record : pointeur aux useinfo
 VAR GRMR__dat, STANDARD.GRMR_TBL._GRMR_TBL_RECORD.size
 	LVA	0, GRMR__dat
-	Sa	0, GRMR_disp				; record fin
-	LVA	0, STANDARD.GRMR_TBL._GRMR_TBL_RECORD.SIZ
-	Sa	0, GRMR__u
+	SA	0, GRMR_disp				; record fin
+	LVA	0, STANDARD.GRMR_TBL._GRMR_TBL_RECORD.SIZ__
+	SA	0, GRMR__u
 
  hexa_show ' disp ', GRMR_disp
 GRMR_TBL_IO = 'GRMR_TBL_IO'
@@ -292,30 +292,30 @@ ST_ELEMENT_TYPE.elab:
 post_ST_ELEMENT_TYPE:
 BRA post_INADR_ELEMENT_TYPE
 INADR_ELEMENT_TYPE.elab:
-	LIa
+	LIA
 	RTD 0
 post_INADR_ELEMENT_TYPE:
 BRA post_OUTADR_ELEMENT_TYPE
 OUTADR_ELEMENT_TYPE.elab:
-	LIa
+	LIA
 	RTD 0
 post_OUTADR_ELEMENT_TYPE:
-VAR ELEMENT_TYPE__outadr_ofs, q
+VAR ELEMENT_TYPE__outadr_ofs, Q
 	LCA OUTADR_ELEMENT_TYPE.elab
-	Sa	 0, ELEMENT_TYPE__outadr_ofs
-VAR ELEMENT_TYPE__inadr_ofs, q
+	SA	 0, ELEMENT_TYPE__outadr_ofs
+VAR ELEMENT_TYPE__inadr_ofs, Q
 	LCA INADR_ELEMENT_TYPE.elab
-	Sa	 0, ELEMENT_TYPE__inadr_ofs
-VAR ELEMENT_TYPE__st_ofs, q
+	SA	 0, ELEMENT_TYPE__inadr_ofs
+VAR ELEMENT_TYPE__st_ofs, Q
 	LCA ST_ELEMENT_TYPE.elab
-	Sa	 0, ELEMENT_TYPE__st_ofs
-VAR ELEMENT_TYPE__ld_ofs, q
+	SA	 0, ELEMENT_TYPE__st_ofs
+VAR ELEMENT_TYPE__ld_ofs, Q
 	LCA LD_ELEMENT_TYPE.elab
-	Sa	 0, ELEMENT_TYPE__ld_ofs
-VAR ELEMENT_TYPE__u_ofs, q
-	La	 0, STANDARD.GRMR_TBL._GRMR_TBL_RECORD.use__info
-	Sa	 0, ELEMENT_TYPE__u_ofs
-VAR GFP_disp, q				; Lieu du Generic Frame Pointer 
+	SA	 0, ELEMENT_TYPE__ld_ofs
+VAR ELEMENT_TYPE__u_ofs, Q
+	LA	 0, STANDARD.GRMR_TBL._GRMR_TBL_RECORD.use__info
+	SA	 0, ELEMENT_TYPE__u_ofs
+VAR GFP_disp, Q				; Lieu du Generic Frame Pointer 
 					; CODE_PACKAGE_SPEC
  hexa_show ' spec ', $
 ; EXPANDER.DECLARATIONS.CODE_TYPE_DECL : skip PRIVATE FILE_TYPE (deferred to full type)
@@ -323,14 +323,14 @@ VAR GFP_disp, q				; Lieu du Generic Frame Pointer
 					; _FILE_MODE ENUMERATION TYPE INFO
 _FILE_MODE = '_FILE_MODE'
 namespace _FILE_MODE
-VAR use__info, q
+VAR use__info, Q
 BEGIN_BLOC_DEF
 db 0, 7, "IN_FILE"
 db 1, 8, "OUT_FILE"
 END_BLOC_DEF 8, 0, 1
 	; SIZ en bits !
 	LCA	SIZ
-	Sa	0, use__info
+	SA	0, use__info
 end namespace
 					; sub program entry decl (in instantiation TRUE )
 if defined CREATE_L1_
@@ -345,10 +345,10 @@ endPRMS					;    fin parametrage
 ELB 1
 begin:
 	LVA	 0, GFP_disp
-	La 	 1, -FORM_ofs
-	La 	 1, -NAME_ofs
-	Lb	 1, -MODE_ofs
-	La 	 1, -FILE_ofs
+	LA 	 1, -FORM_ofs
+	LA 	 1, -NAME_ofs
+	LB	 1, -MODE_ofs
+	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,CREATE_L1
 	UNLINK	 1
 	RTD	prm_siz
@@ -367,10 +367,10 @@ endPRMS					;    fin parametrage
 ELB 1
 begin:
 	LVA	 0, GFP_disp
-	La 	 1, -FORM_ofs
-	La 	 1, -NAME_ofs
-	Lb	 1, -MODE_ofs
-	La 	 1, -FILE_ofs
+	LA 	 1, -FORM_ofs
+	LA 	 1, -NAME_ofs
+	LB	 1, -MODE_ofs
+	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,OPEN_L2
 	UNLINK	 1
 	RTD	prm_siz
@@ -386,7 +386,7 @@ endPRMS					;    fin parametrage
 ELB 1
 begin:
 	LVA	 0, GFP_disp
-	La 	 1, -FILE_ofs
+	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,CLOSE_L3
 	UNLINK	 1
 	RTD	prm_siz
@@ -402,7 +402,7 @@ endPRMS					;    fin parametrage
 ELB 1
 begin:
 	LVA	 0, GFP_disp
-	La 	 1, -FILE_ofs
+	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,DELETE_L4
 	UNLINK	 1
 	RTD	prm_siz
@@ -419,8 +419,8 @@ endPRMS					;    fin parametrage
 ELB 1
 begin:
 	LVA	 0, GFP_disp
-	Lb	 1, -MODE_ofs
-	La 	 1, -FILE_ofs
+	LB	 1, -MODE_ofs
+	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,RESET_L5
 	UNLINK	 1
 	RTD	prm_siz
@@ -436,7 +436,7 @@ endPRMS					;    fin parametrage
 ELB 1
 begin:
 	LVA	 0, GFP_disp
-	La 	 1, -FILE_ofs
+	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,RESET_L6
 	UNLINK	 1
 	RTD	prm_siz
@@ -454,9 +454,9 @@ ELB 1
 begin:
 	LI	0					; lieu result
 	LVA	 0, GFP_disp
-	La 	 1, -FILE_ofs
+	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,MODE_L7
-	Sb	 1, -result__ofs			; retour resultat
+	SB	 1, -result__ofs			; retour resultat
 	UNLINK	 1
 	RTD	prm_siz-8
 endPRO					;---------- end PRO MODE
@@ -471,9 +471,9 @@ PRMS					;    debut parametrage
 endPRMS					;    fin parametrage
 ELB 1
 begin:
-	La 	 1, -result__ofs			; lieu result = relais du slot recu (doublet)
+	LA 	 1, -result__ofs			; lieu result = relais du slot recu (doublet)
 	LVA	 0, GFP_disp
-	La 	 1, -FILE_ofs
+	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,NAME_L8
 	UNLINK	 1
 	RTD	prm_siz-8
@@ -489,9 +489,9 @@ PRMS					;    debut parametrage
 endPRMS					;    fin parametrage
 ELB 1
 begin:
-	La 	 1, -result__ofs			; lieu result = relais du slot recu (doublet)
+	LA 	 1, -result__ofs			; lieu result = relais du slot recu (doublet)
 	LVA	 0, GFP_disp
-	La 	 1, -FILE_ofs
+	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,FORM_L9
 	UNLINK	 1
 	RTD	prm_siz-8
@@ -509,9 +509,9 @@ ELB 1
 begin:
 	LI	0					; lieu result
 	LVA	 0, GFP_disp
-	La 	 1, -FILE_ofs
+	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,IS_OPEN_L10
-	Sb	 1, -result__ofs			; retour resultat
+	SB	 1, -result__ofs			; retour resultat
 	UNLINK	 1
 	RTD	prm_siz-8
 endPRO					;---------- end PRO IS_OPEN
@@ -527,8 +527,8 @@ endPRMS					;    fin parametrage
 ELB 1
 begin:
 	LVA	 0, GFP_disp
-	La 	 1, -ITEM_ofs
-	La 	 1, -FILE_ofs
+	LA 	 1, -ITEM_ofs
+	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,READ_L11
 	UNLINK	 1
 	RTD	prm_siz
@@ -545,8 +545,8 @@ endPRMS					;    fin parametrage
 ELB 1
 begin:
 	LVA	 0, GFP_disp
-	La 	 1, -ITEM_ofs
-	La 	 1, -FILE_ofs
+	LA 	 1, -ITEM_ofs
+	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,WRITE_L12
 	UNLINK	 1
 	RTD	prm_siz
@@ -564,38 +564,38 @@ ELB 1
 begin:
 	LI	0					; lieu result
 	LVA	 0, GFP_disp
-	La 	 1, -FILE_ofs
+	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,END_OF_FILE_L13
-	Sb	 1, -result__ofs			; retour resultat
+	SB	 1, -result__ofs			; retour resultat
 	UNLINK	 1
 	RTD	prm_siz-8
 endPRO					;---------- end PRO END_OF_FILE
 end if
 _FILE_NAME_BUFFER = '_FILE_NAME_BUFFER'
 namespace _FILE_NAME_BUFFER			; _FILE_NAME_BUFFER CONSTRAINED ARRAY SUBTYPE INFO
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR _COMP_SIZ, d
-VAR _FST_1, d
-VAR _LST_1, d
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
 	LI	8
-	Sd	0, _COMP_SIZ
-	Ld	0, _COMP_SIZ
+	SD	0, _COMP_SIZ
+	LD	0, _COMP_SIZ
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
-	Sd	0, _FST_1
+	SD	0, _FST_1
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	256
-	Sd	0, _LST_1
-	Ld	0, _LST_1
-	Ld	0, _FST_1
+	SD	0, _LST_1
+	LD	0, _LST_1
+	LD	0, _FST_1
 	SUB
 	INC
 	CLAMP0
 	MUL
-	Sd	0, SIZ
+	SD	0, SIZ__
   virtual at 4
 COMP_SIZ = $
 	rd 1 
@@ -609,16 +609,16 @@ end namespace
 					; _FILE_TYPE RECORD TYPE INFO
 _FILE_TYPE = '_FILE_TYPE'
 namespace _FILE_TYPE
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-USEINFO 0, ID, 	La 0, STANDARD._INTEGER.use__info
-USEINFO 0, NAME, 	La 0, STANDARD.GRMR_TBL.GRMR_TBL_IO._FILE_NAME_BUFFER.use__info
-USEINFO 0, NAME_LEN, 	La 0, STANDARD._POSITIVE.use__info
-USEINFO 0, IS_OPENED, 	La 0, STANDARD._BOOLEAN.use__info
-USEINFO 0, MODE, 	La 0, STANDARD.GRMR_TBL.GRMR_TBL_IO._FILE_MODE.use__info
-USEINFO 0, AT_END_OF_FILE, 	La 0, STANDARD._BOOLEAN.use__info
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+USEINFO 0, ID, 	LA 0, STANDARD._INTEGER.use__info
+USEINFO 0, NAME, 	LA 0, STANDARD.GRMR_TBL.GRMR_TBL_IO._FILE_NAME_BUFFER.use__info
+USEINFO 0, NAME_LEN, 	LA 0, STANDARD._POSITIVE.use__info
+USEINFO 0, IS_OPENED, 	LA 0, STANDARD._BOOLEAN.use__info
+USEINFO 0, MODE, 	LA 0, STANDARD.GRMR_TBL.GRMR_TBL_IO._FILE_MODE.use__info
+USEINFO 0, AT_END_OF_FILE, 	LA 0, STANDARD._BOOLEAN.use__info
 virtual at 0				; calcul des offsets statiques
 STATOFS ID, 4, 4
 STATOFS NAME, 256, 1
@@ -629,7 +629,7 @@ STATOFS AT_END_OF_FILE, 1, 1
 size = $
 end virtual
 	LI	 size*8
-	Sd	0, SIZ
+	SD	0, SIZ__
 end namespace
 					;---------- end generic package instantiation GRMR_TBL_IO
 end namespace

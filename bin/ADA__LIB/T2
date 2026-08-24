@@ -1,0 +1,2 @@
+#!/bin/bash
+./ADA_COMP.x86exe <<< "$1 $2 $3"

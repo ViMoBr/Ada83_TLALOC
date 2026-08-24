@@ -1912,113 +1912,968 @@ is					-------
 
 
 			---
-    procedure		GET		( FROM :in STRING;
-					  ITEM :out NUM;
-					  LAST :out POSITIVE
-					)
+    procedure		GET		( FROM :in STRING; ITEM :out NUM; LAST :out POSITIVE )
     is			---
+      ------------------------------------------------------------------
+      -- Conversion decimale correctement arrondie.
+      --
+      -- Aucun calcul flottant n'est effectue avant que la significande
+      -- IEEE definitive ait ete determinee.
+      --
+      -- Le nombre decimal est represente exactement par :
+      --
+      --              A
+      --             ---
+      --              B
+      --
+      -- puis on calcule la significande binaire par division entiere
+      -- multiprecision, avec arrondi au plus proche, ties-to-even.
+      ------------------------------------------------------------------
 
-      POS		: POSITIVE	:= FROM'FIRST;
-      VAL		: NUM		:= 0.0;
-      FRAC	: NUM		:= 0.1;
-      NEG		: BOOLEAN		:= FALSE;
-      IN_FRAC	: BOOLEAN		:= FALSE;
-      EXP_VAL	: INTEGER		:= 0;
-      EXP_NEG	: BOOLEAN		:= FALSE;
-      DONE	: BOOLEAN		:= FALSE;
-      CH		: CHARACTER;
-      HAVE_DIGIT	: BOOLEAN		:= FALSE;
+      BASE : constant INTEGER := 32768;       -- 2**15
+
+      -- STATIQUE (nombre nomme) : le composant D du record BIG est
+      -- ainsi contraint statiquement -- offsets record statiques.
+      --
+      -- Dimensionnement, au pire cas passant les gardes DEC_TOP :
+      --   SIG <= 10**SIG_DIGITS_MAX                    ~ 2659 bits
+      --   A   <= 10**1025                              ~ 3406 bits
+      --   B   <= 10**(1074 + SIG_DIGITS_MAX)           ~ 6227 bits
+      --   decalages 2**K de la localisation de E       ~ 6240 bits
+      -- soit au plus ~420 limbs de 15 bits ; 600 laisse une marge.
+      MAX_LIMBS : constant := 600;
+
+      -- Nombre maximal de chiffres significatifs absorbes dans SIG.
+      -- 768 chiffres suffisent pour arrondir correctement binary64
+      -- (borne de Gay) ; les chiffres excedentaires ne comptent que
+      -- via DROPPED et STICKY ci-dessous. 800 donne une marge.
+      SIG_DIGITS_MAX : constant := 800;
+
+      subtype LIMB is INTEGER range 0 .. BASE - 1;
+
+      type LIMB_VECTOR is array ( POSITIVE range <> ) of LIMB;
+
+      type BIG is
+        record
+          N : NATURAL;
+          D : LIMB_VECTOR( 1 .. MAX_LIMBS );
+        end record;
+
+      ------------------------------------------------------------------
+      -- Caracteristiques du format NUM.
+      --
+      -- Pour IEEE binary64 :
+      --
+      --   P              = 53
+      --   MACHINE_EMIN   = -1021
+      --   MACHINE_EMAX   =  1024
+      --
+      -- donc :
+      --
+      --   MIN_NORMAL_E   = -1022
+      --   MAX_NORMAL_E   =  1023
+      --   MIN_SUB_E      = -1074
+      ------------------------------------------------------------------
+
+      P             : constant INTEGER := NUM'MACHINE_MANTISSA;
+      MIN_NORMAL_E  : constant INTEGER := NUM'MACHINE_EMIN - 1;
+      MAX_NORMAL_E  : constant INTEGER := NUM'MACHINE_EMAX - 1;
+      MIN_SUB_E     : constant INTEGER := NUM'MACHINE_EMIN - P;
+
+      BIG_OVERFLOW : exception;
+
+      ------------------------------------------------------------------
+      -- Analyse de la chaine
+      ------------------------------------------------------------------
+
+      POS             : INTEGER := FROM'FIRST;
+      CH              : CHARACTER;
+
+      NEG             : BOOLEAN := FALSE;
+      POINT_SEEN      : BOOLEAN := FALSE;
+      HAVE_DIGIT      : BOOLEAN := FALSE;
+      NONZERO_SEEN    : BOOLEAN := FALSE;
+
+      FRAC_COUNT      : INTEGER := 0;
+      SIG_COUNT       : INTEGER := 0;
+
+      -- Chiffres significatifs au-dela de SIG_DIGITS_MAX, non absorbes
+      -- dans SIG :
+      -- DROPPED : ceux situes avant le point (facteur 10 chacun) ;
+      -- STICKY  : vrai si l'un au moins etait non nul -- la valeur
+      --           exacte est alors STRICTEMENT superieure a la valeur
+      --           tronquee representee par SIG.
+      DROPPED         : INTEGER := 0;
+      STICKY          : BOOLEAN := FALSE;
+
+      EXP_NEG         : BOOLEAN := FALSE;
+      EXP_ABS         : INTEGER := 0;
+      EXP_DIGIT       : BOOLEAN := FALSE;
+      EXP_HUGE        : BOOLEAN := FALSE;
+
+      -- Si l'exposant depasse largement la longueur de la chaine,
+      -- aucun nombre de chiffres de la mantisse ne peut le compenser.
+      EXP_LIMIT       : constant INTEGER := FROM'LENGTH + 4096;
+
+      DIG             : INTEGER;
+
+      SIG             : BIG := ( N => 0, D => ( others => 0 ) );
+      A               : BIG := ( N => 0, D => ( others => 0 ) );
+      B               : BIG := ( N => 0, D => ( others => 0 ) );
+
+      DEC_EXP         : INTEGER;
+      DEC_TOP         : INTEGER;
+
+      E               : INTEGER;
+      K               : INTEGER;
+
+      Q               : LONG_INTEGER;
+
+      TWO_P           : LONG_INTEGER;
+
+      V               : NUM;
+
+      ------------------------------------------------------------------
+      -- Outils BIG
+      ------------------------------------------------------------------
+
+      procedure NORMALIZE ( X : in out BIG )
+      is
+      begin
+        while X.N > 0 loop
+          exit when X.D( X.N ) /= 0;
+          X.N := X.N - 1;
+        end loop;
+      end NORMALIZE;
+
+
+      procedure SET_ZERO ( X : out BIG )
+      is
+      begin
+        X.N := 0;
+        for I in X.D'RANGE loop
+          X.D( I ) := 0;
+        end loop;
+      end SET_ZERO;
+
+
+      procedure SET_ONE ( X : out BIG )
+      is
+      begin
+        SET_ZERO( X );
+        X.N    := 1;
+        X.D(1) := 1;
+      end SET_ONE;
+
+
+      procedure MUL_SMALL
+        ( X : in out BIG;
+          M : in     INTEGER )
+      is
+        CARRY : INTEGER := 0;
+        T     : INTEGER;
+      begin
+        if X.N = 0 then
+          return;
+        end if;
+
+        for I in 1 .. X.N loop
+          T := X.D(I) * M + CARRY;
+
+          X.D(I) := T mod BASE;
+          CARRY  := T / BASE;
+        end loop;
+
+        while CARRY /= 0 loop
+          if X.N = MAX_LIMBS then
+            raise BIG_OVERFLOW;
+          end if;
+
+          X.N := X.N + 1;
+
+          X.D( X.N ) := CARRY mod BASE;
+          CARRY      := CARRY / BASE;
+        end loop;
+      end MUL_SMALL;
+
+
+      procedure ADD_SMALL
+        ( X : in out BIG;
+          A : in     INTEGER )
+      is
+        CARRY : INTEGER := A;
+        I     : INTEGER := 1;
+        T     : INTEGER;
+      begin
+        if CARRY = 0 then
+          return;
+        end if;
+
+        if X.N = 0 then
+          X.N    := 1;
+          X.D(1) := 0;
+        end if;
+
+        while CARRY /= 0 loop
+
+          if I > X.N then
+            if X.N = MAX_LIMBS then
+              raise BIG_OVERFLOW;
+            end if;
+
+            X.N := X.N + 1;
+            X.D( X.N ) := 0;
+          end if;
+
+          T := X.D(I) + CARRY;
+
+          X.D(I) := T mod BASE;
+          CARRY  := T / BASE;
+
+          I := I + 1;
+        end loop;
+      end ADD_SMALL;
+
+
+      procedure MUL_2 ( X : in out BIG )
+      is
+      begin
+        MUL_SMALL( X, 2 );
+      end MUL_2;
+
+
+      procedure DIV_2 ( X : in out BIG )
+      is
+        CARRY : INTEGER := 0;
+        T     : INTEGER;
+      begin
+        if X.N = 0 then
+          return;
+        end if;
+
+        for I in reverse 1 .. X.N loop
+          T := CARRY * BASE + X.D(I);
+
+          X.D(I) := T / 2;
+          CARRY  := T mod 2;
+        end loop;
+
+        NORMALIZE( X );
+      end DIV_2;
+
+
+      procedure SHIFT_LEFT
+        ( X : in out BIG;
+          N : in     NATURAL )
+      is
+      begin
+        for I in 1 .. N loop
+          MUL_2( X );
+        end loop;
+      end SHIFT_LEFT;
+
+
+      function COMPARE
+        ( A : BIG;
+          B : BIG ) return INTEGER
+      is
+      begin
+        if A.N < B.N then
+          return -1;
+        elsif A.N > B.N then
+          return 1;
+        end if;
+
+        for I in reverse 1 .. A.N loop
+          if A.D(I) < B.D(I) then
+            return -1;
+          elsif A.D(I) > B.D(I) then
+            return 1;
+          end if;
+        end loop;
+
+        return 0;
+      end COMPARE;
+
+
+      procedure SUBTRACT
+        ( A : in out BIG;
+          B : in     BIG )
+      is
+        T      : INTEGER;
+        BORROW : INTEGER := 0;
+      begin
+        -- Precondition : A >= B
+
+        for I in 1 .. A.N loop
+
+          T := A.D(I) - BORROW;
+
+          if I <= B.N then
+            T := T - B.D(I);
+          end if;
+
+          if T < 0 then
+            T      := T + BASE;
+            BORROW := 1;
+          else
+            BORROW := 0;
+          end if;
+
+          A.D(I) := T;
+        end loop;
+
+        NORMALIZE( A );
+      end SUBTRACT;
+
+
+      function BIT_LENGTH ( X : BIG ) return INTEGER
+      is
+        V : INTEGER;
+        B : INTEGER := 0;
+      begin
+        if X.N = 0 then
+          return 0;
+        end if;
+
+        V := X.D( X.N );
+
+        while V /= 0 loop
+          V := V / 2;
+          B := B + 1;
+        end loop;
+
+        return 15 * ( X.N - 1 ) + B;
+      end BIT_LENGTH;
+
+
+      ------------------------------------------------------------------
+      -- Division entiere multiprecision.
+      --
+      -- Q est volontairement LONG_INTEGER : dans notre utilisation
+      -- le quotient contient au maximum P+1 bits, donc 54 bits en
+      -- binary64.
+      ------------------------------------------------------------------
+
+      procedure DIV_MOD
+        ( NUMERATOR   : in  BIG;
+          DENOMINATOR : in  BIG;
+          Q           : out LONG_INTEGER;
+          R           : out BIG )
+      is
+        T		: BIG := ( N => 0, D => ( others => 0 ) );
+        SHIFT	: INTEGER;
+        Q_I	: LONG_INTEGER	:= 0;
+
+      begin
+        R := NUMERATOR;
+        Q := 0;
+
+        SHIFT := BIT_LENGTH( NUMERATOR ) - BIT_LENGTH( DENOMINATOR );
+
+        if SHIFT < 0 then
+          return;
+        end if;
+
+        -- Dans l'utilisation normale le quotient ne peut depasser
+        -- quelques dizaines de bits.
+        if SHIFT > 61 then
+          raise BIG_OVERFLOW;
+        end if;
+
+        T := DENOMINATOR;
+        SHIFT_LEFT( T, SHIFT );
+
+        for  I in reverse 0 .. SHIFT  loop
+          Q_I := Q_I * 2;
+
+          if COMPARE( R, T ) >= 0 then
+            SUBTRACT( R, T );
+            Q_I := Q_I + 1;
+          end if;
+
+          if I /= 0 then
+            DIV_2( T );
+          end if;
+
+        end loop;
+        Q := Q_I;
+
+      end	DIV_MOD;
+	-------
+
+      ------------------------------------------------------------------
+      -- Compare A/B a 2**E.
+      ------------------------------------------------------------------
+
+      function COMPARE_TO_POWER_OF_TWO
+        ( A : BIG;
+          B : BIG;
+          E : INTEGER ) return INTEGER
+      is
+        X : BIG := ( N => 0, D => ( others => 0 ) );
+        Y : BIG := ( N => 0, D => ( others => 0 ) );
+      begin
+        X := A;
+        Y := B;
+
+        if E >= 0 then
+          SHIFT_LEFT( Y, E );
+        else
+          SHIFT_LEFT( X, -E );
+        end if;
+
+        return COMPARE( X, Y );
+      end COMPARE_TO_POWER_OF_TWO;
+
+
+      ------------------------------------------------------------------
+      -- Retourne :
+      --
+      --       round_even( (A/B) * 2**K )
+      --
+      -- La comparaison de 2*reste avec le denominateur effectue
+      -- exactement le round-to-nearest, ties-to-even.
+      --
+      -- Troncature a SIG_DIGITS_MAX chiffres : si STICKY, la valeur
+      -- exacte est strictement au-dessus de la valeur tronquee, d'un
+      -- ecart inferieur a une unite du dernier chiffre retenu ; comme
+      -- SIG_DIGITS_MAX >= 768 (borne de Gay pour binary64), cet ecart
+      -- ne peut pas faire franchir un demi-ulp binaire : seule
+      -- l'egalite exacte C = 0 doit etre corrigee.
+      ------------------------------------------------------------------
+
+      function ROUNDED_QUOTIENT
+        ( A : BIG;
+          B : BIG;
+          K : INTEGER ) return LONG_INTEGER
+      is
+        N      : BIG := ( N => 0, D => ( others => 0 ) );
+        D      : BIG := ( N => 0, D => ( others => 0 ) );
+        R      : BIG := ( N => 0, D => ( others => 0 ) );
+        TWICE  : BIG := ( N => 0, D => ( others => 0 ) );
+
+        Q      : LONG_INTEGER;
+        C      : INTEGER;
+      begin
+        N := A;
+        D := B;
+
+        if K >= 0 then
+          SHIFT_LEFT( N, K );
+        else
+          SHIFT_LEFT( D, -K );
+        end if;
+
+        DIV_MOD( N, D, Q, R );
+
+        TWICE := R;
+        MUL_2( TWICE );
+
+        C := COMPARE( TWICE, D );
+
+        if C > 0 then
+
+          Q := Q + 1;
+
+        elsif C = 0 then
+
+          if STICKY then
+
+            -- La valeur tronquee tombe a mi-chemin mais la valeur
+            -- exacte lui est strictement superieure : arrondi vers
+            -- le haut.
+
+            Q := Q + 1;
+
+          elsif Q mod 2 /= 0 then
+
+            -- Exactement a mi-chemin :
+            -- on choisit la significande paire.
+
+            Q := Q + 1;
+
+          end if;
+
+        end if;
+
+        return Q;
+      end ROUNDED_QUOTIENT;
+
+
+      function POW2_LONG
+        ( N : NATURAL ) return LONG_INTEGER
+      is
+        R : LONG_INTEGER := 1;
+      begin
+        for I in 1 .. N loop
+          R := R * 2;
+        end loop;
+
+        return R;
+      end POW2_LONG;
+
+
+      ------------------------------------------------------------------
+      -- Construction finale du flottant.
+      --
+      -- Q <= 2**53 : la conversion LONG_INTEGER -> binary64 est exacte.
+      --
+      -- Les multiplications/divisions par 2 sont elles aussi exactes
+      -- en arithmetique binaire IEEE tant que les subnormaux sont
+      -- conserves.
+      ------------------------------------------------------------------
+
+      function MAKE_FLOAT
+        ( Q     : LONG_INTEGER;
+          SHIFT : INTEGER ) return NUM
+      is
+        V : NUM;
+      begin
+        if Q = 0 then
+          return 0.0;
+        end if;
+
+        V := NUM( Q );
+
+        if SHIFT > 0 then
+
+          for I in 1 .. SHIFT loop
+            V := V * 2.0;
+          end loop;
+
+        elsif SHIFT < 0 then
+
+          for I in 1 .. -SHIFT loop
+            V := V / 2.0;
+          end loop;
+
+        end if;
+
+        return V;
+      end MAKE_FLOAT;
 
     begin
-      -- Saut des separateurs initiaux (blancs et HT uniquement,
-      -- pas de LF : un STRING n'est pas un flux de lignes)
-      while  POS <= FROM'LAST  and then
-	   ( FROM( POS ) = ' '  or else  FROM( POS ) = ASCII.HT )  loop
+
+      ----------------------------------------------------------------
+      -- Cette implementation vise les formats binaires IEEE.
+      ----------------------------------------------------------------
+
+      if NUM'MACHINE_RADIX /= 2 then
+        raise PROGRAM_ERROR;
+      end if;
+
+      -- Q et 2**P doivent tenir dans LONG_INTEGER.
+      if P > 62 then
+        raise PROGRAM_ERROR;
+      end if;
+
+      TWO_P := POW2_LONG( P );
+
+      SET_ZERO( SIG );
+
+
+      ----------------------------------------------------------------
+      -- Blancs initiaux
+      ----------------------------------------------------------------
+
+      while POS <= FROM'LAST
+        and then
+          ( FROM(POS) = ' '
+            or else FROM(POS) = ASCII.HT )
+      loop
         POS := POS + 1;
       end loop;
 
-      -- Signe optionnel
-      if  POS <= FROM'LAST  then
-        CH := FROM( POS );
-        if  CH = '-'  then
-	NEG := TRUE;
-	POS := POS + 1;
-        elsif  CH = '+'  then
-	POS := POS + 1;
+
+      ----------------------------------------------------------------
+      -- Signe
+      ----------------------------------------------------------------
+
+      if POS <= FROM'LAST then
+
+        if FROM(POS) = '-' then
+          NEG := TRUE;
+          POS := POS + 1;
+
+        elsif FROM(POS) = '+' then
+          POS := POS + 1;
         end if;
+
       end if;
 
-      -- Mantisse et exposant
-      loop
-        exit when  DONE  or else  POS > FROM'LAST;
-        CH := FROM( POS );
 
-        if  CH = '.'  then
-	IN_FRAC := TRUE;
-	LAST    := POS;
-	POS     := POS + 1;
+      ----------------------------------------------------------------
+      -- Mantisse
+      ----------------------------------------------------------------
 
-        elsif  CH = 'E'  or else  CH = 'e'  then
-	LAST := POS;
-	POS  := POS + 1;
-	-- Signe de l'exposant
-	if  POS <= FROM'LAST  then
-	  CH := FROM( POS );
-	  if  CH = '-'  then
-	    EXP_NEG := TRUE;
-	    LAST	  := POS;
-	    POS	  := POS + 1;
-	  elsif  CH = '+'  then
-	    LAST := POS;
-	    POS  := POS + 1;
-	  end if;
-	end if;
-	-- Chiffres de l'exposant
-	loop
-	  exit when  POS > FROM'LAST;
-	  CH := FROM( POS );
-	  exit when  CH < '0'  or else  CH > '9';
-	  EXP_VAL := 10 * EXP_VAL
-		       + CHARACTER'POS( CH ) - CHARACTER'POS( '0' );
-	  LAST := POS;
-	  POS  := POS + 1;
-	end loop;
-	DONE := TRUE;
+      while POS <= FROM'LAST loop
 
-        elsif  CH >= '0'  and then  CH <= '9'  then
-	if  IN_FRAC  then
-	  VAL  := VAL + FRAC
-		    * NUM( CHARACTER'POS( CH ) - CHARACTER'POS( '0' ) );
-	  FRAC := FRAC / 10.0;
-	else
-	  VAL  := 10.0 * VAL
-		    + NUM( CHARACTER'POS( CH ) - CHARACTER'POS( '0' ) );
-	end if;
-	HAVE_DIGIT := TRUE;
-	LAST := POS;
-	POS  := POS + 1;
+        CH := FROM(POS);
+
+        if CH >= '0' and then CH <= '9' then
+
+          DIG := CHARACTER'POS(CH) - CHARACTER'POS('0');
+
+          if SIG_COUNT < SIG_DIGITS_MAX then
+
+            MUL_SMALL( SIG, 10 );
+            ADD_SMALL( SIG, DIG );
+
+            if NONZERO_SEEN then
+              SIG_COUNT := SIG_COUNT + 1;
+
+            elsif DIG /= 0 then
+              NONZERO_SEEN := TRUE;
+              SIG_COUNT    := 1;
+            end if;
+
+            if POINT_SEEN then
+              FRAC_COUNT := FRAC_COUNT + 1;
+            end if;
+
+          else
+
+            -- Chiffre au-dela de la capacite : il ne modifie ni SIG
+            -- ni FRAC_COUNT. Avant le point il vaut un facteur 10 ;
+            -- partout il alimente le bit sticky.
+
+            if not POINT_SEEN then
+              DROPPED := DROPPED + 1;
+            end if;
+
+            if DIG /= 0 then
+              STICKY := TRUE;
+            end if;
+
+          end if;
+
+          HAVE_DIGIT := TRUE;
+
+          LAST := POS;
+          POS  := POS + 1;
+
+        elsif CH = '.' and then not POINT_SEEN then
+
+          POINT_SEEN := TRUE;
+
+          LAST := POS;
+          POS  := POS + 1;
+
+
+        elsif CH = 'E' or else CH = 'e' then
+
+          exit;
+
 
         else
-	-- Caractere hors-token : LAST reste sur le precedent
-	DONE := TRUE;
+
+          exit;
+
         end if;
+
       end loop;
 
-      if  not HAVE_DIGIT  then raise DATA_ERROR; end if;					-- LRM 14.3.8 image invalide
 
-      -- Application de l'exposant
-      if  EXP_NEG  then
-        for  J in 1 .. EXP_VAL  loop  VAL := VAL / 10.0;  end loop;
+      if not HAVE_DIGIT then
+        raise DATA_ERROR;
+      end if;
+
+
+      ----------------------------------------------------------------
+      -- Exposant decimal explicite
+      ----------------------------------------------------------------
+
+      if POS <= FROM'LAST
+        and then
+          ( FROM(POS) = 'E' or else FROM(POS) = 'e' )
+      then
+
+        LAST := POS;
+        POS  := POS + 1;
+
+        if POS <= FROM'LAST then
+
+          if FROM(POS) = '-' then
+            EXP_NEG := TRUE;
+            LAST    := POS;
+            POS     := POS + 1;
+
+          elsif FROM(POS) = '+' then
+            LAST := POS;
+            POS  := POS + 1;
+          end if;
+
+        end if;
+
+
+        while POS <= FROM'LAST loop
+
+          CH := FROM(POS);
+
+          exit when CH < '0' or else CH > '9';
+
+          EXP_DIGIT := TRUE;
+          DIG := CHARACTER'POS(CH) - CHARACTER'POS('0');
+
+          if not EXP_HUGE then
+
+            if EXP_ABS > EXP_LIMIT / 10 then
+              EXP_HUGE := TRUE;
+
+            elsif EXP_ABS * 10 > EXP_LIMIT - DIG then
+              EXP_HUGE := TRUE;
+
+            else
+              EXP_ABS := EXP_ABS * 10 + DIG;
+            end if;
+
+          end if;
+
+          LAST := POS;
+          POS  := POS + 1;
+
+        end loop;
+
+
+        if not EXP_DIGIT then
+          raise DATA_ERROR;
+        end if;
+
+      end if;
+
+
+      ----------------------------------------------------------------
+      -- Zero est exact quelle que soit la valeur de l'exposant.
+      ----------------------------------------------------------------
+
+      if SIG.N = 0 then
+
+        if NEG then
+          ITEM := -0.0;
+        else
+          ITEM := 0.0;
+        end if;
+
+        return;
+      end if;
+
+
+      ----------------------------------------------------------------
+      -- Exposant manifestement gigantesque.
+      ----------------------------------------------------------------
+
+      if EXP_HUGE then
+
+        if EXP_NEG then
+
+          if NEG then
+            ITEM := -0.0;
+          else
+            ITEM := 0.0;
+          end if;
+
+          return;
+
+        else
+          raise DATA_ERROR;
+        end if;
+
+      end if;
+
+
+      ----------------------------------------------------------------
+      -- Valeur decimale exacte :
+      --
+      --   SIG * 10**DEC_EXP
+      ----------------------------------------------------------------
+
+      if EXP_NEG then
+        DEC_EXP := -EXP_ABS - FRAC_COUNT + DROPPED;
       else
-        for  J in 1 .. EXP_VAL  loop  VAL := VAL * 10.0;  end loop;
+        DEC_EXP :=  EXP_ABS - FRAC_COUNT + DROPPED;
       end if;
 
-      if  NEG  then  ITEM := -VAL;
-      else	 ITEM :=  VAL;
+
+      ----------------------------------------------------------------
+      -- Ordre de grandeur decimal.
+      --
+      -- Ce test est volontairement tres conservateur. Il evite
+      -- seulement de construire des BIG absurdes.
+      ----------------------------------------------------------------
+
+      DEC_TOP := SIG_COUNT + DEC_EXP - 1;
+
+      if DEC_TOP > MAX_NORMAL_E + 1 then
+        raise DATA_ERROR;
       end if;
+
+      if DEC_TOP < MIN_SUB_E - 1 then
+
+        if NEG then
+          ITEM := -0.0;
+        else
+          ITEM := 0.0;
+        end if;
+
+        return;
+      end if;
+
+
+      ----------------------------------------------------------------
+      -- Construction du rationnel exact A/B.
+      ----------------------------------------------------------------
+
+      A := SIG;
+      SET_ONE( B );
+
+      if DEC_EXP > 0 then
+
+        for I in 1 .. DEC_EXP loop
+          MUL_SMALL( A, 10 );
+        end loop;
+
+      elsif DEC_EXP < 0 then
+
+        for I in 1 .. -DEC_EXP loop
+          MUL_SMALL( B, 10 );
+        end loop;
+
+      end if;
+
+
+      ----------------------------------------------------------------
+      -- Calcul exact de :
+      --
+      --             E = floor( log2( A/B ) )
+      --
+      -- BIT_LENGTH(A)-BIT_LENGTH(B) donne E ou E+1.
+      ----------------------------------------------------------------
+
+      E := BIT_LENGTH(A) - BIT_LENGTH(B);
+
+      if COMPARE_TO_POWER_OF_TWO( A, B, E ) < 0 then
+        E := E - 1;
+      end if;
+
+
+      ----------------------------------------------------------------
+      -- Hors plage haute.
+      ----------------------------------------------------------------
+
+      if E > MAX_NORMAL_E then
+        raise DATA_ERROR;
+      end if;
+
+
+      ----------------------------------------------------------------
+      -- Trop petit meme pour etre arrondi au plus petit subnormal.
+      --
+      -- Si E < MIN_SUB_E-1 :
+      --
+      --       |x| < 1/2 * 2**MIN_SUB_E
+      --
+      -- donc arrondi vers zero.
+      ----------------------------------------------------------------
+
+      if E < MIN_SUB_E - 1 then
+
+        if NEG then
+          ITEM := -0.0;
+        else
+          ITEM := 0.0;
+        end if;
+
+        return;
+      end if;
+
+
+      ----------------------------------------------------------------
+      -- Nombre normal
+      ----------------------------------------------------------------
+
+      if E >= MIN_NORMAL_E then
+
+        -- On veut P bits :
+        --
+        -- Q = round_even
+        --       ( (A/B) * 2**(P-1-E) )
+        --
+        -- avec :
+        --
+        --       2**(P-1) <= Q < 2**P
+
+        K := P - 1 - E;
+
+        Q := ROUNDED_QUOTIENT( A, B, K );
+
+
+        -- L'arrondi peut produire exactement 2**P.
+        -- On renormalise alors.
+
+        if Q = TWO_P then
+          Q := Q / 2;
+          E := E + 1;
+
+          if E > MAX_NORMAL_E then
+            raise DATA_ERROR;
+          end if;
+        end if;
+
+
+        -- Valeur exacte :
+        --
+        --       Q * 2**(E-(P-1))
+
+        V := MAKE_FLOAT( Q, E - (P - 1) );
+
+
+      ----------------------------------------------------------------
+      -- Nombre subnormal
+      ----------------------------------------------------------------
+
+      else
+
+        -- Un subnormal est un multiple entier de :
+        --
+        --       2**MIN_SUB_E
+        --
+        -- Pour binary64 :
+        --
+        --       MIN_SUB_E = -1074
+        --
+        -- donc :
+        --
+        -- Q = round_even( (A/B) * 2**1074 )
+
+        Q := ROUNDED_QUOTIENT( A, B, -MIN_SUB_E );
+
+        V := MAKE_FLOAT( Q, MIN_SUB_E );
+
+      end if;
+
+
+      ----------------------------------------------------------------
+      -- Signe final
+      ----------------------------------------------------------------
+
+      if NEG then
+        ITEM := -V;
+      else
+        ITEM := V;
+      end if;
+
+
+    exception
+
+      when BIG_OVERFLOW =>
+        -- Garde-fou : le dimensionnement statique de MAX_LIMBS couvre
+        -- tous les cas passant les gardes DEC_TOP ; ne devrait jamais
+        -- arriver.
+        raise DATA_ERROR;
 
     end	GET;
-	----
+	---
 
 
 			---

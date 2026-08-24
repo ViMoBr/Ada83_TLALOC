@@ -1,0 +1,33 @@
+	include '../../src/expander/fasmg/codi_x86_64.finc'
+STANDARD = 'STANDARD'
+namespace STANDARD
+  virtual at 8
+    VARzone::
+  end virtual
+	LINK	0, loc_siz
+namespace _R25
+  virtual at 0
+A25 = $
+	rq 2
+B25 = $
+	rd 1
+C25 = $
+  end virtual
+end namespace
+	LI	16
+	LI	STANDARD._R25.B25 - STANDARD._R25.A25
+	CEQ
+	BT	k25_3
+	SYS_EXIT	3
+k25_3:
+	LI	20
+	LI	STANDARD._R25.C25 - STANDARD._R25.A25
+	CEQ
+	BT	k25_4
+	SYS_EXIT	4
+k25_4:
+	SYS_EXIT	0
+ virtual VARzone
+   loc_siz = $
+  end virtual
+end namespace

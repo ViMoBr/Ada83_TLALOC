@@ -73,6 +73,10 @@ is
     IN_SPEC_UNIT			: BOOLEAN;
 
     CUR_LEVEL			: LEVEL_NUM;							--| NIVEAU D'IMBRICATION COURANT
+    GFP_LEVEL			: LEVEL_NUM		:= 0;					--| NIVEAU DU PRO (ou corps de package generique) ENGLOBANT :
+												--| frame porteur du PRM GFP_ofs (piege n 144). Pose par
+												--| CODE_SUBPROGRAM_BODY / CODE_PACKAGE_BODY, JAMAIS par
+												--| CODE_BLOCK : un bloc declare a son frame mais pas de PRM.
     CUR_OFFSET			: OFFSET_VAL		:= 0;
 
 
@@ -94,10 +98,10 @@ is
 			--| contextes ; le raccord (EXC_POP + UNLINK) est emis par
 			--| CODE_LABELED, qui connait les deux niveaux.
 
-    MAX_GOTO_LABELS		: constant		:= 64;					--| NB MAX D'ETIQUETTES GOTO PAR IMBRICATION DE CORPS
+    MAX_GOTO_LABELS		: constant		:= 64;						--| NB MAX D'ETIQUETTES GOTO PAR IMBRICATION DE CORPS
     subtype GOTO_LBL_IDX	is NATURAL		range 0 .. MAX_GOTO_LABELS;
 
-    type LVL_SET		is array( LEVEL_NUM ) of BOOLEAN;					--| photo de HANDLER_CTX_AT au site d'un goto
+    type LVL_SET		is array( LEVEL_NUM ) of BOOLEAN;						--| photo de HANDLER_CTX_AT au site d'un goto
 
     type GOTO_LBL_REC	is record
 			  ID		: TREE;							--| le DN_LABEL_ID (cle, egalite TREE)
@@ -142,8 +146,8 @@ is
     function  OPER_SIZ_CHAR		( DEFN :TREE )			return CHARACTER;
     function  EXP_TYPE_CHAR		( EXP :TREE )			return CHARACTER;
     function  IS_UNSIGNED_TYPE	( DEFN :TREE )			return BOOLEAN;			--| borne basse statique du type de BASE >= 0
-    function  OPER_LOAD_STR		( DEFN :TREE )			return STRING;			--| "Lb".."Lq" ou "ULb".."ULd" selon le signe
-    function  OPER_LOADI_STR		( DEFN :TREE )			return STRING;			--| "LIb".."LIq" ou "ULIb".."ULId" idem
+    function  OPER_LOAD_STR		( DEFN :TREE )			return STRING;			--| "LB".."LQ" ou "ULB".."ULD" selon le signe
+    function  OPER_LOADI_STR		( DEFN :TREE )			return STRING;			--| "LIB".."LIQ" ou "ULIB".."ULID" idem
 
     function  NEW_LABEL						return LABEL_TYPE;
     function  NEW_LABEL						return STRING;
@@ -496,7 +500,7 @@ is
   begin
     case OBJECT.TY is
     when DN_VARIABLE_ID =>
-      PUT_LINE( tab & "La " & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, OBJECT ) ) & "_disp" );
+      PUT_LINE( tab & "LA " & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, OBJECT ) ) & "_disp" );
 
     when DN_IN_ID =>
       PUT_LINE( tab & "LVA " & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) & ',' & tab & PRINT_NAME( D( LX_SYMREP, OBJECT ) ) );
@@ -511,7 +515,7 @@ is
       CODE_OBJECT( D( SM_DEFN, OBJECT ) );
 
     when DN_CONSTANT_ID =>
-      PUT_LINE( tab & "LIa " & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) & ','
+      PUT_LINE( tab & "LIA " & INTEGER'IMAGE( DI( CD_LEVEL, OBJECT ) ) & ','
 	      & tab & PRINT_NAME( D( LX_SYMREP, OBJECT ) ) & "_disp" );					-- LOAD CONSTANT ADDRESS
 
     when others =>
@@ -600,9 +604,9 @@ FIND_DOT_IF_ANY_AND_UPCASE:
    -- PILIER 11 EXCEPTIONS : contexte-sentinelle en fond de la pile des contextes de reprise
 	PUT_LINE( tab & "EXC_MACH" & tab & "0, EXC_CTX0__dat" );						-- photo niveau 0 (NXT_LVL=1 : FP(0))
 	PUT_LINE( tab & "LCA" & tab & "exc_uncaught_" );
-	PUT_LINE( tab & "Sa" & tab & "0, EXC_CTX0__dat + _EXCEPTION_CONTEXT.DISPATCH" );
+	PUT_LINE( tab & "SA" & tab & "0, EXC_CTX0__dat + _EXCEPTION_CONTEXT.DISPATCH" );
 	PUT_LINE( tab & "LVA" & tab & "0, EXC_CTX0__dat" );
-	PUT_LINE( tab & "Sa" & tab & "0, EXCEPTIONS_TOP_CTX_disp" );					-- (PREV_CTX de la sentinelle : jamais lu)
+	PUT_LINE( tab & "SA" & tab & "0, EXCEPTIONS_TOP_CTX_disp" );					-- (PREV_CTX de la sentinelle : jamais lu)
 
 	PUT_LINE( "include '" & NOM_FAS & ".FINC'" );
 	PUT_LINE( tab & "CALL" & tab & "STANDARD., " & NOM_FAS & "_L1" );
@@ -616,7 +620,7 @@ FIND_DOT_IF_ANY_AND_UPCASE:
 	PUT_LINE( tab & "STR" & tab & "EXC_NL__, 10" );
 	PUT_LINE( tab & "LCA" & tab & "EXC_MSG__.data_ptr" );
 	PUT_LINE( tab & "SYS_PUT_STR" );
-	PUT_LINE( tab & "La" & tab & "0, EXCEPTIONS_CURRENT_disp" );					-- le symbole EST son diagnostic
+	PUT_LINE( tab & "LA" & tab & "0, EXCEPTIONS_CURRENT_disp" );					-- le symbole EST son diagnostic
 	PUT_LINE( tab & "SYS_PUT_STR" );
 	PUT_LINE( tab & "LCA" & tab & "EXC_NL__.data_ptr" );
 	PUT_LINE( tab & "SYS_PUT_STR" );
@@ -628,11 +632,11 @@ FIND_DOT_IF_ANY_AND_UPCASE:
     -- couvre le saut depuis toute profondeur d'expression, comme pour raise.
 	PUT_LINE( "ce_raise_:" );									-- CONSTRAINT_ERROR
 	PUT_LINE( tab & "LCA" & tab & "CONSTRAINT_ERROR__exc.data_ptr" );
-	PUT_LINE( tab & "Sa" & tab & "0, EXCEPTIONS_CURRENT_disp" );
+	PUT_LINE( tab & "SA" & tab & "0, EXCEPTIONS_CURRENT_disp" );
 	PUT_LINE( tab & "BRA" & tab & "exc_raise_" );
 	PUT_LINE( "ne_raise_:" );									-- NUMERIC_ERROR (utilise a partir de E-E)
 	PUT_LINE( tab & "LCA" & tab & "NUMERIC_ERROR__exc.data_ptr" );
-	PUT_LINE( tab & "Sa" & tab & "0, EXCEPTIONS_CURRENT_disp" );
+	PUT_LINE( tab & "SA" & tab & "0, EXCEPTIONS_CURRENT_disp" );
 	PUT_LINE( tab & "BRA" & tab & "exc_raise_" );
 
 

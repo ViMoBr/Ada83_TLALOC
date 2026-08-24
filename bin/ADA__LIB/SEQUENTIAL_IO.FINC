@@ -48,14 +48,14 @@ endPRMS
 					; _FILE_MODE ENUMERATION TYPE INFO
 _FILE_MODE = '_FILE_MODE'
 namespace _FILE_MODE
-VAR use__info, q
+VAR use__info, Q
 BEGIN_BLOC_DEF
 db 0, 7, "IN_FILE"
 db 1, 8, "OUT_FILE"
 END_BLOC_DEF 8, 0, 1
 	; SIZ en bits !
 	LCA	SIZ
-	Sa	0, use__info
+	SA	0, use__info
 end namespace
 					; sub program entry decl (in instantiation FALSE )
 					; sub program entry decl (in instantiation FALSE )
@@ -72,29 +72,29 @@ end namespace
 					; sub program entry decl (in instantiation FALSE )
 _FILE_NAME_BUFFER = '_FILE_NAME_BUFFER'
 namespace _FILE_NAME_BUFFER			; _FILE_NAME_BUFFER CONSTRAINED ARRAY SUBTYPE INFO
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-VAR _COMP_SIZ, d
-VAR _FST_1, d
-VAR _LST_1, d
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
 	LI	8
-	Sd	0, _COMP_SIZ
-	Ld	0, _COMP_SIZ
+	SD	0, _COMP_SIZ
+	LD	0, _COMP_SIZ
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
-	Sd	0, _FST_1
+	SD	0, _FST_1
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	256
-	Sd	0, _LST_1
-	Ld	0, _LST_1
-	Ld	0, _FST_1
+	SD	0, _LST_1
+	LD	0, _LST_1
+	LD	0, _FST_1
 	SUB
 	INC
 	CLAMP0
 	MUL
-	Sd	0, SIZ
+	SD	0, SIZ__
   virtual at 4
 COMP_SIZ = $
 	rd 1 
@@ -108,16 +108,16 @@ end namespace
 					; _FILE_TYPE RECORD TYPE INFO
 _FILE_TYPE = '_FILE_TYPE'
 namespace _FILE_TYPE
-VAR use__info, q
-VAR SIZ, d
-	LVA	0, SIZ
-	Sa	0, use__info
-USEINFO 0, ID, 	La 0, STANDARD._INTEGER.use__info
-USEINFO 0, NAME, 	La 0, STANDARD.SEQUENTIAL_IO._FILE_NAME_BUFFER.use__info
-USEINFO 0, NAME_LEN, 	La 0, STANDARD._POSITIVE.use__info
-USEINFO 0, IS_OPENED, 	La 0, STANDARD._BOOLEAN.use__info
-USEINFO 0, MODE, 	La 0, STANDARD.SEQUENTIAL_IO._FILE_MODE.use__info
-USEINFO 0, AT_END_OF_FILE, 	La 0, STANDARD._BOOLEAN.use__info
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	0, SIZ__
+	SA	0, use__info
+USEINFO 0, ID, 	LA 0, STANDARD._INTEGER.use__info
+USEINFO 0, NAME, 	LA 0, STANDARD.SEQUENTIAL_IO._FILE_NAME_BUFFER.use__info
+USEINFO 0, NAME_LEN, 	LA 0, STANDARD._POSITIVE.use__info
+USEINFO 0, IS_OPENED, 	LA 0, STANDARD._BOOLEAN.use__info
+USEINFO 0, MODE, 	LA 0, STANDARD.SEQUENTIAL_IO._FILE_MODE.use__info
+USEINFO 0, AT_END_OF_FILE, 	LA 0, STANDARD._BOOLEAN.use__info
 virtual at 0				; calcul des offsets statiques
 STATOFS ID, 4, 4
 STATOFS NAME, 256, 1
@@ -128,7 +128,7 @@ STATOFS AT_END_OF_FILE, 1, 1
 size = $
 end virtual
 	LI	 size*8
-	Sd	0, SIZ
+	SD	0, SIZ__
 end namespace
 
 					;---------- GENERIC PACKAGE BODY ----------
@@ -147,7 +147,7 @@ PRMS					;    debut parametrage
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
  hexa_show 'var elab ERR_OR_ID ', $
-VAR ERR_OR_ID_disp, d			; variable entiere
+VAR ERR_OR_ID_disp, D			; variable entiere
 
  hexa_show ' disp ', ERR_OR_ID_disp
 
@@ -174,38 +174,45 @@ end if
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 					; debut if
-	La 1, -FILE_ofs
-	ULIb	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.IS_OPENED
+	LA 1, -FILE_ofs
+	ULIB	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.IS_OPENED
 	BF	L7
 	LCA	STANDARD.IO_EXCEPTIONS.STATUS_ERROR__exc.data_ptr
-	Sa	0, STANDARD.EXCEPTIONS_CURRENT_disp
+	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 	BRA	L6
 L7:
 L6:					; post if
 	LI	0					; lieu resultat sur pile
-	La  1,	-GFP_ofs				; propagation GFP generique
-	La  1,	-NAME_ofs
+	LA  1,	-GFP_ofs				; propagation GFP generique
+	LA  1,	-NAME_ofs
 	CALL	STANDARD.SEQUENTIAL_IO.CREATE_L1. ,CREATE_SYSTEM_CALL_L1
-	Sd  1,	ERR_OR_ID_disp
+	SD  1,	ERR_OR_ID_disp
 					; debut if
-	Ld 1,	ERR_OR_ID_disp
+	LD 1,	ERR_OR_ID_disp
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	0
 	CGE
 	BF	L9
-	La 1, -FILE_ofs
+	LA 1, -FILE_ofs
 	LIVA 	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.ID
-	Ld 1,	ERR_OR_ID_disp
-	Sd
-	La 1, -FILE_ofs
+	LD 1,	ERR_OR_ID_disp
+	SD
+	LA 1, -FILE_ofs
 	LIVA 	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.NAME
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	LD	 0, STANDARD.SEQUENTIAL_IO._FILE_NAME_BUFFER._FST_1
+	SUB
+	LI	1
+	MUL
+	ADD
 	LVA	1, -NAME_ofs
-	LIa	, , 8
-	Ld	, _STRING.LST_1
+	LIA	, , 8
+	LD	, _STRING.LST_1
 	LVA	1, -NAME_ofs
-	LIa	, , 8
-	Ld	, _STRING.FST_1
+	LIA	, , 8
+	LD	, _STRING.FST_1
 	SUB
 	INC
 	CLAMP0
@@ -216,33 +223,33 @@ L6:					; post if
 	CLAMP0
 	LI	1
 	MUL
-	La  1,	-NAME_ofs
-	La
+	LA  1,	-NAME_ofs
+	LA
 	BLKMOV
-	La 1, -FILE_ofs
+	LA 1, -FILE_ofs
 	LIVA 	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.NAME_LEN
 	LVA	1, -NAME_ofs
-	LIa	, , 8
-	Ld	, _STRING.LST_1
+	LIA	, , 8
+	LD	, _STRING.LST_1
 	LVA	1, -NAME_ofs
-	LIa	, , 8
-	Ld	, _STRING.FST_1
+	LIA	, , 8
+	LD	, _STRING.FST_1
 	SUB
 	INC
 	CLAMP0
-	Sd
-	La 1, -FILE_ofs
+	SD
+	LA 1, -FILE_ofs
 	LIVA 	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.IS_OPENED
 	LI	1
-	Sb
-	La 1, -FILE_ofs
+	SB
+	LA 1, -FILE_ofs
 	LIVA 	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.MODE
-	ULb  1,	-MODE_ofs
-	Sb
-	La 1, -FILE_ofs
+	ULB  1,	-MODE_ofs
+	SB
+	LA 1, -FILE_ofs
 	LIVA 	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.AT_END_OF_FILE
 	LI	0
-	Sb
+	SB
 	BRA	L8
 L9:
 L8:					; post if
@@ -265,7 +272,7 @@ PRMS					;    debut parametrage
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
  hexa_show 'var elab ERR_OR_ID ', $
-VAR ERR_OR_ID_disp, d			; variable entiere
+VAR ERR_OR_ID_disp, D			; variable entiere
 
  hexa_show ' disp ', ERR_OR_ID_disp
 
@@ -292,38 +299,45 @@ end if
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 					; debut if
-	La 1, -FILE_ofs
-	ULIb	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.IS_OPENED
+	LA 1, -FILE_ofs
+	ULIB	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.IS_OPENED
 	BF	L16
 	LCA	STANDARD.IO_EXCEPTIONS.STATUS_ERROR__exc.data_ptr
-	Sa	0, STANDARD.EXCEPTIONS_CURRENT_disp
+	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 	BRA	L15
 L16:
 L15:					; post if
 	LI	0					; lieu resultat sur pile
-	La  1,	-GFP_ofs				; propagation GFP generique
-	La  1,	-NAME_ofs
+	LA  1,	-GFP_ofs				; propagation GFP generique
+	LA  1,	-NAME_ofs
 	CALL	STANDARD.SEQUENTIAL_IO.OPEN_L2. ,OPEN_SYSTEM_CALL_L10
-	Sd  1,	ERR_OR_ID_disp
+	SD  1,	ERR_OR_ID_disp
 					; debut if
-	Ld 1,	ERR_OR_ID_disp
+	LD 1,	ERR_OR_ID_disp
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	0
 	CGE
 	BF	L18
-	La 1, -FILE_ofs
+	LA 1, -FILE_ofs
 	LIVA 	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.ID
-	Ld 1,	ERR_OR_ID_disp
-	Sd
-	La 1, -FILE_ofs
+	LD 1,	ERR_OR_ID_disp
+	SD
+	LA 1, -FILE_ofs
 	LIVA 	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.NAME
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	LD	 0, STANDARD.SEQUENTIAL_IO._FILE_NAME_BUFFER._FST_1
+	SUB
+	LI	1
+	MUL
+	ADD
 	LVA	1, -NAME_ofs
-	LIa	, , 8
-	Ld	, _STRING.LST_1
+	LIA	, , 8
+	LD	, _STRING.LST_1
 	LVA	1, -NAME_ofs
-	LIa	, , 8
-	Ld	, _STRING.FST_1
+	LIA	, , 8
+	LD	, _STRING.FST_1
 	SUB
 	INC
 	CLAMP0
@@ -334,37 +348,37 @@ L15:					; post if
 	CLAMP0
 	LI	1
 	MUL
-	La  1,	-NAME_ofs
-	La
+	LA  1,	-NAME_ofs
+	LA
 	BLKMOV
-	La 1, -FILE_ofs
+	LA 1, -FILE_ofs
 	LIVA 	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.NAME_LEN
 	LVA	1, -NAME_ofs
-	LIa	, , 8
-	Ld	, _STRING.LST_1
+	LIA	, , 8
+	LD	, _STRING.LST_1
 	LVA	1, -NAME_ofs
-	LIa	, , 8
-	Ld	, _STRING.FST_1
+	LIA	, , 8
+	LD	, _STRING.FST_1
 	SUB
 	INC
 	CLAMP0
-	Sd
-	La 1, -FILE_ofs
+	SD
+	LA 1, -FILE_ofs
 	LIVA 	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.IS_OPENED
 	LI	1
-	Sb
-	La 1, -FILE_ofs
+	SB
+	LA 1, -FILE_ofs
 	LIVA 	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.MODE
-	ULb  1,	-MODE_ofs
-	Sb
-	La 1, -FILE_ofs
+	ULB  1,	-MODE_ofs
+	SB
+	LA 1, -FILE_ofs
 	LIVA 	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.AT_END_OF_FILE
 	LI	0
-	Sb
+	SB
 	BRA	L17
 L18:
 	LCA	STANDARD.IO_EXCEPTIONS.NAME_ERROR__exc.data_ptr
-	Sa	0, STANDARD.EXCEPTIONS_CURRENT_disp
+	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 L17:					; post if
 ret_lbl:
@@ -383,7 +397,7 @@ PRMS					;    debut parametrage
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
  hexa_show 'var elab ERR_CODE ', $
-VAR ERR_CODE_disp, d			; variable entiere
+VAR ERR_CODE_disp, D			; variable entiere
 
  hexa_show ' disp ', ERR_CODE_disp
 
@@ -410,21 +424,21 @@ end if
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	LI	0					; lieu resultat sur pile
-	La  1,	-GFP_ofs				; propagation GFP generique
-	La 1, -FILE_ofs
-	LId	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.ID
+	LA  1,	-GFP_ofs				; propagation GFP generique
+	LA 1, -FILE_ofs
+	LID	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.ID
 	CALL	STANDARD.SEQUENTIAL_IO.CLOSE_L3. ,CLOSE_SYSTEM_CALL_L19
-	Sd  1,	ERR_CODE_disp
-	La 1, -FILE_ofs
+	SD  1,	ERR_CODE_disp
+	LA 1, -FILE_ofs
 	LIVA 	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.ID
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
 	NEG
-	Sd
-	La 1, -FILE_ofs
+	SD
+	LA 1, -FILE_ofs
 	LIVA 	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.IS_OPENED
 	LI	0
-	Sb
+	SB
 ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
@@ -441,7 +455,7 @@ PRMS					;    debut parametrage
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
  hexa_show 'var elab ERR_CODE ', $
-VAR ERR_CODE_disp, d			; variable entiere
+VAR ERR_CODE_disp, D			; variable entiere
 
  hexa_show ' disp ', ERR_CODE_disp
 
@@ -468,43 +482,50 @@ end if
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 	LI	0					; lieu resultat sur pile
-	La  1,	-GFP_ofs				; propagation GFP generique
-	La 1, -FILE_ofs
+	LA  1,	-GFP_ofs				; propagation GFP generique
+	LA 1, -FILE_ofs
 	LIVA 	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.NAME
-namespace ANON_131_37			; ensemble doublet @data/@info pour slice anonyme source
-VAR ANON_131_37_disp, q
-VAR ANON_131_37__u, q
-VAR SIZ, d
-VAR COMP_SIZ, d
-VAR _FST_1, d
-VAR _LST_1, d
-	Sa	1, ANON_131_37_disp
-	LVA	1, SIZ
-	Sa	1, ANON_131_37__u
-	LI	8
-	Sd	1, COMP_SIZ
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
-	Sd	1, _FST_1
-	La 1, -FILE_ofs
-	LId	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.NAME_LEN
-	Sd	1, _LST_1
-	Ld	1, _LST_1
-	Ld	1, _FST_1
+	LD	 0, STANDARD.SEQUENTIAL_IO._FILE_NAME_BUFFER._FST_1
+	SUB
+	LI	1
+	MUL
+	ADD
+namespace ANON_131_37			; ensemble doublet @data/@info pour slice anonyme source
+VAR ANON_131_37_disp, Q
+VAR ANON_131_37__u, Q
+VAR SIZ__, D
+VAR COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
+	SA	1, ANON_131_37_disp
+	LVA	1, SIZ__
+	SA	1, ANON_131_37__u
+	LI	8
+	SD	1, COMP_SIZ
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SD	1, _FST_1
+	LA 1, -FILE_ofs
+	LID	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.NAME_LEN
+	SD	1, _LST_1
+	LD	1, _LST_1
+	LD	1, _FST_1
 	SUB
 	INC
 	CLAMP0
 	LI	8
 	MUL
-	Sd	1, SIZ
+	SD	1, SIZ__
 	LVA	1, ANON_131_37_disp
 end namespace
 	CALL	STANDARD.SEQUENTIAL_IO.DELETE_L4. ,DELETE_SYSTEM_CALL_L24
-	Sd  1,	ERR_CODE_disp
-	La 1, -FILE_ofs
+	SD  1,	ERR_CODE_disp
+	LA 1, -FILE_ofs
 	LIVA 	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.IS_OPENED
 	LI	0
-	Sb
+	SB
 ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
@@ -522,7 +543,7 @@ PRMS					;    debut parametrage
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
  hexa_show 'var elab ERR_CODE ', $
-VAR ERR_CODE_disp, d			; variable entiere
+VAR ERR_CODE_disp, D			; variable entiere
 
  hexa_show ' disp ', ERR_CODE_disp
 
@@ -550,31 +571,31 @@ end if
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 					; debut if
-	La 1, -FILE_ofs
-	ULIb	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.IS_OPENED
+	LA 1, -FILE_ofs
+	ULIB	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.IS_OPENED
 	LI	0
 	CEQ
 	BF	L35
 	LCA	STANDARD.IO_EXCEPTIONS.STATUS_ERROR__exc.data_ptr
-	Sa	0, STANDARD.EXCEPTIONS_CURRENT_disp
+	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 	BRA	L34
 L35:
 L34:					; post if
 	LI	0					; lieu resultat sur pile
-	La  1,	-GFP_ofs				; propagation GFP generique
-	La 1, -FILE_ofs
-	LId	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.ID
+	LA  1,	-GFP_ofs				; propagation GFP generique
+	LA 1, -FILE_ofs
+	LID	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.ID
 	CALL	STANDARD.SEQUENTIAL_IO.RESET_L5. ,SEEK_SYSTEM_CALL_L29
-	Sd  1,	ERR_CODE_disp
-	La 1, -FILE_ofs
+	SD  1,	ERR_CODE_disp
+	LA 1, -FILE_ofs
 	LIVA 	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.MODE
-	ULb  1,	-MODE_ofs
-	Sb
-	La 1, -FILE_ofs
+	ULB  1,	-MODE_ofs
+	SB
+	LA 1, -FILE_ofs
 	LIVA 	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.AT_END_OF_FILE
 	LI	0
-	Sb
+	SB
 ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
@@ -593,21 +614,21 @@ ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 					; debut if
-	La 1, -FILE_ofs
-	ULIb	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.IS_OPENED
+	LA 1, -FILE_ofs
+	ULIB	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.IS_OPENED
 	LI	0
 	CEQ
 	BF	L39
 	LCA	STANDARD.IO_EXCEPTIONS.STATUS_ERROR__exc.data_ptr
-	Sa	0, STANDARD.EXCEPTIONS_CURRENT_disp
+	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 	BRA	L38
 L39:
 L38:					; post if
-	La  1,	-GFP_ofs				; propagation GFP generique
-	La 1, -FILE_ofs
-	ULIb	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.MODE
-	La  1,	-FILE_ofs
+	LA  1,	-GFP_ofs				; propagation GFP generique
+	LA 1, -FILE_ofs
+	ULIB	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.MODE
+	LA  1,	-FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,RESET_L5
 ret_lbl:
 	UNLINK 1
@@ -628,21 +649,21 @@ ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 					; debut if
-	La 1, -FILE_ofs
-	ULIb	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.IS_OPENED
+	LA 1, -FILE_ofs
+	ULIB	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.IS_OPENED
 	LI	0
 	CEQ
 	BF	L43
 	LCA	STANDARD.IO_EXCEPTIONS.STATUS_ERROR__exc.data_ptr
-	Sa	0, STANDARD.EXCEPTIONS_CURRENT_disp
+	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 	BRA	L42
 L43:
 L42:					; post if
 ; CODE_RETURN : EXPR TYPE = DN_ENUMERATION  VUE COMPLETE = DN_ENUMERATION
-	La 1, -FILE_ofs
-	ULIb	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.MODE
-	Sq  1,	-result__ofs
+	LA 1, -FILE_ofs
+	ULIB	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.MODE
+	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
 	UNLINK 1
@@ -663,60 +684,67 @@ ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 					; debut if
-	La 1, -FILE_ofs
-	ULIb	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.IS_OPENED
+	LA 1, -FILE_ofs
+	ULIB	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.IS_OPENED
 	LI	0
 	CEQ
 	BF	L47
 	LCA	STANDARD.IO_EXCEPTIONS.STATUS_ERROR__exc.data_ptr
-	Sa	0, STANDARD.EXCEPTIONS_CURRENT_disp
+	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 	BRA	L46
 L47:
 L46:					; post if
 ; CODE_RETURN : EXPR TYPE = DN_ARRAY  VUE COMPLETE = DN_ARRAY
-	La 1, -FILE_ofs
+	LA 1, -FILE_ofs
 	LIVA 	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.NAME
-namespace ANON_193_12			; ensemble doublet @data/@info pour slice anonyme source
-VAR ANON_193_12_disp, q
-VAR ANON_193_12__u, q
-VAR SIZ, d
-VAR COMP_SIZ, d
-VAR _FST_1, d
-VAR _LST_1, d
-	Sa	1, ANON_193_12_disp
-	LVA	1, SIZ
-	Sa	1, ANON_193_12__u
-	LI	8
-	Sd	1, COMP_SIZ
 ; CODE_NUMERIC_LITERAL DN_INTEGER
 	LI	1
-	Sd	1, _FST_1
-	La 1, -FILE_ofs
-	LId	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.NAME_LEN
-	Sd	1, _LST_1
-	Ld	1, _LST_1
-	Ld	1, _FST_1
+	LD	 0, STANDARD.SEQUENTIAL_IO._FILE_NAME_BUFFER._FST_1
+	SUB
+	LI	1
+	MUL
+	ADD
+namespace ANON_193_12			; ensemble doublet @data/@info pour slice anonyme source
+VAR ANON_193_12_disp, Q
+VAR ANON_193_12__u, Q
+VAR SIZ__, D
+VAR COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
+	SA	1, ANON_193_12_disp
+	LVA	1, SIZ__
+	SA	1, ANON_193_12__u
+	LI	8
+	SD	1, COMP_SIZ
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SD	1, _FST_1
+	LA 1, -FILE_ofs
+	LID	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.NAME_LEN
+	SD	1, _LST_1
+	LD	1, _LST_1
+	LD	1, _FST_1
 	SUB
 	INC
 	CLAMP0
 	LI	8
 	MUL
-	Sd	1, SIZ
+	SD	1, SIZ__
 	LVA	1, ANON_193_12_disp
 end namespace
-VAR	RET_INFO_L48, q
+VAR	RET_INFO_L48, Q
 	DUP
-	La  ,  0
-	SIq   1, -result__ofs,  0
+	LA  ,  0
+	SIQ   1, -result__ofs,  0
 	DUP
-	La  ,  8
-	Sa   1, RET_INFO_L48
+	LA  ,  8
+	SA   1, RET_INFO_L48
 	DROP
-	La   1, -result__ofs
-	La  ,  8
+	LA   1, -result__ofs
+	LA  ,  8
 	LI	16
-	La   1, RET_INFO_L48
+	LA   1, RET_INFO_L48
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
@@ -738,13 +766,13 @@ ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 					; debut if
-	La 1, -FILE_ofs
-	ULIb	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.IS_OPENED
+	LA 1, -FILE_ofs
+	ULIB	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.IS_OPENED
 	LI	0
 	CEQ
 	BF	L52
 	LCA	STANDARD.IO_EXCEPTIONS.STATUS_ERROR__exc.data_ptr
-	Sa	0, STANDARD.EXCEPTIONS_CURRENT_disp
+	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 	BRA	L51
 L52:
@@ -752,18 +780,18 @@ L51:					; post if
 ; CODE_RETURN : EXPR TYPE = DN_VOID  VUE COMPLETE = DN_VOID
 STR RET_STR_L53, ""				; constante string=""
 	LCA	RET_STR_L53.data_ptr
-VAR	RET_INFO_L54, q
+VAR	RET_INFO_L54, Q
 	DUP
-	La  ,  0
-	SIq   1, -result__ofs,  0
+	LA  ,  0
+	SIQ   1, -result__ofs,  0
 	DUP
-	La  ,  8
-	Sa   1, RET_INFO_L54
+	LA  ,  8
+	SA   1, RET_INFO_L54
 	DROP
-	La   1, -result__ofs
-	La  ,  8
+	LA   1, -result__ofs
+	LA  ,  8
 	LI	16
-	La   1, RET_INFO_L54
+	LA   1, RET_INFO_L54
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
@@ -785,9 +813,9 @@ ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 ; CODE_RETURN : EXPR TYPE = DN_ENUMERATION  VUE COMPLETE = DN_ENUMERATION
-	La 1, -FILE_ofs
-	ULIb	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.IS_OPENED
-	Sq  1,	-result__ofs
+	LA 1, -FILE_ofs
+	ULIB	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.IS_OPENED
+	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
 	UNLINK 1
@@ -806,20 +834,20 @@ PRMS					;    debut parametrage
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
  hexa_show 'var elab BYTES_READ ', $
-VAR BYTES_READ_disp, d			; variable entiere
+VAR BYTES_READ_disp, D			; variable entiere
 
  hexa_show ' disp ', BYTES_READ_disp
  hexa_show 'var elab SIZE_BYTES ', $
-VAR SIZE_BYTES_disp, d			; variable entiere
-	La  1,	-GFP_ofs
-	LId , -ELEMENT_TYPE__u_ofs
+VAR SIZE_BYTES_disp, D			; variable entiere
+	LA  1,	-GFP_ofs
+	LID , -ELEMENT_TYPE__u_ofs
 	LI	 8
 	DUP
 	LI	0
 	CEQ
 	BT	STANDARD.ne_raise_
 	DIV
-	Sd  1,	SIZE_BYTES_disp
+	SD  1,	SIZE_BYTES_disp
 
  hexa_show ' disp ', SIZE_BYTES_disp
 
@@ -850,57 +878,57 @@ end if
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 					; debut if
-	La 1, -FILE_ofs
-	ULIb	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.IS_OPENED
+	LA 1, -FILE_ofs
+	ULIB	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.IS_OPENED
 	LI	0
 	CEQ
 	BF	L63
 	LCA	STANDARD.IO_EXCEPTIONS.STATUS_ERROR__exc.data_ptr
-	Sa	0, STANDARD.EXCEPTIONS_CURRENT_disp
+	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 	BRA	L62
 L63:
 L62:					; post if
 					; debut if
-	La 1, -FILE_ofs
-	ULIb	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.MODE
+	LA 1, -FILE_ofs
+	ULIB	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.MODE
 	LI	1
 	CEQ
 	BF	L65
 	LCA	STANDARD.IO_EXCEPTIONS.MODE_ERROR__exc.data_ptr
-	Sa	0, STANDARD.EXCEPTIONS_CURRENT_disp
+	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 	BRA	L64
 L65:
 L64:					; post if
 					; debut if
-	La 1, -FILE_ofs
-	ULIb	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.AT_END_OF_FILE
+	LA 1, -FILE_ofs
+	ULIB	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.AT_END_OF_FILE
 	BF	L67
 	LCA	STANDARD.IO_EXCEPTIONS.END_ERROR__exc.data_ptr
-	Sa	0, STANDARD.EXCEPTIONS_CURRENT_disp
+	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 	BRA	L66
 L67:
 L66:					; post if
 	LI	0					; lieu resultat sur pile
-	La  1,	-GFP_ofs				; propagation GFP generique
+	LA  1,	-GFP_ofs				; propagation GFP generique
 	LVA	1, -ITEM_ofs
-	La  1,	-GFP_ofs
-	La	, -ELEMENT_TYPE__outadr_ofs
+	LA  1,	-GFP_ofs
+	LA	, -ELEMENT_TYPE__outadr_ofs
 	CALLI
-	Ld 1,	SIZE_BYTES_disp
-	La 1, -FILE_ofs
-	LId	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.ID
+	LD 1,	SIZE_BYTES_disp
+	LA 1, -FILE_ofs
+	LID	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.ID
 	CALL	STANDARD.SEQUENTIAL_IO.READ_L11. ,READ_SYSTEM_CALL_L57
-	Sd  1,	BYTES_READ_disp
+	SD  1,	BYTES_READ_disp
 					; debut if
-	Ld 1,	BYTES_READ_disp
-	Ld 1,	SIZE_BYTES_disp
+	LD 1,	BYTES_READ_disp
+	LD 1,	SIZE_BYTES_disp
 	CLT
 	BF	L69
 	LCA	STANDARD.IO_EXCEPTIONS.END_ERROR__exc.data_ptr
-	Sa	0, STANDARD.EXCEPTIONS_CURRENT_disp
+	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 	BRA	L68
 L69:
@@ -922,20 +950,20 @@ PRMS					;    debut parametrage
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
  hexa_show 'var elab ERR_CODE ', $
-VAR ERR_CODE_disp, d			; variable entiere
+VAR ERR_CODE_disp, D			; variable entiere
 
  hexa_show ' disp ', ERR_CODE_disp
  hexa_show 'var elab SIZE_BYTES ', $
-VAR SIZE_BYTES_disp, d			; variable entiere
-	La  1,	-GFP_ofs
-	LId , -ELEMENT_TYPE__u_ofs
+VAR SIZE_BYTES_disp, D			; variable entiere
+	LA  1,	-GFP_ofs
+	LID , -ELEMENT_TYPE__u_ofs
 	LI	 8
 	DUP
 	LI	0
 	CEQ
 	BT	STANDARD.ne_raise_
 	DIV
-	Sd  1,	SIZE_BYTES_disp
+	SD  1,	SIZE_BYTES_disp
 
  hexa_show ' disp ', SIZE_BYTES_disp
 
@@ -966,40 +994,40 @@ end if
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 					; debut if
-	La 1, -FILE_ofs
-	ULIb	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.IS_OPENED
+	LA 1, -FILE_ofs
+	ULIB	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.IS_OPENED
 	LI	0
 	CEQ
 	BF	L76
 	LCA	STANDARD.IO_EXCEPTIONS.STATUS_ERROR__exc.data_ptr
-	Sa	0, STANDARD.EXCEPTIONS_CURRENT_disp
+	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 	BRA	L75
 L76:
 L75:					; post if
 					; debut if
-	La 1, -FILE_ofs
-	ULIb	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.MODE
+	LA 1, -FILE_ofs
+	ULIB	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.MODE
 	LI	0
 	CEQ
 	BF	L78
 	LCA	STANDARD.IO_EXCEPTIONS.MODE_ERROR__exc.data_ptr
-	Sa	0, STANDARD.EXCEPTIONS_CURRENT_disp
+	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 	BRA	L77
 L78:
 L77:					; post if
 	LI	0					; lieu resultat sur pile
-	La  1,	-GFP_ofs				; propagation GFP generique
+	LA  1,	-GFP_ofs				; propagation GFP generique
 	LVA	1, -ITEM_ofs
-	La  1,	-GFP_ofs
-	La	, -ELEMENT_TYPE__inadr_ofs
+	LA  1,	-GFP_ofs
+	LA	, -ELEMENT_TYPE__inadr_ofs
 	CALLI
-	Ld 1,	SIZE_BYTES_disp
-	La 1, -FILE_ofs
-	LId	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.ID
+	LD 1,	SIZE_BYTES_disp
+	LA 1, -FILE_ofs
+	LID	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.ID
 	CALL	STANDARD.SEQUENTIAL_IO.WRITE_L12. ,WRITE_SYSTEM_CALL_L70
-	Sd  1,	ERR_CODE_disp
+	SD  1,	ERR_CODE_disp
 ret_lbl:
 	UNLINK 1
 	RTD	prm_siz
@@ -1017,11 +1045,11 @@ PRMS					;    debut parametrage
 endPRMS					;    fin parametrage
 ELB 1					;    BODY ELAB
  hexa_show 'var elab POS_BYTES ', $
-VAR POS_BYTES_disp, d			; variable entiere
+VAR POS_BYTES_disp, D			; variable entiere
 
  hexa_show ' disp ', POS_BYTES_disp
  hexa_show 'var elab SIZ_BYTES ', $
-VAR SIZ_BYTES_disp, d			; variable entiere
+VAR SIZ_BYTES_disp, D			; variable entiere
 
  hexa_show ' disp ', SIZ_BYTES_disp
 
@@ -1069,46 +1097,46 @@ end if
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 					; debut if
-	La 1, -FILE_ofs
-	ULIb	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.IS_OPENED
+	LA 1, -FILE_ofs
+	ULIB	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.IS_OPENED
 	LI	0
 	CEQ
 	BF	L88
 	LCA	STANDARD.IO_EXCEPTIONS.STATUS_ERROR__exc.data_ptr
-	Sa	0, STANDARD.EXCEPTIONS_CURRENT_disp
+	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 	BRA	L87
 L88:
 L87:					; post if
 					; debut if
-	La 1, -FILE_ofs
-	ULIb	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.MODE
+	LA 1, -FILE_ofs
+	ULIB	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.MODE
 	LI	1
 	CEQ
 	BF	L90
 	LCA	STANDARD.IO_EXCEPTIONS.MODE_ERROR__exc.data_ptr
-	Sa	0, STANDARD.EXCEPTIONS_CURRENT_disp
+	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 	BRA	L89
 L90:
 L89:					; post if
 	LI	0					; lieu resultat sur pile
-	La  1,	-GFP_ofs				; propagation GFP generique
-	La 1, -FILE_ofs
-	LId	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.ID
+	LA  1,	-GFP_ofs				; propagation GFP generique
+	LA 1, -FILE_ofs
+	LID	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.ID
 	CALL	STANDARD.SEQUENTIAL_IO.END_OF_FILE_L13. ,GET_POS_SYSTEM_CALL_L79
-	Sd  1,	POS_BYTES_disp
+	SD  1,	POS_BYTES_disp
 	LI	0					; lieu resultat sur pile
-	La  1,	-GFP_ofs				; propagation GFP generique
-	La 1, -FILE_ofs
-	LId	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.ID
+	LA  1,	-GFP_ofs				; propagation GFP generique
+	LA 1, -FILE_ofs
+	LID	, 0, STANDARD.SEQUENTIAL_IO._FILE_TYPE.ID
 	CALL	STANDARD.SEQUENTIAL_IO.END_OF_FILE_L13. ,GET_SIZE_SYSTEM_CALL_L82
-	Sd  1,	SIZ_BYTES_disp
+	SD  1,	SIZ_BYTES_disp
 ; CODE_RETURN : EXPR TYPE = DN_ENUMERATION  VUE COMPLETE = DN_ENUMERATION
-	Ld 1,	POS_BYTES_disp
-	Ld 1,	SIZ_BYTES_disp
+	LD 1,	POS_BYTES_disp
+	LD 1,	SIZ_BYTES_disp
 	CGE
-	Sq  1,	-result__ofs
+	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
 	UNLINK 1
