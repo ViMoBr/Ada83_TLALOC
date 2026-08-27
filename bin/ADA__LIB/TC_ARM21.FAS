@@ -1,0 +1,314 @@
+	include '../../src/expander/fasmg/codi_arm64.finc'
+STANDARD = 'STANDARD'
+namespace STANDARD
+  virtual at 8
+    VARzone::
+  end virtual
+	LINK	0, loc_siz
+	VAR	WA21_disp, W
+	VAR	PA21_disp, Q
+	VAR	BLAA21_disp, 8
+	VAR	BLBA21_disp, 8
+	VAR	FIDA21_disp, Q
+	VAR	TSA21_disp, 16
+	STR	TA21NM, 't21.tmp'
+; ---- mots signes / non signes ----
+	LVA	0, WA21_disp
+	SA	0, PA21_disp
+	LI	-2
+	SW	0, WA21_disp
+	LW	0, WA21_disp
+	LI	-2
+	CEQ
+	BT	kA21_3
+	SYS_EXIT	3
+kA21_3:
+	ULW	0, WA21_disp
+	LI	65534
+	CEQ
+	BT	kA21_4
+	SYS_EXIT	4
+kA21_4:
+	LIW	0, PA21_disp, 0
+	LI	-2
+	CEQ
+	BT	kA21_5
+	SYS_EXIT	5
+kA21_5:
+	ULIW	0, PA21_disp, 0
+	LI	65534
+	CEQ
+	BT	kA21_6
+	SYS_EXIT	6
+kA21_6:
+	LI	-5
+	SIB	0, PA21_disp, 0
+	LIB	0, PA21_disp, 0
+	LI	-5
+	CEQ
+	BT	kA21_7
+	SYS_EXIT	7
+kA21_7:
+	LI	-300
+	SIW	0, PA21_disp, 0
+	LIW	0, PA21_disp, 0
+	LI	-300
+	CEQ
+	BT	kA21_8
+	SYS_EXIT	8
+kA21_8:
+; ---- alu ----
+	LI	12
+	LI	3
+	OU
+	LI	15
+	CEQ
+	BT	kA21_9
+	SYS_EXIT	9
+kA21_9:
+	LI	5
+	NON
+	LI	-6
+	CEQ
+	BT	kA21_10
+	SYS_EXIT	10
+kA21_10:
+	LI	64
+	LI	3
+	SHR
+	LI	8
+	CEQ
+	BT	kA21_11
+	SYS_EXIT	11
+kA21_11:
+	LI	-64
+	LI	3
+	SAR
+	LI	-8
+	CEQ
+	BT	kA21_12
+	SYS_EXIT	12
+kA21_12:
+	LI	-7
+	ABS
+	LI	7
+	CEQ
+	BT	kA21_13
+	SYS_EXIT	13
+kA21_13:
+	LI	245
+	LI	4
+	LI	4
+	UBFX
+	LI	15
+	CEQ
+	BT	kA21_14
+	SYS_EXIT	14
+kA21_14:
+	LI	240
+	LI	4
+	LI	4
+	SBFX
+	LI	-1
+	CEQ
+	BT	kA21_15
+	SYS_EXIT	15
+kA21_15:
+	LI	65535
+	LI	0
+	LI	4
+	LI	4
+	BFI
+	LI	65295
+	CEQ
+	BT	kA21_16
+	SYS_EXIT	16
+kA21_16:
+; ---- flottants ----
+	LI	-4610560118520545280
+	FABS
+	LI	4612811918334230528
+	CEQ
+	BT	kA21_17
+	SYS_EXIT	17
+kA21_17:
+	LI	4611686018427387904
+	LI	3
+	FEXP
+	LI	4620693217682128896
+	CEQ
+	BT	kA21_18
+	SYS_EXIT	18
+kA21_18:
+	LI	7
+	LI	1
+	LI	2
+	CVTXI
+	LI	4
+	CEQ
+	BT	kA21_19
+	SYS_EXIT	19
+kA21_19:
+	LI	4609434218613702656
+	LI	4609434218613702656
+	FCEQ
+	LI	1
+	CEQ
+	BT	kA21_20
+	SYS_EXIT	20
+kA21_20:
+	LI	4609434218613702656
+	LI	4612811918334230528
+	FCLE
+	LI	1
+	CEQ
+	BT	kA21_21
+	SYS_EXIT	21
+kA21_21:
+; ---- blocs ----
+	LI	858993459
+	SD	0, BLAA21_disp
+	LI	252645135
+	SD	0, BLBA21_disp
+	LVA	0, BLAA21_disp
+	LI	4
+	LVA	0, BLBA21_disp
+	BLKAND
+	LD	0, BLAA21_disp
+	LI	50529027
+	CEQ
+	BT	kA21_22
+	SYS_EXIT	22
+kA21_22:
+	LI	808464432
+	SD	0, BLBA21_disp
+	LVA	0, BLAA21_disp
+	LI	4
+	LVA	0, BLBA21_disp
+	BLKOU
+	LD	0, BLAA21_disp
+	LI	858993459
+	CEQ
+	BT	kA21_23
+	SYS_EXIT	23
+kA21_23:
+	LVA	0, BLAA21_disp
+	LI	4
+	LVA	0, BLBA21_disp
+	BLKOUX
+	LD	0, BLAA21_disp
+	LI	50529027
+	CEQ
+	BT	kA21_24
+	SYS_EXIT	24
+kA21_24:
+	LI	65537
+	SD	0, BLAA21_disp
+	LVA	0, BLAA21_disp
+	LI	4
+	BLKNOT
+	LD	0, BLAA21_disp
+	LI	16777472
+	CEQ
+	BT	kA21_25
+	SYS_EXIT	25
+kA21_25:
+; ---- lexicographique ----
+	LI	4408897
+	SD	0, BLAA21_disp
+	LI	4474433
+	SD	0, BLBA21_disp
+	LVA	0, BLAA21_disp
+	LI	3
+	LVA	0, BLBA21_disp
+	LI	3
+	LEXCMP 1, 0
+	LI	-1
+	CEQ
+	BT	kA21_26
+	SYS_EXIT	26
+kA21_26:
+	LVA	0, BLAA21_disp
+	LI	2
+	LVA	0, BLBA21_disp
+	LI	3
+	LEXCMP 1, 0
+	LI	-1
+	CEQ
+	BT	kA21_27
+	SYS_EXIT	27
+kA21_27:
+	LI	4408897
+	SD	0, BLBA21_disp
+	LVA	0, BLAA21_disp
+	LI	3
+	LVA	0, BLBA21_disp
+	LI	3
+	LEXCMP 1, 0
+	LI	0
+	CEQ
+	BT	kA21_28
+	SYS_EXIT	28
+kA21_28:
+; ---- fichiers de bout en bout ----
+	LI	0
+	LCA	TA21NM.data_ptr
+	SYS_FILE_CREATE
+	SA	0, FIDA21_disp
+	LI	0
+	LI	4
+	LVA	0, BLAA21_disp
+	LA	0, FIDA21_disp
+	SYS_FILE_WRITE
+	LI	4
+	CEQ
+	BT	kA21_29
+	SYS_EXIT	29
+kA21_29:
+	LI	0
+	LA	0, FIDA21_disp
+	SYS_FILE_GET_POS
+	LI	4
+	CEQ
+	BT	kA21_30
+	SYS_EXIT	30
+kA21_30:
+	LI	0
+	LI	2
+	LA	0, FIDA21_disp
+	SYS_FILE_SET_POS
+	LI	2
+	CEQ
+	BT	kA21_31
+	SYS_EXIT	31
+kA21_31:
+	LI	0
+	LA	0, FIDA21_disp
+	SYS_FILE_GET_SIZE
+	LI	4
+	CEQ
+	BT	kA21_32
+	SYS_EXIT	32
+kA21_32:
+	LI	0
+	LA	0, FIDA21_disp
+	SYS_FILE_CLOSE
+	DROP
+	LI	0
+	LCA	TA21NM.data_ptr
+	SYS_FILE_DELETE
+	DROP
+; ---- horloge ----
+	LVA	0, TSA21_disp
+	SYS_CLOCK_GETTIME
+	LQ	0, TSA21_disp
+	LI	1600000000
+	CGT
+	BT	kA21_33
+	SYS_EXIT	33
+kA21_33:
+	SYS_EXIT	0
+ virtual VARzone
+   loc_siz = $
+  end virtual
+end namespace

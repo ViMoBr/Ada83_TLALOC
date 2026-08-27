@@ -1164,6 +1164,9 @@ instances sont expansées sur site.
     faudrait le niveau du PRO englobant ; non exerce, meme famille que
     le bug de niveau des thunks (journal A35801B). Gardien :
     T2 ./ _standrd.adb M + diff FINC de REQ_UTIL. (session 10 aout)
+    RESERVE LEVEE le 24 aout 2026 : exercee par FLOAT_IO.PUT (bloc
+    ROUNDING) apres passage de CODE_VC_ID a CUR_LEVEL -> n 155
+    (GFP_LEVEL). Les jumeaux GENERIC_BASE_LEVEL+1 restent a convertir.
 
 145. ** OPERAND_DATA_ADDRESS
 (CODE_RECORD_EQUALITY) ** copie locale divergente de la règle n°112
@@ -1325,3 +1328,69 @@ variantes, sauts relatifs paramétrés ; (c) BLKAND/OU/OUX : une seule
 usine à opcode (BLK_OP_OCTET : and 20 / or 08 / xor 30), blocs vides
 égaux/neutres ; (d) rd/rq en zone virtual : zéro octet à l'émission,
 TOUTE la sémantique est l'avance de position (4×N / 8×N) à P2.
+
+155. ** — `-GFP_ofs` S'ADRESSE AU NIVEAU DU PRO ENGLOBANT (GFP_LEVEL),
+NI CUR_LEVEL NI GENERIC_BASE_LEVEL+1. Le symbole GFP_ofs se resout au
+PRM du PRO courant (namespace) ; le frame qui le porte est celui de ce
+PRO. CUR_LEVEL est faux dans un bloc declare (frame propre par ELB,
+AUCUN PRM : [display(bloc) - GFP_ofs] lit la pile d'operandes sous le
+bloc — segfault FLOAT_IO.PUT sur ROUNDING, VAL = 8.639975 pris pour
+un GFP, TEST_CALENDAR/FLOAT_TEST/FLOAT_FIXED_IO_TEST) ;
+GENERIC_BASE_LEVEL+1 est faux dans un PRO imbrique (n 144, MAKE_FLOAT).
+Les deux corrections successives avaient oscillé entre ces deux valeurs
+pour le meme site. Regle unique : CODI.GFP_LEVEL, pose par
+CODE_SUBPROGRAM_BODY apres INC_LEVEL (et par CODE_PACKAGE_BODY
+generique), sauvegarde/restaure comme GENERIC_BASE_LEVEL, JAMAIS
+touche par CODE_BLOCK. Reflexe : toute emission de `-GFP_ofs` passe par
+GFP_LEVEL ; DI(CD_LEVEL, DEFN) n'est juste que pour un parametre du PRO
+courant (ancienne puce STORE_OR_CALLI). Gardiens : GENBLK_TEST (bloc
+dans PRO, bloc dans PRO imbrique, appel du corps generique depuis un
+bloc), TEST_CALENDAR (PUT depuis DUR_IO). Recensement mecanique des
+jumeaux restants (commit 2, oracle de point fixe FINC) :
+    grep -n "GENERIC_BASE_LEVEL" expander*.adb | grep "GFP_ofs"
+(session 24 aout)
+
+156. ** — PRÉCÉDENCE fasmg ET SUBSTITUTION TEXTUELLE DES PARAMÈTRES DE
+MACRO. Les paramètres sont remplacés token par token (manuel fasmg §8),
+et les opérateurs bit à bit lient PLUS FORT que l'arithmétique : and/or/
+xor au-dessus de + - *, shl/shr/mod encore au-dessus (manuel §"Expressions").
+Donc `LOAD_QUAD 8*lvl, …` évaluait `(ofs mod 8) = 0` comme
+`8*(lvl mod 8) = 0` (faux pour lvl 1..7) et `ofs shr 3` comme
+`8*(lvl shr 3)` (0 pour lvl 1..7). Le `local signed_ofs = ofs` en tête
+des macros codi_arm64 neutralisait le second effet sans le nommer ; le
+premier était ACTIF : FP_IN_RAX émettait un LDUR (voie ±255, correcte
+par chance) au lieu du LDR scalé pour tout niveau non multiple de 8
+(vu au désassemblage, session 25 août). Règle : dans une macro, tout
+paramètre utilisé dans une expression s'écrit `(param)` ; ne jamais
+compter sur un local de copie pour « fixer » la précédence. Les
+comparaisons (= < >=) sont sûres (priorité la plus basse). Gardien :
+grep des `shl|shr|mod|and` précédés d'un nom de paramètre nu dans les
+.finc.
+
+157. ** — ARM64 : AUCUN SAUT LLIR NE DOIT DÉPENDRE DE LA DISTANCE, ET
+AUCUNE MATÉRIALISATION D'ADRESSE NE DOIT DÉPENDRE DE SA VALEUR.
+(a) CBZ/CBNZ/B.cond ont ±1 Mo (imm19) : suffisant pour tout témoin,
+insuffisant pour le compilateur entier (`BT STANDARD.ne_raise_`,
+_STANDRD.FINC 1175, assert à chaque passe, -p épuisé). Forme longue
+SYSTÉMATIQUE : cbz/cbnz x0, .+8 enjambant un B (imm26, ±128 Mo) — jumeau
+arm64 du n° 82 (BT/BF rel32). (b) QUAD_CONST, qui saute les chunks nuls,
+était appelée sur des références avant (retour de CALL/CALLI, cible de
+LSPA, ptr+disp de LCA) : taille dépendant de la valeur de la passe
+précédente, non monotone (n° 88), et contraire au contrat SIZE_OF =
+ENCODE de TARGET_CODE. Règle : immédiat connu au parse → QUAD_CONST
+(taille = f(val)) ; adresse → QUAD_ADDR (movz+movk, taille fixe) ou
+adr PC-relatif (CALL/CALLI : adr x16, .+16). Les CBZ/CBNZ/B.cond
+INTRA-macro (cibles à quelques instructions) restent légitimes.
+Gardien : grep "dd 0xB4\|dd 0xB5\|dd 0x54" hors cibles locales.
+
+158. ** — « could not generate code within the allowed number of
+passes » N'EST PAS TOUJOURS UNE OSCILLATION. L'assemblage lazy
+(postpone `X_ = X.elab`, n° 83/87) découvre UN niveau de la chaîne
+d'appels par passe : ADA_COMP converge en 18 passes sur les DEUX cibles,
+naturellement. Avec -p 20 on est à deux passes du plafond ; une chaîne
+plus profonde reproduirait le message du 25 août SANS assert associé et
+enverrait chercher une oscillation qui n'existe pas. Réflexe : lire le
+nombre de passes en -v 2, et garder -p au défaut fasmg (100) ; n'accuser
+le n° 88 que si les passes s'égrènent jusqu'au plafond avec des tailles
+qui bougent. Corollaire : à passes égales, un écart de temps entre
+cibles est un coût PAR LIGNE interprétée, mesurable statiquement.

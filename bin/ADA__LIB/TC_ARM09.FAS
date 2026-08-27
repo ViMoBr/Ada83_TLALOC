@@ -1,0 +1,44 @@
+include '../../src/expander/fasmg/codi_arm64.finc'
+STANDARD = 'STANDARD'
+namespace STANDARD
+  virtual at 8
+    VARzone::
+  end virtual
+	LINK	0, loc_siz
+	VAR	CTXA9_disp, 64
+	VAR	TOPA9_disp, Q
+	VAR	GA9_disp, Q
+	EXC_MACH	0, CTXA9_disp
+	LCA	h_a9_
+	SA	0, CTXA9_disp + 8
+	LVA	0, CTXA9_disp
+	SA	0, TOPA9_disp
+	LI	7
+	SQ	0, GA9_disp
+	CALL	STANDARD., SPA9
+	SYS_EXIT	2
+exc_raise_a9_:
+	EXC_RAISE	TOPA9_disp
+h_a9_:
+	LQ	0, GA9_disp
+	LI	7
+	CEQ
+	BT	ok_a9
+	SYS_EXIT	1
+ok_a9:
+	SYS_EXIT	0
+if defined SPA9_
+	PRO	SPA9
+	ELB	1
+	VAR	TA9_disp, Q
+	LI	13
+	SQ	1, TA9_disp
+	BRA	exc_raise_a9_
+	UNLINK	1
+	RTD	0
+	endPRO
+end if
+ virtual VARzone
+   loc_siz = $
+  end virtual
+end namespace

@@ -1712,7 +1712,25 @@ is
 
         elsif  DESIGNATOR_DEFN.TY = DN_CONSTANT_ID  then
 	if  IS_SOURCE  then
-	  PUT_LINE( tab & "LI" & tab & PRINT_NUM( D( SM_VALUE, DESIGNATOR ) ) );
+	  if  FULL_TYPE_VIEW( D( SM_OBJ_TYPE, DESIGNATOR_DEFN ) ).TY in CLASS_SCALAR
+	  or else  FULL_TYPE_VIEW( D( SM_OBJ_TYPE, DESIGNATOR_DEFN ) ).TY = DN_ACCESS
+	  then
+	    PUT_LINE( tab & "LI" & tab & PRINT_NUM( D( SM_VALUE, DESIGNATOR ) ) );
+	  else
+			--| Piege n 1xx (temoin EMITS.TRAITS, 26/08) : PKG.CST d'un type
+			--| COMPOSITE (record constant a agregat) n'a pas de SM_VALUE
+			--| numerique -- PRINT_NUM plantait sur DN_VOID.  CONTRAT de la
+			--| forme selectionnee (CODE_COMPOSITE_DATA_ADDRESS, regle unique
+			--| n 112) : un DN_SELECTED composite laisse @DATA, pas @doublet --
+			--| meme emission que PKG.VARIABLE composite ci-dessus (LA lvl,
+			--| X_disp = data_ptr).  Un premier remede par CODE_VC_ID laissait
+			--| @doublet : le BLKMOV appelant copiait le doublet lui-meme
+			--| (TR.PROLOGUE_SIZE = octets d'info_ptr, placement STR incoherent
+			--| P2B/P3 sur ADA_COMP).  Scalaires : LI inchange.
+	    PUT( tab & "LA " & IMAGE( DI( CD_LEVEL, DESIGNATOR_DEFN ) ) & ", " );
+	    REGIONS_PATH( DESIGNATOR_DEFN );
+	    PUT_LINE( DESIGNATOR_STR & "_disp" );
+	  end if;
 	else											-- contexte adresse (renames, ...)
 	  PUT( tab & "LVA" & tab & IMAGE( DI( CD_LEVEL, DESIGNATOR_DEFN ) ) & ", " );
 	  REGIONS_PATH( DESIGNATOR_DEFN );

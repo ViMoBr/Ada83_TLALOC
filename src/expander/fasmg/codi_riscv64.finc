@@ -49,8 +49,6 @@ postpone							; sera fait en toute toute fin car c'est le premier postpone
   ASM_SIZE = $-0x400078
 end postpone
 
-DEBUG_LLIR = 0
-
 macro show description, value					; pour debogage
   repeat 1, d:value
     display description,`d,13,10
@@ -201,12 +199,12 @@ macro			OVER
 end macro
 
 ;			.......
-macro			align_b
+macro			align_b?
 ;			.......
 end macro
 
 ;			.......
-macro			align_w
+macro			align_w?
 ;			.......
   desalign = $ mod 2
   if desalign <> 0
@@ -217,7 +215,7 @@ macro			align_w
 end macro
 
 ;			.......
-macro			align_d
+macro			align_d?
 ;			.......
   desalign = $ mod 4
   if desalign <> 0
@@ -228,7 +226,7 @@ macro			align_d
 end macro
 
 ;			.......
-macro			align_q
+macro			align_q?
 ;			.......
   desalign = $ mod 8
   if desalign <> 0
@@ -257,7 +255,7 @@ macro			QUAD_CONST	rd, val
 ;			...........................
 ;	Materialise une valeur 64 bits arbitraire dans rd via lui/addi/slli (jusqu'a 8 instructions).
   local v, sval
-  v = val and 0xFFFFFFFFFFFFFFFF						; vue 64 bits non signee
+  v = (val) and 0xFFFFFFFFFFFFFFFF					; vue 64 bits non signee (parentheses : val est textuel, and prime sur + -)
   if (v shr 63) and 1
     sval = v - 0x10000000000000000					; vue 64 bits signee
   else
@@ -279,9 +277,9 @@ macro			QUAD_CONST	rd, val
       hi20 = (sval shr 12) and 0xFFFFF
       lo12s = lo12
     end if
-    dd 0x00000037 or (hi20 shl 12) or (rd shl 7)			; lui rd, hi20
+    dd 0x00000037 or (hi20 shl 12) or (rd shl 7)				; lui rd, hi20
     if lo12s <> 0
-      dd 0x00000013 or ((lo12s and 0xFFF) shl 20) or (rd shl 15) or (rd shl 7)	; addi rd, rd, lo12s
+      dd 0x0000001B or ((lo12s and 0xFFF) shl 20) or (rd shl 15) or (rd shl 7)	; addiw rd, rd, lo12s   (addiW : si hi20 a deborde en 0x80000, lui a etendu le signe ; addiw tronque a 32 bits et re-etend, addi non)
     end if
 
   else
@@ -627,7 +625,7 @@ end macro
 ;			-------------
 macro			LI	val				; Load Integer (32 bits etendu signe vers 64)
 ;			-------------
-;	Sur x86-64 c'etait : mov rax, val (5 octets imm32 + sign-extend automatique).
+;	Sur x86-64 : movabs rax, imm64 (dq val). val est un entier 64 bits signe, comme sur x86.
 ;	Sur RISC-V on materialise via QUAD_CONST (jusqu'a 8 instructions selon la valeur).
   QUAD_CONST 10, val
   PUSH_RAX
@@ -768,7 +766,7 @@ end macro
 ;			------------------------
 macro			LA	lvl:-1, disp:0			; Load Address 64 bits
 ;			------------------------
-  Lq lvl, disp
+  LQ lvl, disp
 end macro
 
 ;			-------------------------------
@@ -824,7 +822,7 @@ end macro
 ;			-------------------------------
 macro			LIA	lvl:-1, disp:0, ofs:0		; Load Address 64 bits Indirect
 ;			-------------------------------
-  LIq lvl, disp, ofs
+  LIQ lvl, disp, ofs
 end macro
 
 
@@ -863,7 +861,7 @@ end macro
 ;			------------------------
 macro			SA	lvl:-1, disp:0			; Store Address 64 bits
 ;			------------------------
-  Sq lvl, disp
+  SQ lvl, disp
 end macro
 
 
@@ -898,7 +896,7 @@ end macro
 ;			-------------------
 macro			SIA	lvl, disp, ofs			; Store Address 64 bits Indirect
 ;			-------------------
-  SIq lvl, disp, ofs
+  SIQ lvl, disp, ofs
 end macro
 
 
@@ -913,7 +911,7 @@ end macro
 macro			ET
 ;			--
   POP_RAX								; a0 = B
-  dd 0x00043583							; ld a1, 0(s0)		a1 = A
+  dd 0x00043583							; ld a1, 0(s0)	a1 = A
   dd 0x00A5F5B3							; and a1, a1, a0	a1 = A and B
   dd 0x00B43023							; sd a1, 0(s0)
 end macro
@@ -1526,13 +1524,14 @@ macro			RTD	param_size:0
 ;	Desallouer param_size octets de la pile de travail puis retour (ret = jalr x0, 0(ra)).
 ;	L'adresse de retour est dans ra ; le 'CALL' du caller s'occupera de
 ;	restaurer le ra du niveau encore au-dessus.
-  assert param_size >= 0
-  if param_size <> 0
-    if param_size <= 2047
-;	addi s0, s0, -param_size
-      dd 0x00040413 or (((-param_size) and 0xFFF) shl 20)
+  prm_size = param_size						; evaluer l'argument textuel (prm_siz-8) AVANT toute negation : and prime sur + - en fasmg
+  assert prm_size >= 0
+  if prm_size <> 0
+    if prm_size <= 2047
+;	addi s0, s0, -prm_size
+      dd 0x00040413 or (((-prm_size) and 0xFFF) shl 20)
     else
-      QUAD_CONST	5, param_size					; t0 = param_size
+      QUAD_CONST	5, prm_size					; t0 = prm_size
       dd 0x40540433							; sub s0, s0, t0  (funct7=0x20, rs1=8, rs2=5, rd=8)
     end if
   end if
@@ -1716,7 +1715,7 @@ macro			USEINFO	lvl, field_name, load_instruc&	; Reference a un __u use info
     rq 1								; reservation
   end virtual
   load_instruc
-  Sa lvl, field_name#__u
+  SA lvl, field_name#__u
 end macro
 ;			---------------------------
 macro			STATOFS	name, siz, algn:0			; Definition de l'offset statique
@@ -1766,6 +1765,7 @@ macro			VAR	name_disp, sizChar, siz:1		; Definition d'un lieu de variable
       name_disp = $							; displacement des data de variable
       rb sizChar							; taille numerique en octets
     end if
+  end virtual
 end macro
 
 ;			------
@@ -1802,10 +1802,7 @@ macro			endPRO					; Fin de procedure
 post:
   virtual VARzone
     align_q
-    loc_siz = $							; taille des locales rétropropagee au LINK du ELAB
-if DEBUG_LLIR = 1
-show 'loc_siz = ', loc_siz
-end if
+    loc_siz = $							; taille des locales retropropagee au LINK du ELAB
   end virtual
   end namespace
 end macro
@@ -1820,9 +1817,9 @@ macro			EXC_MACH		lvl, ctx			; photographie de l'etat machine cache
   FP_IN_RAX lvl							; a0 := FP(lvl), base contexte
   STORE_QUAD	ctx + 16, 10, 8					; pile de travail s0
   STORE_QUAD	ctx + 24, 10, 2					; micro-pile sp
-  STORE_QUAD	ctx + 32, 10, 19				; frame co-pile s3
-  STORE_QUAD	ctx + 40, 10, 18				; sommet co-pile s2
-  QUAD_CONST	6, lvl + 1						; t1 = nombre d'entrees display
+  STORE_QUAD	ctx + 32, 10, 19					; frame co-pile s3
+  STORE_QUAD	ctx + 40, 10, 18					; sommet co-pile s2
+  QUAD_CONST	6, lvl + 1					; t1 = nombre d'entrees display
   STORE_QUAD	ctx + 48, 10, 6
   repeat lvl + 1, n:0
     LOAD_QUAD	8*n, 9, 6						; t1 := display[n]
@@ -2040,9 +2037,9 @@ moins:
 empile:
   PUSH_RAX
 end macro
-;				------------------------------
+;				--------------------------------
 ;				SPECIFIQUE  L I N U X   RISC-V64
-;				------------------------------
+;				--------------------------------
 ;
 ;	Convention syscall RISC-V64 Linux :
 ;	  a7       = numero de syscall
@@ -2147,7 +2144,7 @@ macro			SYS_GET_CHAR				; lit un seul caractere sur stdin en mode non canonique
 ;			------------
 ;	1. Reserver 64 octets sur sp pour le termios.
   dd 0xFC010113							; addi sp, sp, -64
-;	2. ioctl(stdin=0, TCGETS=0x5401, &termios) — recupere les attributs courants
+;	2. ioctl(stdin=0, TCGETS=0x5401, &termios) : recupere les attributs courants
   dd 0x00000513							; addi a0, x0, 0	(fd = stdin)
   dd 0x000055B7							; lui  a1, 0x5
   dd 0x40158593							; addi a1, a1, 0x401	(a1 = 0x5401, TCGETS)
@@ -2159,7 +2156,7 @@ macro			SYS_GET_CHAR				; lit un seul caractere sur stdin en mode non canonique
   dd 0x00C12503							; lw   a0, 12(sp)	(charger c_lflag)
   dd 0xFF557513							; andi a0, a0, -11	(masquer ICANON et ECHO)
   dd 0x00A12623							; sw   a0, 12(sp)	(remettre c_lflag)
-;	4. ioctl(stdin, TCSETS=0x5402, &termios) — applique les nouveaux attributs
+;	4. ioctl(stdin, TCSETS=0x5402, &termios) : applique les nouveaux attributs
   dd 0x00000513							; addi a0, x0, 0	(fd = stdin)
   dd 0x000055B7							; lui  a1, 0x5
   dd 0x40258593							; addi a1, a1, 0x402	(a1 = 0x5402, TCSETS)
@@ -2177,7 +2174,7 @@ macro			SYS_GET_CHAR				; lit un seul caractere sur stdin en mode non canonique
   dd 0x00C12503							; lw   a0, 12(sp)
   dd 0x00A56513							; ori  a0, a0, 0xA	(remettre ICANON et ECHO)
   dd 0x00A12623							; sw   a0, 12(sp)
-;	7. ioctl(stdin, TCSETS, &termios) — reapplique le mode canonique
+;	7. ioctl(stdin, TCSETS, &termios) : reapplique le mode canonique
   dd 0x00000513							; addi a0, x0, 0
   dd 0x000055B7							; lui  a1, 0x5
   dd 0x40258593							; addi a1, a1, 0x402
@@ -2262,21 +2259,20 @@ macro			COPY_STRING_APPEND_NUL			; descripteur dans a4, copie sur la pile montan
 end macro
 
 ;			---------------
-macro			SYS_FILE_CREATE				; openat(AT_FDCWD, name, O_CREAT|O_RDWR, 0700)
+macro			SYS_FILE_CREATE				; openat(AT_FDCWD, name, O_CREAT|O_RDWR|O_TRUNC, 0700)
 ;			---------------
 ;	x86-64 utilisait sys_open (rax=2) ; RISC-V64 utilise sys_openat (a7=56), comme ARM64.
 ;	openat prend AT_FDCWD = -100 en premier argument pour reproduire le sens 'open'.
-;	Args : a0=AT_FDCWD=-100, a1=path, a2=flags=0x42 (O_CREAT|O_RDWR), a3=mode=0700=0x1C0
-
+;	Args : a0=AT_FDCWD=-100, a1=path, a2=flags=0x242 (O_CREAT|O_RDWR|O_TRUNC), a3=mode=0700=0x1C0
   POP_RSI								; a4 = descripteur de chaine Ada
   COPY_STRING_APPEND_NUL						; a5 = adresse copie NUL-terminee
-  dd 0xF9C00513							; addi a0, x0, -100	(a0 = AT_FDCWD)
-  dd 0x00078593							; addi a1, a5, 0	(path)
-  dd 0x04200613							; addi a2, x0, 0x42	(O_CREAT | O_RDWR)
+  dd 0xF9C00513							; addi a0, x0, -100		(a0 = AT_FDCWD)
+  dd 0x00078593							; addi a1, a5, 0		(path)
+  dd 0x24200613							; addi a2, x0, 0x242	(O_CREAT | O_RDWR | O_TRUNC : CODI-01, comme la reference)
   dd 0x1C000693							; addi a3, x0, 0x1C0	(mode = 0700)
-  dd 0x03800893							; addi a7, x0, 56	(sys_openat)
+  dd 0x03800893							; addi a7, x0, 56		(sys_openat)
   dd 0x00000073							; ecall
-  dd 0x00A43023							; sd   a0, 0(s0)	(ATTENTION PAS PUSH ! ID rendu sur le lieu result de la fonction)
+  dd 0x00A43023							; sd   a0, 0(s0)		(ATTENTION PAS PUSH ! ID rendu sur le lieu result de la fonction)
 end macro
 
 ;			-------------
@@ -2423,6 +2419,7 @@ EV_CURRENT	= 1
 ET_EXEC		= 2
 SYSTEM_V		= 0
 EM_RISCV		= 243						; e_machine pour RISC-V (au lieu de 183 pour ARM64)
+TAILLE_COPILE	= 1*1024*1024*1024					; COPILE = 1 Go
 
 org 0x400000							; adresse entree programme linux
 
@@ -2448,7 +2445,7 @@ Elf64_Phdr:
 	p_vaddr		dq 0x00400078
 	p_paddr		dq 0
 	p_filesz		dq ASM_SIZE				; juste le necessaire code/constantes dans le fichier
-	p_memsz		dq ASM_SIZE + 1024*1024*1024
+	p_memsz		dq ASM_SIZE + TAILLE_COPILE
 	p_align		dq 4096
 
 

@@ -7963,10 +7963,10 @@ VAR	LMT_IL667_disp, D			; limite boucle LOOP__30
 	BT	L666
 LOOP__30:					; corps boucle LOOP__30
 	LVA 2,	ROUNDING_disp
-	LA 2,	-GFP_ofs
+	LA 1,	-GFP_ofs
 	LA ,	-NUM__inadr_ofs
 	CALLI
-	LA 2,	-GFP_ofs
+	LA 1,	-GFP_ofs
 	LA ,	-NUM__ld_ofs
 	CALLI
 ; CODE_NUMERIC_LITERAL DN_FLOAT
@@ -7983,17 +7983,17 @@ LOOP__30:					; corps boucle LOOP__30
 	BRA	LOOP__30				; iteration suivante LOOP__30
 L666:					; post loop LOOP__30
 	LVA 1,	STANDARD.TEXT_IO.FLOAT_IO.PUT_L69.VAL_disp
-	LA 2,	-GFP_ofs
+	LA 1,	-GFP_ofs
 	LA ,	-NUM__inadr_ofs
 	CALLI
-	LA 2,	-GFP_ofs
+	LA 1,	-GFP_ofs
 	LA ,	-NUM__ld_ofs
 	CALLI
 	LVA 2,	ROUNDING_disp
-	LA 2,	-GFP_ofs
+	LA 1,	-GFP_ofs
 	LA ,	-NUM__inadr_ofs
 	CALLI
-	LA 2,	-GFP_ofs
+	LA 1,	-GFP_ofs
 	LA ,	-NUM__ld_ofs
 	CALLI
 	FADD
@@ -13409,7 +13409,7 @@ VAR	LMT_KL999_disp, D			; limite boucle LOOP__63
 	CGT
 	BT	L998
 LOOP__63:					; corps boucle LOOP__63
-	LA  2,	-GFP_ofs				; propagation GFP generique
+	LA  1,	-GFP_ofs				; propagation GFP generique
 	LA	 2, STANDARD.TEXT_IO.FLOAT_IO.PUT_L72.BLOCK__58.EXP_STR_disp	; array data start address on stack
 	LD 2,	KL999_disp
 	DUP
@@ -17612,7 +17612,7 @@ VAR	LMT_KL1282_disp, D			; limite boucle LOOP__100
 	CGT
 	BT	L1281
 LOOP__100:				; corps boucle LOOP__100
-	LA  2,	-GFP_ofs				; propagation GFP generique
+	LA  1,	-GFP_ofs				; propagation GFP generique
 	LA	 2, STANDARD.TEXT_IO.FIXED_IO.PUT_L78.BLOCK__95.EXP_STR_disp	; array data start address on stack
 	LD 2,	KL1282_disp
 	DUP
@@ -17896,7 +17896,7 @@ end namespace
 	LVA 2, ANON_4015_42_info.SIZ__
 	SA  2, ANON_4015_42__u
 	LVA 2, ANON_4015_42_disp
-	LA  2,	-GFP_ofs				; propagation GFP generique
+	LA  1,	-GFP_ofs				; propagation GFP generique
 	CALL	STANDARD.TEXT_IO.ENUMERATION_IO.PUT_L81. ,GET_ENUM_IMAGES_L1292
 	DUP
 	LA
@@ -18576,7 +18576,7 @@ end namespace
 	LVA 2, ANON_4162_42_info.SIZ__
 	SA  2, ANON_4162_42__u
 	LVA 2, ANON_4162_42_disp
-	LA  2,	-GFP_ofs				; propagation GFP generique
+	LA  1,	-GFP_ofs				; propagation GFP generique
 	CALL	STANDARD.TEXT_IO.ENUMERATION_IO.GET_L79. ,GET_ENUM_IMAGES_L1317
 	DUP
 	LA
@@ -18622,7 +18622,7 @@ SKIP_BLANKS:
 	ULIB	, 0, STANDARD.TEXT_IO._FILE_TYPE.AT_END_OF_FILE
 	BT	L1353
 	LI	0					; lieu resultat sur pile
-	LA  2,	-GFP_ofs				; propagation GFP generique
+	LA  1,	-GFP_ofs				; propagation GFP generique
 	ULB 1,	STANDARD.TEXT_IO.ENUMERATION_IO.GET_L79.CH_disp
 	CALL	STANDARD.TEXT_IO.ENUMERATION_IO.GET_L79. ,IS_SEPARATOR_L1326
 	LI	1
@@ -18733,7 +18733,7 @@ L1360:
 LOOP__108:
 					; debut if
 	LI	0					; lieu resultat sur pile
-	LA  2,	-GFP_ofs				; propagation GFP generique
+	LA  1,	-GFP_ofs				; propagation GFP generique
 	ULB 1,	STANDARD.TEXT_IO.ENUMERATION_IO.GET_L79.CH_disp
 	CALL	STANDARD.TEXT_IO.ENUMERATION_IO.GET_L79. ,IS_IDENT_CHAR_L1333
 	BF	L1367
@@ -18784,7 +18784,7 @@ L1368:					; post if
 	CALL	STANDARD.TEXT_IO. ,GET_RAW_L81
 	BRA	L1366
 L1367:
-	LA  2,	-GFP_ofs				; propagation GFP generique
+	LA  1,	-GFP_ofs				; propagation GFP generique
 	ULB 1,	STANDARD.TEXT_IO.ENUMERATION_IO.GET_L79.CH_disp
 	CALL	STANDARD.TEXT_IO.ENUMERATION_IO.GET_L79. ,UNGET_CHAR_L1342
 	LI	1
@@ -19018,11 +19018,11 @@ L1385:					; post if
 L1384:
 					; debut if
 	LI	0					; lieu resultat sur pile
-	LA  2,	-GFP_ofs				; propagation GFP generique
+	LA  1,	-GFP_ofs				; propagation GFP generique
 	ULB 1,	STANDARD.TEXT_IO.ENUMERATION_IO.GET_L79.TOK_CH_disp
 	CALL	STANDARD.TEXT_IO.ENUMERATION_IO.GET_L79. ,UPPER_L1320
 	LI	0					; lieu resultat sur pile
-	LA  2,	-GFP_ofs				; propagation GFP generique
+	LA  1,	-GFP_ofs				; propagation GFP generique
 	ULB 1,	STANDARD.TEXT_IO.ENUMERATION_IO.GET_L79.IMG_CH_disp
 	CALL	STANDARD.TEXT_IO.ENUMERATION_IO.GET_L79. ,UPPER_L1320
 	CNE
@@ -19282,7 +19282,7 @@ end namespace
 	LVA 2, ANON_4363_42_info.SIZ__
 	SA  2, ANON_4363_42__u
 	LVA 2, ANON_4363_42_disp
-	LA  2,	-GFP_ofs				; propagation GFP generique
+	LA  1,	-GFP_ofs				; propagation GFP generique
 	CALL	STANDARD.TEXT_IO.ENUMERATION_IO.GET_L83. ,GET_ENUM_IMAGES_L1393
 	DUP
 	LA
@@ -19523,7 +19523,7 @@ VAR	LMT_JL1418_disp, D			; limite boucle LOOP__114
 LOOP__114:				; corps boucle LOOP__114
 					; debut if
 	LI	0					; lieu resultat sur pile
-	LA  2,	-GFP_ofs				; propagation GFP generique
+	LA  1,	-GFP_ofs				; propagation GFP generique
 	LA	 2, STANDARD.TEXT_IO.ENUMERATION_IO.GET_L83.BLOCK__112.IMAGES_STR_disp	; array data start address on stack
 	LD 1,	STANDARD.TEXT_IO.ENUMERATION_IO.GET_L83.IMG_START_disp
 	LD 2,	JL1418_disp
@@ -19728,7 +19728,7 @@ end namespace
 	LVA 2, ANON_4444_43_info.SIZ__
 	SA  2, ANON_4444_43__u
 	LVA 2, ANON_4444_43_disp
-	LA  2,	-GFP_ofs				; propagation GFP generique
+	LA  1,	-GFP_ofs				; propagation GFP generique
 	CALL	STANDARD.TEXT_IO.ENUMERATION_IO.PUT_L84. ,GET_ENUM_IMAGES_L1428
 	DUP
 	LA

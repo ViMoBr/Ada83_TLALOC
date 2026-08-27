@@ -1,0 +1,32 @@
+include '../../src/expander/fasmg/codi_arm64.finc'
+namespace STANDARD
+main_a6:
+	LINK	1, 200
+	LI	65
+	SB	1, 130
+	LB	1, 130
+	LI	65
+	CEQ
+	BT	t_a6
+	UNLINK	1
+	SYS_EXIT	1
+t_a6:
+	LI	7
+	SD	1, 8
+	LI	5
+	SD	1, 160
+	LD	1, 8
+	LD	1, 160
+	ADD
+	SA	1, 16
+	LA	1, 16
+	LVA	1, 16
+	LQ	-1
+	CEQ
+	BT	ok_a6
+	UNLINK	1
+	SYS_EXIT	2
+ok_a6:
+	UNLINK	1
+	SYS_EXIT	0
+end namespace

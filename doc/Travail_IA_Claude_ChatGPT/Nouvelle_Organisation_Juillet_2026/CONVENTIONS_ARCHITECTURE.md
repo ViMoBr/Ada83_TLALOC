@@ -71,9 +71,12 @@ expander.adb                  Programme principal + CODE_ROOT
 - **CALLI pour LD/ST** : `La lvl, -GFP_ofs` puis `La , -TYPE__st_ofs`
   (simple, pas LIa indirect). Le contenu de `__st_ofs` est déjà
   l'adresse de saut, pas un pointeur.
-- **Niveau dans STORE_OR_CALLI** : utiliser `DI(CD_LEVEL, DEFN)` (niveau
-  du paramètre = niveau de la procédure) et non `CUR_LEVEL` (qui peut
-  être plus grand dans un bloc declare).
+- **Niveau du GFP** : toute émission de `-GFP_ofs` s'adresse au niveau
+  `CODI.GFP_LEVEL` (PRO englobant le plus proche, posé par
+  CODE_SUBPROGRAM_BODY, jamais par CODE_BLOCK). Ni `CUR_LEVEL` (faux
+  dans un bloc declare : frame sans PRM) ni `GENERIC_BASE_LEVEL+1`
+  (faux dans un PRO imbriqué). `DI(CD_LEVEL, DEFN)` n'est juste que
+  pour un paramètre du PRO courant. Pièges n° 144 et 155.
 
 
 ## 2. Macros CODI_x86_64 — SSE2 flottant (session 11 avril)

@@ -49,8 +49,6 @@ postpone							; sera fait en toute toute fin car c'est le premier postpone
   ASM_SIZE = $-0x400078
 end postpone
 
-DEBUG_LLIR	= 0
-
 macro show description, value					; pour debogage
   repeat 1, d:value
     display description,`d,13,10
@@ -123,72 +121,53 @@ macro			PUSH_RAX
   dd 0xF80083A0							; stur x0, [x29, #8]
   dd 0x910023BD							; add  x29, x29, #8
 end macro
-
 ;			........
 macro			PUSH_RDX
 ;			........
   dd 0xF80083A3							; stur x3, [x29, #8]
   dd 0x910023BD							; add  x29, x29, #8
 end macro
-
 ;			.......
 macro			POP_RAX
 ;			.......
   dd 0xF94003A0							; ldr x0, [x29]
   dd 0xD10023BD							; sub x29, x29, #8
 end macro
-
 ;			.......
 macro			POP_RBX
 ;			.......
   dd 0xF94003A1							; ldr x1, [x29]
   dd 0xD10023BD							; sub x29, x29, #8
 end macro
-
 ;			.......
 macro			POP_RCX
 ;			.......
   dd 0xF94003A2							; ldr x2, [x29]
   dd 0xD10023BD							; sub x29, x29, #8
-
-optim_RAX_ON_TOP = 0
 end macro
-
 ;			.......
 macro			POP_RDX
 ;			.......
   dd 0xF94003A3							; ldr x3, [x29]
   dd 0xD10023BD							; sub x29, x29, #8
-
-optim_RAX_ON_TOP = 0
 end macro
-
 ;			.......
 macro			POP_RSI
 ;			.......
   dd 0xF94003A4							; ldr x4, [x29]    (RSI -> x4)
   dd 0xD10023BD							; sub x29, x29, #8
-
-optim_RAX_ON_TOP = 0
 end macro
-
 ;			.......
 macro			POP_RDI
 ;			.......
   dd 0xF94003A5							; ldr x5, [x29]    (RDI -> x5)
   dd 0xD10023BD							; sub x29, x29, #8
-
-optim_RAX_ON_TOP = 0
 end macro
-
 ;			....
 macro			DROP
 ;			....
   dd 0xD10023BD							; sub x29, x29, #8
-
-optim_RAX_ON_TOP = 0
 end macro
-
 ;			...
 macro			DUP
 ;			...
@@ -196,23 +175,21 @@ macro			DUP
   dd 0xF80083A0							; stur x0, [x29, #8]	dupliquer
   dd 0x910023BD							; add  x29, x29, #8
 end macro
-
-
-;				....
+;			....
 macro			OVER
-;				....
+;			....
   dd 0xF85F83A0							; ldur x0, [x29, #-8]	amener le NOS dans x0
   dd 0xF80083A0							; stur x0, [x29, #8]	empiler
   dd 0x910023BD							; add  x29, x29, #8
 end macro
 
 ;			.......
-macro			align_b
+macro			align_b?
 ;			.......
 end macro
 
 ;			.......
-macro			align_w
+macro			align_w?
 ;			.......
   desalign = $ mod 2
   if desalign <> 0
@@ -223,7 +200,7 @@ macro			align_w
 end macro
 
 ;			.......
-macro			align_d
+macro			align_d?
 ;			.......
   desalign = $ mod 4
   if desalign <> 0
@@ -234,7 +211,7 @@ macro			align_d
 end macro
 
 ;			.......
-macro			align_q
+macro			align_q?
 ;			.......
   desalign = $ mod 8
   if desalign <> 0
@@ -248,96 +225,129 @@ end macro
 macro			LOAD_QUAD		ofs, Ra, Rd		; load qword Rd depuis [Ra + imm]
 ;			...............................
 ;	Choix automatique entre LDR (offset positif scale par 8, 0..32760)
-;	ou LDUR (offset signe -256..255 non scale).
-;	Pour les autres cas, materialisation dans x16.
-  local signed_ofs
-  signed_ofs = ofs							; Pour gerer le signe negatif
-  local aTerm
-  aTerm = Ra shl 5
-
-  if ofs >= 0  &  ofs <= 32760  &  (ofs mod 8) = 0
-    local imm12
-    imm12 = ofs shr 3
-    dd 0xF9400000  or  (imm12 shl 10)  or  aTerm or Rd			; ldr Rd, [Ra, #imm]
-
-  else if ofs >= -256 & ofs <= 255
-    dd 0xF8400000  or  ((signed_ofs and 0x1FF) shl 12)  or  aTerm or Rd	; ldur Rd, [Ra, #imm]
-
+;	ou LDUR (offset signe -256..255 non scale) ; sinon materialisation dans x17.
+;	Sans symbole local : ofs est substitue textuellement, d'ou (ofs) partout
+;	(precedence fasmg : shr/and/mod lient plus fort que + - *).
+  if (ofs) >= 0  &  (ofs) <= 32760  &  ((ofs) mod 8) = 0
+    dd 0xF9400000  or  (((ofs) shr 3) shl 10)  or  (Ra shl 5)  or  Rd		; ldr Rd, [Ra, #ofs]
+  else if (ofs) >= -256 & (ofs) <= 255
+    dd 0xF8400000  or  (((ofs) and 0x1FF) shl 12)  or  (Ra shl 5)  or  Rd	; ldur Rd, [Ra, #ofs]
   else
-    QUAD_CONST	17, signed_ofs
-    dd 0xF8606800  or  (17 shl 16)  or  aTerm or Rd			; ldr Rd, [Ra, x17, lsl #0]
+    QUAD_CONST	17, (ofs)
+    dd 0xF8606800  or  (17 shl 16)  or  (Ra shl 5)  or  Rd			; ldr Rd, [Ra, x17]
   end if
 end macro
 
 ;			...............................
 macro			STORE_QUAD	ofs, Ra, Rs		; store qword Rs vers [Ra + ofs]
 ;			...............................
-  local signed_ofs
-  signed_ofs = ofs
-  local aTerm
-  aTerm = Ra shl 5
-
-  if ofs >= 0  &  ofs <= 32760  &  (ofs mod 8) = 0
-    local imm12
-    imm12 = ofs shr 3
-    dd 0xF9000000  or  aTerm or Rs  or  (imm12 shl 10)			; str Rs, [Ra, #ofs]
-
-  else if ofs >= -256 & ofs <= 255
-    dd 0xF8000000  or  aTerm or Rs  or  ((signed_ofs and 0x1FF) shl 12)	; stur Rs, [Ra, #ofs]
-
+  if (ofs) >= 0  &  (ofs) <= 32760  &  ((ofs) mod 8) = 0
+    dd 0xF9000000  or  (((ofs) shr 3) shl 10)  or  (Ra shl 5)  or  Rs		; str Rs, [Ra, #ofs]
+  else if (ofs) >= -256 & (ofs) <= 255
+    dd 0xF8000000  or  (((ofs) and 0x1FF) shl 12)  or  (Ra shl 5)  or  Rs	; stur Rs, [Ra, #ofs]
   else
-    QUAD_CONST	17, signed_ofs
-    dd 0xF8206800  or  aTerm or Rs  or  (17 shl 16)			; str Rs, [Ra, x17, lsl #0]
+    QUAD_CONST	17, (ofs)
+    dd 0xF8206800  or  (17 shl 16)  or  (Ra shl 5)  or  Rs			; str Rs, [Ra, x17]
   end if
 end macro
 
 ;			...........................
 macro			QUAD_CONST	Rd, val
 ;			...........................
-;	Materialise une valeur 64 bits arbitraire dans Rd via movz/movk (4 instructions max).
-;	Les chunks a zero sont sautes (sauf si tous nuls : un movz #0 minimum).
-  local v, emitted, chunk
-  v = val
-  emitted = 0
-
-  repeat 4, idx:0
-    chunk = (v shr (16*idx)) and 0xFFFF
-    if chunk <> 0
-      if emitted = 0
-        dd 0xD2800000  or  (idx shl 21)  or  (chunk shl 5)  or  Rd		; movz Rd, #chunk, lsl #(16*idx)
-        emitted = 1
+;	Materialise une valeur entiere 64 bits (IMMEDIAT connu des la passe 1) dans Rd.
+;	Chemins rapides : 0..0xFFFF -> movz ; -0x10000..-1 -> movn (une instruction).
+;	Sinon, sur le motif 64 bits de val : vue movz (chunks nuls implicites) ou vue
+;	movn (chunks 0xFFFF implicites), la moins chere ; premier chunk explicite par
+;	movz/movn, les suivants par movk. Taille = max(1, min(nz, nf)) : fonction de
+;	val seule, calculable au parse par TARGET_CODE (val est dans le texte).
+;	Pour une ADRESSE (reference avant, valeur inconnue en passe 1) : QUAD_ADDR,
+;	de taille fixe (contrat SIZE_OF = ENCODE, piege n. 88 : jamais de taille
+;	dependant d'une valeur de la passe precedente).
+;	Precedence fasmg : and/or/shl/shr/mod lient plus fort que + - * ; les parametres
+;	de macro sont substitues TEXTUELLEMENT, d'ou les parentheses (val) partout.
+  if (val) >= 0 & (val) <= 0xFFFF
+    dd 0xD2800000  or  ((val) shl 5)  or  Rd				; movz Rd, #val
+  else if (val) < 0 & (val) >= -0x10000
+    dd 0x92800000  or  ((-(val) - 1) shl 5)  or  Rd			; movn Rd, #(not val)
+  else
+    local emitted, chunk, nz, nf
+    nz = 0							; chunks non nuls   (cout de la vue movz+movk)
+    nf = 0							; chunks /= 0xFFFF  (cout de la vue movn+movk)
+    repeat 4, idx:0
+      chunk = ((val) shr (16*idx)) and 0xFFFF
+      if chunk <> 0
+        nz = nz + 1
+      end if
+      if chunk <> 0xFFFF
+        nf = nf + 1
+      end if
+    end repeat
+    emitted = 0
+    repeat 4, idx:0
+      chunk = ((val) shr (16*idx)) and 0xFFFF
+      if nz <= nf							; vue movz : les chunks nuls sont implicites
+        if chunk <> 0
+          if emitted = 0
+            dd 0xD2800000  or  (idx shl 21)  or  (chunk shl 5)  or  Rd	; movz Rd, #chunk, lsl #(16*idx)
+            emitted = 1
+          else
+            dd 0xF2800000  or  (idx shl 21)  or  (chunk shl 5)  or  Rd	; movk Rd, #chunk, lsl #(16*idx)
+          end if
+        end if
+      else							; vue movn : les chunks 0xFFFF sont implicites
+        if chunk <> 0xFFFF
+          if emitted = 0
+            dd 0x92800000  or  (idx shl 21)  or  ((chunk xor 0xFFFF) shl 5)  or  Rd	; movn Rd, #(not chunk), lsl #(16*idx)
+            emitted = 1
+          else
+            dd 0xF2800000  or  (idx shl 21)  or  (chunk shl 5)  or  Rd	; movk Rd, #chunk, lsl #(16*idx)
+          end if
+        end if
+      end if
+    end repeat
+    if emitted = 0							; tous les chunks implicites : 0 (vue movz) ou -1 (vue movn)
+      if nz <= nf
+        dd 0xD2800000  or  Rd						; movz Rd, #0
       else
-        dd 0xF2800000  or  (idx shl 21)  or  (chunk shl 5)  or  Rd		; movk Rd, #chunk, lsl #(16*idx)
+        dd 0x92800000  or  Rd						; movn Rd, #0  (Rd = -1)
       end if
     end if
-  end repeat
-
-  if emitted = 0
-    dd 0xD2800000  or  Rd						; movz Rd, #0
   end if
+end macro
+
+;			..........................
+macro			QUAD_ADDR	Rd, val
+;			..........................
+;	Materialise une ADRESSE (symbole, reference avant possible) dans Rd.
+;	TAILLE FIXE : movz + movk, 32 bits (image ELF chargee sous 4 Go, comme sur
+;	x86-64 ou movabs est lui aussi de taille fixe). L'assert garde l'hypothese ;
+;	si elle tombait un jour, passer a trois instructions (48 bits), toujours fixes.
+  assert (val) >= 0 & (val) <= 0xFFFFFFFF
+  dd 0xD2800000  or  (((val) and 0xFFFF) shl 5)  or  Rd			; movz Rd, #lo16
+  dd 0xF2A00000  or  ((((val) shr 16) and 0xFFFF) shl 5)  or  Rd		; movk Rd, #hi16, lsl #16
 end macro
 
 ;			.......................
 macro			FP_IN_RAX		lvl
 ;			.......................
-;	Aller chercher le frame pointer du niveau lvl dans le display pointe par x28
-  assert lvl >= 0 & lvl <= 31
-  LOAD_QUAD	8*lvl, 28, 0					; ldr x0, [x28, #8*lvl]
-
+;	Aller chercher le frame pointer du niveau lvl dans le display pointe par x28.
+;	Encodage direct (imm12 = lvl, scale 8) : une ligne au lieu du passage par LOAD_QUAD.
+  assert (lvl) >= 0 & (lvl) <= 31
+  dd 0xF9400380  or  ((lvl) shl 10)					; ldr x0, [x28, #8*lvl]
 end macro
 
 ;			.......................
 macro			RAX_IN_FP		lvl
 ;			.......................
-  assert lvl >= 0 & lvl <= 31
-  STORE_QUAD	8*lvl, 28, 0					; str x0, [x28, #8*lvl]
+  assert (lvl) >= 0 & (lvl) <= 31
+  dd 0xF9000380  or  ((lvl) shl 10)					; str x0, [x28, #8*lvl]
 end macro
 
 ;			.......................
 macro			FP_IN_RBP	lvl
 ;			.......................
-  assert lvl >= 0 & lvl <= 31
-  LOAD_QUAD 8*lvl, 28, 29						; ldr x29, [x28, #8*lvl]
+  assert (lvl) >= 0 & (lvl) <= 31
+  dd 0xF940039D  or  ((lvl) shl 10)					; ldr x29, [x28, #8*lvl]
 end macro
 
 ;			.......................
@@ -380,21 +390,17 @@ end macro
 ;	Pour les offsets negatifs ou non alignes, on utilise LDUR (imm9 signe -256..255).
 
 ;			........................
-;			........................
 macro			FETCH_BYTE_U	disp
 ;			........................
 ; Charge un octet sans signe dans x0 (zero-extension).
-  local signed_disp
-  signed_disp = disp
-
-  if disp = 0
+  if (disp) = 0
     dd 0x39400000							; ldrb w0, [x0]
-  else if disp > 0  &  disp <= 4095
-    dd 0x39400000 or (disp shl 10)					; ldrb w0, [x0, #disp]
-  else if disp >= -256 & disp <= 255
-    dd 0x38400000 or ((signed_disp and 0x1FF) shl 12)			; ldurb w0, [x0, #disp]
+  else if (disp) > 0  &  (disp) <= 4095
+    dd 0x39400000 or ((disp) shl 10)					; ldrb w0, [x0, #disp]
+  else if (disp) >= -256 & (disp) <= 255
+    dd 0x38400000 or (((disp) and 0x1FF) shl 12)			; ldurb w0, [x0, #disp]
   else
-    QUAD_CONST	17, signed_disp
+    QUAD_CONST	17, (disp)
     dd 0x38606800 or (17 shl 16)					; ldrb w0, [x0, x17]
   end if
 end macro
@@ -403,17 +409,14 @@ end macro
 macro			FETCH_WORD_U	disp
 ;			........................
 ; Charge un mot 16 bits sans signe dans x0 (zero-extension).
-  local signed_disp
-  signed_disp = disp
-
-  if disp = 0
+  if (disp) = 0
     dd 0x79400000							; ldrh w0, [x0]
-  else if disp >= 0  &  disp <= 8190  &  (disp mod 2) = 0
-    dd 0x79400000 or ((disp shr 1) shl 10)				; ldrh w0, [x0, #disp]
-  else if disp >= -256 & disp <= 255
-    dd 0x78400000 or ((signed_disp and 0x1FF) shl 12)			; ldurh w0, [x0, #disp]
+  else if (disp) >= 0  &  (disp) <= 8190  &  ((disp) mod 2) = 0
+    dd 0x79400000 or (((disp) shr 1) shl 10)				; ldrh w0, [x0, #disp]
+  else if (disp) >= -256 & (disp) <= 255
+    dd 0x78400000 or (((disp) and 0x1FF) shl 12)			; ldurh w0, [x0, #disp]
   else
-    QUAD_CONST	17, signed_disp
+    QUAD_CONST	17, (disp)
     dd 0x78606800 or (17 shl 16)					; ldrh w0, [x0, x17]
   end if
 end macro
@@ -423,34 +426,29 @@ macro			FETCH_DWORD_U	disp
 ;			........................
 ; Charge un dword 32 bits sans signe dans x0. Un ecriture dans w0 met implicitement
 ; a zero les 32 bits hauts de x0, exactement comme mov eax,[...] sur x86-64.
-  local signed_disp
-  signed_disp = disp
-
-  if disp = 0
+  if (disp) = 0
     dd 0xB9400000							; ldr w0, [x0]
-  else if disp >= 0  &  disp <= 16380  &  (disp mod 4) = 0
-    dd 0xB9400000 or ((disp shr 2) shl 10)				; ldr w0, [x0, #disp]
-  else if disp >= -256 & disp <= 255
-    dd 0xB8400000 or ((signed_disp and 0x1FF) shl 12)			; ldur w0, [x0, #disp]
+  else if (disp) >= 0  &  (disp) <= 16380  &  ((disp) mod 4) = 0
+    dd 0xB9400000 or (((disp) shr 2) shl 10)				; ldr w0, [x0, #disp]
+  else if (disp) >= -256 & (disp) <= 255
+    dd 0xB8400000 or (((disp) and 0x1FF) shl 12)			; ldur w0, [x0, #disp]
   else
-    QUAD_CONST	17, signed_disp
+    QUAD_CONST	17, (disp)
     dd 0xB8606800 or (17 shl 16)					; ldr w0, [x0, x17]
   end if
 end macro
 
+;			........................
 macro			FETCH_BYTE	disp
 ;			........................
-  local signed_disp
-  signed_disp = disp
-
-  if disp = 0
+  if (disp) = 0
     dd 0x39800000							; ldrsb x0, [x0]
-  else if disp > 0  &  disp <= 4095
-    dd 0x39800000 or (disp shl 10)					; ldrsb x0, [x0, #disp]
-  else if disp >= -256 & disp <= 255
-    dd 0x38800000 or ((signed_disp and 0x1FF) shl 12)			; ldursb x0, [x0, #disp]
+  else if (disp) > 0  &  (disp) <= 4095
+    dd 0x39800000 or ((disp) shl 10)					; ldrsb x0, [x0, #disp]
+  else if (disp) >= -256 & (disp) <= 255
+    dd 0x38800000 or (((disp) and 0x1FF) shl 12)			; ldursb x0, [x0, #disp]
   else
-    QUAD_CONST	17, signed_disp					; x17 = signed_disp
+    QUAD_CONST	17, (disp)					; x17 = disp
     dd 0x38A06800 or (17 shl 16)					; ldrsb x0, [x0, x17]
   end if
 end macro
@@ -458,17 +456,14 @@ end macro
 ;			........................
 macro			FETCH_WORD	disp
 ;			........................
-  local signed_disp
-  signed_disp = disp
-
-  if disp = 0
+  if (disp) = 0
     dd 0x79800000							; ldrsh x0, [x0]
-  else if disp >= 0  &  disp <= 8190  &  (disp mod 2) = 0
-    dd 0x79800000 or ((disp shr 1) shl 10)				; ldrsh x0, [x0, #disp]
-  else if disp >= -256 & disp <= 255
-    dd 0x78800000 or ((signed_disp and 0x1FF) shl 12)			; ldursh x0, [x0, #disp]
+  else if (disp) >= 0  &  (disp) <= 8190  &  ((disp) mod 2) = 0
+    dd 0x79800000 or (((disp) shr 1) shl 10)				; ldrsh x0, [x0, #disp]
+  else if (disp) >= -256 & (disp) <= 255
+    dd 0x78800000 or (((disp) and 0x1FF) shl 12)			; ldursh x0, [x0, #disp]
   else
-    QUAD_CONST	17, signed_disp
+    QUAD_CONST	17, (disp)
     dd 0x78A06800 or (17 shl 16)					; ldrsh x0, [x0, x17]
   end if
 
@@ -477,17 +472,14 @@ end macro
 ;			........................
 macro			FETCH_DWORD	disp
 ;			........................
-  local signed_disp
-  signed_disp = disp
-
-  if disp = 0
+  if (disp) = 0
     dd 0xB9800000							; ldrsw x0, [x0]
-  else if disp >= 0  &  disp <= 16380  &  (disp mod 4) = 0
-    dd 0xB9800000 or ((disp shr 2) shl 10)				; ldrsw x0, [x0, #disp]
-  else if disp >= -256 & disp <= 255
-    dd 0xB8800000 or ((signed_disp and 0x1FF) shl 12)			; ldursw x0, [x0, #disp]
+  else if (disp) >= 0  &  (disp) <= 16380  &  ((disp) mod 4) = 0
+    dd 0xB9800000 or (((disp) shr 2) shl 10)				; ldrsw x0, [x0, #disp]
+  else if (disp) >= -256 & (disp) <= 255
+    dd 0xB8800000 or (((disp) and 0x1FF) shl 12)			; ldursw x0, [x0, #disp]
   else
-    QUAD_CONST	17, signed_disp
+    QUAD_CONST	17, (disp)
     dd 0xB8A06800 or (17 shl 16)					; ldrsw x0, [x0, x17]
   end if
 
@@ -497,25 +489,20 @@ end macro
 macro			FETCH_QWORD	disp
 ;			........................
   LOAD_QUAD	disp, 0, 0					; ldr x0, [x0, #disp] (avec choix scale/lefty/scratch)
-
-optim_RAX_ON_TOP = 0
 end macro
 
 ;			........................
 macro			STORE_BYTE	disp
 ;			........................
 ;	Range x1 (vue w1 32 bits basse) en byte vers [x0 + disp]
-  local signed_disp
-  signed_disp = disp
-
-  if disp = 0
+  if (disp) = 0
     dd 0x39000001							; strb w1, [x0]
-  else if disp > 0  &  disp <= 4095
-    dd 0x39000001 or (disp shl 10)					; strb w1, [x0, #disp]
-  else if disp >= -256 & disp <= 255
-    dd 0x38000001 or ((signed_disp and 0x1FF) shl 12)			; sturb w1, [x0, #disp]
+  else if (disp) > 0  &  (disp) <= 4095
+    dd 0x39000001 or ((disp) shl 10)					; strb w1, [x0, #disp]
+  else if (disp) >= -256 & (disp) <= 255
+    dd 0x38000001 or (((disp) and 0x1FF) shl 12)			; sturb w1, [x0, #disp]
   else
-    QUAD_CONST	17, signed_disp
+    QUAD_CONST	17, (disp)
     dd 0x38206800 or (17 shl 16) or 1					; strb w1, [x0, x17]
   end if
 end macro
@@ -523,17 +510,14 @@ end macro
 ;			........................
 macro			STORE_WORD	disp
 ;			........................
-  local signed_disp
-  signed_disp = disp
-
-  if disp = 0
+  if (disp) = 0
     dd 0x79000001							; strh w1, [x0]
-  else if disp >= 0  &  disp <= 8190  &  (disp mod 2) = 0
-    dd 0x79000001 or ((disp shr 1) shl 10)				; strh w1, [x0, #disp]
-  else if disp >= -256 & disp <= 255
-    dd 0x78000001 or ((signed_disp and 0x1FF) shl 12)			; sturh w1, [x0, #disp]
+  else if (disp) >= 0  &  (disp) <= 8190  &  ((disp) mod 2) = 0
+    dd 0x79000001 or (((disp) shr 1) shl 10)				; strh w1, [x0, #disp]
+  else if (disp) >= -256 & (disp) <= 255
+    dd 0x78000001 or (((disp) and 0x1FF) shl 12)			; sturh w1, [x0, #disp]
   else
-    QUAD_CONST	17, signed_disp
+    QUAD_CONST	17, (disp)
     dd 0x78206800 or (17 shl 16) or 1					; strh w1, [x0, x17]
   end if
 end macro
@@ -541,17 +525,14 @@ end macro
 ;			........................
 macro			STORE_DWORD	disp
 ;			........................
-  local signed_disp
-  signed_disp = disp
-
-  if disp = 0
+  if (disp) = 0
     dd 0xB9000001							; str w1, [x0]
-  else if disp >= 0  &  disp <= 16380  &  (disp mod 4) = 0
-    dd 0xB9000001 or ((disp shr 2) shl 10)				; str w1, [x0, #disp]
-  else if disp >= -256 & disp <= 255
-    dd 0xB8000001 or ((signed_disp and 0x1FF) shl 12)			; stur w1, [x0, #disp]
+  else if (disp) >= 0  &  (disp) <= 16380  &  ((disp) mod 4) = 0
+    dd 0xB9000001 or (((disp) shr 2) shl 10)				; str w1, [x0, #disp]
+  else if (disp) >= -256 & (disp) <= 255
+    dd 0xB8000001 or (((disp) and 0x1FF) shl 12)			; stur w1, [x0, #disp]
   else
-    QUAD_CONST	17, signed_disp
+    QUAD_CONST	17, (disp)
     dd 0xB8206800 or (17 shl 16) or 1					; str w1, [x0, x17]
   end if
 end macro
@@ -570,16 +551,8 @@ end macro
 ;			-------------
 macro			LI	val				; Load Integer (32 bits etendu signe vers 64)
 ;			-------------
-;	Sur x86-64 c'etait : mov rax, val (5 octets imm32 + sign-extend automatique).
-;	Sur ARM64, on utilise jusqu'a 4 instructions movz/movk si necessaire ; 
-;	la macro QUAD_CONST optimise les chunks nuls. Pour les valeurs negatives
-;	en imm32, on materialise les bits effectifs apres extension de signe vers 64.
-;  local v64
-;  if val < 0
-;    v64 = val and 0xFFFFFFFFFFFFFFFF					; extension de signe vers 64 bits
-;  else
-;    v64 = val
-;  end if
+;	Sur x86-64 : movabs rax, imm64 (dq val). Sur ARM64 : jusqu'a 4 movz/movk,
+;	QUAD_CONST saute les chunks nuls ; val est un entier 64 bits signe, comme sur x86.
   QUAD_CONST 0, val
   PUSH_RAX
 end macro
@@ -597,7 +570,7 @@ macro			LIF	val				; Load Immediate Float (IEEE 754 double 64 bits sur la pile e
   local bits
   virtual at 0
     dq val
-    load bits qword from 0
+    load bits:qword from 0
   end virtual
   QUAD_CONST 0, bits
   PUSH_RAX
@@ -611,9 +584,8 @@ end macro
 ;			---------------------
 macro			LCA	ptr, disp:0			; Load Constant Address
 ;			---------------------
-;	Materialise une adresse 64 bits dans x0 et l'empile.
-;	Sur ARM64 : 4 instructions movz/movk maximum, optimisable selon la valeur.
-  QUAD_CONST	0, ptr+disp
+;	Materialise une adresse dans x0 (QUAD_ADDR, taille fixe : 2 instructions) et l'empile.
+  QUAD_ADDR	0, ptr+disp
   PUSH_RAX
 end macro
 
@@ -627,7 +599,7 @@ macro			LSPA	prefix, subname			; Load SubProgram Address de .elab, en armant l'a
     end if
   end postpone
 
-  QUAD_CONST	0, prefix#subname#_					; adresse absolue du sous-programme dans x0
+  QUAD_ADDR	0, prefix#subname#_					; adresse absolue du sous-programme dans x0 (taille fixe)
   PUSH_RAX
 end macro
 ;			------------------------
@@ -637,16 +609,16 @@ macro			LVA	lvl:-1, disp:0			; Load Variable Address pour lvl et disp
 ;	x86 : lea rax, [base + disp] ; ARM64 : add x0, base, #disp (immediat 12 bits ; sinon
 ;	via movz/movk + add).
   BASE_IN_RAX	lvl
-  if disp = 0
+  if (disp) = 0
 ;	x0 deja a la bonne valeur, rien a faire
-  else if disp >= -4095 & disp <= 4095
-    if disp >= 0
-      dd 0x91000000 or (disp shl 10) or (0 shl 5) or 0			; add x0, x0, #disp
+  else if (disp) >= -4095 & (disp) <= 4095
+    if (disp) >= 0
+      dd 0x91000000 or ((disp) shl 10) or (0 shl 5) or 0			; add x0, x0, #disp
     else
-      dd 0xD1000000 or ((-disp) shl 10) or (0 shl 5) or 0			; sub x0, x0, #(-disp)
+      dd 0xD1000000 or ((-(disp)) shl 10) or (0 shl 5) or 0			; sub x0, x0, #(-disp)
     end if
   else
-    QUAD_CONST	17, disp
+    QUAD_CONST	17, (disp)
     dd 0x8B110000							; add x0, x0, x17
   end if
   PUSH_RAX
@@ -658,16 +630,16 @@ macro			LIVA	lvl:-1, disp:0, ofs:0		; Load Indirect Variable Address
 ;	Empile l'adresse de la variable pointee par l adresse au deplacement disp du frame de lvl,
 ;	a laquelle on ajoute ofs.
   INDIRECT_BASE_IN_RAX	lvl, disp
-  if ofs = 0
+  if (ofs) = 0
 ;	x0 deja a la bonne valeur
-  else if ofs >= -4095 & ofs <= 4095
-    if ofs >= 0
-      dd 0x91000000 or (ofs shl 10)					; add x0, x0, #ofs
+  else if (ofs) >= -4095 & (ofs) <= 4095
+    if (ofs) >= 0
+      dd 0x91000000 or ((ofs) shl 10)					; add x0, x0, #ofs
     else
-      dd 0xD1000000 or ((-ofs) shl 10)					; sub x0, x0, #(-ofs)
+      dd 0xD1000000 or ((-(ofs)) shl 10)					; sub x0, x0, #(-ofs)
     end if
   else
-    QUAD_CONST	17, ofs
+    QUAD_CONST	17, (ofs)
     dd 0x8B110000							; add x0, x0, x17
   end if
   PUSH_RAX
@@ -699,7 +671,7 @@ macro			ULD	lvl:-1, disp:0			; Unsigned Load doubleword 32 bits
   FETCH_DWORD_U	disp
   PUSH_RAX
 end macro
-
+;			------------------------
 macro			LB	lvl:-1, disp:0			; Load Byte 8 bits
 ;			------------------------
   BASE_IN_RAX	lvl
@@ -733,7 +705,6 @@ macro			LA	lvl:-1, disp:0			; Load Address 64 bits
   LQ lvl, disp
 end macro
 
-;			-------------------------------
 ;			-------------------------------
 macro			ULIB	lvl:-1, disp:0, ofs:0		; Unsigned Load Indirect byte
 ;			-------------------------------
@@ -1191,7 +1162,7 @@ end macro
 macro			CVTFI					; Conversion double IEEE 754 -> entier signe 64 bits (troncature vers zero)
 ;			-----
   dd 0xFD4003A0							; ldr d0, [x29]		(double depuis la pile dans d0)
-  dd 0x9EF80000							; fcvtzs x0, d0		(convertir double -> entier avec troncature)
+  dd 0x9E780000							; fcvtzs x0, d0		(convertir double -> entier avec troncature ; ftype=01 double, 0x9EF8.... etait h0)
   dd 0xF90003A0							; str x0, [x29]		(ecraser le double par l'entier)
 end macro
 
@@ -1473,23 +1444,25 @@ end macro
 ;			-------------
 macro			BT	lbl				; branch true
 ;			-------------
-;	POP x0 puis CBNZ x0, lbl (sauter si x0 != 0).
-;	CBNZ a une plage limitee a ±1 Mo (imm19). Suffisant pour les programmes courants.
+;	POP x0 puis saut par INVERSION : CBZ x0, +8 enjambe le B ; B lbl.
+;	Un CBNZ direct n'offre que +-1 Mo (imm19) : insuffisant pour le compilateur
+;	entier (BT STANDARD.ne_raise_ hors plage). Le B offre +-128 Mo (imm26),
+;	comme BRA, dont on reutilise la macro (et son assert de plage).
+;	Forme longue SYSTEMATIQUE : jamais de choix de taille inter-passes
+;	(pieges n. 82 et 88 : decision non monotone = oscillation fasmg).
+;	Cout : une instruction (4 octets) de plus par BT/BF.
   POP_RAX
-  local disp
-  dd 0xB5000000 or (((disp shr 2) and 0x7FFFF) shl 5)			; cbnz x0, lbl
-  disp = lbl - $ + 4
-  assert (disp mod 4) = 0 & disp >= -1048576 & disp <= 1048572
+  dd 0xB4000040							; cbz x0, +8	(x0 = 0 : enjambe le B, pas de saut)
+  BRA lbl								; b lbl		(x0 /= 0 : saut)
 end macro
 
 ;			-------------
 macro			BF	lbl				; branch false
 ;			-------------
+;	Symetrique de BT : CBNZ x0, +8 enjambe le B ; B lbl.
   POP_RAX
-  local disp
-  dd 0xB4000000 or (((disp shr 2) and 0x7FFFF) shl 5)			; cbz x0, lbl
-  disp = lbl - $ + 4
-  assert (disp mod 4) = 0 & disp >= -1048576 & disp <= 1048572
+  dd 0xB5000040							; cbnz x0, +8	(x0 /= 0 : enjambe le B, pas de saut)
+  BRA lbl								; b lbl		(x0 = 0 : saut)
 end macro
 
 ;			-------------------------
@@ -1500,29 +1473,29 @@ macro			CALL	prefix, subname			; CALL par offset
 ; 16 octets (alignement AArch64), range l'adresse de retour a [sp], puis branche.
 ; RTD depile cette adresse. Ainsi une restauration de SP par EXC_RAISE deroule
 ; aussi les retours des frames abandonnes, sans avoir a sauver x30 dans le contexte.
+; L'adresse de retour est PC-relative (adr x16, .+16 : la 4e instruction apres
+; l'adr) : taille fixe de 16 octets par CALL, aucun label, aucune dependance
+; a une valeur de passe precedente (contrat SIZE_OF = ENCODE).
   postpone
     if ~definite prefix#subname#_
       prefix#subname#_ = prefix#subname#.elab
     end if
   end postpone
 
-  local retour
-  QUAD_CONST	16, retour
+  dd 0x10000090							; adr x16, .+16	(adresse de retour = apres le b)
   dd 0xD10043FF							; sub sp, sp, #16
   dd 0xF90003F0							; str x16, [sp]
   BRA prefix#subname#_
-retour:
 end macro
+
 ;			-----
 macro			CALLI					; CALL indirect par valeur empilee
 ;			-----
-  local retour
   POP_RAX								; x0 = adresse cible
-  QUAD_CONST	16, retour
+  dd 0x10000090							; adr x16, .+16	(adresse de retour = apres le br)
   dd 0xD10043FF							; sub sp, sp, #16
   dd 0xF90003F0							; str x16, [sp]
   dd 0xD61F0000							; br x0
-retour:
 end macro
 ;			--------------------
 macro			RTD	param_size:0
@@ -1774,6 +1747,7 @@ macro			VAR	name_disp, sizChar, siz:1		; Definition d'un lieu de variable
       name_disp = $							; displacement des data de variable
       rb sizChar							; taille numerique en octets
     end if
+  end virtual
 end macro
 
 ;			------
@@ -1812,15 +1786,12 @@ post:
   virtual VARzone
     align_q
     loc_siz = $							; taille des locales retropropagee au LINK du ELAB
-if DEBUG_LLIR = 1
-show 'loc_siz = ', loc_siz
-end if
   end virtual
   end namespace
 end macro
 
 ;			----------------------------
-macro			EXC_MACH?		lvl, ctx			; photographie de l'etat machine cache
+macro			EXC_MACH		lvl, ctx			; photographie de l'etat machine cache
 ;			----------------------------
 ; Layout identique a la reference x86 :
 ; +16 x29 (pile travail), +24 sp (micro-pile retours), +32 x26, +40 x27,
@@ -1841,7 +1812,7 @@ macro			EXC_MACH?		lvl, ctx			; photographie de l'etat machine cache
 end macro
 
 ;			-----------------------
-macro			EXC_RAISE?	top			; deroulage vers le contexte sommet
+macro			EXC_RAISE		top			; deroulage vers le contexte sommet
 ;			-----------------------
 ; Atteint par BRA, jamais par CALL. Le POP du contexte est fait avant dispatch,
 ; afin qu'un raise execute dans un handler remonte au contexte appelant.
@@ -1949,7 +1920,7 @@ macro			BLKMOV					; Copie de bloc sans recouvrement
   POP_RSI								; x4 = adresse source
   POP_RCX								; x2 = nombre d'octets
   POP_RDI								; x5 = adresse destination
-  dd 0xB40000A2							; cbz x2, .end (saut +16 octets = 4 instr)
+  dd 0xB40000A2							; cbz x2, .end (saut +20 octets = 5 instr)
 ;.loop:
   dd 0x38401490							; ldrb w16, [x4], #1   (post-increment src)
   dd 0x380014B0							; strb w16, [x5], #1   (post-increment dst)
@@ -2047,7 +2018,7 @@ end if
   BRA boucle
 
 epuise:
-  dd 0xCB030042							; sub x2, x2, x3
+  dd 0xEB030042							; subs x2, x2, x3   (reste_G - reste_D, drapeaux pour b.eq / b.lt)
   dd 0x54000000 or (((d_eq shr 2) and 0x7FFFF) shl 5)			; b.eq egal
   d_eq = egal - $ + 4
   dd 0x5400000B or (((d_ltpre shr 2) and 0x7FFFF) shl 5)			; b.lt moins
@@ -2142,11 +2113,11 @@ macro			SYS_PUT_STR				; affiche tout une chaine sur stdout
 ;	  svc #0
   POP_RSI								; x4 = adresse descripteur
   dd 0xF9400480							; ldr x0, [x4, #8]    (x0 = adresse info)
-  dd 0xB9400C02							; ldr w2, [x0, #12]   (w2 = LST)  ← x2, pas x3 !
+  dd 0xB9400C02							; ldr w2, [x0, #12]   (w2 = LST)
   dd 0x91000442							; add x2, x2, #1
   dd 0xB9400811							; ldr w17, [x0, #8]   (w17 = FST)
   dd 0xCB110042							; sub x2, x2, x17     (x2 = longueur)
-  dd 0xF9400081							; ldr x1, [x4]        (x1 = adresse caractères)
+  dd 0xF9400081							; ldr x1, [x4]        (x1 = adresse caracteres)
   dd 0xD2800020							; movz x0, #1         (fd = stdout)
   dd 0xD2800808							; movz x8, #64        (sys_write)
   dd 0xD4000001							; svc #0
@@ -2174,7 +2145,7 @@ macro			SYS_GET_CHAR				; lit un seul caractere sur stdin en mode non canonique
 ;			------------
 ;	1. Reserver 64 octets sur sp pour le termios.
   dd 0xD10103FF							; sub sp, sp, #64
-;	2. ioctl(stdin=0, TCGETS=0x5401, &termios) — recupere les attributs courants
+;	2. ioctl(stdin=0, TCGETS=0x5401, &termios) : recupere les attributs courants
   dd 0xD2800000							; movz x0, #0		(fd = stdin)
   dd 0xD28A8021							; movz x1, #0x5401	(TCGETS)
   dd 0x910003E2							; add x2, sp, #0	(adresse du termios temporaire = sp)
@@ -2185,7 +2156,7 @@ macro			SYS_GET_CHAR				; lit un seul caractere sur stdin en mode non canonique
   dd 0x12800151							; movn w17, #0xA	(w17 = 0xFFFFFFF5)
   dd 0x0A110000							; and w0, w0, w17	(masquer ICANON et ECHO)
   dd 0xB9000FE0							; str w0, [sp, #12]	(remettre c_lflag)
-;	4. ioctl(stdin, TCSETS=0x5402, &termios) — applique les nouveaux attributs
+;	4. ioctl(stdin, TCSETS=0x5402, &termios) : applique les nouveaux attributs
   dd 0xD2800000							; movz x0, #0		(fd = stdin)
   dd 0xD28A8041							; movz x1, #0x5402	(TCSETS)
   dd 0x910003E2							; add x2, sp, #0
@@ -2203,7 +2174,7 @@ macro			SYS_GET_CHAR				; lit un seul caractere sur stdin en mode non canonique
   dd 0x52800151							; movz w17, #0xA
   dd 0x2A110000							; orr w0, w0, w17	(remettre ICANON et ECHO)
   dd 0xB9000FE0							; str w0, [sp, #12]
-;	7. ioctl(stdin, TCSETS, &termios) — reapplique le mode canonique
+;	7. ioctl(stdin, TCSETS, &termios) : reapplique le mode canonique
   dd 0xD2800000							; movz x0, #0
   dd 0xD28A8041							; movz x1, #0x5402
   dd 0x910003E2							; add x2, sp, #0
@@ -2267,7 +2238,7 @@ macro			COPY_STRING_APPEND_NUL			; descripteur dans x4, copie sur la pile montan
   dd 0xCB110042							; sub x2, x2, x17	(count)
   dd 0xF9400084							; ldr x4, [x4]		(adresse caracteres source)
   dd 0x910023A5							; add x5, x29, #8	(destination)
-  dd 0xB4000082							; cbz x2, .end (saut +16 octets = 4 instr) - cas pathologique chaine vide
+  dd 0xB40000A2							; cbz x2, .end (saut +20 octets = 5 instr) - cas pathologique chaine vide
 ;.loop:
   dd 0x38401490							; ldrb w16, [x4], #1
   dd 0x380014B0							; strb w16, [x5], #1
@@ -2417,7 +2388,7 @@ macro			SYS_FILE_DELETE				; unlinkat(AT_FDCWD, name, 0)
 end macro
 
 ;			----------------
-macro			SYS_EXIT? code:0				; retour au systeme
+macro			SYS_EXIT	code:0				; retour au systeme
 ;			----------------
   if code = 0
     dd 0xD2800000							; movz x0, #0
@@ -2437,6 +2408,7 @@ EV_CURRENT	= 1
 ET_EXEC		= 2
 SYSTEM_V		= 0
 EM_AARCH64	= 183						; e_machine pour ARM64 (au lieu de 62 pour x86-64)
+TAILLE_COPILE	= 4096*1024*1024					; COPILE = 4 Go
 
 org 0x400000							; adresse entree programme linux
 
@@ -2462,7 +2434,7 @@ Elf64_Phdr:
 	p_vaddr		dq 0x00400078
 	p_paddr		dq 0
 	p_filesz		dq ASM_SIZE				; juste le necessaire code/constantes dans le fichier
-	p_memsz		dq ASM_SIZE + 1024*1024*1024
+	p_memsz		dq ASM_SIZE + TAILLE_COPILE			; TAILLE_COPILE au dessus du code et des constantes (pour la co-pile)
 	p_align		dq 4096
 
 

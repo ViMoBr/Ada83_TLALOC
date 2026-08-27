@@ -25,8 +25,6 @@ postpone						; sera fait en toute toute fin car c'est le premier postpone
   ASM_SIZE = $-0x400078
 end postpone
 
-DEBUG_LLIR	= 0
-
 macro show description, value				; pour debogage
   repeat 1, d:value
     display description,`d,13,10
@@ -1273,7 +1271,7 @@ macro			LINK	lvl, alloc			; ALLOCATION POUR VARIABLES LOCALES APRES FRAME PTR
     if	lvl <= 15							; 15 niveaux suivants, petit offset dans le display
       db 0x49, 0x89, 0x6F, 8*lvl					; mov qword ptr [r15 + 8*lvl], rbp   update FP le FP pointe sur l'adresse de sauvegarde du FP anterieur
     else
-      db 0x49, 0x89, 0x6F
+      db 0x49, 0x89, 0xAF
       dd 8*lvl							; mov qword ptr [r15 + 8*lvl], rbp   update FP le FP pointe sur l'adresse de sauvegarde du FP anterieur
     end if
   end if
@@ -1444,11 +1442,6 @@ macro			USEINFO	lvl, field_name, load_instruc&	; Reference a un __u use info
     align_q							; aligner en fonction de l'unite de reservation
     field_name#__u = $						; lieu ptr use info
     rq 1
-								; reservation
-if DEBUG_LLIR = 1
-show 'useinfo size = ', $
-end if
-
   end virtual
   load_instruc
   SA lvl, field_name#__u
@@ -1538,11 +1531,6 @@ post:
   virtual VARzone
     align_q
     loc_siz = $							; Ce n'est que la que l'on calcule la taille des locales qui sera retropropagee au LINK du ELAB
-
-if DEBUG_LLIR = 1
-show 'loc_siz = ', loc_siz
-end if
-
   end virtual
   end namespace
 end macro
@@ -2081,6 +2069,7 @@ EV_CURRENT	= 1
 ET_EXEC		= 2
 SYSTEM_V		= 0
 EM_X86_64		= 62
+TAILLE_COPILE	= 16*1024*1024*1024					; COPILE = 16 Go
 
 org 0x400000							; adresse entree programme linux
 
@@ -2106,7 +2095,7 @@ Elf64_Phdr:
 	p_vaddr		dq 0x00400078
 	p_paddr		dq 0
 	p_filesz		dq ASM_SIZE				; juste le necessaire code/constantes dans le fichier
-	p_memsz		dq ASM_SIZE + 16*1024*1024*1024		; 16 Go au dessus du code et des constantes (pour la co-pile)
+	p_memsz		dq ASM_SIZE + TAILLE_COPILE			; TAILLE_COPILE au dessus du code et des constantes (pour la co-pile)
 	p_align		dq 4096
 
 

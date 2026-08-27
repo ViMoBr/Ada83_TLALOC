@@ -1,5 +1,0 @@
-TC_INC = 'TC_INC'
-namespace TC_PACK
-lbl_inc:
-	LI	42
-end namespace

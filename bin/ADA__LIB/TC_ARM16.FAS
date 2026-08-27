@@ -1,0 +1,213 @@
+	include '../../src/expander/fasmg/codi_arm64.finc'
+STANDARD = 'STANDARD'
+namespace STANDARD
+  virtual at 8
+    VARzone::
+  end virtual
+	LINK	0, loc_siz
+	LI	17
+	LI	-5
+	DIV
+	LI	-3
+	CEQ
+	BT	kA16_3
+	SYS_EXIT	3
+kA16_3:
+	LI	17
+	LI	-5
+	REMI
+	LI	2
+	CEQ
+	BT	kA16_4
+	SYS_EXIT	4
+kA16_4:
+	LI	17
+	LI	-5
+	MODI
+	LI	-3
+	CEQ
+	BT	kA16_5
+	SYS_EXIT	5
+kA16_5:
+	LI	-17
+	LI	5
+	MODI
+	LI	3
+	CEQ
+	BT	kA16_6
+	SYS_EXIT	6
+kA16_6:
+	LI	42
+	NEG
+	LI	-42
+	CEQ
+	BT	kA16_7
+	SYS_EXIT	7
+kA16_7:
+	LI	7
+	INC
+	INC
+	DEC
+	LI	8
+	CEQ
+	BT	kA16_8
+	SYS_EXIT	8
+kA16_8:
+	LI	-7
+	CLAMP0
+	LI	0
+	CEQ
+	BT	kA16_9
+	SYS_EXIT	9
+kA16_9:
+	LI	5
+	CLAMP0
+	LI	5
+	CEQ
+	BT	kA16_10
+	SYS_EXIT	10
+kA16_10:
+	LI	61680
+	LI	4080
+	OUX
+	LI	65280
+	CEQ
+	BT	kA16_11
+	SYS_EXIT	11
+kA16_11:
+	LI	3
+	LI	4
+	SHL
+	LI	48
+	CEQ
+	BT	kA16_12
+	SYS_EXIT	12
+kA16_12:
+	LI	5
+	LI	3
+	CGT
+	BT	kA16_13
+	SYS_EXIT	13
+kA16_13:
+	LI	3
+	LI	5
+	CGT
+	BF	kA16_14
+	SYS_EXIT	14
+kA16_14:
+	LI	3
+	LI	5
+	CLT
+	BT	kA16_15
+	SYS_EXIT	15
+kA16_15:
+	LI	5
+	LI	5
+	CLE
+	BT	kA16_16
+	SYS_EXIT	16
+kA16_16:
+	LI	5
+	LI	5
+	CGE
+	BT	kA16_17
+	SYS_EXIT	17
+kA16_17:
+	LI	5
+	LI	5
+	CNE
+	BF	kA16_18
+	SYS_EXIT	18
+kA16_18:
+	LIF	1.5
+	LIF	2.25
+	FADD
+	LIF	3.75
+	FCNE
+	BF	kA16_19
+	SYS_EXIT	19
+kA16_19:
+	LIF	5.5
+	LIF	2.25
+	FSUB
+	LIF	3.25
+	FCNE
+	BF	kA16_20
+	SYS_EXIT	20
+kA16_20:
+	LIF	1.5
+	LIF	2.5
+	FMUL
+	LIF	3.75
+	FCNE
+	BF	kA16_21
+	SYS_EXIT	21
+kA16_21:
+	LIF	7.5
+	LIF	2.5
+	FDIV
+	LIF	3.0
+	FCNE
+	BF	kA16_22
+	SYS_EXIT	22
+kA16_22:
+	LIF	2.5
+	FNEG
+	LIF	-2.5
+	FCNE
+	BF	kA16_23
+	SYS_EXIT	23
+kA16_23:
+	LIF	1.5
+	LIF	2.5
+	FCLT
+	BT	kA16_24
+	SYS_EXIT	24
+kA16_24:
+	LIF	2.5
+	LIF	1.5
+	FCGT
+	BT	kA16_25
+	SYS_EXIT	25
+kA16_25:
+	LIF	2.5
+	LIF	2.5
+	FCGE
+	BT	kA16_26
+	SYS_EXIT	26
+kA16_26:
+	LI	7
+	CVTIF
+	LIF	7.0
+	FCNE
+	BF	kA16_27
+	SYS_EXIT	27
+kA16_27:
+	LIF	-3.75
+	CVTFI
+	LI	-3
+	CEQ
+	BT	kA16_28
+	SYS_EXIT	28
+kA16_28:
+	LIF	3.5
+	CVTFIR
+	LI	4
+	CEQ
+	BT	kA16_29
+	SYS_EXIT	29
+kA16_29:
+	LI	7
+	LI	2
+	LI	3
+	CVTIX
+	LI	4
+	CEQ
+	BT	kA16_30
+	SYS_EXIT	30
+kA16_30:
+	SYS_EXIT	0
+ virtual VARzone
+   loc_siz = $
+  end virtual
+end namespace

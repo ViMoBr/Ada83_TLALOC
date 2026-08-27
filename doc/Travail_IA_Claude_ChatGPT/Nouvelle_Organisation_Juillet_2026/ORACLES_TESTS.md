@@ -763,6 +763,34 @@ run gnat-W = reference (existe, trace du 7/08) ; run boot-W ;
 normaliser CRLF (piege n 131) ; diff ; premiere divergence = point
 d entree du chantier. Retrait final par grep @GT/@PC/@AP.
 
+## GENBLK_TEST — gardien du piège n° 155 (GFP depuis un bloc declare)
+
+Source : tests/genblk_test.adb (livré avec le commit GFP_LEVEL, 24 août).
+Générique `type NUM is digits <>`, instancié sur LONG_FLOAT et FLOAT.
+Trois formes exercées : locale de type formel lue dans un bloc declare
+d'un PRO du corps (HALF_SUM) ; PRO imbriqué dans un PRO du corps, avec
+bloc dans le PRO imbriqué (NESTED/TWICE) ; appel d'un sous-programme
+du corps générique émis depuis un bloc — propagation du GFP
+(CALL_IN_BLOCK → SCALE).
+
+Verdict attendu :
+	RESULTAT : 6 OK, 0 ECHECS
+	GENBLK_TEST PASSE
+
+Rouge de référence : T1 d'AVANT le commit GFP_LEVEL — segfault dès
+HALF_SUM (même faute que FLOAT_IO.PUT : `LA <niveau du bloc>, -GFP_ofs`).
+
+Oracle FINC associé (sans exécution) : dans un namespace BLOCK__n du
+FINC du témoin, tout `LA k,<tab>-GFP_ofs` porte le niveau du PRO
+englobant (k = niveau du bloc − 1), jamais celui du bloc.
+
+Assemblé par TARGET_CODE le 24 août (CARTO : 20 885 éléments, 2 812
+symboles, 35 760 octets émis).
+
+Rappel : TEST_CALENDAR, FLOAT_TEST, FLOAT_FIXED_IO_TEST couvrent le
+même piège par FLOAT_IO.PUT (bloc ROUNDING) — les trois ont capturé le
+rouge du 24 août.
+
 ## Chaîne TARGET_CODE (pilote interactif, entrée vide = tests)
 
 TC_TEST19  blocs Ada internes (ELB sans PRO, fonction gardée morte)   exit 0 (3..5)

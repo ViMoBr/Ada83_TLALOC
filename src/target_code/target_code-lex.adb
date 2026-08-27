@@ -641,6 +641,10 @@ is					---
       end if;
 
       if  L2 - F2 >= 30  and then  LINE( F2 .. F2 + 29 ) = "../../src/expander/fasmg/codi_"  then								--| le codi est l'IMPLEMENTATION de TARGET_CODE,
+        if  LINE( F2 + 30 .. L2 - 1 ) /= CODI_NAME  then									--| ... de la cible CHOISIE : un .fas qui declare
+          FAULT( "include codi_" & LINE( F2 + 30 .. L2 - 1 )								--| un autre codi est refuse (jamais un binaire
+		 & " : cible choisie " & CPU_KIND'IMAGE( TARGET_CPU ) );						--| arm pour un .fas x86, ni l'inverse)
+        end if;
         return;											--| internalisee : ne jamais le parser (TC-04) ;
       end if;											--| fasmg, lui, lit cet include — meme .fas, deux
 												--| assembleurs, oracle cmp.

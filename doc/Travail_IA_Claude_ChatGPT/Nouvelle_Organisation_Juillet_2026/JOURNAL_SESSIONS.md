@@ -1706,3 +1706,137 @@ la panoplie aux côtés du cmp intégral : il localise en secondes ce que
 le byte-diff global ne fait que signaler. Et les jauges CARTO ont
 transformé « il va peut-être y avoir des limites de tables » en trois
 constantes élargies sur mesure, sans une seule panne aveugle.
+
+## 24 août 2026 (suite) — Segfault FLOAT_IO.PUT : GFP_LEVEL, la réserve du n° 144 levée
+
+**Symptôme.** Filet repassé après la campagne TARGET_CODE et le
+travail sur GET(FROM: STRING) de FLOAT_IO : TEST_CALENDAR, FLOAT_TEST
+et FLOAT_FIXED_IO_TEST segfaultent au premier PUT flottant ; tout le
+reste vert. Rapport gdb (segfault_0x40697A_test_calendar.md) : faute à
+`mov -0x20(%rax),%rax` avec RAX = 0x402147AACD9E83E5 = 8,639975, soit
+VAL (86 399,75 normalisé) ; l'instruction est le `LA , -NUM__inadr_ofs`
+qui déréférence un pseudo-GFP lu par `LA 2, -GFP_ofs`.
+
+**Décodage.** Dans le FINC, le niveau 2 est BLOCK__29 — le bloc
+`declare ROUNDING : NUM := 0.5` de PUT — tandis que VAL est lu en
+`LVA 1, …PUT_L69.VAL_disp` : le PRO est au niveau 1. Un bloc declare
+ouvre un frame (ELB) mais ne porte AUCUN PRM : [display(2) − GFP_ofs]
+tombe dans la pile d'opérandes sous le frame du bloc, où traîne VAL.
+C'est mot pour mot la RÉSERVE consignée au n° 144 (« depuis un bloc
+declare d'un corps générique, CUR_LEVEL est le niveau du BLOC »). Elle
+a été exercée par la correction MAKE_FLOAT (GET, fonction imbriquée)
+qui avait fait passer CODE_VC_ID de GENERIC_BASE_LEVEL+1 à CUR_LEVEL :
+juste pour un PRO imbriqué, faux pour un bloc. Trois témoins, un PUT,
+un bug. Nous avions oscillé entre les deux mauvaises réponses.
+
+**Correctif (commit unique, 15 modifications).** Le bon niveau n'est
+ni CUR_LEVEL ni GENERIC_BASE_LEVEL+1 : c'est celui du PRO ENGLOBANT LE
+PLUS PROCHE, dont le namespace résout le symbole `GFP_ofs` et dont le
+frame porte ce PRM. Nouvelle variable `CODI.GFP_LEVEL`, posée après
+INC_LEVEL dans CODE_SUBPROGRAM_BODY (sauvegarde/restauration comme
+GENERIC_BASE_LEVEL) et dans la branche générique de CODE_PACKAGE_BODY ;
+CODE_BLOCK ne la touche jamais. Les huit sites `CUR_LEVEL … -GFP_ofs`
+(CODE_VC_ID ×2, CODE_ADDRESS ×2, CODE_CONSTRAINED, 'WIDTH, propagation
+et CALLI formel de CODE_PROCEDURE_CALL) passent à GFP_LEVEL ; deux
+fossiles commentés retirés au passage.
+
+**Oracle et verdict.** Diff FINC de TEXT_IO limité aux `LA 2,` → `LA 1,`
+dans les BLOCK__n de FLOAT_IO.PUT / FIXED_IO.PUT, `LA 2` de MAKE_FLOAT
+inchangé. Les trois témoins passent ; filet vert. Gardien GENBLK_TEST
+(6 assertions : bloc dans PRO, bloc dans PRO imbriqué, appel du corps
+générique depuis un bloc, sur LONG_FLOAT et FLOAT) PASSE, assemblé par
+TARGET_CODE (CARTO : 20 885 éléments, 2 812 symboles, 35 760 octets).
+
+**Reste en file (commit 2, mécanique).** Les ~21 jumeaux
+`GENERIC_BASE_LEVEL+1 … -GFP_ofs` recensés au n° 144 passent à
+GFP_LEVEL. Oracle de point fixe : FINC IDENTIQUES sur tout le filet
+SAUF à l'intérieur des PRO imbriqués dans un corps générique
+(MAKE_FLOAT), où 1 devient 2. Après ce commit, `-GFP_ofs` n'aura plus
+qu'UN niveau dans tout l'expander.
+
+Leçon de méthode : une réserve écrite au piège est une prédiction ;
+quand deux corrections successives oscillent entre deux valeurs pour
+un même site, aucune des deux n'est la règle — chercher la grandeur
+qui les subsume (ici : le frame porteur du PRM, pas le niveau courant
+ni le niveau de base).
+
+## 25 août 2026 — Cible arm64 : BT/BF hors plage, contrat de taille fixe, premier bootstrap croisé sur Orange Pi 3B
+
+**Symptôme.** Assemblage du compilateur ENTIER pour arm64 (fasmg -p 20,
+codi_arm64.finc) : « could not generate code within the allowed number
+of passes », puis assert de la macro BT sur `BT STANDARD.ne_raise_`
+(_STANDRD.FINC 1175). Les témoins unitaires arm64 passaient tous.
+
+**Décodage.** BT/BF émettaient CBNZ/CBZ x0, lbl : immédiat imm19, plage
+±1 Mo. Le trampoline ne_raise_ est à plus de 1 Mo dans l'image complète ;
+l'assert échouait à chaque passe et fasmg épuisait -p. Les autres
+CBZ/CBNZ/B.cond de codi_arm64 sont intra-macro (cibles à quelques
+instructions) ; BRA (B, imm26) a ±128 Mo. Même famille que le n° 82 x86
+(BT/BF rel8/rel32) : un saut LLIR ne doit jamais dépendre de la distance.
+
+**Correctif 1 (commit unique, 2 modifications).** Forme longue
+SYSTÉMATIQUE par inversion : `cbz x0, .+8` enjambe un `B lbl` émis par
+la macro BRA (BF symétrique avec cbnz). Aucune décision de taille
+inter-passes (n° 82/88) ; +4 octets par BT/BF. Assemblage complet OK en
+18 passes, 714 s sur le laptop x86 — contre 188 s pour x86-64, en 18
+passes aussi.
+
+**Décodage du ×3,8.** À passes égales l'écart est un coût PAR PASSE :
+lignes fasmg interprétées par expansion (comptage statique, sous-macros
+comprises) : LI 5 → 21, LVA 28 → 73, LQ/SQ 30 → 78, LIQ 47 → 144,
+CALL 9 → 32. Coupables : QUAD_CONST (repeat 4 + deux if par tour + trois
+local) appelée par LI/LCA/LSPA/CALL/CALLI et par les voies de repli ;
+LOAD_QUAD (trois local, chaîne if) sous chaque FP_IN_RAX. Plus grave :
+QUAD_CONST choisissait son NOMBRE d'instructions selon les chunks nuls
+de la valeur, et elle était appelée sur des RÉFÉRENCES AVANT (retour de
+CALL, prefix#subname#_ de LSPA, ptr+disp de LCA) — la décision de taille
+non monotone du n° 88, et une violation du contrat SIZE_OF = ENCODE de
+TARGET_CODE.
+
+**Correctif 2 (deux commits, 21 modifications).** C1, adresses de taille
+fixe : CALL/CALLI matérialisent l'adresse de retour par `adr x16, .+16`
+(une instruction, plus de label local) ; LCA/LSPA passent par QUAD_ADDR,
+movz+movk TOUJOURS deux instructions (assert image < 4 Go, même hypothèse
+que le movabs fixe de x86) ; QUAD_CONST réservée aux immédiats, taille =
+max(1, min(chunks ≠ 0, chunks ≠ 0xFFFF)) — fonction de la seule valeur,
+calculable au parse — avec chemins rapides à une ligne (0..0xFFFF → movz,
+-0x10000..-1 → movn) ; LI -1 passe de 4 instructions à 1. C2, display et
+mémoire : FP_IN_RAX/RAX_IN_FP/FP_IN_RBP en encodage direct
+(0xF9400380 | lvl<<10), LOAD_QUAD/STORE_QUAD et les neuf FETCH_*/STORE_*
+sans local, tout paramètre parenthésé (piège n° 156 découvert au
+passage : FP_IN_RAX émettait un LDUR au lieu du LDR scalé pour tout
+niveau non multiple de 8, correct par chance).
+
+**Contre-épreuve hors cible.** fasmg g.l8vn (dépôt officiel) sur des
+témoins LLIR assemblés avec l'ancien et le nouveau codi : passes 4 → 3 et
+2 → 2 ; diff des désassemblages limité aux changements attendus ; 410 LI
+aléatoires 64 bits (bornes 0, -1, ±0x10000, 2^63, 2^64-1) rematérialisés
+exacts au nombre minimal d'instructions ; x17 des voies de repli exacts ;
+adr x16 vise l'instruction qui suit le b/br.
+
+**Oracle et verdict.** Assemblage complet arm64 : 714 s → 548 s
+(ratio arm64/x86 3,8 → 2,9 ; le reste est le coût intrinsèque des `dd …
+or … shl …` de fasmg). L'exécutable arm64 transféré sur Orange Pi 3B
+(RK3566, 4×A55) compile TOUT le source du compilateur en FINC en 5 min.
+Ramenés par scp, ces FINC sont comparés (diff_finc.sh) à ceux produits
+par T2 x86 assemblé par TARGET_CODE : AUCUNE DIFFÉRENCE. Deux chaînes
+indépendantes (fasmg+codi_arm64 sur A55, TARGET_CODE+x86 sur laptop)
+convergent vers la même LLIR sur le plus gros corpus disponible :
+l'expander est correct sur arm64 et chaque instruction LLIR sollicitée a
+la sémantique de son homologue x86. Jalon : PREMIER BOOTSTRAP CROISÉ.
+
+**Ce qui manque pour fermer la boucle sur le Pi.** fasmg est un programme
+x86 (cœur en assembleur x86, pas de build arm64 natif) : le Pi ne peut
+pas assembler les FINC qu'il produit. C'est TARGET_CODE arm64 qui ferme
+la boucle ; CPU_KIND/TARGET_TRAITS l'anticipent (E_MACHINE 183, PAD 0,
+CALL_FRAME 16) et, depuis C1, chaque macro de codi_arm64 a une taille
+calculable au parse : la table EMITS arm64 est une transcription mot de
+32 bits par mot de 32 bits, oracle d'identité byte-à-byte contre
+fasmg+codi_arm64 sur les mêmes FINC, puis exécution sur le Pi.
+
+Leçon de méthode : quand deux cibles prennent le même nombre de passes,
+l'écart de temps est un coût par ligne et se MESURE statiquement
+(lignes interprétées par expansion) avant toute hypothèse sur l'outil ;
+et la LLIR étant indépendante de la cible, le diff des FINC entre deux
+exécutables de cibles différentes est l'oracle de portage le plus fort
+et le moins cher — il a validé d'un coup codi_arm64 sur tout le corpus.

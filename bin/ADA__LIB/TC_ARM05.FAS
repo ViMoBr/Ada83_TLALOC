@@ -1,0 +1,12 @@
+include '../../src/expander/fasmg/codi_arm64.finc'
+namespace STANDARD
+main_a5:
+	LCA	MSGA5A.data_ptr
+	SYS_PUT_STR
+	LCA	MSGA5B.data_ptr
+	SYS_PUT_STR
+	SYS_EXIT	0
+STR	MSGA5A, 'ok'
+STR	MSGA5B, 'AH'
+	CST	KA5, q, 123
+end namespace

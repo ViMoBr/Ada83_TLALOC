@@ -1,0 +1,30 @@
+include '../../src/expander/fasmg/codi_arm64.finc'
+STANDARD = 'STANDARD'
+namespace STANDARD
+main_a7:
+	LINK	1, 32
+	CALL	STANDARD., SPA7
+	LD	1, 8
+	LI	42
+	CEQ
+	BT	ok_a7
+	UNLINK	1
+	SYS_EXIT	1
+ok_a7:
+	UNLINK	1
+	SYS_EXIT	0
+if defined SPA7_
+	PRO	SPA7
+	ELB	2
+	VAR	TA7_disp, Q
+	LI	6
+	LI	7
+	MUL
+	SQ	2, TA7_disp
+	LQ	2, TA7_disp
+	SD	1, 8
+	UNLINK	2
+	RTD	0
+	endPRO
+end if
+end namespace

@@ -61,7 +61,9 @@ is					-----------
 			  ENTRY_POINT	: INTEGER;						--| 16#400078#
 			  PAD_BYTE	: INTEGER;						--| remplissage align_* : 16#90# x86, 0 sinon (byte-diff !)
 			  CALL_FRAME	: INTEGER;						--| micro-pile par CALL : 8 x86, 16 arm/riscv (alignement SP)
-			  MEMSZ_RESERVE	: INTEGER;						--| reserve co-pile au dessus du code (p_memsz)
+			  MEMSZ_RESERVE	: LONG_INTEGER;						--| reserve co-pile au dessus du code (p_memsz)
+			  PROLOGUE_SIZE	: INTEGER;						--| amorcage (codi queue) : 82 x86, 92 arm
+			  BRA_SIZE	: INTEGER;						--| taille du BRA de BEGIN_BLOC_DEF : 5 x86, 4 arm
       --  numeros de syscalls (openat/unlinkat cote arm et riscv), constantes ioctl, etc.
 			end record;
 
@@ -322,6 +324,50 @@ is					-----------
   end	EMITS;
 	-----
 
+
+  --|  Conventions de nommage par cible. CODI_NAME : suffixe de l'include
+  --|  codi que le .fas DOIT porter (controle croise dans LEX : la cible
+  --|  choisie au lancement et celle declaree par le .fas ne divergent
+  --|  jamais en silence). FAS_EXT / EXE_EXT : extensions du source et du
+  --|  binaire (.fas x86 historique, .arm64fas, .riscv64fas).
+
+			---------
+  function		CODI_NAME				return STRING
+  is			---------
+  begin
+    case  TARGET_CPU  is
+      when X86_64  => return "x86_64.finc";
+      when ARM64   => return "arm64.finc";
+      when RISCV64 => return "riscv64.finc";
+    end case;
+  end	CODI_NAME;
+	---------
+
+			-------
+  function		FAS_EXT					return STRING
+  is			-------
+  begin
+    case  TARGET_CPU  is
+      when X86_64  => return ".fas";
+      when ARM64   => return ".arm64fas";
+      when RISCV64 => return ".riscv64fas";
+    end case;
+  end	FAS_EXT;
+	-------
+
+			-------
+  function		EXE_EXT					return STRING
+  is			-------
+  begin
+    case  TARGET_CPU  is
+      when X86_64  => return ".x86exe";
+      when ARM64   => return ".arm64exe";
+      when RISCV64 => return ".riscv64exe";
+    end case;
+  end	EXE_EXT;
+	-------
+
+
   package body		LEX		is separate;						--| target_code-lex.adb
   package body		SYMBOLS		is separate;						--| target_code-symbols.adb
   package body		IR		is separate;						--| target_code-ir.adb
@@ -332,6 +378,28 @@ is					-----------
   --			P I L O T E
 
 begin
+  declare
+    TAMPON	: STRING( 1 .. 32 );
+    LONGUEUR	: NATURAL;
+    package CPU_KIND_IO	is new ENUMERATION_IO( CPU_KIND );
+    CPU_TYPE_OK		: BOOLEAN		:= FALSE;
+  begin
+    loop
+      begin
+        PUT( "ASSEMBLAGE POUR : (X86_64, ARM64, RISCV64) (simple ret X86_64) : " );
+        GET_LINE( TAMPON, LONGUEUR );
+        if  LONGUEUR = 0  then
+	TARGET_CPU := X86_64;
+	exit;
+        end if;
+        CPU_KIND_IO.GET( TAMPON( 1 .. LONGUEUR ), TARGET_CPU, LONGUEUR );
+        CPU_TYPE_OK := TRUE;
+      exception
+        when DATA_ERROR => CPU_TYPE_OK := FALSE;		--| retry
+      end;
+      exit when CPU_TYPE_OK;
+    end loop;
+  end;
 
   PUT( "NOM FICHIER .fas (sans extension, simple ret faire les tests) : " );
   declare
@@ -342,11 +410,11 @@ begin
   begin
     GET_LINE( TAMPON, LONGUEUR );
     if  LONGUEUR /= 0  then
-      LEX.RUN_P0( TAMPON( 1 .. LONGUEUR ) & ".fas" );
+      LEX.RUN_P0( TAMPON( 1 .. LONGUEUR ) & FAS_EXT );
       PASSES.P1_REACH;
       PASSES.P2_LAYOUT( 1, IR.ELT_ID( IR.ELT_COUNT ) );
       EMITS.P2B_ADDRESSES( 1, IR.ELT_ID( IR.ELT_COUNT ) );
-      EMITS.P3_EMIT( 1, IR.ELT_ID( IR.ELT_COUNT ), TAMPON( 1 .. LONGUEUR ) & ".x86exe" );
+      EMITS.P3_EMIT( 1, IR.ELT_ID( IR.ELT_COUNT ), TAMPON( 1 .. LONGUEUR ) & EXE_EXT );
 
       PUT_LINE( "CARTO capacites :" );
       PUT_LINE( "  elements " & NATURAL'IMAGE( IR.ELT_COUNT )
@@ -371,6 +439,8 @@ begin
 			---------------
 			-- T E S T S --
 			---------------
+
+  TARGET_CPU := X86_64;										--| les temoins TC_TEST04..25 ecrivent "include codi_x86_64"
 
   --  P0 : LEX.OPEN_SOURCE( nom du .fas ) ; construire l'IR et les portees.
   --  P1 : SYMBOLS : fermeture d'atteignabilite depuis l'entree.
@@ -738,8 +808,73 @@ begin
   end;
 
 
+  --|  TEMOIN TC-ARM04 : jumeau arm64 de TC_TEST4 (meme programme, memes
+  --|  mnemoniques, include codi_arm64). Auto-jugeant sur les tailles (LI 5 =
+  --|  movz + PUSH_RAX = 12, ADD/SUB = 20, BRA = 4, SYS_EXIT 0 = 12, amorcage
+  --|  92) ; oracle externe : fasmg + cmp sur le laptop, execution sur le Pi.
+  --|  Le temoin pose SA cible et la rend a X86_64 en sortant (les temoins
+  --|  suivants sont x86). Labels distincts de TC_TEST4 (meme namespace).
+
+  TARGET_CPU := ARM64;										--| TEST ARM
+  declare
+    use LEX, SYMBOLS, IR;
+    OK			: BOOLEAN	:= TRUE;
+    F			: FILE_TYPE;
+    FROMA		: IR.ELT_ID;
+
+    procedure CHECK ( COND :BOOLEAN; MSG :STRING )
+    is
+    begin
+      if not COND
+      then
+	OK := FALSE;
+	PUT_LINE( "ECHEC arm04 : " & MSG );
+      end if;
+    end CHECK;
+
+  begin
+    CREATE( F, OUT_FILE, "TC_ARM04.FAS" );
+    PUT_LINE( F, "include '../../src/expander/fasmg/codi_arm64.finc'" );
+    PUT_LINE( F, "namespace STANDARD" );
+    PUT_LINE( F, "main_a4:" );
+    PUT_LINE( F, "	LI	5" );
+    PUT_LINE( F, "	LI	7" );
+    PUT_LINE( F, "	ADD" );
+    PUT_LINE( F, "	DUP" );
+    PUT_LINE( F, "	DROP" );
+    PUT_LINE( F, "	LI	3" );
+    PUT_LINE( F, "	SUB" );
+    PUT_LINE( F, "	BRA	fin_a4" );
+    PUT_LINE( F, "	LI	99" );
+    PUT_LINE( F, "fin_a4:" );
+    PUT_LINE( F, "	DROP" );
+    PUT_LINE( F, "	SYS_EXIT	0" );
+    PUT_LINE( F, "end namespace" );
+    CLOSE( F );
+
+    FROMA := IR.ELT_ID( IR.ELT_COUNT + 1 );
+    RUN_P0( "TC_ARM04.FAS" );
+    EMITS.P2B_ADDRESSES( FROMA, IR.ELT_ID( IR.ELT_COUNT ) );
+    EMITS.P3_EMIT( FROMA, IR.ELT_ID( IR.ELT_COUNT ), "TC_ARM04.BIN" );
+
+    CHECK( EMITS.ASM_SIZE = 216,
+	   "ASM_SIZE = 92 (amorcage) + 124 (code) = 216" );
+    CHECK( VALUE_OF( RESOLVE( "STANDARD.fin_a4" ) ) = 16#400078# + 200,
+	   "adresse de fin_a4 (apres 108 octets de code)" );
+    CHECK( VALUE_OF( RESOLVE( "STANDARD.main_a4" ) ) = 16#400078# + 92,
+	   "main_a4 au premier octet apres l'amorcage" );
+
+    if  OK  then
+      PUT_LINE( "PASSE arm04" );
+      PUT_LINE( "TC_ARM04.BIN ecrit - oracle externe :" );
+      PUT_LINE( "  fasmg TC_ARM04.FAS TC_ARM_REF4 && cmp TC_ARM_REF4 TC_ARM04.BIN" );
+      PUT_LINE( "  sur le Pi : chmod +x TC_ARM04.BIN && ./TC_ARM04.BIN ; echo $?   (attendu 0)" );
+    end if;
+  end;
+
   --|  TEMOIN TEMPORAIRE DES DIFFERES (TC-05) - LIFO, LCA, SYS_PUT_STR.
   --|  Sortie attendue du binaire : "okAH". A RETIRER avec les autres.
+  TARGET_CPU := X86_64;										--| TEST X86
   declare
     use LEX, SYMBOLS, IR;
     OK			: BOOLEAN	:= TRUE;
@@ -803,10 +938,75 @@ begin
 
 
 
+  --|  TEMOIN TC-ARM05 : jumeau arm64 de TC_TEST5 (differes LIFO, LCA,
+  --|  SYS_PUT_STR). Les differes sont generiques depuis C0 : le temoin verifie
+  --|  que le placement suit le code arm (LCA 16 + SYS_PUT_STR 44). Sortie
+  --|  attendue du binaire sur le Pi : "okAH".
+
+  TARGET_CPU := ARM64;
+  declare
+    use LEX, SYMBOLS, IR;
+    OK			: BOOLEAN	:= TRUE;
+    F			: FILE_TYPE;
+    FROMA		: IR.ELT_ID;
+
+    procedure CHECK ( COND :BOOLEAN; MSG :STRING )
+    is
+    begin
+      if not COND
+      then
+	OK := FALSE;
+	PUT_LINE( "ECHEC arm05 : " & MSG );
+      end if;
+    end CHECK;
+
+  begin
+    CREATE( F, OUT_FILE, "TC_ARM05.FAS" );
+    PUT_LINE( F, "include '../../src/expander/fasmg/codi_arm64.finc'" );
+    PUT_LINE( F, "namespace STANDARD" );
+    PUT_LINE( F, "main_a5:" );
+    PUT_LINE( F, "	LCA	MSGA5A.data_ptr" );
+    PUT_LINE( F, "	SYS_PUT_STR" );
+    PUT_LINE( F, "	LCA	MSGA5B.data_ptr" );
+    PUT_LINE( F, "	SYS_PUT_STR" );
+    PUT_LINE( F, "	SYS_EXIT	0" );
+    PUT_LINE( F, "STR	MSGA5A, 'ok'" );
+    PUT_LINE( F, "STR	MSGA5B, 'AH'" );
+    PUT_LINE( F, "	CST	KA5, q, 123" );
+    PUT_LINE( F, "end namespace" );
+    CLOSE( F );
+
+    FROMA := IR.ELT_ID( IR.ELT_COUNT + 1 );
+    RUN_P0( "TC_ARM05.FAS" );
+    EMITS.P2B_ADDRESSES( FROMA, IR.ELT_ID( IR.ELT_COUNT ) );
+    EMITS.P3_EMIT( FROMA, IR.ELT_ID( IR.ELT_COUNT ), "TC_ARM05.BIN" );
+
+    CHECK( VALUE_OF( RESOLVE( "STANDARD.KA5" ) )
+	     < VALUE_OF( RESOLVE( "STANDARD.MSGA5B.data_ptr" ) )
+	   and then VALUE_OF( RESOLVE( "STANDARD.MSGA5B.data_ptr" ) )
+	     < VALUE_OF( RESOLVE( "STANDARD.MSGA5A.data_ptr" ) ),
+	   "placement LIFO des differes" );
+    CHECK( VALUE_OF( RESOLVE( "STANDARD.MSGA5A.data" ) )
+	     = VALUE_OF( RESOLVE( "STANDARD.MSGA5A.data_ptr" ) ) + 32,
+	   "structure du bloc STR (data a +32)" );
+    CHECK( VALUE_OF( RESOLVE( "STANDARD.KA5" ) ) = 16#400078# + 92 + 132,
+	   "KA5 (premier differe, LIFO) juste apres 132 octets de code : 2 x (16 + 44) + 12" );
+
+    if  OK  then
+      PUT_LINE( "PASSE arm05" );
+      PUT_LINE( "TC_ARM05.BIN ecrit - oracle externe :" );
+      PUT_LINE( "  fasmg TC_ARM05.FAS TC_ARM_REF5 && cmp TC_ARM_REF5 TC_ARM05.BIN" );
+      PUT_LINE( "  sur le Pi : chmod +x TC_ARM05.BIN && ./TC_ARM05.BIN ; echo $?   (attendu : okAH puis 0)" );
+    end if;
+  end;
+
+
+
   --|  TEMOIN TEMPORAIRE FRAME (TC-06) - LINK/UNLINK, charges et
   --|  rangements avec selections disp0/8/32, CEQ/BT. Le BINAIRE rend le
   --|  verdict par code de sortie : 0 = tout bon, 1 = chemin octet,
   --|  2 = chemin qword. A RETIRER avec les autres.
+  TARGET_CPU := X86_64;
   declare
     use LEX;
     use SYMBOLS;
@@ -882,10 +1082,93 @@ begin
   end;
 
 
+  --|  TEMOIN TC-ARM06 : jumeau arm64 de TC_TEST6 (LINK/UNLINK, charges et
+  --|  rangements a disp 8/16/130/160 - plages imm12 scalee -, LVA, LQ -1,
+  --|  CEQ/BT). Le binaire rend le verdict par code de sortie sur le Pi.
+
+  TARGET_CPU := ARM64;
+  declare
+    use LEX, SYMBOLS, IR;
+    OK			: BOOLEAN	:= TRUE;
+    F			: FILE_TYPE;
+    FROMA		: IR.ELT_ID;
+
+    procedure CHECK ( COND :BOOLEAN; MSG :STRING )
+    is
+    begin
+      if not COND
+      then
+	OK := FALSE;
+	PUT_LINE( "ECHEC arm06 : " & MSG );
+      end if;
+    end CHECK;
+
+  begin
+    CREATE( F, OUT_FILE, "TC_ARM06.FAS" );
+    PUT_LINE( F, "include '../../src/expander/fasmg/codi_arm64.finc'" );
+    PUT_LINE( F, "namespace STANDARD" );
+    PUT_LINE( F, "main_a6:" );
+    PUT_LINE( F, "	LINK	1, 200" );
+    PUT_LINE( F, "	LI	65" );
+    PUT_LINE( F, "	SB	1, 130" );
+    PUT_LINE( F, "	LB	1, 130" );
+    PUT_LINE( F, "	LI	65" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	t_a6" );
+    PUT_LINE( F, "	UNLINK	1" );
+    PUT_LINE( F, "	SYS_EXIT	1" );
+    PUT_LINE( F, "t_a6:" );
+    PUT_LINE( F, "	LI	7" );
+    PUT_LINE( F, "	SD	1, 8" );
+    PUT_LINE( F, "	LI	5" );
+    PUT_LINE( F, "	SD	1, 160" );
+    PUT_LINE( F, "	LD	1, 8" );
+    PUT_LINE( F, "	LD	1, 160" );
+    PUT_LINE( F, "	ADD" );
+    PUT_LINE( F, "	SA	1, 16" );
+    PUT_LINE( F, "	LA	1, 16" );
+    PUT_LINE( F, "	LVA	1, 16" );
+    PUT_LINE( F, "	LQ	-1" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	ok_a6" );
+    PUT_LINE( F, "	UNLINK	1" );
+    PUT_LINE( F, "	SYS_EXIT	2" );
+    PUT_LINE( F, "ok_a6:" );
+    PUT_LINE( F, "	UNLINK	1" );
+    PUT_LINE( F, "	SYS_EXIT	0" );
+    PUT_LINE( F, "end namespace" );
+    CLOSE( F );
+
+    FROMA := IR.ELT_ID( IR.ELT_COUNT + 1 );
+    RUN_P0( "TC_ARM06.FAS" );
+    EMITS.P2B_ADDRESSES( FROMA, IR.ELT_ID( IR.ELT_COUNT ) );
+    EMITS.P3_EMIT( FROMA, IR.ELT_ID( IR.ELT_COUNT ), "TC_ARM06.BIN" );
+
+    CHECK( EMITS.ASM_SIZE = 532,
+	   "ASM_SIZE = 92 + 440 = 532, obtenu"
+	   & LONG_INTEGER'IMAGE( EMITS.ASM_SIZE ) );
+    CHECK( VALUE_OF( RESOLVE( "STANDARD.main_a6" ) ) = 16#400078# + 92,
+	   "main_a6 au premier octet apres l'amorcage" );
+    CHECK( VALUE_OF( RESOLVE( "STANDARD.t_a6" ) ) = 16#400078# + 92 + 160,
+	   "t_a6 : LINK 32, LI 12, SB 16, LB 16, LI 12, CEQ 24, BT 16, UNLINK 20, SYS_EXIT 12" );
+    CHECK( VALUE_OF( RESOLVE( "STANDARD.ok_a6" ) ) = 16#400078# + 92 + 160 + 248,
+	   "ok_a6 : 248 octets de t_a6 a ok_a6" );
+
+    if  OK  then
+      PUT_LINE( "PASSE arm06" );
+      PUT_LINE( "TC_ARM06.BIN ecrit - oracle externe :" );
+      PUT_LINE( "  fasmg TC_ARM06.FAS TC_ARM_REF6 && cmp TC_ARM_REF6 TC_ARM06.BIN" );
+      PUT_LINE( "  sur le Pi : chmod +x TC_ARM06.BIN && ./TC_ARM06.BIN ; echo $?   (attendu : 0 ; 1 = chemin octet, 2 = chemin qword)" );
+    end if;
+  end;
+
+
   --|  TEMOIN TEMPORAIRE APPEL (TC-07) - CALL vers .elab (lazy reel des
   --|  deux cotes : multipasse fasmg / atteignabilite P1), PRO/ELB/endPRO,
   --|  RTD, ecriture inter-frames par le display. Verdict du binaire :
   --|  0 = 42 revenu dans la frame de main, 1 = non. A RETIRER.
+
+  TARGET_CPU := X86_64;
   declare
     use LEX;
     use SYMBOLS;
@@ -963,6 +1246,86 @@ begin
   end;
 
 
+
+  --|  TEMOIN TC-ARM07 : jumeau arm64 de TC_TEST7 (CALL vers .elab lazy,
+  --|  PRO/ELB/endPRO, RTD, micro-pile de retours par sp, ecriture
+  --|  inter-frames par le display). Verdict du binaire : 0 = 42 revenu.
+
+  TARGET_CPU := ARM64;
+  declare
+    use LEX, SYMBOLS, IR;
+    OK			: BOOLEAN	:= TRUE;
+    F			: FILE_TYPE;
+    FROMA		: IR.ELT_ID;
+
+    procedure CHECK ( COND :BOOLEAN; MSG :STRING )
+    is
+    begin
+      if not COND
+      then
+	OK := FALSE;
+	PUT_LINE( "ECHEC arm07 : " & MSG );
+      end if;
+    end CHECK;
+
+  begin
+    CREATE( F, OUT_FILE, "TC_ARM07.FAS" );
+    PUT_LINE( F, "include '../../src/expander/fasmg/codi_arm64.finc'" );
+    PUT_LINE( F, "STANDARD = 'STANDARD'" );
+    PUT_LINE( F, "namespace STANDARD" );
+    PUT_LINE( F, "main_a7:" );
+    PUT_LINE( F, "	LINK	1, 32" );
+    PUT_LINE( F, "	CALL	STANDARD., SPA7" );
+    PUT_LINE( F, "	LD	1, 8" );
+    PUT_LINE( F, "	LI	42" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	ok_a7" );
+    PUT_LINE( F, "	UNLINK	1" );
+    PUT_LINE( F, "	SYS_EXIT	1" );
+    PUT_LINE( F, "ok_a7:" );
+    PUT_LINE( F, "	UNLINK	1" );
+    PUT_LINE( F, "	SYS_EXIT	0" );
+    PUT_LINE( F, "if defined SPA7_" );
+    PUT_LINE( F, "	PRO	SPA7" );
+    PUT_LINE( F, "	ELB	2" );
+    PUT_LINE( F, "	VAR	TA7_disp, Q" );
+    PUT_LINE( F, "	LI	6" );
+    PUT_LINE( F, "	LI	7" );
+    PUT_LINE( F, "	MUL" );
+    PUT_LINE( F, "	SQ	2, TA7_disp" );
+    PUT_LINE( F, "	LQ	2, TA7_disp" );
+    PUT_LINE( F, "	SD	1, 8" );
+    PUT_LINE( F, "	UNLINK	2" );
+    PUT_LINE( F, "	RTD	0" );
+    PUT_LINE( F, "	endPRO" );
+    PUT_LINE( F, "end if" );
+    PUT_LINE( F, "end namespace" );
+    CLOSE( F );
+
+    FROMA := IR.ELT_ID( IR.ELT_COUNT + 1 );
+    RUN_P0( "TC_ARM07.FAS" );
+    PASSES.P1_REACH;											--| lazy : active le bloc "if defined SPA7_" (CALL)
+    PASSES.P2_LAYOUT( FROMA, IR.ELT_ID( IR.ELT_COUNT ) );							--| VAR, loc_siz
+    EMITS.P2B_ADDRESSES( FROMA, IR.ELT_ID( IR.ELT_COUNT ) );
+    EMITS.P3_EMIT( FROMA, IR.ELT_ID( IR.ELT_COUNT ), "TC_ARM07.BIN" );
+
+    CHECK( EMITS.ASM_SIZE = 432,
+	   "ASM_SIZE = 92 + 180 (main) + 160 (SPA7) = 432, obtenu"
+	   & LONG_INTEGER'IMAGE( EMITS.ASM_SIZE ) );
+    CHECK( VALUE_OF( RESOLVE( "STANDARD.SPA7.elab" ) ) = 16#400078# + 92 + 180 + 4,
+	   "SPA7.elab apres main (180) et le BRA post (4)" );
+    CHECK( VALUE_OF( RESOLVE( "STANDARD.SPA7.post" ) ) = 16#400078# + 432,
+	   "SPA7.post = fin du code" );
+
+    if  OK  then
+      PUT_LINE( "PASSE arm07" );
+      PUT_LINE( "TC_ARM07.BIN ecrit - oracle externe :" );
+      PUT_LINE( "  fasmg TC_ARM07.FAS TC_ARM_REF7 && cmp TC_ARM_REF7 TC_ARM07.BIN" );
+      PUT_LINE( "  sur le Pi : chmod +x TC_ARM07.BIN && ./TC_ARM07.BIN ; echo $?   (attendu : 0)" );
+    end if;
+  end;
+
+
   --|  TEMOIN TEMPORAIRE TETE/QUEUE (TC-08) - frame de NIVEAU 0 : tete
   --|  canonique (VARzone:: dans virtual at 8, LINK 0 retropropage,
   --|  VAR de niveau 0) et queue (virtual VARzone / loc_siz = $ SANS
@@ -971,6 +1334,8 @@ begin
   --|  de l'expander (CREATE_FAS_MAIN_FILE). Verdict du binaire :
   --|  0 = 42 relu au niveau 0 apres ecriture par SP8 via le display,
   --|  1 = non. A RETIRER avec les autres.
+
+  TARGET_CPU := X86_64;
   declare
     use LEX;
     use SYMBOLS;
@@ -1066,6 +1431,7 @@ begin
   --|  sur la pile restauree). Verdict : 0 = deroulage et dispatch
   --|  corrects ; 1 = G9 faux apres deroulage ; 2 = EXC_RAISE n'a pas
   --|  detourne le flot. A RETIRER avec les autres.
+  TARGET_CPU := X86_64;
   declare
     use LEX;
     use SYMBOLS;
@@ -1160,6 +1526,102 @@ begin
   end;
 
 
+  --|  TEMOIN TC-ARM09 : jumeau arm64 de TC_TEST9 (EXC_MACH 0, motif exact
+  --|  de la tete reelle, levee depuis un frame imbrique, deroulage par
+  --|  EXC_RAISE - y compris la micro-pile de retours par sp -, dispatch
+  --|  sur h_a9_, etat de niveau 0 restaure). Verdict par code de sortie.
+
+  TARGET_CPU := ARM64;
+  declare
+    use LEX, SYMBOLS, IR;
+    OK			: BOOLEAN	:= TRUE;
+    F			: FILE_TYPE;
+    FROMA		: IR.ELT_ID;
+
+    procedure CHECK ( COND :BOOLEAN; MSG :STRING )
+    is
+    begin
+      if not COND
+      then
+	OK := FALSE;
+	PUT_LINE( "ECHEC arm09 : " & MSG );
+      end if;
+    end CHECK;
+
+  begin
+    CREATE( F, OUT_FILE, "TC_ARM09.FAS" );
+    PUT_LINE( F, "include '../../src/expander/fasmg/codi_arm64.finc'" );
+    PUT_LINE( F, "STANDARD = 'STANDARD'" );
+    PUT_LINE( F, "namespace STANDARD" );
+    PUT_LINE( F, "  virtual at 8" );
+    PUT_LINE( F, "    VARzone::" );
+    PUT_LINE( F, "  end virtual" );
+    PUT_LINE( F, "	LINK	0, loc_siz" );
+    PUT_LINE( F, "	VAR	CTXA9_disp, 64" );
+    PUT_LINE( F, "	VAR	TOPA9_disp, Q" );
+    PUT_LINE( F, "	VAR	GA9_disp, Q" );
+    PUT_LINE( F, "	EXC_MACH	0, CTXA9_disp" );
+    PUT_LINE( F, "	LCA	h_a9_" );
+    PUT_LINE( F, "	SA	0, CTXA9_disp + 8" );
+    PUT_LINE( F, "	LVA	0, CTXA9_disp" );
+    PUT_LINE( F, "	SA	0, TOPA9_disp" );
+    PUT_LINE( F, "	LI	7" );
+    PUT_LINE( F, "	SQ	0, GA9_disp" );
+    PUT_LINE( F, "	CALL	STANDARD., SPA9" );
+    PUT_LINE( F, "	SYS_EXIT	2" );
+    PUT_LINE( F, "exc_raise_a9_:" );
+    PUT_LINE( F, "	EXC_RAISE	TOPA9_disp" );
+    PUT_LINE( F, "h_a9_:" );
+    PUT_LINE( F, "	LQ	0, GA9_disp" );
+    PUT_LINE( F, "	LI	7" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	ok_a9" );
+    PUT_LINE( F, "	SYS_EXIT	1" );
+    PUT_LINE( F, "ok_a9:" );
+    PUT_LINE( F, "	SYS_EXIT	0" );
+    PUT_LINE( F, "if defined SPA9_" );
+    PUT_LINE( F, "	PRO	SPA9" );
+    PUT_LINE( F, "	ELB	1" );
+    PUT_LINE( F, "	VAR	TA9_disp, Q" );
+    PUT_LINE( F, "	LI	13" );
+    PUT_LINE( F, "	SQ	1, TA9_disp" );
+    PUT_LINE( F, "	BRA	exc_raise_a9_" );
+    PUT_LINE( F, "	UNLINK	1" );
+    PUT_LINE( F, "	RTD	0" );
+    PUT_LINE( F, "	endPRO" );
+    PUT_LINE( F, "end if" );
+    PUT_LINE( F, " virtual VARzone" );
+    PUT_LINE( F, "   loc_siz = $" );
+    PUT_LINE( F, "  end virtual" );
+    PUT_LINE( F, "end namespace" );
+    CLOSE( F );
+
+    FROMA := IR.ELT_ID( IR.ELT_COUNT + 1 );
+    RUN_P0( "TC_ARM09.FAS" );
+    PASSES.P1_REACH;											--| lazy : active le bloc "if defined SPA7_" (CALL)
+    PASSES.P2_LAYOUT( FROMA, IR.ELT_ID( IR.ELT_COUNT ) );							--| VAR, loc_siz
+    EMITS.P2B_ADDRESSES( FROMA, IR.ELT_ID( IR.ELT_COUNT ) );
+    EMITS.P3_EMIT( FROMA, IR.ELT_ID( IR.ELT_COUNT ), "TC_ARM09.BIN" );
+
+    CHECK( VALUE_OF( RESOLVE( "STANDARD.CTXA9_disp" ) ) = 8
+	   and then VALUE_OF( RESOLVE( "STANDARD.TOPA9_disp" ) ) = 72
+	   and then VALUE_OF( RESOLVE( "STANDARD.GA9_disp" ) ) = 80,
+	   "layout de niveau 0 (8 / 72 / 80)" );
+    CHECK( VALUE_OF( RESOLVE( "STANDARD.loc_siz" ) ) = 88,
+	   "loc_siz de niveau 0 (attendu 88), obtenu"
+	   & LONG_INTEGER'IMAGE( VALUE_OF( RESOLVE( "STANDARD.loc_siz" ) ) ) );
+    CHECK( VALUE_OF( RESOLVE( "STANDARD.h_a9_" ) ) - VALUE_OF( RESOLVE( "STANDARD.exc_raise_a9_" ) ) = 84,
+	   "EXC_RAISE top = 72 : 76 + 2 x 4 = 84 octets" );
+
+    if  OK  then
+      PUT_LINE( "PASSE arm09" );
+      PUT_LINE( "TC_ARM09.BIN ecrit - oracle externe :" );
+      PUT_LINE( "  fasmg TC_ARM09.FAS TC_ARM_REF9 && cmp TC_ARM_REF9 TC_ARM09.BIN" );
+      PUT_LINE( "  sur le Pi : chmod +x TC_ARM09.BIN && ./TC_ARM09.BIN ; echo $?   (attendu : 0 ; 1 = etat de niveau 0 non restaure ; 2 = flot non detourne)" );
+    end if;
+  end;
+
+
   --|  TEMOIN TEMPORAIRE USEINFO CODE (TC-10) - la forme exacte du
   --|  corpus expander : bloc type (garde + namespace + VAR use__info,q
   --|  + Sa lvl, use__info local), puis USEINFO lvl, NOM avec charge
@@ -1168,6 +1630,8 @@ begin
   --|  namespace non-PRO loge dans le frame 0 (portee et pile, mini-Q7).
   --|  Verdict : 0 = la valeur a traverse use__info -> NOM__u ; 1 = non.
   --|  A RETIRER avec les autres.
+
+  TARGET_CPU := X86_64;
   declare
     use LEX;
     use SYMBOLS;
@@ -1878,6 +2342,264 @@ begin
   end;
 
 
+  --|  TEMOIN TC-ARM16 : jumeau arm64 de TC_TEST16 - le MEME programme (labels
+  --|  suffixes A16), les 28 mnemoniques de calcul sous verdict d'execution
+  --|  discriminant (0 = tout bon, 3..30 = etape fautive). Sur arm : CVTFIR =
+  --|  fcvtns (pair), CVTIX / CVTXI par SDIV128_64_POS.
+
+  TARGET_CPU := ARM64;
+  declare
+    use LEX, SYMBOLS, IR;
+    OK			: BOOLEAN	:= TRUE;
+    F			: FILE_TYPE;
+    FROMA		: IR.ELT_ID;
+
+    procedure CHECK ( COND :BOOLEAN; MSG :STRING )
+    is
+    begin
+      if not COND
+      then
+	OK := FALSE;
+	PUT_LINE( "ECHEC arm16 : " & MSG );
+      end if;
+    end CHECK;
+
+  begin
+    CREATE( F, OUT_FILE, "TC_ARM16.FAS" );
+    PUT_LINE( F, "	include '../../src/expander/fasmg/codi_arm64.finc'" );
+    PUT_LINE( F, "STANDARD = 'STANDARD'" );
+    PUT_LINE( F, "namespace STANDARD" );
+    PUT_LINE( F, "  virtual at 8" );
+    PUT_LINE( F, "    VARzone::" );
+    PUT_LINE( F, "  end virtual" );
+    PUT_LINE( F, "	LINK	0, loc_siz" );
+    PUT_LINE( F, "	LI	17" );
+    PUT_LINE( F, "	LI	-5" );
+    PUT_LINE( F, "	DIV" );
+    PUT_LINE( F, "	LI	-3" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA16_3" );
+    PUT_LINE( F, "	SYS_EXIT	3" );
+    PUT_LINE( F, "kA16_3:" );
+    PUT_LINE( F, "	LI	17" );
+    PUT_LINE( F, "	LI	-5" );
+    PUT_LINE( F, "	REMI" );
+    PUT_LINE( F, "	LI	2" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA16_4" );
+    PUT_LINE( F, "	SYS_EXIT	4" );
+    PUT_LINE( F, "kA16_4:" );
+    PUT_LINE( F, "	LI	17" );
+    PUT_LINE( F, "	LI	-5" );
+    PUT_LINE( F, "	MODI" );
+    PUT_LINE( F, "	LI	-3" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA16_5" );
+    PUT_LINE( F, "	SYS_EXIT	5" );
+    PUT_LINE( F, "kA16_5:" );
+    PUT_LINE( F, "	LI	-17" );
+    PUT_LINE( F, "	LI	5" );
+    PUT_LINE( F, "	MODI" );
+    PUT_LINE( F, "	LI	3" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA16_6" );
+    PUT_LINE( F, "	SYS_EXIT	6" );
+    PUT_LINE( F, "kA16_6:" );
+    PUT_LINE( F, "	LI	42" );
+    PUT_LINE( F, "	NEG" );
+    PUT_LINE( F, "	LI	-42" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA16_7" );
+    PUT_LINE( F, "	SYS_EXIT	7" );
+    PUT_LINE( F, "kA16_7:" );
+    PUT_LINE( F, "	LI	7" );
+    PUT_LINE( F, "	INC" );
+    PUT_LINE( F, "	INC" );
+    PUT_LINE( F, "	DEC" );
+    PUT_LINE( F, "	LI	8" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA16_8" );
+    PUT_LINE( F, "	SYS_EXIT	8" );
+    PUT_LINE( F, "kA16_8:" );
+    PUT_LINE( F, "	LI	-7" );
+    PUT_LINE( F, "	CLAMP0" );
+    PUT_LINE( F, "	LI	0" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA16_9" );
+    PUT_LINE( F, "	SYS_EXIT	9" );
+    PUT_LINE( F, "kA16_9:" );
+    PUT_LINE( F, "	LI	5" );
+    PUT_LINE( F, "	CLAMP0" );
+    PUT_LINE( F, "	LI	5" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA16_10" );
+    PUT_LINE( F, "	SYS_EXIT	10" );
+    PUT_LINE( F, "kA16_10:" );
+    PUT_LINE( F, "	LI	61680" );
+    PUT_LINE( F, "	LI	4080" );
+    PUT_LINE( F, "	OUX" );
+    PUT_LINE( F, "	LI	65280" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA16_11" );
+    PUT_LINE( F, "	SYS_EXIT	11" );
+    PUT_LINE( F, "kA16_11:" );
+    PUT_LINE( F, "	LI	3" );
+    PUT_LINE( F, "	LI	4" );
+    PUT_LINE( F, "	SHL" );
+    PUT_LINE( F, "	LI	48" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA16_12" );
+    PUT_LINE( F, "	SYS_EXIT	12" );
+    PUT_LINE( F, "kA16_12:" );
+    PUT_LINE( F, "	LI	5" );
+    PUT_LINE( F, "	LI	3" );
+    PUT_LINE( F, "	CGT" );
+    PUT_LINE( F, "	BT	kA16_13" );
+    PUT_LINE( F, "	SYS_EXIT	13" );
+    PUT_LINE( F, "kA16_13:" );
+    PUT_LINE( F, "	LI	3" );
+    PUT_LINE( F, "	LI	5" );
+    PUT_LINE( F, "	CGT" );
+    PUT_LINE( F, "	BF	kA16_14" );
+    PUT_LINE( F, "	SYS_EXIT	14" );
+    PUT_LINE( F, "kA16_14:" );
+    PUT_LINE( F, "	LI	3" );
+    PUT_LINE( F, "	LI	5" );
+    PUT_LINE( F, "	CLT" );
+    PUT_LINE( F, "	BT	kA16_15" );
+    PUT_LINE( F, "	SYS_EXIT	15" );
+    PUT_LINE( F, "kA16_15:" );
+    PUT_LINE( F, "	LI	5" );
+    PUT_LINE( F, "	LI	5" );
+    PUT_LINE( F, "	CLE" );
+    PUT_LINE( F, "	BT	kA16_16" );
+    PUT_LINE( F, "	SYS_EXIT	16" );
+    PUT_LINE( F, "kA16_16:" );
+    PUT_LINE( F, "	LI	5" );
+    PUT_LINE( F, "	LI	5" );
+    PUT_LINE( F, "	CGE" );
+    PUT_LINE( F, "	BT	kA16_17" );
+    PUT_LINE( F, "	SYS_EXIT	17" );
+    PUT_LINE( F, "kA16_17:" );
+    PUT_LINE( F, "	LI	5" );
+    PUT_LINE( F, "	LI	5" );
+    PUT_LINE( F, "	CNE" );
+    PUT_LINE( F, "	BF	kA16_18" );
+    PUT_LINE( F, "	SYS_EXIT	18" );
+    PUT_LINE( F, "kA16_18:" );
+    PUT_LINE( F, "	LIF	1.5" );
+    PUT_LINE( F, "	LIF	2.25" );
+    PUT_LINE( F, "	FADD" );
+    PUT_LINE( F, "	LIF	3.75" );
+    PUT_LINE( F, "	FCNE" );
+    PUT_LINE( F, "	BF	kA16_19" );
+    PUT_LINE( F, "	SYS_EXIT	19" );
+    PUT_LINE( F, "kA16_19:" );
+    PUT_LINE( F, "	LIF	5.5" );
+    PUT_LINE( F, "	LIF	2.25" );
+    PUT_LINE( F, "	FSUB" );
+    PUT_LINE( F, "	LIF	3.25" );
+    PUT_LINE( F, "	FCNE" );
+    PUT_LINE( F, "	BF	kA16_20" );
+    PUT_LINE( F, "	SYS_EXIT	20" );
+    PUT_LINE( F, "kA16_20:" );
+    PUT_LINE( F, "	LIF	1.5" );
+    PUT_LINE( F, "	LIF	2.5" );
+    PUT_LINE( F, "	FMUL" );
+    PUT_LINE( F, "	LIF	3.75" );
+    PUT_LINE( F, "	FCNE" );
+    PUT_LINE( F, "	BF	kA16_21" );
+    PUT_LINE( F, "	SYS_EXIT	21" );
+    PUT_LINE( F, "kA16_21:" );
+    PUT_LINE( F, "	LIF	7.5" );
+    PUT_LINE( F, "	LIF	2.5" );
+    PUT_LINE( F, "	FDIV" );
+    PUT_LINE( F, "	LIF	3.0" );
+    PUT_LINE( F, "	FCNE" );
+    PUT_LINE( F, "	BF	kA16_22" );
+    PUT_LINE( F, "	SYS_EXIT	22" );
+    PUT_LINE( F, "kA16_22:" );
+    PUT_LINE( F, "	LIF	2.5" );
+    PUT_LINE( F, "	FNEG" );
+    PUT_LINE( F, "	LIF	-2.5" );
+    PUT_LINE( F, "	FCNE" );
+    PUT_LINE( F, "	BF	kA16_23" );
+    PUT_LINE( F, "	SYS_EXIT	23" );
+    PUT_LINE( F, "kA16_23:" );
+    PUT_LINE( F, "	LIF	1.5" );
+    PUT_LINE( F, "	LIF	2.5" );
+    PUT_LINE( F, "	FCLT" );
+    PUT_LINE( F, "	BT	kA16_24" );
+    PUT_LINE( F, "	SYS_EXIT	24" );
+    PUT_LINE( F, "kA16_24:" );
+    PUT_LINE( F, "	LIF	2.5" );
+    PUT_LINE( F, "	LIF	1.5" );
+    PUT_LINE( F, "	FCGT" );
+    PUT_LINE( F, "	BT	kA16_25" );
+    PUT_LINE( F, "	SYS_EXIT	25" );
+    PUT_LINE( F, "kA16_25:" );
+    PUT_LINE( F, "	LIF	2.5" );
+    PUT_LINE( F, "	LIF	2.5" );
+    PUT_LINE( F, "	FCGE" );
+    PUT_LINE( F, "	BT	kA16_26" );
+    PUT_LINE( F, "	SYS_EXIT	26" );
+    PUT_LINE( F, "kA16_26:" );
+    PUT_LINE( F, "	LI	7" );
+    PUT_LINE( F, "	CVTIF" );
+    PUT_LINE( F, "	LIF	7.0" );
+    PUT_LINE( F, "	FCNE" );
+    PUT_LINE( F, "	BF	kA16_27" );
+    PUT_LINE( F, "	SYS_EXIT	27" );
+    PUT_LINE( F, "kA16_27:" );
+    PUT_LINE( F, "	LIF	-3.75" );
+    PUT_LINE( F, "	CVTFI" );
+    PUT_LINE( F, "	LI	-3" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA16_28" );
+    PUT_LINE( F, "	SYS_EXIT	28" );
+    PUT_LINE( F, "kA16_28:" );
+    PUT_LINE( F, "	LIF	3.5" );
+    PUT_LINE( F, "	CVTFIR" );
+    PUT_LINE( F, "	LI	4" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA16_29" );
+    PUT_LINE( F, "	SYS_EXIT	29" );
+    PUT_LINE( F, "kA16_29:" );
+    PUT_LINE( F, "	LI	7" );
+    PUT_LINE( F, "	LI	2" );
+    PUT_LINE( F, "	LI	3" );
+    PUT_LINE( F, "	CVTIX" );
+    PUT_LINE( F, "	LI	4" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA16_30" );
+    PUT_LINE( F, "	SYS_EXIT	30" );
+    PUT_LINE( F, "kA16_30:" );
+    PUT_LINE( F, "	SYS_EXIT	0" );
+    PUT_LINE( F, " virtual VARzone" );
+    PUT_LINE( F, "   loc_siz = $" );
+    PUT_LINE( F, "  end virtual" );
+    PUT_LINE( F, "end namespace" );
+    CLOSE( F );
+
+    FROMA := IR.ELT_ID( IR.ELT_COUNT + 1 );
+    RUN_P0( "TC_ARM16.FAS" );
+    PASSES.P1_REACH;
+    PASSES.P2_LAYOUT( FROMA, IR.ELT_ID( IR.ELT_COUNT ) );
+    EMITS.P2B_ADDRESSES( FROMA, IR.ELT_ID( IR.ELT_COUNT ) );
+    EMITS.P3_EMIT( FROMA, IR.ELT_ID( IR.ELT_COUNT ), "TC_ARM16.BIN" );
+
+    CHECK( VALUE_OF( RESOLVE( "STANDARD.loc_siz" ) ) = 8,
+	   "loc_siz de niveau 0 (attendu 8)" );
+
+    if  OK  then
+      PUT_LINE( "PASSE arm16" );
+      PUT_LINE( "TC_ARM16.BIN ecrit - oracle externe :" );
+      PUT_LINE( "  fasmg TC_ARM16.FAS TC_ARM_REF16 && cmp TC_ARM_REF16 TC_ARM16.BIN" );
+      PUT_LINE( "  sur le Pi : chmod +x TC_ARM16.BIN && ./TC_ARM16.BIN ; echo $?   (attendu : 0 ; 3..30 = etape fautive)" );
+    end if;
+  end;
+
+
   --|  TEMOIN TEMPORAIRE BLOCS (TC-17) - le bloc d'images de _BOOLEAN
   --|  reproduit a l'identique (BEGIN_BLOC_DEF / db val, len, chaine /
   --|  END_BLOC_DEF 1, 0, 1 / LCA SIZ / SA use__info), premier
@@ -1886,6 +2608,8 @@ begin
   --|  -> octets d'images), BLKMOV (copie de l'image TRUE vers le
   --|  frame), CO_VAR (allocation co-pile ecrite et relue). Verdicts :
   --|  0 = tout bon ; 3..7 = etape fautive. A RETIRER avec les autres.
+
+  TARGET_CPU := X86_64;
   declare
     use LEX;
     use SYMBOLS;
@@ -2366,10 +3090,370 @@ begin
   end;
 
 
+  --|  TEMOIN TC-ARM21 : jumeau arm64 de TC_TEST21 - le MEME programme (labels
+  --|  suffixes A21) : mots, alu, champs de bits, flottants, CVTXI, BLK*,
+  --|  LEXCMP, horloge, fichiers de bout en bout. Verdict par code de sortie.
+
+  TARGET_CPU := ARM64;
+  declare
+    use LEX, SYMBOLS, IR;
+    OK			: BOOLEAN	:= TRUE;
+    F			: FILE_TYPE;
+    FROMA		: IR.ELT_ID;
+
+    procedure CHECK ( COND :BOOLEAN; MSG :STRING )
+    is
+    begin
+      if not COND
+      then
+	OK := FALSE;
+	PUT_LINE( "ECHEC arm21 : " & MSG );
+      end if;
+    end CHECK;
+
+  begin
+    CREATE( F, OUT_FILE, "TC_ARM21.FAS" );
+    PUT_LINE( F, "	include '../../src/expander/fasmg/codi_arm64.finc'" );
+    PUT_LINE( F, "STANDARD = 'STANDARD'" );
+    PUT_LINE( F, "namespace STANDARD" );
+    PUT_LINE( F, "  virtual at 8" );
+    PUT_LINE( F, "    VARzone::" );
+    PUT_LINE( F, "  end virtual" );
+    PUT_LINE( F, "	LINK	0, loc_siz" );
+    PUT_LINE( F, "	VAR	WA21_disp, W" );
+    PUT_LINE( F, "	VAR	PA21_disp, Q" );
+    PUT_LINE( F, "	VAR	BLAA21_disp, 8" );
+    PUT_LINE( F, "	VAR	BLBA21_disp, 8" );
+    PUT_LINE( F, "	VAR	FIDA21_disp, Q" );
+    PUT_LINE( F, "	VAR	TSA21_disp, 16" );
+    PUT_LINE( F, "	STR	TA21NM, 't21.tmp'" );
+    PUT_LINE( F, "; ---- mots signes / non signes ----" );
+    PUT_LINE( F, "	LVA	0, WA21_disp" );
+    PUT_LINE( F, "	SA	0, PA21_disp" );
+    PUT_LINE( F, "	LI	-2" );
+    PUT_LINE( F, "	SW	0, WA21_disp" );
+    PUT_LINE( F, "	LW	0, WA21_disp" );
+    PUT_LINE( F, "	LI	-2" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_3" );
+    PUT_LINE( F, "	SYS_EXIT	3" );
+    PUT_LINE( F, "kA21_3:" );
+    PUT_LINE( F, "	ULW	0, WA21_disp" );
+    PUT_LINE( F, "	LI	65534" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_4" );
+    PUT_LINE( F, "	SYS_EXIT	4" );
+    PUT_LINE( F, "kA21_4:" );
+    PUT_LINE( F, "	LIW	0, PA21_disp, 0" );
+    PUT_LINE( F, "	LI	-2" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_5" );
+    PUT_LINE( F, "	SYS_EXIT	5" );
+    PUT_LINE( F, "kA21_5:" );
+    PUT_LINE( F, "	ULIW	0, PA21_disp, 0" );
+    PUT_LINE( F, "	LI	65534" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_6" );
+    PUT_LINE( F, "	SYS_EXIT	6" );
+    PUT_LINE( F, "kA21_6:" );
+    PUT_LINE( F, "	LI	-5" );
+    PUT_LINE( F, "	SIB	0, PA21_disp, 0" );
+    PUT_LINE( F, "	LIB	0, PA21_disp, 0" );
+    PUT_LINE( F, "	LI	-5" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_7" );
+    PUT_LINE( F, "	SYS_EXIT	7" );
+    PUT_LINE( F, "kA21_7:" );
+    PUT_LINE( F, "	LI	-300" );
+    PUT_LINE( F, "	SIW	0, PA21_disp, 0" );
+    PUT_LINE( F, "	LIW	0, PA21_disp, 0" );
+    PUT_LINE( F, "	LI	-300" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_8" );
+    PUT_LINE( F, "	SYS_EXIT	8" );
+    PUT_LINE( F, "kA21_8:" );
+    PUT_LINE( F, "; ---- alu ----" );
+    PUT_LINE( F, "	LI	12" );
+    PUT_LINE( F, "	LI	3" );
+    PUT_LINE( F, "	OU" );
+    PUT_LINE( F, "	LI	15" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_9" );
+    PUT_LINE( F, "	SYS_EXIT	9" );
+    PUT_LINE( F, "kA21_9:" );
+    PUT_LINE( F, "	LI	5" );
+    PUT_LINE( F, "	NON" );
+    PUT_LINE( F, "	LI	-6" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_10" );
+    PUT_LINE( F, "	SYS_EXIT	10" );
+    PUT_LINE( F, "kA21_10:" );
+    PUT_LINE( F, "	LI	64" );
+    PUT_LINE( F, "	LI	3" );
+    PUT_LINE( F, "	SHR" );
+    PUT_LINE( F, "	LI	8" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_11" );
+    PUT_LINE( F, "	SYS_EXIT	11" );
+    PUT_LINE( F, "kA21_11:" );
+    PUT_LINE( F, "	LI	-64" );
+    PUT_LINE( F, "	LI	3" );
+    PUT_LINE( F, "	SAR" );
+    PUT_LINE( F, "	LI	-8" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_12" );
+    PUT_LINE( F, "	SYS_EXIT	12" );
+    PUT_LINE( F, "kA21_12:" );
+    PUT_LINE( F, "	LI	-7" );
+    PUT_LINE( F, "	ABS" );
+    PUT_LINE( F, "	LI	7" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_13" );
+    PUT_LINE( F, "	SYS_EXIT	13" );
+    PUT_LINE( F, "kA21_13:" );
+    PUT_LINE( F, "	LI	245" );
+    PUT_LINE( F, "	LI	4" );
+    PUT_LINE( F, "	LI	4" );
+    PUT_LINE( F, "	UBFX" );
+    PUT_LINE( F, "	LI	15" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_14" );
+    PUT_LINE( F, "	SYS_EXIT	14" );
+    PUT_LINE( F, "kA21_14:" );
+    PUT_LINE( F, "	LI	240" );
+    PUT_LINE( F, "	LI	4" );
+    PUT_LINE( F, "	LI	4" );
+    PUT_LINE( F, "	SBFX" );
+    PUT_LINE( F, "	LI	-1" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_15" );
+    PUT_LINE( F, "	SYS_EXIT	15" );
+    PUT_LINE( F, "kA21_15:" );
+    PUT_LINE( F, "	LI	65535" );
+    PUT_LINE( F, "	LI	0" );
+    PUT_LINE( F, "	LI	4" );
+    PUT_LINE( F, "	LI	4" );
+    PUT_LINE( F, "	BFI" );
+    PUT_LINE( F, "	LI	65295" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_16" );
+    PUT_LINE( F, "	SYS_EXIT	16" );
+    PUT_LINE( F, "kA21_16:" );
+    PUT_LINE( F, "; ---- flottants ----" );
+    PUT_LINE( F, "	LI	-4610560118520545280" );
+    PUT_LINE( F, "	FABS" );
+    PUT_LINE( F, "	LI	4612811918334230528" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_17" );
+    PUT_LINE( F, "	SYS_EXIT	17" );
+    PUT_LINE( F, "kA21_17:" );
+    PUT_LINE( F, "	LI	4611686018427387904" );
+    PUT_LINE( F, "	LI	3" );
+    PUT_LINE( F, "	FEXP" );
+    PUT_LINE( F, "	LI	4620693217682128896" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_18" );
+    PUT_LINE( F, "	SYS_EXIT	18" );
+    PUT_LINE( F, "kA21_18:" );
+    PUT_LINE( F, "	LI	7" );
+    PUT_LINE( F, "	LI	1" );
+    PUT_LINE( F, "	LI	2" );
+    PUT_LINE( F, "	CVTXI" );
+    PUT_LINE( F, "	LI	4" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_19" );
+    PUT_LINE( F, "	SYS_EXIT	19" );
+    PUT_LINE( F, "kA21_19:" );
+    PUT_LINE( F, "	LI	4609434218613702656" );
+    PUT_LINE( F, "	LI	4609434218613702656" );
+    PUT_LINE( F, "	FCEQ" );
+    PUT_LINE( F, "	LI	1" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_20" );
+    PUT_LINE( F, "	SYS_EXIT	20" );
+    PUT_LINE( F, "kA21_20:" );
+    PUT_LINE( F, "	LI	4609434218613702656" );
+    PUT_LINE( F, "	LI	4612811918334230528" );
+    PUT_LINE( F, "	FCLE" );
+    PUT_LINE( F, "	LI	1" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_21" );
+    PUT_LINE( F, "	SYS_EXIT	21" );
+    PUT_LINE( F, "kA21_21:" );
+    PUT_LINE( F, "; ---- blocs ----" );
+    PUT_LINE( F, "	LI	858993459" );
+    PUT_LINE( F, "	SD	0, BLAA21_disp" );
+    PUT_LINE( F, "	LI	252645135" );
+    PUT_LINE( F, "	SD	0, BLBA21_disp" );
+    PUT_LINE( F, "	LVA	0, BLAA21_disp" );
+    PUT_LINE( F, "	LI	4" );
+    PUT_LINE( F, "	LVA	0, BLBA21_disp" );
+    PUT_LINE( F, "	BLKAND" );
+    PUT_LINE( F, "	LD	0, BLAA21_disp" );
+    PUT_LINE( F, "	LI	50529027" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_22" );
+    PUT_LINE( F, "	SYS_EXIT	22" );
+    PUT_LINE( F, "kA21_22:" );
+    PUT_LINE( F, "	LI	808464432" );
+    PUT_LINE( F, "	SD	0, BLBA21_disp" );
+    PUT_LINE( F, "	LVA	0, BLAA21_disp" );
+    PUT_LINE( F, "	LI	4" );
+    PUT_LINE( F, "	LVA	0, BLBA21_disp" );
+    PUT_LINE( F, "	BLKOU" );
+    PUT_LINE( F, "	LD	0, BLAA21_disp" );
+    PUT_LINE( F, "	LI	858993459" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_23" );
+    PUT_LINE( F, "	SYS_EXIT	23" );
+    PUT_LINE( F, "kA21_23:" );
+    PUT_LINE( F, "	LVA	0, BLAA21_disp" );
+    PUT_LINE( F, "	LI	4" );
+    PUT_LINE( F, "	LVA	0, BLBA21_disp" );
+    PUT_LINE( F, "	BLKOUX" );
+    PUT_LINE( F, "	LD	0, BLAA21_disp" );
+    PUT_LINE( F, "	LI	50529027" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_24" );
+    PUT_LINE( F, "	SYS_EXIT	24" );
+    PUT_LINE( F, "kA21_24:" );
+    PUT_LINE( F, "	LI	65537" );
+    PUT_LINE( F, "	SD	0, BLAA21_disp" );
+    PUT_LINE( F, "	LVA	0, BLAA21_disp" );
+    PUT_LINE( F, "	LI	4" );
+    PUT_LINE( F, "	BLKNOT" );
+    PUT_LINE( F, "	LD	0, BLAA21_disp" );
+    PUT_LINE( F, "	LI	16777472" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_25" );
+    PUT_LINE( F, "	SYS_EXIT	25" );
+    PUT_LINE( F, "kA21_25:" );
+    PUT_LINE( F, "; ---- lexicographique ----" );
+    PUT_LINE( F, "	LI	4408897" );
+    PUT_LINE( F, "	SD	0, BLAA21_disp" );
+    PUT_LINE( F, "	LI	4474433" );
+    PUT_LINE( F, "	SD	0, BLBA21_disp" );
+    PUT_LINE( F, "	LVA	0, BLAA21_disp" );
+    PUT_LINE( F, "	LI	3" );
+    PUT_LINE( F, "	LVA	0, BLBA21_disp" );
+    PUT_LINE( F, "	LI	3" );
+    PUT_LINE( F, "	LEXCMP 1, 0" );
+    PUT_LINE( F, "	LI	-1" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_26" );
+    PUT_LINE( F, "	SYS_EXIT	26" );
+    PUT_LINE( F, "kA21_26:" );
+    PUT_LINE( F, "	LVA	0, BLAA21_disp" );
+    PUT_LINE( F, "	LI	2" );
+    PUT_LINE( F, "	LVA	0, BLBA21_disp" );
+    PUT_LINE( F, "	LI	3" );
+    PUT_LINE( F, "	LEXCMP 1, 0" );
+    PUT_LINE( F, "	LI	-1" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_27" );
+    PUT_LINE( F, "	SYS_EXIT	27" );
+    PUT_LINE( F, "kA21_27:" );
+    PUT_LINE( F, "	LI	4408897" );
+    PUT_LINE( F, "	SD	0, BLBA21_disp" );
+    PUT_LINE( F, "	LVA	0, BLAA21_disp" );
+    PUT_LINE( F, "	LI	3" );
+    PUT_LINE( F, "	LVA	0, BLBA21_disp" );
+    PUT_LINE( F, "	LI	3" );
+    PUT_LINE( F, "	LEXCMP 1, 0" );
+    PUT_LINE( F, "	LI	0" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_28" );
+    PUT_LINE( F, "	SYS_EXIT	28" );
+    PUT_LINE( F, "kA21_28:" );
+    PUT_LINE( F, "; ---- fichiers de bout en bout ----" );
+    PUT_LINE( F, "	LI	0" );
+    PUT_LINE( F, "	LCA	TA21NM.data_ptr" );
+    PUT_LINE( F, "	SYS_FILE_CREATE" );
+    PUT_LINE( F, "	SA	0, FIDA21_disp" );
+    PUT_LINE( F, "	LI	0" );
+    PUT_LINE( F, "	LI	4" );
+    PUT_LINE( F, "	LVA	0, BLAA21_disp" );
+    PUT_LINE( F, "	LA	0, FIDA21_disp" );
+    PUT_LINE( F, "	SYS_FILE_WRITE" );
+    PUT_LINE( F, "	LI	4" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_29" );
+    PUT_LINE( F, "	SYS_EXIT	29" );
+    PUT_LINE( F, "kA21_29:" );
+    PUT_LINE( F, "	LI	0" );
+    PUT_LINE( F, "	LA	0, FIDA21_disp" );
+    PUT_LINE( F, "	SYS_FILE_GET_POS" );
+    PUT_LINE( F, "	LI	4" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_30" );
+    PUT_LINE( F, "	SYS_EXIT	30" );
+    PUT_LINE( F, "kA21_30:" );
+    PUT_LINE( F, "	LI	0" );
+    PUT_LINE( F, "	LI	2" );
+    PUT_LINE( F, "	LA	0, FIDA21_disp" );
+    PUT_LINE( F, "	SYS_FILE_SET_POS" );
+    PUT_LINE( F, "	LI	2" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_31" );
+    PUT_LINE( F, "	SYS_EXIT	31" );
+    PUT_LINE( F, "kA21_31:" );
+    PUT_LINE( F, "	LI	0" );
+    PUT_LINE( F, "	LA	0, FIDA21_disp" );
+    PUT_LINE( F, "	SYS_FILE_GET_SIZE" );
+    PUT_LINE( F, "	LI	4" );
+    PUT_LINE( F, "	CEQ" );
+    PUT_LINE( F, "	BT	kA21_32" );
+    PUT_LINE( F, "	SYS_EXIT	32" );
+    PUT_LINE( F, "kA21_32:" );
+    PUT_LINE( F, "	LI	0" );
+    PUT_LINE( F, "	LA	0, FIDA21_disp" );
+    PUT_LINE( F, "	SYS_FILE_CLOSE" );
+    PUT_LINE( F, "	DROP" );
+    PUT_LINE( F, "	LI	0" );
+    PUT_LINE( F, "	LCA	TA21NM.data_ptr" );
+    PUT_LINE( F, "	SYS_FILE_DELETE" );
+    PUT_LINE( F, "	DROP" );
+    PUT_LINE( F, "; ---- horloge ----" );
+    PUT_LINE( F, "	LVA	0, TSA21_disp" );
+    PUT_LINE( F, "	SYS_CLOCK_GETTIME" );
+    PUT_LINE( F, "	LQ	0, TSA21_disp" );
+    PUT_LINE( F, "	LI	1600000000" );
+    PUT_LINE( F, "	CGT" );
+    PUT_LINE( F, "	BT	kA21_33" );
+    PUT_LINE( F, "	SYS_EXIT	33" );
+    PUT_LINE( F, "kA21_33:" );
+    PUT_LINE( F, "	SYS_EXIT	0" );
+    PUT_LINE( F, " virtual VARzone" );
+    PUT_LINE( F, "   loc_siz = $" );
+    PUT_LINE( F, "  end virtual" );
+    PUT_LINE( F, "end namespace" );
+    CLOSE( F );
+
+    FROMA := IR.ELT_ID( IR.ELT_COUNT + 1 );
+    RUN_P0( "TC_ARM21.FAS" );
+    PASSES.P1_REACH;
+    PASSES.P2_LAYOUT( FROMA, IR.ELT_ID( IR.ELT_COUNT ) );
+    EMITS.P2B_ADDRESSES( FROMA, IR.ELT_ID( IR.ELT_COUNT ) );
+    EMITS.P3_EMIT( FROMA, IR.ELT_ID( IR.ELT_COUNT ), "TC_ARM21.BIN" );
+
+    CHECK( VALUE_OF( RESOLVE( "STANDARD.loc_siz" ) ) = 64,
+	   "loc_siz de niveau 0 (attendu 64)" );
+
+    if  OK  then
+      PUT_LINE( "PASSE arm21" );
+      PUT_LINE( "TC_ARM21.BIN ecrit - oracle externe :" );
+      PUT_LINE( "  fasmg TC_ARM21.FAS TC_ARM_REF21 && cmp TC_ARM_REF21 TC_ARM21.BIN" );
+      PUT_LINE( "  sur le Pi : chmod +x TC_ARM21.BIN && ./TC_ARM21.BIN ; echo $?   (attendu : 0 ; 3..33 = etape fautive ; cree puis supprime t21.tmp)" );
+    end if;
+  end;
+
+
   --|  TEMOIN TEMPORAIRE ENTITE UNIQUE (TC-23) - le releve ADA_COMP :
   --|  un meme nom variable ET namespace, dans les deux ordres, avec
   --|  ecritures/lectures de la variable ET de ses enfants pointes.
   --|  Verdicts : 0 = tout bon ; 3..6 = etape fautive. A RETIRER.
+
+  TARGET_CPU := X86_64;
   declare
     use LEX;
     use SYMBOLS;

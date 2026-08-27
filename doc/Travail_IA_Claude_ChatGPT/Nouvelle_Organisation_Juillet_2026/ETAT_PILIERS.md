@@ -1,6 +1,6 @@
 # ÉTAT DES PILIERS — tableau de bord TLALOC
 
-**Dernière mise à jour : 7 août 2026**
+**Dernière mise à jour : 25 août 2026**
 
 **Régime** : ce fichier est RÉÉCRIT à chaque clôture ; il est la seule source de
 vérité sur « où on en est ». Le récit des sessions est dans JOURNAL_SESSIONS.md,
@@ -43,6 +43,7 @@ La sémantique n'est protégée que par les programmes-témoins à sortie attend
 | Bootstrap : **Jalon POINT FIXE DU BOOTSTRAP (12 aout 2026 13h20)** | T1 (compilé gnat) -> 63 FINC -> T2 (fasmg). T2 recompile les 63 unités : FINC(T2) IDENTIQUES à FINC(T1), octet pour octet, checks ON. fasmg produit T3 = T2. TLALOC est auto-hébergé et idempotent. Le diff des 63 FINC entre deux générations devient l'ORACLE DE NON-RÉGRESSION SUPRÊME : tout remaniement futur (mark/release co-pile, scission d'expander-expressions, optimiseur) doit le laisser vide ou justifier chaque ligne du diff.
  | 18 juillet 2026 |
  | **TARGET_CODE (assembleur natif LLIR/FINC → ELF64, remplaçant fasmg)** | **CLOS — POINT FIXE** : table EMITS = codi x86_64 entier (contrat SIZE_OF = ENCODE par élément, refus « hors tranche » en filet pour les extensions du codi) ; motifs du corpus compilateur acquis : blocs Ada (ELB sans PRO), labels pointés/thunks génériques, entité unique symbole/namespace, redéfinition séquentielle name = $ (époques), rq ; jauges CARTO + bornes calibrées (ADA_COMP : 765 721 éléments, 14 Mo de texte, 200 347 symboles, 10,3 Mo émis) ; **ADA_COMP byte-identique à fasmg, exécutable, et le compilateur assemblé par TARGET_CODE se recompile lui-même — chaîne intégralement auto-hébergée, assemblage ~3× plus rapide que fasmg** | **24 août 2026** — oracles TC_TEST04…25 (chaîne du pilote), avalements DIS_BONJOUR / ENUM_TEST / DIRECT_IO_TEST / SEQ_IO_TEST / ADA_COMP muets |
+| **Cible arm64 (codi_arm64.finc)** | **BOOTSTRAP CROISÉ** : compilateur arm64 assemblé par fasmg+codi_arm64 (BT/BF forme longue ; CALL/LCA/LSPA de taille FIXE — adr, QUAD_ADDR ; QUAD_CONST taille = f(val) ; display en encodage direct ; contrat SIZE_OF = ENCODE respecté, prêt pour TARGET_CODE arm64). Exécuté sur Orange Pi 3B (4×A55) : compile tout le source du compilateur en 5 min ; **FINC IDENTIQUES à ceux de T2 x86 (assemblé par TARGET_CODE), octet pour octet**. Manque : assembleur natif sur le Pi (fasmg est x86) → TARGET_CODE arm64. Assemblage fasmg arm64 : 548 s (×2,9 de x86, 18 passes) | **25 août 2026** — oracle diff_finc.sh Pi/laptop vide ; pièges n° 156–158 |
 
  
 
@@ -325,11 +326,15 @@ Vigilances versees/mises a jour 7 août 2026 :
   des diffs de traces (piege n 131).
 
 
-## Prochaine séquence (arrêtée le 6/08 — bilan recensement)
-
-  - CONSTRAINT_ERROR du bootstrappe au LEX_SCAN{BEGIN} de null_prog (prochaine session ; premiere
-    question : les attributs non renseignes affiches [DN_ALTERNATIVE_PRAGMA,P357,L86], dumper ou
-    contamination ?).
+## Prochaine séquence (arrêtée le 25/08 — bilan recensement)
+ 
+  - TARGET_CODE arm64 (fermer la boucle sur le Pi sans fasmg) : traits (ELF aarch64
+    E_MACHINE 183, PAD 0, CALL_FRAME 16, syscalls openat/unlinkat, p_memsz), puis table
+    EMITS par tranches comme x86 (TC-04 : DROP DUP LI ADD SUB MUL BRA SYS_EXIT d'abord),
+    SIZE_OF = 4 × nombre de mots (LI = 4·max(1, min(nz, nf)) + 8, CALL 16, LCA/LSPA 16),
+    séquences fixes du runtime (EXC_*, CO_*, chaînes, SYS_*) recopiées. Oracle : binaire
+    IDENTIQUE à fasmg+codi_arm64 sur les mêmes FINC (oracle unitaire n° 153 par
+    mnémonique), exécution sur le Pi, puis T2_arm → FINC → TARGET_CODE arm64 → T3_arm = T2_arm.
 
 1. Rédiger la note de modèle d'exécution du pilier retenu AVANT de coder.
 2. Filet complet + tag git à chaque clôture.
@@ -376,3 +381,4 @@ référence fasmg passe du rôle d'outil à celui d'ORACLE DE RÉGRESSION
 (cmp sur corpus figé). Vigie capacités : éléments à 77 % de la borne
 (765 721 / 1 000 000) — au prochain élargissement du corpus, passer
 ELT_MAX à 2 000 000 et OPS_MAX à 6 000 000.
+    contamination ?).
