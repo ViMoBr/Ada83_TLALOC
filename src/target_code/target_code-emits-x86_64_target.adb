@@ -94,6 +94,15 @@ is					-------------
 	---------
 
 			---------
+  procedure		E_POP_RDX									--| 8 octets (E/S fichiers)
+  is			---------
+  begin
+    B( 16#48# ); B( 16#8B# ); B( 16#55# ); B( 16#00# );							--| mov rdx, [rbp]
+    B( 16#48# ); B( 16#8D# ); B( 16#6D# ); B( 16#F8# );							--| lea rbp, [rbp-8]
+  end	E_POP_RDX;
+	---------
+
+			---------
   procedure		E_POP_RDI									--| 8 octets (BLKMOV)
   is			---------
   begin
@@ -111,14 +120,6 @@ is					-------------
   end	E_POP_RSI;
 	---------
 
-			---------
-  procedure		E_POP_RDX									--| 8 octets (E/S fichiers)
-  is			---------
-  begin
-    B( 16#48# ); B( 16#8B# ); B( 16#55# ); B( 16#00# );							--| mov rdx, [rbp]
-    B( 16#48# ); B( 16#8D# ); B( 16#6D# ); B( 16#F8# );							--| lea rbp, [rbp-8]
-  end	E_POP_RDX;
-	---------
 
 			-----------------
   procedure		E_COPY_STRING_NUL								--| COPY_STRING_APPEND_NUL du codi (31) :
@@ -338,9 +339,6 @@ is					-------------
     if  M = "DROP"  then return  4;
     elsif  M = "DUP"  then return  12;
 
---    elsif  M = "db"  then return  DB_LEN( E );								--| octets inline
---    elsif  M = "rd"  then return  0;									--| reservation statique (TC-12)  then return 0;											--| pure declaration : zero octet
---    elsif  M = "rq"  then return  0;									--| reservation statique (TC-12)  then return 0;											--| pure declaration : zero octet
 
 			---------------------------------------------------
 --			L O A D	C O N S T A N T E S	  I M M E D I A T E S
@@ -430,9 +428,8 @@ is					-------------
 		-------------------------------------
 --		O P E R A T I O N S	  L O G I Q U E S
 
-    elsif M = "ET"  or  M = "OU"  or  M = "OUX"  or  M = "SHL" then return  12;
+    elsif M = "ET"  or  M = "OU"  or  M = "OUX"  or  M = "SHL"  or  M = "SHR"  then return  12;
     elsif  M = "NON"  then return  4;									--| not qword [rbp]
-    elsif  M = "SHR"  then return  12;									--| POP_RCX + shr qword [rbp], cl
 
 
 		-----------------------------------------
@@ -503,8 +500,7 @@ is					-------------
 --			O P E R A T I O N S	  C O N T R O L E	D E   F L O T
 
     elsif  M = "BRA"  then return  5;									--| E9 rel32 SYSTEMATIQUE (piege n 82)
-    elsif  M = "BT"  then return 16;									--| POP_RAX + or al,al + jnz rel32 (n 82)
-    elsif  M = "BF"  then return 16;									--| comme BT (jz rel32)
+    elsif  M = "BT"  or else  M = "BF"  then return 16;							--| POP_RAX + or al,al + jnz rel32 (n 82)
     elsif  M = "CALL"  then return 5;									--| E8/E9 rel32, taille FIXE
     elsif  M = "CALLI"  then return 10;									--| POP_RAX + FF D0
     elsif  M = "RTD"  then
@@ -527,17 +523,17 @@ is					-------------
 	LVL		: constant SYMBOLS.VALUE_TYPE := OPV( E, 1, 0 );
 	A8		: constant SYMBOLS.VALUE_TYPE
 			:= 8 * ( ( OPV( E, 2, 0 ) + 7 ) / 8 );
-	N		: SYMBOLS.VALUE_TYPE := 10;			--| co-pile : 3 + 3 + 4
+	N		: SYMBOLS.VALUE_TYPE := 10;							--| co-pile : 3 + 3 + 4
       begin
 	if LVL > 0
 	then
-	  N := N + S_FPA( LVL ) + 8;					--| FP(lvl) + PUSH
+	  N := N + S_FPA( LVL ) + 8;									--| FP(lvl) + PUSH
 	  if LVL <= 15
 	  then
 	    N := N + 4;
 	  else
-	    N := N + 7;							--| fidele au codi (ModRM 6F + dd :
-	  end if;							--| suspect au dela de lvl 15 - a auditer)
+	    N := N + 7;										--| fidele au codi (ModRM 6F + dd :
+	  end if;											--| suspect au dela de lvl 15 - a auditer)
 	end if;
 	if A8 /= 0
 	then
@@ -555,15 +551,19 @@ is					-------------
       declare
 	LVL		: constant SYMBOLS.VALUE_TYPE := OPV( E, 1, 0 );
       begin
-	return S_FPA( LVL ) + 8 + S_FPA( LVL ) + 4;			--| FP_IN_RBP + POP_RAX + RAX_IN_FP + copile
+	return S_FPA( LVL ) + 8 + S_FPA( LVL ) + 4;							--| FP_IN_RBP + POP_RAX + RAX_IN_FP + copile
       end;
 
-    elsif  M = "PRO"  then return 5;							--| E8/E9 rel32, taille FIXE
+    elsif  M = "UNLINKR"  then
+      declare
+	LVL		: constant SYMBOLS.VALUE_TYPE := OPV( E, 1, 0 );
+      begin
+	return S_FPA( LVL ) + 8 + S_FPA( LVL ) + 4 + 3;							--| FP_IN_RBP + POP_RAX + RAX_IN_FP + copile + sommet
+      end;
 
---    elsif  M = "PRMS"  or else  M = "PRM"  or else  M = "endPRMS"									--| reservation statique (TC-12)
---      then return 0;											--| pure declaration : zero octet
+    elsif  M = "PRO"  then return 5;									--| E8/E9 rel32, taille FIXE
 
-    elsif  M = "ELB"  then								--| elab: + LINK lvl, loc_siz - meme compte que LINK
+    elsif  M = "ELB"  then										--| elab: + LINK lvl, loc_siz - meme compte que LINK
       declare
 	LVL	:constant SYMBOLS.VALUE_TYPE := OPV( E, 1, 0 );
 	A8	:constant SYMBOLS.VALUE_TYPE
@@ -590,18 +590,9 @@ is					-------------
 
     elsif  M = "BEGIN_BLOC_DEF"  then return 5;								--| BRA IMAGES.skip (les db suivent, inline)
 
---    elsif  M = "END_BLOC_DEF"  then									--| info dd x4 + align_q NOP + dd x4 + dq x2 :
---      return 48 + ( 8 - ( ( CURADDR + 16 ) mod 8 ) ) mod 8;							--| l'adresse du point d'appel donne le bourrage
-
---    elsif  M = "STR"  or else  M = "CST"  then return  0;							--| DIFFERE : place/emis apres le code (LIFO)
-
---    elsif  M = "USEINFO"  or else  M = "STATOFS"  or else  M = "VAR"  then return  0;				--| pure declaration : zero octet
-
     elsif  M = "CO_VAR"  then return  28;
 
     elsif  M = "HEAP_ALLOC"  then return  34;
-
---    elsif  M = "endPRO"  then return  0;								--| reservation statique (TC-12)  then return 0;											--| pure declaration : zero octet
 
     elsif  M = "EXC_MACH"  then									--| pilier 11 : photo machine (codi) - chemin froid,
       declare											--| deplacements disp32 UNIFORMES : taille fixe
@@ -657,7 +648,7 @@ is					-------------
     elsif  M = "SYS_FILE_SET_POS"  then return  28;
     elsif  M = "SYS_FILE_GET_POS"  then return  23;							--| lseek(SEEK_CUR, 0) - resultat sur [rbp]
     elsif  M = "SYS_FILE_GET_SIZE"  then return  51;							--| lseek END puis SET (position preservee)
-    elsif  M = "SYS_FILE_READ"  or else  M = "SYS_FILE_WRITE"  then return  33;
+    elsif  M = "SYS_FILE_WRITE"  or else  M = "SYS_FILE_READ"  then return  33;
     elsif  M = "SYS_FILE_CLOSE"  then return  17;
     elsif  M = "SYS_FILE_DELETE"  then return  50;
     elsif  M = "SYS_EXIT"  then
@@ -1311,6 +1302,17 @@ is					-------------
         E_FP_RBP( LVL );
         E_POP_RAX;
         E_RAX_FP( LVL );
+        B( 16#4D# ); B( 16#8B# ); B( 16#6D# ); B( 16#00# );							--| mov r13, [r13]
+      end;
+
+    elsif  M = "UNLINKR"  then
+      declare
+        LVL	: constant SYMBOLS.VALUE_TYPE		:= OPV( E, 1, 0 );
+      begin
+        E_FP_RBP( LVL );
+        E_POP_RAX;
+        E_RAX_FP( LVL );
+        B( 16#4D# ); B( 16#89# ); B( 16#EE# );								--| mov r14, r13
         B( 16#4D# ); B( 16#8B# ); B( 16#6D# ); B( 16#00# );							--| mov r13, [r13]
       end;
 

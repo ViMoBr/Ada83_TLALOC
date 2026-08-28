@@ -77,7 +77,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO ARITY
@@ -266,7 +266,7 @@ end namespace
 	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO SON_1
@@ -440,7 +440,7 @@ end namespace
 	BRA	STANDARD.exc_raise_
 L10:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SON_1
@@ -629,7 +629,7 @@ end namespace
 	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO SON_2
@@ -803,7 +803,7 @@ end namespace
 	BRA	STANDARD.exc_raise_
 L20:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SON_2
@@ -966,7 +966,7 @@ end namespace
 	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO SON_3
@@ -1114,7 +1114,7 @@ end namespace
 	BRA	STANDARD.exc_raise_
 L30:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SON_3
@@ -1206,7 +1206,7 @@ STR STR_L39, "IDL.IDL-MAN.HEAD : TETE DE SEQUENCE SEQ.FIRST = TREE_NIL !"	; cons
 	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO HEAD
@@ -1314,7 +1314,7 @@ L47:					; post if
 	BLKMOV
 	UNLINK 2
 	BRA ret_lbl
-	UNLINK 2
+	UNLINKR 2
 endPRO
 	BRA	L42
 L43:
@@ -1357,7 +1357,7 @@ STR STR_L50, "IDL.IDL-MAN.TAIL : LISTE VIDE S.FIRST = TREE_NIL !"	; constante st
 	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO TAIL
@@ -1515,10 +1515,10 @@ L60:					; post if
 	BLKMOV
 	UNLINK 2
 	BRA ret_lbl
-	UNLINK 2
+	UNLINKR 2
 endPRO
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO INSERT
@@ -2967,7 +2967,7 @@ STR STR_L115, "@AP7 chainage fait"		; constante string="@AP7 chainage fait"
 	BRA	L113
 L114:
 L113:					; post if
-	UNLINK 2
+	UNLINKR 2
 endPRO
 L73:					; post if
 ; CODE_RETURN : EXPR TYPE = DN_RECORD  VUE COMPLETE = DN_RECORD
@@ -2979,7 +2979,7 @@ L73:					; post if
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO APPEND
@@ -3014,7 +3014,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	DROP
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO SINGLETON
@@ -3238,7 +3238,7 @@ end namespace
 	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO LIST
@@ -3411,7 +3411,7 @@ L128:					; post if
 	LI	1
 	SB
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO DABS
@@ -3566,7 +3566,7 @@ L134:					; post if
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO DABS
@@ -4214,10 +4214,10 @@ L146:					; post loop LOOP__7
 	BLKMOV
 	UNLINK 2
 	BRA ret_lbl
-	UNLINK 2
+	UNLINKR 2
 endPRO
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO STORE_TEXT
@@ -4643,7 +4643,7 @@ begin:
 	LA
 	LD
 	SD	2, -result__ofs
-	UNLINK	 2
+	UNLINKR	 2
 	RTD	prm_siz-8
 endPRO					;---------- end PRO TO_INT
 end if
@@ -5173,7 +5173,7 @@ L168:					; post loop LOOP__13
 	BRA	L173
 L174:
 L173:					; post if
-	UNLINK 4
+	UNLINKR 4
 endPRO
 	BRA	L164
 L165:
@@ -5194,7 +5194,7 @@ VAR	ANON_389_22__dat, STANDARD.IDL._SEQ_TYPE.size
 	CALL	STANDARD.IDL.IDL_MAN. ,TAIL_L32
 	LA
 	BLKMOV
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	LOOP__10
 L161:					; post loop LOOP__10
@@ -5229,10 +5229,10 @@ L161:					; post loop LOOP__10
 	DROP
 	UNLINK 2
 	BRA ret_lbl
-	UNLINK 2
+	UNLINKR 2
 endPRO
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO HASH_SEARCH
@@ -5476,7 +5476,7 @@ VAR	ANON_417_18__dat, STANDARD.IDL._SEQ_TYPE.size
 	CGT
 	BT	STANDARD.ce_raise_
 	CALL	STANDARD.IDL.IDL_MAN. ,DABS_L37
-	UNLINK 3
+	UNLINKR 3
 endPRO
 ; CODE_RETURN : EXPR TYPE = DN_RECORD  VUE COMPLETE = DN_RECORD
 	LA   1,	-result__ofs
@@ -5487,11 +5487,11 @@ endPRO
 	BLKMOV
 	UNLINK 2
 	BRA ret_lbl
-	UNLINK 2
+	UNLINKR 2
 endPRO
 L177:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO STORE_SYM
@@ -5657,7 +5657,7 @@ L186:					; post if
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO FIND_SYM
@@ -5815,7 +5815,7 @@ end namespace
 	BRA	STANDARD.exc_raise_
 L192:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_SOURCE_POSITION
@@ -5972,7 +5972,7 @@ end namespace
 	BRA	STANDARD.exc_raise_
 L197:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GET_SOURCE_LINE
@@ -5998,7 +5998,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GET_SOURCE_COL
@@ -6161,7 +6161,7 @@ VAR	ANON_501_29__dat, STANDARD.IDL._SEQ_TYPE.size
 	LVA 1,	SRC_LIN_disp
 	CALL	STANDARD.IDL.IDL_MAN. ,LIST_L36
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO EMIT_ERROR
@@ -6260,11 +6260,11 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA  0,	STANDARD.IDL.TREE_ROOT_disp		; array actual
 	LI  3
 	CALL	STANDARD.IDL. ,D_L16
-	UNLINK 2
+	UNLINKR 2
 endPRO
 L209:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO ERROR
@@ -6355,7 +6355,7 @@ STR ANON_534_20_L215_G, "(Warning) "		; constante string="(Warning) "
 	LA  1,	-T_ofs
 	CALL	STANDARD.IDL.IDL_MAN. ,EMIT_ERROR_L202
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO WARNING
@@ -7180,7 +7180,7 @@ L220:
 L218:
 L217:
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE
@@ -7227,7 +7227,7 @@ VAR	ANON_574_10__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE
@@ -7255,7 +7255,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO LAST_BLOCK

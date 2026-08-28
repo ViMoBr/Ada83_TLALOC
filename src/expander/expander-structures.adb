@@ -434,7 +434,8 @@ is
       CODE_BLOCK_BODY( SUB_BODY );
 
       PUT_LINE( "ret_lbl:" );
-      PUT_LINE( tab & "UNLINK" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );
+      PUT_LINE( tab & CODI.EXIT_UNLINK_MNEMONIC( D( AS_HEADER, SUBPROGRAM_BODY ) )		-- chantier co-pile (n 163) : UNLINKR rend la
+		& LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );					-- co-pile, sauf resultat TABLEAU (n 147)
 
       PUT( tab & "RTD" );
       if  CODI.NO_SUBP_PARAMS = FALSE  then  PUT( tab & "prm_siz" );

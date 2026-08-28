@@ -1394,3 +1394,125 @@ nombre de passes en -v 2, et garder -p au défaut fasmg (100) ; n'accuser
 le n° 88 que si les passes s'égrènent jusqu'au plafond avec des tailles
 qui bougent. Corollaire : à passes égales, un écart de temps entre
 cibles est un coût PAR LIGNE interprétée, mesurable statiquement.
+
+159. ** — PKG.CONSTANTE COMPOSITE : DEUX COUCHES, ET LA FORME DU RÉSULTAT
+DES PRODUCTEURS. (a) CODE_SELECTED, branche DN_CONSTANT_ID en contexte
+source, émettait inconditionnellement `LI PRINT_NUM( SM_VALUE )` —
+constante SCALAIRE STATIQUE supposée. Une constante record (agrégat) n'a
+pas de SM_VALUE numérique : PROGRAM_ERROR dans PRINT_NUM (idl.adb:538)
+au premier `return X86_64_TARGET.TRAITS` (session TARGET_CODE C0, 26/08).
+(b) Le premier correctif (E-SEL-01) empruntait le chemin du nom simple
+(CODE_VC_ID) : il laissait l'@DOUBLET là où le CONTRAT de la forme
+sélectionnée (CODE_COMPOSITE_DATA_ADDRESS, règle unique n° 112) exige
+l'@DATA — le `LA` doublet→data n'est ajouté QUE pour DN_USED_OBJECT_ID /
+FUNCTION_CALL / QUALIFIED / STRING_LITERAL. Le BLKMOV appelant copiait
+le doublet lui-même : TR.PROLOGUE_SIZE = octets d'info_ptr, symptôme
+« placement STR incohérent P2B/P3 » sur le PREMIER différé (point de
+départ de P2B faux). Remède : même émission que PKG.VARIABLE composite
+(`LA lvl, chemin, X_disp` = data_ptr). RÈGLE : la forme du résultat d'un
+producteur composite dépend de la SYNTAXE (DN_SELECTED → @data,
+DN_USED_OBJECT_ID → @doublet), pas de l'objet ; un remède qui emprunte
+le chemin de l'un pour la syntaxe de l'autre copie le doublet sans
+message. Gardien : témoin SEL_CST (X := P.K ; Y := P.K.B). VOISIN
+CONSIGNÉ : PKG.CST d'un scalaire NON STATIQUE suit toujours la branche
+LI et plantera pareil — bruyant, remède identique sous la garde de
+staticité de CODE_CONVERSION/CODE_QUALIFIED, le jour venu.
+
+160. ** — UN COMPOSANT DE RECORD DÉCLARÉ INTEGER LÀ OÙ 2³⁴ DOIT TENIR :
+`SD` TRONQUE EN SILENCE. MEMSZ_RESERVE : INTEGER au lieu de LONG_INTEGER
+→ l'agrégat émet SD, p_memsz = ASM, la co-pile n'est pas mappée, et
+c'est le BINAIRE PRODUIT qui segfaulte (famille n° 109/136 : p_memsz).
+UN octet de diff au cmp (offset 109 = 5e octet de p_memsz). Réflexes
+devant un segfault d'un binaire émis : (1) adresse fautive vs régions
+(co-pile = au-delà de ORG+ASM ; l'adresse EXACTEMENT au premier octet
+hors mapping désigne p_memsz) ; (2) readelf -l, MemSiz vs FileSiz ;
+(3) cmp contre la référence fasmg — il localise À L'OCTET. L'oracle
+byte-identique n'est pas un luxe : ici il a circonscrit le défaut à une
+constante en trois minutes.
+
+161. ** — SQUELETTE DE CIBLE MUET = ELF VIDE SANS MESSAGE. Un SIZE_OF
+qui rend 0 et un ENCODE qui n'émet rien (squelette « à venir ») sont un
+REPLI MUET : NULL_PROG sous ARM64 aurait produit un exécutable vide au
+lieu d'échouer. Doctrine R6 : tout squelette FAULT (« hors tranche
+<cible> : <mnémonique> ») dès sa création ; le refus nominal fait
+partie de l'oracle de chaque lot (« doit tomber sur LINK »), et la
+mnémonique du refus ORDONNE la tranche suivante.
+
+162. ** — TÉMOIN TARGET_CODE AVEC PRO OU VAR SANS P1_REACH NI P2_LAYOUT.
+Symptôme : « symbole introuvable X.elab » alors que le MÊME .FAS passe
+sous fasmg — le lazy (`if defined X_`) EST P1 (fasmg le joue par son
+multipasse), et le layout (VAR, loc_siz) EST P2. Les témoins TC_TEST4/5/6
+n'ont ni PRO ni VAR : leur gabarit court (RUN_P0, P2B, P3) est
+CONTAGIEUX — TC-ARM07/09 l'avaient hérité. Règle : la séquence de
+phases d'un témoin se copie du témoin x86 HOMOLOGUE (même numéro), pas
+du plus simple disponible.
+
+163. ** — CO-PILE MONOTONE, MASQUÉE PAR LA RÉSERVE 16 Gio DE x86.
+UNLINK restaure x26/r13 mais ne rend JAMAIS x27/r14 (« A FAIRE » du codi
+x86) : 8 octets par LINK + les CO_VAR de chaque temporaire non contraint
+(résultats de LEX.IMAGE, concaténations de RESOLVE, `M : constant
+STRING` de SIZE_OF/ENCODE) ne sont libérés que par EXC_RAISE. Mesuré :
+ADA_COMP = 3,39 Go de RSS, ~2,95 Go de co-pile, 3,8 Ko PAR ÉLÉMENT de
+transitoire. x86 vit sous 16 Gio de réserve virtuelle ; arm à 1 Gio
+s'arrête net : x27 au PREMIER octet hors mapping, dans le LINK de trop
+(GET_RAW, fortuit). Béquille : vm.overcommit_memory=1 + swap. REMÈDE
+(chantier ouvert, AVANT riscv64) : variante « libère » d'UNLINK
+(x27 := x26 puis x26 := [x26] ; r14 := r13 puis r13 := [r13]) choisie
+par l'expander sur le TYPE DE RÉSULTAT — règle de la pile secondaire
+GNAT : procédures, fonctions scalaires et record (copiés dans le lieu
+du caller) libèrent ; fonctions à résultat TABLEAU NON CONTRAINT gardent
+(CODE_RETURN copie le data_ptr, PAS les données — expander-instructions,
+branche non contrainte) ; le transitoire meurt alors à la sortie du
+frame qui l'a consommé. Oracle : ADA_COMP.x86exe fonctionnel (les octets
+changent), cmp fasmg après mise à jour des DEUX codi et des DEUX tables,
+et time -v retombant de 3,4 Go à ~450 Mo. Vérifier avant : les quatre
+sites CO_VAR de declarations (691, 905, 1144, 1198) — aucun objet de
+BLOC référencé après un UNLINK intermédiaire, paramètres out alloués
+caller-side.
+
+164. ** — TRANSCRIRE UN CODI EN Ada 83 HÔTE : QUATRE ÉQUIVALENCES, UN
+GARDE-FOU. (1) `shr` fasmg est ARITHMÉTIQUE (plancher) ; Ada tronque
+vers zéro : retirer le reste AVANT de diviser (U := (U − (U mod B)) / B,
+l'idiome de Q64) — chunks des négatifs, b imm26, imm9. (2) `and 0xFFFF`
+= mod 65536 ; `xor 0xFFFF` d'un chunk = 16#FFFF# − chunk. (3) Pas
+d'opérateurs de bits sur les entiers : les `or` du codi portent sur des
+champs DISJOINTS → composer par ADDITION (Rd = +Rd, imm16 = ×32, imm12 =
+×1024, imm9 = ×4096, hw = ×2 097 152) ; vérifier la disjonction, pas la
+supposer. (4) 2⁶³ n'est pas représentable en LONG_INTEGER : un motif
+64 bits à bit de signe (IEEE 754, masques) se construit NÉGATIF
+(X − 2⁶² − 2⁶²), Q64/DD écrivent le complément à deux via le même idiome
+qu'en (1). GARDE-FOU : toute séquence transcrite se vérifie AVANT
+livraison par simulation hôte + désassemblage (capstone) — cibles des
+branchements comprises — et l'ORACLE reste le cmp contre fasmg ;
+41 macros ont été transcrites mécaniquement depuis le codi (expansion
+des sous-macros, résolution des labels) sans une erreur d'octet : quand
+la source de vérité est un fichier, la copier par PROGRAMME.
+
+165. ** -- CO-PILE : LA LIBERATION SE DECIDE AU TYPE DE RESULTAT, JAMAIS
+AU CODI (remede des n 109/147/163, lot 1 du 28 aout). Deux mnemoniques
+d'epilogue : UNLINK (historique, garde r14) et UNLINKR (r14 := r13 puis
+r13 := [r13] -- rend tout ce que le frame a alloue, cellule LINK comprise ;
+x86 : 4D 89 EE / 4D 8B 6D 00 ; arm64 a venir : x27 := x26 ; x26 := [x26]).
+Choix par UTILS.EXIT_UNLINK_MNEMONIC( header ) : procedure, fonction a
+resultat CLASS_SCALAR / DN_ACCESS / DN_RECORD / DN_CONSTRAINED_RECORD ->
+UNLINKR (le resultat est COPIE chez l'appelant avant l'epilogue) ; tout le
+reste -> UNLINK (DN_ARRAY ET DN_CONSTRAINED_ARRAY : CODE_RETURN copie le
+data_ptr, pas les donnees -- le CO_VAR alloue par l'appelant pour un resultat
+contraint est laisse MORT, le data_ptr recopie est celui de l'appele ;
+formel generique, vue privee non percee : repli conservateur). Sites :
+ret_lbl des corps et wrappers d'instanciation = regle ; fin normale de
+bloc, exit, goto = UNLINKR (rien n'evade) ; blocs traverses par un RETURN
+= UNLINK (la valeur rendue peut vivre dans leur region : declare T : STRING
+:= ... begin return T & T; end). Pourquoi c'est sur : un evade produit par F
+est SOUS la cellule LINK de tout frame P entre ensuite ; UNLINKR de P ne
+redescend qu'a cette cellule. Mesure : ADA_COMP assemble par TARGET_CODE
+passe de 3,39 Go a 468 Mo de RSS max, prediction du n 163 tenue. Gardiens :
+STRRET_TEST (evasion, inchange), COPILE_REL_TEST (8 assertions : capacite
+2 M x 1000 octets + 3 M appels a temporaires STRING, evade consomme apres
+appels interposes qui relachent, return depuis un bloc, fonction record a
+temporaires, exit a travers un bloc). Dette restante consignee : les
+temporaires d'une boucle dans un MEME frame ne sont rendus qu'a la sortie
+du frame (remede si mesure l'exige : marque/relache par instruction ou
+retour glissant -- NOTE_MODELE_COPILE_v1 par. 5). Regle de revue : tout
+nouveau site d'emission d'UNLINK se demande si une valeur peut encore
+vivre au-dessus de la cellule apres l'epilogue ; dans le doute, UNLINK.

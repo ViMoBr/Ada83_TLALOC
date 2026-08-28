@@ -762,7 +762,7 @@ L14:					; post if
 L18:
 L17:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO TROU
@@ -915,7 +915,7 @@ STR ANON_78_79_L22_D, ".FINC"			; constante string=".FINC"
 	BT	STANDARD.ce_raise_
 	SD  1,	STANDARD.EXPANDER_L1.UTILS.TROU_COUNT_disp
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO OPEN_OUTPUT_FILE
@@ -1106,7 +1106,7 @@ L25:					; post if
 	LVA  1,	STANDARD.EXPANDER_L1.UTILS.FS_disp
 	CALL	STANDARD.TEXT_IO. ,CLOSE_L3
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD
 excep:
 endPRO					;---------- end PRO CLOSE_OUTPUT_FILE
@@ -1198,7 +1198,7 @@ begin:
 	LA 	 2, -ITEM_ofs
 	LA 	 2, -FILE_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L61
-	UNLINK	 2
+	UNLINKR	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO GET
 end if
@@ -1216,7 +1216,7 @@ begin:
 	LD	 2, -WIDTH_ofs
 	LA 	 2, -ITEM_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L62
-	UNLINK	 2
+	UNLINKR	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO GET
 end if
@@ -1238,7 +1238,7 @@ begin:
 	LD	 2, -ITEM_ofs
 	LA 	 2, -FILE_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L63
-	UNLINK	 2
+	UNLINKR	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO PUT
 end if
@@ -1258,7 +1258,7 @@ begin:
 	LD	 2, -WIDTH_ofs
 	LD	 2, -ITEM_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L64
-	UNLINK	 2
+	UNLINKR	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO PUT
 end if
@@ -1278,7 +1278,7 @@ begin:
 	LA 	 2, -ITEM_ofs
 	LA 	 2, -FROM_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L65
-	UNLINK	 2
+	UNLINKR	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO GET
 end if
@@ -1298,7 +1298,7 @@ begin:
 	LD	 2, -ITEM_ofs
 	LA 	 2, -TO_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L66
-	UNLINK	 2
+	UNLINKR	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO PUT
 end if
@@ -1392,7 +1392,7 @@ begin:
 	LA 	 2, -ITEM_ofs
 	LA 	 2, -FILE_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L61
-	UNLINK	 2
+	UNLINKR	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO GET
 end if
@@ -1410,7 +1410,7 @@ begin:
 	LD	 2, -WIDTH_ofs
 	LA 	 2, -ITEM_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L62
-	UNLINK	 2
+	UNLINKR	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO GET
 end if
@@ -1432,7 +1432,7 @@ begin:
 	LD	 2, -ITEM_ofs
 	LA 	 2, -FILE_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L63
-	UNLINK	 2
+	UNLINKR	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO PUT
 end if
@@ -1452,7 +1452,7 @@ begin:
 	LD	 2, -WIDTH_ofs
 	LD	 2, -ITEM_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L64
-	UNLINK	 2
+	UNLINKR	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO PUT
 end if
@@ -1472,7 +1472,7 @@ begin:
 	LA 	 2, -ITEM_ofs
 	LA 	 2, -FROM_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L65
-	UNLINK	 2
+	UNLINKR	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO GET
 end if
@@ -1492,7 +1492,7 @@ begin:
 	LD	 2, -ITEM_ofs
 	LA 	 2, -TO_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L66
-	UNLINK	 2
+	UNLINKR	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO PUT
 end if
@@ -1525,7 +1525,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD
 excep:
 endPRO					;---------- end PRO NEW_LABEL
@@ -1933,7 +1933,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BT	STANDARD.ce_raise_
 	SD  1,	STANDARD.EXPANDER_L1.UTILS.CUR_LEVEL_disp
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD
 excep:
 endPRO					;---------- end PRO INC_LEVEL
@@ -1959,7 +1959,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BT	STANDARD.ce_raise_
 	SD  1,	STANDARD.EXPANDER_L1.UTILS.CUR_LEVEL_disp
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD
 excep:
 endPRO					;---------- end PRO DEC_LEVEL
@@ -2192,7 +2192,7 @@ L57:
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO TYPE_SIZE
@@ -2672,7 +2672,7 @@ L78:					; post if
 	BRA	LOOP__1
 L77:					; post loop LOOP__1
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO FULL_TYPE_VIEW
@@ -2858,7 +2858,7 @@ end namespace
 	BRA	L91
 L91:
 					; fin case
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L87
 L88:
@@ -3118,7 +3118,7 @@ L109:
 	UNLINK 3
 	BRA ret_lbl
 L105:					; post if
-	UNLINK 4
+	UNLINKR 4
 endPRO
 	BRA	L98
 L101:
@@ -3228,7 +3228,7 @@ end namespace
 	BRA	L98
 L98:
 					; fin case
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L87
 L95:
@@ -3330,7 +3330,7 @@ end namespace
 	BRA	STANDARD.exc_raise_
 L87:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO CODE_DATA_TYPE_OF
@@ -3561,7 +3561,7 @@ end namespace
 	BRA	STANDARD.exc_raise_
 L117:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO NUMBER_OF_DIMENSIONS
@@ -3600,7 +3600,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO CONSTRAINED
@@ -3901,7 +3901,7 @@ STR STR_L133, "LOAD_TYPE_SIZE type non contraint"	; constante string="LOAD_TYPE_
 	CALL	STANDARD.EXPANDER_L1.UTILS. ,TROU_L2
 L128:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO LOAD_TYPE_SIZE
@@ -4051,7 +4051,7 @@ L147:
 	BRA	L145
 L146:
 L145:					; post if
-	UNLINK 4
+	UNLINKR 4
 endPRO
 	BRA	L140
 L141:
@@ -4517,10 +4517,10 @@ end namespace
 	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 L153:					; post if
-	UNLINK 3
+	UNLINKR 3
 endPRO
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO OPER_SIZ_CHAR
@@ -4672,10 +4672,10 @@ L169:
 	UNLINK 3
 	BRA ret_lbl
 L165:					; post if
-	UNLINK 3
+	UNLINKR 3
 endPRO
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO EXP_TYPE_CHAR
@@ -4910,7 +4910,7 @@ L183:					; post if
 	SQ  2,	-result__ofs
 	UNLINK 3
 	BRA ret_lbl
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L176
 L177:
@@ -5199,7 +5199,7 @@ L199:
 	BRA	L197
 L198:
 L197:					; post if
-	UNLINK 4
+	UNLINKR 4
 endPRO
 	BRA	L192
 L193:
@@ -5377,10 +5377,10 @@ L208:					; post if
 	SQ  2,	-result__ofs
 	UNLINK 3
 	BRA ret_lbl
-	UNLINK 3
+	UNLINKR 3
 endPRO
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_UNSIGNED_TYPE
@@ -5943,7 +5943,7 @@ L233:
 	DROP
 	LI	0					; lieu resultat sur pile
 	LA  2,	-DEFN_ofs
-	CALL	STANDARD.EXPANDER_L1.EXPRESSIONS. ,IS_GENERIC_FORMAL_OBJECT_L52
+	CALL	STANDARD.EXPANDER_L1.EXPRESSIONS. ,IS_GENERIC_FORMAL_OBJECT_L53
 L232:
 	BF	L231
 namespace	BLOCK__12
@@ -6025,7 +6025,7 @@ VAR	ANON_578_43__dat, STANDARD.IDL._TREE.size
 	LVA 3,	OBJ_TYPE_disp
 	LI  35
 	CALL	STANDARD.IDL. ,D_L17
-	CALL	STANDARD.EXPANDER_L1.EXPRESSIONS. ,IS_GENERIC_FORMAL_TYPE_L51
+	CALL	STANDARD.EXPANDER_L1.EXPRESSIONS. ,IS_GENERIC_FORMAL_TYPE_L52
 	SB  3,	HAS_GENERIC_TYPE_disp
 
  hexa_show ' disp ', HAS_GENERIC_TYPE_disp
@@ -9244,7 +9244,7 @@ L266:					; post if
 L236:					; post if
 	UNLINK 3
 	BRA ret_lbl
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L230
 L231:
@@ -9948,7 +9948,7 @@ VAR	ANON_617_31__dat, STANDARD.IDL._TREE.size
 STR STR_L293, "_ofs"			; constante string="_ofs"
 	LCA	STR_L293.data_ptr
 	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L282
 L283:
@@ -10622,7 +10622,7 @@ VAR	ANON_630_31__dat, STANDARD.IDL._TREE.size
 STR STR_L304, "_ofs"			; constante string="_ofs"
 	LCA	STR_L304.data_ptr
 	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L282
 L294:
@@ -12229,7 +12229,7 @@ L319:					; post if
 	UNLINK 4
 	UNLINK 3
 	BRA ret_lbl
-	UNLINK 4
+	UNLINKR 4
 endPRO
 	BRA	L314
 L315:
@@ -12882,7 +12882,7 @@ STR ANON_682_51_L346_D, "_disp"		; constante string="_disp"
 	BLKMOV
 	LVA 4, ANON_682_14_L346_R_disp
 	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
-	UNLINK 4
+	UNLINKR 4
 endPRO
 	BRA	L333
 L334:
@@ -13402,14 +13402,14 @@ STR ANON_693_51_L356_D, "_disp"		; constante string="_disp"
 	BLKMOV
 	LVA 4, ANON_693_14_L356_R_disp
 	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
-	UNLINK 4
+	UNLINKR 4
 endPRO
 L333:					; post if
-	UNLINK 3
+	UNLINKR 3
 endPRO
 L280:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO LOAD_MEM
@@ -13590,7 +13590,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LI  28
 	CALL	STANDARD.IDL. ,DI_L21
 	SD  2,	STANDARD.EXPANDER_L1.UTILS.STORE_L24.STORE_LEVEL_disp
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L360
 L361:
@@ -15065,7 +15065,7 @@ STR ANON_739_33_L384_D, "_disp"		; constante string="_disp"
 	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
 L364:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO STORE
@@ -15159,7 +15159,7 @@ L392:
 	CNE
 L391:
 	BF	L393
-	UNLINK 3
+	UNLINKR 3
 	BRA	L387
 L393:
 namespace	BLOCK__22
@@ -15237,9 +15237,9 @@ VAR	ANON_771_12__dat, STANDARD.IDL._TREE.size
 	CALL	STANDARD.IDL. ,D_L17
 	LA
 	BLKMOV
-	UNLINK 4
+	UNLINKR 4
 endPRO
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	LOOP__20
 L387:					; post loop LOOP__20
@@ -15252,7 +15252,7 @@ L387:					; post loop LOOP__20
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO SUBPROGRAM_ORIGIN
@@ -15645,7 +15645,7 @@ L404:					; post if
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SET_GENERIC_ACTUAL_TYPE
@@ -15861,7 +15861,7 @@ L410:					; post loop LOOP__24
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GENERIC_ACTUAL_TYPE_OF
@@ -15885,7 +15885,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BT	STANDARD.ce_raise_
 	SD  1,	STANDARD.EXPANDER_L1.UTILS.GA_COUNT_disp
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD
 excep:
 endPRO					;---------- end PRO CLEAR_GENERIC_ACTUAL_TYPES
@@ -16514,7 +16514,7 @@ STR ANON_835_37_L425_D, "STANDARD.EXCEPTIONS_TOP_CTX_disp"	; constante string="S
 	LVA 2, ANON_835_15_L425_R_disp
 	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD
 excep:
 endPRO					;---------- end PRO EXC_POP
@@ -16693,7 +16693,7 @@ L430:					; post loop LOOP__25
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO EXCEPTION_ID_OF
@@ -16853,7 +16853,7 @@ L445:					; post if
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GOTO_LABEL_ENTRY
@@ -16926,7 +16926,7 @@ L452:					; post if
 	BRA	LOOP__28				; iteration suivante LOOP__28
 L450:					; post loop LOOP__28
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD
 excep:
 endPRO					;---------- end PRO GOTO_CHECK_BODY_END
@@ -17113,7 +17113,7 @@ VAR	RET_INFO_L463, Q
 	BLKMOV
 	UNLINK 3
 	BRA ret_lbl
-	UNLINK 3
+	UNLINKR 3
 endPRO
 ret_lbl:
 	UNLINK 2
@@ -17783,7 +17783,7 @@ L488:
 L487:					; post if
 L469:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REGIONS_PATH
@@ -19148,10 +19148,282 @@ L589:					; post loop LOOP__30
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO LAST_OF_SELECTED
+end if
+
+if defined EXIT_UNLINK_MNEMONIC_L36_
+PRO	EXIT_UNLINK_MNEMONIC_L36			;---------- PRO EXIT_UNLINK_MNEMONIC
+ hexa_show 'EXIT_UNLINK_MNEMONIC_L36 ', $
+PRMS					;    debut parametrage
+	PRM HEADER_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+ hexa_show 'var elab RESULT_TS ', $
+VAR RESULT_TS_disp, Q			; variable record : pointeur aux data record
+VAR RESULT_TS__u, Q				; variable record : pointeur aux useinfo
+VAR RESULT_TS__dat, STANDARD.IDL._TREE.size
+	LVA	2, RESULT_TS__dat
+	SA	2, RESULT_TS_disp			; record fin
+	LVA	2, STANDARD.IDL._TREE.SIZ__
+	SA	2, RESULT_TS__u
+	LA  2, RESULT_TS_disp
+					; store represented component PT range 0 .. 1 width 2
+	DUP
+	LD
+	LI	0
+	LI	0
+	LI	2
+	BFI
+	SD
+
+ hexa_show ' disp ', RESULT_TS_disp
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+					; debut if
+; CODE record equality "=" _TREE
+	LA  2,	-HEADER_ofs
+	LA
+	LD
+	LVA 0,	STANDARD.IDL.TREE_VOID_disp
+	LA
+	LD
+	CEQ
+	DUP
+	BT	L594
+	DROP
+	LA 2, -HEADER_ofs
+	LA	-1, 0
+	LD
+	LI	24
+	LI	8
+	UBFX
+	LI	165
+	CNE
+L594:
+	BF	L593
+; CODE_RETURN : EXPR TYPE = DN_VOID  VUE COMPLETE = DN_VOID
+STR RET_STR_L595, "UNLINKR"			; constante string="UNLINKR"
+	LCA	RET_STR_L595.data_ptr
+VAR	RET_INFO_L596, Q
+	DUP
+	LA  ,  0
+	SIQ   2, -result__ofs,  0
+	DUP
+	LA  ,  8
+	SA   2, RET_INFO_L596
+	DROP
+	LA   2, -result__ofs
+	LA  ,  8
+	LI	16
+	LA   2, RET_INFO_L596
+	BLKMOV
+	BRA ret_lbl
+	BRA	L592
+L593:
+L592:					; post if
+	LVA 2,	RESULT_TS_disp
+	LA
+	LI	STANDARD.IDL._TREE.size
+VAR	ANON_1064_18_disp, Q
+VAR	ANON_1064_18__u,    Q
+VAR	ANON_1064_18__dat, STANDARD.IDL._TREE.size
+	LVA 2, ANON_1064_18__dat
+	SA  2, ANON_1064_18_disp
+	LA  0, STANDARD.IDL._TREE.use__info
+	SA  2, ANON_1064_18__u
+	LVA 2, ANON_1064_18_disp
+					; doublet resultat record anonyme
+VAR	ANON_1064_35_disp, Q
+VAR	ANON_1064_35__u,    Q
+VAR	ANON_1064_35__dat, STANDARD.IDL._TREE.size
+	LVA 2, ANON_1064_35__dat
+	SA  2, ANON_1064_35_disp
+	LA  0, STANDARD.IDL._TREE.use__info
+	SA  2, ANON_1064_35__u
+	LVA 2, ANON_1064_35_disp
+					; doublet resultat record anonyme
+VAR	ANON_1064_47_disp, Q
+VAR	ANON_1064_47__u,    Q
+VAR	ANON_1064_47__dat, STANDARD.IDL._TREE.size
+	LVA 2, ANON_1064_47__dat
+	SA  2, ANON_1064_47_disp
+	LA  0, STANDARD.IDL._TREE.use__info
+	SA  2, ANON_1064_47__u
+	LVA 2, ANON_1064_47_disp
+					; doublet resultat record anonyme
+VAR	ANON_1064_65_disp, Q
+VAR	ANON_1064_65__u,    Q
+VAR	ANON_1064_65__dat, STANDARD.IDL._TREE.size
+	LVA 2, ANON_1064_65__dat
+	SA  2, ANON_1064_65_disp
+	LA  0, STANDARD.IDL._TREE.use__info
+	SA  2, ANON_1064_65__u
+	LVA 2, ANON_1064_65_disp
+					; doublet resultat record anonyme
+	LA  2,	-HEADER_ofs
+	LI  48
+	CALL	STANDARD.IDL. ,D_L17
+	CALL	STANDARD.EXPANDER_L1.UTILS. ,LAST_OF_SELECTED_L35
+	LI  89
+	CALL	STANDARD.IDL. ,D_L17
+	LI  33
+	CALL	STANDARD.IDL. ,D_L17
+	LA
+	BLKMOV
+					; debut if
+; CODE record equality "=" _TREE
+	LVA 2,	RESULT_TS_disp
+	LA
+	LD
+	LVA 0,	STANDARD.IDL.TREE_VOID_disp
+	LA
+	LD
+	CEQ
+	DUP
+	BT	L599
+	DROP
+; CODE record equality "=" _TREE
+	LVA 2,	RESULT_TS_disp
+	LA
+	LD
+	LVA 0,	STANDARD.IDL.TREE_NIL_disp
+	LA
+	LD
+	CEQ
+L599:
+	BF	L598
+; CODE_RETURN : EXPR TYPE = DN_VOID  VUE COMPLETE = DN_VOID
+STR RET_STR_L600, "UNLINK"			; constante string="UNLINK"
+	LCA	RET_STR_L600.data_ptr
+VAR	RET_INFO_L601, Q
+	DUP
+	LA  ,  0
+	SIQ   2, -result__ofs,  0
+	DUP
+	LA  ,  8
+	SA   2, RET_INFO_L601
+	DROP
+	LA   2, -result__ofs
+	LA  ,  8
+	LI	16
+	LA   2, RET_INFO_L601
+	BLKMOV
+	BRA ret_lbl
+	BRA	L597
+L598:
+L597:					; post if
+	LVA 2,	RESULT_TS_disp
+	LA
+	LI	STANDARD.IDL._TREE.size
+VAR	ANON_1068_18_disp, Q
+VAR	ANON_1068_18__u,    Q
+VAR	ANON_1068_18__dat, STANDARD.IDL._TREE.size
+	LVA 2, ANON_1068_18__dat
+	SA  2, ANON_1068_18_disp
+	LA  0, STANDARD.IDL._TREE.use__info
+	SA  2, ANON_1068_18__u
+	LVA 2, ANON_1068_18_disp
+					; doublet resultat record anonyme
+	LVA 2,	RESULT_TS_disp
+	CALL	STANDARD.EXPANDER_L1.UTILS. ,FULL_TYPE_VIEW_L21
+	LA
+	BLKMOV
+					; debut if
+	LA	2, STANDARD.EXPANDER_L1.UTILS.EXIT_UNLINK_MNEMONIC_L36.RESULT_TS_disp
+	LD
+	LI	24
+	LI	8
+	UBFX
+	ULB	0, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._CLASS_SCALAR.FST
+	CGE
+	ULB	0, STANDARD.DIANA_NODE_ATTR_CLASS_NAMES._CLASS_SCALAR.LST
+	LA	2, STANDARD.EXPANDER_L1.UTILS.EXIT_UNLINK_MNEMONIC_L36.RESULT_TS_disp
+	LD
+	LI	24
+	LI	8
+	UBFX
+	CGE
+	ET
+	DUP
+	BT	L606
+	DROP
+	LA	2, STANDARD.EXPANDER_L1.UTILS.EXIT_UNLINK_MNEMONIC_L36.RESULT_TS_disp
+	LD
+	LI	24
+	LI	8
+	UBFX
+	LI	208
+	CEQ
+L606:
+	DUP
+	BT	L605
+	DROP
+	LA	2, STANDARD.EXPANDER_L1.UTILS.EXIT_UNLINK_MNEMONIC_L36.RESULT_TS_disp
+	LD
+	LI	24
+	LI	8
+	UBFX
+	LI	207
+	CEQ
+L605:
+	DUP
+	BT	L604
+	DROP
+	LA	2, STANDARD.EXPANDER_L1.UTILS.EXIT_UNLINK_MNEMONIC_L36.RESULT_TS_disp
+	LD
+	LI	24
+	LI	8
+	UBFX
+	LI	210
+	CEQ
+L604:
+	BF	L603
+; CODE_RETURN : EXPR TYPE = DN_VOID  VUE COMPLETE = DN_VOID
+STR RET_STR_L607, "UNLINKR"			; constante string="UNLINKR"
+	LCA	RET_STR_L607.data_ptr
+VAR	RET_INFO_L608, Q
+	DUP
+	LA  ,  0
+	SIQ   2, -result__ofs,  0
+	DUP
+	LA  ,  8
+	SA   2, RET_INFO_L608
+	DROP
+	LA   2, -result__ofs
+	LA  ,  8
+	LI	16
+	LA   2, RET_INFO_L608
+	BLKMOV
+	BRA ret_lbl
+	BRA	L602
+L603:
+; CODE_RETURN : EXPR TYPE = DN_VOID  VUE COMPLETE = DN_VOID
+STR RET_STR_L609, "UNLINK"			; constante string="UNLINK"
+	LCA	RET_STR_L609.data_ptr
+VAR	RET_INFO_L610, Q
+	DUP
+	LA  ,  0
+	SIQ   2, -result__ofs,  0
+	DUP
+	LA  ,  8
+	SA   2, RET_INFO_L610
+	DROP
+	LA   2, -result__ofs
+	LA  ,  8
+	LI	16
+	LA   2, RET_INFO_L610
+	BLKMOV
+	BRA ret_lbl
+L602:					; post if
+ret_lbl:
+	UNLINK 2
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO EXIT_UNLINK_MNEMONIC
 end if
 begin:					;---------- package BDY INSTRUCTIONS
 end namespace 				;---------- end package BDY UTILS

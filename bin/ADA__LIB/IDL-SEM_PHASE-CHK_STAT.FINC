@@ -94,7 +94,7 @@ L3:
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_STATIC_RANGE
@@ -382,7 +382,7 @@ L16:
 	BRA ret_lbl
 L14:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_STATIC_SUBTYPE
@@ -620,7 +620,7 @@ L25:
 L19:
 					; fin case
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_STATIC_DISCRETE_RANGE
@@ -882,7 +882,7 @@ L40:					; post loop LOOP__2
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_STATIC_INDEX_CONSTRAINT

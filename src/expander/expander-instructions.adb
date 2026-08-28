@@ -149,7 +149,7 @@ separate ( EXPANDER )
 	  PUT_LINE( LABEL_STR( CODI.GOTO_PENDING( I ).LBL_G ) & ':' );
 	  for  L in reverse CODI.CUR_LEVEL + 1 .. CODI.GOTO_PENDING( I ).LEVEL  loop
 	    if  CODI.GOTO_PENDING( I ).CTX( L )  then  CODI.EXC_POP;  end if;
-	    PUT_LINE( tab & "UNLINK" & LEVEL_NUM'IMAGE( L ) );
+	    PUT_LINE( tab & "UNLINKR" & LEVEL_NUM'IMAGE( L ) );
 	  end loop;
 	  PUT_LINE( tab & "BRA" & tab & LX_STR );
 	  CODI.GOTO_PENDING( I ).TARGET := TREE_VOID;					-- raccord resolu
@@ -493,7 +493,7 @@ separate ( EXPANDER )
     PUT_LINE( "namespace" & tab &  PROC_LBL );
     INC_LEVEL;
     STRUCTURES.CODE_BLOCK_BODY( D( AS_BLOCK_BODY, BLOCK ) );
-    PUT_LINE( tab & "UNLINK" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );						-- RESTAURER LE DISPLAY ET LA PILE APRES LE BLOC
+    PUT_LINE( tab & "UNLINKR" & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );						-- RESTAURER LE DISPLAY, LA PILE ET LA CO-PILE APRES LE BLOC (n 163)
     DEC_LEVEL;
     PUT_LINE( "endPRO" );										-- POUR CALCUL DU LOC_SIZ AVANT FERMETURE DU NAMESPACE
 
@@ -1303,6 +1303,10 @@ separate ( EXPANDER )
 		---------------------
       end if;
 
+		-- Chantier co-pile (n 163) : les blocs traverses par un return gardent
+		-- UNLINK (pas UNLINKR) -- la valeur rendue peut vivre dans leur region
+		-- (declare T : STRING := ... begin return T & T; end).  C'est l'epilogue
+		-- ret_lbl du frame (EXIT_UNLINK_MNEMONIC) qui tranche pour tout le frame.
 		-- PILIER 11 : depiler le contexte de chaque bloc protege traverse
 		-- (note v2 par. 5bis).  Dans un HANDLER le drapeau du niveau est faux
 		-- (contexte deja depile) : rien n'est emis pour ce bloc-la.
@@ -2212,7 +2216,7 @@ separate ( EXPANDER )
       if  EXP = TREE_VOID  then
         for  L in reverse EXITED_LOOP_LEVEL + 1 .. CODI.CUR_LEVEL  loop					-- UNLINK par NIVEAU (bug compte-comme-niveau
 	if  CODI.HANDLER_CTX_AT( L )  then  CODI.EXC_POP;  end if;						-- corrige) + pop des blocs proteges traverses
-	PUT_LINE( tab & "UNLINK" & LEVEL_NUM'IMAGE( L ) );
+	PUT_LINE( tab & "UNLINKR" & LEVEL_NUM'IMAGE( L ) );						-- n 163 : les blocs quittes rendent leur co-pile
         end loop;
         PUT_LINE( tab & "BRA" & tab & LABEL_STR( AFTER_LOOP_LABEL ) );
 
@@ -2226,7 +2230,7 @@ separate ( EXPANDER )
 
 	  for  L in reverse EXITED_LOOP_LEVEL + 1 .. CODI.CUR_LEVEL  loop
 	    if  CODI.HANDLER_CTX_AT( L )  then  CODI.EXC_POP;  end if;
-	    PUT_LINE( tab & "UNLINK" & LEVEL_NUM'IMAGE( L ) );
+	    PUT_LINE( tab & "UNLINKR" & LEVEL_NUM'IMAGE( L ) );
 	  end loop;
 
 	  PUT_LINE( tab & "BRA" & tab & LABEL_STR( AFTER_LOOP_LABEL ) );

@@ -1840,3 +1840,149 @@ l'écart de temps est un coût par ligne et se MESURE statiquement
 et la LLIR étant indépendante de la cible, le diff des FINC entre deux
 exécutables de cibles différentes est l'oracle de portage le plus fort
 et le moins cher — il a validé d'un coup codi_arm64 sur tout le corpus.
+
+## 26–28 août 2026 — TARGET_CODE multicible (C0–C4) : la boucle arm64 se ferme sur Orange Pi 3B
+
+**Architecture (C0).** Un seul TARGET_CODE pour trois cibles : EMITS
+devient le pilote GÉNÉRIQUE de l'émission (tampon, différés, ELF, P2B,
+P3, mnémoniques de DONNÉES et de DÉCLARATION — db, rd, rq, STR/CST,
+END_BLOC_DEF, USEINFO/STATOFS/VAR, PRMS/PRM/endPRMS/endPRO — identiques
+dans tous les codi, bourrage TR.PAD_BYTE) ; chaque cible est une
+sous-unité (X86_64_TARGET, ARM64_TARGET, RISCV64_TARGET) qui n'expose
+que TRAITS, SIZE_OF, ENCODE, PROLOGUE. QUATRE points de dispatch (case
+TARGET_CPU), et quatre seulement. TARGET_TRAITS complété (PROLOGUE_SIZE,
+BRA_SIZE, MEMSZ_RESERVE 64 bits) ; les cinq fuites x86 du générique
+(e_machine, p_memsz, 16#90#, CUR+5, 82) passent par les traits. Q64F
+scindé en DOUBLE_BITS (motif IEEE 754 comme entier, vérifié contre
+pack('<d') sur 2 512 doubles) + écriture. Pilote : cible demandée au
+lancement, extensions par cible (.fas/.arm64fas, .x86exe/.arm64exe),
+témoins x86 posant leur cible ; LEX contrôle que l'include codi du .fas
+désigne la cible choisie (refus bruyant — le .fas est auto-descriptif,
+c'est le même include qui pilote fasmg). Oracle du commit : filet
+TC_TEST04…25 vert et ADA_COMP **byte-identique** — zéro octet changé,
+définition même du refactor. Squelettes arm64/riscv64 en refus bruyant
+« hors tranche » (n° 161).
+
+**Deux incidents d'expander, débusqués par les oracles de C0.**
+(1) `return X86_64_TARGET.TRAITS` : première constante RECORD désignée à
+travers un préfixe de paquetage jamais compilée — CODE_SELECTED
+supposait une constante scalaire statique (LI PRINT_NUM sur DN_VOID,
+PROGRAM_ERROR idl.adb:538). Correctif en deux temps, le premier FAUX :
+E-SEL-01 (chemin du nom simple, CODE_VC_ID) laissait l'@doublet là où le
+contrat de la forme sélectionnée exige l'@data — le BLKMOV de
+`TR := TRAITS` copiait le doublet lui-même, TR.PROLOGUE_SIZE devenait un
+morceau d'info_ptr, symptôme « placement STR incohérent P2B/P3 :
+EXC_NL__ » (le premier différé émis trahit un point de DÉPART faux).
+E-SEL-02 : émission de la branche variable composite (LA lvl, X_disp).
+Piège n° 159. (2) MEMSZ_RESERVE déclaré INTEGER là où 2³⁴ doit tenir :
+`SD` silencieux, p_memsz = ASM, co-pile non mappée, segfault du binaire
+produit — UN octet de diff au cmp (offset 109), diagnostic en trois
+relevés (readelf -l, cmp, FINC de l'agrégat). Piège n° 160, famille
+109/136.
+
+**La table arm64 en quatre tranches (C1–C4), méthode.** Transcription
+MOT DE 32 BITS PAR MOT du codi_arm64 : DD (petit-boutiste), CHUNK
+(division plancher = shr arithmétique de fasmg), champs d'opcodes
+DISJOINTS composés par ADDITION (Ada 83 n'a pas d'opérateurs de bits) —
+règles consignées n° 164. C1 (TC-ARM04) : QUAD_CONST (QC_LEN =
+4·max(1, min(nz, nf)), fonction de la seule valeur), b imm26, amorçage
+23 mots. C2 (TC-ARM05/06) : E_MEM/M_LEN — les DOUZE accès [x0+disp] du
+codi ne diffèrent que par (scale, trois opcodes), trois plages imm12
+scalée / imm9 signée / repli x17, l'homologue arm de S_DISP ; LINK,
+UNLINK, CEQ, BT/BF forme longue, SYS_PUT_STR. C3 (TC-ARM07/09) :
+structure (PRO/ELB/CALL/CALLI/RTD — micro-pile de retours par sp, 16
+octets par appel), calcul, comparaisons, BLKMOV/CO_VAR, EXC_MACH/
+EXC_RAISE (E_LQ/E_SQ à registres quelconques), SDIV128_64_POS 29 mots à
+branchements internes FIXES précalculés. C4 (TC-ARM16/21) : le reste —
+41 macros à séquence fixe transcrites MÉCANIQUEMENT par un transcripteur
+qui lit les corps dans le codi, expanse les sous-macros, résout les
+labels en imm19/imm26, puis DÉSASSEMBLE chaque mot et vérifie chaque
+branchement sur sa cible (capstone) ; à la main, seules BLK_OP_OCTET et
+LEXCMP (paramétrées). Témoins TC-ARM16/21 = TEXTE de TC_TEST16/21
+(identifiants suffixés A), mêmes verdicts discriminants par code de
+sortie. Chaque tranche sous le même triptyque : témoins auto-jugeants
+dans la suite du pilote, **cmp fasmg** (l'oracle), exécution sur le Pi ;
+ADA_COMP.x86exe inchangé à chaque lot. Un seul faux pas de témoin :
+TC-ARM07/09 livrés sans P1_REACH/P2_LAYOUT (gabarit court de TC_TEST4) —
+« symbole introuvable SPA7.elab » alors que fasmg passe : le lazy EST
+P1. Piège n° 162.
+
+**Le mur de la co-pile, et la victoire.** TARGET_CODE.arm64exe
+(byte-identique à fasmg, 1 320 736 octets) segfaulte sur le Pi en
+assemblant ADA_COMP : x27 = 0x40543000 = PREMIER octet hors mapping
+(ORG + ASM + 1 Gio arrondi page) — la co-pile a épuisé TAILLE_COPILE.
+Cause de fond, commune aux deux codi : UNLINK ne rend RIEN (« A FAIRE »
+du codi x86), 8 octets par LINK plus les CO_VAR de chaque temporaire non
+contraint ; 16 Gio l'ont toujours masquée en x86. Mesure (time -v,
+laptop) : 3,39 Go de RSS pour ADA_COMP, ~2,95 Go de co-pile, 3,8 Ko par
+élément — du transitoire jamais rendu. Piège n° 163. Béquille assumée
+sur Orange Pi 3B : swapfile 8 Go + vm.overcommit_memory=1 — et
+TARGET_CODE.arm64exe assemble ADA_COMP sur le Pi, ET CE COMPILATEUR
+COMPILE TOUT, comme celui venu du laptop. **La boucle arm64 est fermée :
+compilation ET assemblage natifs sur la cible.**
+
+**Reste ouvert.** (1) Point fixe croisé à jouer à froid : la CARTO du Pi
+diffère légèrement de celle du laptop (765 772 vs 765 864 éléments,
+14 013 895 vs 14 015 395 caractères) — établir par cmp des FINC si c'est
+un écart de sources entre machines (probable : lots appliqués en
+décalé) ou un vrai non-déterminisme. (2) Chantier co-pile AVANT la cible
+riscv64, pour n'avoir que deux tables EMITS à adapter : variante
+« libère » d'UNLINK (x27 := x26 ; x26 := [x26]) choisie par l'expander
+sur le type de résultat — interdite aux fonctions à résultat tableau non
+contraint, car CODE_RETURN copie le data_ptr, PAS les données (règle de
+la pile secondaire GNAT) ; oracle déjà écrit : ADA_COMP fonctionnel puis
+time -v retombant de 3,4 Go à ~450 Mo.
+
+Leçon de méthode : le refactor multicible s'est payé en UN commit sous
+oracle zéro-diff, et c'est ce commit qui a débusqué deux trous d'expander
+dormants — un refactor à oracle byte-identique est un GÉNÉRATEUR de
+témoins gratuits. Et la transcription mécanique (lire le codi, résoudre,
+désassembler) a produit 48 mnémoniques en un lot sans une seule erreur
+d'octet : quand la source de vérité est un fichier, la copier par
+programme, jamais à la main.
+
+## 28 aout 2026 -- Chantier co-pile, lot 1 : UNLINKR, ADA_COMP de 3,4 Go a 468 Mo
+
+Ouverture par note de modele AVANT code (NOTE_MODELE_COPILE_v1.md), sur
+l'arbitrage du n 163 : liberation au niveau FRAME seulement, mnemonique
+UNLINK inchange + variante UNLINKR. L'audit prealable de l'expander a
+etabli les faits qui fondent la regle : seule la branche tableau de
+CODE_RETURN evade (data_ptr copie, pas les donnees -- y compris pour un
+resultat DN_CONSTRAINED_ARRAY, dont le CO_VAR caller-alloue reste mort) ;
+scalaires, access et records sont copies chez l'appelant avant l'epilogue ;
+`new` passe par HEAP_ALLOC ; tous les sites CO_VAR allouent dans le frame
+courant ; les out/in out composites BLKMOV dans les data de l'actuel sans
+jamais re-pointer son _disp ; l'elaboration X : STRING := F(1) aliase les
+data de F dans la region du meme frame. Cas delicat vu et couvert : evade
+produit par F puis appel interpose P qui relache -- la cellule LINK de P
+est au-dessus des data de F, UNLINKR n'y redescend jamais.
+
+Livraison en deux commits ancres : C1 codi_x86_64.finc (macro UNLINKR,
+commentaire de UNLINK ; oracle byte-identique) ; C2 expander (spec + corps
+UTILS.EXIT_UNLINK_MNEMONIC, ret_lbl de CODE_SUBPROGRAM_BODY, wrapper
+d'instanciation, CODE_BLOCK, CODE_EXIT x2, CODE_GOTO, CODE_LABELED ;
+CODE_RETURN garde UNLINK sur les blocs traverses, commente). Temoin
+COPILE_REL_TEST ecrit avant, 8 assertions. Le mainteneur a ajoute l'entree
+EMITS UNLINKR de target_code x86_64 dans la foulee.
+
+Verdict : COPILE_REL_TEST 8/8 sous fasmg ET sous target_code ; STRRET_TEST
+7/7 ; filet vert ; /usr/bin/time -v sur TARGET_CODE assemblant ADA_COMP :
+468 480 Ko de RSS max contre 3,39 Go (CARTO identique : 766 461 elements,
+10 310 112 octets emis) -- la prediction ~450 Mo du n 163 est tenue.
+Piege n 165. Suite : lot 2 = macro UNLINKR de codi_arm64 + entree EMITS
+arm64, cmp fasmg, puis rejeu sur le Pi SANS swap ni overcommit ; riscv64
+debloque. Lecon : le contrat d'evasion se respecte par le CHOIX de
+l'epilogue cote expander (qui sait le type de resultat), pas par une
+garde au codi (qui ne sait rien) -- c'est ce qui a manque a R1.
+
+Lot 2 (arm64, le meme jour) : codi_arm64.finc recoit UNLINKR = copie
+d'UNLINK + dd 0xAA1A03FB (mov x27, x26, verifie au desassembleur) en
+avant-dernier ; entree EMITS arm64 de target_code. Sur Orange Pi 3B, SANS
+swapfile ni overcommit : T2 recompile toutes les sources du compilateur en
+4 min 34 s (RSS max 10 Mo par unite) ; TARGET_CODE.arm64exe assemble
+ADA_COMP en 4 min 27 s avec 152 Mo de RSS max (la meme tache crevait
+l'arene de 1 Gio le 26 aout, piege n 163) ; ADA_COMP.arm64exe regenere
+sur place BYTE-IDENTIQUE a celui importe du laptop -- POINT FIXE CROISE
+ATTEINT, question (1) du 26-28 aout close (elements identiques, 766 461
+des deux cotes). Bequille swap + overcommit retiree. riscv64 debloque :
+une table EMITS, aucune contrainte memoire.

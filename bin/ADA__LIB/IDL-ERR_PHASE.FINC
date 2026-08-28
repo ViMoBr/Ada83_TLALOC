@@ -343,7 +343,7 @@ VAR	ANON_44_15__dat, STANDARD.IDL._SEQ_TYPE.size
 	CALL	STANDARD.IDL. ,LIST_L22
 	LA
 	BLKMOV
-	UNLINK 3
+	UNLINKR 3
 endPRO
 L12:					; post if
 LOOP__4:
@@ -636,7 +636,7 @@ end namespace
 	BRA	L28
 L29:
 L28:					; post if
-	UNLINK 3
+	UNLINKR 3
 endPRO
 L18:					; post if
 	BRA	LOOP__4
@@ -842,7 +842,7 @@ VAR	ANON_85_31__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	LVA 3, ANON_85_12_L39_R_disp
 	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	LOOP__6
 L33:					; post loop LOOP__6
@@ -852,7 +852,7 @@ L33:					; post loop LOOP__6
 	BT	L11
 	BRA	LOOP__2
 L11:					; post loop LOOP__2
-	UNLINK 2
+	UNLINKR 2
 endPRO
 	LVA  1,	STANDARD.IDL.ERR_PHASE_L12.IFILE_disp
 	CALL	STANDARD.TEXT_IO. ,CLOSE_L3
@@ -860,7 +860,7 @@ L7:
 L6:
 	CALL	STANDARD.IDL. ,CLOSE_IDL_TREE_FILE_L7
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO ERR_PHASE

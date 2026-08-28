@@ -96,7 +96,7 @@ begin:
 	LA 	 2, -ITEM_ofs
 	LA 	 2, -FILE_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L61
-	UNLINK	 2
+	UNLINKR	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO GET
 end if
@@ -114,7 +114,7 @@ begin:
 	LD	 2, -WIDTH_ofs
 	LA 	 2, -ITEM_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L62
-	UNLINK	 2
+	UNLINKR	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO GET
 end if
@@ -136,7 +136,7 @@ begin:
 	LD	 2, -ITEM_ofs
 	LA 	 2, -FILE_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L63
-	UNLINK	 2
+	UNLINKR	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO PUT
 end if
@@ -156,7 +156,7 @@ begin:
 	LD	 2, -WIDTH_ofs
 	LD	 2, -ITEM_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L64
-	UNLINK	 2
+	UNLINKR	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO PUT
 end if
@@ -176,7 +176,7 @@ begin:
 	LA 	 2, -ITEM_ofs
 	LA 	 2, -FROM_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L65
-	UNLINK	 2
+	UNLINKR	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO GET
 end if
@@ -196,7 +196,7 @@ begin:
 	LD	 2, -ITEM_ofs
 	LA 	 2, -TO_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L66
-	UNLINK	 2
+	UNLINKR	 2
 	RTD	prm_siz
 endPRO					;---------- end PRO PUT
 end if
@@ -579,7 +579,7 @@ L16:					; post loop LOOP__3
 	CGT
 	BT	STANDARD.ce_raise_
 	SD  1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.T_LAST_disp
-	UNLINK 2
+	UNLINKR 2
 endPRO
 					; debut if
 	ULB 1,	T_CHR_disp
@@ -1177,7 +1177,7 @@ L31:
 	LI	1
 	SB  1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.NON_AS_SEEN_disp
 L30:					; post if
-	UNLINK 2
+	UNLINKR 2
 endPRO
 	LA	 0, STANDARD.IDL.IDL_TBL.A_SPEC_disp	; array data start address on stack
 	LID	0, STANDARD.IDL.IDL_TBL.LAST_NODE_ATTR_disp, 0
@@ -1243,7 +1243,7 @@ L11:					; post loop LOOP__1
 	LVA  1,	STANDARD.IDL.IDL_TBL.INIT_SPEC_L53.SFILE_disp
 	CALL	STANDARD.TEXT_IO. ,CLOSE_L3
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO INIT_SPEC
@@ -1323,7 +1323,7 @@ begin:
 	LB	 1, -MODE_ofs
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,CREATE_L1
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO CREATE
 end if
@@ -1345,7 +1345,7 @@ begin:
 	LB	 1, -MODE_ofs
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,OPEN_L2
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO OPEN
 end if
@@ -1361,7 +1361,7 @@ begin:
 	LVA	 0, GFP_disp
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,CLOSE_L3
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO CLOSE
 end if
@@ -1377,7 +1377,7 @@ begin:
 	LVA	 0, GFP_disp
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,DELETE_L4
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO DELETE
 end if
@@ -1395,7 +1395,7 @@ begin:
 	LB	 1, -MODE_ofs
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,RESET_L5
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO RESET
 end if
@@ -1411,7 +1411,7 @@ begin:
 	LVA	 0, GFP_disp
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,RESET_L6
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO RESET
 end if
@@ -1430,7 +1430,7 @@ begin:
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,MODE_L7
 	SB	 1, -result__ofs			; retour resultat
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz-8
 endPRO					;---------- end PRO MODE
 end if
@@ -1485,7 +1485,7 @@ begin:
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,IS_OPEN_L10
 	SB	 1, -result__ofs			; retour resultat
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz-8
 endPRO					;---------- end PRO IS_OPEN
 end if
@@ -1503,7 +1503,7 @@ begin:
 	LA 	 1, -ITEM_ofs
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,READ_L11
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO READ
 end if
@@ -1521,7 +1521,7 @@ begin:
 	LA 	 1, -ITEM_ofs
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,WRITE_L12
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO WRITE
 end if
@@ -1540,7 +1540,7 @@ begin:
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,END_OF_FILE_L13
 	SB	 1, -result__ofs			; retour resultat
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz-8
 endPRO					;---------- end PRO END_OF_FILE
 end if
@@ -1721,7 +1721,7 @@ STR ANON_140_47_L61_D, ".bin"			; constante string=".bin"
 	LVA  1,	STANDARD.IDL.IDL_TBL.WRITE_SPEC_L54.SFILE_disp
 	CALL	STANDARD.IDL.IDL_TBL.DTT_IO. ,CLOSE_L3
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO WRITE_SPEC
@@ -1840,7 +1840,7 @@ STR ANON_154_45_L65_D, ".bin"			; constante string=".bin"
 	LVA  1,	STANDARD.IDL.IDL_TBL.READ_SPEC_L55.SFILE_disp
 	CALL	STANDARD.IDL.IDL_TBL.DTT_IO. ,CLOSE_L3
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO READ_SPEC

@@ -1,6 +1,6 @@
 # ÉTAT DES PILIERS — tableau de bord TLALOC
 
-**Dernière mise à jour : 25 août 2026**
+**Dernière mise à jour : 28 août 2026**
 
 **Régime** : ce fichier est RÉÉCRIT à chaque clôture ; il est la seule source de
 vérité sur « où on en est ». Le récit des sessions est dans JOURNAL_SESSIONS.md,
@@ -43,8 +43,7 @@ La sémantique n'est protégée que par les programmes-témoins à sortie attend
 | Bootstrap : **Jalon POINT FIXE DU BOOTSTRAP (12 aout 2026 13h20)** | T1 (compilé gnat) -> 63 FINC -> T2 (fasmg). T2 recompile les 63 unités : FINC(T2) IDENTIQUES à FINC(T1), octet pour octet, checks ON. fasmg produit T3 = T2. TLALOC est auto-hébergé et idempotent. Le diff des 63 FINC entre deux générations devient l'ORACLE DE NON-RÉGRESSION SUPRÊME : tout remaniement futur (mark/release co-pile, scission d'expander-expressions, optimiseur) doit le laisser vide ou justifier chaque ligne du diff.
  | 18 juillet 2026 |
  | **TARGET_CODE (assembleur natif LLIR/FINC → ELF64, remplaçant fasmg)** | **CLOS — POINT FIXE** : table EMITS = codi x86_64 entier (contrat SIZE_OF = ENCODE par élément, refus « hors tranche » en filet pour les extensions du codi) ; motifs du corpus compilateur acquis : blocs Ada (ELB sans PRO), labels pointés/thunks génériques, entité unique symbole/namespace, redéfinition séquentielle name = $ (époques), rq ; jauges CARTO + bornes calibrées (ADA_COMP : 765 721 éléments, 14 Mo de texte, 200 347 symboles, 10,3 Mo émis) ; **ADA_COMP byte-identique à fasmg, exécutable, et le compilateur assemblé par TARGET_CODE se recompile lui-même — chaîne intégralement auto-hébergée, assemblage ~3× plus rapide que fasmg** | **24 août 2026** — oracles TC_TEST04…25 (chaîne du pilote), avalements DIS_BONJOUR / ENUM_TEST / DIRECT_IO_TEST / SEQ_IO_TEST / ADA_COMP muets |
-| **Cible arm64 (codi_arm64.finc)** | **BOOTSTRAP CROISÉ** : compilateur arm64 assemblé par fasmg+codi_arm64 (BT/BF forme longue ; CALL/LCA/LSPA de taille FIXE — adr, QUAD_ADDR ; QUAD_CONST taille = f(val) ; display en encodage direct ; contrat SIZE_OF = ENCODE respecté, prêt pour TARGET_CODE arm64). Exécuté sur Orange Pi 3B (4×A55) : compile tout le source du compilateur en 5 min ; **FINC IDENTIQUES à ceux de T2 x86 (assemblé par TARGET_CODE), octet pour octet**. Manque : assembleur natif sur le Pi (fasmg est x86) → TARGET_CODE arm64. Assemblage fasmg arm64 : 548 s (×2,9 de x86, 18 passes) | **25 août 2026** — oracle diff_finc.sh Pi/laptop vide ; pièges n° 156–158 |
-
+| **Cible arm64 (codi_arm64.finc + TARGET_CODE multicible)** | **BOUCLE FERMÉE SUR LA CIBLE** : TARGET_CODE restructuré multicible (C0, oracle zéro-diff : EMITS générique — données, différés, ELF, P2B/P3 —, sous-unités X86_64/ARM64/RISCV64_TARGET exposant TRAITS/SIZE_OF/ENCODE/PROLOGUE, quatre points de dispatch ; cible au lancement, extensions par cible, contrôle croisé LEX de l'include codi ; squelettes en refus bruyant). Table arm64 complète en quatre tranches (C1–C4 : QUAD_CONST f(val), E_MEM trois plages, structure/exceptions, 41 macros transcrites mécaniquement + capstone), témoins TC-ARM04…09/16/21 jumeaux des x86, **chaque tranche byte-identique à fasmg et exécutée sur le Pi**. TARGET_CODE.arm64exe (cmp muet, 1 320 736 octets) assemble ADA_COMP SUR le Pi (swap 8 Go + overcommit=1 : co-pile monotone n° 163, ~2,95 Go) et le compilateur produit recompile tout. E-SEL-01/02 au passage (PKG.CST composite, n° 159) | **28 août 2026** — oracles cmp fasmg par tranche ; pièges n° 159–164 ; RESTE : point fixe croisé laptop/Pi (écart CARTO à élucider — sources ?), chantier co-pile (n° 163) AVANT riscv64 |
  
 
 ## Fondations absentes (piliers non ouverts)
@@ -382,3 +381,17 @@ référence fasmg passe du rôle d'outil à celui d'ORACLE DE RÉGRESSION
 (765 721 / 1 000 000) — au prochain élargissement du corpus, passer
 ELT_MAX à 2 000 000 et OPS_MAX à 6 000 000.
     contamination ?).
+    
+    **28 août 2026 — BOUCLE arm64 FERMÉE** : TARGET_CODE multicible (un
+générique + une sous-unité par cible), table arm64 complète, chaque
+tranche sous cmp fasmg ; assemblage ET compilation natifs sur Orange
+Pi 3B. Prochain ordre de marche : (1) point fixe croisé — cmp des FINC
+laptop/Pi pour élucider l'écart CARTO (765 864 vs 765 772 éléments) ;
+(2) chantier CO-PILE (piège n° 163 : variante « libère » d'UNLINK
+choisie par l'expander sur le type de résultat, deux codi + deux tables,
+oracle time -v 3,4 Go → ~450 Mo) — AVANT d'ouvrir codi_riscv64, pour
+n'avoir que deux tables EMITS à adapter ; (3) riscv64 : C0 déjà en
+place (squelette FAULT, TRAITS provisoires), entrer directement en C1 —
+attention codi : pas de drapeaux (slt/sltu), branchements courts (BRA
+en auipc+jalr, BRA_SIZE 8), immédiats lui/addi/slli de taille f(val),
+instructions compressées DÉSACTIVÉES (mot de 4 octets).

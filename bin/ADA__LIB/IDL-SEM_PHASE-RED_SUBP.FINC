@@ -154,7 +154,7 @@ L17:					; post loop LOOP__1
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO LENGTH
@@ -626,7 +626,7 @@ VAR	ANON_108_48__dat, STANDARD.IDL.SEM_PHASE_L11.SET_UTIL._EXTRAINFO_TYPE.size
 	LVA 3,	RESULT_TYPE_disp
 	LVA  2,	STANDARD.IDL.SEM_PHASE_L11.RED_SUBP.EVAL_SUBP_CALL_L488.NEW_TYPESET_disp
 	CALL	STANDARD.IDL.SEM_PHASE_L11.SET_UTIL. ,ADD_TO_TYPESET_L92
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	LOOP__2
 L28:					; post loop LOOP__2
@@ -805,7 +805,7 @@ L22:					; post if
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO EVAL_SUBP_CALL
@@ -1013,7 +1013,7 @@ VAR	ANON_159_16__dat, STANDARD.IDL._TREE.size
 L46:					; post if
 L42:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GET_FUNCTION_RESULT_SUBTYPE
@@ -1304,7 +1304,7 @@ VAR	ANON_182_42__dat, STANDARD.IDL._TREE.size
 L50:
 					; fin case
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GET_APPLY_NAME_RESULT_TYPE
@@ -2657,7 +2657,7 @@ VAR	ANON_307_17__dat, STANDARD.IDL._TREE.size
 	LA  2,	-EXP_ofs
 	LI  48
 	CALL	STANDARD.IDL. ,D_L16
-	UNLINK 3
+	UNLINKR 3
 endPRO
 ; CODE_RETURN : EXPR TYPE = DN_RECORD  VUE COMPLETE = DN_RECORD
 	LA   2,	-result__ofs
@@ -2679,7 +2679,7 @@ VAR	ANON_310_14__dat, STANDARD.IDL._TREE.size
 	BRA ret_lbl
 L62:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO RESOLVE_FUNCTION_CALL
@@ -3406,7 +3406,7 @@ VAR	ANON_391_16_L152__dat, STANDARD.IDL._TREE.size
 L114:
 					; fin case
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO STATIC_OP_VALUE
@@ -3958,7 +3958,7 @@ VAR	ANON_446_60__dat, STANDARD.IDL._TREE.size
 	CALL	STANDARD.IDL.SEM_PHASE_L11.EXPRESO. ,RESOLVE_EXP_L158
 	LA
 	BLKMOV
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L164
 L165:
@@ -4198,7 +4198,7 @@ VAR	ANON_470_26__dat, STANDARD.IDL._TREE.size
 	CALL	STANDARD.IDL.SEM_PHASE_L11.EXPRESO. ,RESOLVE_EXP_L162
 	LA
 	BLKMOV
-	UNLINK 3
+	UNLINKR 3
 endPRO
 L164:					; post if
 ; CODE_RETURN : EXPR TYPE = DN_RECORD  VUE COMPLETE = DN_RECORD
@@ -4234,7 +4234,7 @@ VAR	ANON_476_37__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO RESOLVE_SLICE
@@ -4517,7 +4517,7 @@ VAR	ANON_516_15__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO RESOLVE_INDEXED
@@ -5343,7 +5343,7 @@ L236:
 L233:					; post if
 	BRA	LOOP__17
 L225:					; post loop LOOP__17
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L220
 L221:
@@ -5516,7 +5516,7 @@ VAR	ANON_616_42__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO RESOLVE_CONVERSION
@@ -5545,7 +5545,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LA  2,	-NAME_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.RED_SUBP. ,REDUCE_APPLY_NAMES_L8
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REDUCE_APPLY_NAMES
@@ -7874,7 +7874,7 @@ VAR	ANON_833_44__dat, STANDARD.IDL._TREE.size
 	SD  3,	IL352_disp
 	BRA	LOOP__22				; iteration suivante LOOP__22
 L351:					; post loop LOOP__22
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L346
 L347:
@@ -7907,7 +7907,7 @@ L283:					; post if
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REDUCE_APPLY_NAMES
@@ -8221,7 +8221,7 @@ STR STR_L373, "CHECK_ACTUAL_LIST    not ok on formal base_type node="	; constant
 	BRA	L371
 L372:
 L371:					; post if
-	UNLINK 3
+	UNLINKR 3
 endPRO
 					; debut if
 	ULB 2,	NEW_ACTUALS_OK_disp
@@ -8550,7 +8550,7 @@ L393:
 	BLKMOV
 L392:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO CHECK_ACTUAL_LIST
@@ -9446,7 +9446,7 @@ L430:					; post if
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REDUCE_ARRAY_PREFIX_TYPES
@@ -9698,7 +9698,7 @@ L442:					; post if
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO CHECK_SUBSCRIPT_LIST
@@ -10109,7 +10109,7 @@ L446:					; post loop LOOP__30
 	LI	0
 	SIB  2,	-ACTUALS_OK_ofs
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO CHECK_ACTUAL_TYPE
@@ -11098,7 +11098,7 @@ VAR	ANON_1234_12__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO RESOLVE_SUBP_PARAMETERS
@@ -11342,7 +11342,7 @@ VAR	ANON_1263_12__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO RESOLVE_EXP_OR_UNIV_FIXED
@@ -11636,7 +11636,7 @@ VAR	ANON_1288_37__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO RESOLVE_SUBSCRIPTS
@@ -11754,7 +11754,7 @@ VAR	ANON_1312_16__dat, STANDARD.IDL._TREE.size
 	BRA	LOOP__37
 L524:					; post loop LOOP__37
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO RESOLVE_ERRONEOUS_PARAM_S
@@ -11864,7 +11864,7 @@ VAR	ANON_1323_27__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GET_ARRAY_COMPONENT_TYPE
@@ -12046,7 +12046,7 @@ STR STR_L540, "!! GET_TYPE_OF_DISCRETE_RANGE: INVALID PARAMETER"	; constante str
 L533:
 					; fin case
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GET_TYPE_OF_DISCRETE_RANGE

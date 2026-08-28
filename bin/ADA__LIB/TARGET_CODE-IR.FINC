@@ -1,0 +1,1484 @@
+IR = 'IR'
+namespace IR				;---------- PACKAGE (BDY)
+					;    BODY ELAB
+
+					; _ELT_CELL RECORD TYPE INFO
+_ELT_CELL = '_ELT_CELL'
+namespace _ELT_CELL
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	1, SIZ__
+	SA	1, use__info
+USEINFO 1, KIND, 	LA 1, STANDARD.TARGET_CODE_L1.IR._ELT_KIND.use__info
+USEINFO 1, MNEMO, 	LA 1, STANDARD.TARGET_CODE_L1.LEX._SLICE.use__info
+USEINFO 1, SCOPE, 	LA 1, STANDARD.TARGET_CODE_L1.SYMBOLS._SCOPE_ID.use__info
+USEINFO 1, LAZY, 	LA 1, STANDARD.TARGET_CODE_L1.LEX._SLICE.use__info
+USEINFO 1, FIRST_OP, 	LA 0, STANDARD._NATURAL.use__info
+USEINFO 1, LAST_OP, 	LA 0, STANDARD._NATURAL.use__info
+virtual at 0				; calcul des offsets statiques
+STATOFS KIND, 1, 1
+STATOFS MNEMO, 8, 8
+STATOFS SCOPE, 4, 4
+STATOFS LAZY, 8, 8
+STATOFS FIRST_OP, 4, 4
+STATOFS LAST_OP, 4, 4
+size = $
+end virtual
+	LI	 size*8
+	SD	1, SIZ__
+end namespace
+ hexa_show 'var elab ELTS ', $
+_ELTS__type = '_ELTS__type'
+namespace _ELTS__type			; array var constrained array type info
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	1, SIZ__
+	SA	1, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
+	LI	320
+	SD	1, _COMP_SIZ
+	LD	1, _COMP_SIZ
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SD	1, _FST_1
+	LI	01000000
+	SD	1, _LST_1
+	LD	1, _LST_1
+	LD	1, _FST_1
+	SUB
+	INC
+	CLAMP0
+	MUL
+	SD	1, SIZ__
+  virtual at 4
+COMP_SIZ = $
+	rd 1 
+FST_1 = $
+	rd 1 
+LST_1 = $
+	rd 1 
+  end virtual
+end namespace
+VAR ELTS_disp, Q				; variable array : pointeur aux data
+VAR ELTS__u, Q				; variable array : useinfo pointeur au rec info
+	LA 1, _ELTS__type.use__info
+	SA	1, ELTS__u				; array info ptr at __u
+	LD	1, _ELTS__type.SIZ__
+	LI	8
+	DIV
+	CO_VAR
+	SA	1, ELTS_disp				; array data ptr at _disp
+
+ hexa_show ' disp ', ELTS_disp
+ hexa_show 'var elab LAST_ELT ', $
+VAR LAST_ELT_disp, D			; variable entiere
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	SD  1,	STANDARD.TARGET_CODE_L1.IR.LAST_ELT_disp
+
+ hexa_show ' disp ', LAST_ELT_disp
+
+					; _OP_CELL RECORD TYPE INFO
+_OP_CELL = '_OP_CELL'
+namespace _OP_CELL
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	1, SIZ__
+	SA	1, use__info
+USEINFO 1, TAG, 	LA 1, STANDARD.TARGET_CODE_L1.IR._OPERAND_TAG.use__info
+USEINFO 1, TXT, 	LA 1, STANDARD.TARGET_CODE_L1.LEX._SLICE.use__info
+USEINFO 1, IVAL, 	LA 0, STANDARD._LONG_INTEGER.use__info
+USEINFO 1, FVAL, 	LA 0, STANDARD._LONG_FLOAT.use__info
+virtual at 0				; calcul des offsets statiques
+STATOFS TAG, 1, 1
+STATOFS TXT, 8, 8
+STATOFS IVAL, 8, 8
+STATOFS FVAL, 8, 8
+size = $
+end virtual
+	LI	 size*8
+	SD	1, SIZ__
+end namespace
+ hexa_show 'var elab OPS ', $
+_OPS__type = '_OPS__type'
+namespace _OPS__type			; array var constrained array type info
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	1, SIZ__
+	SA	1, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
+	LI	256
+	SD	1, _COMP_SIZ
+	LD	1, _COMP_SIZ
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SD	1, _FST_1
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	05000000
+	SD	1, _LST_1
+	LD	1, _LST_1
+	LD	1, _FST_1
+	SUB
+	INC
+	CLAMP0
+	MUL
+	SD	1, SIZ__
+  virtual at 4
+COMP_SIZ = $
+	rd 1 
+FST_1 = $
+	rd 1 
+LST_1 = $
+	rd 1 
+  end virtual
+end namespace
+VAR OPS_disp, Q				; variable array : pointeur aux data
+VAR OPS__u, Q				; variable array : useinfo pointeur au rec info
+	LA 1, _OPS__type.use__info
+	SA	1, OPS__u				; array info ptr at __u
+	LD	1, _OPS__type.SIZ__
+	LI	8
+	DIV
+	CO_VAR
+	SA	1, OPS_disp				; array data ptr at _disp
+
+ hexa_show ' disp ', OPS_disp
+ hexa_show 'var elab LAST_OP_G ', $
+VAR LAST_OP_G_disp, D			; variable entiere
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	DUP
+	LD	0, STANDARD._NATURAL.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD._NATURAL.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	SD  1,	STANDARD.TARGET_CODE_L1.IR.LAST_OP_G_disp
+
+ hexa_show ' disp ', LAST_OP_G_disp
+ hexa_show 'var elab DEFERS ', $
+_DEFERS__type = '_DEFERS__type'
+namespace _DEFERS__type			; array var constrained array type info
+VAR use__info, Q
+VAR SIZ__, D
+	LVA	1, SIZ__
+	SA	1, use__info
+VAR _COMP_SIZ, D
+VAR _FST_1, D
+VAR _LST_1, D
+	LI	32
+	SD	1, _COMP_SIZ
+	LD	1, _COMP_SIZ
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SD	1, _FST_1
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	00200000
+	SD	1, _LST_1
+	LD	1, _LST_1
+	LD	1, _FST_1
+	SUB
+	INC
+	CLAMP0
+	MUL
+	SD	1, SIZ__
+  virtual at 4
+COMP_SIZ = $
+	rd 1 
+FST_1 = $
+	rd 1 
+LST_1 = $
+	rd 1 
+  end virtual
+end namespace
+VAR DEFERS_disp, Q				; variable array : pointeur aux data
+VAR DEFERS__u, Q				; variable array : useinfo pointeur au rec info
+	LA 1, _DEFERS__type.use__info
+	SA	1, DEFERS__u				; array info ptr at __u
+	LD	1, _DEFERS__type.SIZ__
+	LI	8
+	DIV
+	CO_VAR
+	SA	1, DEFERS_disp				; array data ptr at _disp
+
+ hexa_show ' disp ', DEFERS_disp
+ hexa_show 'var elab LAST_DEFER ', $
+VAR LAST_DEFER_disp, D			; variable entiere
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	DUP
+	LD	0, STANDARD._NATURAL.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD._NATURAL.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	SD  1,	STANDARD.TARGET_CODE_L1.IR.LAST_DEFER_disp
+
+ hexa_show ' disp ', LAST_DEFER_disp
+ hexa_show 'var elab CUR_LAZY ', $
+VAR CUR_LAZY_disp, Q			; variable record : pointeur aux data record
+VAR CUR_LAZY__u, Q				; variable record : pointeur aux useinfo
+VAR CUR_LAZY__dat, STANDARD.TARGET_CODE_L1.LEX._SLICE.size
+	LVA	1, CUR_LAZY__dat
+	SA	1, CUR_LAZY_disp			; record fin
+	LVA	1, STANDARD.TARGET_CODE_L1.LEX._SLICE.SIZ__
+	SA	1, CUR_LAZY__u
+	LIVA 1, STANDARD.TARGET_CODE_L1.IR.CUR_LAZY_disp, STANDARD.TARGET_CODE_L1.LEX._SLICE.F
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	SD
+	LIVA 1, STANDARD.TARGET_CODE_L1.IR.CUR_LAZY_disp, STANDARD.TARGET_CODE_L1.LEX._SLICE.L
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	SD
+
+ hexa_show ' disp ', CUR_LAZY_disp
+
+if defined FAULT_L1_
+PRO	FAULT_L1				;---------- PRO FAULT
+ hexa_show 'FAULT_L1 ', $
+PRMS					;    debut parametrage
+	PRM MSG_ofs				; in
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+; CODE & concat _STRING
+VAR	ANON_60_15_L4_G_data, Q
+VAR	ANON_60_15_L4_G_info, Q
+VAR	ANON_60_37_L4_D_data, Q
+VAR	ANON_60_37_L4_D_info, Q
+VAR	ANON_60_15_L4_G_len,  Q
+VAR	ANON_60_37_L4_D_len,  Q
+VAR	ANON_60_15_L4_R_disp, Q
+VAR	ANON_60_15_L4_R__u,   Q
+namespace ANON_60_15_L4_R_info
+  VAR SIZ__, D
+  VAR _COMP_SIZ, D
+  VAR _FST_1, D
+  VAR _LST_1, D
+end namespace
+STR ANON_60_15_L4_G, "TARGET_CODE.IR : "	; constante string="TARGET_CODE.IR : "
+	LCA	ANON_60_15_L4_G.data_ptr
+	DUP
+	LA  ,  0
+	SA  2, ANON_60_15_L4_G_data
+	LA  ,  8
+	SA  2, ANON_60_15_L4_G_info
+	LID 2, ANON_60_15_L4_G_info, _STRING.LST_1
+	LID 2, ANON_60_15_L4_G_info, _STRING.FST_1
+	SUB
+	INC
+	CLAMP0
+	SA  2, ANON_60_15_L4_G_len
+	LA  2,	-MSG_ofs
+	DUP
+	LA  ,  0
+	SA  2, ANON_60_37_L4_D_data
+	LA  ,  8
+	SA  2, ANON_60_37_L4_D_info
+	LID 2, ANON_60_37_L4_D_info, _STRING.LST_1
+	LID 2, ANON_60_37_L4_D_info, _STRING.FST_1
+	SUB
+	INC
+	CLAMP0
+	SA  2, ANON_60_37_L4_D_len
+	LA  2, ANON_60_15_L4_G_len
+	LA  2, ANON_60_37_L4_D_len
+	ADD
+	CO_VAR
+	SA  2, ANON_60_15_L4_R_disp
+	LI	1
+	SD  2, ANON_60_15_L4_R_info._FST_1
+	LA  2, ANON_60_15_L4_G_len
+	LA  2, ANON_60_37_L4_D_len
+	ADD
+	SD  2, ANON_60_15_L4_R_info._LST_1
+	LI	8
+	SD  2, ANON_60_15_L4_R_info._COMP_SIZ
+	LA  2, ANON_60_15_L4_G_len
+	LA  2, ANON_60_37_L4_D_len
+	ADD
+	LI	8
+	MUL
+	SD  2, ANON_60_15_L4_R_info.SIZ__
+	LVA 2, ANON_60_15_L4_R_info.SIZ__
+	SA  2, ANON_60_15_L4_R__u
+	LA  2, ANON_60_15_L4_R_disp
+	LA  2, ANON_60_15_L4_G_len
+	LA  2, ANON_60_15_L4_G_data
+	BLKMOV
+	LA  2, ANON_60_15_L4_R_disp
+	LA  2, ANON_60_15_L4_G_len
+	ADD
+	LA  2, ANON_60_37_L4_D_len
+	LA  2, ANON_60_37_L4_D_data
+	BLKMOV
+	LVA 2, ANON_60_15_L4_R_disp
+	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
+	LCA	STANDARD.TARGET_CODE_L1.IR.IR_FAULT__exc.data_ptr
+	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
+	BRA	STANDARD.exc_raise_
+ret_lbl:
+	UNLINKR 2
+	RTD	prm_siz
+excep:
+endPRO					;---------- end PRO FAULT
+end if
+
+if defined NEW_ELT_L35_
+PRO	NEW_ELT_L35				;---------- PRO NEW_ELT
+ hexa_show 'NEW_ELT_L35 ', $
+PRMS					;    debut parametrage
+	PRM KIND_ofs				; in
+	PRM MNEMO_ofs				; in
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+					; debut if
+	ULD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_ELT_disp
+	LI	01000000
+	CEQ
+	BF	L8
+STR STR_L9, "table des elements pleine (ELT_MAX)"	; constante string="table des elements pleine (ELT_MAX)"
+	LCA	STR_L9.data_ptr
+	CALL	STANDARD.TARGET_CODE_L1.IR. ,FAULT_L1
+	BRA	L7
+L8:
+L7:					; post if
+	ULD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_ELT_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	ADD
+	SD  1,	STANDARD.TARGET_CODE_L1.IR.LAST_ELT_disp
+	LA	 1, STANDARD.TARGET_CODE_L1.IR.ELTS_disp	; array data start address on stack
+	ULD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_ELT_disp
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LVA	, STANDARD.TARGET_CODE_L1.IR._ELT_CELL.KIND
+	ULB  2,	-KIND_ofs
+	SB
+	LA	 1, STANDARD.TARGET_CODE_L1.IR.ELTS_disp	; array data start address on stack
+	ULD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_ELT_disp
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LVA	, STANDARD.TARGET_CODE_L1.IR._ELT_CELL.MNEMO
+	LI	STANDARD.TARGET_CODE_L1.LEX._SLICE.size
+	LA  2,	-MNEMO_ofs
+	LA
+	BLKMOV
+	LA	 1, STANDARD.TARGET_CODE_L1.IR.ELTS_disp	; array data start address on stack
+	ULD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_ELT_disp
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LVA	, STANDARD.TARGET_CODE_L1.IR._ELT_CELL.SCOPE
+	LI	0					; lieu resultat sur pile
+	CALL	STANDARD.TARGET_CODE_L1.SYMBOLS. ,CURRENT_SCOPE_L10
+	SD
+	LA	 1, STANDARD.TARGET_CODE_L1.IR.ELTS_disp	; array data start address on stack
+	ULD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_ELT_disp
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LVA	, STANDARD.TARGET_CODE_L1.IR._ELT_CELL.LAZY
+	LI	STANDARD.TARGET_CODE_L1.LEX._SLICE.size
+	LVA 1,	STANDARD.TARGET_CODE_L1.IR.CUR_LAZY_disp
+	LA
+	BLKMOV
+	LA	 1, STANDARD.TARGET_CODE_L1.IR.ELTS_disp	; array data start address on stack
+	ULD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_ELT_disp
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LVA	, STANDARD.TARGET_CODE_L1.IR._ELT_CELL.FIRST_OP
+	LD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_OP_G_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	ADD
+	SD
+	LA	 1, STANDARD.TARGET_CODE_L1.IR.ELTS_disp	; array data start address on stack
+	ULD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_ELT_disp
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LVA	, STANDARD.TARGET_CODE_L1.IR._ELT_CELL.LAST_OP
+	LD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_OP_G_disp
+	SD
+ret_lbl:
+	UNLINKR 2
+	RTD	prm_siz
+excep:
+endPRO					;---------- end PRO NEW_ELT
+end if
+
+if defined ADD_OP_L36_
+PRO	ADD_OP_L36				;---------- PRO ADD_OP
+ hexa_show 'ADD_OP_L36 ', $
+PRMS					;    debut parametrage
+	PRM TAG_ofs				; in
+	PRM TXT_ofs				; in
+	PRM IVAL_ofs				; in
+	PRM FVAL_ofs				; in
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+					; debut if
+	ULD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_ELT_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	CEQ
+	BF	L13
+STR STR_L14, "ADD_OP sans element"		; constante string="ADD_OP sans element"
+	LCA	STR_L14.data_ptr
+	CALL	STANDARD.TARGET_CODE_L1.IR. ,FAULT_L1
+	BRA	L12
+L13:
+L12:					; post if
+					; debut if
+	LD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_OP_G_disp
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	05000000
+	CEQ
+	BF	L16
+STR STR_L17, "table des operandes pleine (OPS_MAX)"	; constante string="table des operandes pleine (OPS_MAX)"
+	LCA	STR_L17.data_ptr
+	CALL	STANDARD.TARGET_CODE_L1.IR. ,FAULT_L1
+	BRA	L15
+L16:
+L15:					; post if
+	LD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_OP_G_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	ADD
+	DUP
+	LD	0, STANDARD._NATURAL.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD._NATURAL.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	SD  1,	STANDARD.TARGET_CODE_L1.IR.LAST_OP_G_disp
+	LA	 1, STANDARD.TARGET_CODE_L1.IR.OPS_disp	; array data start address on stack
+	LD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_OP_G_disp
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LVA	, STANDARD.TARGET_CODE_L1.IR._OP_CELL.TAG
+	ULB  2,	-TAG_ofs
+	SB
+	LA	 1, STANDARD.TARGET_CODE_L1.IR.OPS_disp	; array data start address on stack
+	LD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_OP_G_disp
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LVA	, STANDARD.TARGET_CODE_L1.IR._OP_CELL.TXT
+	LI	STANDARD.TARGET_CODE_L1.LEX._SLICE.size
+	LA  2,	-TXT_ofs
+	LA
+	BLKMOV
+	LA	 1, STANDARD.TARGET_CODE_L1.IR.OPS_disp	; array data start address on stack
+	LD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_OP_G_disp
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LVA	, STANDARD.TARGET_CODE_L1.IR._OP_CELL.IVAL
+	LQ  2,	-IVAL_ofs
+	SQ
+	LA	 1, STANDARD.TARGET_CODE_L1.IR.OPS_disp	; array data start address on stack
+	LD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_OP_G_disp
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LVA	, STANDARD.TARGET_CODE_L1.IR._OP_CELL.FVAL
+	LQ  2,	-FVAL_ofs
+	SQ
+	LA	 1, STANDARD.TARGET_CODE_L1.IR.ELTS_disp	; array data start address on stack
+	ULD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_ELT_disp
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LVA	, STANDARD.TARGET_CODE_L1.IR._ELT_CELL.LAST_OP
+	LD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_OP_G_disp
+	SD
+ret_lbl:
+	UNLINKR 2
+	RTD	prm_siz
+excep:
+endPRO					;---------- end PRO ADD_OP
+end if
+
+if defined SET_LAZY_L37_
+PRO	SET_LAZY_L37				;---------- PRO SET_LAZY
+ hexa_show 'SET_LAZY_L37 ', $
+PRMS					;    debut parametrage
+	PRM GUARD_ofs				; in
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	LVA 1,	STANDARD.TARGET_CODE_L1.IR.CUR_LAZY_disp
+	LA
+	LI	STANDARD.TARGET_CODE_L1.LEX._SLICE.size
+	LA  2,	-GUARD_ofs
+	LA
+	BLKMOV
+ret_lbl:
+	UNLINKR 2
+	RTD	prm_siz
+excep:
+endPRO					;---------- end PRO SET_LAZY
+end if
+
+if defined CLEAR_LAZY_L38_
+PRO	CLEAR_LAZY_L38				;---------- PRO CLEAR_LAZY
+ hexa_show 'CLEAR_LAZY_L38 ', $
+ELB 2					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	LIVA 	1, STANDARD.TARGET_CODE_L1.IR.CUR_LAZY_disp, STANDARD.TARGET_CODE_L1.LEX._SLICE.F
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	SD
+	LIVA 	1, STANDARD.TARGET_CODE_L1.IR.CUR_LAZY_disp, STANDARD.TARGET_CODE_L1.LEX._SLICE.L
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	SD
+ret_lbl:
+	UNLINKR 2
+	RTD
+excep:
+endPRO					;---------- end PRO CLEAR_LAZY
+end if
+
+if defined DEFER_LAST_L39_
+PRO	DEFER_LAST_L39				;---------- PRO DEFER_LAST
+ hexa_show 'DEFER_LAST_L39 ', $
+ELB 2					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+					; debut if
+	ULD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_ELT_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	CEQ
+	BF	L25
+STR STR_L26, "DEFER_LAST sans element"		; constante string="DEFER_LAST sans element"
+	LCA	STR_L26.data_ptr
+	CALL	STANDARD.TARGET_CODE_L1.IR. ,FAULT_L1
+	BRA	L24
+L25:
+L24:					; post if
+					; debut if
+	LD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_DEFER_disp
+; CODE_NUMERIC_LITERAL DN_UNIVERSAL_INTEGER
+	LI	00200000
+	CEQ
+	BF	L28
+STR STR_L29, "table des differes pleine (DEFER_MAX)"	; constante string="table des differes pleine (DEFER_MAX)"
+	LCA	STR_L29.data_ptr
+	CALL	STANDARD.TARGET_CODE_L1.IR. ,FAULT_L1
+	BRA	L27
+L28:
+L27:					; post if
+	LD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_DEFER_disp
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	ADD
+	DUP
+	LD	0, STANDARD._NATURAL.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD._NATURAL.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	SD  1,	STANDARD.TARGET_CODE_L1.IR.LAST_DEFER_disp
+	LA	 1, STANDARD.TARGET_CODE_L1.IR.DEFERS_disp	; array data start address on stack
+	LD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_DEFER_disp
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.DEFERS__u, STANDARD.TARGET_CODE_L1.IR._DEFERS__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.DEFERS__u, STANDARD.TARGET_CODE_L1.IR._DEFERS__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	1, STANDARD.TARGET_CODE_L1.IR.DEFERS__u, STANDARD.TARGET_CODE_L1.IR._DEFERS__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	1, STANDARD.TARGET_CODE_L1.IR.DEFERS__u, STANDARD.TARGET_CODE_L1.IR._DEFERS__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	ULD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_ELT_disp
+	SD
+ret_lbl:
+	UNLINKR 2
+	RTD
+excep:
+endPRO					;---------- end PRO DEFER_LAST
+end if
+
+if defined ELT_COUNT_L40_
+PRO	ELT_COUNT_L40				;---------- PRO ELT_COUNT
+ hexa_show 'ELT_COUNT_L40 ', $
+PRMS					;    debut parametrage
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+; CODE_RETURN : EXPR TYPE = DN_INTEGER  VUE COMPLETE = DN_INTEGER
+	ULD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_ELT_disp
+; CODE CONVERSION SOURCE DN_INTEGER TARGET DN_INTEGER
+	DUP
+	LD	0, STANDARD._NATURAL.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD._NATURAL.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD._NATURAL.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD._NATURAL.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	SQ  2,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINKR 2
+	RTD
+excep:
+endPRO					;---------- end PRO ELT_COUNT
+end if
+
+if defined DEFER_COUNT_L41_
+PRO	DEFER_COUNT_L41				;---------- PRO DEFER_COUNT
+ hexa_show 'DEFER_COUNT_L41 ', $
+PRMS					;    debut parametrage
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+; CODE_RETURN : EXPR TYPE = DN_INTEGER  VUE COMPLETE = DN_INTEGER
+	LD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_DEFER_disp
+	DUP
+	LD	0, STANDARD._NATURAL.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD._NATURAL.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	SQ  2,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINKR 2
+	RTD
+excep:
+endPRO					;---------- end PRO DEFER_COUNT
+end if
+
+if defined DEFER_AT_L42_
+PRO	DEFER_AT_L42				;---------- PRO DEFER_AT
+ hexa_show 'DEFER_AT_L42 ', $
+PRMS					;    debut parametrage
+	PRM I_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+					; debut if
+	LD  2,	-I_ofs
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	CEQ
+	LD  2,	-I_ofs
+	LD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_DEFER_disp
+	CGT
+	OU
+	BF	L37
+STR STR_L38, "DEFER_AT hors table"		; constante string="DEFER_AT hors table"
+	LCA	STR_L38.data_ptr
+	CALL	STANDARD.TARGET_CODE_L1.IR. ,FAULT_L1
+	BRA	L36
+L37:
+L36:					; post if
+; CODE_RETURN : EXPR TYPE = DN_INTEGER  VUE COMPLETE = DN_INTEGER
+	LA	 1, STANDARD.TARGET_CODE_L1.IR.DEFERS_disp	; array data start address on stack
+	LD  2,	-I_ofs
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.DEFERS__u, STANDARD.TARGET_CODE_L1.IR._DEFERS__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.DEFERS__u, STANDARD.TARGET_CODE_L1.IR._DEFERS__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	1, STANDARD.TARGET_CODE_L1.IR.DEFERS__u, STANDARD.TARGET_CODE_L1.IR._DEFERS__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	1, STANDARD.TARGET_CODE_L1.IR.DEFERS__u, STANDARD.TARGET_CODE_L1.IR._DEFERS__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	ULD
+	SQ  2,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINKR 2
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO DEFER_AT
+end if
+
+if defined CHECK_ELT_L39_
+PRO	CHECK_ELT_L39				;---------- PRO CHECK_ELT
+ hexa_show 'CHECK_ELT_L39 ', $
+PRMS					;    debut parametrage
+	PRM E_ofs				; in
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+					; debut if
+	ULD  2,	-E_ofs
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	CEQ
+	ULD  2,	-E_ofs
+	ULD 1,	STANDARD.TARGET_CODE_L1.IR.LAST_ELT_disp
+	CGT
+	OU
+	BF	L43
+STR STR_L44, "element hors table"		; constante string="element hors table"
+	LCA	STR_L44.data_ptr
+	CALL	STANDARD.TARGET_CODE_L1.IR. ,FAULT_L1
+	BRA	L42
+L43:
+L42:					; post if
+ret_lbl:
+	UNLINKR 2
+	RTD	prm_siz
+excep:
+endPRO					;---------- end PRO CHECK_ELT
+end if
+
+if defined KIND_OF_L43_
+PRO	KIND_OF_L43				;---------- PRO KIND_OF
+ hexa_show 'KIND_OF_L43 ', $
+PRMS					;    debut parametrage
+	PRM E_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	ULD  2,	-E_ofs
+	CALL	STANDARD.TARGET_CODE_L1.IR. ,CHECK_ELT_L39
+; CODE_RETURN : EXPR TYPE = DN_ENUMERATION  VUE COMPLETE = DN_ENUMERATION
+	LA	 1, STANDARD.TARGET_CODE_L1.IR.ELTS_disp	; array data start address on stack
+	ULD  2,	-E_ofs
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	ULB	, STANDARD.TARGET_CODE_L1.IR._ELT_CELL.KIND
+	SQ  2,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINKR 2
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO KIND_OF
+end if
+
+if defined MNEMO_OF_L44_
+PRO	MNEMO_OF_L44				;---------- PRO MNEMO_OF
+ hexa_show 'MNEMO_OF_L44 ', $
+PRMS					;    debut parametrage
+	PRM E_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	ULD  2,	-E_ofs
+	CALL	STANDARD.TARGET_CODE_L1.IR. ,CHECK_ELT_L39
+; CODE_RETURN : EXPR TYPE = DN_RECORD  VUE COMPLETE = DN_RECORD
+	LA   2,	-result__ofs
+	LA  ,  0
+	LI	STANDARD.TARGET_CODE_L1.LEX._SLICE.size
+	LA	 1, STANDARD.TARGET_CODE_L1.IR.ELTS_disp	; array data start address on stack
+	ULD  2,	-E_ofs
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LVA	, STANDARD.TARGET_CODE_L1.IR._ELT_CELL.MNEMO
+	BLKMOV
+	BRA ret_lbl
+ret_lbl:
+	UNLINKR 2
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO MNEMO_OF
+end if
+
+if defined SCOPE_OF_L45_
+PRO	SCOPE_OF_L45				;---------- PRO SCOPE_OF
+ hexa_show 'SCOPE_OF_L45 ', $
+PRMS					;    debut parametrage
+	PRM E_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	ULD  2,	-E_ofs
+	CALL	STANDARD.TARGET_CODE_L1.IR. ,CHECK_ELT_L39
+; CODE_RETURN : EXPR TYPE = DN_INTEGER  VUE COMPLETE = DN_INTEGER
+	LA	 1, STANDARD.TARGET_CODE_L1.IR.ELTS_disp	; array data start address on stack
+	ULD  2,	-E_ofs
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	ULD	, STANDARD.TARGET_CODE_L1.IR._ELT_CELL.SCOPE
+	SQ  2,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINKR 2
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO SCOPE_OF
+end if
+
+if defined LAZY_OF_L46_
+PRO	LAZY_OF_L46				;---------- PRO LAZY_OF
+ hexa_show 'LAZY_OF_L46 ', $
+PRMS					;    debut parametrage
+	PRM E_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	ULD  2,	-E_ofs
+	CALL	STANDARD.TARGET_CODE_L1.IR. ,CHECK_ELT_L39
+; CODE_RETURN : EXPR TYPE = DN_RECORD  VUE COMPLETE = DN_RECORD
+	LA   2,	-result__ofs
+	LA  ,  0
+	LI	STANDARD.TARGET_CODE_L1.LEX._SLICE.size
+	LA	 1, STANDARD.TARGET_CODE_L1.IR.ELTS_disp	; array data start address on stack
+	ULD  2,	-E_ofs
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LVA	, STANDARD.TARGET_CODE_L1.IR._ELT_CELL.LAZY
+	BLKMOV
+	BRA ret_lbl
+ret_lbl:
+	UNLINKR 2
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO LAZY_OF
+end if
+
+if defined N_OPS_L47_
+PRO	N_OPS_L47				;---------- PRO N_OPS
+ hexa_show 'N_OPS_L47 ', $
+PRMS					;    debut parametrage
+	PRM E_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+	ULD  2,	-E_ofs
+	CALL	STANDARD.TARGET_CODE_L1.IR. ,CHECK_ELT_L39
+					; debut if
+	LA	 1, STANDARD.TARGET_CODE_L1.IR.ELTS_disp	; array data start address on stack
+	ULD  2,	-E_ofs
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LD	, STANDARD.TARGET_CODE_L1.IR._ELT_CELL.LAST_OP
+	LA	 1, STANDARD.TARGET_CODE_L1.IR.ELTS_disp	; array data start address on stack
+	ULD  2,	-E_ofs
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LD	, STANDARD.TARGET_CODE_L1.IR._ELT_CELL.FIRST_OP
+	CLT
+	BF	L56
+; CODE_RETURN : EXPR TYPE = DN_INTEGER  VUE COMPLETE = DN_INTEGER
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	DUP
+	LD	0, STANDARD._NATURAL.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD._NATURAL.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	SQ  2,	-result__ofs
+	BRA ret_lbl
+	BRA	L55
+L56:
+L55:					; post if
+; CODE_RETURN : EXPR TYPE = DN_INTEGER  VUE COMPLETE = DN_INTEGER
+	LA	 1, STANDARD.TARGET_CODE_L1.IR.ELTS_disp	; array data start address on stack
+	ULD  2,	-E_ofs
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LD	, STANDARD.TARGET_CODE_L1.IR._ELT_CELL.LAST_OP
+	LA	 1, STANDARD.TARGET_CODE_L1.IR.ELTS_disp	; array data start address on stack
+	ULD  2,	-E_ofs
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LD	, STANDARD.TARGET_CODE_L1.IR._ELT_CELL.FIRST_OP
+	SUB
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	ADD
+	DUP
+	LD	0, STANDARD._NATURAL.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD._NATURAL.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	SQ  2,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINKR 2
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO N_OPS
+end if
+
+if defined OP_INDEX_L57_
+PRO	OP_INDEX_L57				;---------- PRO OP_INDEX
+ hexa_show 'OP_INDEX_L57 ', $
+PRMS					;    debut parametrage
+	PRM E_ofs				; in
+	PRM I_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+					; debut if
+	LD  2,	-I_ofs
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	CEQ
+	LD  2,	-I_ofs
+	LI	0					; lieu resultat sur pile
+	ULD  2,	-E_ofs
+	CALL	STANDARD.TARGET_CODE_L1.IR. ,N_OPS_L47
+	CGT
+	OU
+	BF	L61
+STR STR_L62, "operande hors bornes"		; constante string="operande hors bornes"
+	LCA	STR_L62.data_ptr
+	CALL	STANDARD.TARGET_CODE_L1.IR. ,FAULT_L1
+	BRA	L60
+L61:
+L60:					; post if
+; CODE_RETURN : EXPR TYPE = DN_INTEGER  VUE COMPLETE = DN_INTEGER
+	LA	 1, STANDARD.TARGET_CODE_L1.IR.ELTS_disp	; array data start address on stack
+	ULD  2,	-E_ofs
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	1, STANDARD.TARGET_CODE_L1.IR.ELTS__u, STANDARD.TARGET_CODE_L1.IR._ELTS__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LD	, STANDARD.TARGET_CODE_L1.IR._ELT_CELL.FIRST_OP
+	LD  2,	-I_ofs
+	ADD
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	1
+	SUB
+	DUP
+	LD	0, STANDARD._NATURAL.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD._NATURAL.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	SQ  2,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINKR 2
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO OP_INDEX
+end if
+
+if defined OP_TAG_L48_
+PRO	OP_TAG_L48				;---------- PRO OP_TAG
+ hexa_show 'OP_TAG_L48 ', $
+PRMS					;    debut parametrage
+	PRM E_ofs				; in
+	PRM I_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+; CODE_RETURN : EXPR TYPE = DN_ENUMERATION  VUE COMPLETE = DN_ENUMERATION
+	LA	 1, STANDARD.TARGET_CODE_L1.IR.OPS_disp	; array data start address on stack
+	LI	0					; lieu resultat sur pile
+	LD  2,	-I_ofs
+	DUP
+	LD	0, STANDARD._NATURAL.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD._NATURAL.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	ULD  2,	-E_ofs
+	CALL	STANDARD.TARGET_CODE_L1.IR. ,OP_INDEX_L57
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	ULB	, STANDARD.TARGET_CODE_L1.IR._OP_CELL.TAG
+	SQ  2,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINKR 2
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO OP_TAG
+end if
+
+if defined OP_TXT_L49_
+PRO	OP_TXT_L49				;---------- PRO OP_TXT
+ hexa_show 'OP_TXT_L49 ', $
+PRMS					;    debut parametrage
+	PRM E_ofs				; in
+	PRM I_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+; CODE_RETURN : EXPR TYPE = DN_RECORD  VUE COMPLETE = DN_RECORD
+	LA   2,	-result__ofs
+	LA  ,  0
+	LI	STANDARD.TARGET_CODE_L1.LEX._SLICE.size
+	LA	 1, STANDARD.TARGET_CODE_L1.IR.OPS_disp	; array data start address on stack
+	LI	0					; lieu resultat sur pile
+	LD  2,	-I_ofs
+	DUP
+	LD	0, STANDARD._NATURAL.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD._NATURAL.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	ULD  2,	-E_ofs
+	CALL	STANDARD.TARGET_CODE_L1.IR. ,OP_INDEX_L57
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LVA	, STANDARD.TARGET_CODE_L1.IR._OP_CELL.TXT
+	BLKMOV
+	BRA ret_lbl
+ret_lbl:
+	UNLINKR 2
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO OP_TXT
+end if
+
+if defined OP_INT_L50_
+PRO	OP_INT_L50				;---------- PRO OP_INT
+ hexa_show 'OP_INT_L50 ', $
+PRMS					;    debut parametrage
+	PRM E_ofs				; in
+	PRM I_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+; CODE_RETURN : EXPR TYPE = DN_INTEGER  VUE COMPLETE = DN_INTEGER
+	LA	 1, STANDARD.TARGET_CODE_L1.IR.OPS_disp	; array data start address on stack
+	LI	0					; lieu resultat sur pile
+	LD  2,	-I_ofs
+	DUP
+	LD	0, STANDARD._NATURAL.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD._NATURAL.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	ULD  2,	-E_ofs
+	CALL	STANDARD.TARGET_CODE_L1.IR. ,OP_INDEX_L57
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LQ	, STANDARD.TARGET_CODE_L1.IR._OP_CELL.IVAL
+	SQ  2,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINKR 2
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO OP_INT
+end if
+
+if defined OP_FLT_L51_
+PRO	OP_FLT_L51				;---------- PRO OP_FLT
+ hexa_show 'OP_FLT_L51 ', $
+PRMS					;    debut parametrage
+	PRM E_ofs				; in
+	PRM I_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+; CODE_RETURN : EXPR TYPE = DN_FLOAT  VUE COMPLETE = DN_FLOAT
+	LA	 1, STANDARD.TARGET_CODE_L1.IR.OPS_disp	; array data start address on stack
+	LI	0					; lieu resultat sur pile
+	LD  2,	-I_ofs
+	DUP
+	LD	0, STANDARD._NATURAL.FST
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LD	0, STANDARD._NATURAL.LST
+	CGT
+	BT	STANDARD.ce_raise_
+	ULD  2,	-E_ofs
+	CALL	STANDARD.TARGET_CODE_L1.IR. ,OP_INDEX_L57
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.FST_1
+	CLT
+	BT	STANDARD.ce_raise_
+	DUP
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.LST_1
+	CGT
+	BT	STANDARD.ce_raise_
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.FST_1	; (index - FST_1) * SIZ_1
+	SUB
+	LID	1, STANDARD.TARGET_CODE_L1.IR.OPS__u, STANDARD.TARGET_CODE_L1.IR._OPS__type.COMP_SIZ
+	LI	8
+	DIV
+	MUL
+	ADD					; add offset to start address
+	LQ	, STANDARD.TARGET_CODE_L1.IR._OP_CELL.FVAL
+	SQ  2,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINKR 2
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO OP_FLT
+end if
+begin:					;---------- package BDY INSTRUCTIONS
+end namespace 				;---------- end package BDY IR
+

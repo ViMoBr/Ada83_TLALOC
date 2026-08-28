@@ -85,7 +85,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_VARIABLE_ID
@@ -174,7 +174,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_CONSTANT_ID
@@ -248,7 +248,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_NUMBER_ID
@@ -327,7 +327,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_COMPONENT_ID
@@ -411,7 +411,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_DISCRIMINANT_ID
@@ -490,7 +490,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_IN_ID
@@ -569,7 +569,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_IN_OUT_ID
@@ -648,7 +648,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_OUT_ID
@@ -727,7 +727,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_ENUMERATION_ID
@@ -806,7 +806,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_CHARACTER_ID
@@ -875,7 +875,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_ITERATION_ID
@@ -949,7 +949,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_TYPE_ID
@@ -1018,7 +1018,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_SUBTYPE_ID
@@ -1087,7 +1087,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_PRIVATE_TYPE_ID
@@ -1156,7 +1156,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_L_PRIVATE_TYPE_ID
@@ -1269,7 +1269,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_PROCEDURE_ID
@@ -1382,7 +1382,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_FUNCTION_ID
@@ -1500,7 +1500,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_OPERATOR_ID
@@ -1598,7 +1598,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_PACKAGE_ID
@@ -1687,7 +1687,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_GENERIC_ID
@@ -1766,7 +1766,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_TASK_BODY_ID
@@ -1835,7 +1835,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_LABEL_ID
@@ -1904,7 +1904,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_BLOCK_LOOP_ID
@@ -1978,7 +1978,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_ENTRY_ID
@@ -2047,7 +2047,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_EXCEPTION_ID
@@ -2111,7 +2111,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_ATTRIBUTE_ID
@@ -2180,7 +2180,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_PRAGMA_ID
@@ -2244,7 +2244,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_ARGUMENT_ID
@@ -2308,7 +2308,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_BLTN_OPERATOR_ID
@@ -2367,7 +2367,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_BLOCK_MASTER
@@ -2436,7 +2436,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_DSCRMT_DECL
@@ -2510,7 +2510,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_IN
@@ -2579,7 +2579,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_OUT
@@ -2648,7 +2648,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_IN_OUT
@@ -2717,7 +2717,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_CONSTANT_DECL
@@ -2786,7 +2786,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_VARIABLE_DECL
@@ -2850,7 +2850,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_NUMBER_DECL
@@ -2909,7 +2909,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_EXCEPTION_DECL
@@ -2973,7 +2973,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_DEFERRED_CONSTANT_DECL
@@ -3042,7 +3042,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_TYPE_DECL
@@ -3106,7 +3106,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_SUBTYPE_DECL
@@ -3170,7 +3170,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_TASK_DECL
@@ -3239,7 +3239,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_GENERIC_DECL
@@ -3308,7 +3308,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_SUBPROG_ENTRY_DECL
@@ -3377,7 +3377,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_PACKAGE_DECL
@@ -3446,7 +3446,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_RENAMES_OBJ_DECL
@@ -3510,7 +3510,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_RENAMES_EXC_DECL
@@ -3564,7 +3564,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_NULL_COMP_DECL
@@ -3628,7 +3628,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_LENGTH_ENUM_REP
@@ -3692,7 +3692,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_ADDRESS
@@ -3761,7 +3761,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_RECORD_REP
@@ -3820,7 +3820,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_USE
@@ -3884,7 +3884,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_PRAGMA
@@ -3953,7 +3953,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_SUBPROGRAM_BODY
@@ -4017,7 +4017,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_PACKAGE_BODY
@@ -4081,7 +4081,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_TASK_BODY
@@ -4145,7 +4145,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_SUBUNIT
@@ -4204,7 +4204,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_ENUMERATION_DEF
@@ -4268,7 +4268,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_SUBTYPE_INDICATION
@@ -4327,7 +4327,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_INTEGER_DEF
@@ -4386,7 +4386,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_FLOAT_DEF
@@ -4445,7 +4445,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_FIXED_DEF
@@ -4509,7 +4509,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_CONSTRAINED_ARRAY_DEF
@@ -4573,7 +4573,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_UNCONSTRAINED_ARRAY_DEF
@@ -4632,7 +4632,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_ACCESS_DEF
@@ -4695,7 +4695,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_DERIVED_DEF
@@ -4754,7 +4754,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_RECORD_DEF
@@ -4808,7 +4808,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_PRIVATE_DEF
@@ -4862,7 +4862,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_L_PRIVATE_DEF
@@ -4916,7 +4916,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_FORMAL_DSCRT_DEF
@@ -4970,7 +4970,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_FORMAL_INTEGER_DEF
@@ -5024,7 +5024,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_FORMAL_FIXED_DEF
@@ -5078,7 +5078,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_FORMAL_FLOAT_DEF
@@ -5136,7 +5136,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_ALTERNATIVE_S
@@ -5194,7 +5194,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_ARGUMENT_ID_S
@@ -5252,7 +5252,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_CHOICE_S
@@ -5310,7 +5310,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_COMP_REP_S
@@ -5368,7 +5368,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_COMPLTN_UNIT_S
@@ -5426,7 +5426,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_CONTEXT_ELEM_S
@@ -5484,7 +5484,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_DECL_S
@@ -5542,7 +5542,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_DSCRMT_DECL_S
@@ -5600,7 +5600,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_GENERAL_ASSOC_S
@@ -5658,7 +5658,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_DISCRETE_RANGE_S
@@ -5716,7 +5716,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_ENUM_LITERAL_S
@@ -5774,7 +5774,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_EXP_S
@@ -5832,7 +5832,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_ITEM_S
@@ -5890,7 +5890,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_INDEX_S
@@ -5948,7 +5948,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_NAME_S
@@ -6006,7 +6006,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_PARAM_S
@@ -6064,7 +6064,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_PRAGMA_S
@@ -6122,7 +6122,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_SCALAR_S
@@ -6180,7 +6180,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_SOURCE_NAME_S
@@ -6238,7 +6238,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_STM_S
@@ -6296,7 +6296,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_TEST_CLAUSE_ELEM_S
@@ -6354,7 +6354,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_USE_PRAGMA_S
@@ -6412,7 +6412,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_VARIANT_S
@@ -6481,7 +6481,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_LABELED
@@ -6535,7 +6535,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_NULL_STM
@@ -6594,7 +6594,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_ABORT
@@ -6653,7 +6653,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_RETURN
@@ -6712,7 +6712,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_DELAY
@@ -6776,7 +6776,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_ASSIGN
@@ -6845,7 +6845,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_EXIT
@@ -6909,7 +6909,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_CODE
@@ -6973,7 +6973,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_CASE
@@ -7032,7 +7032,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_GOTO
@@ -7091,7 +7091,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_RAISE
@@ -7160,7 +7160,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_ENTRY_CALL
@@ -7229,7 +7229,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_PROCEDURE_CALL
@@ -7298,7 +7298,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_ACCEPT
@@ -7367,7 +7367,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_LOOP
@@ -7431,7 +7431,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_BLOCK
@@ -7495,7 +7495,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_COND_ENTRY
@@ -7559,7 +7559,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_TIMED_ENTRY
@@ -7623,7 +7623,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_IF
@@ -7687,7 +7687,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_SELECTIVE_WAIT
@@ -7741,7 +7741,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_TERMINATE
@@ -7800,7 +7800,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_STM_PRAGMA
@@ -7864,7 +7864,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_NAMED
@@ -7928,7 +7928,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_ASSOC
@@ -8002,7 +8002,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_USED_CHAR
@@ -8076,7 +8076,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_USED_OBJECT_ID
@@ -8140,7 +8140,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_USED_OP
@@ -8204,7 +8204,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_USED_NAME_ID
@@ -8283,7 +8283,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_ATTRIBUTE
@@ -8357,7 +8357,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_SELECTED
@@ -8441,7 +8441,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_FUNCTION_CALL
@@ -8510,7 +8510,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_INDEXED
@@ -8579,7 +8579,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_SLICE
@@ -8643,7 +8643,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_ALL
@@ -8722,7 +8722,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_SHORT_CIRCUIT
@@ -8791,7 +8791,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_NUMERIC_LITERAL
@@ -8855,7 +8855,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_NULL_ACCESS
@@ -8934,7 +8934,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_RANGE_MEMBERSHIP
@@ -9013,7 +9013,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_TYPE_MEMBERSHIP
@@ -9087,7 +9087,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_CONVERSION
@@ -9161,7 +9161,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_QUALIFIED
@@ -9230,7 +9230,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_PARENTHESIZED
@@ -9304,7 +9304,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_AGGREGATE
@@ -9373,7 +9373,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_STRING_LITERAL
@@ -9437,7 +9437,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_QUALIFIED_ALLOCATOR
@@ -9506,7 +9506,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_SUBTYPE_ALLOCATOR
@@ -9575,7 +9575,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_RANGE
@@ -9649,7 +9649,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_RANGE_ATTRIBUTE
@@ -9708,7 +9708,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_DISCRETE_SUBTYPE
@@ -9777,7 +9777,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_FLOAT_CONSTRAINT
@@ -9846,7 +9846,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_FIXED_CONSTRAINT
@@ -9905,7 +9905,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_INDEX_CONSTRAINT
@@ -9964,7 +9964,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_DSCRMT_CONSTRAINT
@@ -10023,7 +10023,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_CHOICE_EXP
@@ -10082,7 +10082,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_CHOICE_RANGE
@@ -10136,7 +10136,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_CHOICE_OTHERS
@@ -10195,7 +10195,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_PROCEDURE_SPEC
@@ -10259,7 +10259,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_FUNCTION_SPEC
@@ -10323,7 +10323,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_ENTRY
@@ -10388,7 +10388,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_PACKAGE_SPEC
@@ -10447,7 +10447,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_RENAMES_UNIT
@@ -10516,7 +10516,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_INSTANTIATION
@@ -10575,7 +10575,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_NAME_DEFAULT
@@ -10629,7 +10629,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_BOX_DEFAULT
@@ -10683,7 +10683,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_NO_DEFAULT
@@ -10752,7 +10752,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_BLOCK_BODY
@@ -10806,7 +10806,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_STUB
@@ -10865,7 +10865,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_IMPLICIT_NOT_EQ
@@ -10924,7 +10924,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_DERIVED_SUBPROG
@@ -10988,7 +10988,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_COND_CLAUSE
@@ -11052,7 +11052,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_SELECT_ALTERNATIVE
@@ -11111,7 +11111,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_SELECT_ALT_PRAGMA
@@ -11165,7 +11165,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_IN_OP
@@ -11219,7 +11219,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_NOT_IN
@@ -11273,7 +11273,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_AND_THEN
@@ -11327,7 +11327,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_OR_ELSE
@@ -11391,7 +11391,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_FOR
@@ -11455,7 +11455,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_REVERSE
@@ -11514,7 +11514,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_WHILE
@@ -11578,7 +11578,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_ALTERNATIVE
@@ -11637,7 +11637,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_ALTERNATIVE_PRAGMA
@@ -11706,7 +11706,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_COMP_REP
@@ -11765,7 +11765,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_COMP_REP_PRAGMA
@@ -11824,7 +11824,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_CONTEXT_PRAGMA
@@ -11888,7 +11888,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_WITH
@@ -11952,7 +11952,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_VARIANT
@@ -12011,7 +12011,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_VARIANT_PRAGMA
@@ -12075,7 +12075,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_ALIGNMENT
@@ -12139,7 +12139,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_VARIANT_PART
@@ -12208,7 +12208,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_COMP_LIST
@@ -12267,7 +12267,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_COMPILATION
@@ -12355,7 +12355,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_COMPILATION_UNIT
@@ -12419,7 +12419,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_INDEX
@@ -12522,7 +12522,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_TASK_SPEC
@@ -12610,7 +12610,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_ENUMERATION
@@ -12693,7 +12693,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_INTEGER
@@ -12781,7 +12781,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_FLOAT
@@ -12874,7 +12874,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_FIXED
@@ -12972,7 +12972,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_ARRAY
@@ -13080,7 +13080,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_RECORD
@@ -13183,7 +13183,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_ACCESS
@@ -13271,7 +13271,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_CONSTRAINED_ARRAY
@@ -13370,7 +13370,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_CONSTRAINED_RECORD
@@ -13449,7 +13449,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_CONSTRAINED_ACCESS
@@ -13523,7 +13523,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_PRIVATE
@@ -13597,7 +13597,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_L_PRIVATE
@@ -13661,7 +13661,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_INCOMPLETE
@@ -13715,7 +13715,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_UNIVERSAL_INTEGER
@@ -13769,7 +13769,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_UNIVERSAL_FIXED
@@ -13823,7 +13823,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_UNIVERSAL_REAL

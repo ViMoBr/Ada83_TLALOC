@@ -116,7 +116,7 @@ begin:
 	LB	 1, -MODE_ofs
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.DIRECT_IO. ,CREATE_L1
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO CREATE
 end if
@@ -138,7 +138,7 @@ begin:
 	LB	 1, -MODE_ofs
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.DIRECT_IO. ,OPEN_L2
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO OPEN
 end if
@@ -154,7 +154,7 @@ begin:
 	LVA	 0, GFP_disp
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.DIRECT_IO. ,CLOSE_L3
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO CLOSE
 end if
@@ -170,7 +170,7 @@ begin:
 	LVA	 0, GFP_disp
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.DIRECT_IO. ,DELETE_L4
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO DELETE
 end if
@@ -188,7 +188,7 @@ begin:
 	LB	 1, -MODE_ofs
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.DIRECT_IO. ,RESET_L5
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO RESET
 end if
@@ -204,7 +204,7 @@ begin:
 	LVA	 0, GFP_disp
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.DIRECT_IO. ,RESET_L6
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO RESET
 end if
@@ -223,7 +223,7 @@ begin:
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.DIRECT_IO. ,MODE_L7
 	SB	 1, -result__ofs			; retour resultat
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz-8
 endPRO					;---------- end PRO MODE
 end if
@@ -278,7 +278,7 @@ begin:
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.DIRECT_IO. ,IS_OPEN_L10
 	SB	 1, -result__ofs			; retour resultat
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz-8
 endPRO					;---------- end PRO IS_OPEN
 end if
@@ -298,7 +298,7 @@ begin:
 	LA 	 1, -ITEM_ofs
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.DIRECT_IO. ,READ_L11
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO READ
 end if
@@ -316,7 +316,7 @@ begin:
 	LA 	 1, -ITEM_ofs
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.DIRECT_IO. ,READ_L12
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO READ
 end if
@@ -336,7 +336,7 @@ begin:
 	LA 	 1, -ITEM_ofs
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.DIRECT_IO. ,WRITE_L13
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO WRITE
 end if
@@ -354,7 +354,7 @@ begin:
 	LA 	 1, -ITEM_ofs
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.DIRECT_IO. ,WRITE_L14
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO WRITE
 end if
@@ -372,7 +372,7 @@ begin:
 	LD	 1, -TO_ofs
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.DIRECT_IO. ,SET_INDEX_L15
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO SET_INDEX
 end if
@@ -391,7 +391,7 @@ begin:
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.DIRECT_IO. ,INDEX_L16
 	SD	 1, -result__ofs			; retour resultat
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz-8
 endPRO					;---------- end PRO INDEX
 end if
@@ -410,7 +410,7 @@ begin:
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.DIRECT_IO. ,SIZE_L17
 	SD	 1, -result__ofs			; retour resultat
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz-8
 endPRO					;---------- end PRO SIZE
 end if
@@ -429,7 +429,7 @@ begin:
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.DIRECT_IO. ,END_OF_FILE_L18
 	SB	 1, -result__ofs			; retour resultat
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz-8
 endPRO					;---------- end PRO END_OF_FILE
 end if
@@ -776,7 +776,7 @@ L27:
 	BT	STANDARD.ce_raise_
 	SD  0,	STANDARD.IDL.PAGE_MAN.RPG_ALLOC_disp
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO INIT_PAGE_MAN
@@ -991,7 +991,7 @@ STR ANON_55_95_L37_D, ")"			; constante string=")"
 L34:
 L29:
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO CREATE_PAGE_MANAGER
@@ -1355,7 +1355,7 @@ STR ANON_78_80_L51_D, ")"			; constante string=")"
 L45:
 L40:
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO OPEN_PAGE_MANAGER
@@ -1961,7 +1961,7 @@ L67:					; post if
 	LI	1
 	SB
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO INDIQUE_RECUPERABLE
@@ -2390,7 +2390,7 @@ L72:					; post if
 	LI	0
 	SB
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO WRITE_PAGE
@@ -2951,7 +2951,7 @@ L92:					; post if
 	LI	0
 	SIW	1, 	STANDARD.IDL.PAGE_MAN.FREE_PAGE_L79.VP_disp, 0
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO FREE_PAGE
@@ -4185,7 +4185,7 @@ L117:					; post if
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO ASSIGN_PAGE
@@ -4928,7 +4928,7 @@ L134:					; post if
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO READ_PAGE
@@ -4962,7 +4962,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LI	 128
 	SW
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO NEW_BLOCK
@@ -5747,9 +5747,9 @@ L158:					; post if
 	UNLINK 3
 	UNLINK 2
 	BRA ret_lbl
-	UNLINK 3
+	UNLINKR 3
 endPRO
-	UNLINK 2
+	UNLINKR 2
 endPRO
 	BRA	L144
 L145:
@@ -5849,7 +5849,7 @@ L170:
 	BRA	L168
 L169:
 L168:					; post if
-	UNLINK 2
+	UNLINKR 2
 endPRO
 namespace	BLOCK__2
 ELB 2					;    BODY ELAB
@@ -5980,7 +5980,7 @@ L175:
 	BRA	STANDARD.exc_raise_
 L173:
 L172:
-	UNLINK 2
+	UNLINKR 2
 endPRO
 namespace	ASSIGNE_PAGE_REELLE
 ELB 2					;    BODY ELAB
@@ -6124,7 +6124,7 @@ L180:
 	LVA	, STANDARD.IDL.PAGE_MAN._RPG_DATA.CHANGED
 	LI	1
 	SB
-	UNLINK 2
+	UNLINKR 2
 endPRO
 	LA	 0, STANDARD.IDL.PAGE_MAN.AREA_disp		; array data start address on stack
 	ULD  1,	-AR_ofs
@@ -6155,7 +6155,7 @@ endPRO
 	DROP
 L144:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO ALLOC_PAGE
@@ -6307,7 +6307,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BRA	L185
 L186:
 L185:					; post if
-	UNLINK 2
+	UNLINKR 2
 endPRO
 VAR	IL188_disp, D				; compteur boucle LOOP__5
 ; CODE_NUMERIC_LITERAL DN_INTEGER
@@ -6353,7 +6353,7 @@ L189:					; post if
 	LVA  0,	STANDARD.IDL.PAGE_MAN.WORK_FILE_disp
 	CALL	STANDARD.IDL.PAGE_MAN.PAGE_IO. ,CLOSE_L3
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO CLOSE_PAGE_MANAGER
@@ -6368,7 +6368,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA  0,	STANDARD.IDL.PAGE_MAN.WORK_FILE_disp
 	CALL	STANDARD.IDL.PAGE_MAN.PAGE_IO. ,DELETE_L4
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO DELETE_PAGE_MANAGER

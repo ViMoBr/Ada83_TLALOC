@@ -554,7 +554,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SYS_FILE_CREATE
 	SD 2 ,	-16
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO CREATE_SYSTEM_CALL
@@ -679,7 +679,7 @@ L9:
 	BRA	STANDARD.exc_raise_
 L8:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO CREATE
@@ -714,7 +714,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SYS_FILE_OPEN
 	SD 2 ,	-16
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO OPEN_SYSTEM_CALL
@@ -839,7 +839,7 @@ L18:
 	BRA	STANDARD.exc_raise_
 L17:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO OPEN
@@ -871,7 +871,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SYS_FILE_CLOSE
 	SD 2 ,	-16
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO CLOSE_SYSTEM_CALL
@@ -906,7 +906,7 @@ L24:					; post if
 	LI	0
 	SB
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO CLOSE
@@ -938,7 +938,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SYS_FILE_DELETE
 	SD 2 ,	-16
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO DELETE_SYSTEM_CALL
@@ -1002,7 +1002,7 @@ end namespace
 	LI	0
 	SB
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO DELETE
@@ -1036,7 +1036,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SYS_FILE_SET_POS
 	SD 2 ,	-16
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO SEEK_SYSTEM_CALL
@@ -1088,7 +1088,7 @@ L38:					; post if
 	LI	0
 	SB
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO RESET
@@ -1120,7 +1120,7 @@ L42:					; post if
 	LA  1,	-FILE_ofs
 	CALL	STANDARD.TEXT_IO. ,RESET_L5
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO RESET
@@ -1154,7 +1154,7 @@ L46:					; post if
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MODE
@@ -1303,7 +1303,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_OPEN
@@ -1349,7 +1349,7 @@ L65:					; post if
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SET_INPUT
@@ -1395,7 +1395,7 @@ L71:					; post if
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SET_OUTPUT
@@ -1419,7 +1419,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO STANDARD_INPUT
@@ -1443,7 +1443,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO STANDARD_OUTPUT
@@ -1467,7 +1467,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO CURRENT_INPUT
@@ -1491,7 +1491,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO CURRENT_OUTPUT
@@ -1526,7 +1526,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SYS_FILE_READ
 	SD 2 ,	-16
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO READ_SYSTEM_CALL
@@ -1579,7 +1579,7 @@ L91:
 L90:					; post if
 L87:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO GET_RAW
@@ -1614,7 +1614,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SYS_FILE_WRITE
 	SD 2 ,	-16
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO WRITE_SYSTEM_CALL
@@ -1640,7 +1640,7 @@ L99:
 	SD  1,	ERR_CODE_disp
 L98:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PUT_RAW
@@ -1676,7 +1676,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SYS_FILE_WRITE
 	SD 2 ,	-24
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO WRITE_SYSTEM_CALL
@@ -1737,7 +1737,7 @@ L109:
 	SD  1,	ERR_CODE_disp
 L108:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PUT_RAW
@@ -1782,7 +1782,7 @@ L114:					; post if
 	ULD  1,	-TO_ofs
 	SD
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SET_LINE_LENGTH
@@ -1801,7 +1801,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA 0,	STANDARD.TEXT_IO.DEFAULT_OUTPUT_disp
 	CALL	STANDARD.TEXT_IO. ,SET_LINE_LENGTH_L17
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SET_LINE_LENGTH
@@ -1846,7 +1846,7 @@ L122:					; post if
 	ULD  1,	-TO_ofs
 	SD
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SET_PAGE_LENGTH
@@ -1865,7 +1865,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA 0,	STANDARD.TEXT_IO.DEFAULT_OUTPUT_disp
 	CALL	STANDARD.TEXT_IO. ,SET_PAGE_LENGTH_L19
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SET_PAGE_LENGTH
@@ -1911,7 +1911,7 @@ L130:					; post if
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO LINE_LENGTH
@@ -1933,7 +1933,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO LINE_LENGTH
@@ -1979,7 +1979,7 @@ L138:					; post if
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO PAGE_LENGTH
@@ -2001,7 +2001,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO PAGE_LENGTH
@@ -2116,7 +2116,7 @@ L152:
 L151:
 L150:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO NEW_LINE
@@ -2143,7 +2143,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA 0,	STANDARD.TEXT_IO.DEFAULT_OUTPUT_disp
 	CALL	STANDARD.TEXT_IO. ,NEW_LINE_L25
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO NEW_LINE
@@ -2273,7 +2273,7 @@ L168:					; post if
 	BRA	LOOP__2
 L163:					; post loop LOOP__2
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SKIP_LINE
@@ -2300,7 +2300,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA 0,	STANDARD.TEXT_IO.DEFAULT_INPUT_disp
 	CALL	STANDARD.TEXT_IO. ,SKIP_LINE_L27
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SKIP_LINE
@@ -2428,7 +2428,7 @@ L187:
 	BRA ret_lbl
 L185:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO END_OF_LINE
@@ -2450,7 +2450,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO END_OF_LINE
@@ -2528,7 +2528,7 @@ L197:					; post if
 	LI	1
 	SD
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO NEW_PAGE
@@ -2543,7 +2543,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA 0,	STANDARD.TEXT_IO.DEFAULT_OUTPUT_disp
 	CALL	STANDARD.TEXT_IO. ,NEW_PAGE_L31
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO NEW_PAGE
@@ -2652,7 +2652,7 @@ L209:					; post loop LOOP__3
 	LI	1
 	SD
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SKIP_PAGE
@@ -2667,7 +2667,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA 0,	STANDARD.TEXT_IO.DEFAULT_INPUT_disp
 	CALL	STANDARD.TEXT_IO. ,SKIP_PAGE_L33
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO SKIP_PAGE
@@ -2765,7 +2765,7 @@ L228:
 	BRA ret_lbl
 L227:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO END_OF_PAGE
@@ -2787,7 +2787,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO END_OF_PAGE
@@ -2880,7 +2880,7 @@ L242:
 	BRA ret_lbl
 L241:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO END_OF_FILE
@@ -2902,7 +2902,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO END_OF_FILE
@@ -3005,7 +3005,7 @@ L250:
 	SD
 L249:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SET_COL
@@ -3032,7 +3032,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA 0,	STANDARD.TEXT_IO.DEFAULT_OUTPUT_disp
 	CALL	STANDARD.TEXT_IO. ,SET_COL_L39
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SET_COL
@@ -3126,7 +3126,7 @@ L264:
 	SD
 L263:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SET_LINE
@@ -3153,7 +3153,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA 0,	STANDARD.TEXT_IO.DEFAULT_OUTPUT_disp
 	CALL	STANDARD.TEXT_IO. ,SET_LINE_L41
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SET_LINE
@@ -3195,7 +3195,7 @@ L275:					; post if
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO COL
@@ -3225,7 +3225,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO COL
@@ -3267,7 +3267,7 @@ L281:					; post if
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO LINE
@@ -3297,7 +3297,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO LINE
@@ -3339,7 +3339,7 @@ L287:					; post if
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO PAGE
@@ -3369,7 +3369,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO PAGE
@@ -3502,7 +3502,7 @@ L302:					; post if
 	BRA	LOOP__6
 L297:					; post loop LOOP__6
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO GET
@@ -3521,7 +3521,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA 0,	STANDARD.TEXT_IO.DEFAULT_INPUT_disp
 	CALL	STANDARD.TEXT_IO. ,GET_L49
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO GET
@@ -3604,7 +3604,7 @@ L314:					; post if
 	ADD
 	SD
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PUT
@@ -3623,7 +3623,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA 0,	STANDARD.TEXT_IO.DEFAULT_OUTPUT_disp
 	CALL	STANDARD.TEXT_IO. ,PUT_L51
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PUT
@@ -3692,7 +3692,7 @@ LOOP__7:					; corps boucle LOOP__7
 	BRA	LOOP__7				; iteration suivante LOOP__7
 L321:					; post loop LOOP__7
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO GET
@@ -3711,7 +3711,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA 0,	STANDARD.TEXT_IO.DEFAULT_INPUT_disp
 	CALL	STANDARD.TEXT_IO. ,GET_L53
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO GET
@@ -3834,7 +3834,7 @@ L332:
 	SD
 L331:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PUT
@@ -3853,7 +3853,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA 0,	STANDARD.TEXT_IO.DEFAULT_OUTPUT_disp
 	CALL	STANDARD.TEXT_IO. ,PUT_L55
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PUT
@@ -4088,7 +4088,7 @@ L357:					; post if
 L347:					; post loop LOOP__9
 L343:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO GET_LINE
@@ -4109,7 +4109,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA 0,	STANDARD.TEXT_IO.DEFAULT_INPUT_disp
 	CALL	STANDARD.TEXT_IO. ,GET_LINE_L57
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO GET_LINE
@@ -4141,7 +4141,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LA  1,	-FILE_ofs
 	CALL	STANDARD.TEXT_IO. ,NEW_LINE_L25
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PUT_LINE
@@ -4172,7 +4172,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA 0,	STANDARD.TEXT_IO.DEFAULT_OUTPUT_disp
 	CALL	STANDARD.TEXT_IO. ,NEW_LINE_L25
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PUT_LINE
@@ -4911,7 +4911,7 @@ L449:
 	CALLI
 L448:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO GET
@@ -4942,7 +4942,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA 0,	STANDARD.TEXT_IO.DEFAULT_INPUT_disp
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L61
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO GET
@@ -5392,7 +5392,7 @@ end namespace
 L477:
 L476:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PUT
@@ -5436,7 +5436,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA 0,	STANDARD.TEXT_IO.DEFAULT_OUTPUT_disp
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L63
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PUT
@@ -6048,7 +6048,7 @@ L523:
 	CALLI
 L522:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO GET
@@ -6844,7 +6844,7 @@ L550:					; post loop LOOP__18
 L553:
 L552:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PUT
@@ -7756,7 +7756,7 @@ L653:
 	CALLI
 L652:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO GET
@@ -7787,7 +7787,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA 0,	STANDARD.TEXT_IO.DEFAULT_INPUT_disp
 	CALL	STANDARD.TEXT_IO.FLOAT_IO. ,GET_L67
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO GET
@@ -7998,7 +7998,7 @@ L666:					; post loop LOOP__30
 	CALLI
 	FADD
 	SQ  1,	STANDARD.TEXT_IO.FLOAT_IO.PUT_L69.VAL_disp
-	UNLINK 2
+	UNLINKR 2
 endPRO
 					; debut if
 	LVA 1,	VAL_disp
@@ -8395,13 +8395,13 @@ L694:					; post loop LOOP__31
 	LVA 2,	EXP_STR_disp
 	LA  1,	-FILE_ofs
 	CALL	STANDARD.TEXT_IO. ,PUT_L55
-	UNLINK 2
+	UNLINKR 2
 endPRO
 	BRA	L688
 L689:
 L688:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PUT
@@ -8455,7 +8455,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA 0,	STANDARD.TEXT_IO.DEFAULT_OUTPUT_disp
 	CALL	STANDARD.TEXT_IO.FLOAT_IO. ,PUT_L69
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PUT
@@ -9021,7 +9021,7 @@ LOOP__32:
 	BRA	LOOP__32
 L707:					; post loop LOOP__32
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO NORMALIZE
@@ -9085,7 +9085,7 @@ LOOP__33:					; corps boucle LOOP__33
 	BRA	LOOP__33				; iteration suivante LOOP__33
 L712:					; post loop LOOP__33
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SET_ZERO
@@ -9133,7 +9133,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LI	1
 	SD
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SET_ONE
@@ -9320,7 +9320,7 @@ L725:					; post if
 	BRA	LOOP__35
 L724:					; post loop LOOP__35
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO MUL_SMALL
@@ -9527,7 +9527,7 @@ L735:					; post if
 	BRA	LOOP__36
 L734:					; post loop LOOP__36
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO ADD_SMALL
@@ -9549,7 +9549,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LA  2,	-X_ofs
 	CALL	STANDARD.TEXT_IO.FLOAT_IO.GET_L71. ,MUL_SMALL_L717
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO MUL_2
@@ -9679,7 +9679,7 @@ L747:					; post loop LOOP__37
 	LA  2,	-X_ofs
 	CALL	STANDARD.TEXT_IO.FLOAT_IO.GET_L71. ,NORMALIZE_L704
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO DIV_2
@@ -9721,7 +9721,7 @@ LOOP__38:					; corps boucle LOOP__38
 	BRA	LOOP__38				; iteration suivante LOOP__38
 L752:					; post loop LOOP__38
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SHIFT_LEFT
@@ -9901,7 +9901,7 @@ L760:					; post loop LOOP__39
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO COMPARE
@@ -10050,7 +10050,7 @@ L768:					; post loop LOOP__40
 	LA  2,	-A_ofs
 	CALL	STANDARD.TEXT_IO.FLOAT_IO.GET_L71. ,NORMALIZE_L704
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SUBTRACT
@@ -10151,7 +10151,7 @@ L779:					; post loop LOOP__41
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO BIT_LENGTH
@@ -10381,7 +10381,7 @@ L789:					; post loop LOOP__42
 	LQ 2,	Q_I_disp
 	SIQ  2,	-Q_ofs
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO DIV_MOD
@@ -10603,7 +10603,7 @@ L802:					; post if
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO COMPARE_TO_POWER_OF_TWO
@@ -11049,7 +11049,7 @@ L817:					; post if
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO ROUNDED_QUOTIENT
@@ -11104,7 +11104,7 @@ L826:					; post loop LOOP__43
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO POW2_LONG
@@ -11236,7 +11236,7 @@ L833:					; post if
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_FLOAT
@@ -12425,7 +12425,7 @@ L939:
 L937:
 L841:
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO GET
@@ -12670,7 +12670,7 @@ L943:					; post if
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO FLOOR_POS
@@ -12729,7 +12729,7 @@ L949:
 	SB  1,	STANDARD.TEXT_IO.FLOAT_IO.PUT_L72.BAD_LAYOUT_disp
 L948:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO EMIT
@@ -12821,7 +12821,7 @@ L955:					; post if
 	BRA	LOOP__51				; iteration suivante LOOP__51
 L953:					; post loop LOOP__51
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO EMIT_FRACTION
@@ -13438,7 +13438,7 @@ LOOP__63:					; corps boucle LOOP__63
 	SD  2,	KL999_disp
 	BRA	LOOP__63				; iteration suivante LOOP__63
 L998:					; post loop LOOP__63
-	UNLINK 2
+	UNLINKR 2
 endPRO
 L964:					; post if
 					; debut if
@@ -13607,7 +13607,7 @@ LOOP__60:					; corps boucle LOOP__60
 L1005:					; post loop LOOP__60
 L1000:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PUT
@@ -14491,7 +14491,7 @@ L1106:
 	CALLI
 L1105:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO GET
@@ -14522,7 +14522,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA 0,	STANDARD.TEXT_IO.DEFAULT_INPUT_disp
 	CALL	STANDARD.TEXT_IO.FIXED_IO. ,GET_L73
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO GET
@@ -14728,7 +14728,7 @@ L1112:					; post if
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO FLOOR_POS
@@ -14820,7 +14820,7 @@ L1119:					; post if
 	BRA	LOOP__69				; iteration suivante LOOP__69
 L1117:					; post loop LOOP__69
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO EMIT_FRACTION
@@ -15175,7 +15175,7 @@ LOOP__79:					; corps boucle LOOP__79
 	SD  2,	KL1144_disp
 	BRA	LOOP__79				; iteration suivante LOOP__79
 L1143:					; post loop LOOP__79
-	UNLINK 2
+	UNLINKR 2
 endPRO
 	LI	46
 	LA  1,	-FILE_ofs
@@ -15626,11 +15626,11 @@ LOOP__82:					; corps boucle LOOP__82
 	SD  2,	KL1175_disp
 	BRA	LOOP__82				; iteration suivante LOOP__82
 L1174:					; post loop LOOP__82
-	UNLINK 2
+	UNLINKR 2
 endPRO
 L1126:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PUT
@@ -15684,7 +15684,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA 0,	STANDARD.TEXT_IO.DEFAULT_OUTPUT_disp
 	CALL	STANDARD.TEXT_IO.FIXED_IO. ,PUT_L75
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PUT
@@ -16619,7 +16619,7 @@ L1222:
 	CALLI
 L1221:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO GET
@@ -16873,7 +16873,7 @@ L1226:					; post if
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO FLOOR_POS
@@ -16932,7 +16932,7 @@ L1232:
 	SB  1,	STANDARD.TEXT_IO.FIXED_IO.PUT_L78.BAD_LAYOUT_disp
 L1231:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO EMIT
@@ -17024,7 +17024,7 @@ L1238:					; post if
 	BRA	LOOP__88				; iteration suivante LOOP__88
 L1236:					; post loop LOOP__88
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO EMIT_FRACTION
@@ -17641,7 +17641,7 @@ LOOP__100:				; corps boucle LOOP__100
 	SD  2,	KL1282_disp
 	BRA	LOOP__100				; iteration suivante LOOP__100
 L1281:					; post loop LOOP__100
-	UNLINK 2
+	UNLINKR 2
 endPRO
 L1247:					; post if
 					; debut if
@@ -17810,7 +17810,7 @@ LOOP__97:					; corps boucle LOOP__97
 L1288:					; post loop LOOP__97
 L1283:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PUT
@@ -18085,7 +18085,7 @@ L1308:					; post if
 	ULB 3,	CH_disp
 	LA  1,	-FILE_ofs
 	CALL	STANDARD.TEXT_IO. ,PUT_L51
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L1304
 L1305:
@@ -18180,10 +18180,10 @@ L1300:					; post if
 	SD  2,	I_disp
 	BRA	LOOP__102
 L1299:					; post loop LOOP__102
-	UNLINK 2
+	UNLINKR 2
 endPRO
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PUT
@@ -18219,7 +18219,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA 0,	STANDARD.TEXT_IO.DEFAULT_OUTPUT_disp
 	CALL	STANDARD.TEXT_IO.ENUMERATION_IO. ,PUT_L81
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PUT
@@ -18408,7 +18408,7 @@ L1324:
 	BRA ret_lbl
 L1323:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO UPPER
@@ -18460,7 +18460,7 @@ L1329:
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_SEPARATOR
@@ -18526,7 +18526,7 @@ L1336:
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_IDENT_CHAR
@@ -18551,7 +18551,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LI	1
 	SB
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO UNGET_CHAR
@@ -19079,10 +19079,10 @@ L1374:					; post loop LOOP__109
 	LCA	STANDARD.IO_EXCEPTIONS.DATA_ERROR__exc.data_ptr
 	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
-	UNLINK 2
+	UNLINKR 2
 endPRO
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO GET
@@ -19103,7 +19103,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA 0,	STANDARD.TEXT_IO.DEFAULT_INPUT_disp
 	CALL	STANDARD.TEXT_IO.ENUMERATION_IO. ,GET_L79
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO GET
@@ -19226,7 +19226,7 @@ L1400:
 	BRA ret_lbl
 L1399:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO UPPER
@@ -19257,7 +19257,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO SAME_CHAR
@@ -19669,10 +19669,10 @@ L1427:
 	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 L1426:					; post if
-	UNLINK 2
+	UNLINKR 2
 endPRO
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO GET
@@ -20056,10 +20056,10 @@ L1437:					; post loop LOOP__117
 	LCA	STANDARD.PROGRAM_ERROR__exc.data_ptr
 	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
-	UNLINK 2
+	UNLINKR 2
 endPRO
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PUT

@@ -113,10 +113,10 @@ is					------------
     EMITTED		: BOOLEAN		:= FALSE;
   begin
     if  V >= 0  and then  V <= 16#FFFF#  then
-      DD( 16#D2800000# + V * 32 + RD );								--| movz Rd, #val
+      DD( 16#D2800000# + V * 32 + RD );									--| movz Rd, #val
       return;
     elsif  V < 0  and then  V >= -16#10000#  then
-      DD( 16#92800000# + ( -V - 1 ) * 32 + RD );							--| movn Rd, #(not val)
+      DD( 16#92800000# + ( -V - 1 ) * 32 + RD );								--| movn Rd, #(not val)
       return;
     end if;
     for  IDX in 0 .. 3  loop
@@ -133,19 +133,19 @@ is					------------
       if  NZ <= NF  then										--| vue movz : les chunks nuls sont implicites
         if  C /= 0  then
           if  not EMITTED  then
-            DD( 16#D2800000# + SYMBOLS.VALUE_TYPE( IDX ) * 2097152 + C * 32 + RD );						--| movz Rd, #chunk, lsl #(16*idx)
+            DD( 16#D2800000# + SYMBOLS.VALUE_TYPE( IDX ) * 2097152 + C * 32 + RD );				--| movz Rd, #chunk, lsl #(16*idx)
             EMITTED := TRUE;
           else
-            DD( 16#F2800000# + SYMBOLS.VALUE_TYPE( IDX ) * 2097152 + C * 32 + RD );						--| movk Rd, #chunk, lsl #(16*idx)
+            DD( 16#F2800000# + SYMBOLS.VALUE_TYPE( IDX ) * 2097152 + C * 32 + RD );				--| movk Rd, #chunk, lsl #(16*idx)
           end if;
         end if;
-      else												--| vue movn : les chunks 0xFFFF sont implicites
+      else											--| vue movn : les chunks 0xFFFF sont implicites
         if  C /= 16#FFFF#  then
           if  not EMITTED  then
-            DD( 16#92800000# + SYMBOLS.VALUE_TYPE( IDX ) * 2097152 + ( 16#FFFF# - C ) * 32 + RD );					--| movn Rd, #(not chunk), lsl #(16*idx)
+            DD( 16#92800000# + SYMBOLS.VALUE_TYPE( IDX ) * 2097152 + ( 16#FFFF# - C ) * 32 + RD );			--| movn Rd, #(not chunk), lsl #(16*idx)
             EMITTED := TRUE;
           else
-            DD( 16#F2800000# + SYMBOLS.VALUE_TYPE( IDX ) * 2097152 + C * 32 + RD );						--| movk Rd, #chunk, lsl #(16*idx)
+            DD( 16#F2800000# + SYMBOLS.VALUE_TYPE( IDX ) * 2097152 + C * 32 + RD );				--| movk Rd, #chunk, lsl #(16*idx)
           end if;
         end if;
       end if;
@@ -162,12 +162,11 @@ is					------------
 	------------
 
 			---
-  procedure		E_B		( TARGET :SYMBOLS.VALUE_TYPE )					--| b label : 0x14000000 or ((disp shr 2)
-  is			---										--| and 0x3FFFFFF), disp = cible - $ de
-    DISP			: constant SYMBOLS.VALUE_TYPE							--| l'instruction (codi : lbl - $ + 4)
-			:= TARGET - ( ORG + SYMBOLS.VALUE_TYPE( TOP ) );
-    W			: constant SYMBOLS.VALUE_TYPE
-			:= ( DISP - ( DISP mod 4 ) ) / 4;							--| shr 2 plancher
+  procedure		E_B		( TARGET :SYMBOLS.VALUE_TYPE )				--| b label : 0x14000000 or ((disp shr 2)
+  is			---									--| and 0x3FFFFFF), disp = cible - $ de
+
+    DISP	: constant SYMBOLS.VALUE_TYPE		:= TARGET - ( ORG + SYMBOLS.VALUE_TYPE( TOP ) );			--| l'instruction (codi : lbl - $ + 4)
+    W	: constant SYMBOLS.VALUE_TYPE		:= ( DISP - ( DISP mod 4 ) ) / 4;				--| shr 2 plancher
   begin
     DD( 16#14000000# + ( W mod 2 ** 26 ) );								--| and 0x3FFFFFF : complement a deux 26 bits
 
@@ -202,12 +201,39 @@ is					------------
 	---------
 
 			---------
+  procedure		E_POP_RCX									--| x2
+  is			---------
+  begin
+    DD( 16#F94003A2# );										--| ldr x2, [x29]
+    DD( 16#D10023BD# );										--| sub x29, x29, #8
+  end	E_POP_RCX;
+	---------
+
+			---------
   procedure		E_POP_RDX									--| x3
   is			---------
   begin
     DD( 16#F94003A3# );										--| ldr x3, [x29]
     DD( 16#D10023BD# );
   end	E_POP_RDX;
+	---------
+
+			---------
+  procedure		E_POP_RDI									--| x5
+  is			---------
+  begin
+    DD( 16#F94003A5# );										--| ldr x5, [x29]
+    DD( 16#D10023BD# );
+  end	E_POP_RDI;
+	---------
+
+			---------
+  procedure		E_POP_RSI									--| x4
+  is			---------
+  begin
+    DD( 16#F94003A4# );										--| ldr x4, [x29]
+    DD( 16#D10023BD# );
+  end	E_POP_RSI;
 	---------
 
 
@@ -226,7 +252,7 @@ is					------------
 	-----
 
 			--------
-  procedure		E_RAX_FP	( LVL :SYMBOLS.VALUE_TYPE )					--| str x0, [x28, #8*lvl]
+  procedure		E_RAX_FP	( LVL :SYMBOLS.VALUE_TYPE )						--| str x0, [x28, #8*lvl]
   is			--------
   begin
     DD( 16#F9000380# + LVL * 1024 );
@@ -234,7 +260,7 @@ is					------------
 	--------
 
 			--------
-  procedure		E_FP_RBP	( LVL :SYMBOLS.VALUE_TYPE )					--| ldr x29, [x28, #8*lvl]
+  procedure		E_FP_RBP	( LVL :SYMBOLS.VALUE_TYPE )						--| ldr x29, [x28, #8*lvl]
   is			--------
   begin
     DD( 16#F940039D# + LVL * 1024 );
@@ -293,12 +319,12 @@ is					------------
   is			-----
   begin
     if  D >= 0  and then  D <= 4095 * SCALE  and then  D mod SCALE = 0  then
-      DD( OPS + ( D / SCALE ) * 1024 );								--| [x0, #disp]  imm12 scale
+      DD( OPS + ( D / SCALE ) * 1024 );									--| [x0, #disp]  imm12 scale
     elsif  D >= -256  and then  D <= 255  then
-      DD( OPU + ( D mod 512 ) * 4096 );								--| [x0, #disp]  imm9 signe
+      DD( OPU + ( D mod 512 ) * 4096 );									--| [x0, #disp]  imm9 signe
     else
-      E_QUAD_CONST( 17, D );									--| x17 = disp
-      DD( OPR );										--| [x0, x17]
+      E_QUAD_CONST( 17, D );										--| x17 = disp
+      DD( OPR );											--| [x0, x17]
     end if;
   end	E_MEM;
 	-----
@@ -306,31 +332,31 @@ is					------------
   --|  Les douze acces du codi : (scale, OPS, OPU, OPR). Formes registre =
   --|  opcode codi or (17 shl 16) [or 1] : 0x38606800 -> 16#38716800#, etc.
 
-  procedure		E_FETCH_UB	( D :SYMBOLS.VALUE_TYPE )					--| ldrb w0 (zero-ext.)
+  procedure E_FETCH_UB	( D :SYMBOLS.VALUE_TYPE )							--| ldrb w0 (zero-ext.)
   is begin  E_MEM( D, 1, 16#39400000#, 16#38400000#, 16#38716800# );  end E_FETCH_UB;
-  procedure		E_FETCH_UW	( D :SYMBOLS.VALUE_TYPE )					--| ldrh w0
+  procedure E_FETCH_UW	( D :SYMBOLS.VALUE_TYPE )							--| ldrh w0
   is begin  E_MEM( D, 2, 16#79400000#, 16#78400000#, 16#78716800# );  end E_FETCH_UW;
-  procedure		E_FETCH_UD	( D :SYMBOLS.VALUE_TYPE )					--| ldr w0
+  procedure E_FETCH_UD	( D :SYMBOLS.VALUE_TYPE )							--| ldr w0
   is begin  E_MEM( D, 4, 16#B9400000#, 16#B8400000#, 16#B8716800# );  end E_FETCH_UD;
-  procedure		E_FETCH_B	( D :SYMBOLS.VALUE_TYPE )					--| ldrsb x0
+  procedure E_FETCH_B	( D :SYMBOLS.VALUE_TYPE )							--| ldrsb x0
   is begin  E_MEM( D, 1, 16#39800000#, 16#38800000#, 16#38B16800# );  end E_FETCH_B;
-  procedure		E_FETCH_W	( D :SYMBOLS.VALUE_TYPE )					--| ldrsh x0
+  procedure E_FETCH_W	( D :SYMBOLS.VALUE_TYPE )							--| ldrsh x0
   is begin  E_MEM( D, 2, 16#79800000#, 16#78800000#, 16#78B16800# );  end E_FETCH_W;
-  procedure		E_FETCH_D	( D :SYMBOLS.VALUE_TYPE )					--| ldrsw x0
+  procedure E_FETCH_D	( D :SYMBOLS.VALUE_TYPE )							--| ldrsw x0
   is begin  E_MEM( D, 4, 16#B9800000#, 16#B8800000#, 16#B8B16800# );  end E_FETCH_D;
-  procedure		E_FETCH_Q	( D :SYMBOLS.VALUE_TYPE )					--| ldr x0 (LOAD_QUAD d, 0, 0)
+  procedure E_FETCH_Q	( D :SYMBOLS.VALUE_TYPE )							--| ldr x0 (LOAD_QUAD d, 0, 0)
   is begin  E_MEM( D, 8, 16#F9400000#, 16#F8400000#, 16#F8716800# );  end E_FETCH_Q;
-  procedure		E_STORE_B	( D :SYMBOLS.VALUE_TYPE )					--| strb w1
+  procedure E_STORE_B	( D :SYMBOLS.VALUE_TYPE )							--| strb w1
   is begin  E_MEM( D, 1, 16#39000001#, 16#38000001#, 16#38316801# );  end E_STORE_B;
-  procedure		E_STORE_W	( D :SYMBOLS.VALUE_TYPE )					--| strh w1
+  procedure E_STORE_W	( D :SYMBOLS.VALUE_TYPE )							--| strh w1
   is begin  E_MEM( D, 2, 16#79000001#, 16#78000001#, 16#78316801# );  end E_STORE_W;
-  procedure		E_STORE_D	( D :SYMBOLS.VALUE_TYPE )					--| str w1
+  procedure E_STORE_D	( D :SYMBOLS.VALUE_TYPE )							--| str w1
   is begin  E_MEM( D, 4, 16#B9000001#, 16#B8000001#, 16#B8316801# );  end E_STORE_D;
-  procedure		E_STORE_Q	( D :SYMBOLS.VALUE_TYPE )					--| str x1 (STORE_QUAD d, 0, 1)
+  procedure E_STORE_Q	( D :SYMBOLS.VALUE_TYPE )							--| str x1 (STORE_QUAD d, 0, 1)
   is begin  E_MEM( D, 8, 16#F9000001#, 16#F8000001#, 16#F8316801# );  end E_STORE_Q;
 
 			-------
-  procedure		E_IBASE		( LVL, D :SYMBOLS.VALUE_TYPE )					--| INDIRECT_BASE_IN_RAX
+  procedure		E_IBASE		( LVL, D :SYMBOLS.VALUE_TYPE )				--| INDIRECT_BASE_IN_RAX
   is			-------
   begin
     E_BASE( LVL );
@@ -361,7 +387,7 @@ is					------------
     if  D = 0  then
       null;
     elsif  D >= 0  and then  D <= 4095  then
-      DD( 16#91000000# + D * 1024 );								--| add x0, x0, #disp
+      DD( 16#91000000# + D * 1024 );									--| add x0, x0, #disp
     elsif  D >= -4095  and then  D < 0  then
       DD( 16#D1000000# + ( -D ) * 1024 );								--| sub x0, x0, #(-disp)
     else
@@ -378,8 +404,8 @@ is					------------
     if  V < 0  or else  V > 16#FFFFFFFF#  then
       FAULT( "QUAD_ADDR : adresse hors 32 bits" );							--| assert du codi
     end if;
-    DD( 16#D2800000# + CHUNK( V, 0 ) * 32 + RD );							--| movz Rd, #lo16
-    DD( 16#F2A00000# + CHUNK( V, 1 ) * 32 + RD );							--| movk Rd, #hi16, lsl #16
+    DD( 16#D2800000# + CHUNK( V, 0 ) * 32 + RD );								--| movz Rd, #lo16
+    DD( 16#F2A00000# + CHUNK( V, 1 ) * 32 + RD );								--| movk Rd, #hi16, lsl #16
   end	E_QUAD_ADDR;
 	-----------
 
@@ -404,32 +430,6 @@ is					------------
   end	E_SQ;
 	----
 
-			---------
-  procedure		E_POP_RCX									--| x2
-  is			---------
-  begin
-    DD( 16#F94003A2# );										--| ldr x2, [x29]
-    DD( 16#D10023BD# );										--| sub x29, x29, #8
-  end	E_POP_RCX;
-	---------
-
-			---------
-  procedure		E_POP_RSI									--| x4
-  is			---------
-  begin
-    DD( 16#F94003A4# );										--| ldr x4, [x29]
-    DD( 16#D10023BD# );
-  end	E_POP_RSI;
-	---------
-
-			---------
-  procedure		E_POP_RDI									--| x5
-  is			---------
-  begin
-    DD( 16#F94003A5# );										--| ldr x5, [x29]
-    DD( 16#D10023BD# );
-  end	E_POP_RDI;
-	---------
 
   --|  LINK lvl, alloc (codi) : partage par LINK et ELB (alloc = loc_siz).
   --|  12 (co-pile) + 16 si lvl > 0 + selon alloc8 = 8*((alloc+7)/8) :
@@ -438,8 +438,10 @@ is					------------
 			--------
   function		LINK_LEN	( LVL, ALLOC :SYMBOLS.VALUE_TYPE )	return SYMBOLS.VALUE_TYPE
   is			--------
+
     A8			: constant SYMBOLS.VALUE_TYPE	:= 8 * ( ( ALLOC + 7 ) / 8 );
     N			: SYMBOLS.VALUE_TYPE		:= 12;
+
   begin
     if  LVL > 0  then
       N := N + 16;
@@ -454,8 +456,10 @@ is					------------
       end if;
     end if;
     return  N;
+
   end	LINK_LEN;
 	--------
+
 
 			------
   procedure		E_LINK		( LVL, ALLOC :SYMBOLS.VALUE_TYPE )
@@ -474,17 +478,19 @@ is					------------
       if  A8 <= 4095  then
         DD( 16#910003BD# + A8 * 1024 );									--| add x29, x29, #alloc8
       elsif  A8 <= 16777215  and then  A8 mod 4096 = 0  then
-        DD( 16#914003BD# + ( A8 / 4096 ) * 1024 );								--| add x29, x29, #alloc8, lsl #12
+        DD( 16#914003BD# + ( A8 / 4096 ) * 1024 );							--| add x29, x29, #alloc8, lsl #12
       else
         E_QUAD_CONST( 17, A8 );
         DD( 16#8B1103BD# );										--| add x29, x29, x17
       end if;
     end if;
-    DD( 16#F900037A# );											--| str x26, [x27]
-    DD( 16#AA1B03FA# );											--| mov x26, x27
-    DD( 16#9100237B# );											--| add x27, x27, #8
+    DD( 16#F900037A# );										--| str x26, [x27]
+    DD( 16#AA1B03FA# );										--| mov x26, x27
+    DD( 16#9100237B# );										--| add x27, x27, #8
+
   end	E_LINK;
 	------
+
 
 			---------
   procedure		E_SDIV128									--| SDIV128_64_POS : (x3:x0) / x1, x1 > 0
@@ -519,8 +525,10 @@ is					------------
     DD( 16#CB100000# );										--| sub x0, x0, x16
     DD( 16#CA100063# );										--| eor x3, x3, x16
     DD( 16#CB100063# );										--| sub x3, x3, x16
+
   end	E_SDIV128;
 	---------
+
 
 			-------
   function		SIZE_OF		( E :IR.ELT_ID )		return SYMBOLS.VALUE_TYPE
@@ -535,36 +543,35 @@ is					------------
     if  M = "DROP"  then return  4;
     elsif  M = "DUP"  then return  12;
 
+			---------------------------------------------------
+--			L O A D	C O N S T A N T E S	  I M M E D I A T E S
+
     elsif  M = "LI"  then return  QC_LEN( OPV( E, 1, 0 ) ) + 8;						--| QUAD_CONST (1..4 mots) + PUSH_RAX
-
-    elsif  M = "ADD"  or else  M = "SUB"  or else  M = "MUL"  then return  20;				--| POP_RAX + ldr, op, str
-
-    elsif  M = "BRA"  then return  4;									--| b imm26, taille FIXE
-    elsif  M = "BEGIN_BLOC_DEF"  then return  4;								--| BRA IMAGES.skip (TRAITS.BRA_SIZE)
-
-    elsif  M = "BT"  or else  M = "BF"  then return  16;						--| POP_RAX + cbz/cbnz +8 + b (forme longue)
-
-    elsif  M = "LCA"  then return  16;									--| QUAD_ADDR (8) + PUSH_RAX (8)
-    elsif  M = "LSPA"  then return  16;
     elsif  M = "LIF"  then
       if  IR.N_OPS( E ) < 1  or else  IR.OP_TAG( E, 1 ) /= IR.FLT_OP  then
         FAULT( "LIF : litteral flottant attendu" );
       end if;
       return  QC_LEN( DOUBLE_BITS( IR.OP_FLT( E, 1 ) ) ) + 8;
 
+
+			-------------------------------------------------------------
+--			L O A D	C O N S T A N T  /  V A R I A B L E   A D R E S S E
+
+    elsif  M = "LCA"  then return  16;									--| QUAD_ADDR (8) + PUSH_RAX (8)
+    elsif  M = "LSPA"  then return  16;
+
     elsif  M = "LVA"  then return  S_BASE( OPV( E, 1, -1 ) ) + A_LEN( OPV( E, 2, 0 ) ) + 8;
     elsif  M = "LIVA"  then return  S_BASE( OPV( E, 1, -1 ) ) + M_LEN( OPV( E, 2, 0 ), 8 )
 					+ A_LEN( OPV( E, 3, 0 ) ) + 8;
 
-    elsif  M = "ULB"  or else  M = "LB"  then
-      return  S_BASE( OPV( E, 1, -1 ) ) + M_LEN( OPV( E, 2, 0 ), 1 ) + 8;
-    elsif  M = "ULW"  or else  M = "LW"  then
-      return  S_BASE( OPV( E, 1, -1 ) ) + M_LEN( OPV( E, 2, 0 ), 2 ) + 8;
-    elsif  M = "ULD"  or else  M = "LD"  then
-      return  S_BASE( OPV( E, 1, -1 ) ) + M_LEN( OPV( E, 2, 0 ), 4 ) + 8;
-    elsif  M = "LQ"  or else  M = "LA"  then
-      return  S_BASE( OPV( E, 1, -1 ) ) + M_LEN( OPV( E, 2, 0 ), 8 ) + 8;
 
+				-----------------
+--				L O A D	D A T A		(unsigned/signed)
+
+    elsif  M = "ULB"  or else  M = "LB"  then  return  S_BASE( OPV( E, 1, -1 ) ) + M_LEN( OPV( E, 2, 0 ), 1 ) + 8;
+    elsif  M = "ULW"  or else  M = "LW"  then  return  S_BASE( OPV( E, 1, -1 ) ) + M_LEN( OPV( E, 2, 0 ), 2 ) + 8;
+    elsif  M = "ULD"  or else  M = "LD"  then  return  S_BASE( OPV( E, 1, -1 ) ) + M_LEN( OPV( E, 2, 0 ), 4 ) + 8;
+    elsif  M = "LQ"  or else  M = "LA"  then  return  S_BASE( OPV( E, 1, -1 ) ) + M_LEN( OPV( E, 2, 0 ), 8 ) + 8;
     elsif  M = "ULIB"  or else  M = "LIB"  then
       return  S_BASE( OPV( E, 1, -1 ) ) + M_LEN( OPV( E, 2, 0 ), 8 ) + M_LEN( OPV( E, 3, 0 ), 1 ) + 8;
     elsif  M = "ULIW"  or else  M = "LIW"  then
@@ -574,12 +581,15 @@ is					------------
     elsif  M = "LIQ"  or else  M = "LIA"  then
       return  S_BASE( OPV( E, 1, -1 ) ) + M_LEN( OPV( E, 2, 0 ), 8 ) + M_LEN( OPV( E, 3, 0 ), 8 ) + 8;
 
+
+				-------------------
+--				S T O R E	  D A T A
+
     elsif  M = "SB"  then return  8 + S_BASE( OPV( E, 1, -1 ) ) + M_LEN( OPV( E, 2, 0 ), 1 );
     elsif  M = "SW"  then return  8 + S_BASE( OPV( E, 1, -1 ) ) + M_LEN( OPV( E, 2, 0 ), 2 );
     elsif  M = "SD"  then return  8 + S_BASE( OPV( E, 1, -1 ) ) + M_LEN( OPV( E, 2, 0 ), 4 );
     elsif  M = "SQ"  or else  M = "SA"  then
       return  8 + S_BASE( OPV( E, 1, -1 ) ) + M_LEN( OPV( E, 2, 0 ), 8 );
-
     elsif  M = "SIB"  then
       return  8 + S_BASE( OPV( E, 1, -1 ) ) + M_LEN( OPV( E, 2, 0 ), 8 ) + M_LEN( OPV( E, 3, 0 ), 1 );
     elsif  M = "SIW"  then
@@ -589,16 +599,76 @@ is					------------
     elsif  M = "SIQ"  or else  M = "SIA"  then
       return  8 + S_BASE( OPV( E, 1, -1 ) ) + M_LEN( OPV( E, 2, 0 ), 8 ) + M_LEN( OPV( E, 3, 0 ), 8 );
 
-    elsif  M = "LINK"  then
-      declare
-	LVL		: constant SYMBOLS.VALUE_TYPE := OPV( E, 1, 0 );
-      begin
-	return  LINK_LEN( LVL, OPV( E, 2, 0 ) );
-      end;
-    elsif  M = "ELB"  then										--| LINK lvl, loc_siz (elab deja adresse en P2B)
-      return  LINK_LEN( OPV( E, 1, 0 ), SYMBOLS.VALUE_OF( SYMBOLS.RESOLVE( "loc_siz" ) ) );
 
-    elsif  M = "PRO"  then return  4;									--| BRA post
+		-------------------------------------
+--		O P E R A T I O N S	  L O G I Q U E S
+
+    elsif  M = "ET"  or else  M = "OU"  or else  M = "OUX" or else M = "SHL"  or else  M = "SHR"  then return  20;	--| POP + ldr, op, str
+    elsif  M = "NON"  then return  12;
+
+
+		-----------------------------------------
+--		O P E R A T I O N S	  B I T	F I E L D S
+
+    elsif  M = "UBFX"  or else  M = "SBFX"  then return  44;
+    elsif  M = "BFI"  then return  68;
+
+
+		-------------------------------------------------------------
+--		O P E R A T I O N S	  A R I T H M E T I Q U E   E N T I E R E
+
+    elsif  M = "DEC"  or else  M = "INC"  or else  M = "NEG"  then return  12;
+    elsif  M = "ABS"  then return  16;
+    elsif  M = "CLAMP0"  then return  16;
+    elsif  M = "ADD"  or else  M = "SUB"  or else  M = "MUL"  then return  20;					--| POP_RAX + ldr, op, str
+    elsif  M = "DIV"  then return  28;									--| POP_RBX + POP_RAX + sdiv + PUSH_RAX
+    elsif  M = "REMI"  then return  32;									--| ... sdiv + msub ...
+    elsif  M = "MODI"  then return  48;		--| REMI + ajustement (cbz, eor, tbz, add)
+    elsif  M = "SAR"  then return  20;									--| POP + ldr, op, str
+
+
+	---------------------------------------------------------------------------------------------
+--	O P E R A T I O N S	  A R I T H M E T I Q U E   F L O T T A N T E   ( S S E 2	d o u b l e )
+
+    elsif  M = "FADD"  or else  M = "FSUB"  or else  M = "FMUL"  or else  M = "FDIV"  then return  20;		--| ldr d1, DROP, ldr d0, op, str d0
+    elsif  M = "FNEG"  then return  12;
+    elsif  M = "FABS"  then return  12;
+    elsif  M = "FEXP"  then return  40;									--| POP_RCX + 1.0 par movz lsl 48 + boucle fmul
+
+
+	---------------------------------------------------------
+--	C O N V E R S I O N S   E N T I E R  <->  F L O T T A N T
+
+    elsif  M = "CVTIF"  or else  M = "CVTFI"  or else  M = "CVTFIR"  then return  12;
+
+
+	---------------------------------------------------
+--	C O N V E R S I O N S   E N T I E R  <->  F I X E D
+
+    elsif  M = "CVTIX"  then return  156;								--| 3 POP + smulh + mul + SDIV128_64_POS (29 mots) + PUSH
+    elsif  M = "CVTXI"  then return  192;								--| 3 POP (24) + smulh, mul (8) + SDIV128_64_POS (116) + arrondi (36) + PUSH (8)
+
+
+				-----------------------
+--				C O M P A R A I S O N S
+
+    elsif  M = "CEQ"  then return  24;									--| POP_RBX + ldr, cmp, cset, str
+    elsif  M = "CGT"  or else  M = "CLT"  or else  M = "CLE"  or else  M = "CNE"  or else  M = "CGE"  then
+      return  24;											--| comme CEQ
+
+
+		-------------------------------------------------------------------------
+--		C O M P A R A I S O N S   F L O T T A N T E S   ( S S E 2	d o u b l e )
+
+    elsif  M = "FCEQ"  or else  M = "FCNE"  or else  M = "FCGT"  or else  M = "FCGE"  or else  M = "FCLT"
+	 or else  M = "FCLE"  then return  24;								--| fcmp + cset
+
+
+			-----------------------------------------------------
+--			O P E R A T I O N S	  C O N T R O L E	D E   F L O T
+
+    elsif  M = "BRA"  then return  4;									--| b imm26, taille FIXE
+    elsif  M = "BT"  or else  M = "BF"  then return  16;							--| POP_RAX + cbz/cbnz +8 + b (forme longue)
     elsif  M = "CALL"  then return  16;									--| adr, sub sp, str, b .elab (taille FIXE)
     elsif  M = "CALLI"  then return  24;								--| POP_RAX + adr, sub sp, str, br x0
     elsif  M = "RTD"  then
@@ -615,22 +685,36 @@ is					------------
 	return  QC_LEN( P ) + 16;
       end;
 
-    elsif  M = "NEG"  or else  M = "INC"  or else  M = "DEC"  or else  M = "FNEG"  then return  12;
-    elsif  M = "SHL"  or else  M = "OUX"  then return  20;
-    elsif  M = "CLAMP0"  then return  16;
-    elsif  M = "DIV"  then return  28;									--| POP_RBX + POP_RAX + sdiv + PUSH_RAX
-    elsif  M = "REMI"  then return  32;									--| ... sdiv + msub ...
-    elsif  M = "CVTIX"  then return  156;								--| 3 POP + smulh + mul + SDIV128_64_POS (29 mots) + PUSH
-    elsif  M = "CGT"  or else  M = "CLT"  or else  M = "CLE"  or else  M = "CNE"  or else  M = "CGE"  then
-      return  24;											--| comme CEQ
-    elsif  M = "BLKMOV"  then return  44;								--| 3 POP + 5 mots
+
+			---------------------------------------------------
+--			O P E R A T I O N S	  G E S T I O N   D E   P I L E
+
+    elsif  M = "LINK"  then
+      declare
+	LVL		: constant SYMBOLS.VALUE_TYPE := OPV( E, 1, 0 );
+      begin
+	return  LINK_LEN( LVL, OPV( E, 2, 0 ) );
+      end;
+
+    elsif  M = "UNLINK"  then return  20;								--| FP_IN_RBP + POP_RAX + RAX_IN_FP + ldr x26
+    elsif  M = "UNLINKR"  then return  24;								--| FP_IN_RBP + POP_RAX + RAX_IN_FP + ldr x26 + mox x27,x26
+
+    elsif  M = "PRO"  then return  4;									--| BRA post
+
+    elsif  M = "ELB"  then										--| LINK lvl, loc_siz (elab deja adresse en P2B)
+      return  LINK_LEN( OPV( E, 1, 0 ), SYMBOLS.VALUE_OF( SYMBOLS.RESOLVE( "loc_siz" ) ) );
+
+    elsif  M = "BEGIN_BLOC_DEF"  then return  4;								--| BRA IMAGES.skip (TRAITS.BRA_SIZE)
+
     elsif  M = "CO_VAR"  then return  28;								--| POP_RAX + 5 mots
+
+    elsif  M = "HEAP_ALLOC"  then return  36;
 
     elsif  M = "EXC_MACH"  then
       declare
-	LVL	:constant SYMBOLS.VALUE_TYPE	:= OPV( E, 1, 0 );
-	CTX	:constant SYMBOLS.VALUE_TYPE	:= OPV( E, 2, 0 );
-	N	: SYMBOLS.VALUE_TYPE		:= 8 + QC_LEN( LVL + 1 );					--| FP_IN_RAX + mov x16, sp + QUAD_CONST 16, lvl+1
+	LVL	:constant SYMBOLS.VALUE_TYPE		:= OPV( E, 1, 0 );
+	CTX	:constant SYMBOLS.VALUE_TYPE		:= OPV( E, 2, 0 );
+	N	: SYMBOLS.VALUE_TYPE		:= 8 + QC_LEN( LVL + 1 );				--| FP_IN_RAX + mov x16, sp + QUAD_CONST 16, lvl+1
       begin
 	N := N + M_LEN( CTX + 16, 8 ) + M_LEN( CTX + 24, 8 ) + M_LEN( CTX + 32, 8 )
 	       + M_LEN( CTX + 40, 8 ) + M_LEN( CTX + 48, 8 );
@@ -639,35 +723,18 @@ is					------------
 	end loop;
 	return  N;
       end;
+
     elsif  M = "EXC_RAISE"  then
       return  76 + 2 * M_LEN( OPV( E, 1, 0 ), 8 );							--| 19 acces/mots fixes + boucle (6) ; top lu et ecrit
 
 
-    elsif  M = "ET"  or else  M = "OU"  or else  M = "SHR"  or else  M = "SAR"  then return  20;		--| POP + ldr, op, str
-    elsif  M = "NON"  then return  12;
-    elsif  M = "UBFX"  or else  M = "SBFX"  then return  44;
-    elsif  M = "BFI"  then return  68;
-    elsif  M = "ABS"  then return  16;
-    elsif  M = "MODI"  then return  48;		--| REMI + ajustement (cbz, eor, tbz, add)
-    elsif  M = "FADD"  or else  M = "FSUB"  or else  M = "FMUL"  or else  M = "FDIV"  then return  20;		--| ldr d1, DROP, ldr d0, op, str d0
-    elsif  M = "FABS"  or else  M = "CVTIF"  or else  M = "CVTFI"  or else  M = "CVTFIR"  then return  12;
-    elsif  M = "FEXP"  then return  40;		--| POP_RCX + 1.0 par movz lsl 48 + boucle fmul
-    elsif  M = "FCEQ"  or else  M = "FCNE"  or else  M = "FCGT"  or else  M = "FCGE"  or else  M = "FCLT"  or else  M = "FCLE"  then return  24;		--| fcmp + cset
-    elsif  M = "HEAP_ALLOC"  then return  36;
+		-----------------------------------------------------------------------------
+--		O P E R A T I O N S	  L O G I Q U E S	D E   B L O C   (LRM 4.5.1) -- lot D3
+
+    elsif  M = "BLKAND"  or else  M = "BLKOU"  or else  M = "BLKOUX"  then return  60;				--| 3 POP + cbz + boucle de 8 mots
     elsif  M = "BLKNOT"  then return  44;
+    elsif  M = "BLKMOV"  then return  44;								--| 3 POP + 5 mots
     elsif  M = "BLKCMP"  then return  80;
-    elsif  M = "SYS_CLOCK_GETTIME"  or else  M = "SYS_PUT_CHAR"  then return  24;
-    elsif  M = "SYS_GET_CHAR"  then return  128;		--| termios : ioctl x3 + read
-    elsif  M = "SYS_GET_STR"  then return  60;
-    elsif  M = "SYS_FILE_CREATE"  or else  M = "SYS_FILE_OPEN"  then return  92;		--| POP_RSI + COPY_STRING_APPEND_NUL (56) + openat
-    elsif  M = "SYS_FILE_DELETE"  then return  88;
-    elsif  M = "SYS_FILE_SET_POS"  then return  40;
-    elsif  M = "SYS_FILE_GET_POS"  then return  32;
-    elsif  M = "SYS_FILE_CLOSE"  then return  24;
-    elsif  M = "SYS_FILE_GET_SIZE"  then return  80;
-    elsif  M = "SYS_FILE_WRITE"  or else  M = "SYS_FILE_READ"  then return  48;
-    elsif  M = "CVTXI"  then return  192;		--| 3 POP (24) + smulh, mul (8) + SDIV128_64_POS (116) + arrondi (36) + PUSH (8)
-    elsif  M = "BLKAND"  or else  M = "BLKOU"  or else  M = "BLKOUX"  then return  60;		--| 3 POP + cbz + boucle de 8 mots
     elsif  M = "LEXCMP"  then
       declare
 	SIZC	:constant SYMBOLS.VALUE_TYPE	:= OPV( E, 1, 8 );
@@ -675,15 +742,23 @@ is					------------
 	if  SIZC /= 1  and then  SIZC /= 2  and then  SIZC /= 4  and then  SIZC /= 8  then
 	  FAULT( "LEXCMP : taille de composant non supportee" );						--| err du codi
 	end if;
-	return  124;											--| 4 POP + 21 mots + PUSH, quelle que soit la paire de charges
+	return  124;										--| 4 POP + 21 mots + PUSH, quelle que soit la paire de charges
       end;
 
-    elsif  M = "UNLINK"  then return  20;								--| FP_IN_RBP + POP_RAX + RAX_IN_FP + ldr x26
+				------------------------------
+--				SPECIFIQUE  L I N U X   X86-64
 
-    elsif  M = "CEQ"  then return  24;									--| POP_RBX + ldr, cmp, cset, str
-
+    elsif  M = "SYS_CLOCK_GETTIME"  or else  M = "SYS_PUT_CHAR"  then return  24;
     elsif  M = "SYS_PUT_STR"  then return  44;								--| POP_RSI (8) + 9 mots
-
+    elsif  M = "SYS_GET_CHAR"  then return  128;								--| termios : ioctl x3 + read
+    elsif  M = "SYS_GET_STR"  then return  60;
+    elsif  M = "SYS_FILE_CREATE"  or else  M = "SYS_FILE_OPEN"  then return  92;				--| POP_RSI + COPY_STRING_APPEND_NUL (56) + openat
+    elsif  M = "SYS_FILE_SET_POS"  then return  40;
+    elsif  M = "SYS_FILE_GET_POS"  then return  32;
+    elsif  M = "SYS_FILE_GET_SIZE"  then return  80;
+    elsif  M = "SYS_FILE_WRITE"  or else  M = "SYS_FILE_READ"  then return  48;
+    elsif  M = "SYS_FILE_CLOSE"  then return  24;
+    elsif  M = "SYS_FILE_DELETE"  then return  88;
     elsif  M = "SYS_EXIT"  then
       if  IR.N_OPS( E ) >= 1  and then  IR.OP_TAG( E, 1 ) = IR.INT_OP  and then  IR.OP_INT( E, 1 ) /= 0  then
         return  QC_LEN( IR.OP_INT( E, 1 ) ) + 8;
@@ -863,6 +938,17 @@ is					------------
         DD( 16#F940035A# );										--| ldr x26, [x26]
       end;
 
+    elsif  M = "UNLINKR"  then
+      declare
+        LVL	: constant SYMBOLS.VALUE_TYPE		:= OPV( E, 1, 0 );
+      begin
+        E_FP_RBP( LVL );										--| x29 = FP(lvl)
+        E_POP_RAX;
+        E_RAX_FP( LVL );										--| restaurer le display
+        DD( 16#AA1A03FB# );										--| mox x27, x26
+        DD( 16#F940035A# );										--| ldr x26, [x26]
+      end;
+
 			-------------------
 --			C O M P A R A I S O N
 
@@ -944,7 +1030,7 @@ is					------------
     elsif  M = "FNEG"  then
       DD( 16#FD4003A0# );  DD( 16#1E614000# );  DD( 16#FD0003A0# );						--| ldr d0 ; fneg d0, d0 ; str d0
     elsif  M = "CLAMP0"  then
-      DD( 16#F94003A0# );  DD( 16#F100001F# );  DD( 16#9A9FA000# );  DD( 16#F90003A0# );			--| ldr ; cmp x0, #0 ; csel x0, x0, xzr, ge ; str
+      DD( 16#F94003A0# );  DD( 16#F100001F# );  DD( 16#9A9FA000# );  DD( 16#F90003A0# );				--| ldr ; cmp x0, #0 ; csel x0, x0, xzr, ge ; str
     elsif  M = "SHL"  then
       E_POP_RCX;											--| x2 = positions
       DD( 16#F94003A0# );  DD( 16#9AC22000# );  DD( 16#F90003A0# );						--| ldr ; lslv x0, x0, x2 ; str
@@ -971,7 +1057,7 @@ is					------------
       E_SDIV128;											--| x0 = quotient, x3 = reste
       E_PUSH_RAX;
 
-			-------------------
+			-----------------------
 --			C O M P A R A I S O N S
 
     elsif  M = "CGT"  or else  M = "CLT"  or else  M = "CLE"  or else  M = "CNE"  or else  M = "CGE"  then
@@ -982,11 +1068,11 @@ is					------------
       elsif  M = "CLT"  then  DD( 16#9A9FA7E0# );								--| cset x0, lt
       elsif  M = "CLE"  then  DD( 16#9A9FC7E0# );								--| cset x0, le
       elsif  M = "CNE"  then  DD( 16#9A9F07E0# );								--| cset x0, ne
-      else  DD( 16#9A9FB7E0# );										--| cset x0, ge
+      else  DD( 16#9A9FB7E0# );									--| cset x0, ge
       end if;
       DD( 16#F90003A0# );										--| str x0, [x29]
 
-			-------------------
+			---------
 --			B L O C S
 
     elsif  M = "BLKMOV"  then
@@ -1311,8 +1397,8 @@ is					------------
       DD( 16#39400090# );										--| boucle: ldrb w16, [x4]
       DD( 16#394000B1# );										--| ldrb w17, [x5]
       if  M = "BLKAND"  then  DD( 16#0A100231# );								--| and w17, w17, w16
-      elsif  M = "BLKOU"  then  DD( 16#2A100231# );								--| orr w17, w17, w16
-      else  DD( 16#4A100231# );										--| eor w17, w17, w16
+      elsif  M = "BLKOU"  then  DD( 16#2A100231# );							--| orr w17, w17, w16
+      else  DD( 16#4A100231# );									--| eor w17, w17, w16
       end if;
       DD( 16#390000B1# );										--| strb w17, [x5]
       DD( 16#91000484# );										--| add x4, x4, #1
@@ -1368,18 +1454,18 @@ is					------------
         DD( 16#B4000143# );										--| cbz x3, epuise (+10)
         if  SIZC = 1  then
 	if  SGN = 1  then  DD( 16#398000A0# );  DD( 16#39800081# );						--| ldrsb x0, [x5] ; ldrsb x1, [x4]
-	else  DD( 16#394000A0# );  DD( 16#39400081# );								--| ldrb w0 ; ldrb w1
+	else  DD( 16#394000A0# );  DD( 16#39400081# );							--| ldrb w0 ; ldrb w1
 	end if;
         elsif  SIZC = 2  then
 	if  SGN = 1  then  DD( 16#798000A0# );  DD( 16#79800081# );						--| ldrsh x0 ; ldrsh x1
-	else  DD( 16#794000A0# );  DD( 16#79400081# );								--| ldrh w0 ; ldrh w1
+	else  DD( 16#794000A0# );  DD( 16#79400081# );							--| ldrh w0 ; ldrh w1
 	end if;
         elsif  SIZC = 4  then
 	if  SGN = 1  then  DD( 16#B98000A0# );  DD( 16#B9800081# );						--| ldrsw x0 ; ldrsw x1
-	else  DD( 16#B94000A0# );  DD( 16#B9400081# );								--| ldr w0 ; ldr w1
+	else  DD( 16#B94000A0# );  DD( 16#B9400081# );							--| ldr w0 ; ldr w1
 	end if;
         elsif  SIZC = 8  then
-	DD( 16#F94000A0# );  DD( 16#F9400081# );								--| ldr x0 ; ldr x1
+	DD( 16#F94000A0# );  DD( 16#F9400081# );							--| ldr x0 ; ldr x1
         else
 	FAULT( "LEXCMP : taille de composant non supportee" );
         end if;
@@ -1650,7 +1736,7 @@ is					------------
 
     T0			: constant INTEGER := TOP;
     COPILE_BASE		: constant SYMBOLS.VALUE_TYPE
-			:= ENTRY_PT + 8 * ( ( ASM + 7 ) / 8 );							--| co_pile_start du codi
+			:= ENTRY_PT + 8 * ( ( ASM + 7 ) / 8 );						--| co_pile_start du codi
   begin
     --  tas : mmap anonyme 64 Mo (x8 = 222)
     DD( 16#D2800000# );										--| mov x0, #0
@@ -1671,10 +1757,10 @@ is					------------
     DD( 16#9104039D# );										--| add x29, x28, #256
     DD( 16#F900039D# );										--| str x29, [x28]  FP(0)
     --  co-pile : x27 = ENTRY + 8*((ASM_SIZE+7)/8), quatre mots (taille FIXE)
-    DD( 16#D2800000# + CHUNK( COPILE_BASE, 0 ) * 32 + 27 );						--| movz x27, #imm0
-    DD( 16#F2A00000# + CHUNK( COPILE_BASE, 1 ) * 32 + 27 );						--| movk x27, #imm1, lsl #16
-    DD( 16#F2C00000# + CHUNK( COPILE_BASE, 2 ) * 32 + 27 );						--| movk x27, #imm2, lsl #32
-    DD( 16#F2E00000# + CHUNK( COPILE_BASE, 3 ) * 32 + 27 );						--| movk x27, #imm3, lsl #48
+    DD( 16#D2800000# + CHUNK( COPILE_BASE, 0 ) * 32 + 27 );							--| movz x27, #imm0
+    DD( 16#F2A00000# + CHUNK( COPILE_BASE, 1 ) * 32 + 27 );							--| movk x27, #imm1, lsl #16
+    DD( 16#F2C00000# + CHUNK( COPILE_BASE, 2 ) * 32 + 27 );							--| movk x27, #imm2, lsl #32
+    DD( 16#F2E00000# + CHUNK( COPILE_BASE, 3 ) * 32 + 27 );							--| movk x27, #imm3, lsl #48
     DD( 16#F900037B# );										--| str x27, [x27]  premier frame
     DD( 16#AA1B03FA# );										--| mov x26, x27
     DD( 16#9100237B# );										--| add x27, x27, #8

@@ -1,0 +1,135 @@
+#!/bin/bash
+debutC=$(date +%s)
+
+
+./comp_predef_units
+#--------------------------------------------------
+#	IDL
+#--------------------------------------------------
+./T1 ./ ./idl_tools/diana_node_attr_class_names.ads W
+./T1 ./ ../src/ada_comp/idl.ads W
+./T1 ./ ../src/ada_comp/idl.adb W
+
+./T1 ./ ../src/communs/idl-page_man.adb W
+./T1 ./ ../src/communs/idl-idl_tbl.adb W
+./T1 ./ ../src/communs/idl-idl_man.adb W
+./T1 ./ ../src/communs/idl-print_nod.adb W
+./T1 ./ ../src/pretty/idl-pretty_diana.adb W
+#--------------------------------------------------
+#	PAR_PHASE
+#--------------------------------------------------
+./T1 ./ ../src/par_phase/grmr_tbl.ads W
+./T1 ./ ../src/par_phase/grmr_ops.ads W
+./T1 ./ ../src/par_phase/grmr_ops.adb W
+./T1 ./ ../src/par_phase/lex.ads W
+./T1 ./ ../src/par_phase/lex.adb W
+./T1 ./ ../src/par_phase/idl-par_phase.adb W
+./T1 ./ ../src/par_phase/idl-par_phase-set_dflt.adb W
+#--------------------------------------------------
+#	LIB_PHASE
+#--------------------------------------------------
+./T1 ./ ../src/ada_comp/idl-lib_phase.adb W
+#--------------------------------------------------
+#	SEM_PHASE
+#--------------------------------------------------
+./T1 ./ ../src/sem_phase/idl-sem_phase.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-aggreso.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-att_walk.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-chk_stat.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-def_util.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-def_walk.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-derived.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-eval_num.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-exp_type.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-expreso.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-fix_pre.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-fix_with.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-gen_subs.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-hom_unit.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-instant.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-make_nod.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-newsnam.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-nod_walk.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-pra_walk.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-pre_fcns.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-red_subp.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-rep_clau.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-req_util.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-sem_glob.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-set_util.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-stm_walk.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-uarith.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-univ_ops.adb W
+./T1 ./ ../src/sem_phase/idl-sem_phase-vis_util.adb W
+#--------------------------------------------------
+#	ERR_PHASE
+#--------------------------------------------------
+./T1 ./ ../src/ada_comp/idl-err_phase.adb W
+#--------------------------------------------------
+#	WRITE_LIB
+#--------------------------------------------------
+./T1 ./ ../src/ada_comp/idl-write_lib.adb W
+#--------------------------------------------------
+#	EXPANDER
+#--------------------------------------------------
+./T1 ./ ../src/expander/expander.ads W
+./T1 ./ ../src/expander/expander.adb W
+./T1 ./ ../src/expander/expander-utils.adb W
+./T1 ./ ../src/expander/expander-expressions.adb W
+./T1 ./ ../src/expander/expander-declarations.adb W
+./T1 ./ ../src/expander/expander-declarations-types_decls.adb W
+./T1 ./ ../src/expander/expander-represented_items.adb W
+./T1 ./ ../src/expander/expander-instructions.adb W
+./T1 ./ ../src/expander/expander-structures.adb W
+#--------------------------------------------------
+#	ADA_COMP
+#--------------------------------------------------
+./T1 ./ ../src/ada_comp/ada_comp.ads W
+./T1 ./ ../src/ada_comp/ada_comp.adb W
+
+#./T1 ./ ../src/ada_comp/ada_comp.adb B	ne pas faire cela ADA_COMP.fas a des ajouts manuels
+#	Rappel de ces ajouts :
+#	Sa	0, EXCEPTIONS_TOP_CTX_disp
+# if ~ definite DIRECT_IO
+# include 'DIRECT_IO.FINC'
+# end if
+# if ~ definite GRMR_TBL
+# include 'GRMR_TBL.FINC'
+# end if
+# if ~ definite GRMR_OPS
+# include 'GRMR_OPS.FINC'
+# end if
+# if ~ definite LEX
+# include 'LEX.FINC'
+# end if
+# include 'ADA_COMP.FINC'
+
+
+finC=$(date +%s)
+dureeC=$((finC - debutC))
+
+heuresC=$((dureeC / 3600))
+minutesC=$(((dureeC % 3600) / 60))
+secondesC=$((dureeC % 60))
+
+printf "Durée de compilation : %02dh %02dmin %02dsec\n" "$heuresC" "$minutesC" "$secondesC"
+
+if [ "${1:-}" = "A" ]
+then
+
+cd ./ADA__LIB
+
+debutA=$(date +%s)
+
+./fasmg -v 2 ADA_COMP.fas T2.exe
+
+finA=$(date +%s)
+dureeA=$((finA - debutA))
+
+heuresA=$((dureeA / 3600))
+minutesA=$(((dureeA % 3600) / 60))
+secondesA=$((dureeA % 60))
+
+printf "Durée d assemblage : %02dh %02dmin %02dsec\n" "$heuresA" "$minutesA" "$secondesA"
+fi
+

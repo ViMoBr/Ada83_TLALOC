@@ -182,6 +182,8 @@ is
 
     function  LAST_OF_SELECTED	( NAME_ID :TREE )			return TREE;
 
+    function  EXIT_UNLINK_MNEMONIC	( HEADER :TREE )			return STRING;			--| chantier co-pile (n 163) : "UNLINKR" (rend la co-pile) ou "UNLINK" (garde : resultat tableau)
+
     OPERAND_OVERFLOW		: exception;
 
 

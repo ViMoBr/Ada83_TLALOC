@@ -43,7 +43,7 @@ end namespace
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO STORE_SYM
@@ -201,7 +201,7 @@ VAR	ANON_48_17__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_DEF_FOR_ID
@@ -582,7 +582,7 @@ L15:					; post if
 	BRA	LOOP__1
 L14:					; post loop LOOP__1
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO ADD_BLTN_IDS_TO_TABLE
@@ -961,7 +961,7 @@ L33:
 	BRA	LOOP__2
 L27:					; post loop LOOP__2
 ret_lbl:
-	UNLINK 4
+	UNLINKR 4
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO FIX_WITH_DECL_LIST
@@ -1763,7 +1763,7 @@ L39:
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 4
+	UNLINKR 4
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_DEF_IF_NEEDED
@@ -2056,7 +2056,7 @@ L83:					; post if
 	BRA	LOOP__3
 L77:					; post loop LOOP__3
 ret_lbl:
-	UNLINK 4
+	UNLINKR 4
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REPROCESS_ANCESTOR_USE_CLAUSE
@@ -2092,7 +2092,7 @@ begin:					;---------- BDY INSTRUCTIONS
 L89:
 L88:					; post if
 ret_lbl:
-	UNLINK 4
+	UNLINKR 4
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SET_REGION_LEVEL
@@ -2270,7 +2270,7 @@ L95:					; post loop LOOP__5
 L94:
 L93:					; post if
 ret_lbl:
-	UNLINK 4
+	UNLINKR 4
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO FIX_WITH_COMP_LIST
@@ -2928,7 +2928,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA 4,	FUNCTION_SPEC_disp
 	LA
 	BLKMOV
-	UNLINK 4
+	UNLINKR 4
 endPRO
 	LVA 3,	SOURCE_NAME_LIST_disp
 	LA
@@ -3182,7 +3182,7 @@ VAR	ANON_400_25__dat, STANDARD.IDL._TREE.size
 	LVA 3,	STANDARD.IDL.SEM_PHASE_L11.FIX_WITH.FIX_WITH_CLAUSES_L49.FIX_WITH_ONE_DECL_L23.BASE_TYPE_disp
 	LI  33
 	CALL	STANDARD.IDL. ,D_L16
-	UNLINK 4
+	UNLINKR 4
 endPRO
 	BRA	L139
 L140:
@@ -3314,7 +3314,7 @@ VAR	ANON_418_19__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA	LOOP__12
 L153:					; post loop LOOP__12
-	UNLINK 4
+	UNLINKR 4
 endPRO
 	BRA	L149
 L150:
@@ -4194,7 +4194,7 @@ L168:					; post if
 L102:
 					; fin case
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO FIX_WITH_ONE_DECL
@@ -4475,7 +4475,7 @@ VAR	ANON_531_32__dat, STANDARD.IDL._TREE.size
 	LI  217
 	CALL	STANDARD.IDL. ,MAKE_L15
 	CALL	STANDARD.IDL.SEM_PHASE_L11.PRE_FCNS. ,GEN_PREDEFINED_OPERATORS_L441
-	UNLINK 3
+	UNLINKR 3
 endPRO
 LOOP__14:
 	LI	0					; lieu resultat sur pile
@@ -4834,7 +4834,7 @@ VAR	ANON_568_54__dat, STANDARD.IDL._TREE.size
 	BRA	LOOP__14
 L178:					; post loop LOOP__14
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO FIX_WITH_CLAUSES
@@ -5220,10 +5220,10 @@ VAR	ANON_619_43__dat, STANDARD.IDL._TREE.size
 	SQ  2,	-result__ofs
 	UNLINK 3
 	BRA ret_lbl
-	UNLINK 3
+	UNLINKR 3
 endPRO
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_ANCESTOR

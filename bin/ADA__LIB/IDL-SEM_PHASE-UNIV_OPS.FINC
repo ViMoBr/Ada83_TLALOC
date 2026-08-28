@@ -219,7 +219,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	ADD
 	SIW  2,	-HIGH_ofs
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO DIGIT_MUL
@@ -416,7 +416,7 @@ L13:
 L12:					; post if
 L7:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO DIGIT_DIV
@@ -993,7 +993,7 @@ L28:					; post if
 	BRA	L18
 L24:
 L18:					; post if
-	UNLINK 3
+	UNLINKR 3
 endPRO
 namespace	CAS_RETOUR_BLOC_UDIGITS
 ELB 3					;    BODY ELAB
@@ -1150,7 +1150,7 @@ L38:					; post if
 	CGT
 	BT	STANDARD.ce_raise_
 	CALL	STANDARD.IDL.IDL_MAN. ,DABS_L37
-	UNLINK 4
+	UNLINKR 4
 endPRO
 namespace	COPIE_PAIRES_UDIGITS
 ELB 4					;    BODY ELAB
@@ -1284,7 +1284,7 @@ begin:
 	LA	5, -S_ofs
 	LA
 	BLKMOV
-	UNLINK	 5
+	UNLINKR	 5
 	RTD	prm_siz-8
 endPRO					;---------- end PRO CAST_TREE
 end if
@@ -1437,7 +1437,7 @@ VAR	ANON_137_31__dat, STANDARD.IDL._TREE.size
 	BRA	L46
 L47:
 L46:					; post if
-	UNLINK 4
+	UNLINKR 4
 endPRO
 ; CODE_RETURN : EXPR TYPE = DN_RECORD  VUE COMPLETE = DN_RECORD
 	LA   2,	-result__ofs
@@ -1448,10 +1448,10 @@ endPRO
 	BLKMOV
 	UNLINK 3
 	BRA ret_lbl
-	UNLINK 3
+	UNLINKR 3
 endPRO
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO U_INT
@@ -1530,7 +1530,7 @@ VAR	ANON_151_19__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO U_REAL
@@ -1718,7 +1718,7 @@ VAR	ANON_172_26__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO U_REAL
@@ -1825,7 +1825,7 @@ L64:					; post if
 	LA  2,	-V_ofs
 	LD 3,	IVAL_disp
 	CALL	STANDARD.IDL.SEM_PHASE_L11.UNIV_OPS. ,SPREAD_L8
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L60
 L61:
@@ -1999,7 +1999,7 @@ begin:
 	LA	4, -S_ofs
 	LA
 	BLKMOV
-	UNLINK	 4
+	UNLINKR	 4
 	RTD	prm_siz-8
 endPRO					;---------- end PRO CAST_UDIGIT_PAIR
 end if
@@ -2150,7 +2150,7 @@ VAR	ANON_211_41__dat, STANDARD.IDL._TREE.size
 	SB  3,	IL77_disp
 	BRA	LOOP__4				; iteration suivante LOOP__4
 L76:					; post loop LOOP__4
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	LA  2,	-V_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.UNIV_OPS. ,NORMALIZE_L9
@@ -2420,7 +2420,7 @@ end namespace
 	LCA	STANDARD.PROGRAM_ERROR__exc.data_ptr
 	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L78
 L83:
@@ -2428,7 +2428,7 @@ L83:
 L78:
 L57:
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SPREAD
@@ -2602,7 +2602,7 @@ L95:					; post if
 	LA  2,	-V_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.UNIV_OPS. ,NORMALIZE_L9
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SPREAD
@@ -2676,7 +2676,7 @@ ENLEVE_ZEROS_NON_SIGNIF:
 	BRA	ENLEVE_ZEROS_NON_SIGNIF
 L102:					; post loop ENLEVE_ZEROS_NON_SIGNIF
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO NORMALIZE
@@ -3026,7 +3026,7 @@ L113:					; post loop LOOP__7
 	LA  2,	-R_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.UNIV_OPS. ,NORMALIZE_L9
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO V_ADD
@@ -3306,7 +3306,7 @@ L127:					; post loop LOOP__9
 	LA  2,	-R_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.UNIV_OPS. ,NORMALIZE_L9
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO V_SUB
@@ -3725,7 +3725,7 @@ L139:					; post loop LOOP__11
 	LA  2,	-R_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.UNIV_OPS. ,NORMALIZE_L9
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO V_MUL
@@ -3886,7 +3886,7 @@ L152:					; post loop LOOP__14
 L155:
 L154:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO V_SCALE
@@ -4061,7 +4061,7 @@ L165:
 	ADD
 	SD
 L164:					; post if
-	UNLINK 3
+	UNLINKR 3
 endPRO
 VAR	IL167_disp, D				; compteur boucle LOOP__16
 ; CODE_NUMERIC_LITERAL DN_INTEGER
@@ -4452,7 +4452,7 @@ L168:					; post loop LOOP__17
 	LA  2,	-Q_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.UNIV_OPS. ,NORMALIZE_L9
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO V_DIV
@@ -4483,7 +4483,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LA  2,	-A_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.UNIV_OPS. ,V_DIV_L14
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO V_REM
@@ -4613,7 +4613,7 @@ L189:					; post if
 	BRA	LOOP__19
 L185:					; post loop LOOP__19
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO V_GCD
@@ -4835,7 +4835,7 @@ L200:					; post if
 	LI	1
 	SW
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO V_LOWEST_TERMS
@@ -4988,7 +4988,7 @@ L208:
 	BRA ret_lbl
 L205:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO V_EQUAL
@@ -5144,7 +5144,7 @@ L213:					; post loop LOOP__20
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO V_LESS

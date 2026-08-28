@@ -350,7 +350,7 @@ begin:
 	LB	 1, -MODE_ofs
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,CREATE_L1
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO CREATE
 end if
@@ -372,7 +372,7 @@ begin:
 	LB	 1, -MODE_ofs
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,OPEN_L2
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO OPEN
 end if
@@ -388,7 +388,7 @@ begin:
 	LVA	 0, GFP_disp
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,CLOSE_L3
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO CLOSE
 end if
@@ -404,7 +404,7 @@ begin:
 	LVA	 0, GFP_disp
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,DELETE_L4
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO DELETE
 end if
@@ -422,7 +422,7 @@ begin:
 	LB	 1, -MODE_ofs
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,RESET_L5
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO RESET
 end if
@@ -438,7 +438,7 @@ begin:
 	LVA	 0, GFP_disp
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,RESET_L6
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO RESET
 end if
@@ -457,7 +457,7 @@ begin:
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,MODE_L7
 	SB	 1, -result__ofs			; retour resultat
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz-8
 endPRO					;---------- end PRO MODE
 end if
@@ -512,7 +512,7 @@ begin:
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,IS_OPEN_L10
 	SB	 1, -result__ofs			; retour resultat
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz-8
 endPRO					;---------- end PRO IS_OPEN
 end if
@@ -530,7 +530,7 @@ begin:
 	LA 	 1, -ITEM_ofs
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,READ_L11
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO READ
 end if
@@ -548,7 +548,7 @@ begin:
 	LA 	 1, -ITEM_ofs
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,WRITE_L12
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO WRITE
 end if
@@ -567,7 +567,7 @@ begin:
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,END_OF_FILE_L13
 	SB	 1, -result__ofs			; retour resultat
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz-8
 endPRO					;---------- end PRO END_OF_FILE
 end if

@@ -146,7 +146,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LI	0
 	SW
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO V_CLEAR
@@ -379,7 +379,7 @@ L9:					; post loop LOOP__1
 L16:
 L15:					; post if
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO V_INCREMENT
@@ -435,7 +435,7 @@ L21:
 	SB  2,	STANDARD.IDL.SEM_PHASE_L11.EVAL_NUM_L501.CHR_disp
 L20:					; post if
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD
 excep:
 endPRO					;---------- end PRO NEXT_CHR
@@ -899,7 +899,7 @@ VAR	ANON_149_12__dat, STANDARD.IDL._TREE.size
 	BRA ret_lbl
 L57:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO EVAL_NUM

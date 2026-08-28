@@ -1,0 +1,250 @@
+RISCV64_TARGET = 'RISCV64_TARGET'
+namespace RISCV64_TARGET			;---------- PACKAGE (BDY)
+					;    BODY ELAB
+
+if defined SIZE_OF_L119_
+PRO	SIZE_OF_L119				;---------- PRO SIZE_OF
+ hexa_show 'SIZE_OF_L119 ', $
+PRMS					;    debut parametrage
+	PRM E_ofs				; in
+	PRM result__ofs				; resultat de fonction
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+; CODE & concat _STRING
+VAR	ANON_17_12_L3_G_data, Q
+VAR	ANON_17_12_L3_G_info, Q
+VAR	ANON_17_40_L3_D_data, Q
+VAR	ANON_17_40_L3_D_info, Q
+VAR	ANON_17_12_L3_G_len,  Q
+VAR	ANON_17_40_L3_D_len,  Q
+VAR	ANON_17_12_L3_R_disp, Q
+VAR	ANON_17_12_L3_R__u,   Q
+namespace ANON_17_12_L3_R_info
+  VAR SIZ__, D
+  VAR _COMP_SIZ, D
+  VAR _FST_1, D
+  VAR _LST_1, D
+end namespace
+STR ANON_17_12_L3_G, "hors tranche riscv64 : "	; constante string="hors tranche riscv64 : "
+	LCA	ANON_17_12_L3_G.data_ptr
+	DUP
+	LA  ,  0
+	SA  2, ANON_17_12_L3_G_data
+	LA  ,  8
+	SA  2, ANON_17_12_L3_G_info
+	LID 2, ANON_17_12_L3_G_info, _STRING.LST_1
+	LID 2, ANON_17_12_L3_G_info, _STRING.FST_1
+	SUB
+	INC
+	CLAMP0
+	SA  2, ANON_17_12_L3_G_len
+VAR	ANON_17_40_disp, Q
+VAR	ANON_17_40__u,   Q
+namespace ANON_17_40_info
+  VAR SIZ__, D
+  VAR _COMP_SIZ, D
+  VAR _FST_1, D
+  VAR _LST_1, D
+end namespace
+	LVA 2, ANON_17_40_info.SIZ__
+	SA  2, ANON_17_40__u
+	LVA 2, ANON_17_40_disp
+VAR	ANON_17_51_disp, Q
+VAR	ANON_17_51__u,    Q
+VAR	ANON_17_51__dat, STANDARD.TARGET_CODE_L1.LEX._SLICE.size
+	LVA 2, ANON_17_51__dat
+	SA  2, ANON_17_51_disp
+	LA  1, STANDARD.TARGET_CODE_L1.LEX._SLICE.use__info
+	SA  2, ANON_17_51__u
+	LVA 2, ANON_17_51_disp
+					; doublet resultat record anonyme
+	ULD  2,	-E_ofs
+	CALL	STANDARD.TARGET_CODE_L1.IR. ,MNEMO_OF_L44
+	CALL	STANDARD.TARGET_CODE_L1.LEX. ,IMAGE_L2
+	DUP
+	LA  ,  0
+	SA  2, ANON_17_40_L3_D_data
+	LA  ,  8
+	SA  2, ANON_17_40_L3_D_info
+	LID 2, ANON_17_40_L3_D_info, _STRING.LST_1
+	LID 2, ANON_17_40_L3_D_info, _STRING.FST_1
+	SUB
+	INC
+	CLAMP0
+	SA  2, ANON_17_40_L3_D_len
+	LA  2, ANON_17_12_L3_G_len
+	LA  2, ANON_17_40_L3_D_len
+	ADD
+	CO_VAR
+	SA  2, ANON_17_12_L3_R_disp
+	LI	1
+	SD  2, ANON_17_12_L3_R_info._FST_1
+	LA  2, ANON_17_12_L3_G_len
+	LA  2, ANON_17_40_L3_D_len
+	ADD
+	SD  2, ANON_17_12_L3_R_info._LST_1
+	LI	8
+	SD  2, ANON_17_12_L3_R_info._COMP_SIZ
+	LA  2, ANON_17_12_L3_G_len
+	LA  2, ANON_17_40_L3_D_len
+	ADD
+	LI	8
+	MUL
+	SD  2, ANON_17_12_L3_R_info.SIZ__
+	LVA 2, ANON_17_12_L3_R_info.SIZ__
+	SA  2, ANON_17_12_L3_R__u
+	LA  2, ANON_17_12_L3_R_disp
+	LA  2, ANON_17_12_L3_G_len
+	LA  2, ANON_17_12_L3_G_data
+	BLKMOV
+	LA  2, ANON_17_12_L3_R_disp
+	LA  2, ANON_17_12_L3_G_len
+	ADD
+	LA  2, ANON_17_40_L3_D_len
+	LA  2, ANON_17_40_L3_D_data
+	BLKMOV
+	LVA 2, ANON_17_12_L3_R_disp
+	CALL	STANDARD.TARGET_CODE_L1.EMITS. ,FAULT_L14
+; CODE_RETURN : EXPR TYPE = DN_INTEGER  VUE COMPLETE = DN_INTEGER
+; CODE_NUMERIC_LITERAL DN_INTEGER
+	LI	0
+	SQ  2,	-result__ofs
+	BRA ret_lbl
+ret_lbl:
+	UNLINKR 2
+	RTD	prm_siz-8
+excep:
+endPRO					;---------- end PRO SIZE_OF
+end if
+
+if defined ENCODE_L120_
+PRO	ENCODE_L120				;---------- PRO ENCODE
+ hexa_show 'ENCODE_L120 ', $
+PRMS					;    debut parametrage
+	PRM E_ofs				; in
+endPRMS					;    fin parametrage
+ELB 2					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+; CODE & concat _STRING
+VAR	ANON_28_12_L6_G_data, Q
+VAR	ANON_28_12_L6_G_info, Q
+VAR	ANON_28_40_L6_D_data, Q
+VAR	ANON_28_40_L6_D_info, Q
+VAR	ANON_28_12_L6_G_len,  Q
+VAR	ANON_28_40_L6_D_len,  Q
+VAR	ANON_28_12_L6_R_disp, Q
+VAR	ANON_28_12_L6_R__u,   Q
+namespace ANON_28_12_L6_R_info
+  VAR SIZ__, D
+  VAR _COMP_SIZ, D
+  VAR _FST_1, D
+  VAR _LST_1, D
+end namespace
+STR ANON_28_12_L6_G, "hors tranche riscv64 : "	; constante string="hors tranche riscv64 : "
+	LCA	ANON_28_12_L6_G.data_ptr
+	DUP
+	LA  ,  0
+	SA  2, ANON_28_12_L6_G_data
+	LA  ,  8
+	SA  2, ANON_28_12_L6_G_info
+	LID 2, ANON_28_12_L6_G_info, _STRING.LST_1
+	LID 2, ANON_28_12_L6_G_info, _STRING.FST_1
+	SUB
+	INC
+	CLAMP0
+	SA  2, ANON_28_12_L6_G_len
+VAR	ANON_28_40_disp, Q
+VAR	ANON_28_40__u,   Q
+namespace ANON_28_40_info
+  VAR SIZ__, D
+  VAR _COMP_SIZ, D
+  VAR _FST_1, D
+  VAR _LST_1, D
+end namespace
+	LVA 2, ANON_28_40_info.SIZ__
+	SA  2, ANON_28_40__u
+	LVA 2, ANON_28_40_disp
+VAR	ANON_28_51_disp, Q
+VAR	ANON_28_51__u,    Q
+VAR	ANON_28_51__dat, STANDARD.TARGET_CODE_L1.LEX._SLICE.size
+	LVA 2, ANON_28_51__dat
+	SA  2, ANON_28_51_disp
+	LA  1, STANDARD.TARGET_CODE_L1.LEX._SLICE.use__info
+	SA  2, ANON_28_51__u
+	LVA 2, ANON_28_51_disp
+					; doublet resultat record anonyme
+	ULD  2,	-E_ofs
+	CALL	STANDARD.TARGET_CODE_L1.IR. ,MNEMO_OF_L44
+	CALL	STANDARD.TARGET_CODE_L1.LEX. ,IMAGE_L2
+	DUP
+	LA  ,  0
+	SA  2, ANON_28_40_L6_D_data
+	LA  ,  8
+	SA  2, ANON_28_40_L6_D_info
+	LID 2, ANON_28_40_L6_D_info, _STRING.LST_1
+	LID 2, ANON_28_40_L6_D_info, _STRING.FST_1
+	SUB
+	INC
+	CLAMP0
+	SA  2, ANON_28_40_L6_D_len
+	LA  2, ANON_28_12_L6_G_len
+	LA  2, ANON_28_40_L6_D_len
+	ADD
+	CO_VAR
+	SA  2, ANON_28_12_L6_R_disp
+	LI	1
+	SD  2, ANON_28_12_L6_R_info._FST_1
+	LA  2, ANON_28_12_L6_G_len
+	LA  2, ANON_28_40_L6_D_len
+	ADD
+	SD  2, ANON_28_12_L6_R_info._LST_1
+	LI	8
+	SD  2, ANON_28_12_L6_R_info._COMP_SIZ
+	LA  2, ANON_28_12_L6_G_len
+	LA  2, ANON_28_40_L6_D_len
+	ADD
+	LI	8
+	MUL
+	SD  2, ANON_28_12_L6_R_info.SIZ__
+	LVA 2, ANON_28_12_L6_R_info.SIZ__
+	SA  2, ANON_28_12_L6_R__u
+	LA  2, ANON_28_12_L6_R_disp
+	LA  2, ANON_28_12_L6_G_len
+	LA  2, ANON_28_12_L6_G_data
+	BLKMOV
+	LA  2, ANON_28_12_L6_R_disp
+	LA  2, ANON_28_12_L6_G_len
+	ADD
+	LA  2, ANON_28_40_L6_D_len
+	LA  2, ANON_28_40_L6_D_data
+	BLKMOV
+	LVA 2, ANON_28_12_L6_R_disp
+	CALL	STANDARD.TARGET_CODE_L1.EMITS. ,FAULT_L14
+ret_lbl:
+	UNLINKR 2
+	RTD	prm_siz
+excep:
+endPRO					;---------- end PRO ENCODE
+end if
+
+if defined PROLOGUE_L121_
+PRO	PROLOGUE_L121				;---------- PRO PROLOGUE
+ hexa_show 'PROLOGUE_L121 ', $
+ELB 2					;    BODY ELAB
+					;    end elab
+begin:					;---------- BDY INSTRUCTIONS
+STR STR_L9, "hors tranche riscv64 : amorcage"	; constante string="hors tranche riscv64 : amorcage"
+	LCA	STR_L9.data_ptr
+	CALL	STANDARD.TARGET_CODE_L1.EMITS. ,FAULT_L14
+ret_lbl:
+	UNLINKR 2
+	RTD
+excep:
+endPRO					;---------- end PRO PROLOGUE
+end if
+begin:					;---------- package BDY INSTRUCTIONS
+end namespace 				;---------- end package BDY RISCV64_TARGET
+

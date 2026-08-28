@@ -1298,9 +1298,25 @@ macro			UNLINK	lvl				; DISPOSE VARS LOCALES ET RESTORE FRAME PTR
   FP_IN_RBP	lvl						; (throw locals)
   POP_RAX
   RAX_IN_FP	lvl						; (restore stored FP)
-			; A FAIRE Gerer la co-pile pour liberer les allocations de taille dynamique eventuelles
+			; La co-pile N'EST PAS rendue ici (n 147, contrat d'evasion) : les donnees d'un
+			; resultat de fonction TABLEAU vivent dans la region de ce frame et sont consommees
+			; par l'appelant APRES le retour. La variante UNLINKR ci-dessous rend la co-pile ;
+			; c'est l'EXPANDER qui choisit (EXIT_UNLINK_MNEMONIC) selon le type de resultat.
 
   db 0x4D, 0x8B, 0x6D, 0x00						; mov r13, [r13]
+end macro
+
+;			--------------
+macro			UNLINKR	lvl				; UNLINK + LIBERATION DE LA CO-PILE (r14 redescend a la cellule LINK de ce frame)
+;			--------------
+  FP_IN_RBP	lvl						; (throw locals)
+  POP_RAX
+  RAX_IN_FP	lvl						; (restore stored FP)
+			; Chantier co-pile (n 163) : rendre TOUT ce que ce frame a alloue, cellule LINK comprise.
+			; INTERDIT pour un frame de fonction a resultat TABLEAU (contrat d'evasion n 147) :
+			; l'expander n'emet UNLINKR que si le resultat est copie chez l'appelant avant l'epilogue.
+  db 0x4D, 0x89, 0xEE						; mov r14, r13	(sommet := cellule LINK de ce frame = r14 d'avant LINK)
+  db 0x4D, 0x8B, 0x6D, 0x00						; mov r13, [r13]	(frame de co-pile anterieur)
 end macro
 
 ;			----------------------

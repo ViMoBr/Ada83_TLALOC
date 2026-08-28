@@ -95,7 +95,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	DROP
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD
 excep:
 endPRO					;---------- end PRO INITIALIZE_GLOBAL_DATA
@@ -245,7 +245,7 @@ L6:					; post loop LOOP__1
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO INIT
@@ -402,7 +402,7 @@ VAR	ANON_71_17__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 L12:					; post if
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SET_RANGE_BOUNDS
@@ -468,7 +468,7 @@ VAR	ANON_84_21__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 L17:					; post if
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SET_ACCURACY
@@ -726,7 +726,7 @@ L33:
 	BLKMOV
 L32:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD
 excep:
 endPRO					;---------- end PRO INITIALIZE_PREDEFINED_TYPES

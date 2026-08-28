@@ -1,0 +1,24 @@
+#!/bin/bash
+rm -f ./ADA__LIB/*.DCL
+rm -f ./ADA__LIB/*.BDY
+rm -f ./ADA__LIB/*.SUB
+rm -f ./ADA__LIB/*.FINC
+
+./T1 ./ _standrd.ads W
+./T1 ./ system.ads W
+./T1 ./ machine_code.ads W
+./T1 ./ calendar.ads W
+./T1 ./ io_exceptions.ads W
+./T1 ./ text_io.ads W
+./T1 ./ direct_io.ads W
+./T1 ./ sequential_io.ads W
+./T1 ./ unchecked_conversion.ads W
+./T1 ./ unchecked_deallocation.ads W
+
+./T1 ./ _standrd.adb W
+./T1 ./ calendar.adb W
+./T1 ./ text_io.adb W
+./T1 ./ direct_io.adb W
+./T1 ./ sequential_io.adb W
+#./T1 ./ unchecked_conversion.adb W		intrinsèque expander ne pas compiler !
+#./T1 ./ unchecked_deallocation.adb W	A VOIR

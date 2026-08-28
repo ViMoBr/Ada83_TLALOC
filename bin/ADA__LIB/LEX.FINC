@@ -689,7 +689,7 @@ L6:					; post loop LOOP__1
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO HASH_POS
@@ -729,7 +729,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO HASH_SEARCH
@@ -5249,7 +5249,7 @@ L23:
 	BT	STANDARD.ce_raise_
 	SID  1,	-TOK_LEN_ofs
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO NEXT_TOKEN
@@ -5633,7 +5633,7 @@ end namespace
 L351:
 L350:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO LEX_SCAN
@@ -6050,7 +6050,7 @@ VAR	RET_INFO_L375, Q
 	UNLINK 2
 	BRA ret_lbl
 L372:					; post if
-	UNLINK 2
+	UNLINKR 2
 endPRO
 	BRA	L359
 L361:
@@ -6201,7 +6201,7 @@ VAR	RET_INFO_L378, Q
 	BLKMOV
 	UNLINK 2
 	BRA ret_lbl
-	UNLINK 2
+	UNLINKR 2
 endPRO
 	BRA	L359
 L362:

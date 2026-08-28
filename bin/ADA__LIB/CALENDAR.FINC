@@ -344,7 +344,7 @@ L6:					; post if
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO DAYS_FROM_CIVIL
@@ -564,7 +564,7 @@ L13:					; post if
 	LQ 1,	D_OUT_disp
 	SIQ  1,	-D_ofs
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO CIVIL_FROM_DAYS
@@ -626,7 +626,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LIA 2 ,	-8
 	SYS_CLOCK_GETTIME
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO GETTIME_SYSCALL
@@ -663,7 +663,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO CLOCK
@@ -718,7 +718,7 @@ L24:
 	BRA ret_lbl
 L23:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO WHOLE_SECONDS
@@ -795,7 +795,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO YEAR
@@ -872,7 +872,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MONTH
@@ -949,7 +949,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO DAY
@@ -1010,7 +1010,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO SECONDS
@@ -1160,7 +1160,7 @@ begin:					;---------- BDY INSTRUCTIONS
 ; CODE CONVERSION SOURCE DN_FIXED TARGET DN_FIXED
 	SIQ  1,	-SECONDS_ofs
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SPLIT
@@ -1214,7 +1214,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO TIME_OF
@@ -1240,7 +1240,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO _PLUS_
@@ -1266,7 +1266,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO _PLUS_
@@ -1292,7 +1292,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO _MINUS_
@@ -1318,7 +1318,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO _MINUS_
@@ -1344,7 +1344,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO _LT_
@@ -1370,7 +1370,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO _LE_
@@ -1396,7 +1396,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO _GT_
@@ -1422,7 +1422,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO _GE_

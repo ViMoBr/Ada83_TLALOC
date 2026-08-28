@@ -24,6 +24,8 @@ procedure STRRET_TEST is
   NB_OK  : INTEGER := 0;
   NB_ERR : INTEGER := 0;
 
+  V : INTEGER;
+
   procedure VERDICT ( OK : BOOLEAN; NUM : INTEGER ) is
   begin
     if OK then
@@ -53,8 +55,6 @@ procedure STRRET_TEST is
   begin
     return X;                                    -- appel interpose : LINK/UNLINK purs
   end NOOP;
-
-  V : INTEGER;
 
 begin
   -- 1 : resultat passe DIRECTEMENT a l'appel suivant (le cas _standrd :

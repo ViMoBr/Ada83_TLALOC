@@ -576,19 +576,19 @@ L26:
 L25:					; post if
 	CALL	STANDARD.IDL.LIB_PHASE_L10. ,ENTER_DEFAULT_GENERIC_FORMALS_L5
 	CALL	STANDARD.IDL.LIB_PHASE_L10. ,ENTER_USED_DEFINING_IDS_L6
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L11
 L12:
 L11:					; post if
 	BRA	L19
 L20:
-	UNLINK 3
+	UNLINKR 3
 	BRA	L19
 L19:
 	CALL	STANDARD.IDL. ,CLOSE_IDL_TREE_FILE_L7
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD
 excep:
 endPRO					;---------- end PRO START_LIB_PHASE
@@ -1173,7 +1173,7 @@ L35:
 	BRA	STANDARD.exc_raise_
 L33:
 L31:
-	UNLINK 3
+	UNLINKR 3
 endPRO
 LOOP__3:
 	LVA  2,	STANDARD.IDL.LIB_PHASE_L10.READ_LIB_CTL_FILE_L1.LIB_CHAR_disp
@@ -1474,7 +1474,7 @@ L41:					; post loop LOOP__3
 	LVA  2,	STANDARD.IDL.LIB_PHASE_L10.READ_LIB_CTL_FILE_L1.FCTL_disp
 	CALL	STANDARD.TEXT_IO. ,CLOSE_L3
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD
 excep:
 endPRO					;---------- end PRO READ_LIB_CTL_FILE
@@ -2004,11 +2004,11 @@ VAR	ANON_196_33__dat, STANDARD.IDL._TREE.size
 	LVA 2,	STANDARD.IDL.LIB_PHASE_L10.REGENERATE_LIB_CTL_FILE_L2.FCTL_disp
 	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L59
 L64:					; post if
-	UNLINK 4
+	UNLINKR 4
 endPRO
 	BRA	LOOP__5
 L60:					; post loop LOOP__5
-	UNLINK 3
+	UNLINKR 3
 endPRO
 STR STR_L68, "T "				; constante string="T "
 	LCA	STR_L68.data_ptr
@@ -2051,7 +2051,7 @@ STR STR_L68, "T "				; constante string="T "
 	LVA  2,	STANDARD.IDL.LIB_PHASE_L10.REGENERATE_LIB_CTL_FILE_L2.FCTL_disp
 	CALL	STANDARD.TEXT_IO. ,CLOSE_L3
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD
 excep:
 endPRO					;---------- end PRO REGENERATE_LIB_CTL_FILE
@@ -3193,7 +3193,7 @@ VAR	ANON_264_30__dat, STANDARD.IDL._TREE.size
 	LVA 2,	STANDARD.IDL.LIB_PHASE_L10.MAKE_FILE_SYM_L69.LIB_INFO_disp
 	LI  164
 	CALL	STANDARD.IDL. ,D_L16
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	LVA 2,	BASE_UNIT_SYM_disp
 	LVA 2,	LIB_INFO_disp
@@ -3229,7 +3229,7 @@ VAR	ANON_268_21__dat, STANDARD.IDL._SEQ_TYPE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_FILE_SYM
@@ -3437,7 +3437,7 @@ end namespace
 	LA
 	BLKMOV
 L106:					; post if
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L102
 L103:
@@ -3832,7 +3832,7 @@ VAR	RET_INFO_L120, Q
 	BLKMOV
 	UNLINK 5
 	BRA ret_lbl
-	UNLINK 5
+	UNLINKR 5
 endPRO
 	BRA	L114
 L115:
@@ -4067,7 +4067,7 @@ end namespace
 	CALL	STANDARD.IDL.LIB_PHASE_L10. ,MAKE_FILE_SYM_L69
 	LA
 	BLKMOV
-	UNLINK 3
+	UNLINKR 3
 endPRO
 L102:					; post if
 	LVA 2,	FILE_SYM_disp
@@ -4075,7 +4075,7 @@ L102:					; post if
 	LI  143
 	CALL	STANDARD.IDL. ,D_L16
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO INSERT_XD_LIB_NAME_IN_COMP_UNIT
@@ -4179,7 +4179,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO OFFSET
@@ -4668,7 +4668,7 @@ LOOP__15:					; corps boucle LOOP__15
 	BRA	LOOP__15				; iteration suivante LOOP__15
 L139:					; post loop LOOP__15
 ret_lbl:
-	UNLINK 5
+	UNLINKR 5
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO FILL_RELOC_FOR_WUNIT
@@ -4759,7 +4759,7 @@ L145:					; post loop LOOP__16
 	BRA	L143
 L144:
 L143:					; post if
-	UNLINK 4
+	UNLINKR 4
 endPRO
 VAR	NEW_PAGEL147_disp, W			; compteur boucle FILL_RELOC_TABLE_FOR_UNIT
 	LA 3, -UNIT_ofs
@@ -4824,7 +4824,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	ADD					; add offset to start address
 	ULW 3,	NEW_PAGEL147_disp
 	SW
-	UNLINK 4
+	UNLINKR 4
 endPRO
 	ULW  3,	NEW_PAGEL147_disp			; test de sortie FILL_RELOC_TABLE_FOR_UNIT
 	ULW  3,	LMT_NEW_PAGEL147_disp
@@ -5147,7 +5147,7 @@ L164:					; post if
 	BRA	L161
 L163:
 L161:					; post if
-	UNLINK 5
+	UNLINKR 5
 endPRO
 	ULB  4,	IL158_disp				; test de sortie RELOCATE_NODE_FIELDS
 	ULB  4,	LMT_IL158_disp
@@ -5228,12 +5228,12 @@ L169:
 	SD
 L168:					; post if
 L153:					; post if
-	UNLINK 4
+	UNLINKR 4
 endPRO
 	BRA	RELOCATE_TREE_POINTERS
 L150:					; post loop RELOCATE_TREE_POINTERS
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO RELOCATE_UNIT
@@ -5371,7 +5371,7 @@ begin:
 	LB	 4, -MODE_ofs
 	LA 	 4, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,CREATE_L1
-	UNLINK	 4
+	UNLINKR	 4
 	RTD	prm_siz
 endPRO					;---------- end PRO CREATE
 end if
@@ -5393,7 +5393,7 @@ begin:
 	LB	 4, -MODE_ofs
 	LA 	 4, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,OPEN_L2
-	UNLINK	 4
+	UNLINKR	 4
 	RTD	prm_siz
 endPRO					;---------- end PRO OPEN
 end if
@@ -5409,7 +5409,7 @@ begin:
 	LVA	 3, GFP_disp
 	LA 	 4, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,CLOSE_L3
-	UNLINK	 4
+	UNLINKR	 4
 	RTD	prm_siz
 endPRO					;---------- end PRO CLOSE
 end if
@@ -5425,7 +5425,7 @@ begin:
 	LVA	 3, GFP_disp
 	LA 	 4, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,DELETE_L4
-	UNLINK	 4
+	UNLINKR	 4
 	RTD	prm_siz
 endPRO					;---------- end PRO DELETE
 end if
@@ -5443,7 +5443,7 @@ begin:
 	LB	 4, -MODE_ofs
 	LA 	 4, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,RESET_L5
-	UNLINK	 4
+	UNLINKR	 4
 	RTD	prm_siz
 endPRO					;---------- end PRO RESET
 end if
@@ -5459,7 +5459,7 @@ begin:
 	LVA	 3, GFP_disp
 	LA 	 4, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,RESET_L6
-	UNLINK	 4
+	UNLINKR	 4
 	RTD	prm_siz
 endPRO					;---------- end PRO RESET
 end if
@@ -5478,7 +5478,7 @@ begin:
 	LA 	 4, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,MODE_L7
 	SB	 4, -result__ofs			; retour resultat
-	UNLINK	 4
+	UNLINKR	 4
 	RTD	prm_siz-8
 endPRO					;---------- end PRO MODE
 end if
@@ -5533,7 +5533,7 @@ begin:
 	LA 	 4, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,IS_OPEN_L10
 	SB	 4, -result__ofs			; retour resultat
-	UNLINK	 4
+	UNLINKR	 4
 	RTD	prm_siz-8
 endPRO					;---------- end PRO IS_OPEN
 end if
@@ -5551,7 +5551,7 @@ begin:
 	LA 	 4, -ITEM_ofs
 	LA 	 4, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,READ_L11
-	UNLINK	 4
+	UNLINKR	 4
 	RTD	prm_siz
 endPRO					;---------- end PRO READ
 end if
@@ -5569,7 +5569,7 @@ begin:
 	LA 	 4, -ITEM_ofs
 	LA 	 4, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,WRITE_L12
-	UNLINK	 4
+	UNLINKR	 4
 	RTD	prm_siz
 endPRO					;---------- end PRO WRITE
 end if
@@ -5588,7 +5588,7 @@ begin:
 	LA 	 4, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,END_OF_FILE_L13
 	SB	 4, -result__ofs			; retour resultat
-	UNLINK	 4
+	UNLINKR	 4
 	RTD	prm_siz-8
 endPRO					;---------- end PRO END_OF_FILE
 end if
@@ -5817,7 +5817,7 @@ L195:
 	BRA	STANDARD.exc_raise_
 L193:
 L190:
-	UNLINK 4
+	UNLINKR 4
 endPRO
 namespace	LECTURES
 ELB 4					;    BODY ELAB
@@ -6101,11 +6101,11 @@ VAR	ANON_502_11__dat, STANDARD.IDL._TREE.size
 	SD  4,	IL200_disp
 	BRA	LOOP__20				; iteration suivante LOOP__20
 L199:					; post loop LOOP__20
-	UNLINK 4
+	UNLINKR 4
 endPRO
 	LVA  3,	STANDARD.IDL.LIB_PHASE_L10.LOAD_UNIT_L127.READ_UNIT_PAGES.LIB_FILE_disp
 	CALL	STANDARD.IDL.LIB_PHASE_L10.LOAD_UNIT_L127.READ_UNIT_PAGES.SEQ_IO. ,CLOSE_L3
-	UNLINK 3
+	UNLINKR 3
 endPRO
 namespace	BLOCK__18
 ELB 3					;    BODY ELAB
@@ -6151,7 +6151,7 @@ begin:					;---------- BDY INSTRUCTIONS
 ; CODE CONVERSION SOURCE DN_INTEGER TARGET DN_INTEGER
 	SUB
 	SD  2,	STANDARD.IDL.LIB_PHASE_L10.LOAD_UNIT_L127.DELTA_PG_OLD_TO_NEW_disp
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	LI	0					; lieu resultat sur pile
 	LVA 2,	UNIT_disp
@@ -7141,7 +7141,7 @@ end namespace
 L210:
 L209:					; post if
 ret_lbl:
-	UNLINK 4
+	UNLINKR 4
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO LOAD_WITHED_UNIT
@@ -7232,7 +7232,7 @@ L224:					; post loop LOOP__21
 	BRA	L222
 L223:
 L222:					; post if
-	UNLINK 3
+	UNLINKR 3
 endPRO
 VAR	ANON_563_26_disp, Q
 VAR	ANON_563_26__u,    Q
@@ -7309,7 +7309,7 @@ VAR	ANON_565_20__dat, STANDARD.IDL._SEQ_TYPE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO LOAD_UNIT
@@ -7356,7 +7356,7 @@ VAR	ANON_576_23__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO LOAD_UNIT
@@ -7447,7 +7447,7 @@ L235:
 L234:					; post if
 	BRA	LOOP__22
 L233:					; post loop LOOP__22
-	UNLINK 3
+	UNLINKR 3
 endPRO
 namespace	INTEGRER_LES_SUBWITHES
 ELB 3					;    BODY ELAB
@@ -7522,7 +7522,7 @@ VAR	ANON_611_41__dat, STANDARD.IDL._TREE.size
 	CALL	STANDARD.IDL.LIB_PHASE_L10. ,INTEGRER_EN_FERMETURE_DES_WITH_L228
 	BRA	LOOP__23
 L238:					; post loop LOOP__23
-	UNLINK 3
+	UNLINKR 3
 endPRO
 namespace	INTEGRER_EN_FERMETURE
 ELB 3					;    BODY ELAB
@@ -7611,10 +7611,10 @@ VAR	ANON_624_25__dat, STANDARD.IDL._SEQ_TYPE.size
 	CALL	STANDARD.IDL.IDL_MAN. ,APPEND_L34
 	LA
 	BLKMOV
-	UNLINK 3
+	UNLINKR 3
 endPRO
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO INTEGRER_EN_FERMETURE_DES_WITH
@@ -7694,7 +7694,7 @@ VAR	ANON_640_33__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_USED_NAME_ID
@@ -7751,7 +7751,7 @@ L248:
 	BRA ret_lbl
 L247:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO UNSELECTED
@@ -8308,7 +8308,7 @@ VAR	ANON_705_57__dat, STANDARD.IDL._TREE.size
 	LI  89
 	CALL	STANDARD.IDL. ,D_L16
 L267:					; post if
-	UNLINK 4
+	UNLINKR 4
 endPRO
 	BRA	L253
 L254:
@@ -8560,7 +8560,7 @@ end namespace
 	LVA 5, ANON_728_43_L274_R_disp
 	LA
 	BLKMOV
-	UNLINK 5
+	UNLINKR 5
 endPRO
 	LVA 4,	GRAND_PARENT_NAME_OUT_USED_disp
 	LA  3,	-PARENT_NAME_OUT_USED_ofs
@@ -9201,19 +9201,19 @@ VAR	ANON_760_71__dat, STANDARD.IDL._TREE.size
 	LA  3,	-PARENT_NAME_OUT_USED_ofs
 	LI  91
 	CALL	STANDARD.IDL. ,D_L16
-	UNLINK 6
+	UNLINKR 6
 endPRO
 L283:					; post if
-	UNLINK 5
+	UNLINKR 5
 endPRO
 	BRA	L275
 L276:
 L275:					; post if
-	UNLINK 4
+	UNLINKR 4
 endPRO
 L253:					; post if
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO INCLUDE_PARENT
@@ -9227,7 +9227,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LI  48
 	CALL	STANDARD.IDL. ,D_L16
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO TREAT_SUBUNIT_PARENTS
@@ -9686,7 +9686,7 @@ VAR	ANON_857_14__dat, STANDARD.IDL._TREE.size
 	LI  89
 	CALL	STANDARD.IDL. ,D_L16
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO CHECK_ONE_USE_ID
@@ -9773,7 +9773,7 @@ L314:					; post if
 	BRA	LOOP__30
 L313:					; post loop LOOP__30
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO CHECK_USE_CLAUSES
@@ -10294,7 +10294,7 @@ VAR	ANON_926_29__dat, STANDARD.IDL._TREE.size
 	LVA 2,	STANDARD.IDL.LIB_PHASE_L10.PROCESS_WITH_CLAUSES_L319.WITH_NAME_disp
 	LI  89
 	CALL	STANDARD.IDL. ,D_L16
-	UNLINK 3
+	UNLINKR 3
 endPRO
 L327:					; post if
 	BRA	TRAITE_UN_NOM_WITHE
@@ -10308,7 +10308,7 @@ L323:					; post if
 	BRA	TRAITE_ELEMENT_DE_CONTEXTE
 L322:					; post loop TRAITE_ELEMENT_DE_CONTEXTE
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PROCESS_WITH_CLAUSES
@@ -10498,7 +10498,7 @@ L341:
 L340:					; post if
 	LVA 3,	SPC_STANDRD_disp
 	CALL	STANDARD.IDL.LIB_PHASE_L10. ,INTEGRER_EN_FERMETURE_DES_WITH_L228
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	VAR ANON_967_22_disp, q
 	VAR ANON_967_22__u, q
@@ -10852,7 +10852,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BRA	L360
 L361:
 L360:					; post if
-	UNLINK 4
+	UNLINKR 4
 endPRO
 	BRA	L353
 L354:
@@ -11085,11 +11085,11 @@ VAR	ANON_1022_21__dat, STANDARD.IDL._SEQ_TYPE.size
 	LA  2,	-COMP_UNIT_ofs
 	LI  143
 	CALL	STANDARD.IDL. ,D_L16
-	UNLINK 4
+	UNLINKR 4
 endPRO
 L364:					; post if
 L362:					; post if
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L343
 L346:
@@ -11162,7 +11162,7 @@ VAR	ANON_1047_22__dat, STANDARD.IDL._SEQ_TYPE.size
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO LOAD_RELOC_LIB_BLOCKS
@@ -11320,7 +11320,7 @@ L376:					; post loop LOOP__35
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO COPY_NODE
@@ -11505,7 +11505,7 @@ VAR	ANON_1117_41__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 L381:					; post if
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO INSERT_SYMBOL
@@ -11618,7 +11618,7 @@ L386:					; post loop LOOP__37
 	BRA	LOOP__36
 L385:					; post loop LOOP__36
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD
 excep:
 endPRO					;---------- end PRO ENTER_DEFAULT_GENERIC_FORMALS
@@ -12247,7 +12247,7 @@ L394:					; post loop PARCOURS_PAGES_CHARGEES
 	BRA	LOOP__38
 L393:					; post loop LOOP__38
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD
 excep:
 endPRO					;---------- end PRO ENTER_USED_DEFINING_IDS
@@ -12256,7 +12256,7 @@ end if
 begin:					;---------- BDY INSTRUCTIONS
 	CALL	STANDARD.IDL.LIB_PHASE_L10. ,START_LIB_PHASE_L7
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO LIB_PHASE

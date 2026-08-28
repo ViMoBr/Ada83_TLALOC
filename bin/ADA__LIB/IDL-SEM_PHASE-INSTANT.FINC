@@ -140,7 +140,7 @@ L10:					; post loop LOOP__1
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO LENGTH
@@ -585,7 +585,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA  2,	STANDARD.IDL.SEM_PHASE_L11.INSTANT.WALK_INSTANTIATION_L225.NODE_HASH_disp
 	LVA 4,	DECL_S2_disp
 	CALL	STANDARD.IDL.SEM_PHASE_L11.INSTANT. ,FIX_DECLS_AND_SUBSTITUTE_L6
-	UNLINK 4
+	UNLINKR 4
 endPRO
 	BRA	L19
 L20:
@@ -614,10 +614,10 @@ L19:					; post if
 	LVA 3,	S_disp
 	LVA  2,	STANDARD.IDL.SEM_PHASE_L11.INSTANT.WALK_INSTANTIATION_L225.UNIT_DEF_disp	; array actual
 	CALL	STANDARD.IDL.SEM_PHASE_L11.NOD_WALK. ,LEAVE_REGION_L190
-	UNLINK 3
+	UNLINKR 3
 endPRO
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO WALK_INSTANTIATION
@@ -1526,7 +1526,7 @@ VAR	ANON_224_31__dat, STANDARD.IDL._TREE.size
 	BRA	L56
 L58:
 L56:					; post if
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	LVA  0,	STANDARD.IDL.TREE_VOID_disp		; array actual
 VAR	ANON_227_14_disp, Q
@@ -2489,7 +2489,7 @@ VAR	ANON_302_19__dat, STANDARD.IDL._TREE.size
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO RESOLVE_GENERIC_FORMALS
@@ -2665,7 +2665,7 @@ L91:					; post loop LOOP__10
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO COUNT_GENERIC_FORMALS
@@ -3100,7 +3100,7 @@ L98:					; post if
 	BRA	LOOP__11
 L97:					; post loop LOOP__11
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SPREAD_GENERIC_FORMALS
@@ -3351,7 +3351,7 @@ STR STR_L111, "!! BAD GENERIC ACTUAL ID"	; constante string="!! BAD GENERIC ACTU
 L104:
 					; fin case
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO WALK_GENERIC_ACTUAL
@@ -4190,7 +4190,7 @@ VAR	ANON_490_22__dat, STANDARD.IDL._SEQ_TYPE.size
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO CONSTRUCT_INSTANCE_DECL
@@ -4710,7 +4710,7 @@ VAR	ANON_526_53__dat, STANDARD.IDL._TREE.size
 	LVA 2,	STANDARD.IDL.SEM_PHASE_L11.INSTANT.FIX_DECLS_AND_SUBSTITUTE_L6.BASE_TYPE_disp
 	LI  40
 	CALL	STANDARD.IDL. ,DI_L20
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L139
 L140:
@@ -4776,7 +4776,7 @@ L134:					; post if
 	BRA	LOOP__13
 L133:					; post loop LOOP__13
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO FIX_DECLS_AND_SUBSTITUTE

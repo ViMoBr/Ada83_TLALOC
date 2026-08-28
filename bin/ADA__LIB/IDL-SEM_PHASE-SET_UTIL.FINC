@@ -80,7 +80,7 @@ L6:					; post if
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GET_DEF
@@ -108,7 +108,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_NULLARY
@@ -174,7 +174,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	UNLINK 3
 	BRA ret_lbl
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L13
 L14:
@@ -188,7 +188,7 @@ L14:
 	BRA ret_lbl
 L13:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GET_EXTRAINFO
@@ -212,7 +212,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_EMPTY
@@ -249,7 +249,7 @@ VAR	ANON_65_28__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO HEAD
@@ -296,7 +296,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO POP
@@ -366,7 +366,7 @@ L25:					; post if
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GET_TYPE
@@ -432,7 +432,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	UNLINK 3
 	BRA ret_lbl
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L29
 L30:
@@ -446,7 +446,7 @@ L30:
 	BRA ret_lbl
 L29:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GET_EXTRAINFO
@@ -470,7 +470,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_EMPTY
@@ -507,7 +507,7 @@ VAR	ANON_116_29__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO HEAD
@@ -554,7 +554,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO POP
@@ -612,7 +612,7 @@ VAR	ANON_135_16__dat, STANDARD.IDL._SEQ_TYPE.size
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO ADD_TO_DEFSET
@@ -755,7 +755,7 @@ VAR	ANON_155_16__dat, STANDARD.IDL._SEQ_TYPE.size
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO ADD_TO_DEFSET
@@ -796,7 +796,7 @@ VAR	ANON_163_30__dat, STANDARD.IDL._TREE.size
 	LA  2,	-TYPESET_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.SET_UTIL. ,ADD_TO_TYPESET_L92
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO ADD_TO_TYPESET
@@ -880,7 +880,7 @@ L51:					; post if
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_TYPEINTERP
@@ -1197,7 +1197,7 @@ VAR	ANON_247_14__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO ADD_INFO
@@ -1587,7 +1587,7 @@ VAR	ANON_278_27__dat, STANDARD.IDL._TREE.size
 L76:					; post if
 L74:					; post if
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO INSERT_TYPE
@@ -1616,7 +1616,7 @@ VAR	ANON_284_30__dat, STANDARD.IDL._SEQ_TYPE.size
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO ADD_TO_TYPESET
@@ -1917,7 +1917,7 @@ L91:					; post if
 L90:
 L89:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REQUIRE_UNIQUE_DEF
@@ -2078,7 +2078,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA 3,	T1_disp
 	LA  2,	-TYPESET_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.SET_UTIL. ,ADD_TO_TYPESET_L92
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L105
 L106:
@@ -2129,14 +2129,14 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA 3,	T1_disp
 	LA  2,	-TYPESET_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.SET_UTIL. ,ADD_TO_TYPESET_L92
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L105
 L109:
 L105:					; post if
 L99:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REQUIRE_UNIQUE_TYPE
@@ -2208,7 +2208,7 @@ VAR	ANON_352_42__dat, STANDARD.IDL.SEM_PHASE_L11.SET_UTIL._DEFINTERP_TYPE.size
 	BRA ret_lbl
 L114:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GET_THE_ID
@@ -2247,7 +2247,7 @@ VAR	ANON_360_12__dat, STANDARD.IDL._TREE.size
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO THE_ID_IS_NULLARY
@@ -2308,7 +2308,7 @@ VAR	ANON_370_24__dat, STANDARD.IDL.SEM_PHASE_L11.SET_UTIL._TYPEINTERP_TYPE.size
 	BRA ret_lbl
 L120:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GET_THE_TYPE
@@ -2589,7 +2589,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  3,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_UNIVERSAL_FIRST_PARAM
@@ -2878,7 +2878,7 @@ L137:					; post loop LOOP__8
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REDUCE_OPERATOR_DEFS
@@ -3000,7 +3000,7 @@ VAR	ANON_469_34__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 L145:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO ADD_EXTRAINFO
@@ -3030,7 +3030,7 @@ VAR	ANON_479_31__dat, STANDARD.IDL.SEM_PHASE_L11.SET_UTIL._EXTRAINFO_TYPE.size
 	LA  2,	-DEFINTERP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.SET_UTIL. ,ADD_EXTRAINFO_L85
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO ADD_EXTRAINFO
@@ -3152,7 +3152,7 @@ VAR	ANON_492_35__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 L151:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO ADD_EXTRAINFO
@@ -3182,7 +3182,7 @@ VAR	ANON_502_32__dat, STANDARD.IDL.SEM_PHASE_L11.SET_UTIL._EXTRAINFO_TYPE.size
 	LA  2,	-TYPEINTERP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.SET_UTIL. ,ADD_EXTRAINFO_L97
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO ADD_EXTRAINFO
@@ -3216,7 +3216,7 @@ VAR	ANON_509_18__dat, STANDARD.IDL.SEM_PHASE_L11.SET_UTIL._EXTRAINFO_TYPE.size
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO ADD_EXTRAINFO
@@ -3305,7 +3305,7 @@ L159:					; post loop LOOP__9
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_MEMBER
@@ -3345,7 +3345,7 @@ VAR	ANON_528_25__dat, STANDARD.IDL._SEQ_TYPE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO INSERT
@@ -3385,7 +3385,7 @@ VAR	ANON_533_26__dat, STANDARD.IDL._SEQ_TYPE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO INSERT
@@ -3444,7 +3444,7 @@ VAR	ANON_541_24__dat, STANDARD.IDL._TREE.size
 	CALL	STANDARD.IDL. ,D_L16
 L168:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO STASH_DEFSET
@@ -3533,7 +3533,7 @@ VAR	ANON_550_42__dat, STANDARD.IDL._TREE.size
 	BRA ret_lbl
 L172:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO FETCH_DEFSET
@@ -3565,7 +3565,7 @@ VAR	ANON_556_26__dat, STANDARD.IDL._TREE.size
 	LI  87
 	CALL	STANDARD.IDL. ,D_L16
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO STASH_TYPESET
@@ -3612,7 +3612,7 @@ VAR	ANON_561_41__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO FETCH_TYPESET
@@ -3925,7 +3925,7 @@ L187:					; post loop LOOP__10
 	SQ  3,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_CONFLICTING_CONVERSION
@@ -4176,7 +4176,7 @@ L211:
 	SIB  2,	-IS_CONFLICT_ofs
 L210:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REDUCE_UNIQUE
@@ -4482,10 +4482,10 @@ VAR	ANON_710_30__dat, STANDARD.IDL._SEQ_TYPE.size
 	BLKMOV
 	UNLINK 3
 	BRA ret_lbl
-	UNLINK 3
+	UNLINKR 3
 endPRO
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO COMBINE_EXTRAINFO

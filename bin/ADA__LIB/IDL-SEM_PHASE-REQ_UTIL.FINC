@@ -189,7 +189,7 @@ L8:
 	BRA ret_lbl
 L7:					; post if
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO REQUIRE_XXX
@@ -246,7 +246,7 @@ VAR	ANON_60_16__dat, STANDARD.IDL._TREE.size
 L16:
 L15:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REQ_DEF_XXX
@@ -436,7 +436,7 @@ L24:
 	BRA ret_lbl
 L23:					; post if
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO REQUIRE_XXX
@@ -493,7 +493,7 @@ VAR	ANON_106_16__dat, STANDARD.IDL._TREE.size
 L32:
 L31:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REQ_TYPE_XXX
@@ -811,7 +811,7 @@ L37:					; post if
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GET_BASE_STRUCT
@@ -942,7 +942,7 @@ VAR	ANON_163_12__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GET_ANCESTOR_TYPE
@@ -1230,7 +1230,7 @@ L63:
 L57:
 					; fin case
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_MEMBER_OF_UNSPECIFIED
@@ -1303,7 +1303,7 @@ L71:
 	BRA ret_lbl
 L69:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_NONLIMITED_COMPOSITE_TYPE
@@ -1440,7 +1440,7 @@ L77:
 	BRA ret_lbl
 L75:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_STRING_TYPE
@@ -1586,7 +1586,7 @@ L83:					; post loop LOOP__2
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_CHARACTER_TYPE
@@ -1875,7 +1875,7 @@ L97:					; post if
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REQUIRE_SAME_TYPES
@@ -2335,7 +2335,7 @@ VAR	ANON_339_14__dat, STANDARD.IDL._TREE.size
 L130:
 L129:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REQUIRE_TYPE
@@ -2461,7 +2461,7 @@ VAR	ANON_351_45__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GET_VARIABLE_TYPE_SPEC
@@ -2795,7 +2795,7 @@ L138:					; post loop LOOP__6
 	SQ  3,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_NONLIMITED_COMP_LIST
@@ -2939,7 +2939,7 @@ L159:
 L155:
 					; fin case
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_NONLIMITED_TYPE
@@ -2964,7 +2964,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_LIMITED_TYPE
@@ -3130,7 +3130,7 @@ L171:
 L168:
 					; fin case
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_PRIVATE_TYPE
@@ -3196,7 +3196,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_INTEGER_TYPE
@@ -3266,7 +3266,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_REAL_TYPE
@@ -3344,7 +3344,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_SCALAR_TYPE
@@ -3382,7 +3382,7 @@ VAR	ANON_474_12__dat, STANDARD.IDL._TREE.size
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_BOOLEAN_TYPE
@@ -3428,7 +3428,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_UNIVERSAL_TYPE
@@ -3453,7 +3453,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_NON_UNIVERSAL_TYPE
@@ -3534,7 +3534,7 @@ L191:
 L189:
 					; fin case
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_DISCRETE_TYPE
@@ -3586,7 +3586,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_TASK_TYPE
@@ -3810,7 +3810,7 @@ VAR	ANON_527_14__dat, STANDARD.IDL._TREE.size
 L202:
 L201:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REQUIRE_ID
@@ -3859,7 +3859,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_TYPE_DEF
@@ -3898,7 +3898,7 @@ VAR	ANON_541_12__dat, STANDARD.IDL._TREE.size
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_ENTRY_DEF
@@ -3993,7 +3993,7 @@ L213:
 	BRA ret_lbl
 L210:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_PROC_OR_ENTRY_DEF
@@ -4194,7 +4194,7 @@ L221:
 	BRA ret_lbl
 L217:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_FUNCTION_OR_ARRAY_DEF
@@ -4261,7 +4261,7 @@ L227:
 	BRA ret_lbl
 L226:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_FUNCTION_OR_ENUMERATION_DEF
@@ -4302,7 +4302,7 @@ begin:
 	LA 	 3, -TYPESET_ofs
 	LA 	 3, -EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQ_GENE. ,REQ_TYPE_XXX_L17
-	UNLINK	 3
+	UNLINKR	 3
 	RTD	prm_siz
 endPRO					;---------- end PRO N_REQUIRE_NONLIMITED_TYPE
 end if
@@ -4312,7 +4312,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LA  2,	-EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQUIRE_NONLIMITED_TYPE_L133. ,N_REQUIRE_NONLIMITED_TYPE_L228
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REQUIRE_NONLIMITED_TYPE
@@ -4353,7 +4353,7 @@ begin:
 	LA 	 3, -TYPESET_ofs
 	LA 	 3, -EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQ_GENE. ,REQ_TYPE_XXX_L17
-	UNLINK	 3
+	UNLINKR	 3
 	RTD	prm_siz
 endPRO					;---------- end PRO N_REQUIRE_INTEGER_TYPE
 end if
@@ -4363,7 +4363,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LA  2,	-EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQUIRE_INTEGER_TYPE_L134. ,N_REQUIRE_INTEGER_TYPE_L233
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REQUIRE_INTEGER_TYPE
@@ -4404,7 +4404,7 @@ begin:
 	LA 	 3, -TYPESET_ofs
 	LA 	 3, -EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQ_GENE. ,REQ_TYPE_XXX_L17
-	UNLINK	 3
+	UNLINKR	 3
 	RTD	prm_siz
 endPRO					;---------- end PRO N_REQUIRE_BOOLEAN_TYPE
 end if
@@ -4414,7 +4414,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LA  2,	-EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQUIRE_BOOLEAN_TYPE_L135. ,N_REQUIRE_BOOLEAN_TYPE_L238
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REQUIRE_BOOLEAN_TYPE
@@ -4455,7 +4455,7 @@ begin:
 	LA 	 3, -TYPESET_ofs
 	LA 	 3, -EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQ_GENE. ,REQ_TYPE_XXX_L17
-	UNLINK	 3
+	UNLINKR	 3
 	RTD	prm_siz
 endPRO					;---------- end PRO N_REQUIRE_REAL_TYPE
 end if
@@ -4465,7 +4465,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LA  2,	-EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQUIRE_REAL_TYPE_L136. ,N_REQUIRE_REAL_TYPE_L243
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REQUIRE_REAL_TYPE
@@ -4506,7 +4506,7 @@ begin:
 	LA 	 3, -TYPESET_ofs
 	LA 	 3, -EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQ_GENE. ,REQ_TYPE_XXX_L17
-	UNLINK	 3
+	UNLINKR	 3
 	RTD	prm_siz
 endPRO					;---------- end PRO N_REQUIRE_SCALAR_TYPE
 end if
@@ -4516,7 +4516,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LA  2,	-EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQUIRE_SCALAR_TYPE_L137. ,N_REQUIRE_SCALAR_TYPE_L248
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REQUIRE_SCALAR_TYPE
@@ -4557,7 +4557,7 @@ begin:
 	LA 	 3, -TYPESET_ofs
 	LA 	 3, -EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQ_GENE. ,REQ_TYPE_XXX_L17
-	UNLINK	 3
+	UNLINKR	 3
 	RTD	prm_siz
 endPRO					;---------- end PRO N_REQUIRE_UNIVERSAL_TYPE
 end if
@@ -4567,7 +4567,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LA  2,	-EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQUIRE_UNIVERSAL_TYPE_L138. ,N_REQUIRE_UNIVERSAL_TYPE_L253
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REQUIRE_UNIVERSAL_TYPE
@@ -4608,7 +4608,7 @@ begin:
 	LA 	 3, -TYPESET_ofs
 	LA 	 3, -EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQ_GENE. ,REQ_TYPE_XXX_L17
-	UNLINK	 3
+	UNLINKR	 3
 	RTD	prm_siz
 endPRO					;---------- end PRO N_REQUIRE_NON_UNIVERSAL_TYPE
 end if
@@ -4618,7 +4618,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LA  2,	-EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQUIRE_NON_UNIVERSAL_TYPE_L139. ,N_REQUIRE_NON_UNIVERSAL_TYPE_L258
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REQUIRE_NON_UNIVERSAL_TYPE
@@ -4659,7 +4659,7 @@ begin:
 	LA 	 3, -TYPESET_ofs
 	LA 	 3, -EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQ_GENE. ,REQ_TYPE_XXX_L17
-	UNLINK	 3
+	UNLINKR	 3
 	RTD	prm_siz
 endPRO					;---------- end PRO N_REQUIRE_DISCRETE_TYPE
 end if
@@ -4669,7 +4669,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LA  2,	-EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQUIRE_DISCRETE_TYPE_L140. ,N_REQUIRE_DISCRETE_TYPE_L263
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REQUIRE_DISCRETE_TYPE
@@ -4710,7 +4710,7 @@ begin:
 	LA 	 3, -TYPESET_ofs
 	LA 	 3, -EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQ_GENE. ,REQ_TYPE_XXX_L17
-	UNLINK	 3
+	UNLINKR	 3
 	RTD	prm_siz
 endPRO					;---------- end PRO N_REQUIRE_TASK_TYPE
 end if
@@ -4720,7 +4720,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LA  2,	-EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQUIRE_TASK_TYPE_L141. ,N_REQUIRE_TASK_TYPE_L268
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REQUIRE_TASK_TYPE
@@ -4761,7 +4761,7 @@ begin:
 	LA 	 3, -DEFSET_ofs
 	LA 	 3, -EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQ_GENE. ,REQ_DEF_XXX_L1
-	UNLINK	 3
+	UNLINKR	 3
 	RTD	prm_siz
 endPRO					;---------- end PRO N_REQUIRE_TYPE_DEF
 end if
@@ -4771,7 +4771,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LA  2,	-EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQUIRE_TYPE_DEF_L142. ,N_REQUIRE_TYPE_DEF_L273
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REQUIRE_TYPE_DEF
@@ -4812,7 +4812,7 @@ begin:
 	LA 	 3, -DEFSET_ofs
 	LA 	 3, -EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQ_GENE. ,REQ_DEF_XXX_L1
-	UNLINK	 3
+	UNLINKR	 3
 	RTD	prm_siz
 endPRO					;---------- end PRO N_REQUIRE_ENTRY_DEF
 end if
@@ -4822,7 +4822,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LA  2,	-EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQUIRE_ENTRY_DEF_L143. ,N_REQUIRE_ENTRY_DEF_L278
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REQUIRE_ENTRY_DEF
@@ -4863,7 +4863,7 @@ begin:
 	LA 	 3, -DEFSET_ofs
 	LA 	 3, -EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQ_GENE. ,REQ_DEF_XXX_L1
-	UNLINK	 3
+	UNLINKR	 3
 	RTD	prm_siz
 endPRO					;---------- end PRO N_REQUIRE_PROC_OR_ENTRY_DEF
 end if
@@ -4873,7 +4873,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LA  2,	-EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQUIRE_PROC_OR_ENTRY_DEF_L144. ,N_REQUIRE_PROC_OR_ENTRY_DEF_L283
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REQUIRE_PROC_OR_ENTRY_DEF
@@ -4914,7 +4914,7 @@ begin:
 	LA 	 3, -DEFSET_ofs
 	LA 	 3, -EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQ_GENE. ,REQ_DEF_XXX_L1
-	UNLINK	 3
+	UNLINKR	 3
 	RTD	prm_siz
 endPRO					;---------- end PRO N_REQUIRE_FUNCTION_OR_ARRAY_DEF
 end if
@@ -4924,7 +4924,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LA  2,	-EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQUIRE_FUNCTION_OR_ARRAY_DEF_L145. ,N_REQUIRE_FUNCTION_OR_ARRAY_DEF_L288
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REQUIRE_FUNCTION_OR_ARRAY_DEF
@@ -4965,7 +4965,7 @@ begin:
 	LA 	 3, -DEFSET_ofs
 	LA 	 3, -EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQ_GENE. ,REQ_DEF_XXX_L1
-	UNLINK	 3
+	UNLINKR	 3
 	RTD	prm_siz
 endPRO					;---------- end PRO N_REQUIRE_FUNCTION_OR_ENUMERATION_DEF
 end if
@@ -4975,7 +4975,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LA  2,	-EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.REQ_UTIL.REQUIRE_FUNCTION_OR_ENUMERATION_DEF_L146. ,N_REQUIRE_FUNCTION_OR_ENUMERATION_DEF_L293
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REQUIRE_FUNCTION_OR_ENUMERATION_DEF

@@ -1043,6 +1043,44 @@ end	SUBPROGRAM_ORIGIN;
 	----------------
 
 
+			--^^^^^^^^^^^^^^^^^^^^--
+  function		  EXIT_UNLINK_MNEMONIC	( HEADER :TREE )	return STRING
+  is			------------------------
+		-- Chantier co-pile (n 109/147/163) : mnemonique de l'epilogue d'un
+		-- frame de sous-programme (ret_lbl des corps, wrappers d'instanciation).
+		-- UNLINKR rend la co-pile (r14 := r13) : procedures, fonctions a
+		-- resultat scalaire / access / record -- le resultat est COPIE chez
+		-- l'appelant avant l'epilogue.  UNLINK garde : fonctions a resultat
+		-- TABLEAU (CODE_RETURN copie le data_ptr, PAS les donnees : contrat
+		-- d'evasion, gardien STRRET_TEST) et toute sorte non prouvee sure
+		-- (formel generique en corps partage, vue privee non percee) :
+		-- le comportement historique est toujours le repli.
+    RESULT_TS	: TREE;
+  begin
+    if  HEADER = TREE_VOID  or else  HEADER.TY /= DN_FUNCTION_SPEC  then
+      return "UNLINKR";										-- procedure : rien n'evade
+    end if;
+
+    RESULT_TS := D( SM_TYPE_SPEC, D( SM_DEFN, LAST_OF_SELECTED( D( AS_NAME, HEADER ) ) ) );
+    if  RESULT_TS = TREE_VOID  or else  RESULT_TS = TREE_NIL  then
+      return "UNLINK";										-- non prouvable : garder
+    end if;
+    RESULT_TS := FULL_TYPE_VIEW( RESULT_TS );
+
+    if  RESULT_TS.TY in CLASS_SCALAR
+    or else  RESULT_TS.TY = DN_ACCESS
+    or else  RESULT_TS.TY = DN_RECORD
+    or else  RESULT_TS.TY = DN_CONSTRAINED_RECORD
+    then
+      return "UNLINKR";
+    else
+      return "UNLINK";										-- DN_ARRAY / DN_CONSTRAINED_ARRAY / autre : contrat d'evasion
+    end if;
+
+  end	EXIT_UNLINK_MNEMONIC;
+	--------------------
+
+
 	-----
 end	UTILS;
 	-----

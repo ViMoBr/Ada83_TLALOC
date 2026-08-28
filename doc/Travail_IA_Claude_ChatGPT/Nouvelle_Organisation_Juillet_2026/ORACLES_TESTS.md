@@ -809,3 +809,29 @@ corpus réel muets. Oracle suprême : cmp ADA_COMP / ADA_COMP.x86exe muet
 
 Oracle unitaire (localisation) : squelette constant avec/sans le
 mnémonique isolé, delta d'octets = taille fasmg, confrontée à SIZE_OF.
+
+### COPILE_REL_TEST (chantier co-pile lot 1, 28 aout 2026, 8 assertions)
+
+Une unite : copile_rel_test.adb. Gardien du piege n 165 (UNLINKR choisi par
+l'expander). S1 capacite : 2 000 000 appels d'une procedure a tableau local
+de 1000 octets (2 Go sous le regime a bosse) ; S2 capacite : 3 000 000
+appels d'une fonction SCALAIRE a temporaires STRING (IMAGE + concat) ;
+S3 evasion : resultat STRING consomme APRES deux appels interposes qui
+relachent (en parametre, puis aliase par declaration) ; S4 return depuis un
+bloc declare dans une fonction STRING ; S5 fonction RECORD a temporaires
+STRING ; S6 exit a travers un bloc. Attendu : « RESULTAT : 8 OK, 0 ECHECS /
+COPILE_REL_TEST PASSE », sous fasmg et sous target_code. Mesure associee :
+/usr/bin/time -v -> RSS max < 100 Mo (plus de 2 Go sous l'ancien regime ;
+sur x86 l'arene de 16 Gio ne segfaulte pas, c'est le RSS qui juge). Vert
+le 28 aout au premier passage. A repasser apres toute retouche de
+LINK/UNLINK/UNLINKR/ELB, d'EXIT_UNLINK_MNEMONIC, de CODE_RETURN ou des
+sites d'UNLINK de l'expander. Ordre des oracles inchange : STRRET_TEST
+d'abord.
+
+Amendement COPILE_TEST : depuis le lot 1, la phase 1 (30 M d'appels) ne
+fait plus de bosse (les 8 octets par LINK sont rendus) ; verdict inchange.
+
+Amendement oracle de point fixe : entre un T1 d'avant-lot et un T1
+d'apres-lot, le diff FINC attendu se limite aux UNLINK devenus UNLINKR
+(sed s/UNLINKR/UNLINK/ puis cmp = muet). Entre T2 et T3 apres le lot :
+identite stricte comme avant.

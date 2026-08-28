@@ -35,7 +35,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	DROP
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO INIT_PARAM_CURSOR
@@ -176,7 +176,7 @@ L5:					; post if
 	LVA 2, SELARG_L17_disp
 	CALL	STANDARD.IDL. ,POP_L24
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO ADVANCE_PARAM_CURSOR
@@ -675,7 +675,7 @@ L34:					; post if
 L28:
 L27:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO DEBUG_PRINT_DEF
@@ -736,7 +736,7 @@ STR STR_L44, "!! INVALID ARGUMENT FOR FIND_VISIBILITY"	; constante string="!! IN
 L39:
 					; fin case
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO FIND_VISIBILITY
@@ -1405,7 +1405,7 @@ L70:					; post loop LOOP__10
 	LVA 3,	NEW_DEFLIST_disp
 	LA
 	BLKMOV
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	LI	0
 	SB  2,	USED_IS_OK_disp
@@ -1694,7 +1694,7 @@ L84:
 	BRA	STANDARD.exc_raise_
 L82:
 L78:
-	UNLINK 4
+	UNLINKR 4
 endPRO
 					; debut if
 	ULB 3,	HEADER_KIND_disp
@@ -1945,7 +1945,7 @@ L88:					; post if
 	BLKMOV
 	UNLINK 3
 	BRA ret_lbl
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L73
 L74:
@@ -3675,7 +3675,7 @@ L159:					; post if
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO FIND_DIRECT_VISIBILITY
@@ -4859,7 +4859,7 @@ L195:					; post loop LOOP__16
 	LVA 3,	NEW_NEW_DEFSET_disp
 	LA
 	BLKMOV
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L185
 L186:
@@ -5391,11 +5391,11 @@ L233:					; post if
 	BRA	L230
 L231:
 L230:					; post if
-	UNLINK 4
+	UNLINKR 4
 endPRO
 	BRA	LOOP__18
 L227:					; post loop LOOP__18
-	UNLINK 3
+	UNLINKR 3
 endPRO
 L220:					; post if
 	LA  2,	-DEFSET_ofs
@@ -5405,7 +5405,7 @@ L220:					; post if
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO FIND_SELECTED_VISIBILITY
@@ -5631,7 +5631,7 @@ L249:					; post if
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GET_ENCLOSING_DEF
@@ -5746,7 +5746,7 @@ VAR	ANON_681_12__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_USED_NAME_ID_FROM_OBJECT
@@ -6038,7 +6038,7 @@ VAR	ANON_701_39__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_USED_OP_FROM_STRING
@@ -6230,7 +6230,7 @@ L266:					; post loop LOOP__22
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REDUCE_NAME_TYPES
@@ -6572,7 +6572,7 @@ L278:
 	BRA ret_lbl
 L271:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO EXPRESSION_TYPE_OF_DEF
@@ -6688,7 +6688,7 @@ L283:					; post loop LOOP__23
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO ALL_PARAMETERS_HAVE_DEFAULTS
@@ -6755,7 +6755,7 @@ L288:
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_OVERLOADABLE_HEADER
@@ -6780,7 +6780,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO CAST_TREE
@@ -6815,7 +6815,7 @@ VAR	ANON_805_12__dat, STANDARD.IDL._SEQ_TYPE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO CAST_SEQ_TYPE
@@ -7003,11 +7003,11 @@ L299:					; post loop LOOP__25
 	BLKMOV
 	UNLINK 3
 	BRA ret_lbl
-	UNLINK 3
+	UNLINKR 3
 endPRO
 L295:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO COPY_NODE
@@ -7503,7 +7503,7 @@ L317:
 	BRA	L315
 L316:
 L315:					; post if
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	LVA 2,	NAME_TYPEINTERP_disp
 	LVA  2,	STANDARD.IDL.SEM_PHASE_L11.VIS_UTIL.FIND_SELECTED_DEFS_L19.NEW_TYPESET_disp
@@ -7546,7 +7546,7 @@ L303:					; post loop LOOP__26
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO FIND_SELECTED_DEFS

@@ -1234,7 +1234,7 @@ L11:					; post if
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO WALK_HOMOGRAPH_UNIT

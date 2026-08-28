@@ -452,7 +452,7 @@ L19:
 L17:
 L7:
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO WALK_PRAGMA
@@ -2660,7 +2660,7 @@ L113:					; post if
 	LA  2,	-GEN_ASSOC_S_ofs
 	CALL	STANDARD.IDL.IDL_MAN. ,LIST_L36
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO WALK_PRAGMA_ARGUMENTS
@@ -2953,7 +2953,7 @@ VAR	ANON_348_47__dat, STANDARD.IDL._TREE.size
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO GET_ARGUMENT_NAME
@@ -3053,7 +3053,7 @@ L133:					; post if
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO GET_ARGUMENT_EXP
@@ -3100,7 +3100,7 @@ VAR	ANON_374_16__dat, STANDARD.IDL._TREE.size
 L138:
 L137:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO MUST_BE_SIMPLE_NAME
@@ -3170,7 +3170,7 @@ VAR	ANON_382_16__dat, STANDARD.IDL._TREE.size
 L143:
 L142:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO MUST_BE_NAME

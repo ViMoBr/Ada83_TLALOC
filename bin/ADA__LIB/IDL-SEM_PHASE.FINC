@@ -3115,7 +3115,7 @@ L507:					; post if
 	BRA	LOOP__1
 L506:					; post loop LOOP__1
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD
 excep:
 endPRO					;---------- end PRO INITIALIZE_PRAGMA_ATTRIBUTE_DEFS
@@ -3453,7 +3453,7 @@ VAR	ANON_2180_19__dat, STANDARD.IDL._SEQ_TYPE.size
 	CALL	STANDARD.IDL.IDL_MAN. ,APPEND_L34
 	LA
 	BLKMOV
-	UNLINK 4
+	UNLINKR 4
 endPRO
 	BRA	LOOP__2
 L515:					; post loop LOOP__2
@@ -3461,7 +3461,7 @@ L515:					; post loop LOOP__2
 	LA  3,	-NAME_S_ofs
 	CALL	STANDARD.IDL.IDL_MAN. ,LIST_L36
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PROCESS_WITH_NAME_S
@@ -3788,7 +3788,7 @@ VAR	ANON_2223_25__dat, STANDARD.IDL._SEQ_TYPE.size
 	CALL	STANDARD.IDL.IDL_MAN. ,APPEND_L34
 	LA
 	BLKMOV
-	UNLINK 5
+	UNLINKR 5
 endPRO
 	BRA	LOOP__5
 L526:					; post loop LOOP__5
@@ -3806,13 +3806,13 @@ VAR	ANON_2227_10__dat, STANDARD.IDL._TREE.size
 	LI  130
 	CALL	STANDARD.IDL. ,D_L17
 	CALL	STANDARD.IDL.IDL_MAN. ,LIST_L36
-	UNLINK 4
+	UNLINKR 4
 endPRO
 L522:					; post if
 	BRA	LOOP__4
 L521:					; post loop LOOP__4
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PROCESS_WITH_USE_PRAGMA_S
@@ -4263,7 +4263,7 @@ VAR	ANON_2276_40__dat, STANDARD.IDL._TREE.size
 	BRA	L542
 L544:
 L542:					; post if
-	UNLINK 6
+	UNLINKR 6
 endPRO
 	BRA	L536
 L539:
@@ -4273,7 +4273,7 @@ L536:					; post if
 	SQ  5,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 5
+	UNLINKR 5
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_ANCESTOR
@@ -4646,7 +4646,7 @@ L550:					; post if
 	BRA	LOOP__9
 L549:					; post loop LOOP__9
 ret_lbl:
-	UNLINK 5
+	UNLINKR 5
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REPROCESS_CONTEXT
@@ -4698,7 +4698,7 @@ VAR	ANON_2328_21__dat, STANDARD.IDL._TREE.size
 L564:
 L563:					; post if
 ret_lbl:
-	UNLINK 4
+	UNLINKR 4
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PROCESS_ANCESTOR_CONTEXT
@@ -4788,7 +4788,7 @@ VAR	ANON_2352_35__dat, STANDARD.IDL._TREE.size
 	BRA	LOOP__14
 L571:					; post loop LOOP__14
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PROCESS_CONTEXT_CLAUSES
@@ -5184,7 +5184,7 @@ VAR	ANON_2399_18__dat, STANDARD.IDL._TREE.size
 	LVA 3,	DES_DEF_disp
 	CALL	STANDARD.IDL.SEM_PHASE_L11.NOD_WALK. ,ENTER_BODY_L191
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO ENTER_ANCESTOR_REGION
@@ -5219,7 +5219,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LA  3,	-ITEM_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.NOD_WALK. ,WALK_L184
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO WALK_ITEM
@@ -5394,10 +5394,10 @@ VAR	ANON_2450_30__dat, STANDARD.IDL._SEQ_TYPE.size
 	BLKMOV
 	BRA	LOOP__17
 L601:					; post loop LOOP__17
-	UNLINK 3
+	UNLINKR 3
 endPRO
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO COMPILE_COMPILATION_UNIT
@@ -5672,7 +5672,7 @@ L605:					; post loop LOOP__18
 	LVA 1,	STANDARD.IDL.SEM_PHASE_L11.SEM_GLOB.PREDEFINED_STANDARD_DEF_disp
 	CALL	STANDARD.IDL.SEM_PHASE_L11.DEF_UTIL. ,REMOVE_DEF_FROM_ENVIRONMENT_L69
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO CANCEL_TRANS_WITHS
@@ -6018,14 +6018,14 @@ L624:					; post if
 	BRA	LOOP__20
 L623:					; post loop LOOP__20
 L619:					; post if
-	UNLINK 2
+	UNLINKR 2
 endPRO
 	BRA	L615
 L616:
 L615:					; post if
 	CALL	STANDARD.IDL.PAGE_MAN. ,CLOSE_PAGE_MANAGER_L19
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO SEM_PHASE

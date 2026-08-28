@@ -803,7 +803,7 @@ L33:
 L32:					; post if
 	BRA	LOOP__6
 L31:					; post loop LOOP__6
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L25
 L26:
@@ -1063,7 +1063,7 @@ L35:					; post loop LOOP__4
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_DERIVED_SUBPROGRAM_LIST
@@ -1193,7 +1193,7 @@ VAR	ANON_184_28__dat, STANDARD.IDL._SEQ_TYPE.size
 L50:
 L49:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REMEMBER_DERIVED_DECL
@@ -1424,7 +1424,7 @@ L59:					; post loop LOOP__7
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_OPERATION_OF_TYPE
@@ -1982,7 +1982,7 @@ VAR	ANON_291_27__dat, STANDARD.IDL._SEQ_TYPE.size
 	CALL	STANDARD.IDL.IDL_MAN. ,APPEND_L34
 	LA
 	BLKMOV
-	UNLINK 4
+	UNLINKR 4
 endPRO
 	BRA	LOOP__10
 L71:					; post loop LOOP__10
@@ -2001,7 +2001,7 @@ VAR	ANON_294_34__dat, STANDARD.IDL._TREE.size
 	LVA 2,	STANDARD.IDL.SEM_PHASE_L11.DERIVED.MAKE_DERIVED_SUBPROGRAM_L2.NEW_HEADER_disp
 	LI  120
 	CALL	STANDARD.IDL. ,D_L16
-	UNLINK 3
+	UNLINKR 3
 endPRO
 					; debut if
 	LA	2, STANDARD.IDL.SEM_PHASE_L11.DERIVED.MAKE_DERIVED_SUBPROGRAM_L2.NEW_ID_disp
@@ -2149,7 +2149,7 @@ VAR	ANON_309_69__dat, STANDARD.IDL._TREE.size
 	BRA	L88
 L89:
 L88:					; post if
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L84
 L85:
@@ -2163,7 +2163,7 @@ L84:					; post if
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_DERIVED_SUBPROGRAM

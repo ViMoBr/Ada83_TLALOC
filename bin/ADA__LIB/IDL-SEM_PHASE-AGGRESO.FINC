@@ -172,7 +172,7 @@ L12:					; post if
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GET_SUBTYPE_OF_ID
@@ -216,7 +216,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LI	0
 	SD
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO INIT_ASSOC_CURSOR
@@ -425,7 +425,7 @@ L25:
 	BLKMOV
 L20:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO ADVANCE_ASSOC_CURSOR
@@ -490,7 +490,7 @@ L37:					; post loop LOOP__1
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO COUNT_AGGREGATE_CHOICES
@@ -839,7 +839,7 @@ L43:					; post if
 	BRA	LOOP__2				; iteration suivante LOOP__2
 L41:					; post loop LOOP__2
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO SPREAD_ASSOC_S
@@ -2185,7 +2185,7 @@ L51:					; post if
 	BRA	LOOP__3
 L49:					; post loop LOOP__3
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO WALK_RECORD_DECL_S
@@ -3107,7 +3107,7 @@ L88:					; post loop LOOP__5
 	LA  2,	-ASSOC_S_ofs
 	CALL	STANDARD.IDL.IDL_MAN. ,LIST_L36
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO RESOLVE_RECORD_ASSOC_S
@@ -3387,7 +3387,7 @@ L119:					; post if
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO RESOLVE_EXP_OR_AGGREGATE
@@ -3547,7 +3547,7 @@ L128:
 	CALL	STANDARD.IDL.SEM_PHASE_L11.AGGRESO. ,RESOLVE_ERRONEOUS_AGGREGATE_L5
 L126:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO RESOLVE_AGGREGATE
@@ -3728,7 +3728,7 @@ VAR	ANON_340_39__dat, STANDARD.IDL._TREE.size
 	LA  2,	-EXP_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.AGGRESO. ,RESOLVE_STRING_SUBAGGREGATE_L7
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO RESOLVE_STRING
@@ -3942,7 +3942,7 @@ L137:					; post if
 	BRA	LOOP__6				; iteration suivante LOOP__6
 L135:					; post loop LOOP__6
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO RESOLVE_ERRONEOUS_AGGREGATE
@@ -4504,7 +4504,7 @@ VAR	ANON_394_11__dat, STANDARD.IDL._TREE.size
 	LI  154
 	CALL	STANDARD.IDL. ,D_L17
 	CALL	STANDARD.IDL.IDL_MAN. ,ERROR_L45
-	UNLINK 3
+	UNLINKR 3
 	BRA	L142
 	BRA	L154
 L155:
@@ -4550,7 +4550,7 @@ VAR	ANON_399_11__dat, STANDARD.IDL._TREE.size
 	LI  154
 	CALL	STANDARD.IDL. ,D_L17
 	CALL	STANDARD.IDL.IDL_MAN. ,ERROR_L45
-	UNLINK 3
+	UNLINKR 3
 	BRA	L142
 	BRA	L158
 L159:
@@ -4735,12 +4735,12 @@ VAR	ANON_412_11__dat, STANDARD.IDL._TREE.size
 	LI  154
 	CALL	STANDARD.IDL. ,D_L17
 	CALL	STANDARD.IDL.IDL_MAN. ,ERROR_L45
-	UNLINK 3
+	UNLINKR 3
 	BRA	L142
 	BRA	L168
 L169:
 L168:					; post if
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L143
 L144:
@@ -4790,10 +4790,10 @@ begin:					;---------- BDY INSTRUCTIONS
 	LA  2,	-EXP_ofs
 	LI  92
 	CALL	STANDARD.IDL. ,D_L16
-	UNLINK 3
+	UNLINKR 3
 endPRO
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO RESOLVE_RECORD_AGGREGATE
@@ -4966,7 +4966,7 @@ L176:					; post loop LOOP__12
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO VALUE_IS_IN_CHOICE_S
@@ -6249,7 +6249,7 @@ VAR	ANON_558_34__dat, STANDARD.IDL._TREE.size
 	LVA 3,	NEW_CHOICE_disp
 	LA
 	BLKMOV
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	LA	 2, STANDARD.IDL.SEM_PHASE_L11.AGGRESO.RESOLVE_ARRAY_SUBAGGREGATE_L6.AGGREGATE_ARRAY_disp	; array data start address on stack
 	LD 2,	IL235_disp
@@ -6550,7 +6550,7 @@ L225:					; post if
 	LI  92
 	CALL	STANDARD.IDL. ,D_L16
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO RESOLVE_ARRAY_SUBAGGREGATE
@@ -6577,7 +6577,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LI  95
 	CALL	STANDARD.IDL. ,D_L16
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO RESOLVE_STRING_SUBAGGREGATE
@@ -7052,7 +7052,7 @@ VAR	ANON_624_25__dat, STANDARD.IDL._TREE.size
 	LVA 3,	NAMED_disp
 	LA
 	BLKMOV
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L258
 L259:
@@ -7524,7 +7524,7 @@ VAR	ANON_642_23__dat, STANDARD.IDL._TREE.size
 	LVA 3,	NAMED_disp
 	LA
 	BLKMOV
-	UNLINK 3
+	UNLINKR 3
 endPRO
 L256:					; post if
 	LVA 2,	CHOICE_disp
@@ -8060,7 +8060,7 @@ VAR	ANON_681_22__dat, STANDARD.IDL._SEQ_TYPE.size
 	LVA 3, SELARG_L296_disp
 	LI  72
 	CALL	STANDARD.IDL. ,D_L16
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	LVA 2,	RANGE_NODE_disp
 	LVA 2,	CHOICE_disp
@@ -8666,7 +8666,7 @@ L313:					; post loop LOOP__24
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO MAKE_NORMALIZED_LIST

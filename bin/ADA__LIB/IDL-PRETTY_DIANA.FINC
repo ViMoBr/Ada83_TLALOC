@@ -411,7 +411,7 @@ LOOP__2:					; corps boucle LOOP__2
 	BRA	LOOP__2				; iteration suivante LOOP__2
 L11:					; post loop LOOP__2
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO INDENT
@@ -701,7 +701,7 @@ LOOP__5:
 	CALL	STANDARD.IDL.PRETTY_DIANA_L14.IMPRIME_L1. ,MARK_STRUCT_L13
 	BRA	LOOP__5
 L30:					; post loop LOOP__5
-	UNLINK 4
+	UNLINKR 4
 endPRO
 	BRA	L26
 L27:
@@ -763,7 +763,7 @@ L26:					; post if
 L24:
 L23:					; post if
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO MARK_STRUCT
@@ -1251,7 +1251,7 @@ end namespace
 	BLKMOV
 	LVA 5, ANON_122_11_L55_R_disp
 	CALL	STANDARD.TEXT_IO. ,PUT_L56
-	UNLINK 5
+	UNLINKR 5
 endPRO
 	BRA	L50
 L51:
@@ -1260,7 +1260,7 @@ L51:
 L50:					; post if
 	LI	41
 	CALL	STANDARD.TEXT_IO. ,PUT_L52
-	UNLINK 4
+	UNLINKR 4
 endPRO
 					; debut if
 	LA 3, -T_ofs
@@ -1435,7 +1435,7 @@ L63:					; post loop LOOP__7
 	BRA	L61
 L62:
 L61:					; post if
-	UNLINK 4
+	UNLINKR 4
 endPRO
 	BRA	L57
 L58:
@@ -1813,7 +1813,7 @@ L89:
 	CGT
 	BT  L89
 L90:
-	UNLINK 5
+	UNLINKR 5
 endPRO
 	ULW  4,	IL83_disp				; test de sortie LOOP__9
 	ULW  4,	LMT_IL83_disp
@@ -1832,7 +1832,7 @@ L79:					; post loop LOOP__8
 	BRA	L74
 L75:
 L74:					; post if
-	UNLINK 4
+	UNLINKR 4
 endPRO
 	BRA	L70
 L71:
@@ -2447,11 +2447,11 @@ L120:					; post loop LOOP__11
 STR STR_L121, " }"				; constante string=" }"
 	LCA	STR_L121.data_ptr
 	CALL	STANDARD.TEXT_IO. ,PUT_L56
-	UNLINK 6
+	UNLINKR 6
 endPRO
 L106:					; post if
 ret_lbl:
-	UNLINK 5
+	UNLINKR 5
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PRINT_NON_STRUCT_ATTR
@@ -3113,14 +3113,14 @@ STR STR_L162, " }"				; constante string=" }"
 	LCA	STR_L162.data_ptr
 	CALL	STANDARD.TEXT_IO. ,PUT_L56
 L156:					; post if
-	UNLINK 7
+	UNLINKR 7
 endPRO
 L151:					; post if
-	UNLINK 6
+	UNLINKR 6
 endPRO
 L143:					; post if
 ret_lbl:
-	UNLINK 5
+	UNLINKR 5
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PRINT_STRUCT_ATTR
@@ -3789,7 +3789,7 @@ L179:
 	CALL	STANDARD.IDL.PRETTY_DIANA_L14.IMPRIME_L1.PRINT_DIANA_L33.TRAITER_LES_DESCENDANTS. ,PRINT_STRUCT_ATTR_L122
 L178:					; post if
 ret_lbl:
-	UNLINK 5
+	UNLINKR 5
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO MAYBE_NON_STRUCT_ATTR
@@ -4366,7 +4366,7 @@ L198:
 	CALL	STANDARD.IDL.PRETTY_DIANA_L14.IMPRIME_L1.PRINT_DIANA_L33.TRAITER_LES_DESCENDANTS. ,MAYBE_NON_STRUCT_ATTR_L163
 L197:					; post if
 ret_lbl:
-	UNLINK 5
+	UNLINKR 5
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PRINT_IF_NOT_STRUCTURAL
@@ -4648,7 +4648,7 @@ L215:					; post if
 	SB  4,	IL214_disp
 	BRA	LOOP__14				; iteration suivante LOOP__14
 L213:					; post loop LOOP__14
-	UNLINK 4
+	UNLINKR 4
 endPRO
 					; debut if
 	ULB 1,	STANDARD.IDL.PRETTY_DIANA_L14.DEBUG_PRETTY_disp
@@ -4660,7 +4660,7 @@ STR STR_L219, "print_diana ok"		; constante string="print_diana ok"
 L218:
 L217:					; post if
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PRINT_DIANA
@@ -4724,7 +4724,7 @@ STR STR_L223, "USER_ROOT="			; constante string="USER_ROOT="
 	BT	STANDARD.ce_raise_
 	CALL	STANDARD.TEXT_IO. ,NEW_LINE_L26
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD
 excep:
 endPRO					;---------- end PRO IMPRIME
@@ -4891,7 +4891,7 @@ VAR	ANON_439_17__dat, STANDARD.TEXT_IO._FILE_TYPE.size
 L229:
 L225:
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PRETTY_DIANA

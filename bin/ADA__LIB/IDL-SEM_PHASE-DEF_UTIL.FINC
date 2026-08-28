@@ -155,7 +155,7 @@ VAR	ANON_41_39__dat, STANDARD.IDL._TREE.size
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO HEADER_IS_HOMOGRAPH
@@ -347,7 +347,7 @@ VAR	ANON_63_27__dat, STANDARD.IDL._SEQ_TYPE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE_DEF_FOR_ID
@@ -431,7 +431,7 @@ VAR	ANON_77_25__dat, STANDARD.IDL._TREE.size
 	BRA	LOOP__1
 L22:					; post loop LOOP__1
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO CHECK_UNIQUE_SOURCE_NAME_S
@@ -517,7 +517,7 @@ VAR	ANON_91_27__dat, STANDARD.IDL._TREE.size
 	BRA	LOOP__2
 L25:					; post loop LOOP__2
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO CHECK_CONSTANT_ID_S
@@ -732,7 +732,7 @@ VAR	ANON_111_51__dat, STANDARD.IDL._TREE.size
 	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GET_DEF_FOR_ID
@@ -933,7 +933,7 @@ L34:					; post loop LOOP__4
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GET_PRIOR_DEF
@@ -1061,7 +1061,7 @@ VAR	ANON_139_44__dat, STANDARD.IDL._TREE.size
 	BRA ret_lbl
 L40:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GET_PRIOR_HOMOGRAPH_DEF
@@ -1405,7 +1405,7 @@ L44:					; post loop LOOP__5
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GET_PRIOR_HOMOGRAPH_DEF
@@ -1545,7 +1545,7 @@ L55:					; post loop LOOP__6
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GET_DEF_IN_REGION
@@ -1753,7 +1753,7 @@ L61:
 	CALL	STANDARD.IDL. ,D_L16
 L60:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO CHECK_UNIQUE_DEF
@@ -1944,7 +1944,7 @@ L69:					; post if
 	CALL	STANDARD.IDL. ,D_L16
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO CHECK_CONSTANT_DEF
@@ -2248,7 +2248,7 @@ L84:					; post if
 	BRA	L82
 L83:
 L82:					; post if
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L76
 L77:
@@ -2366,7 +2366,7 @@ VAR	ANON_302_41__dat, STANDARD.IDL._TREE.size
 	BRA	L92
 L93:
 L92:					; post if
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L86
 L87:
@@ -2374,7 +2374,7 @@ L86:					; post if
 	LA  2,	-SOURCE_DEF_ofs
 	CALL	STANDARD.IDL.SEM_PHASE_L11.DEF_UTIL. ,CHECK_UNIQUE_DEF_L60
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO CHECK_TYPE_DEF
@@ -2499,7 +2499,7 @@ VAR	ANON_339_47__dat, STANDARD.IDL._TREE.size
 L99:					; post if
 L97:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO ARE_HOMOGRAPH_HEADERS
@@ -2872,7 +2872,7 @@ L113:					; post if
 	BRA	LOOP__9
 L103:					; post loop LOOP__9
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_SAME_PARAMETER_PROFILE
@@ -3465,7 +3465,7 @@ VAR	ANON_466_26__dat, STANDARD.IDL._TREE.size
 	BRA	LOOP__11
 L138:					; post loop LOOP__11
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO CONFORM_PARAMETER_LISTS
@@ -3487,7 +3487,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_COMPATIBLE_EXPRESSION
@@ -3508,7 +3508,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LI  168
 	CALL	STANDARD.IDL. ,D_L16
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO MAKE_DEF_VISIBLE
@@ -3528,7 +3528,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LI  168
 	CALL	STANDARD.IDL. ,D_L16
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO MAKE_DEF_IN_ERROR
@@ -3561,7 +3561,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LI  172
 	CALL	STANDARD.IDL. ,DB_L18
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REMOVE_DEF_FROM_ENVIRONMENT
@@ -3802,7 +3802,7 @@ L154:
 	BRA ret_lbl
 L151:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GET_DEF_EXP_TYPE
@@ -4544,7 +4544,7 @@ L196:					; post loop LOOP__13
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GET_BASE_TYPE
@@ -4686,7 +4686,7 @@ L200:					; post if
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GET_BASE_PACKAGE

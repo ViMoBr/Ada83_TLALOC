@@ -1099,7 +1099,7 @@ L10:
 	BRA ret_lbl
 L6:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO WIDTH
@@ -1178,7 +1178,7 @@ LOOP__2:
 	BRA	LOOP__2
 L20:					; post loop LOOP__2
 L16:					; post if
-	UNLINK 2
+	UNLINKR 2
 endPRO
 namespace	BLOCK__1
 ELB 2					;    BODY ELAB
@@ -1407,7 +1407,7 @@ VAR	RET_INFO_L30, Q
 	BLKMOV
 	UNLINK 2
 	BRA ret_lbl
-	UNLINK 2
+	UNLINKR 2
 endPRO
 ret_lbl:
 	UNLINK 1
@@ -1641,7 +1641,7 @@ VAR	RET_INFO_L39, Q
 	BLKMOV
 	UNLINK 2
 	BRA ret_lbl
-	UNLINK 2
+	UNLINKR 2
 endPRO
 	BRA	L35
 L36:
@@ -2141,7 +2141,7 @@ L62:
 	BRA ret_lbl
 L61:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO INTEGER_VALUE
@@ -2211,7 +2211,7 @@ L68:					; post loop LOOP__9
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO INTEGER_POW

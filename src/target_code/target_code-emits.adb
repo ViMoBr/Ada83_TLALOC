@@ -267,15 +267,17 @@ is					-----
 	------
 
 
-
-			-----------
-  function		ELAB_TARGET	( E :IR.ELT_ID )	return SYMBOLS.VALUE_TYPE
   --| adresse de prefix.subname.elab pour CALL/LSPA - le prefixe des FINC
   --| reels porte un POINT FINAL de concatenation (releve EXP-03) ; le
   --| temoin, lui, ecrit "STANDARD" nu : les deux formes sont acceptees.
-  is
+
+			-----------
+  function		ELAB_TARGET	( E :IR.ELT_ID )	return SYMBOLS.VALUE_TYPE
+  is			-----------
+
     P			: constant STRING := LEX.IMAGE( IR.OP_TXT( E, 1 ) );
     S			: constant STRING := LEX.IMAGE( IR.OP_TXT( E, 2 ) );
+
   begin
     if  IR.N_OPS( E ) < 2
        or else  IR.OP_TAG( E, 1 ) /= IR.NAME_OP

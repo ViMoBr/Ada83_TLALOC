@@ -370,14 +370,14 @@ LOOP__2:					; corps boucle LOOP__2
 	SW  4,	IL14_disp
 	BRA	LOOP__2				; iteration suivante LOOP__2
 L13:					; post loop LOOP__2
-	UNLINK 4
+	UNLINKR 4
 endPRO
 	BRA	LOOP__1
 L10:					; post loop LOOP__1
-	UNLINK 3
+	UNLINKR 3
 endPRO
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO MARK_DONT_MOVE_PAGES
@@ -465,7 +465,7 @@ begin:
 	LB	 3, -MODE_ofs
 	LA 	 3, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,CREATE_L1
-	UNLINK	 3
+	UNLINKR	 3
 	RTD	prm_siz
 endPRO					;---------- end PRO CREATE
 end if
@@ -487,7 +487,7 @@ begin:
 	LB	 3, -MODE_ofs
 	LA 	 3, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,OPEN_L2
-	UNLINK	 3
+	UNLINKR	 3
 	RTD	prm_siz
 endPRO					;---------- end PRO OPEN
 end if
@@ -503,7 +503,7 @@ begin:
 	LVA	 2, GFP_disp
 	LA 	 3, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,CLOSE_L3
-	UNLINK	 3
+	UNLINKR	 3
 	RTD	prm_siz
 endPRO					;---------- end PRO CLOSE
 end if
@@ -519,7 +519,7 @@ begin:
 	LVA	 2, GFP_disp
 	LA 	 3, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,DELETE_L4
-	UNLINK	 3
+	UNLINKR	 3
 	RTD	prm_siz
 endPRO					;---------- end PRO DELETE
 end if
@@ -537,7 +537,7 @@ begin:
 	LB	 3, -MODE_ofs
 	LA 	 3, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,RESET_L5
-	UNLINK	 3
+	UNLINKR	 3
 	RTD	prm_siz
 endPRO					;---------- end PRO RESET
 end if
@@ -553,7 +553,7 @@ begin:
 	LVA	 2, GFP_disp
 	LA 	 3, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,RESET_L6
-	UNLINK	 3
+	UNLINKR	 3
 	RTD	prm_siz
 endPRO					;---------- end PRO RESET
 end if
@@ -572,7 +572,7 @@ begin:
 	LA 	 3, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,MODE_L7
 	SB	 3, -result__ofs			; retour resultat
-	UNLINK	 3
+	UNLINKR	 3
 	RTD	prm_siz-8
 endPRO					;---------- end PRO MODE
 end if
@@ -627,7 +627,7 @@ begin:
 	LA 	 3, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,IS_OPEN_L10
 	SB	 3, -result__ofs			; retour resultat
-	UNLINK	 3
+	UNLINKR	 3
 	RTD	prm_siz-8
 endPRO					;---------- end PRO IS_OPEN
 end if
@@ -645,7 +645,7 @@ begin:
 	LA 	 3, -ITEM_ofs
 	LA 	 3, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,READ_L11
-	UNLINK	 3
+	UNLINKR	 3
 	RTD	prm_siz
 endPRO					;---------- end PRO READ
 end if
@@ -663,7 +663,7 @@ begin:
 	LA 	 3, -ITEM_ofs
 	LA 	 3, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,WRITE_L12
-	UNLINK	 3
+	UNLINKR	 3
 	RTD	prm_siz
 endPRO					;---------- end PRO WRITE
 end if
@@ -682,7 +682,7 @@ begin:
 	LA 	 3, -FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,END_OF_FILE_L13
 	SB	 3, -result__ofs			; retour resultat
-	UNLINK	 3
+	UNLINKR	 3
 	RTD	prm_siz-8
 endPRO					;---------- end PRO END_OF_FILE
 end if
@@ -1472,14 +1472,14 @@ L51:					; post if
 	UNLINK 5
 	UNLINK 4
 	BRA ret_lbl
-	UNLINK 5
+	UNLINKR 5
 endPRO
 L40:					; post if
-	UNLINK 4
+	UNLINKR 4
 endPRO
 L32:					; post if
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO RECOPIE_POUR_COMPACTION
@@ -1660,7 +1660,7 @@ STR STR_L64, ""				; constante string=""
 	LI	 1
 	LVA  2,	STANDARD.IDL.WRITE_LIB_L13.WRITE_UNIT_L15.LIB_FILE_disp
 	CALL	STANDARD.IDL.WRITE_LIB_L13.WRITE_UNIT_L15.SEQ_IO. ,CREATE_L1
-	UNLINK 3
+	UNLINKR 3
 endPRO
 namespace	PREPARER_ECRITURE_PAGES_UNITE
 ELB 3					;    BODY ELAB
@@ -1883,7 +1883,7 @@ VAR	ANON_218_20__dat, STANDARD.IDL._TREE.size
 	SD  3,	IL68_disp
 	BRA	ECRIRE_LES_PAGES_D_UNITE			; iteration suivante ECRIRE_LES_PAGES_D_UNITE
 L67:					; post loop ECRIRE_LES_PAGES_D_UNITE
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	LVA  2,	STANDARD.IDL.WRITE_LIB_L13.WRITE_UNIT_L15.LIB_FILE_disp
 	CALL	STANDARD.IDL.WRITE_LIB_L13.WRITE_UNIT_L15.SEQ_IO. ,CLOSE_L3
@@ -1905,7 +1905,7 @@ VAR	ANON_228_21__dat, STANDARD.IDL._SEQ_TYPE.size
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO WRITE_UNIT
@@ -2225,11 +2225,11 @@ VAR	ANON_264_11__dat, STANDARD.IDL._TREE.size
 	LI  136
 	CALL	STANDARD.IDL. ,D_L17
 	CALL	STANDARD.IDL.IDL_MAN. ,LIST_L36
-	UNLINK 2
+	UNLINKR 2
 endPRO
 	CALL	STANDARD.IDL. ,DELETE_IDL_TREE_FILE_L8
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO WRITE_LIB

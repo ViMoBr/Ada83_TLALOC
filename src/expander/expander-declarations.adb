@@ -2604,12 +2604,12 @@ is
 	  end if;
 	end if;
 
-	PUT_LINE( tab & "UNLINK" & tab & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );
+	PUT_LINE( tab & CODI.EXIT_UNLINK_MNEMONIC( HEADER ) & tab & LEVEL_NUM'IMAGE( CODI.CUR_LEVEL ) );		--| chantier co-pile (n 163) : meme regle que ret_lbl
 
 	if  CODI.NO_SUBP_PARAMS  then
 	  PUT_LINE( tab & "RTD" );
 	else
-	  if  SOURCE_NAME.TY = DN_FUNCTION_ID  or  SOURCE_NAME.TY = DN_OPERATOR_ID  then		-- symetrie avec l'epilogue des corps reels (un operateur est une fonction)
+	  if  SOURCE_NAME.TY = DN_FUNCTION_ID  or  SOURCE_NAME.TY = DN_OPERATOR_ID  then			--| symetrie avec l'epilogue des corps reels (un operateur est une fonction)
 	    PUT_LINE( tab & "RTD" & tab & "prm_siz-8" );
 	  else
 	    PUT_LINE( tab & "RTD" & tab & "prm_siz" );

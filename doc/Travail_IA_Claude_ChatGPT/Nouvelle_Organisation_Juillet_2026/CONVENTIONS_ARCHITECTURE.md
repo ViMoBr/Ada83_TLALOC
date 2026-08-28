@@ -430,6 +430,23 @@ slot recu au modele — jamais de lieu factice pour un resultat
 composite (piege n 123). Data du resultat : co-pile de l'appele,
 promue (UNLINK ne redescend pas r14).
 
+## Epilogue de frame et co-pile : UNLINK / UNLINKR (lot 1, 28/08)
+
+UNLINK lvl garde la co-pile (r14 inchange) ; UNLINKR lvl la rend
+(r14 := r13 avant r13 := [r13] : retour exact au r14 d'avant LINK). Le
+choix appartient a l'EXPANDER, via UTILS.EXIT_UNLINK_MNEMONIC( header ) :
+UNLINKR pour les procedures et les fonctions a resultat scalaire, access
+ou record (copies chez l'appelant avant l'epilogue) ; UNLINK pour tout
+resultat TABLEAU (contrat d'evasion : CODE_RETURN copie le data_ptr) et
+toute sorte non prouvee sure. Fin normale de bloc, exit et goto :
+UNLINKR ; blocs traverses par un return : UNLINK. Le codi ne decide
+jamais. Le paragraphe C7 ci-dessus reste vrai : « data du resultat :
+co-pile de l'appele, promue » -- promue parce que ce frame-la emet UNLINK.
+
+Amendement de la ligne « Blocs declare : toujours UNLINK N avant de
+quitter le bloc » : lire UNLINKR N en sortie normale, UNLINK N sur le
+chemin d'un return.
+
 ## Clause d'adresse d'objet = OVERLAY (C8, 01/08)
 
 Traitee a la DECLARATION via SM_ADDRESS (pose par sem), rien au site

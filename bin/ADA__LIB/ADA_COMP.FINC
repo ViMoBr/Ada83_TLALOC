@@ -322,7 +322,7 @@ L9:					; post loop FIND_POST_END_1
 	MUL
 	DROP
 	BLKMOV
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	LVA	0, STANDARD.IDL.LIB_PATH_LENGTH_disp
 	LD	0, STANDARD.IDL.PROJECT_PATH_LENGTH_disp
@@ -628,7 +628,7 @@ L16:					; post loop FIND_POST_END_2
 	MUL
 	DROP
 	BLKMOV
-	UNLINK 3
+	UNLINKR 3
 endPRO
 					; debut if
 	ULB 1,	STANDARD.ADA_COMP_L1.NO_OPTION_GIVEN_disp
@@ -707,10 +707,10 @@ L24:					; post loop FIND_START_3
 	ADD					; add offset to start address
 	ULB
 	SB  1,	STANDARD.ADA_COMP_L1.OPTION_disp
-	UNLINK 3
+	UNLINKR 3
 endPRO
 L20:					; post if
-	UNLINK 2
+	UNLINKR 2
 endPRO
 					; debut if
 	ULB 1,	OPTION_disp
@@ -1386,12 +1386,12 @@ L58:
 	BRA	STANDARD.exc_raise_
 L56:
 L34:
-	UNLINK 3
+	UNLINKR 3
 endPRO
-	UNLINK 2
+	UNLINKR 2
 endPRO
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO ADA_COMP

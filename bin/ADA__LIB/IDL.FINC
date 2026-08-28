@@ -791,7 +791,7 @@ begin:
 	LA 	 1, -ITEM_ofs
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L61
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO GET
 end if
@@ -809,7 +809,7 @@ begin:
 	LD	 1, -WIDTH_ofs
 	LA 	 1, -ITEM_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L62
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO GET
 end if
@@ -831,7 +831,7 @@ begin:
 	LD	 1, -ITEM_ofs
 	LA 	 1, -FILE_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L63
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO PUT
 end if
@@ -851,7 +851,7 @@ begin:
 	LD	 1, -WIDTH_ofs
 	LD	 1, -ITEM_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L64
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO PUT
 end if
@@ -871,7 +871,7 @@ begin:
 	LA 	 1, -ITEM_ofs
 	LA 	 1, -FROM_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,GET_L65
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO GET
 end if
@@ -891,7 +891,7 @@ begin:
 	LD	 1, -ITEM_ofs
 	LA 	 1, -TO_ofs
 	CALL	STANDARD.TEXT_IO.INTEGER_IO. ,PUT_L66
-	UNLINK	 1
+	UNLINKR	 1
 	RTD	prm_siz
 endPRO					;---------- end PRO PUT
 end if
@@ -1812,7 +1812,7 @@ L64:
 	BRA	STANDARD.exc_raise_
 L62:
 L60:
-	UNLINK 2
+	UNLINKR 2
 endPRO
 	LA  1,	-PAGE_FILE_NAME_ofs
 	CALL	STANDARD.IDL.PAGE_MAN. ,CREATE_PAGE_MANAGER_L14
@@ -1871,7 +1871,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LVA 2,	ROOT_disp
 	LI  3
 	CALL	STANDARD.IDL. ,DI_L20
-	UNLINK 2
+	UNLINKR 2
 endPRO
 namespace	BLOCK__3
 ELB 2					;    BODY ELAB
@@ -1960,7 +1960,7 @@ LOOP__5:					; corps boucle LOOP__5
 	SB  2,	IL72_disp
 	BRA	LOOP__5				; iteration suivante LOOP__5
 L71:					; post loop LOOP__5
-	UNLINK 2
+	UNLINKR 2
 endPRO
 namespace	BLOCK__4
 ELB 2					;    BODY ELAB
@@ -2308,10 +2308,10 @@ STR STR_L93, """NOT"""			; constante string="""NOT"""
 	CALL	STANDARD.IDL.IDL_MAN. ,STORE_SYM_L40
 	LA
 	BLKMOV
-	UNLINK 2
+	UNLINKR 2
 endPRO
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO CREATE_IDL_TREE_FILE
@@ -2367,10 +2367,10 @@ L101:
 	BRA	STANDARD.exc_raise_
 L99:
 L97:
-	UNLINK 2
+	UNLINKR 2
 endPRO
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO OPEN_IDL_TREE_FILE
@@ -2384,7 +2384,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 	CALL	STANDARD.IDL.PAGE_MAN. ,CLOSE_PAGE_MANAGER_L19
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO CLOSE_IDL_TREE_FILE
@@ -2398,7 +2398,7 @@ ELB 1					;    BODY ELAB
 begin:					;---------- BDY INSTRUCTIONS
 	CALL	STANDARD.IDL.PAGE_MAN. ,DELETE_PAGE_MANAGER_L20
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO DELETE_IDL_TREE_FILE
@@ -2518,7 +2518,7 @@ VAR	ANON_294_14__dat, STANDARD.IDL._TREE.size
 	BRA ret_lbl
 L109:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MAKE
@@ -2891,7 +2891,7 @@ end namespace
 	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO D
@@ -3278,7 +3278,7 @@ end namespace
 	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO D
@@ -3327,7 +3327,7 @@ L131:					; post if
 	ULB  1,	-AN_ofs
 	CALL	STANDARD.IDL. ,D_L16
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO DB
@@ -3715,7 +3715,7 @@ STR ANON_358_88_L138_D, " N EST PAS UN BOOLEEN"	; constante string=" N EST PAS U
 	BRA	STANDARD.exc_raise_
 L135:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO DB
@@ -3955,7 +3955,7 @@ begin:
 	LA	3, -S_ofs
 	LA
 	BLKMOV
-	UNLINK	 3
+	UNLINKR	 3
 	RTD	prm_siz-8
 endPRO					;---------- end PRO TO_TREE
 end if
@@ -4233,11 +4233,11 @@ L153:					; post loop LOOP__9
 	LA  1,	-T_ofs
 	ULB  1,	-AN_ofs
 	CALL	STANDARD.IDL. ,D_L16
-	UNLINK 2
+	UNLINKR 2
 endPRO
 L144:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO DI
@@ -4704,7 +4704,7 @@ STR ANON_431_84_L166_D, " N EST PAS UN ENTIER"	; constante string=" N EST PAS UN
 	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO DI
@@ -4945,7 +4945,7 @@ end namespace
 	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO LIST
@@ -4991,7 +4991,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_EMPTY
@@ -5040,7 +5040,7 @@ VAR	ANON_473_10__dat, STANDARD.IDL._SEQ_TYPE.size
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO POP
@@ -5578,7 +5578,7 @@ VAR	RET_INFO_L190, Q
 	BLKMOV
 	UNLINK 2
 	BRA ret_lbl
-	UNLINK 2
+	UNLINKR 2
 endPRO
 	BRA	L185
 L186:
@@ -7688,7 +7688,7 @@ VAR	RET_INFO_L241, Q
 	UNLINK 2
 	BRA ret_lbl
 L237:					; post if
-	UNLINK 2
+	UNLINKR 2
 endPRO
 	BRA	L194
 L204:
@@ -8778,7 +8778,7 @@ ELB 1					;    BODY ELAB
 					;    end elab
 begin:					;---------- BDY INSTRUCTIONS
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD
 excep:
 endPRO					;---------- end PRO DEBUG_STOP

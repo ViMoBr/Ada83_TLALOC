@@ -189,7 +189,7 @@ L5:
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_ZERO
@@ -237,7 +237,7 @@ VAR	ANON_33_13__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO U_VAL
@@ -272,7 +272,7 @@ VAR	ANON_43_13__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO U_VALUE
@@ -367,7 +367,7 @@ STR STR_L19, "ERR U_POS"			; constante string="ERR U_POS"
 	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO U_POS
@@ -532,7 +532,7 @@ VAR	ANON_82_10__dat, STANDARD.IDL._TREE.size
 	UNLINK 3
 	BRA ret_lbl
 L29:					; post if
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L22
 L24:
@@ -623,7 +623,7 @@ VAR	ANON_86_24__dat, STANDARD.IDL._TREE.size
 	BRA ret_lbl
 L22:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO U_EQUAL
@@ -670,7 +670,7 @@ VAR	ANON_97_17__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO U_NOT_EQUAL
@@ -918,7 +918,7 @@ VAR	ANON_127_17__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	UNLINK 3
 	BRA ret_lbl
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L39
 L41:
@@ -1009,7 +1009,7 @@ VAR	ANON_131_21__dat, STANDARD.IDL._TREE.size
 	BRA ret_lbl
 L39:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO _LT_
@@ -1056,7 +1056,7 @@ VAR	ANON_144_18_L63__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO _LE_
@@ -1093,7 +1093,7 @@ VAR	ANON_154_14_L66__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO _GT_
@@ -1140,7 +1140,7 @@ VAR	ANON_163_18_L70__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO _GE_
@@ -1605,7 +1605,7 @@ VAR	ANON_204_63__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	UNLINK 3
 	BRA ret_lbl
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L75
 L82:
@@ -1619,7 +1619,7 @@ L75:					; post if
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO U_MEMBER
@@ -1670,7 +1670,7 @@ VAR	ANON_217_30__dat, STANDARD.IDL._TREE.size
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO _LE_
@@ -1721,7 +1721,7 @@ VAR	ANON_226_31__dat, STANDARD.IDL._TREE.size
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO _GE_
@@ -1772,7 +1772,7 @@ VAR	ANON_236_38__dat, STANDARD.IDL._TREE.size
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO U_EQUAL
@@ -1823,7 +1823,7 @@ VAR	ANON_246_49__dat, STANDARD.IDL._TREE.size
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO U_MEMBER
@@ -1931,7 +1931,7 @@ VAR	ANON_261_15__dat, STANDARD.IDL._TREE.size
 	BRA ret_lbl
 L105:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO _AND_
@@ -2039,7 +2039,7 @@ VAR	ANON_277_15__dat, STANDARD.IDL._TREE.size
 	BRA ret_lbl
 L110:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO _OR_
@@ -2141,7 +2141,7 @@ VAR	ANON_293_15__dat, STANDARD.IDL._TREE.size
 	BRA ret_lbl
 L115:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO _XOR_
@@ -2213,7 +2213,7 @@ VAR	ANON_308_12__dat, STANDARD.IDL._TREE.size
 	BRA ret_lbl
 L120:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO _NOT_
@@ -2322,7 +2322,7 @@ VAR	ANON_323_14__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	UNLINK 3
 	BRA ret_lbl
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L124
 L126:
@@ -2379,7 +2379,7 @@ VAR	ANON_326_23__dat, STANDARD.IDL._TREE.size
 	BRA ret_lbl
 L124:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO _MINUS_
@@ -2506,7 +2506,7 @@ VAR	ANON_345_16__dat, STANDARD.IDL._TREE.size
 	UNLINK 3
 	BRA ret_lbl
 L141:					; post if
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L134
 L136:
@@ -2563,7 +2563,7 @@ VAR	ANON_349_25__dat, STANDARD.IDL._TREE.size
 	BRA ret_lbl
 L134:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO _ABS_
@@ -2780,7 +2780,7 @@ VAR	ANON_379_16__dat, STANDARD.IDL._TREE.size
 	UNLINK 3
 	BRA ret_lbl
 L153:					; post if
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L146
 L148:
@@ -2915,7 +2915,7 @@ VAR	ANON_384_7__dat, STANDARD.IDL._TREE.size
 	BRA ret_lbl
 L146:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO _PLUS_
@@ -3136,7 +3136,7 @@ VAR	ANON_416_16__dat, STANDARD.IDL._TREE.size
 	UNLINK 3
 	BRA ret_lbl
 L170:					; post if
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L163
 L165:
@@ -3271,7 +3271,7 @@ VAR	ANON_421_7__dat, STANDARD.IDL._TREE.size
 	BRA ret_lbl
 L163:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO _MINUS_
@@ -3463,7 +3463,7 @@ VAR	ANON_445_14__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	UNLINK 3
 	BRA ret_lbl
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L184
 L186:
@@ -3633,7 +3633,7 @@ VAR	ANON_452_20__dat, STANDARD.IDL._TREE.size
 	BRA ret_lbl
 L184:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO _MUL_
@@ -3842,7 +3842,7 @@ VAR	ANON_477_14__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	UNLINK 3
 	BRA ret_lbl
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L201
 L203:
@@ -4064,7 +4064,7 @@ VAR	ANON_488_20__dat, STANDARD.IDL._TREE.size
 	BRA ret_lbl
 L201:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO _DIV_
@@ -4247,11 +4247,11 @@ VAR	ANON_516_14__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	UNLINK 3
 	BRA ret_lbl
-	UNLINK 3
+	UNLINKR 3
 endPRO
 L218:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO _MOD_
@@ -4377,11 +4377,11 @@ VAR	ANON_540_14__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	UNLINK 3
 	BRA ret_lbl
-	UNLINK 3
+	UNLINKR 3
 endPRO
 L229:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO _REM_
@@ -4574,7 +4574,7 @@ VAR	ANON_571_16__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	UNLINK 3
 	BRA ret_lbl
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L237
 L239:
@@ -4737,7 +4737,7 @@ VAR	ANON_578_25__dat, STANDARD.IDL._TREE.size
 L247:					; post if
 L237:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO _POW_

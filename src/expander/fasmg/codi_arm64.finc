@@ -1565,6 +1565,18 @@ macro			UNLINK	lvl				; DISPOSE VARS LOCALES ET RESTORE FRAME PTR
   dd 0xF940035A							; ldr x26, [x26]
 end macro
 
+;			-------------
+macro			UNLINKR	lvl				; DISPOSE VARS LOCALES ET RESTORE FRAME PTR
+;			-------------
+  FP_IN_RBP	lvl						; throw locals : x29 = FP(lvl)
+  POP_RAX								; depiler l'ancien FP sauvegarde
+  RAX_IN_FP	lvl						; restaurer l'entree lvl du display
+;	Liberer le frame de co-pile : mov x26, [x26]
+
+  dd 0xAA1A03FB							; mov x27, x26	(sommet := cellule LINK de ce frame = x27 d'avant LINK)
+  dd 0xF940035A							; ldr x26, [x26]
+end macro
+
 ;			----------------------
 macro			PRO	sub_name_lbl			; Debut de procedure declaree
 ;			----------------------

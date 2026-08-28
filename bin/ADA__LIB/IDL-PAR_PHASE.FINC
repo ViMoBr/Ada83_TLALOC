@@ -364,7 +364,7 @@ L13:
 	BRA	STANDARD.exc_raise_
 L11:
 L8:
-	UNLINK 4
+	UNLINKR 4
 endPRO
 	VAR SELARG_L15_disp, q
 	VAR SELARG_L15__u, q
@@ -377,10 +377,10 @@ endPRO
 	CALL	STANDARD.GRMR_TBL.GRMR_TBL_IO. ,READ_L11
 	LVA  3,	STANDARD.IDL.PAR_PHASE_L9.READ_PARSE_TABLES_L2.BLOCK__1.BIN_FILE_disp
 	CALL	STANDARD.GRMR_TBL.GRMR_TBL_IO. ,CLOSE_L3
-	UNLINK 3
+	UNLINKR 3
 endPRO
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD
 excep:
 endPRO					;---------- end PRO READ_PARSE_TABLES
@@ -493,7 +493,7 @@ L21:					; post if
 	LI	0
 	SD
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD
 excep:
 endPRO					;---------- end PRO GET_SOURCE_LINE
@@ -1086,7 +1086,7 @@ L54:					; post if
 	ULB 0,	STANDARD.LEX.LTYPE_disp
 	SB  1,	STANDARD.IDL.PAR_PHASE_L9.TOKENSYM_disp
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD
 excep:
 endPRO					;---------- end PRO GET_TOKEN
@@ -1280,7 +1280,7 @@ VAR	ANON_167_37__dat, STANDARD.IDL._TREE.size
 	LVA 2, SELARG_L69_disp
 	CALL	STANDARD.IDL.PAR_PHASE_L9. ,SET_DFLT_L1
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO MAKE_AUXA_NODE
@@ -1349,7 +1349,7 @@ end namespace
 	SA	0, STANDARD.EXCEPTIONS_CURRENT_disp
 	BRA	STANDARD.exc_raise_
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO TABLE_ERROR
@@ -1403,7 +1403,7 @@ L76:					; post if
 	SUB
 	SD  1,	STANDARD.IDL.PAR_PHASE_L9.SSITOP_disp
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO POP_ITEM
@@ -1451,7 +1451,7 @@ L82:					; post if
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO POP_NODE
@@ -1729,7 +1729,7 @@ L90:					; post if
 	LI  154
 	CALL	STANDARD.IDL. ,D_L16
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO POP_AUXA_SON_ARG_NODE
@@ -1817,7 +1817,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BT	STANDARD.ce_raise_
 	CALL	STANDARD.IDL.IDL_MAN. ,DABS_L37
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD
 excep:
 endPRO					;---------- end PRO SET_AUXA_SON1_NEW_NAME_SEQ
@@ -1849,7 +1849,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	BT	STANDARD.ce_raise_
 	CALL	STANDARD.IDL.IDL_MAN. ,DABS_L37
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD
 excep:
 endPRO					;---------- end PRO SET_AUXA_SON1_VOID
@@ -1897,7 +1897,7 @@ L108:					; post if
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO POP_TOKEN
@@ -1952,7 +1952,7 @@ L114:					; post if
 	LA
 	BLKMOV
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO POP_LIST
@@ -2185,7 +2185,7 @@ VAR	ANON_308_32__dat, STANDARD.IDL._TREE.size
 	LI  18
 	CALL	STANDARD.IDL. ,D_L16
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO MAKE_FCN_NODE
@@ -2485,7 +2485,7 @@ L132:
 L129:
 L128:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD
 excep:
 endPRO					;---------- end PRO PUSH_AUXA_NODE
@@ -2854,7 +2854,7 @@ end namespace
 	BRA	L148
 L149:
 L148:					; post if
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	LD  2,	IL141_disp				; test de sortie LOOP__3
 	LD  2,	LMT_IL141_disp
@@ -2866,7 +2866,7 @@ endPRO
 	BRA	LOOP__3				; iteration suivante LOOP__3
 L140:					; post loop LOOP__3
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD
 excep:
 endPRO					;---------- end PRO DISPLAY_SEMSTAK
@@ -3212,7 +3212,7 @@ STR ANON_386_55_L160_D, " expected"		; constante string=" expected"
 L157:
 L156:					; post if
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO CHECK_NAME_COHERENCE
@@ -4806,11 +4806,11 @@ L255:
 	BRA	L254
 L257:
 L254:					; post if
-	UNLINK 4
+	UNLINKR 4
 endPRO
 	LVA 3,	SYM_REP_ORIGINE_disp
 	CALL	STANDARD.IDL.PAR_PHASE_L9.BUILD_TREE_L151. ,CHECK_NAME_COHERENCE_L152
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	LD 1,	STANDARD.IDL.PAR_PHASE_L9.SSITOP_disp
 ; CODE_NUMERIC_LITERAL DN_INTEGER
@@ -5026,7 +5026,7 @@ VAR	ANON_600_31__dat, STANDARD.IDL._TREE.size
 	LI  13
 	CALL	STANDARD.IDL. ,D_L17
 	CALL	STANDARD.IDL.PAR_PHASE_L9.BUILD_TREE_L151. ,CHECK_NAME_COHERENCE_L152
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	LD 1,	STANDARD.IDL.PAR_PHASE_L9.SSITOP_disp
 ; CODE_NUMERIC_LITERAL DN_INTEGER
@@ -5113,7 +5113,7 @@ L271:					; post if
 	ADD
 	SID  2,	-AP_ofs
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO BUILD_TREE
@@ -5538,7 +5538,7 @@ L283:
 	CALL	STANDARD.TEXT_IO. ,PUT_LINE_L60
 L282:					; post if
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO DEBUG_PRINT
@@ -5568,7 +5568,7 @@ end namespace
 	CALL	STANDARD.IDL. ,PRINT_NAME_L25
 	CALL	STANDARD.IDL.PAR_PHASE_L9.PARSE_COMPILATION_L273. ,DEBUG_PRINT_L274
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO DEBUG_PRINT
@@ -8223,7 +8223,7 @@ L305:					; post if
 	BRA	LOOP__9
 L289:					; post loop LOOP__9
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD
 excep:
 endPRO					;---------- end PRO PARSE_COMPILATION
@@ -8483,7 +8483,7 @@ L381:
 	BRA	STANDARD.exc_raise_
 L379:
 L376:
-	UNLINK 2
+	UNLINKR 2
 endPRO
 ; CODE & concat _STRING
 VAR	ANON_837_8_L384_G_data, Q
@@ -8777,7 +8777,7 @@ VAR	ANON_850_32__dat, STANDARD.IDL._TREE.size
 	CALL	STANDARD.TEXT_IO. ,CLOSE_L3
 	CALL	STANDARD.IDL.PAGE_MAN. ,CLOSE_PAGE_MANAGER_L19
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO PAR_PHASE

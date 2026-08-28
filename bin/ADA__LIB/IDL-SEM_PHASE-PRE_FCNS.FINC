@@ -160,7 +160,7 @@ VAR	ANON_48_80__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GEN_IN
@@ -218,7 +218,7 @@ VAR	ANON_54_50__dat, STANDARD.IDL._SEQ_TYPE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GEN_DOUBLE_PARAM
@@ -264,7 +264,7 @@ VAR	ANON_60_42__dat, STANDARD.IDL._SEQ_TYPE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GEN_SINGLE_PARAM
@@ -302,7 +302,7 @@ VAR	ANON_66_12__dat, STANDARD.IDL._TREE.size
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GEN_HEADER
@@ -381,7 +381,7 @@ VAR	ANON_73_29_dbl_L16__u,   q
 	LVA 2,	DEF_disp
 	CALL	STANDARD.IDL.SEM_PHASE_L11.DEF_UTIL. ,MAKE_DEF_VISIBLE_L67
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO GEN_OP_DEF
@@ -780,7 +780,7 @@ L27:					; post loop LOOP__3
 	SQ  2,	-result__ofs
 	UNLINK 3
 	BRA ret_lbl
-	UNLINK 3
+	UNLINKR 3
 endPRO
 	BRA	L22
 L23:
@@ -799,7 +799,7 @@ L20:					; post loop LOOP__1
 	SQ  2,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO OPS_ARE_NOT_YET_DEFINED
@@ -1032,7 +1032,7 @@ L35:					; post if
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD
 excep:
 endPRO					;---------- end PRO USE_LEFT_TYPE_IN
@@ -1114,7 +1114,7 @@ L40:					; post if
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD
 excep:
 endPRO					;---------- end PRO USE_RIGHT_TYPE_IN
@@ -1186,7 +1186,7 @@ L47:					; post if
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD
 excep:
 endPRO					;---------- end PRO USE_PARAMS_TWO
@@ -1248,7 +1248,7 @@ L52:					; post if
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD
 excep:
 endPRO					;---------- end PRO USE_PARAMS_ONE
@@ -1311,7 +1311,7 @@ L57:					; post if
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD
 excep:
 endPRO					;---------- end PRO USE_HEADER_BOOLEAN
@@ -1374,7 +1374,7 @@ L62:					; post if
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD
 excep:
 endPRO					;---------- end PRO USE_HEADER_TYPE
@@ -1448,7 +1448,7 @@ L67:					; post if
 	BLKMOV
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD
 excep:
 endPRO					;---------- end PRO USE_HEADER_BY_INT
@@ -1524,7 +1524,7 @@ L74:					; post if
 	BRA	LOOP__4				; iteration suivante LOOP__4
 L72:					; post loop LOOP__4
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD
 excep:
 endPRO					;---------- end PRO GEN_PREDEF_EQ
@@ -1548,7 +1548,7 @@ begin:					;---------- BDY INSTRUCTIONS
 L80:
 L79:					; post if
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD
 excep:
 endPRO					;---------- end PRO CHECK_PREDEF_EQ
@@ -1678,7 +1678,7 @@ VAR	ANON_229_52__dat, STANDARD.IDL._TREE.size
 L89:
 L88:					; post if
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD
 excep:
 endPRO					;---------- end PRO GEN_PREDEF_BOOLEAN
@@ -1754,7 +1754,7 @@ L95:					; post if
 	BRA	LOOP__6				; iteration suivante LOOP__6
 L93:					; post loop LOOP__6
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD
 excep:
 endPRO					;---------- end PRO GEN_PREDEF_RELATIONAL
@@ -1923,7 +1923,7 @@ L106:					; post if
 	BRA	LOOP__8				; iteration suivante LOOP__8
 L104:					; post loop LOOP__8
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO GEN_PREDEF_NUMERIC
@@ -2048,7 +2048,7 @@ VAR	ANON_271_29__dat, STANDARD.IDL._TREE.size
 L114:
 L113:					; post if
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD
 excep:
 endPRO					;---------- end PRO GEN_PREDEF_FIXED_MULTIPLY
@@ -2278,7 +2278,7 @@ VAR	ANON_285_84__dat, STANDARD.IDL._TREE.size
 L119:
 L118:					; post if
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD
 excep:
 endPRO					;---------- end PRO GEN_PREDEF_CAT
@@ -2334,7 +2334,7 @@ VAR	ANON_293_29__dat, STANDARD.IDL._TREE.size
 L124:
 L123:					; post if
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD
 excep:
 endPRO					;---------- end PRO GEN_PREDEF_EXP
@@ -2530,7 +2530,7 @@ L143:					; post if
 L142:
 L141:					; post if
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD
 excep:
 endPRO					;---------- end PRO GEN_PREDEF_ARRAY
@@ -2880,7 +2880,7 @@ VAR	ANON_352_78__dat, STANDARD.IDL._TREE.size
 L153:
 L152:					; post if
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD
 excep:
 endPRO					;---------- end PRO GEN_PREDEF_UNIV_REAL
@@ -2979,7 +2979,7 @@ VAR	ANON_365_29__dat, STANDARD.IDL._TREE.size
 L160:
 L159:					; post if
 ret_lbl:
-	UNLINK 3
+	UNLINKR 3
 	RTD
 excep:
 endPRO					;---------- end PRO GEN_PREDEF_UNIV_FIXED
@@ -3277,7 +3277,7 @@ L177:
 L166:
 					; fin case
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO GEN_PREDEFINED_OPERATORS

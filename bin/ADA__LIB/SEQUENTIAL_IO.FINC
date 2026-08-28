@@ -166,7 +166,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SYS_FILE_CREATE
 	SD 2 ,	-24
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO CREATE_SYSTEM_CALL
@@ -254,7 +254,7 @@ L6:					; post if
 L9:
 L8:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO CREATE
@@ -291,7 +291,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SYS_FILE_OPEN
 	SD 2 ,	-24
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO OPEN_SYSTEM_CALL
@@ -382,7 +382,7 @@ L18:
 	BRA	STANDARD.exc_raise_
 L17:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO OPEN
@@ -416,7 +416,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SYS_FILE_CLOSE
 	SD 2 ,	-24
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO CLOSE_SYSTEM_CALL
@@ -440,7 +440,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	LI	0
 	SB
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO CLOSE
@@ -474,7 +474,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SYS_FILE_DELETE
 	SD 2 ,	-24
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO DELETE_SYSTEM_CALL
@@ -527,7 +527,7 @@ end namespace
 	LI	0
 	SB
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO DELETE
@@ -563,7 +563,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SYS_FILE_SET_POS
 	SD 2 ,	-24
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO SEEK_SYSTEM_CALL
@@ -597,7 +597,7 @@ L34:					; post if
 	LI	0
 	SB
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO RESET
@@ -631,7 +631,7 @@ L38:					; post if
 	LA  1,	-FILE_ofs
 	CALL	STANDARD.SEQUENTIAL_IO. ,RESET_L5
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO RESET
@@ -666,7 +666,7 @@ L42:					; post if
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO MODE
@@ -818,7 +818,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO IS_OPEN
@@ -870,7 +870,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SYS_FILE_READ
 	SD 2 ,	-40
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO READ_SYSTEM_CALL
@@ -934,7 +934,7 @@ L66:					; post if
 L69:
 L68:					; post if
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO READ
@@ -986,7 +986,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SYS_FILE_WRITE
 	SD 2 ,	-40
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO WRITE_SYSTEM_CALL
@@ -1029,7 +1029,7 @@ L77:					; post if
 	CALL	STANDARD.SEQUENTIAL_IO.WRITE_L12. ,WRITE_SYSTEM_CALL_L70
 	SD  1,	ERR_CODE_disp
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO WRITE
@@ -1068,7 +1068,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SYS_FILE_GET_POS
 	SD 2 ,	-24
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GET_POS_SYSTEM_CALL
@@ -1089,7 +1089,7 @@ begin:					;---------- BDY INSTRUCTIONS
 	SYS_FILE_GET_SIZE
 	SD 2 ,	-24
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO GET_SIZE_SYSTEM_CALL
@@ -1139,7 +1139,7 @@ L89:					; post if
 	SQ  1,	-result__ofs
 	BRA ret_lbl
 ret_lbl:
-	UNLINK 1
+	UNLINKR 1
 	RTD	prm_siz-8
 excep:
 endPRO					;---------- end PRO END_OF_FILE

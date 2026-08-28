@@ -311,7 +311,7 @@ VAR	ANON_57_14__dat, STANDARD.IDL._TREE.size
 L17:
 L16:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO REQUIRE_CURRENT_REGION
@@ -1095,7 +1095,7 @@ VAR	ANON_141_31__dat, STANDARD.IDL._TREE.size
 	CALL	STANDARD.IDL. ,D_L17
 	LI  88
 	CALL	STANDARD.IDL. ,D_L16
-	UNLINK 3
+	UNLINKR 3
 endPRO
 L44:					; post if
 	BRA	L23
@@ -1150,7 +1150,7 @@ L23:
 L22:
 L21:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO RESOLVE_LENGTH_REP
@@ -2061,7 +2061,7 @@ VAR	ANON_233_28__dat, STANDARD.IDL._TREE.size
 L93:
 L92:					; post if
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO RESOLVE_ENUM_REP
@@ -2584,7 +2584,7 @@ L121:
 L117:
 					; fin case
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO RESOLVE_ADDRESS_REP
@@ -3549,7 +3549,7 @@ L140:					; post if
 	BRA	LOOP__4
 L139:					; post loop LOOP__4
 ret_lbl:
-	UNLINK 2
+	UNLINKR 2
 	RTD	prm_siz
 excep:
 endPRO					;---------- end PRO RESOLVE_RECORD_REP
